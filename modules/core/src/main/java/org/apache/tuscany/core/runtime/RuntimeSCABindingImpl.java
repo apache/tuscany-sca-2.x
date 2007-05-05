@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.SCABindingImpl;
 import org.apache.tuscany.core.ReferenceBindingProvider;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -48,7 +48,7 @@ public class RuntimeSCABindingImpl extends SCABindingImpl implements SCABinding,
         return null;
     }
 
-    public InterfaceContract getBindingInterfaceContract(ComponentReference reference) {
+    public InterfaceContract getBindingInterfaceContract(RuntimeComponentReference reference) {
         return reference.getInterfaceContract();
     }
 
@@ -56,7 +56,7 @@ public class RuntimeSCABindingImpl extends SCABindingImpl implements SCABinding,
         return wires;
     }
 
-    public Interceptor createInterceptor(Component component, ComponentReference reference, Operation operation, boolean isCallback) {
+    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
         return null;
     }
 

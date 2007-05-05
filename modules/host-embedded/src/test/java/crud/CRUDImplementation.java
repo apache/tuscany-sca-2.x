@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
@@ -31,6 +30,7 @@ import org.apache.tuscany.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
@@ -155,7 +155,7 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         // CRUD implementations are always resolved
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
+    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
         CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
         CRUDTargetInvoker invoker = new CRUDTargetInvoker(operation, new ResourceManager(impl.getDirectory()));
         return invoker;
@@ -167,7 +167,7 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         return invoker;
     }
 
-    public InterfaceContract getImplementationInterfaceContract(ComponentService service) {
+    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
         return service.getInterfaceContract();
     }
 

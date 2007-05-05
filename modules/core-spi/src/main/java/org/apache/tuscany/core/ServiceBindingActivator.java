@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentService;
 
 /**
  * A binding can optionally implement this interface to control how the service
@@ -36,7 +34,7 @@ public interface ServiceBindingActivator {
      * @param component The SCA component
      * @param service The service that owns the binding
      */
-    void start(Component component, ComponentService service);
+    void start(RuntimeComponent component, RuntimeComponentService service);
 
     /**
      * This method will be invoked when a service binding is deactivated or the
@@ -45,5 +43,5 @@ public interface ServiceBindingActivator {
      * @param component The SCA component
      * @param service The service that owns the binding
      */
-    void stop(Component component, ComponentService service);
+    void stop(RuntimeComponent component, RuntimeComponentService service);
 }

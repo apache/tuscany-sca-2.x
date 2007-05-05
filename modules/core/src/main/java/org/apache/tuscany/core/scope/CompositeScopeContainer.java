@@ -85,7 +85,7 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         InstanceWrapper wrapper = (InstanceWrapper) instanceWrappers.get(component);
         if (wrapper == EMPTY) {
             // FIXME is there a potential race condition here that may result in two instances being created
-            wrapper = createInstance(component);
+            wrapper = createInstanceWrapper(component);
             instanceWrappers.put(component, wrapper);
             wrapper.start();
             // FIXME: [rfeng]

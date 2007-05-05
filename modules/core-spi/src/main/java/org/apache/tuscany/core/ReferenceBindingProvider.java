@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
@@ -40,7 +38,7 @@ public interface ReferenceBindingProvider {
      * @return An interceptor that handles the invocation logic, null should be
      *         returned if no interceptor is required
      */
-    Interceptor createInterceptor(Component component, ComponentReference reference, Operation operation, boolean isCallback);
+    Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback);
 
     /**
      * Get the effective interface contract imposed by the binding. For example,
@@ -51,7 +49,7 @@ public interface ReferenceBindingProvider {
      * @return The effective interface contract, if null is returned, the interface contract
      * for the component reference will be used
      */
-    InterfaceContract getBindingInterfaceContract(ComponentReference reference);
+    InterfaceContract getBindingInterfaceContract(RuntimeComponentReference reference);
     
 
 }

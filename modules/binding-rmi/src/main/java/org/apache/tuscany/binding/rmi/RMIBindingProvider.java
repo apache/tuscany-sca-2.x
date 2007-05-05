@@ -30,11 +30,10 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.core.ReferenceBindingActivator;
 import org.apache.tuscany.core.ReferenceBindingProvider;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.ServiceBindingActivator;
@@ -77,21 +76,21 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         this.rmiHost = rmiHost;
     }
 
-    public InterfaceContract getBindingInterfaceContract(ComponentService service) {
+    public InterfaceContract getBindingInterfaceContract(RuntimeComponentService service) {
         return service.getInterfaceContract();
     }
 
-    public void start(Component component, ComponentReference reference) {
+    public void start(RuntimeComponent component, RuntimeComponentReference reference) {
         // TODO Auto-generated method stub
         
     }
 
-    public void stop(Component component, ComponentReference reference) {
+    public void stop(RuntimeComponent component, RuntimeComponentReference reference) {
         // TODO Auto-generated method stub
         
     }
 
-    public void start(Component component, ComponentService service) {
+    public void start(RuntimeComponent component, RuntimeComponentService service) {
         URI uri = URI.create(component.getURI() + "/" + getName());
         setURI(uri.toString());
         RuntimeComponentService componentService = (RuntimeComponentService) service;
@@ -111,7 +110,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         }
     }
 
-    public void stop(Component component, ComponentService service) {
+    public void stop(RuntimeComponent component, RuntimeComponentService service) {
         try {
             rmiHost.unregisterService(getRmiServiceName(), 
                                       getPort(getRmiPort()));
@@ -121,7 +120,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         
     }
 
-    public Interceptor createInterceptor(Component component, ComponentReference reference, Operation operation, boolean isCallback) {
+    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
        try {
             Method remoteMethod = 
                 JavaInterfaceUtil.findMethod(((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass(),
@@ -136,7 +135,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         }
     }
 
-    public InterfaceContract getBindingInterfaceContract(ComponentReference reference) {
+    public InterfaceContract getBindingInterfaceContract(RuntimeComponentReference reference) {
         return reference.getInterfaceContract();
     }
     

@@ -37,7 +37,7 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
 
     public  InstanceWrapper getWrapper(RuntimeComponent component, KEY contextId)
         throws TargetResolutionException {
-        InstanceWrapper ctx = createInstance(component);
+        InstanceWrapper ctx = createInstanceWrapper(component);
         ctx.start();
         return ctx;
     }

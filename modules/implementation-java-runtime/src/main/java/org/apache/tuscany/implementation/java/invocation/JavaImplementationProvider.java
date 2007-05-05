@@ -25,6 +25,7 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.core.scope.CompositeScopeContainer;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
@@ -154,7 +155,7 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
         return atomicComponent.createInstance();
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
+    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
         JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         try {
             return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(operation));
@@ -172,7 +173,7 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
         }
     }
 
-    public InterfaceContract getImplementationInterfaceContract(ComponentService service) {
+    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
         return service.getInterfaceContract();
     }
 

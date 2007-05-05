@@ -25,10 +25,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
@@ -73,7 +73,7 @@ public class ScriptImplementation extends AbstractImplementation {
         this.scriptSrc = scriptSrc;
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
+    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
         return new ScriptInvoker(this, operation.getName());
     }
 

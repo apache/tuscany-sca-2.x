@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentReference;
 
 /**
  * A binding can optionally implement this interface to control how the
@@ -36,7 +34,7 @@ public interface ReferenceBindingActivator {
      * @param component The component that owns the reference
      * @param reference The reference that owns the binding
      */
-    void start(Component component, ComponentReference reference);
+    void start(RuntimeComponent component, RuntimeComponentReference reference);
 
     /**
      * This method will be invoked when the reference binding is deactivated for
@@ -45,5 +43,5 @@ public interface ReferenceBindingActivator {
      * @param component The component that owns the reference
      * @param reference The reference that owns the binding
      */
-    void stop(Component component, ComponentReference reference);
+    void stop(RuntimeComponent component, RuntimeComponentReference reference);
 }
