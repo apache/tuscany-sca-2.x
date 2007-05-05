@@ -200,9 +200,10 @@ public class ContributionServiceTestCase extends TestCase {
         contributionService.contribute(contributionId, contributionLocation, false);
         assertNotNull(contributionService.getContribution(contributionId));
 
-        URI artifactId = contributionId.resolve("contributionComposite.composite");
+        URI artifactId = URI.create("contributionComposite.composite");
         Composite composite = (new DefaultAssemblyFactory()).createComposite();
         composite.setName(new QName(null, "contributionComposite"));
+        composite.setURI("contributionComposite.composite");
 
         contributionService.addDeploymentComposite(contributionId, composite);
 
