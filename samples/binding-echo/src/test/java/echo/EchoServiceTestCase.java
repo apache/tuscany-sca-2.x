@@ -20,19 +20,21 @@ package echo;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * @version $Rev$ $Date$
  */
 public class EchoServiceTestCase extends TestCase {
 
+    private SCADomain domain;
+
     protected void setUp() throws Exception {
-        SCARuntimeActivator.start("EchoBinding.composite");
+        domain = SCADomain.newInstance("EchoBinding.composite");
     }
     
     protected void tearDown() throws Exception {
-    	SCARuntimeActivator.stop();
+    	domain.close();
     }
 
     public void testEchoBinding() throws Exception {
