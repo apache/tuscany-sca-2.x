@@ -23,9 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.implementation.java.injection.EventInvoker;
 import org.apache.tuscany.implementation.java.injection.Injector;
+import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
  * @version $Rev$ $Date$

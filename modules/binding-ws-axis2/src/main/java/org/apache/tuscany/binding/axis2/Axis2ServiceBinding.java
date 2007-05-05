@@ -51,7 +51,7 @@ import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.Operation.ConversationSequence;
-import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;

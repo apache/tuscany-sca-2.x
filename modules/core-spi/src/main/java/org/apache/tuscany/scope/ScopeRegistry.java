@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.scope;
 
-import org.apache.tuscany.spi.Scope;
 
 /**
  * Manages {@link ScopeContainer}s in the runtime

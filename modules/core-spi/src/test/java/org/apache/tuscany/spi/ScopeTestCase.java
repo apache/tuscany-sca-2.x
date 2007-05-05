@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi;
 
-import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.scope.Scope;
 
 import junit.framework.TestCase;
 

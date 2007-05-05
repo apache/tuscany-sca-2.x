@@ -32,7 +32,7 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.AbstractInvocationHandler;
-import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.wire.InvocationChain;

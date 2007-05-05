@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.scope.InstanceWrapper;
+import org.apache.tuscany.scope.Scope;
 
 /**
  * A component implementation can implement this interface to provide scope

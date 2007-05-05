@@ -47,7 +47,7 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.rmi.RMIHostExtensionPoint;
-import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;

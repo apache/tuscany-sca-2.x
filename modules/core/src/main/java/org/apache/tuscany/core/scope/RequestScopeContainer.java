@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.component.event.RequestEnd;
-import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.scope.InstanceWrapper;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;

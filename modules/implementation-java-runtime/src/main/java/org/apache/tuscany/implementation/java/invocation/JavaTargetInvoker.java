@@ -22,10 +22,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.scope.InstanceWrapper;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
