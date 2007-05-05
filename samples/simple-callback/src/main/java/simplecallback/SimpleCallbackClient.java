@@ -18,9 +18,7 @@
  */
 package simplecallback;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * Demonstrates resolving the client service and initiating the callback sequence
@@ -28,17 +26,13 @@ import org.osoa.sca.ServiceReference;
 public class SimpleCallbackClient {
 
     public static void main(String[] args) throws Exception {
-    	SCARuntime.start("simplecallback.composite");
-    	
-        // Locate the MyClient component and invoke it
-        ComponentContext context = SCARuntime.getComponentContext("MyClientComponent");
-        ServiceReference<MyClient> service = context.createSelfReference(MyClient.class);
-        MyClient myClient = service.getService();
+        SCADomain domain = SCADomain.newInstance("simplecallback.composite");
+        MyClient myClient = domain.getService(MyClient.class, "MyClientComponent");
         
         System.out.println("Main thread " + Thread.currentThread());
         myClient.aClientMethod();
         Thread.sleep(500);
         
-        SCARuntime.stop();
+        domain.close();
     }
 }

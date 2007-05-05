@@ -20,33 +20,30 @@ package simplecallback;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * A testcase that demonstrates resolving the client service and initiating the callback sequence
  */
 public class SimpleCallbackTestCase extends TestCase {
 
+    private SCADomain domain;
     private MyClient myClient;
 
     protected void setUp() throws Exception {
-        SCARuntime.start("simplecallback.composite");
-
-        ComponentContext context = SCARuntime.getComponentContext("MyClientComponent");
-        ServiceReference<MyClient> service = context.createSelfReference(MyClient.class);
-        myClient = service.getService();
+        domain = SCADomain.newInstance("simplecallback.composite");
+        myClient = domain.getService(MyClient.class, "MyClientComponent");
     }
     
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+        domain.close();
     }
 
     public void test() throws Exception {
         System.out.println("Main thread " + Thread.currentThread());
         myClient.aClientMethod();
         System.out.println("Sleeping ...");
-        Thread.sleep(1000);
+        Thread.sleep(300);
+        assertEquals("-> someMethod -> receiveResult", MyClientImpl.result);
     }
 }
