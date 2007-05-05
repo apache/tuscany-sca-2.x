@@ -25,7 +25,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
@@ -54,7 +53,7 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
     private StoreMonitor monitor;
     private long defaultExpirationOffset = 600000; // 10 minutes
 
-    public MemoryStore(@Monitor StoreMonitor monitor) {
+    public MemoryStore(StoreMonitor monitor) {
         this.monitor = monitor;
         this.store = new ConcurrentHashMap<RuntimeComponent, Map<String, Record>>();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();

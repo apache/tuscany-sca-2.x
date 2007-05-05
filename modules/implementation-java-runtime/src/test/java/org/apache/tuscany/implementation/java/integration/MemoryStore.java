@@ -25,7 +25,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
@@ -40,8 +39,9 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
 
 /**
- * Implements a non-durable, non-transactional store using a simple in-memory map
- *
+ * Implements a non-durable, non-transactional store using a simple in-memory
+ * map
+ * 
  * @version $Rev$ $Date$
  */
 @Service(Store.class)
@@ -54,7 +54,7 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
     private StoreMonitor monitor;
     private long defaultExpirationOffset = 600000; // 10 minutes
 
-    public MemoryStore(@Monitor StoreMonitor monitor) {
+    public MemoryStore(StoreMonitor monitor) {
         this.monitor = monitor;
         this.store = new ConcurrentHashMap<RuntimeComponent, Map<String, Record>>();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -62,7 +62,7 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
 
     /**
      * Returns the maximum default expiration offset for records in the store
-     *
+     * 
      * @return the maximum default expiration offset for records in the store
      */
     public long getDefaultExpirationOffset() {
@@ -101,7 +101,8 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
         monitor.stop("In-memory store stopped");
     }
 
-    public void insertRecord(RuntimeComponent owner, String id, Object object, long expiration) throws StoreWriteException {
+    public void insertRecord(RuntimeComponent owner, String id, Object object, long expiration)
+        throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
             map = new ConcurrentHashMap<String, Record>();
@@ -113,7 +114,8 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
         map.put(id, new Record(object, expiration));
     }
 
-    public void updateRecord(RuntimeComponent owner, String id, Object object, long expiration) throws StoreWriteException {
+    public void updateRecord(RuntimeComponent owner, String id, Object object, long expiration)
+        throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
             throw new StoreWriteException("Record not found", owner.getURI(), id);
@@ -183,7 +185,7 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
                     if (expiration != NEVER && now >= expiration) {
                         RuntimeComponent owner = entries.getKey();
                         Object instance = entry.getValue().getData();
-                        // notify listeners of the expiration 
+                        // notify listeners of the expiration
                         StoreExpirationEvent event = new StoreExpirationEvent(this, owner, instance);
                         publish(event);
                         entries.getValue().remove(entry.getKey());
