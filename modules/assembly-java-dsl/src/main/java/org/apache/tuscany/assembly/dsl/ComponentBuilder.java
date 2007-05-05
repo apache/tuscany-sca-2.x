@@ -17,24 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder.impl;
+package org.apache.tuscany.assembly.dsl;
 
-import javax.xml.namespace.QName;
+public interface ComponentBuilder {
 
-import org.apache.tuscany.assembly.builder.ComponentPropertyBuilder;
-import org.apache.tuscany.assembly.impl.ComponentPropertyImpl;
-
-public class ComponentPropertyBuilderImpl extends ComponentPropertyImpl implements ComponentPropertyBuilder {
+	ComponentBuilder implementedBy(Class clazz);
 	
-	public ComponentPropertyBuilderImpl ofType(String type) {
-		//TODO handle namespace
-		this.setXSDType(new QName("", type));
-		return this;
-	}
+	ComponentBuilder implementedBy(CompositeBuilder composite);
 	
-	public ComponentPropertyBuilderImpl configuredTo(Object value) {
-		this.setValue(value);
-		return this;
-	}
+	public ComponentBuilder uses(ComponentReferenceBuilder... componentReferences);
+
+	public ComponentBuilder provides(ComponentServiceBuilder... componentServices);
+	
+	public ComponentBuilder declares(ComponentPropertyBuilder...componentProperties);
 
 }

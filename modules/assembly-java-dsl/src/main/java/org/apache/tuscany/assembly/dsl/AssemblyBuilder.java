@@ -17,20 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder;
+package org.apache.tuscany.assembly.dsl;
 
-public interface ComponentReferenceBuilder {
-	
-	ComponentReferenceBuilder wiredTo(String target);
-	
-	ComponentReferenceBuilder wiredTo(ComponentServiceBuilder target);
-	
-	ComponentReferenceBuilder typedBy(Class interfaceClass);
-	
-	ComponentReferenceBuilder promotedAs(String promoted);
 
-	ComponentReferenceBuilder promoted();
+public interface AssemblyBuilder {
 	
-	ComponentReferenceBuilder boundTo(String uri);
+	CompositeBuilder composite(String name);
+	
+	ComponentBuilder component(String name);
+	
+	ComponentReferenceBuilder reference(String name);
+
+	ComponentServiceBuilder service(String name);
+	
+	ComponentPropertyBuilder property(String name);
+	
+	CompositeBuilder domain(String uri);
 
 }

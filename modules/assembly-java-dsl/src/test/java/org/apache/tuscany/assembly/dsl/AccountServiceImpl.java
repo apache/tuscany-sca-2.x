@@ -17,26 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder;
+package org.apache.tuscany.assembly.dsl;
 
-import org.apache.tuscany.assembly.builder.ComponentBuilder;
-import org.apache.tuscany.assembly.builder.ComponentPropertyBuilder;
-import org.apache.tuscany.assembly.builder.ComponentReferenceBuilder;
-import org.apache.tuscany.assembly.builder.ComponentServiceBuilder;
-import org.apache.tuscany.assembly.builder.CompositeBuilder;
-
-public interface AssemblyBuilder {
-	
-	CompositeBuilder composite(String name);
-	
-	ComponentBuilder component(String name);
-	
-	ComponentReferenceBuilder reference(String name);
-
-	ComponentServiceBuilder service(String name);
-	
-	ComponentPropertyBuilder property(String name);
-	
-	CompositeBuilder domain(String uri);
+public class AccountServiceImpl {
 
 }

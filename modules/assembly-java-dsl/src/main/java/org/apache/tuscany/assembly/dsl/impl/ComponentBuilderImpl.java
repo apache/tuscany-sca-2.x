@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder.impl;
+package org.apache.tuscany.assembly.dsl.impl;
 
 import java.util.List;
 
@@ -25,11 +25,11 @@ import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.builder.ComponentBuilder;
-import org.apache.tuscany.assembly.builder.ComponentPropertyBuilder;
-import org.apache.tuscany.assembly.builder.ComponentReferenceBuilder;
-import org.apache.tuscany.assembly.builder.ComponentServiceBuilder;
-import org.apache.tuscany.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentPropertyBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentReferenceBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentServiceBuilder;
+import org.apache.tuscany.assembly.dsl.CompositeBuilder;
 import org.apache.tuscany.assembly.impl.ComponentImpl;
 
 public class ComponentBuilderImpl extends ComponentImpl implements ComponentBuilder {

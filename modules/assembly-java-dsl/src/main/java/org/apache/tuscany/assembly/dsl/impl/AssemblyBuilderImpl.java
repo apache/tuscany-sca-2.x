@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.builder.impl;
+package org.apache.tuscany.assembly.dsl.impl;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.builder.AssemblyBuilder;
-import org.apache.tuscany.assembly.builder.ComponentBuilder;
-import org.apache.tuscany.assembly.builder.ComponentPropertyBuilder;
-import org.apache.tuscany.assembly.builder.ComponentReferenceBuilder;
-import org.apache.tuscany.assembly.builder.ComponentServiceBuilder;
-import org.apache.tuscany.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.assembly.dsl.AssemblyBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentPropertyBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentReferenceBuilder;
+import org.apache.tuscany.assembly.dsl.ComponentServiceBuilder;
+import org.apache.tuscany.assembly.dsl.CompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 
 public class AssemblyBuilderImpl extends DefaultAssemblyFactory implements AssemblyBuilder {

@@ -17,8 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder;
+package org.apache.tuscany.assembly.dsl;
 
-public interface AccountService {
+public interface ComponentPropertyBuilder {
+	
+	ComponentPropertyBuilder ofType(String type);
+	
+	ComponentPropertyBuilder configuredTo(Object value);
 
 }
