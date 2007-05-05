@@ -57,7 +57,7 @@ public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint {
             registry.bind(serviceName,
                 serviceObject);
         } catch (AlreadyBoundException e) {
-            throw new RMIHostException(e.getMessage());
+            throw new RMIHostException(e);
         } catch (RemoteException e) {
             RMIHostRuntimeException rmiExec = new RMIHostRuntimeException(e.getMessage());
             rmiExec.setStackTrace(e.getStackTrace());
