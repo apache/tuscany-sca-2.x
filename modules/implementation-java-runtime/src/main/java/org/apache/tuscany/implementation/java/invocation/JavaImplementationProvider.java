@@ -26,7 +26,6 @@ import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.ScopedImplementationProvider;
-import org.apache.tuscany.core.builder.NoConversationalContractException;
 import org.apache.tuscany.core.scope.CompositeScopeContainer;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
