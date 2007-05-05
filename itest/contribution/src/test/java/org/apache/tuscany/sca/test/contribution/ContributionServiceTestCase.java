@@ -75,14 +75,14 @@ public class ContributionServiceTestCase extends TestCase {
     private static final String FOLDER_CONTRIBUTION = "target/classes/";
 
     private ContributionService contributionService;
-    
+
     protected void setUp() throws Exception {
-        
+
         // Create default factories
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
-        
+
         // Create an extension point registry
         ExtensionPointRegistry extensionRegistry = new DefaultExtensionPointRegistry();
 
@@ -93,9 +93,11 @@ public class ContributionServiceTestCase extends TestCase {
         extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
         // Register base artifact processors
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessors));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper,
+                                                                   staxProcessors));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory,
+                                                                          staxProcessors));
 
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessors, inputFactory));
@@ -106,18 +108,20 @@ public class ContributionServiceTestCase extends TestCase {
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(describer);
         extensionRegistry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
-        
+
         // Register base package processors
         new JarContributionProcessor(packageProcessors);
         new FolderContributionProcessor(packageProcessors);
 
         // Create a repository
         ContributionRepository repository = new ContributionRepositoryImpl("target");
-        
+
         // Create an artifact resolver and contribution service
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getClass().getClassLoader());
-        this.contributionService = new ContributionServiceImpl(repository, packageProcessors,
-                                                                              documentProcessors, artifactResolver, assemblyFactory, new DefaultContributionFactory());
+        this.contributionService = new ContributionServiceImpl(repository, packageProcessors, documentProcessors,
+                                                               artifactResolver, assemblyFactory,
+                                                               new DefaultContributionFactory(), XMLInputFactory
+                                                                   .newInstance());
     }
 
     public void testContributeJAR() throws Exception {
@@ -131,38 +135,40 @@ public class ContributionServiceTestCase extends TestCase {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         URI contributionId = URI.create(CONTRIBUTION_001_ID);
         contributionService.contribute(contributionId, contributionLocation, true);
-        
-        assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation())).exists());
+
+        assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation()))
+            .exists());
 
         assertNotNull(contributionId);
 
         Contribution contributionModel = contributionService.getContribution(contributionId);
-        
+
         File contributionFile = FileHelper.toFile(new URL(contributionModel.getLocation()));
         assertTrue(contributionFile.exists());
     }
-    
+
     public void testStoreContributionStreamInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         URI contributionId = URI.create(CONTRIBUTION_001_ID);
-        
+
         InputStream contributionStream = contributionLocation.openStream();
         try {
             contributionService.contribute(contributionId, contributionLocation, contributionStream);
         } finally {
             IOHelper.closeQuietly(contributionStream);
         }
-        
-        assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation())).exists());
+
+        assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation()))
+            .exists());
 
         assertNotNull(contributionId);
 
         Contribution contributionModel = contributionService.getContribution(contributionId);
-        
+
         File contributionFile = FileHelper.toFile(new URL(contributionModel.getLocation()));
         assertTrue(contributionFile.exists());
-    }    
-    
+    }
+
     public void testStoreDuplicatedContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         URI contributionId1 = URI.create(CONTRIBUTION_001_ID);
@@ -172,27 +178,22 @@ public class ContributionServiceTestCase extends TestCase {
         contributionService.contribute(contributionId2, contributionLocation, true);
         assertNotNull(contributionService.getContribution(contributionId2));
     }
-    
-    
+
     public void testContributeFolder() throws Exception {
         /*
-        File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
-        URI contributionId = URI.create(CONTRIBUTION_001_ID);
-        
-        //first rename the sca-contribution metadata file
-        File calculatorMetadataFile = new File("target/classes/calculator/sca-contribution.xml");
-        File metadataDirectory = new File("target/classes/META-INF/");
-        
-        if (! metadataDirectory.exists()) {
-            FileHelper.forceMkdir(metadataDirectory);
-        }
-        FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory);
-        
-        contributionService.contribute(contributionId, rootContributionFolder.toURL(), false);
-        */
+         * File rootContributionFolder = new File(FOLDER_CONTRIBUTION); URI
+         * contributionId = URI.create(CONTRIBUTION_001_ID); //first rename the
+         * sca-contribution metadata file File calculatorMetadataFile = new
+         * File("target/classes/calculator/sca-contribution.xml"); File
+         * metadataDirectory = new File("target/classes/META-INF/"); if (!
+         * metadataDirectory.exists()) {
+         * FileHelper.forceMkdir(metadataDirectory); }
+         * FileHelper.copyFileToDirectory(calculatorMetadataFile,
+         * metadataDirectory); contributionService.contribute(contributionId,
+         * rootContributionFolder.toURL(), false);
+         */
     }
-    
-    
+
     public void testAddDeploymentComposites() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         URI contributionId = URI.create(CONTRIBUTION_001_ID);
@@ -202,24 +203,23 @@ public class ContributionServiceTestCase extends TestCase {
         URI artifactId = contributionId.resolve("contributionComposite.composite");
         Composite composite = (new DefaultAssemblyFactory()).createComposite();
         composite.setName(new QName(null, "contributionComposite"));
-        
+
         contributionService.addDeploymentComposite(contributionId, composite);
-        
-        
+
         List deployables = contributionService.getContribution(contributionId).getDeployables();
-        Composite composite1 = (Composite) deployables.get( deployables.size() -1 );
+        Composite composite1 = (Composite)deployables.get(deployables.size() - 1);
         assertEquals("contributionComposite", composite1.getName().toString());
-        
+
         DeployedArtifact artifact = null;
         Contribution contribution = contributionService.getContribution(contributionId);
         String id = artifactId.toString();
-        for (DeployedArtifact a: contribution.getArtifacts()) {
+        for (DeployedArtifact a : contribution.getArtifacts()) {
             if (id.equals(a.getURI())) {
                 artifact = a;
                 break;
             }
         }
-        Composite composite2 = (Composite) artifact.getModel();
+        Composite composite2 = (Composite)artifact.getModel();
         assertEquals("contributionComposite", composite2.getName().toString());
     }
 
