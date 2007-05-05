@@ -55,9 +55,6 @@ public class ScriptImplementation extends AbstractImplementation {
         this.scriptLanguage = scriptLanguage;
         this.scriptSrc = scriptSrc;
         this.propertyFactory = propertyFactory;
-        
-        setURI(scriptName);
-        setUnresolved(true);
     }
 
     public String getScriptName() {
