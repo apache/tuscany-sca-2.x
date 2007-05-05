@@ -21,15 +21,14 @@ package org.apache.tuscany.binding.rmi;
 import helloworld.HelloWorldRmiService;
 import junit.framework.Assert;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
 
 public class BindingTestCase {
     private static HelloWorldRmiService helloWorldRmiService;
+    private static SCADomain domain;
  
     @Test
     public void testRmiService() {
@@ -47,15 +46,14 @@ public class BindingTestCase {
     
     @BeforeClass
     public static void init() throws Exception {
-        SCARuntimeActivator.start("META-INF/sca/RMIBindingTest.composite");
-        ComponentContext context = SCARuntimeActivator.getComponentContext("HelloWorldRmiServiceComponent");
-        ServiceReference<HelloWorldRmiService> serviceReference = context.createSelfReference(HelloWorldRmiService.class);
-        helloWorldRmiService = serviceReference.getService();
+        domain = SCADomain.newInstance("http://rmi.hello", ".", "META-INF/sca/RMIBindingTest.composite");
+        helloWorldRmiService = 
+            domain.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
   }
     
     @AfterClass
     public static void destroy() throws Exception {
-        SCARuntimeActivator.stop();
+        domain.close();
     }
 
 }

@@ -23,10 +23,7 @@ import java.rmi.registry.Registry;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 
 /**
@@ -34,6 +31,7 @@ import org.osoa.sca.ServiceReference;
  */
 public class CalculatorRMIReferenceTestCase extends TestCase {
 
+    private SCADomain domain;
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
@@ -41,14 +39,12 @@ public class CalculatorRMIReferenceTestCase extends TestCase {
         Registry rmiRegistry = LocateRegistry.createRegistry(8099);
         rmiRegistry.bind("CalculatorRMIService", rmiCalculatorImpl);
         
-        SCARuntimeActivator.start("CalculatorRMIReference.composite");
-        ComponentContext context = SCARuntimeActivator.getComponentContext("CalculatorServiceComponent");
-        ServiceReference<CalculatorService> serviceReference = context.createSelfReference(CalculatorService.class);
-        calculatorService = serviceReference.getService();
+        domain = SCADomain.newInstance("CalculatorRMIReference.composite");
+        calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
     
     protected void tearDown() throws Exception {
-        SCARuntimeActivator.stop();
+        domain.close();
         LocateRegistry.getRegistry(8099).unbind("CalculatorRMIService");
     }
 
