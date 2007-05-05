@@ -17,8 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder;
+package org.apache.tuscany.assembly.dsl;
 
-public interface StockQuoteService {
+import junit.framework.TestCase;
+
+public class BigBankBuilderTestCase extends TestCase {
+	
+	public void testBuild() throws Exception {
+
+		BigBankBuilder builder = new BigBankBuilder();
+		CompositeBuilder domain = builder.build();
+		
+		//System.out.println();
+		//new PrintUtil(System.out).print(domain);
+		//System.out.println();
+		
+	}
 
 }

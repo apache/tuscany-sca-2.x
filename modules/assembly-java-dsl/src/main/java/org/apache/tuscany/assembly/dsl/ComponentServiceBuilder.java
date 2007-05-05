@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder;
+package org.apache.tuscany.assembly.dsl;
 
 public interface ComponentServiceBuilder {
 	

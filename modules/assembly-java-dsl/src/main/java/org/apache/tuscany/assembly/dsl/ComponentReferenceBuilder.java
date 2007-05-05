@@ -17,8 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.builder;
+package org.apache.tuscany.assembly.dsl;
 
-public interface AccountDataService {
+public interface ComponentReferenceBuilder {
+	
+	ComponentReferenceBuilder wiredTo(String target);
+	
+	ComponentReferenceBuilder wiredTo(ComponentServiceBuilder target);
+	
+	ComponentReferenceBuilder typedBy(Class interfaceClass);
+	
+	ComponentReferenceBuilder promotedAs(String promoted);
+
+	ComponentReferenceBuilder promoted();
+	
+	ComponentReferenceBuilder boundTo(String uri);
 
 }
