@@ -18,48 +18,58 @@
  */
 package org.apache.tuscany.sca.test.spec;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+
 import java.util.Date;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.host.embedded.SCARuntime;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.RequestContext;
 
-public class ComponentTestCase extends TestCase {
-    private MyService myService;
-    private MyServiceByDate myServiceByDate;
-    private MyListService myListService;
-    private MyListServiceByYear myListServiceByYear;
-    private MyService myNCService;
-    private MyListService myListServiceFor2006;
+public class ComponentTestCase {
+    private static MyService myService;
+    private static MyServiceByDate myServiceByDate;
+    private static MyListService myListService;
+    private static MyListServiceByYear myListServiceByYear;
+    private static MyService myNCService;
+    private static MyListService myListServiceFor2006;
 
-    private CompositeContext context;
+    private static CompositeContext context;
 
+    @Test
     public void testDefaultProperty() {
         assertEquals("RTP", myService.getLocation());
         assertEquals("2006", myService.getYear());
 
     }
 
+    @Test
     public void testDefaultService() {
         assertEquals(myService.nextHoliday(), myServiceByDate.nextHolidayByDate(new Date()));
         assertEquals(myListService.getHolidays()[0], myListServiceByYear.getHolidaysByYear(2006)[0]);
 
     }
 
+    @Test
     public void testOverrideProperty() {
         assertEquals("NC", myNCService.getLocation());
         assertEquals("2007", myNCService.getYear());
     }
 
+    @Test
     public void testServiceWithOverrideProperty() {
         assertFalse(myNCService.nextHoliday() == myService.nextHoliday());
         assertEquals(myListServiceFor2006.getHolidays()[0], myListServiceByYear.getHolidaysByYear(2006)[0]);
 
     }
 
+    @Test
     public void testContext() {
         //FIXME TUSCANY-1174 - Need support for @ComponentName
         /*
@@ -93,7 +103,8 @@ public class ComponentTestCase extends TestCase {
 
     }
 
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void init() throws Exception {
         SCARuntime.start("CompositeTest.composite");
         context = CurrentCompositeContext.getContext();
         myService = context.locateService(MyService.class, "MyService");
@@ -104,7 +115,9 @@ public class ComponentTestCase extends TestCase {
         myListServiceFor2006 = context.locateService(MyListService.class, "MyListServiceFor2006");
     }
 
-    protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    @AfterClass
+    public static void destroy() throws Exception {
+        SCARuntime.stop();
     }
+    
 }

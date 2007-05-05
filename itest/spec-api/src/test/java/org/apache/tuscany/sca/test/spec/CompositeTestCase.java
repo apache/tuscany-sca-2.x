@@ -18,46 +18,51 @@
  */
 package org.apache.tuscany.sca.test.spec;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 import java.util.Date;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.host.embedded.SCARuntime;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.RequestContext;
 
-public class CompositeTestCase extends TestCase {
-    private MyService myService;
-    private MyServiceByDate myServiceByDate;
-    private MyListService myListService;
-    private MyListServiceByYear myListServiceByYear;
+public class CompositeTestCase {
+    private static MyService myService;
+    private static MyServiceByDate myServiceByDate;
+    private static MyListService myListService;
+    private static MyListServiceByYear myListServiceByYear;
 
-    private CompositeContext context;
+    private static CompositeContext context;
 
+    @Test
     public void testOverrideProperty() {
         assertEquals("CARY", myService.getLocation());
         assertEquals("2007", myService.getYear());
 
     }
 
+    @Test
     public void testDefaultService() {
         assertEquals(myService.nextHoliday(), myServiceByDate.nextHolidayByDate(new Date()));
         assertEquals(myListService.getHolidays()[0], myListServiceByYear.getHolidaysByYear(2007)[0]);
 
     }
 
+    @Test
     public void testContext() {
-        //FIXME TUSCANY-1174 - Need support for @ComponentName
+        // FIXME TUSCANY-1174 - Need support for @ComponentName
         /*
-        assertNotNull("Service component name is null", myService.getComponentName());
-        assertNotNull("service context is null", myService.getContext());
-
-        System.out.println("Service component name :" + myService.getComponentName());
-        System.out.println("service context :" + myService.getContext());
-
-        test(context);
-        */
+         * assertNotNull("Service component name is null",
+         * myService.getComponentName()); assertNotNull("service context is
+         * null", myService.getContext()); System.out.println("Service component
+         * name :" + myService.getComponentName()); System.out.println("service
+         * context :" + myService.getContext()); test(context);
+         */
     }
 
     private void test(CompositeContext context) {
@@ -76,21 +81,24 @@ public class CompositeTestCase extends TestCase {
     private void display(RequestContext context) {
         System.out.println("\tService name:" + context.getServiceName());
         System.out.println("\tSecurity subject:" + context.getSecuritySubject());
-        //System.out.println("\tService reference:" + (Object)context.getServiceReference());
+        // System.out.println("\tService reference:" +
+        // (Object)context.getServiceReference());
 
     }
 
-    protected void setUp() throws Exception {
-    	SCARuntime.start("CompositeTest.composite");
+    @BeforeClass
+    public static void init() throws Exception {
+        SCARuntime.start("CompositeTest.composite");
         context = CurrentCompositeContext.getContext();
         myService = context.locateService(MyService.class, "MyServiceInRecursiveMyService");
         myServiceByDate = context.locateService(MyServiceByDate.class, "MyServiceInRecursiveMyServiceByDate");
         myListService = context.locateService(MyListService.class, "MyServiceInRecursiveMyListService");
-        myListServiceByYear =
-            context.locateService(MyListServiceByYear.class, "MyServiceInRecursiveMyListServiceByYear");
+        myListServiceByYear = context.locateService(MyListServiceByYear.class,
+                                                    "MyServiceInRecursiveMyListServiceByYear");
     }
 
-    protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    @AfterClass
+    public static void destroy() throws Exception {
+        SCARuntime.stop();
     }
 }
