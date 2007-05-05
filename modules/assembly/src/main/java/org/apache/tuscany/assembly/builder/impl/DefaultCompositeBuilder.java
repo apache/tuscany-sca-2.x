@@ -615,17 +615,17 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
             CompositeService compositeService = (CompositeService)service;
             ComponentService componentService = compositeService.getPromotedService();
             if (componentService != null && componentService.isUnresolved()) {
-                componentService = componentServices.get(componentService.getName());
-                if (componentService != null) {
+                ComponentService promotedService = componentServices.get(componentService.getName());
+                if (promotedService != null) {
 
                     // Point to the resolved component service
-                    compositeService.setPromotedService(componentService);
-                    componentService.promotedAs().add(compositeService);
+                    compositeService.setPromotedService(promotedService);
+                    promotedService.promotedAs().add(compositeService);
 
                     // Use the interface contract from the component service if
                     // none is specified on the composite service
                     if (compositeService.getInterfaceContract() == null) {
-                        compositeService.setInterfaceContract(componentService.getInterfaceContract());
+                        compositeService.setInterfaceContract(promotedService.getInterfaceContract());
                     }
 
                 } else {
