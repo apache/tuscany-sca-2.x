@@ -42,7 +42,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;
-import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -237,7 +237,7 @@ public class Axis2ServiceServlet extends AxisServlet {
         }
 
         // Create a work context TODO: where should this get done?
-        WorkContext workContext = new SimpleWorkContext();
+        WorkContext workContext = new WorkContextImpl();
         workContext.setIdentifier(Scope.COMPOSITE, ComponentNames.TUSCANY_APPLICATION_ROOT.resolve("default"));
         WorkContextTunnel.setThreadWorkContext(workContext);
         

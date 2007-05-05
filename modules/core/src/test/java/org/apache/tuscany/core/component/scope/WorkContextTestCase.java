@@ -35,15 +35,15 @@ public class WorkContextTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
         RuntimeComponent component2 = EasyMock.createNiceMock(RuntimeComponent.class);
-        ctx.setCurrentAtomicComponent(component);
-        assertEquals(component, ctx.getCurrentAtomicComponent());
-        ctx.setCurrentAtomicComponent(component2);
-        assertEquals(component2, ctx.getCurrentAtomicComponent());
+        ctx.setCurrentComponent(component);
+        assertEquals(component, ctx.getCurrentComponent());
+        ctx.setCurrentComponent(component2);
+        assertEquals(component2, ctx.getCurrentComponent());
     }
 
     public void testNonSetCurrentAtomicComponent() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        assertNull(ctx.getCurrentAtomicComponent());
+        assertNull(ctx.getCurrentComponent());
     }
 
     public void testIndentifier() throws Exception {
@@ -114,13 +114,13 @@ public class WorkContextTestCase extends TestCase {
     public void testCurrentAtomicComponentDoesNotPropagateToChildThread() throws InterruptedException {
         // NOTE should behaviour be to propagate?
         WorkContext context = new WorkContextImpl();
-        context.setCurrentAtomicComponent(EasyMock.createNiceMock(RuntimeComponent.class));
+        context.setCurrentComponent(EasyMock.createNiceMock(RuntimeComponent.class));
         TestCurrentAtomicComponentChildThread t = new TestCurrentAtomicComponentChildThread(context);
         t.start();
         t.join();
         assertTrue(t.passed);
-        context.setCurrentAtomicComponent(null);
-        assertNull(context.getCurrentAtomicComponent());
+        context.setCurrentComponent(null);
+        assertNull(context.getCurrentComponent());
     }
 
     private static final class ChildThread extends Thread {
@@ -154,7 +154,7 @@ public class WorkContextTestCase extends TestCase {
         @Override
         public void run() {
             try {
-                assertNull(context.getCurrentAtomicComponent());
+                assertNull(context.getCurrentComponent());
             } catch (AssertionFailedError e) {
                 passed = false;
             }

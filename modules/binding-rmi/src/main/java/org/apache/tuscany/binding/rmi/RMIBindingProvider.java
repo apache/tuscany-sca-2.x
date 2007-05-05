@@ -39,7 +39,7 @@ import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
-import org.apache.tuscany.core.component.SimpleWorkContext;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -215,7 +215,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         Interceptor headInterceptor = chain.getHeadInterceptor();
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         if (workContext == null) {
-            workContext = new SimpleWorkContext();
+            workContext = new WorkContextImpl();
             workContext.setIdentifier(Scope.COMPOSITE, ComponentNames.TUSCANY_APPLICATION_ROOT.resolve("default"));
             WorkContextTunnel.setThreadWorkContext(workContext);
         }

@@ -22,7 +22,6 @@ import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeWire;
 
 /**
  * Implementations track information associated with a request as it is processed by the runtime
@@ -69,20 +68,6 @@ public interface WorkContext {
     void setCallbackUris(LinkedList<URI> uris);
 
     /**
-     * Returns an ordered list of callback wures for the current context. Ordering is based on the sequence of service
-     * invocations for collocated components
-     *
-     * @return the current list of callback wires
-     */
-    LinkedList<RuntimeWire> getCallbackWires();
-
-    /**
-     * Sets an ordered list of callback wires for the current context. Ordering is based on the sequence of service
-     * invocations for collocated components
-     */
-    void setCallbackWires(LinkedList<RuntimeWire> wires);
-
-    /**
      * Returns the correlation id for the current invocation or null if not available. Transports may use correlation
      * ids for message routing.
      *
@@ -104,7 +89,7 @@ public interface WorkContext {
      *
      * @return the current atomic component as a request is processed or null
      */
-    RuntimeComponent getCurrentAtomicComponent();
+    RuntimeComponent getCurrentComponent();
 
     /**
      * Sets the current atomic component that is handling processing of a request. Note that in most cases it will not
@@ -112,14 +97,7 @@ public interface WorkContext {
      *
      * @param component the current atomic component
      */
-    void setCurrentAtomicComponent(RuntimeComponent component);
-
-    /**
-     * Removes and returns the name of the last remotable service to handle the current request
-     *
-     * @return the name of the last remotable service to handle the current request or null
-     */
-    String popServiceName();
+    void setCurrentComponent(RuntimeComponent component);
 
     /**
      * Returns the name of the last remotable service to handle the current request
@@ -127,13 +105,6 @@ public interface WorkContext {
      * @return the name of the last remotable service to handle the current request or null
      */
     String getCurrentServiceName();
-
-    /**
-     * Adds the name of the last remotable service to handle the current request
-     *
-     * @param name the name of the last remotable service to handle the current request or null
-     */
-    void pushServiceName(String name);
 
     /**
      * Clears the stack of current service names

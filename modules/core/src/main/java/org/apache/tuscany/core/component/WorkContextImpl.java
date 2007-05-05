@@ -67,7 +67,7 @@ public class WorkContextImpl implements WorkContext {
         map.put(CORRELATION_ID, id);
     }
 
-    public RuntimeComponent getCurrentAtomicComponent() {
+    public RuntimeComponent getCurrentComponent() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
@@ -75,7 +75,7 @@ public class WorkContextImpl implements WorkContext {
         return (RuntimeComponent)map.get(CURRENT_ATOMIC);
     }
 
-    public void setCurrentAtomicComponent(RuntimeComponent component) {
+    public void setCurrentComponent(RuntimeComponent component) {
         Map<Object, Object> map = getWorkContextMap();
         map.put(CURRENT_ATOMIC, component);
     }
