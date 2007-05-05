@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.Callback;
-import org.apache.tuscany.assembly.util.Visitor;
+import org.apache.tuscany.assembly.Visitor;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 

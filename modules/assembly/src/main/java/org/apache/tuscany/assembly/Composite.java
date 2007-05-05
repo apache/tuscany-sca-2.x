@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.util.Visitable;
 
 /**
  * Represents a composite.

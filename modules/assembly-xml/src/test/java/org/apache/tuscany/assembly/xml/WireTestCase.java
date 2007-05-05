@@ -20,7 +20,6 @@
 package org.apache.tuscany.assembly.xml;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -28,11 +27,10 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
+import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
@@ -89,8 +87,8 @@ public class WireTestCase extends TestCase {
         assertNotNull(composite);
         
         compositeReader.resolve(composite, resolver);
-        CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
-        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
@@ -112,8 +110,8 @@ public class WireTestCase extends TestCase {
         is.close();
         
         compositeReader.resolve(composite, resolver);
-        CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
-        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }

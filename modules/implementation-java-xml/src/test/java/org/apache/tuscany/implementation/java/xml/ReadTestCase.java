@@ -20,7 +20,6 @@
 package org.apache.tuscany.implementation.java.xml;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -28,10 +27,9 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
@@ -91,10 +89,9 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
-        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
 
-        //new PrintUtil(System.out).print(composite);
     }
 
     public void testReadAndResolveComposite() throws Exception {
@@ -107,8 +104,8 @@ public class ReadTestCase extends TestCase {
         ArtifactResolver resolver = new DefaultArtifactResolver(getClass().getClassLoader());
         staxProcessors.resolve(composite, resolver);
 
-        CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
-        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
 
         //new PrintUtil(System.out).print(composite);
     }

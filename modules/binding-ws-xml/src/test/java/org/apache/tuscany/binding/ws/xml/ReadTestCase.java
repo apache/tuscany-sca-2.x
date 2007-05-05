@@ -28,11 +28,11 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.builder.Problem;
+import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
@@ -105,8 +105,8 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeUtil compositeUtil = new CompositeUtil(factory, mapper);
-        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper);
+        compositeUtil.build(composite, new ArrayList<Problem>());
 
         //new PrintUtil(System.out).print(composite);
     }

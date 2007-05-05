@@ -37,6 +37,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.core.ExtensionPointRegistry;
@@ -302,6 +303,8 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         } catch (IncompatibleInterfaceContractException e) {
             throw new ActivationException(e);
 
+        } catch (CompositeBuilderException e) {
+            throw new ActivationException(e);
         }
     }
 

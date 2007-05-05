@@ -26,8 +26,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.Visitor;
 import org.apache.tuscany.assembly.Wire;
-import org.apache.tuscany.assembly.util.Visitor;
 
 public class CompositeImpl extends ComponentTypeImpl implements Composite, Cloneable {
     private List<Component> components = new ArrayList<Component>();

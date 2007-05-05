@@ -16,43 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.assembly.Base;
-import org.apache.tuscany.assembly.Visitable;
-import org.apache.tuscany.assembly.Visitor;
+package org.apache.tuscany.assembly.builder;
 
 /**
- * Convenience base class for assembly model objects.
- * 
+ * A monitor for the composite builder.
+ *
  * @version $Rev$ $Date$
  */
-public abstract class BaseImpl implements Base, Visitable {
-    private List<Object> extensions = new ArrayList<Object>();
-    private boolean unresolved;
+public interface CompositeBuilderMonitor {
 
     /**
-     * Constructs a new base model object.
+     * Reports a build problem.
+     * 
+     * @param problem
      */
-    protected BaseImpl() {
-    }
+    void problem(Problem problem);
     
-    public List<Object> getExtensions() {
-        return extensions;
-    }
-
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    public void setUnresolved(boolean undefined) {
-        this.unresolved = undefined;
-    }
-
-    public boolean accept(Visitor visitor) {
-        return visitor.visit(this);
-    }
 }

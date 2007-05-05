@@ -26,7 +26,7 @@ import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.util.Visitor;
+import org.apache.tuscany.assembly.Visitor;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 

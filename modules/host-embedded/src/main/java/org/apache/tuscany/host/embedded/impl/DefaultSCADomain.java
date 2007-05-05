@@ -34,6 +34,7 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.service.ContributionException;
@@ -133,6 +134,8 @@ public class DefaultSCADomain extends SCADomain {
         try {
             ((DefaultCompositeActivator)compositeActivator).activate(domainComposite);
         } catch (IncompatibleInterfaceContractException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (CompositeBuilderException e) {
             throw new ServiceRuntimeException(e);
         }
 
