@@ -22,7 +22,7 @@ package org.apache.tuscany.core;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.invocation.Interceptor;
 
 /**
  * A component implementation can implement this interface to provide additional logic 

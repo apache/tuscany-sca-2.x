@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.invocation;
 
 import org.apache.tuscany.interfacedef.Operation;
 

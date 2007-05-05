@@ -20,11 +20,11 @@ package echo;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.invocation.MessageImpl;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
 
 /**
  * @version $Rev$ $Date$

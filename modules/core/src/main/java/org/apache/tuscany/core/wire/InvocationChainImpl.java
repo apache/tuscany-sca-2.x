@@ -19,9 +19,9 @@
 package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.TargetInvoker;
 
 /**
  * Default implementation of an invocation chain

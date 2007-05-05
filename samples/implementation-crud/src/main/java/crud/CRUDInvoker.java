@@ -22,9 +22,9 @@ package crud;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.InvocationRuntimeException;
+import org.apache.tuscany.invocation.Message;
 
 /**
  * Implements a target invoker for CRUD component implementations.

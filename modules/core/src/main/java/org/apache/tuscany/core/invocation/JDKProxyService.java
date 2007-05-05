@@ -25,10 +25,10 @@ import java.util.Map;
 
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.invocation.ChainHolder;
+import org.apache.tuscany.invocation.ProxyCreationException;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.ChainHolder;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.osoa.sca.CallableReference;
 
 /**

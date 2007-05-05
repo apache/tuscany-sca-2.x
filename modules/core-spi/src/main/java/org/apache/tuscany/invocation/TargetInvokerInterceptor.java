@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.invocation;
 
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Serves as a tail interceptor on a target wire chain. This implementation dispatches to the target invoker passed
@@ -30,7 +26,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $Rev$ $Date$
  * @Deprecated
- * @see org.apache.tuscany.spi.wire.TargetInvoker
+ * @see org.apache.tuscany.invocation.TargetInvoker
  */
 public class TargetInvokerInterceptor implements Interceptor {
     private TargetInvoker invoker;

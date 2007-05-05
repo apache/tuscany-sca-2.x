@@ -45,17 +45,17 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.invocation.MessageImpl;
+import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.rmi.RMIHostExtensionPoint;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @author administrator

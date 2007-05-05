@@ -28,7 +28,7 @@ import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.invocation.InvocationChain;
 
 /**
  * @version $Rev$ $Date$

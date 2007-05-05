@@ -21,9 +21,9 @@ package org.apache.tuscany.core.wire;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Message;
 
 /**
  * @version $Rev$ $Date$

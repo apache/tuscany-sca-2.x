@@ -16,36 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.invocation;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Denotes an error creating a proxy
+ * Denotes a runtime exception thrown during an invocation over a wire
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class ProxyCreationException extends CoreRuntimeException {
-    public ProxyCreationException() {
+public class InvocationRuntimeException extends ServiceRuntimeException {
+
+    public InvocationRuntimeException() {
+        super();
     }
 
-    public ProxyCreationException(String message) {
+    public InvocationRuntimeException(String message) {
         super(message);
     }
 
-    public ProxyCreationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public ProxyCreationException(String message, Throwable cause) {
+    public InvocationRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ProxyCreationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
-    public ProxyCreationException(Throwable cause) {
+    public InvocationRuntimeException(Throwable cause) {
         super(cause);
     }
+
 }

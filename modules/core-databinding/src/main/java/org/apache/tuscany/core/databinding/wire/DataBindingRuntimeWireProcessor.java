@@ -27,7 +27,7 @@ import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.invocation.InvocationChain;
 
 /**
  * This processor is responsible to add an interceptor to invocation chain if

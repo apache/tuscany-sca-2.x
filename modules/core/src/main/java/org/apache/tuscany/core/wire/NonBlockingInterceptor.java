@@ -22,12 +22,12 @@ import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**

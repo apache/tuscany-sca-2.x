@@ -25,9 +25,9 @@ import java.util.LinkedList;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.invocation.MessageImpl;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
 import org.easymock.EasyMock;
 
 /**

@@ -29,9 +29,9 @@ import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFac
 import org.apache.tuscany.implementation.java.context.TargetMethodNotFoundException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The runtime instantiation of Java component implementations

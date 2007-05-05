@@ -51,16 +51,16 @@ import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.Operation.ConversationSequence;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.invocation.MessageImpl;
+import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * An implementation of a {@link ServiceBindingExtension} configured with the Axis2 binding

@@ -32,8 +32,8 @@ import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.InvocationChain;
 
 /**
  * Implementation of the Echo binding provider.

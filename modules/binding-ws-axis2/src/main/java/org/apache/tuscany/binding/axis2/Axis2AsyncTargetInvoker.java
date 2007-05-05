@@ -30,9 +30,9 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.tuscany.invocation.InvocationRuntimeException;
+import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
 
 public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 

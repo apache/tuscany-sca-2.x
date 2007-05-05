@@ -32,17 +32,16 @@ import java.util.Map;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.invocation.AbstractInvocationHandler;
+import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.osoa.sca.NoRegisteredCallbackException;
 
 /**
  * Responsible for dispatching to a callback through a wire. <p/> TODO cache
  * target invoker
  * 
- * @Deprecated
  * @version $Rev$ $Date$
  */
 public class JDKCallbackInvocationHandler extends AbstractInvocationHandler implements InvocationHandler {

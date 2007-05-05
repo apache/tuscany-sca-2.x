@@ -19,12 +19,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.InvocationRuntimeException;
+import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.rmi.RMIHostExtensionPoint;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
 
 public class RMIBindingInterceptor implements Interceptor {
     private RMIHostExtensionPoint rmiHost;

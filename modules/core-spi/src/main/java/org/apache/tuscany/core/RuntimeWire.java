@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.invocation.InvocationChain;
 
 /**
  * The runtime wire that connects a component reference to a component service

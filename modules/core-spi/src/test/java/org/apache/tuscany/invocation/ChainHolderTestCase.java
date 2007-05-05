@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.invocation;
 
 import junit.framework.TestCase;
+
 import org.easymock.EasyMock;
 
 /**

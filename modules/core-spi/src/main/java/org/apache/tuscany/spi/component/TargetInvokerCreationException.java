@@ -19,7 +19,7 @@
 package org.apache.tuscany.spi.component;
 
 /**
- * Denotes an error creating a {@link org.apache.tuscany.spi.wire.TargetInvoker}
+ * Denotes an error creating a {@link org.apache.tuscany.invocation.TargetInvoker}
  *
  * @version $Rev$ $Date$
  * @Deprecated

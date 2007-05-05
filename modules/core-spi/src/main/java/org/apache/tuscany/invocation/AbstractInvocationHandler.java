@@ -26,11 +26,6 @@ import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Base class for performing invocations on a wire. Subclasses are responsible for retrieving and supplying the

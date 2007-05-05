@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.invocation;
 
 /**
  * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from the

@@ -20,8 +20,8 @@ package org.apache.tuscany.core.wire;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Message;
 
 /**
  * An interceptor applied to the forward direction of a wire that ensures the callback target implements the required
