@@ -21,10 +21,10 @@ package org.apache.tuscany.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.Scope;
 
 /**
  * The default implementation of a scope registry

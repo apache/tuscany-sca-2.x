@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi;
+package org.apache.tuscany.scope;
 
 /**
  * The default implementation scopes supported by assemblies.

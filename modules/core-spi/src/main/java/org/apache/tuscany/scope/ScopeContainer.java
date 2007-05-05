@@ -22,9 +22,7 @@ import java.net.URI;
 
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.spi.Lifecycle;
-import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.GroupInitializationException;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;

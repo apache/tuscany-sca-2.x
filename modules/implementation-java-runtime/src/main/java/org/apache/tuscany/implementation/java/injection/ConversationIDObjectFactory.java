@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 
 public class ConversationIDObjectFactory implements ObjectFactory<String> {

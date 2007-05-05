@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;

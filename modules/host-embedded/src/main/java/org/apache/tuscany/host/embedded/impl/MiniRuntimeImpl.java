@@ -51,7 +51,7 @@ import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.core.runtime.ActivationException;
 import org.apache.tuscany.core.runtime.RuntimeActivatorImpl;
-import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;

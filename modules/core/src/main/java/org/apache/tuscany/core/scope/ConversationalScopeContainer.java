@@ -21,9 +21,9 @@ package org.apache.tuscany.core.scope;
 import java.net.URI;
 
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.scope.InstanceWrapper;
+import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;

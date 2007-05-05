@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.component;
+package org.apache.tuscany.scope;
+
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
 
 /**
  * Provides lifecycle management for an implementation instance associated with
