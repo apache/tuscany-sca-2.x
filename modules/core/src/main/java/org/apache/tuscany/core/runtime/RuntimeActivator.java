@@ -41,7 +41,7 @@ public interface RuntimeActivator<I extends RuntimeInfo> {
      */
     void stop() throws ActivationException;
     
-    void start(Contribution contribution) throws ActivationException;
+    void start(Contribution contribution, String deployable) throws ActivationException;
     void stop(Contribution contribution) throws ActivationException;
 
     /**

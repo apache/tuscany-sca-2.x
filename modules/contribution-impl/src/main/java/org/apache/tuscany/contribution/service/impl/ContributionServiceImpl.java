@@ -55,43 +55,43 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Repository where contributions are stored. Usually set by injection.
      */
-    protected ContributionRepository contributionRepository;
+    private ContributionRepository contributionRepository;
 
     /**
      * Registry of available package processors.
      */
-    protected PackageProcessor packageProcessor;
+    private PackageProcessor packageProcessor;
 
     /**
      * Registry of available artifact processors
      */
 
-    protected URLArtifactProcessor artifactProcessor;
+    private URLArtifactProcessor artifactProcessor;
 
     /**
      * Artifact Resolver
      */
-    protected ArtifactResolver artifactResolver;
+    private ArtifactResolver artifactResolver;
     
     /**
      * xml factory used to create reader instance to load contribution metadata
      */
-    protected XMLInputFactory xmlFactory;
+    private XMLInputFactory xmlFactory;
     
     /**
      * contribution metadata loader
      */
-    protected ContributionMetadataLoaderImpl contributionLoader;
+    private ContributionMetadataLoaderImpl contributionLoader;
 
     /**
      * Contribution registry This is a registry of processed Contributios index by URI
      */
-    protected Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
+    private Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
 
     /**
      * Contribution model facotry
      */
-    protected ContributionFactory contributionFactory;
+    private ContributionFactory contributionFactory;
     
     
     public ContributionServiceImpl(ContributionRepository repository,
@@ -112,7 +112,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
 
-    public void contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+    public Contribution contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
         IOException {
         if (contributionURI == null) {
             throw new IllegalArgumentException("URI for the contribution is null");
@@ -120,12 +120,12 @@ public class ContributionServiceImpl implements ContributionService {
         if (sourceURL == null) {
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
-        addContribution(contributionURI, sourceURL, null, storeInRepository);
+        return addContribution(contributionURI, sourceURL, null, storeInRepository);
     }
 
-    public void contribute(URI contributionURI, URL sourceURL, InputStream input) 
+    public Contribution contribute(URI contributionURI, URL sourceURL, InputStream input) 
         throws ContributionException, IOException {
-        addContribution(contributionURI, sourceURL, input, true);
+        return addContribution(contributionURI, sourceURL, input, true);
     }
 
     private Contribution initializeContributionMetadata(URL sourceURL) throws ContributionException {
@@ -222,10 +222,11 @@ public class ContributionServiceImpl implements ContributionService {
      * @param contributionStream contribution content
      * @param storeInRepository flag if we store the contribution into the
      *            repository or not
+     * @return the contribution model representing the contribution 
      * @throws IOException
      * @throws DeploymentException
      */
-    private void addContribution(URI contributionURI,
+    private Contribution addContribution(URI contributionURI,
                                  URL sourceURL,
                                  InputStream contributionStream,
                                  boolean storeInRepository) throws IOException, ContributionException {
@@ -268,10 +269,11 @@ public class ContributionServiceImpl implements ContributionService {
 
         processReadPhase(contribution, contributionArtifacts);
         processResolvePhase(contribution);
-        processDeployables(contribution);
         
         // store the contribution on the registry
         this.contributionRegistry.put(URI.create(contribution.getURI()), contribution);
+        
+        return contribution;
     }
 
     /**
@@ -286,7 +288,6 @@ public class ContributionServiceImpl implements ContributionService {
     private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
         URL contributionURL = new URL(contribution.getLocation()); 
-        URI contributionURI = URI.create(contribution.getURI());
         for (URI a : artifacts) {
             URL artifactURL = packageProcessor.getArtifactURL(new URL(contribution.getLocation()), a);
             Object model = this.artifactProcessor.read(contributionURL, a, artifactURL);
@@ -294,9 +295,8 @@ public class ContributionServiceImpl implements ContributionService {
             if (model != null) {
                 artifactResolver.add(model);
                 
-                URI artifactURI = contributionURI.resolve(a);
                 DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact();
-                artifact.setURI(artifactURI.toString());
+                artifact.setURI(a.toString());
                 artifact.setLocation(artifactURL.toString());
                 artifact.setModel(model);
                 contribution.getArtifacts().add(artifact);
@@ -311,6 +311,7 @@ public class ContributionServiceImpl implements ContributionService {
      * @param contribution
      * @throws ContributionException
      */
+    @SuppressWarnings("unchecked")
     private void processResolvePhase(Contribution contribution) throws ContributionException {
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
@@ -331,23 +332,4 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.getDeployables().addAll(resolvedDeployables);
     }
 
-    /**
-     * If there is no specific composite promoted as deployable in sca contribution metadata sidefile
-     * All composites are promoted as deployables
-     * 
-     * @param contribution
-     * @throws ContributionException
-     */
-    private void processDeployables(Contribution contribution) throws ContributionException {
-        if (contribution.getDeployables() == null || contribution.getDeployables().size() == 0) {
-            //Contribution metadata not available with a list of deployables
-            //Promote all composites to deployable
-            for (DeployedArtifact deployedArtifact : contribution.getArtifacts()) {
-                Object model = deployedArtifact.getModel(); 
-                if (model instanceof Composite) {
-                    contribution.getDeployables().add((Composite) model);
-                }
-            }
-        }
-    }
 }

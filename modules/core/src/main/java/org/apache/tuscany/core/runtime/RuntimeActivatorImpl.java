@@ -38,6 +38,7 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.WireProcessorExtensionPoint;
@@ -287,10 +288,12 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         throw new IllegalArgumentException("ComponentContext for component named: " + componentName + " not found in this domain");
     }
 
-    public void start(Contribution contribution) throws ActivationException {
+    public void start(Contribution contribution, String deployable) throws ActivationException {
         // Add the deployable composites to the SCA domain by "include"
-        for (Composite composite : contribution.getDeployables()) {
-            domain.getIncludes().add(composite);
+        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            if (deployable.equals(artifact.getURI())) {
+                domain.getIncludes().add((Composite)artifact.getModel());
+            }
         }
 
         // Activate the SCA domain composite

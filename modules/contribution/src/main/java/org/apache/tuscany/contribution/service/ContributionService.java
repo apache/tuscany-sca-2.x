@@ -44,10 +44,11 @@ public interface ContributionService {
      * @param sourceURL the location of the resource containing the artifact
      * @param storeInRepository flag that identifies if you want to copy the
      *            contribution to the repository
+     * @return the contribution model representing the contribution 
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the resource
      */
-    void contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+    Contribution contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
         IOException;
 
     /**
@@ -60,10 +61,11 @@ public interface ContributionService {
      * @param contributionContent a stream containing the resource being
      *            contributed; the stream will not be closed but the read
      *            position after the call is undefined
+     * @return the contribution model representing the contribution 
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the stream
      */
-    void contribute(URI contributionURI, URL sourceURL, InputStream contributionContent)
+    Contribution contribute(URI contributionURI, URL sourceURL, InputStream contributionContent)
         throws ContributionException, IOException;
 
     /**
