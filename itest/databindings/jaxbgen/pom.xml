@@ -167,7 +167,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>target/jaxb-source</source>
+                                <source>target/jaxws-source</source>
                             </sources>
                         </configuration>
                     </execution>
