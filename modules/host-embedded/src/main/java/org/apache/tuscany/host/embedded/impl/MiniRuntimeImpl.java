@@ -154,7 +154,8 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
                                                                               documentProcessors, artifactResolver,
                                                                               assemblyFactory,
-                                                                              new DefaultContributionFactory());
+                                                                              new DefaultContributionFactory(),
+                                                                              xmlFactory);
         return contributionService;
     }
 

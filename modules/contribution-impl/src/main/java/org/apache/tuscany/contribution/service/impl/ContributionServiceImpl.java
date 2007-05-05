@@ -99,14 +99,15 @@ public class ContributionServiceImpl implements ContributionService {
                                    URLArtifactProcessor artifactProcessor,
                                    ArtifactResolver artifactResolver,
                                    AssemblyFactory assemblyFactory,
-                                   ContributionFactory contributionFactory) {
+                                   ContributionFactory contributionFactory,
+                                   XMLInputFactory xmlFactory) {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
         this.artifactProcessor = artifactProcessor;
         this.artifactResolver = artifactResolver;
+        this.xmlFactory = xmlFactory;
 
-        this.xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         this.contributionFactory = contributionFactory;
         this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
