@@ -80,7 +80,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
      * @throws TargetResolutionException if there was a problem creating the
      *             instance
      */
-    protected InstanceWrapper createInstance(RuntimeComponent component) throws TargetResolutionException {
+    protected InstanceWrapper createInstanceWrapper(RuntimeComponent component) throws TargetResolutionException {
         Implementation impl = component.getImplementation();
         if (impl instanceof ScopedImplementationProvider) {
             return ((ScopedImplementationProvider)impl).createInstanceWrapper(component);

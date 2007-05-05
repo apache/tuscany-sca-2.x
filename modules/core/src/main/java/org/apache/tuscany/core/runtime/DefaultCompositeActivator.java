@@ -96,7 +96,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 for (Binding binding : service.getBindings()) {
                     if (binding instanceof ServiceBindingActivator) {
                         ServiceBindingActivator bindingActivator = (ServiceBindingActivator)binding;
-                        bindingActivator.start(component, service);
+                        bindingActivator.start((RuntimeComponent)component, (RuntimeComponentService)service);
                     }
                 }
             }
@@ -104,7 +104,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof ReferenceBindingActivator) {
                         ReferenceBindingActivator bindingActivator = (ReferenceBindingActivator)binding;
-                        bindingActivator.start(component, reference);
+                        bindingActivator.start((RuntimeComponent)component, (RuntimeComponentReference)reference);
                     }
                 }
             }
@@ -146,7 +146,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 for (Binding binding : service.getBindings()) {
                     if (binding instanceof ServiceBindingActivator) {
                         ServiceBindingActivator bindingActivator = (ServiceBindingActivator)binding;
-                        bindingActivator.stop(component, service);
+                        bindingActivator.stop((RuntimeComponent)component, (RuntimeComponentService)service);
                     }
                 }
             }
@@ -154,7 +154,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof ReferenceBindingActivator) {
                         ReferenceBindingActivator bindingActivator = (ReferenceBindingActivator)binding;
-                        bindingActivator.stop(component, reference);
+                        bindingActivator.stop((RuntimeComponent)component, (RuntimeComponentReference)reference);
                     }
                 }
             }
@@ -208,7 +208,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
         InterfaceContract sourceContract = reference.getInterfaceContract();
         if (binding instanceof ReferenceBindingProvider) {
             ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
-            InterfaceContract bindingContract = provider.getBindingInterfaceContract(reference);
+            InterfaceContract bindingContract = provider
+                .getBindingInterfaceContract((RuntimeComponentReference)reference);
             if (bindingContract != null) {
                 sourceContract = bindingContract;
             }
@@ -297,7 +298,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 wire.getInvocationChains().add(chain);
             }
             if (bindingContract.getCallbackInterface() != null) {
-                if(reference.getName().startsWith("$self$.")) {
+                if (reference.getName().startsWith("$self$.")) {
                     // No callback is needed
                     continue;
                 }
@@ -336,7 +337,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
         if (binding instanceof ServiceBindingProvider) {
             ServiceBindingProvider provider = (ServiceBindingProvider)binding;
-            InterfaceContract bindingContract = provider.getBindingInterfaceContract(service);
+            InterfaceContract bindingContract = provider.getBindingInterfaceContract((RuntimeComponentService)service);
             if (bindingContract != null) {
                 sourceContract = bindingContract;
             }
@@ -379,18 +380,23 @@ public class DefaultCompositeActivator implements CompositeActivator {
             addImplementationInterceptor(component, service, chain, operation, false);
             wire.getInvocationChains().add(chain);
         }
-//        if (sourceContract.getCallbackInterface() != null) {
-//            for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
-//                Operation targetOperation = interfaceContractMapper.map(targetContract.getCallbackInterface(),
-//                                                                        operation);
-//                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-//                if (operation.isNonBlocking()) {
-//                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
-//                }
-//                addImplementationInterceptor(component, service, chain, operation, true);
-//                wire.getCallbackInvocationChains().add(chain);
-//            }
-//        }
+        // if (sourceContract.getCallbackInterface() != null) {
+        // for (Operation operation :
+        // sourceContract.getCallbackInterface().getOperations()) {
+        // Operation targetOperation =
+        // interfaceContractMapper.map(targetContract.getCallbackInterface(),
+        // operation);
+        // InvocationChain chain = new InvocationChainImpl(operation,
+        // targetOperation);
+        // if (operation.isNonBlocking()) {
+        // chain.addInterceptor(new NonBlockingInterceptor(workScheduler,
+        // workContext));
+        // }
+        // addImplementationInterceptor(component, service, chain, operation,
+        // true);
+        // wire.getCallbackInvocationChains().add(chain);
+        // }
+        // }
 
         runtimeService.addRuntimeWire(wire);
         wireProcessorExtensionPoint.process(wire);
@@ -414,7 +420,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
             ImplementationProvider provider = (ImplementationProvider)component.getImplementation();
             Interceptor interceptor = null;
             if (!isCallback) {
-                interceptor = provider.createInterceptor((RuntimeComponent)component, service, operation);
+                interceptor = provider.createInterceptor((RuntimeComponent)component,
+                                                         (RuntimeComponentService)service,
+                                                         operation);
             } else {
                 interceptor = provider.createCallbackInterceptor((RuntimeComponent)component, operation);
             }
@@ -440,7 +448,10 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                       boolean isCallback) {
         if (binding instanceof ReferenceBindingProvider) {
             ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
-            Interceptor interceptor = provider.createInterceptor(component, reference, operation, isCallback);
+            Interceptor interceptor = provider.createInterceptor((RuntimeComponent)component,
+                                                                 (RuntimeComponentReference)reference,
+                                                                 operation,
+                                                                 isCallback);
             if (interceptor != null) {
                 chain.addInterceptor(interceptor);
             }
@@ -535,9 +546,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
     }
 
     private void buildComposite(Composite composite,
-                      AssemblyFactory assemblyFactory,
-                      InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
-        
+                                AssemblyFactory assemblyFactory,
+                                InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
+
         CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
 
             public void problem(Problem problem) {
@@ -549,9 +560,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
         };
 
-        DefaultCompositeBuilder builder =
-            new DefaultCompositeBuilder(assemblyFactory, interfaceContractMapper, monitor);
-
+        DefaultCompositeBuilder builder = new DefaultCompositeBuilder(assemblyFactory, interfaceContractMapper, monitor);
 
         builder.build(composite);
 
@@ -567,8 +576,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @param composite
      * @throws IncompatibleInterfaceContractException
      */
-    public void activate(Composite composite)
-            throws IncompatibleInterfaceContractException, CompositeBuilderException {
+    public void activate(Composite composite) throws IncompatibleInterfaceContractException, CompositeBuilderException {
         buildComposite(composite, assemblyFactory, interfaceContractMapper);
         configure(composite);
         createRuntimeWires(composite);

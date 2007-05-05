@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.core;
 
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 
 /**
@@ -37,5 +36,5 @@ public interface ServiceBindingProvider {
      * @return The effective interface contract, if null is returned, the interface contract
      * for the component service will be used
      */
-    InterfaceContract getBindingInterfaceContract(ComponentService service);
+    InterfaceContract getBindingInterfaceContract(RuntimeComponentService service);
 }

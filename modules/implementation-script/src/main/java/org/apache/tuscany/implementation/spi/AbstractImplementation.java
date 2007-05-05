@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
@@ -33,6 +32,7 @@ import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.interfacedef.Interface;
@@ -114,7 +114,7 @@ public abstract class AbstractImplementation implements Implementation, Implemen
         // TODO what is this for?
     }
 
-    public InterfaceContract getImplementationInterfaceContract(ComponentService service) {
+    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
         // TODO what is this for?
         return null;
     }

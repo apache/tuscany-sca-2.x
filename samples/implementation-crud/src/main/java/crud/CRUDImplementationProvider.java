@@ -19,10 +19,10 @@
 package crud;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
@@ -53,7 +53,7 @@ public class CRUDImplementationProvider extends CRUDImplementationImpl implement
         super(assemblyFactory, javaFactory, introspector);
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
+    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
         CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(getDirectory()));
         return invoker;
     }
@@ -64,7 +64,7 @@ public class CRUDImplementationProvider extends CRUDImplementationImpl implement
         return invoker;
     }
 
-    public InterfaceContract getImplementationInterfaceContract(ComponentService service) {
+    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
         return service.getInterfaceContract();
     }
 

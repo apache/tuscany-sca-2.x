@@ -34,8 +34,9 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 
 /**
- * A scope context which manages atomic component instances keyed on HTTP session
- *
+ * A scope context which manages atomic component instances keyed on HTTP
+ * session
+ * 
  * @version $Rev$ $Date$
  */
 public class HttpSessionScopeContainer extends AbstractScopeContainer {
@@ -53,7 +54,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof HttpSessionEnd) {
-            Object key = ((HttpSessionEnd) event).getId();
+            Object key = ((HttpSessionEnd)event).getId();
             shutdownInstances(key);
             workContext.clearIdentifier(key);
         }
@@ -76,13 +77,14 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
 
     public void register(RuntimeComponent component, Object groupId) {
         contexts.put(component, new ConcurrentHashMap<Object, InstanceWrapper>());
-//        component.addListener(this);
+        // component.addListener(this);
     }
 
     public void unregister(RuntimeComponent component) {
-        // FIXME should all the instances associated with this component be destroyed already
+        // FIXME should all the instances associated with this component be
+        // destroyed already
         contexts.remove(component);
-//        component.removeListener(this);
+        // component.removeListener(this);
         super.unregister(component);
     }
 
@@ -90,18 +92,13 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
         throws TargetResolutionException {
         Object key = workContext.getIdentifier(Scope.SESSION);
         assert key != null : "HTTP session key not bound in work context";
-        return getInstance(component, key, create);
-    }
-
-    private InstanceWrapper getInstance(RuntimeComponent component, Object key, boolean create)
-        throws TargetResolutionException {
         Map<Object, InstanceWrapper> wrappers = contexts.get(component);
         InstanceWrapper ctx = wrappers.get(key);
         if (ctx == null && !create) {
             return null;
         }
         if (ctx == null) {
-            ctx = super.createInstance(component);
+            ctx = super.createInstanceWrapper(component);
             ctx.start();
             wrappers.put(key, ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(key);
@@ -114,7 +111,6 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
             }
         }
         return ctx;
-
     }
 
     private void shutdownInstances(Object key) {
@@ -129,7 +125,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
                     try {
                         iter.previous().stop();
                     } catch (TargetDestructionException e) {
-//                        monitor.destructionError(e);
+                        // monitor.destructionError(e);
                     }
                 }
             }
