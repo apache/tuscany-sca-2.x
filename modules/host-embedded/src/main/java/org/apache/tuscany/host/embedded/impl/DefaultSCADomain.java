@@ -132,10 +132,7 @@ public class DefaultSCADomain extends SCADomain {
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
         try {
             ((DefaultCompositeActivator)compositeActivator).activate(domainComposite);
-            compositeActivator.start(domainComposite);
         } catch (IncompatibleInterfaceContractException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
 
