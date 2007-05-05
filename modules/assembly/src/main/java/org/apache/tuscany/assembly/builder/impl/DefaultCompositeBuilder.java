@@ -730,10 +730,6 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                             }
                         } else {
                             warning("Component reference target not found: " + target.getName(), composite);
-                            
-                            // Remove the unresolved target
-                            targets.remove(i);
-                            i--;
                         }
                     }
                 }
