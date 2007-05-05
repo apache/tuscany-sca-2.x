@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.scope.ScopeIdentifier;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
