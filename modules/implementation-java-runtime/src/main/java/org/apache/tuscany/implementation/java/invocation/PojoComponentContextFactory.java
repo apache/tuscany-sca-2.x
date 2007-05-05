@@ -27,10 +27,10 @@ import org.apache.tuscany.spi.ObjectCreationException;
  * @version $Rev$ $Date$
  */
 public class PojoComponentContextFactory implements ObjectFactory<ComponentContext> {
-    private final PojoAtomicComponent component;
+    private final JavaComponentInfo component;
 
 
-    public PojoComponentContextFactory(PojoAtomicComponent component) {
+    public PojoComponentContextFactory(JavaComponentInfo component) {
         this.component = component;
     }
 

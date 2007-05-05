@@ -76,14 +76,12 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     public void configure(RuntimeComponent component) {
         try {
             PojoConfiguration configuration = new PojoConfiguration(this);
-            configuration.setProxyService(proxyService);
+            configuration.setProxyFactory(proxyService);
             configuration.setWorkContext(workContext);
             // FIXME: Group id to be removed
             configuration.setGroupId(URI.create("/"));
-            configuration.setName(URI.create(component.getURI()));
-            JavaAtomicComponent atomicComponent = new JavaAtomicComponent(component, configuration);
-            atomicComponent.setDataBindingRegistry(dataBindingRegistry);
-            atomicComponent.setPropertyValueFactory(propertyValueObjectFactory);
+            JavaComponentInfo atomicComponent = new JavaComponentInfo(component, configuration, dataBindingRegistry,
+                                                                      propertyValueObjectFactory);
 
             Scope scope = getScope();
 
@@ -126,7 +124,7 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
 
     }
 
-    private void handleResources(JavaImplementation componentType, JavaAtomicComponent component) {
+    private void handleResources(JavaImplementation componentType, JavaComponentInfo component) {
         for (JavaResourceImpl resource : componentType.getResources().values()) {
             String name = resource.getName();
 
@@ -152,14 +150,12 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     }
 
     public Object createInstance(RuntimeComponent component, ComponentService service) {
-        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         return atomicComponent.createInstance();
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component,
-                                         ComponentService service,
-                                         Operation operation) {
-        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
+        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         try {
             return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
@@ -168,7 +164,7 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     }
 
     public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
-        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         try {
             return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
@@ -188,17 +184,17 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     }
 
     public void start(RuntimeComponent component) {
-        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         atomicComponent.start();
     }
 
     public void stop(RuntimeComponent component) {
-        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         atomicComponent.stop();
     }
 
     public InstanceWrapper createInstanceWrapper(RuntimeComponent component) {
-        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         return atomicComponent.createInstanceWrapper();
     }
 

@@ -43,7 +43,11 @@ import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.core.invocation.CallbackWireObjectFactory;
+import org.apache.tuscany.core.invocation.WireObjectFactory;
+import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.implementation.java.context.TargetMethodNotFoundException;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.implementation.java.injection.ConversationIDObjectFactory;
@@ -54,7 +58,10 @@ import org.apache.tuscany.implementation.java.injection.ListMultiplicityObjectFa
 import org.apache.tuscany.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.implementation.java.injection.ObjectCallbackException;
 import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.invocation.ProxyFactory;
+import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
@@ -63,6 +70,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.osoa.sca.CallableReference;
@@ -71,14 +79,13 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.ConversationID;
 
 /**
- * Base implementation of an
- * {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java
- * class
+ * The runtime instantiation of Java component implementations
  * 
- * @version $$Rev$$ $$Date: 2007-03-19 22:08:36 -0700 (Mon, 19 Mar
- *          2007) $$
+ * @version $Rev$ $Date$
  */
-public abstract class PojoAtomicComponent implements ComponentContextProvider {
+public class JavaComponentInfo implements ComponentContextProvider {
+    private JavaPropertyValueObjectFactory propertyValueFactory;
+    private DataBindingExtensionPoint dataBindingRegistry;
 
     protected RuntimeComponent component;
     protected PojoConfiguration<?> configuration;
@@ -90,15 +97,19 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
 
     private final ComponentContext componentContext;
 
-    public PojoAtomicComponent(RuntimeComponent component, PojoConfiguration configuration) {
+    public JavaComponentInfo(RuntimeComponent component, PojoConfiguration configuration, 
+                             DataBindingExtensionPoint dataBindingExtensionPoint,
+                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
         this.configuration = configuration;
         componentContext = new ComponentContextImpl(this);
         this.groupId = configuration.getGroupId();
         this.component = component;
-        this.proxyService = configuration.getProxyService();
+        this.proxyService = configuration.getProxyFactory();
+        this.dataBindingRegistry = dataBindingExtensionPoint;
+        this.propertyValueFactory = propertyValueObjectFactory;
     }
-
+  
     public void destroy(Object instance) throws TargetDestructionException {
         if (configuration.getDestroyInvoker() != null) {
             try {
@@ -378,15 +389,6 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
         return null;
     }
 
-    protected abstract <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, RuntimeWire wire);
-
-    protected abstract ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,
-                                                                   Object propertyValue,
-                                                                   Class javaType);
-
-    /**
-     * @see org.apache.tuscany.spi.component.AtomicComponent#createInstance()
-     */
     public Object createInstance() throws ObjectCreationException {
         return createInstanceWrapper().getInstance();
     }
@@ -410,6 +412,36 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
 
     public URI getUri() {
         return URI.create(component.getURI());
+    }
+
+    public TargetInvoker createTargetInvoker(Operation operation) throws TargetInvokerCreationException {
+        Class<?> implClass = configuration.getImplementationClass();
+
+        try {
+            Method method = JavaInterfaceUtil.findMethod(implClass, operation);
+            boolean passByValue = operation.getInterface().isRemotable() && (!configuration.getDefinition()
+                                      .isAllowsPassByReference(method));
+
+            TargetInvoker invoker = new JavaTargetInvoker(method, component, scopeContainer);
+            if (passByValue) {
+                return new PassByValueInvoker(dataBindingRegistry, operation, method, component, scopeContainer);
+            } else {
+                return invoker;
+            }
+        } catch (NoSuchMethodException e) {
+            throw new TargetMethodNotFoundException(operation);
+        }
+
+    }
+
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, RuntimeWire wire) {
+        return new WireObjectFactory<B>(interfaze, wire, proxyService);
+    }
+
+    protected ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,
+                                                          Object propertyValue,
+                                                          Class javaType) {
+        return propertyValueFactory.createValueFactory(property, propertyValue, javaType);
     }
 
 }
