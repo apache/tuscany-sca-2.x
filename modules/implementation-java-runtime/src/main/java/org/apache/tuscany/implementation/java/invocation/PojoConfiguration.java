@@ -74,14 +74,6 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
         injectionSites = new ArrayList<JavaElementImpl>();
     }
 
-    public void setName(URI name) {
-        this.name = name;
-    }
-
-    public URI getName() {
-        return name;
-    }
-
     public URI getGroupId() {
         return groupId;
     }
@@ -106,11 +98,11 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
         }
     }
 
-    public ProxyFactory getProxyService() {
+    public ProxyFactory getProxyFactory() {
         return proxyService;
     }
 
-    public void setProxyService(ProxyFactory proxyService) {
+    public void setProxyFactory(ProxyFactory proxyService) {
         this.proxyService = proxyService;
     }
 
