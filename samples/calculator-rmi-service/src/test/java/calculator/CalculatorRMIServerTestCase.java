@@ -23,6 +23,7 @@ import java.rmi.Naming;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCARuntimeActivator;
 
 /**
  * This shows how to test the Calculator service component.
@@ -32,11 +33,11 @@ public class CalculatorRMIServerTestCase extends TestCase {
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        SCARuntime.start("CalculatorRMIServer.composite");
+        SCARuntimeActivator.start("CalculatorRMIServer.composite");
     }
     
     protected void tearDown() throws Exception {
-       SCARuntime.stop();
+        SCARuntimeActivator.stop();
     }
 
     public void testCalculator() throws Exception {
