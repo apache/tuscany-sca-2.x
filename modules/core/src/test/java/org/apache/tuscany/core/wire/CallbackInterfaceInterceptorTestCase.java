@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
+import org.apache.tuscany.core.invocation.CallbackInterfaceInterceptor;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;

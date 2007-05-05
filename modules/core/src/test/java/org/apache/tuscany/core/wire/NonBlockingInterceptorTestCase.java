@@ -26,6 +26,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;

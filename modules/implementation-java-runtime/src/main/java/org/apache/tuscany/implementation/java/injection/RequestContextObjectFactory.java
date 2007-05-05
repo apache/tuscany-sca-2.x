@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.osoa.sca.RequestContext;
 
 /**
- * Creates instances of {@link org.apache.tuscany.core.implementation.composite.ManagedRequestContext} for injection on
+ * Creates instances of {@link org.apache.tuscany.core.component.RequestContextImpl} for injection on
  * component implementation instances
  *
  * @version $Rev$ $Date$

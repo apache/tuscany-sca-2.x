@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.wire;
+package org.apache.tuscany.core.invocation;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
