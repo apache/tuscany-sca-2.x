@@ -24,15 +24,25 @@ import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.invocation.ProxyFactory;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RuntimeAssemblyFactory extends DefaultAssemblyFactory {
+    private ProxyFactory proxyFactory;
+    
+    /**
+     * @param proxyFactory
+     */
+    public RuntimeAssemblyFactory(ProxyFactory proxyFactory) {
+        super();
+        this.proxyFactory = proxyFactory;
+    }
 
     @Override
     public Component createComponent() {
-        return new RuntimeComponentImpl();
+        return new RuntimeComponentImpl(proxyFactory);
     }
 
     @Override

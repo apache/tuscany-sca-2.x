@@ -21,6 +21,7 @@ package org.apache.tuscany.spi.wire;
 import java.net.URI;
 import java.util.LinkedList;
 
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -93,21 +94,21 @@ public interface Message {
      *
      * @param wire the callback wire
      */
-    void pushCallbackWire(Wire wire);
+    void pushCallbackWire(RuntimeWire wire);
 
     /**
      * Returns the ordered list of callback wires for the current invocation
      *
      * @return the ordered list of callback wires for the current invocation
      */
-    LinkedList<Wire> getCallbackWires();
+    LinkedList<RuntimeWire> getCallbackWires();
 
     /**
      * Sets the ordered list of callback wires for the current invocation
      *
      * @param wires the ordered list of callback wires for the current invocation
      */
-    void setCallbackWires(LinkedList<Wire> wires);
+    void setCallbackWires(LinkedList<RuntimeWire> wires);
 
     /**
      * Returns the id of the message

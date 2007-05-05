@@ -18,21 +18,11 @@
  */
 package org.apache.tuscany.core.invocation;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.wire.NoMethodForOperationException;
-import org.apache.tuscany.core.wire.WireUtils;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.wire.ChainHolder;
-import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * Uses a wire to return an object instance

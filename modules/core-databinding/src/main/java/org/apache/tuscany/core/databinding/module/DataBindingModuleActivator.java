@@ -30,8 +30,6 @@ import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTrans
 import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
 import org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer;
 import org.apache.tuscany.core.databinding.wire.DataBindingRuntimeWireProcessor;
-import org.apache.tuscany.core.databinding.wire.DataBindingWirePostProcessor;
-import org.apache.tuscany.core.databinding.wire.DataTransformationInteceptor;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
@@ -65,8 +63,6 @@ import org.apache.tuscany.databinding.xml.XMLStreamReader2SAX;
 import org.apache.tuscany.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.spi.component.ComponentManager;
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -103,13 +99,6 @@ public class DataBindingModuleActivator implements ModuleActivator {
         JavaInterfaceIntrospectorExtensionPoint introspectors = registry
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         introspectors.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
-
-        // To be removed
-        WirePostProcessorRegistry postProcessors = registry.getExtensionPoint(WirePostProcessorRegistry.class);
-        if (postProcessors != null) {
-            ComponentManager componentManager = registry.getExtensionPoint(ComponentManager.class);
-            postProcessors.register(new DataBindingWirePostProcessor(componentManager, mediator));
-        }
 
         WireProcessorExtensionPoint wireProcessorExtensionPoint = registry
             .getExtensionPoint(WireProcessorExtensionPoint.class);

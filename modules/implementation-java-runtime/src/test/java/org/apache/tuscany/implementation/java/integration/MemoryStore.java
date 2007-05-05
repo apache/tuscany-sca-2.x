@@ -24,8 +24,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.spi.annotation.Monitor;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
@@ -47,7 +47,7 @@ import org.osoa.sca.annotations.Service;
 @Service(Store.class)
 @EagerInit
 public class MemoryStore extends AbstractEventPublisher implements Store {
-    private Map<SCAObject, Map<String, Record>> store;
+    private Map<RuntimeComponent, Map<String, Record>> store;
     // TODO integrate with a core threading scheme
     private ScheduledExecutorService scheduler;
     private long reaperInterval = 300000;
@@ -56,7 +56,7 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
 
     public MemoryStore(@Monitor StoreMonitor monitor) {
         this.monitor = monitor;
-        this.store = new ConcurrentHashMap<SCAObject, Map<String, Record>>();
+        this.store = new ConcurrentHashMap<RuntimeComponent, Map<String, Record>>();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -101,31 +101,31 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
         monitor.stop("In-memory store stopped");
     }
 
-    public void insertRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
+    public void insertRecord(RuntimeComponent owner, String id, Object object, long expiration) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
             map = new ConcurrentHashMap<String, Record>();
             store.put(owner, map);
         }
         if (map.containsKey(id)) {
-            throw new DuplicateRecordException(owner.getUri().toString(), id);
+            throw new DuplicateRecordException(owner.getURI(), id);
         }
         map.put(id, new Record(object, expiration));
     }
 
-    public void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
+    public void updateRecord(RuntimeComponent owner, String id, Object object, long expiration) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            throw new StoreWriteException("Record not found", owner.getUri().toString(), id);
+            throw new StoreWriteException("Record not found", owner.getURI(), id);
         }
         Record record = map.get(id);
         if (record == null) {
-            throw new StoreWriteException("Record not found", owner.getUri().toString(), id);
+            throw new StoreWriteException("Record not found", owner.getURI(), id);
         }
         record.data = object;
     }
 
-    public Object readRecord(SCAObject owner, String id) {
+    public Object readRecord(RuntimeComponent owner, String id) {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
             return null;
@@ -141,13 +141,13 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
         store.clear();
     }
 
-    public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
+    public void removeRecord(RuntimeComponent owner, String id) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            throw new StoreWriteException("Owner not found", owner.getUri().toString(), id);
+            throw new StoreWriteException("Owner not found", owner.getURI(), id);
         }
         if (map.remove(id) == null) {
-            throw new StoreWriteException("Owner not found", owner.getUri().toString(), id);
+            throw new StoreWriteException("Owner not found", owner.getURI(), id);
         }
     }
 
@@ -177,11 +177,11 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
 
         public void run() {
             long now = System.currentTimeMillis();
-            for (Map.Entry<SCAObject, Map<String, Record>> entries : store.entrySet()) {
+            for (Map.Entry<RuntimeComponent, Map<String, Record>> entries : store.entrySet()) {
                 for (Map.Entry<String, Record> entry : entries.getValue().entrySet()) {
                     final long expiration = entry.getValue().expiration;
                     if (expiration != NEVER && now >= expiration) {
-                        SCAObject owner = entries.getKey();
+                        RuntimeComponent owner = entries.getKey();
                         Object instance = entry.getValue().getData();
                         // notify listeners of the expiration 
                         StoreExpirationEvent event = new StoreExpirationEvent(this, owner, instance);

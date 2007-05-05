@@ -18,16 +18,17 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import java.util.List;
-import java.util.ArrayList;
+import static org.easymock.EasyMock.createMock;
 
-import org.apache.tuscany.implementation.java.injection.CallbackWireObjectFactory;
-import org.apache.tuscany.spi.wire.Wire;
-import org.apache.tuscany.spi.wire.ProxyService;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
+
+import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.invocation.CallbackWireObjectFactory;
+import org.apache.tuscany.invocation.ProxyFactory;
 import org.easymock.EasyMock;
-import static org.easymock.EasyMock.createMock;
 
 /**
  * @version $Rev$ $Date$
@@ -36,12 +37,12 @@ public class CallbackWireObjectFactoryTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testCreateInstance() throws Exception {
-        ProxyService service = createMock(ProxyService.class);
+        ProxyFactory service = createMock(ProxyFactory.class);
         Foo foo = new Foo() {
         };
         EasyMock.expect(service.createCallbackProxy(EasyMock.eq(Foo.class), EasyMock.isA(List.class))).andReturn(foo);
         EasyMock.replay(service);
-        List<Wire> wires = new ArrayList<Wire>();
+        List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(Foo.class, service, wires);
         assertEquals(foo, factory.getInstance());
         EasyMock.verify(service);

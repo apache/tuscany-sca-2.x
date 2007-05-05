@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.core.runtime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.Property;
@@ -28,10 +31,7 @@ import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.core.invocation.WireObjectFactory;
-import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
@@ -44,6 +44,14 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     public static final String SELF_REFERENCE_PREFIX = "$self$.";
     protected Object implementationConfiguration;
     protected ProxyFactory proxyService;
+
+    /**
+     * @param proxyService
+     */
+    public RuntimeComponentImpl(ProxyFactory proxyService) {
+        super();
+        this.proxyService = proxyService;
+    }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
         return getServiceReference(businessInterface, SELF_REFERENCE_PREFIX);
@@ -74,8 +82,7 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
             if (ref.getName().equals(referenceName)) {
                 RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
                 RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
-                return new JDKProxyService(new WorkContextImpl(), new DefaultInterfaceContractMapper()).createProxy(businessInterface,
-                                                                                                   wire);
+                return proxyService.createProxy(businessInterface, wire);
             }
         }
         return null;
@@ -88,7 +95,6 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
                 && ref.getName().startsWith(referenceName)) {
                 RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
                 RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
-                JDKProxyService proxyService = new JDKProxyService(new WorkContextImpl(), new DefaultInterfaceContractMapper());
                 WireObjectFactory<B> factory = new WireObjectFactory<B>(businessInterface, wire, proxyService);
                 return new ServiceReferenceImpl<B>(businessInterface, factory);
             }
@@ -98,8 +104,8 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        Object ref = proxyService.cast(target);  
-        return (R) ref;
+        Object ref = proxyService.cast(target);
+        return (R)ref;
     }
 
     public Object getImplementationConfiguration() {

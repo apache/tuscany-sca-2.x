@@ -85,7 +85,6 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         this.assemblyFactory = assemblyFactory;
     }
 
-
     /**
      * Returns the directory used by CRUD implementations to persist resources.
      * 
@@ -156,10 +155,13 @@ public class CRUDImplementation extends ComponentTypeImpl implements Implementat
         // CRUD implementations are always resolved
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component,
-                                         ComponentService service,
-                                         Operation operation,
-                                         boolean isCallback) {
+    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
+        CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
+        CRUDTargetInvoker invoker = new CRUDTargetInvoker(operation, new ResourceManager(impl.getDirectory()));
+        return invoker;
+    }
+
+    public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
         CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
         CRUDTargetInvoker invoker = new CRUDTargetInvoker(operation, new ResourceManager(impl.getDirectory()));
         return invoker;

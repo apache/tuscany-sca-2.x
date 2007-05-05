@@ -18,19 +18,18 @@
  */
 package org.apache.tuscany.core.services.store.memory;
 
-import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
-
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
@@ -44,7 +43,7 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();
@@ -69,7 +68,7 @@ public class MemoryStoreTestCase extends TestCase {
         store.addListener(listener);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();
@@ -85,7 +84,7 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();
@@ -99,7 +98,7 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();
@@ -111,8 +110,8 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getUri()).andReturn(URI.create("component"));
+        RuntimeComponent component = EasyMock.createMock(RuntimeComponent.class);
+        EasyMock.expect(component.getURI()).andReturn("component");
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();
@@ -130,7 +129,7 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();
@@ -146,7 +145,7 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
         EasyMock.replay(component);
         String id = UUID.randomUUID().toString();
         Object value = new Object();

@@ -20,6 +20,8 @@ package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.scope.InstanceWrapperBase;
+
 /**
  * @version $Rev$ $Date$
  */

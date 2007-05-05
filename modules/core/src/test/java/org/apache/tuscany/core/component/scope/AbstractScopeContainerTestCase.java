@@ -22,10 +22,11 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.ScopedImplementationProvider;
+import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.spi.component.InstanceWrapper;
-
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
@@ -37,25 +38,34 @@ public abstract class AbstractScopeContainerTestCase<T, KEY> extends TestCase {
     protected ScopeContainer<KEY> scopeContainer;
     protected URI groupId;
     protected KEY contextId;
-    protected AtomicComponent<T> component;
+    protected RuntimeComponent component;
+    protected ScopedImplementation implementation; 
     protected InstanceWrapper<T> wrapper;
 
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         control = EasyMock.createStrictControl();
-        component = control.createMock(AtomicComponent.class);
+        component = control.createMock(RuntimeComponent.class);
         wrapper = control.createMock(InstanceWrapper.class);
+        implementation = control.createMock(ScopedImplementation.class);
+        EasyMock.expect(component.getImplementation()).andReturn(implementation).anyTimes();
     }
 
     protected void preRegisterComponent() throws Exception {
         scopeContainer.start();
         scopeContainer.register(component, groupId);
-        EasyMock.expect(component.isEagerInit()).andStubReturn(false);
+        EasyMock.expect(implementation.isEagerInit(component)).andStubReturn(false);
     }
 
     protected void expectCreateWrapper() throws Exception {
-        EasyMock.expect(component.createInstanceWrapper()).andReturn(wrapper);
+        EasyMock.expect(implementation.createInstanceWrapper(component)).andReturn(wrapper);
         wrapper.start();
     }
+    
+    protected static interface ScopedImplementation extends ScopedImplementationProvider, Implementation {
+        
+    }
+    
+    
 }

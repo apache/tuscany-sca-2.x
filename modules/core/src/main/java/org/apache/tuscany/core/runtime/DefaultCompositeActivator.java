@@ -45,11 +45,8 @@ import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
 import org.apache.tuscany.core.WireProcessorExtensionPoint;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.InvocationChainImpl;
 import org.apache.tuscany.core.wire.NonBlockingInterceptor;
-import org.apache.tuscany.core.work.Jsr237WorkScheduler;
-import org.apache.tuscany.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
@@ -59,18 +56,17 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 
 /**
  * @version $Rev$ $Date$
  */
 public class DefaultCompositeActivator implements CompositeActivator {
 
-    private AssemblyFactory assemblyFactory;
-    private InterfaceContractMapper interfaceContractMapper;
-    private WorkContext workContext = new WorkContextImpl();
-    private WorkScheduler workScheduler = new Jsr237WorkScheduler(new ThreadPoolWorkManager(10));
-    private WireProcessorExtensionPoint wireProcessorExtensionPoint;
+    private final AssemblyFactory assemblyFactory;
+    private final InterfaceContractMapper interfaceContractMapper;
+    private final WorkContext workContext;
+    private final WorkScheduler workScheduler;
+    private final WireProcessorExtensionPoint wireProcessorExtensionPoint;
 
     /**
      * @param assemblyFactory
@@ -238,7 +234,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
         if (!(binding instanceof SCABinding)) {
             InterfaceContract sourceContract = reference.getInterfaceContract();
-            
+
             // Component Reference --> External Service
             RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl((RuntimeComponent)component,
                                                                            (RuntimeComponentReference)reference,
@@ -258,7 +254,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
             if (sourceContract.getCallbackInterface() != null) {
                 for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
-                    Operation targetOperation = interfaceContractMapper.map(bindingContract.getCallbackInterface(), operation);
+                    Operation targetOperation = interfaceContractMapper.map(bindingContract.getCallbackInterface(),
+                                                                            operation);
                     InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                     if (operation.isNonBlocking()) {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
@@ -302,6 +299,10 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 wire.getInvocationChains().add(chain);
             }
             if (bindingContract.getCallbackInterface() != null) {
+                if(reference.getName().startsWith("$self$.")) {
+                    // No callback is needed
+                    continue;
+                }
                 for (Operation operation : bindingContract.getCallbackInterface().getOperations()) {
                     Operation targetOperation = interfaceContractMapper.map(targetContract.getCallbackInterface(),
                                                                             operation);
@@ -310,12 +311,17 @@ public class DefaultCompositeActivator implements CompositeActivator {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                     }
                     addBindingIntercepor(component, reference, binding, chain, operation, true);
-                    addImplementationInterceptor(target, service, chain, operation, false);
+                    addImplementationInterceptor(component, null, chain, operation, true);
                     wire.getCallbackInvocationChains().add(chain);
                 }
             }
 
             runtimeRef.addRuntimeWire(wire);
+            if (!wire.getCallbackInvocationChains().isEmpty()) {
+                if (wire.getTarget().getComponentService() != null) {
+                    wire.getTarget().getComponentService().addCallbackWire(wire);
+                }
+            }
             wireProcessorExtensionPoint.process(wire);
         }
     }
@@ -375,19 +381,18 @@ public class DefaultCompositeActivator implements CompositeActivator {
             addImplementationInterceptor(component, service, chain, operation, false);
             wire.getInvocationChains().add(chain);
         }
-        if (sourceContract.getCallbackInterface() != null) {
-            for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
-                Operation targetOperation = interfaceContractMapper.map(targetContract.getCallbackInterface(),
-                                                                        operation);
-                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                /* lresende */
-                if (operation.isNonBlocking()) {
-                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
-                }
-                addImplementationInterceptor(component, service, chain, operation, false);
-                wire.getCallbackInvocationChains().add(chain);
-            }
-        }
+//        if (sourceContract.getCallbackInterface() != null) {
+//            for (Operation operation : sourceContract.getCallbackInterface().getOperations()) {
+//                Operation targetOperation = interfaceContractMapper.map(targetContract.getCallbackInterface(),
+//                                                                        operation);
+//                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+//                if (operation.isNonBlocking()) {
+//                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+//                }
+//                addImplementationInterceptor(component, service, chain, operation, true);
+//                wire.getCallbackInvocationChains().add(chain);
+//            }
+//        }
 
         runtimeService.addRuntimeWire(wire);
         wireProcessorExtensionPoint.process(wire);
@@ -409,10 +414,12 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                               boolean isCallback) {
         if (component.getImplementation() instanceof ImplementationProvider) {
             ImplementationProvider provider = (ImplementationProvider)component.getImplementation();
-            Interceptor interceptor = provider.createInterceptor((RuntimeComponent)component,
-                                                                 service,
-                                                                 operation,
-                                                                 isCallback);
+            Interceptor interceptor = null;
+            if (!isCallback) {
+                interceptor = provider.createInterceptor((RuntimeComponent)component, service, operation);
+            } else {
+                interceptor = provider.createCallbackInterceptor((RuntimeComponent)component, operation);
+            }
             chain.addInterceptor(interceptor);
         }
     }

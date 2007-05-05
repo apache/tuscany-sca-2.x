@@ -26,7 +26,7 @@ import java.net.URI;
  *
  * @version $Rev$ $Date$
  */
-public abstract class WiringException extends BuilderException {
+public abstract class WiringException extends Exception {
     private final URI sourceUri;
     private final URI targetUri;
 
@@ -46,19 +46,6 @@ public abstract class WiringException extends BuilderException {
         super(message, cause);
         this.sourceUri = sourceUri;
         this.targetUri = targetUri;
-    }
-
-    protected WiringException(String message, String identifier, URI sourceUri, URI targetUri) {
-        super(message, identifier);
-        this.sourceUri = sourceUri;
-        this.targetUri = targetUri;
-    }
-
-
-    protected WiringException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-        sourceUri = null;
-        targetUri = null;
     }
 
     /**

@@ -16,15 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component.scope;
+package org.apache.tuscany.core.scope;
 
 import java.net.URI;
 
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.PersistenceException;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -68,78 +68,79 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         lifecycleState = STOPPED;
     }
 
-    public void register(AtomicComponent component, URI groupId) {
+    public void register(RuntimeComponent component, URI groupId) {
         super.register(component, groupId);
-        component.addListener(this);
+//        component.addListener(this);
     }
 
-    public void unregister(AtomicComponent component) {
+    public void unregister(RuntimeComponent component) {
         // FIXME should all the instances associated with this component be remove already
-        component.removeListener(this);
+//        component.removeListener(this);
         super.unregister(component);
     }
 
-    public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
+    public void persistNew(RuntimeComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
-        try {
-            nonDurableStore.insertRecord(component, id, instance, expiration);
-        } catch (StoreWriteException e) {
-            throw new PersistenceException(e);
-        }
+//        try {
+//            nonDurableStore.insertRecord(component, id, instance, expiration);
+//        } catch (StoreWriteException e) {
+//            throw new PersistenceException(e);
+//        }
     }
 
-    public void persist(AtomicComponent component, String id, Object instance, long expiration)
+    public void persist(RuntimeComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
-        try {
-            nonDurableStore.updateRecord(component, id, instance, expiration);
-        } catch (StoreWriteException e) {
-            throw new PersistenceException(e);
-        }
+//        try {
+//            nonDurableStore.updateRecord(component, id, instance, expiration);
+//        } catch (StoreWriteException e) {
+//            throw new PersistenceException(e);
+//        }
     }
 
-    public void remove(AtomicComponent component) throws PersistenceException {
-        String conversationId = getConversationId();
-        try {
-            workContext.setCurrentAtomicComponent(component);
-            // FIXME this should be an InstanceWrapper and shouldn't we stop it? 
-            Object instance = nonDurableStore.readRecord(component, conversationId);
-            if (instance != null) {
-                nonDurableStore.removeRecord(component, conversationId);
-            }
-        } catch (StoreReadException e) {
-            throw new PersistenceException(e);
-        } catch (StoreWriteException e) {
-            throw new PersistenceException(e);
-        }
+    public void remove(RuntimeComponent component) throws PersistenceException {
+//        String conversationId = getConversationId();
+//        try {
+//            workContext.setCurrentAtomicComponent(component);
+//            // FIXME this should be an InstanceWrapper and shouldn't we stop it? 
+//            Object instance = nonDurableStore.readRecord(component, conversationId);
+//            if (instance != null) {
+//                nonDurableStore.removeRecord(component, conversationId);
+//            }
+//        } catch (StoreReadException e) {
+//            throw new PersistenceException(e);
+//        } catch (StoreWriteException e) {
+//            throw new PersistenceException(e);
+//        }
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+    protected InstanceWrapper getInstanceWrapper(RuntimeComponent component, boolean create)
         throws TargetResolutionException {
-        String conversationId = getConversationId();
-        try {
-            workContext.setCurrentAtomicComponent(component);
-            InstanceWrapper wrapper = (InstanceWrapper) nonDurableStore.readRecord(component, conversationId);
-            if (wrapper != null) {
-                if (component.getMaxIdleTime() > 0) {
-                    // update expiration
-                    long expire = System.currentTimeMillis() + component.getMaxIdleTime();
-                    nonDurableStore.updateRecord(component, conversationId, wrapper, expire);
-                }
-            } else if (create) {
-                // FIXME should the store really be persisting the wrappers
-                wrapper = component.createInstanceWrapper();
-                wrapper.start();
-                long expire = calculateExpiration(component);
-                nonDurableStore.insertRecord(component, conversationId, wrapper, expire);
-            }
-            return wrapper;
-        } catch (StoreReadException e) {
-            throw new TargetResolutionException("Error retrieving target instance", e);
-        } catch (StoreWriteException e) {
-            throw new TargetResolutionException("Error persisting target instance", e);
-        } finally {
-            workContext.setCurrentAtomicComponent(null);
-        }
+        throw new UnsupportedOperationException("To be implemented");
+//        String conversationId = getConversationId();
+//        try {
+//            workContext.setCurrentAtomicComponent(component);
+//            InstanceWrapper wrapper = (InstanceWrapper) nonDurableStore.readRecord(component, conversationId);
+//            if (wrapper != null) {
+//                if (component.getMaxIdleTime() > 0) {
+//                    // update expiration
+//                    long expire = System.currentTimeMillis() + component.getMaxIdleTime();
+//                    nonDurableStore.updateRecord(component, conversationId, wrapper, expire);
+//                }
+//            } else if (create) {
+//                // FIXME should the store really be persisting the wrappers
+//                wrapper = component.createInstanceWrapper();
+//                wrapper.start();
+//                long expire = calculateExpiration(component);
+//                nonDurableStore.insertRecord(component, conversationId, wrapper, expire);
+//            }
+//            return wrapper;
+//        } catch (StoreReadException e) {
+//            throw new TargetResolutionException("Error retrieving target instance", e);
+//        } catch (StoreWriteException e) {
+//            throw new TargetResolutionException("Error persisting target instance", e);
+//        } finally {
+//            workContext.setCurrentAtomicComponent(null);
+//        }
     }
 
     /**
@@ -152,17 +153,17 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         return conversationId;
     }
 
-    private long calculateExpiration(AtomicComponent component) {
-        if (component.getMaxAge() > 0) {
-            long now = System.currentTimeMillis();
-            return now + component.getMaxAge();
-        } else if (component.getMaxIdleTime() > 0) {
-            long now = System.currentTimeMillis();
-            return now + component.getMaxIdleTime();
-        } else {
-            return Store.DEFAULT_EXPIRATION_OFFSET;
-        }
-    }
+//    private long calculateExpiration(RuntimeComponent component) {
+//        if (component.getMaxAge() > 0) {
+//            long now = System.currentTimeMillis();
+//            return now + component.getMaxAge();
+//        } else if (component.getMaxIdleTime() > 0) {
+//            long now = System.currentTimeMillis();
+//            return now + component.getMaxIdleTime();
+//        } else {
+//            return Store.DEFAULT_EXPIRATION_OFFSET;
+//        }
+//    }
 
     /**
      * Receives expiration events from the store and notifies the corresponding atomic component

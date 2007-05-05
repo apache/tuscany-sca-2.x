@@ -18,22 +18,22 @@
  */
 package org.apache.tuscany.implementation.java.context;
 
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ComponentObjectFactory<T, CONTEXT> implements ObjectFactory<T> {
-    private final AtomicComponent<T> component;
+    private final RuntimeComponent component;
     private final ScopeContainer<CONTEXT> scopeContainer;
 
-    public ComponentObjectFactory(AtomicComponent<T> component, ScopeContainer<CONTEXT> scopeContainer) {
+    public ComponentObjectFactory(RuntimeComponent component, ScopeContainer<CONTEXT> scopeContainer) {
         this.component = component;
         this.scopeContainer = scopeContainer;
     }
@@ -43,7 +43,7 @@ public class ComponentObjectFactory<T, CONTEXT> implements ObjectFactory<T> {
             WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
             @SuppressWarnings("unchecked")
             CONTEXT contextId = (CONTEXT) workContext.getIdentifier(scopeContainer.getScope());
-            return scopeContainer.getWrapper(component, contextId).getInstance();
+            return (T) scopeContainer.getWrapper(component, contextId).getInstance();
         } catch (TargetResolutionException e) {
             throw new ObjectCreationException(e);
         }

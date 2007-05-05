@@ -16,21 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.builder;
-
-import java.net.URI;
-
-import org.apache.tuscany.spi.builder.WiringException;
+package org.apache.tuscany.scope;
 
 /**
- * Denotes an illegal callback
- *
  * @version $Rev$ $Date$
  */
-public class IllegalCallbackException extends WiringException {
+public class ScopeNotFoundException extends Exception {
 
-    public IllegalCallbackException(String message, String identifier, URI sourceUri, URI targetUri) {
-        super(message, identifier, sourceUri, targetUri);
+    private static final long serialVersionUID = -3447306764458851441L;
+
+    public ScopeNotFoundException(String scope) {
+        super("Scope not found: " + scope);
     }
-
 }

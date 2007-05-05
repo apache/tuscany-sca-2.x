@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.context;
 
-import org.apache.tuscany.core.component.scope.InstanceWrapperBase;
+import org.apache.tuscany.core.scope.InstanceWrapperBase;
 import org.apache.tuscany.implementation.java.injection.EventInvoker;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;

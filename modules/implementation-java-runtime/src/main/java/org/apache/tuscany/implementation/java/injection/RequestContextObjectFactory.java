@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import org.apache.tuscany.core.implementation.composite.RequestContextImpl;
+import org.apache.tuscany.core.component.RequestContextImpl;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.WorkContext;

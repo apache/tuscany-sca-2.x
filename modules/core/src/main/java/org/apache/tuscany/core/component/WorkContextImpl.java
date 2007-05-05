@@ -25,14 +25,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.Wire;
 
 /**
- * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext} that handles event-to-thread
- * associations using an <code>InheritableThreadLocal</code>
- *
+ * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext}
+ * that handles event-to-thread associations using an
+ * <code>InheritableThreadLocal</code>
+ * 
  * @version $Rev$ $Date$
  */
 public class WorkContextImpl implements WorkContext {
@@ -42,7 +43,8 @@ public class WorkContextImpl implements WorkContext {
     private static final Object CURRENT_SERVICE_NAMES = new Object();
     private static final Object CALLBACK_WIRES = new Object();
 
-    // [rfeng] We cannot use InheritableThreadLocal for message ids here since it's shared by parent and children
+    // [rfeng] We cannot use InheritableThreadLocal for message ids here since
+    // it's shared by parent and children
     private ThreadLocal<Map<Object, Object>> workContext = new ThreadLocal<Map<Object, Object>>();
 
     // [rfeng] Session id requires InheritableThreadLocal
@@ -65,48 +67,54 @@ public class WorkContextImpl implements WorkContext {
         map.put(CORRELATION_ID, id);
     }
 
-    public AtomicComponent getCurrentAtomicComponent() {
+    public RuntimeComponent getCurrentAtomicComponent() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (AtomicComponent) map.get(CURRENT_ATOMIC);
+        return (RuntimeComponent)map.get(CURRENT_ATOMIC);
     }
 
-    public void setCurrentAtomicComponent(AtomicComponent component) {
+    public void setCurrentAtomicComponent(RuntimeComponent component) {
         Map<Object, Object> map = getWorkContextMap();
         map.put(CURRENT_ATOMIC, component);
     }
 
     @SuppressWarnings("unchecked")
     public LinkedList<URI> getCallbackUris() {
-        Map<Object, Object> map = workContext.get();
+        Map<Object, Object> map = inheritableContext.get();
         if (map == null) {
             return null;
         }
-        return (LinkedList<URI>) map.get(CALLBACK_URIS);
+        LinkedList<URI> uris = ((LinkedList<URI>)map.get(CALLBACK_URIS));
+        if (uris != null) {
+            uris = (LinkedList<URI>)uris.clone();
+        }
+        return uris;
     }
 
     public void setCallbackUris(LinkedList<URI> uris) {
-        Map<Object, Object> map = getWorkContextMap();
-        map.put(CALLBACK_URIS, uris);
+        Map<Object, Object> map = inheritableContext.get();
+        if (map == null) {
+            map = new IdentityHashMap<Object, Object>();
+            inheritableContext.set(map);
+        }
+        map.put(CALLBACK_URIS, uris.clone());
     }
 
-
-    @SuppressWarnings({"unchecked"})
-    public LinkedList<Wire> getCallbackWires() {
+    @SuppressWarnings( {"unchecked"})
+    public LinkedList<RuntimeWire> getCallbackWires() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (LinkedList<Wire>) map.get(CALLBACK_WIRES);
+        return (LinkedList<RuntimeWire>)map.get(CALLBACK_WIRES);
     }
 
-    public void setCallbackWires(LinkedList<Wire> wires) {
+    public void setCallbackWires(LinkedList<RuntimeWire> wires) {
         Map<Object, Object> map = getWorkContextMap();
         map.put(CALLBACK_WIRES, wires);
     }
-
 
     public Object getIdentifier(Object type) {
         Map<Object, Object> map = inheritableContext.get();
@@ -115,7 +123,7 @@ public class WorkContextImpl implements WorkContext {
         }
         Object currentId = map.get(type);
         if (currentId instanceof ScopeIdentifier) {
-            currentId = ((ScopeIdentifier) currentId).getIdentifier();
+            currentId = ((ScopeIdentifier)currentId).getIdentifier();
             // once we have accessed the id, replace the lazy wrapper
             map.put(type, currentId);
         }
@@ -145,13 +153,13 @@ public class WorkContextImpl implements WorkContext {
         inheritableContext.remove();
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings( {"unchecked"})
     public String popServiceName() {
         Map<Object, Object> map = inheritableContext.get();
         if (map == null) {
             return null;
         }
-        List<String> stack = (List) map.get(CURRENT_SERVICE_NAMES);
+        List<String> stack = (List)map.get(CURRENT_SERVICE_NAMES);
         if (stack == null || stack.size() < 1) {
             return null;
         }
@@ -163,20 +171,20 @@ public class WorkContextImpl implements WorkContext {
         return name;
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings( {"unchecked"})
     public String getCurrentServiceName() {
         Map<Object, Object> map = inheritableContext.get();
         if (map == null) {
             return null;
         }
-        List<String> stack = (List) map.get(CURRENT_SERVICE_NAMES);
+        List<String> stack = (List)map.get(CURRENT_SERVICE_NAMES);
         if (stack == null || stack.size() < 1) {
             return null;
         }
         return stack.get(stack.size() - 1);
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings( {"unchecked"})
     public void pushServiceName(String name) {
         Map<Object, Object> map = inheritableContext.get();
         List<String> names;
@@ -186,7 +194,7 @@ public class WorkContextImpl implements WorkContext {
             names = new ArrayList<String>();
             map.put(CURRENT_SERVICE_NAMES, names);
         } else {
-            names = (List<String>) map.get(CURRENT_SERVICE_NAMES);
+            names = (List<String>)map.get(CURRENT_SERVICE_NAMES);
             if (names == null) {
                 names = new ArrayList<String>();
                 map.put(CURRENT_SERVICE_NAMES, names);

@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import org.osoa.sca.RequestContext;
 
+import org.apache.tuscany.core.component.RequestContextImpl;
 import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;

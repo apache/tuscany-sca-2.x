@@ -16,12 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.proxy;
+package org.apache.tuscany.core.invocation;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,16 +29,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ReactivationException;
-import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.AbstractInvocationHandler;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Wire;
 import org.osoa.sca.NoRegisteredCallbackException;
 
 /**
@@ -52,14 +45,10 @@ import org.osoa.sca.NoRegisteredCallbackException;
  * @Deprecated
  * @version $Rev$ $Date$
  */
-public class JDKCallbackInvocationHandler extends AbstractInvocationHandler implements InvocationHandler,
-    Externalizable, SCAExternalizable {
-    /**
-     * 
-     */
+public class JDKCallbackInvocationHandler extends AbstractInvocationHandler implements InvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
     private transient WorkContext context;
-    private transient Map<URI, Wire> wires;
+    private transient Map<URI, RuntimeWire> wires;
     private List<String> sourceWireNames;
 
     /**
@@ -67,14 +56,16 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
      */
     public JDKCallbackInvocationHandler() {
         sourceWireNames = new ArrayList<String>();
-        wires = new HashMap<URI, Wire>();
+        wires = new HashMap<URI, RuntimeWire>();
     }
 
-    public JDKCallbackInvocationHandler(List<Wire> wireList, WorkContext context) {
+    public JDKCallbackInvocationHandler(List<RuntimeWire> wireList, WorkContext context) {
         this.context = context;
-        this.wires = new HashMap<URI, Wire>();
-        for (Wire wire : wireList) {
-            wires.put(wire.getSourceUri(), wire);
+        this.wires = new HashMap<URI, RuntimeWire>();
+        for (RuntimeWire wire : wireList) {
+            URI uri = URI.create(wire.getSource().getComponent().getURI() + "#"
+                                 + wire.getSource().getComponentReference().getName());
+            wires.put(uri, wire);
         }
         sourceWireNames = new ArrayList<String>();
         for (URI uri : wires.keySet()) {
@@ -97,7 +88,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         assert callbackUris != null;
         URI targetAddress = callbackUris.getLast();
         assert targetAddress != null;
-        Wire wire = wires.get(targetAddress);
+        RuntimeWire wire = wires.get(targetAddress);
         assert wire != null;
         List<InvocationChain> chains = wire.getCallbackInvocationChains();
         IdentityHashMap<Operation, InvocationChain> map = new IdentityHashMap<Operation, InvocationChain>();
@@ -120,35 +111,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         }
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        int i = sourceWireNames.size() - 1;
-        out.writeInt(i);
-        for (String name : sourceWireNames) {
-            out.writeObject(name);
-        }
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        int num = in.readInt();
-        for (int i = 0; i <= num; i++) {
-            sourceWireNames.add((String)in.readObject());
-        }
-    }
-
     public void setWorkContext(WorkContext context) {
         this.context = context;
-    }
-
-    public void reactivate() throws ReactivationException {
-        AtomicComponent owner = context.getCurrentAtomicComponent();
-        if (owner == null) {
-            throw new ReactivationException("Current atomic component not set on work context");
-        }
-        for (String name : sourceWireNames) {
-            // TODO JFM support multiplicity, remove get(0)
-            Wire wire = owner.getWires(name).get(0);
-            wires.put(wire.getSourceUri(), wire);
-
-        }
     }
 }

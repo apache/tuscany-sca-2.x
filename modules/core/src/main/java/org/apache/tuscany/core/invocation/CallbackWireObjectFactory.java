@@ -16,34 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component.scope;
+package org.apache.tuscany.core.invocation;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
+import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.invocation.ProxyFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeRegistry;
 
 /**
- * The default implementation of a scope registry
+ * Returns proxy instance for a wire callback
  *
  * @version $Rev$ $Date$
  */
-public class ScopeRegistryImpl implements ScopeRegistry {
-    private final Map<Scope, ScopeContainer> scopeCache =
-        new ConcurrentHashMap<Scope, ScopeContainer>();
-    private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache =
-        new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
+public class CallbackWireObjectFactory implements ObjectFactory {
+    private ProxyFactory proxyFactory;
+    private Class<?> interfaze;
+    private List<RuntimeWire> wires;
 
-    public void register(ScopeContainer container) {
-        scopeCache.put(container.getScope(), container);
+    public CallbackWireObjectFactory(Class<?> interfaze, ProxyFactory proxyService, List<RuntimeWire> wires) {
+        this.interfaze = interfaze;
+        this.proxyFactory = proxyService;
+        this.wires = wires;
     }
 
-    public ScopeContainer getScopeContainer(Scope scope) {
-        return scopeCache.get(scope);
+    public Object getInstance() throws ObjectCreationException {
+        return proxyFactory.createCallbackProxy(interfaze, wires);
     }
-
 
 }

@@ -19,14 +19,8 @@
 
 package org.apache.tuscany.host.embedded.impl;
 
-import java.net.URI;
-
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.impl.SimpleRuntime;
-import org.apache.tuscany.host.embedded.impl.SimpleRuntimeImpl;
-import org.apache.tuscany.host.embedded.impl.SimpleRuntimeInfo;
-import org.apache.tuscany.host.embedded.impl.SimpleRuntimeInfoImpl;
 import org.osoa.sca.ComponentContext;
 
 /**

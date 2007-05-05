@@ -53,6 +53,8 @@ import org.apache.tuscany.core.runtime.ActivationException;
 import org.apache.tuscany.core.runtime.RuntimeActivatorImpl;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.osoa.sca.CompositeContext;
+import org.osoa.sca.CurrentCompositeContext;
 
 /**
  * @version $Rev$ $Date$
@@ -108,6 +110,8 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         Contribution contribution = contributionService.getContribution(uri);
 
         super.start(contribution);
+        CompositeContext context = new SimpleCompositeContextImpl(this, domain);
+        CurrentCompositeContext.setContext(context);
     }
 
     protected ContributionService createContributionService() throws ActivationException {

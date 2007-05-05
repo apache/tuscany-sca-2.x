@@ -21,8 +21,8 @@ package org.apache.tuscany.implementation.java.integration;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.core.scope.ConversationalScopeContainer;
+import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.easymock.EasyMock;

@@ -69,12 +69,9 @@ public class JDKProxyService implements ProxyFactory {
     }
 
     public Object createCallbackProxy(Class<?> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
-        return null;
-        /*
         ClassLoader cl = interfaze.getClassLoader();
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wires, context);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
-        */
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {

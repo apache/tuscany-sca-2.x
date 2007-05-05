@@ -28,11 +28,31 @@ import org.apache.tuscany.assembly.ComponentService;
  */
 public interface RuntimeComponentService extends ComponentService {
     /**
+     * Add a runtime wire to the service
+     * 
      * @param wire
      */
     void addRuntimeWire(RuntimeWire wire);
+
     /**
+     * Get a list of runtime wires to the service
+     * 
      * @return
      */
-    List<RuntimeWire> getRuntimeWires();    
+    List<RuntimeWire> getRuntimeWires();
+
+    /**
+     * Add a callback wire if the service has a callabck interface
+     * 
+     * @param wire
+     */
+    void addCallbackWire(RuntimeWire wire);
+
+    /**
+     * Get the callback wires assoicated with this service
+     * 
+     * @return
+     */
+    List<RuntimeWire> getCallbackWires();
+
 }

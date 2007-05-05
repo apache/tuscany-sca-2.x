@@ -21,6 +21,7 @@ package org.apache.tuscany.spi.wire;
 import java.net.URI;
 import java.util.LinkedList;
 
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -32,7 +33,7 @@ public class MessageImpl implements Message {
     private Object body;
     private TargetInvoker invoker;
     private LinkedList<URI> callbackUris;
-    private LinkedList<Wire> callbackWires;
+    private LinkedList<RuntimeWire> callbackWires;
     private Object messageId;
     private Object correlationId;
     private boolean isFault;
@@ -96,18 +97,18 @@ public class MessageImpl implements Message {
         this.callbackUris = callbackRoutingChain;
     }
 
-    public void pushCallbackWire(Wire wire) {
+    public void pushCallbackWire(RuntimeWire wire) {
         if (callbackWires == null) {
-            callbackWires = new LinkedList<Wire>();
+            callbackWires = new LinkedList<RuntimeWire>();
         }
         callbackWires.add(wire);
     }
 
-    public LinkedList<Wire> getCallbackWires() {
+    public LinkedList<RuntimeWire> getCallbackWires() {
         return callbackWires;
     }
 
-    public void setCallbackWires(LinkedList<Wire> wires) {
+    public void setCallbackWires(LinkedList<RuntimeWire> wires) {
         this.callbackWires = wires;
     }
 

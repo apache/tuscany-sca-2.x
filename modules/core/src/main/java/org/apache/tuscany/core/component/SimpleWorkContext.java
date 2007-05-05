@@ -18,16 +18,16 @@
  */
 package org.apache.tuscany.core.component;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.ArrayList;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * A simple WorkContext implementation that provides basic thread-local support
@@ -41,9 +41,9 @@ public class SimpleWorkContext implements WorkContext {
     private final List<String> serviceNameStack = new ArrayList<String>();
 
     private LinkedList<URI> callbackUris;
-    private LinkedList<Wire> callbackWires;
+    private LinkedList<RuntimeWire> callbackWires;
     private Object correlationId;
-    private AtomicComponent currentAtomicComponent;
+    private RuntimeComponent currentAtomicComponent;
 
     public Object getIdentifier(Object type) {
         return identifiers.get(type);
@@ -69,11 +69,11 @@ public class SimpleWorkContext implements WorkContext {
         this.callbackUris = uris;
     }
 
-    public LinkedList<Wire> getCallbackWires() {
+    public LinkedList<RuntimeWire> getCallbackWires() {
         return callbackWires;
     }
 
-    public void setCallbackWires(LinkedList<Wire> wires) {
+    public void setCallbackWires(LinkedList<RuntimeWire> wires) {
         this.callbackWires = wires;
     }
 
@@ -85,11 +85,11 @@ public class SimpleWorkContext implements WorkContext {
         this.correlationId = correlationId;
     }
 
-    public AtomicComponent getCurrentAtomicComponent() {
+    public RuntimeComponent getCurrentAtomicComponent() {
         return currentAtomicComponent;
     }
 
-    public void setCurrentAtomicComponent(AtomicComponent currentAtomicComponent) {
+    public void setCurrentAtomicComponent(RuntimeComponent currentAtomicComponent) {
         this.currentAtomicComponent = currentAtomicComponent;
     }
 

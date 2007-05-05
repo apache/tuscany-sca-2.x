@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +60,8 @@ import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.scope.ScopeRegistry;
+import org.apache.tuscany.spi.Scope;
+import org.apache.tuscany.spi.component.GroupInitializationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
@@ -103,14 +106,9 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
     }
 
     public void init() throws ActivationException {
-        // Create default factories
-        assemblyFactory = new RuntimeAssemblyFactory();
-        policyFactory = new DefaultPolicyFactory();
         interfaceContractMapper = new DefaultInterfaceContractMapper();
         scopeRegistry = createScopeRegistry();
 
-        extensionPointRegistry.addExtensionPoint(AssemblyFactory.class, assemblyFactory);
-        extensionPointRegistry.addExtensionPoint(PolicyFactory.class, policyFactory);
         extensionPointRegistry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
 
         // Create a work context
@@ -118,10 +116,15 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         WorkContext workContext = new WorkContextImpl();
         extensionPointRegistry.addExtensionPoint(WorkContext.class, workContext);
 
-        WorkContextTunnel.setThreadWorkContext(workContext);
+        ProxyFactory proxyFactory = new JDKProxyService(workContext,
+                            interfaceContractMapper);
+        extensionPointRegistry.addExtensionPoint(ProxyFactory.class, proxyFactory);
 
-        extensionPointRegistry.addExtensionPoint(ProxyFactory.class, new JDKProxyService(workContext,
-                                                                                         interfaceContractMapper));
+        // Create default factories
+        assemblyFactory = new RuntimeAssemblyFactory(proxyFactory);
+        policyFactory = new DefaultPolicyFactory();
+        extensionPointRegistry.addExtensionPoint(AssemblyFactory.class, assemblyFactory);
+        extensionPointRegistry.addExtensionPoint(PolicyFactory.class, policyFactory);
 
         workManager = new ThreadPoolWorkManager(10);
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
@@ -137,6 +140,15 @@ public abstract class RuntimeActivatorImpl<I extends RuntimeInfo> implements Run
         domain = assemblyFactory.createComposite();
         domain.setName(new QName(Constants.SCA_NS, "sca.domain"));
         domain.setURI("sca://local/");
+        workContext.setIdentifier(Scope.COMPOSITE, domain);        
+        WorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            scopeRegistry.getScopeContainer(Scope.COMPOSITE).startContext(domain, URI.create("/"));
+        } catch (GroupInitializationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     public <B> B locateService(Class<B> businessInterface, String componentName, String serviceName) {

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.spi.services.management;
 
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.host.management.ManagementService;
-import org.apache.tuscany.spi.component.Component;
 
 /**
  * Interface for the management service abstraction. The implementaion
@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.component.Component;
  *
  * @version $Revision$ $Date$
  */
-public interface TuscanyManagementService extends ManagementService<Component> {
+public interface TuscanyManagementService extends ManagementService<RuntimeComponent> {
 
     /**
      * Registers a component for management.
@@ -36,5 +36,5 @@ public interface TuscanyManagementService extends ManagementService<Component> {
      * @param name      Name of the component.
      * @param component Component to be registered.
      */
-    void registerComponent(String name, Component component);
+    void registerComponent(String name, RuntimeComponent component);
 }

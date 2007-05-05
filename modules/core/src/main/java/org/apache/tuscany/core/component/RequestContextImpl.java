@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.component;
 
 import javax.security.auth.Subject;
 
