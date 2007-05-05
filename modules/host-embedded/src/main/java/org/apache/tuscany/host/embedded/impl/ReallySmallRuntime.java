@@ -148,6 +148,7 @@ public class ReallySmallRuntime {
     }
 
     //FIXME Remove this
+    @SuppressWarnings("unchecked")
     public void startDomainWorkContext(Composite domain) {
         workContext.setIdentifier(Scope.COMPOSITE, domain);        
         WorkContextTunnel.setThreadWorkContext(workContext);

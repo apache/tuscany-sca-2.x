@@ -40,11 +40,11 @@ import org.osoa.sca.ServiceRuntimeException;
 public abstract class SCADomain {
     
     /**
-     * Returns a new instance of an SCA domain. The given deployable composites will
-     * be included in the SCA domain and the contributions that contirbute them will
-     * be made available in the domain as well.
+     * Returns a new instance of a local SCA domain. The specified deployable composites will
+     * be included in the SCA domain.
      * 
-     * @param uri the URI of the SCA domain
+     * @param domainURI the URI of the SCA domain
+     * @param contributionLocation the location of an SCA contribution 
      * @param composites the deployable composites to include in the SCA domain.
      * @return
      */

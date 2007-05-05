@@ -40,15 +40,17 @@ import org.apache.tuscany.core.runtime.CompositeActivator;
 import org.apache.tuscany.core.runtime.DefaultCompositeActivator;
 import org.apache.tuscany.host.embedded.SCADomain;
 import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
-import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.component.GroupInitializationException;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
+/**
+ * A default SCA domain facade implementation.
+ *
+ * @version $Rev$ $Date$
+ */
 public class DefaultSCADomain extends SCADomain {
     
     private String domainURI;
@@ -57,9 +59,15 @@ public class DefaultSCADomain extends SCADomain {
     private Composite domainComposite;
     private Contribution contribution;
     private Map<String, ComponentContext> components = new HashMap<String, ComponentContext>();
-    
     private ReallySmallRuntime runtime;
-    
+
+    /**
+     * Constructs a new domain facade.
+     * 
+     * @param domainURI
+     * @param contributionLocation
+     * @param composites
+     */
     public DefaultSCADomain(String domainURI, String contributionLocation, String... composites) {
         this.domainURI = domainURI;
         this.location = contributionLocation;
@@ -125,7 +133,7 @@ public class DefaultSCADomain extends SCADomain {
             components.put(component.getName(), (ComponentContext)component);
         }
     }
-        
+
     @Override
     public void close() {
         
@@ -154,6 +162,16 @@ public class DefaultSCADomain extends SCADomain {
         }
     }
 
+    /**
+     * Determine the location of a contribution, given a contribution path and a
+     * list of composites.
+     * 
+     * @param contributionPath
+     * @param composites
+     * @param classLoader
+     * @return
+     * @throws MalformedURLException
+     */
     private URL getContributionLocation(String contributionPath, String[] composites, ClassLoader classLoader) throws MalformedURLException {
         URI contributionURI = URI.create(contributionPath);
         if (contributionURI.isAbsolute() || composites.length == 0) {
@@ -192,7 +210,6 @@ public class DefaultSCADomain extends SCADomain {
         return contributionURL;
     }
 
-
     @Override
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         // TODO Auto-generated method stub
@@ -201,25 +218,37 @@ public class DefaultSCADomain extends SCADomain {
 
     @Override
     public <B> B getService(Class<B> businessInterface, String serviceName) {
-        return getServiceReference(businessInterface, serviceName).getService();
+        ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName);
+        if (serviceReference == null) {
+            throw new ServiceRuntimeException("Service not found: " + serviceName);
+        }
+        return serviceReference.getService();
     }
 
     @Override
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
+        String componentName;
         int i = serviceName.indexOf('/'); 
         if (i != -1) {
-            String componentName = serviceName.substring(0, i);
+            componentName = serviceName.substring(0, i);
             serviceName = serviceName.substring(i+1);
             
-            ComponentContext componentContext = components.get(componentName);
-            ServiceReference<B> serviceReference = componentContext.createSelfReference(businessInterface, serviceName);
-            return serviceReference;
-            
         } else {
-            ComponentContext componentContext = components.get(serviceName);
-            ServiceReference<B> serviceReference = componentContext.createSelfReference(businessInterface);
-            return serviceReference;
+            componentName = serviceName;
+            serviceName = null;
         }
+        ComponentContext componentContext = components.get(componentName);
+        if (componentContext == null) {
+            throw new ServiceRuntimeException("Component not found: " + componentName);
+        }
+        ServiceReference<B> serviceReference;
+        if (serviceName != null) {
+            serviceReference = componentContext.createSelfReference(businessInterface, serviceName);
+        } else {
+            serviceReference = componentContext.createSelfReference(businessInterface);
+        }
+        return serviceReference;
+        
     }
 
     @Override
