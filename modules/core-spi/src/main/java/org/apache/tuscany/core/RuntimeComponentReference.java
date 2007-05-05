@@ -21,6 +21,7 @@ package org.apache.tuscany.core;
 
 import java.util.List;
 
+import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ComponentReference;
 
 /**
@@ -28,11 +29,23 @@ import org.apache.tuscany.assembly.ComponentReference;
  */
 public interface RuntimeComponentReference extends ComponentReference {
     /**
+     * Add a runtime wire to the reference
+     * 
      * @param wire
      */
     void addRuntimeWire(RuntimeWire wire);
+
     /**
+     * Get a list of runtime wires to the reference
+     * 
      * @return
      */
-    List<RuntimeWire> getRuntimeWires();    
+    List<RuntimeWire> getRuntimeWires();
+    
+    /**
+     * Get the runtime wire for the given binding
+     * @param binding
+     * @return
+     */
+    RuntimeWire getRuntimeWire(Binding binding);
 }
