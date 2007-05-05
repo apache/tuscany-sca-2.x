@@ -18,22 +18,16 @@
  */
 package org.apache.tuscany.sca.test.opoverload.impl;
 
-import java.io.File;
-import java.net.URL;
-
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
 
 public class OverloadATestCase extends TestCase {
+
+    private SCADomain domain;
     private OverloadASourceTarget overloadA;
 
-    private CompositeContext context;
-
-    
     public void testOperationAall() {
       String[] result= overloadA.operationAall();
        assertEquals(5, result.length);
@@ -67,16 +61,12 @@ public class OverloadATestCase extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
-        SCARuntime.start("OperationOverload.composite");
-        context = CurrentCompositeContext.getContext();
-        assertNotNull(context);
-        overloadA = context.locateService(OverloadASourceTarget.class, "OverloadASourceComponent");
-
-        assertNotNull(context);
+        domain = SCADomain.newInstance("OperationOverload.composite");
+        overloadA = domain.getService(OverloadASourceTarget.class, "OverloadASourceComponent");
     }
     
     @Override
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
 }

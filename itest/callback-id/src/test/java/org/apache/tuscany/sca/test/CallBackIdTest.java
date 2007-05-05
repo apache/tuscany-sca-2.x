@@ -20,24 +20,24 @@ package org.apache.tuscany.sca.test;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
-public class CallBackIdTest extends TestCase  {
+public class CallBackIdTest extends TestCase {
 
+    private SCADomain domain;
     private CallBackIdClient aCallBackClient;
-	
+
     public void testCallBackBasic() {
-    	aCallBackClient.run(); 
+        aCallBackClient.run();
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("CallBackIdClient.composite");
-    	
-    	aCallBackClient = CurrentCompositeContext.getContext().locateService(CallBackIdClient.class, "CallBackIdClient");
+        domain = SCADomain.newInstance("CallBackIdClient.composite");
+
+        aCallBackClient = domain.getService(CallBackIdClient.class, "CallBackIdClient");
     }
-    
+
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+        domain.close();
     }
 }

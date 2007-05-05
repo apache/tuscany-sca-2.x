@@ -23,30 +23,25 @@ import static junit.framework.Assert.assertEquals;
 
 import java.util.Iterator;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.ServiceReference;
 
 public class OuterPropertyTestCase {
+
+    private static SCADomain domain;
     private static ABComponent outerABService;
     
     @BeforeClass
     public static void init() throws Exception {
-        SCARuntime.start("OuterPropertyTest.composite");
-        //outerABService = CurrentCompositeContext.getContext().locateService(ABComponent.class, "OuterComponent/ABComponent");
-        
-        ComponentContext context = SCARuntime.getComponentContext("OuterComponent/ABComponent");
-        ServiceReference<ABComponent> service = context.createSelfReference(ABComponent.class);
-        outerABService = service.getService();
+        domain = SCADomain.newInstance("OuterPropertyTest.composite");
+        outerABService = domain.getService(ABComponent.class, "OuterComponent/ABComponent");
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
     
     @Test

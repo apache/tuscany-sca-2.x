@@ -21,26 +21,28 @@ package org.apache.tuscany.sca.test;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
-public class ConversationsTest extends TestCase  {
+public class ConversationsTest extends TestCase {
 
+    private SCADomain domain;
     private ConversationsClient aConversationsClient;
-	
+
     public void testConversations() {
-    	aConversationsClient.run(); 
+        aConversationsClient.run();
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("ConversationsTest.composite");
-    	
-       aConversationsClient = CurrentCompositeContext.getContext().locateService(ConversationsClient.class, "ConversationsClient/org.apache.tuscany.sca.test.ConversationsClient");
- 
+        domain = SCADomain.newInstance("ConversationsTest.composite");
+
+        aConversationsClient =
+            domain.getService(ConversationsClient.class,
+                              "ConversationsClient/org.apache.tuscany.sca.test.ConversationsClient");
+
     }
-    
+
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+        domain.close();
     }
-   
+
 }

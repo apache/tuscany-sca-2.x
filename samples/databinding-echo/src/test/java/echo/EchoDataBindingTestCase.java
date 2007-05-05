@@ -20,31 +20,29 @@ package echo;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * @version $Rev$ $Date$
  */
 public class EchoDataBindingTestCase extends TestCase {
 
+    private SCADomain domain;
+
     @Override
     protected void setUp() throws Exception {
-        SCARuntimeActivator.start("EchoDataBinding.composite");
+        domain = SCADomain.newInstance("EchoDataBinding.composite");
     }
 
     @Override
     protected void tearDown() throws Exception {
-        SCARuntimeActivator.stop();
+        domain.close();
     }
 
     protected Interface1 componentA;
 
     public void testTransform() {
-        ComponentContext context = SCARuntimeActivator.getComponentContext("ComponentA");
-        ServiceReference<Interface1> ref = context.createSelfReference(Interface1.class);
-        componentA = ref.getService();
+        componentA = domain.getService(Interface1.class, "ComponentA");
         componentA.call("<message><foo>123</foo></message>");
         componentA.call1("<message><foo>123</foo></message>");
     }

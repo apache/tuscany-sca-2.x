@@ -24,16 +24,13 @@ import static junit.framework.Assert.assertNotNull;
 
 import java.util.Iterator;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.CurrentCompositeContext;
 
 public class PropertyTestCase {
+    private static SCADomain domain;
     private static ABComponent abService;
     private static CDComponent cdService;
     private static ABCDComponent abcdService;
@@ -174,16 +171,16 @@ public class PropertyTestCase {
 
     @BeforeClass
     public static void init() throws Exception {
-        SCARuntime.start("PropertyTest.composite");
-        abService = CurrentCompositeContext.getContext().locateService(ABComponent.class, "ABComponent");
-        cdService = CurrentCompositeContext.getContext().locateService(CDComponent.class, "CDComponent");
-        abcdService = CurrentCompositeContext.getContext().locateService(ABCDComponent.class, "ABCDComponent");
+        domain = SCADomain.newInstance("PropertyTest.composite");
+        abService = domain.getService(ABComponent.class, "ABComponent");
+        cdService = domain.getService(CDComponent.class, "CDComponent");
+        abcdService = domain.getService(ABCDComponent.class, "ABCDComponent");
         propertyService =
-            CurrentCompositeContext.getContext().locateService(PropertyComponent.class, "PropertyComponent");
+            domain.getService(PropertyComponent.class, "PropertyComponent");
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
 }

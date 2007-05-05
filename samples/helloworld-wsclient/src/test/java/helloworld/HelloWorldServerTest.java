@@ -21,17 +21,19 @@ package helloworld;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class HelloWorldServerTest {
 	
-	@Before
+    private SCADomain domain;
+
+        @Before
 	public void startServer() throws Exception {
             try {
-		SCARuntime.start("helloworldws.composite");
+		domain = SCADomain.newInstance("helloworldws.composite");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -44,7 +46,7 @@ public class HelloWorldServerTest {
 	
 	@After
 	public void stopServer() throws Exception {
-		SCARuntime.stop();
+		domain.close();
 	}
 
 }

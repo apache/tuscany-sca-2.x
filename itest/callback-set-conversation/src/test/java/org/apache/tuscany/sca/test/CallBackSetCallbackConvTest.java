@@ -20,11 +20,11 @@ package org.apache.tuscany.sca.test;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class CallBackSetCallbackConvTest extends TestCase {
 
+    private SCADomain domain;
     private CallBackSetCallbackConvClient aCallBackClient;
 
     public void testCallBackSetCallback() {
@@ -32,15 +32,15 @@ public class CallBackSetCallbackConvTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("CallBackSetCallbackConvTest.composite");
+    	domain = SCADomain.newInstance("CallBackSetCallbackConvTest.composite");
     	
         aCallBackClient =
-            CurrentCompositeContext.getContext().locateService(CallBackSetCallbackConvClient.class,
+            domain.getService(CallBackSetCallbackConvClient.class,
                                                                "CallBackSetCallbackConvClient");
     }
     
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 
 }

@@ -21,25 +21,22 @@ package crud;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntimeActivator;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CRUDTestCase extends TestCase {
+
+    private SCADomain domain;
     private CRUD crudService;
     
     /**
      * @throws java.lang.Exception
      */
     protected void setUp() throws Exception {
-        SCARuntimeActivator.start("crud.composite");
-        ComponentContext context = SCARuntimeActivator.getComponentContext("CRUDServiceComponent");
-        assertNotNull(context);
-        ServiceReference<CRUD> self = context.createSelfReference(CRUD.class);
-        crudService = self.getService();
+        domain = SCADomain.newInstance("crud.composite");
+        crudService = domain.getService(CRUD.class, "CRUDServiceComponent");
 
     }
 
@@ -47,7 +44,7 @@ public class CRUDTestCase extends TestCase {
      * @throws java.lang.Exception
      */
     protected void tearDown() throws Exception {
-        SCARuntimeActivator.stop();
+        domain.close();
     }
 
     

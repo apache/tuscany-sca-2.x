@@ -26,12 +26,11 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class HelloWorldOMTestCase extends TestCase {
 
+    private SCADomain domain;
     private HelloWorldOM helloWorld;
 
     public void testCalculator() throws Exception {
@@ -46,14 +45,12 @@ public class HelloWorldOMTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        SCARuntime.start("org/apache/tuscany/binding/axis2/itests/helloworld-om.composite");
-        ComponentContext context = SCARuntime.getComponentContext("HelloWorldComponent");
-        ServiceReference<HelloWorldOM> service = context.createSelfReference(HelloWorldOM.class);
-        helloWorld = service.getService();
+        domain = SCADomain.newInstance("org/apache/tuscany/binding/axis2/itests/helloworld-om.composite");
+        helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
     
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
 
 }
