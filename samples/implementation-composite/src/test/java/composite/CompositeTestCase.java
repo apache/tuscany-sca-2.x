@@ -20,24 +20,20 @@ package composite;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class CompositeTestCase extends TestCase {
 
+    private SCADomain domain;
     private Source source;
 
     protected void setUp() throws Exception {
-        SCARuntime.start("OuterComposite.composite");
-        ComponentContext context = SCARuntime.getComponentContext("SourceComponent/InnerSourceComponent");
-        ServiceReference<Source> service = context.createSelfReference(Source.class);
-        source = service.getService();   
-      	
+        domain = SCADomain.newInstance("http://test", ".", "OuterComposite.composite");
+        source = domain.getService(Source.class, "SourceComponent");
     }
     
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 
     public void test() throws Exception {
