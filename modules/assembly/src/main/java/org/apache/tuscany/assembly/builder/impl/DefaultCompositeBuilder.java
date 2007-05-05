@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.util;
+package org.apache.tuscany.assembly.builder.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentProperty;
@@ -40,18 +39,24 @@ import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
+import org.apache.tuscany.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.assembly.builder.Problem;
+import org.apache.tuscany.assembly.builder.Problem.Severity;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 
 /**
- * A utility class that handles the configuration of the components inside a
+ * A builder that handles the configuration of the components inside a
  * composite and the wiring of component references to component services.
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeUtil {
+public class DefaultCompositeBuilder implements CompositeBuilder {
 
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
+    private CompositeBuilderMonitor monitor;
 
     /**
      * Constructs a new composite util.
@@ -59,56 +64,42 @@ public class CompositeUtil {
      * @param assemblyFactory
      * @param interfaceContractMapper
      */
-    public CompositeUtil(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
+    public DefaultCompositeBuilder(AssemblyFactory assemblyFactory,
+                                   InterfaceContractMapper interfaceContractMapper,
+                                   CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
+        
+        if (monitor != null) {
+            this.monitor = monitor;
+        } else {
+            // Create a default monitor that does nothing.
+            this.monitor = new CompositeBuilderMonitor() {
+                public void problem(Problem problem) {
+                }
+            };
+        }
     }
 
-    /**
-     * Configure and wire a composite.
-     * 
-     * @param composite
-     * @param problems
-     */
-    public void configureAndWire(Composite composite, List<Base> problems) {
+    public void build(Composite composite) throws CompositeBuilderException {
 
         // Collect and fuse includes
-        fuseIncludes(composite, problems);
+        fuseIncludes(composite);
 
         // Expand nested composites
-        expandComposites(composite, problems);
+        expandComposites(composite);
 
         // Configure all components
-        configureComponents(composite, problems);
+        configureComponents(composite);
 
         // Wire the composite
-        wireComposite(composite, problems);
-
+        wireComposite(composite);
+        
         // Activate composite services
-        activateCompositeServices(composite, problems);
+        activateCompositeServices(composite);
 
         // Wire composite references
-        wireCompositeReferences(composite, problems);
-    }
-
-    /**
-     * Configure and wire a composite.
-     * 
-     * @param composite
-     * @param problems
-     * @deprecated
-     */
-    public void oldConfigureAndWire(Composite composite, List<Base> problems) {
-
-        // Collect and fuse includes
-        fuseIncludes(composite, problems);
-
-        // Configure all components
-        configureComponents(composite, problems);
-
-        // Wire the composite
-        wireComposite(composite, problems);
-
+        wireCompositeReferences(composite);
     }
 
     /**
@@ -130,7 +121,7 @@ public class CompositeUtil {
      * @param composite
      * @param includes
      */
-    protected void fuseIncludes(Composite composite, List<Base> problems) {
+    protected void fuseIncludes(Composite composite) {
 
         // First collect all includes
         List<Composite> includes = new ArrayList<Composite>();
@@ -167,8 +158,7 @@ public class CompositeUtil {
      */
     private void reconcileServices(Component component,
                                    Map<String, Service> services,
-                                   Map<String, ComponentService> componentServices,
-                                   List<Base> problems) {
+                                   Map<String, ComponentService> componentServices) {
 
         // Connect each component service to the corresponding service
         for (ComponentService componentService : component.getServices()) {
@@ -176,7 +166,7 @@ public class CompositeUtil {
             if (service != null) {
                 componentService.setService(service);
             } else {
-                problems.add(componentService);
+                warning("Service not found for component service: " + component.getName() + "/" + componentService.getName(), component);
             }
         }
 
@@ -202,7 +192,7 @@ public class CompositeUtil {
                     if (!componentService.getInterfaceContract().equals(service.getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(), service
                             .getInterfaceContract())) {
-                            problems.add(componentService);
+                            warning("Component service interface incompatible with service interface: " + component.getName() + "/" + componentService.getName(), component);
                         }
                     }
                 } else {
@@ -229,8 +219,7 @@ public class CompositeUtil {
      */
     private void reconcileReferences(Component component,
                                      Map<String, Reference> references,
-                                     Map<String, ComponentReference> componentReferences,
-                                     List<Base> problems) {
+                                     Map<String, ComponentReference> componentReferences) {
 
         // Connect each component reference to the corresponding reference
         for (ComponentReference componentReference : component.getReferences()) {
@@ -239,7 +228,7 @@ public class CompositeUtil {
                 componentReference.setReference(reference);
             } else {
                 if (!componentReference.getName().startsWith("$self$.")) {
-                    problems.add(componentReference);
+                    warning("Reference not found for component reference: " + component.getName() + "/" + componentReference.getName(), component);
                 }
             }
         }
@@ -265,7 +254,7 @@ public class CompositeUtil {
                 if (componentReference.getMultiplicity() != null) {
                     if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(), componentReference
                         .getMultiplicity())) {
-                        problems.add(componentReference);
+                        warning("Component reference multiplicity incompatible with reference multiplicity: " + component.getName() + "/" + componentReference.getName(), component);
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -276,7 +265,7 @@ public class CompositeUtil {
                     if (!componentReference.getInterfaceContract().equals(reference.getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(reference.getInterfaceContract(), componentReference
                             .getInterfaceContract())) {
-                            problems.add(componentReference);
+                            warning("Component reference interface incompatible with reference interface: " + component.getName() + "/" + componentReference.getName(), component);
                         }
                     }
                 } else {
@@ -312,8 +301,7 @@ public class CompositeUtil {
      */
     private void reconcileProperties(Component component,
                                      Map<String, Property> properties,
-                                     Map<String, ComponentProperty> componentProperties,
-                                     List<Base> problems) {
+                                     Map<String, ComponentProperty> componentProperties) {
 
         // Connect component properties to their properties
         for (ComponentProperty componentProperty : component.getProperties()) {
@@ -321,7 +309,7 @@ public class CompositeUtil {
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                problems.add(componentProperty);
+                warning("Property not found for component property: " + component.getName() + "/" + componentProperty.getName(), component);
             }
         }
 
@@ -348,7 +336,7 @@ public class CompositeUtil {
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
-                    problems.add(componentProperty);
+                    warning("Component property mustSupply attribute incompatible with property: " + component.getName() + "/" + componentProperty.getName(), component);
                 }
 
                 // Default to the mustSupply attribute specified on the property
@@ -362,13 +350,13 @@ public class CompositeUtil {
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    problems.add(componentProperty);
+                    warning("No value configured on a mustSupply property: " + component.getName() + "/" + componentProperty.getName(), component);
                 }
 
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
-                    problems.add(componentProperty);
+                    warning("Component property many attribute incompatible with property: " + component.getName() + "/" + componentProperty.getName(), component);
                 }
 
                 // Default to the many attribute defined on the property
@@ -384,8 +372,7 @@ public class CompositeUtil {
 
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                    //FIXME tolerate this for now
-                    //problems.add(componentProperty);
+                    warning("No type specified on component property: " + component.getName() + "/" + componentProperty.getName(), component);
                 }
             }
         }
@@ -397,8 +384,8 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    protected void configureComponents(Composite composite, List<Base> problems) {
-        configureComponents(composite, null, problems);
+    protected void configureComponents(Composite composite) {
+        configureComponents(composite, null);
     }
 
     /**
@@ -408,7 +395,7 @@ public class CompositeUtil {
      * @param uri
      * @param problems
      */
-    private void configureComponents(Composite composite, String uri, List<Base> problems) {
+    private void configureComponents(Composite composite, String uri) {
 
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -426,7 +413,7 @@ public class CompositeUtil {
             if (implementation instanceof Composite) {
 
                 // Process nested composite
-                configureComponents((Composite)implementation, componentURI, problems);
+                configureComponents((Composite)implementation, componentURI);
             }
         }
 
@@ -452,7 +439,7 @@ public class CompositeUtil {
 
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
-                problems.add(component);
+                warning("Duplicate component name: " + composite.getName() + " : " + component.getName(), composite);
             } else {
                 components.put(component.getName(), component);
             }
@@ -472,32 +459,34 @@ public class CompositeUtil {
             if (implementation == null) {
 
                 // A component must have an implementation
-                problems.add(component);
+                warning("No implementation for component: " + component.getName(), component);
+
             } else if (implementation.isUnresolved()) {
 
                 // The implementation must be fully resolved
-                problems.add(implementation);
+                warning("Component implementation not found: " + component.getName() + " : " + implementation.getURI(), component);
+
             } else {
 
                 // Index properties, services and references, also check for
                 // duplicates
                 for (Property property : implementation.getProperties()) {
                     if (properties.containsKey(property.getName())) {
-                        problems.add(property);
+                        warning("Duplicate property name: " + component.getName() + "/" + property.getName(), component);
                     } else {
                         properties.put(property.getName(), property);
                     }
                 }
                 for (Service service : implementation.getServices()) {
                     if (services.containsKey(service.getName())) {
-                        problems.add(service);
+                        warning("Duplicate service name: " + component.getName() + "/" + service.getName(), component);
                     } else {
                         services.put(service.getName(), service);
                     }
                 }
                 for (Reference reference : implementation.getReferences()) {
                     if (references.containsKey(reference.getName())) {
-                        problems.add(reference);
+                        warning("Duplicate reference name: " + component.getName() + "/" + reference.getName(), component);
                     } else {
                         references.put(reference.getName(), reference);
                     }
@@ -511,7 +500,7 @@ public class CompositeUtil {
             Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
             for (ComponentService componentService : component.getServices()) {
                 if (componentServices.containsKey(componentService.getName())) {
-                    problems.add(componentService);
+                    warning("Duplicate component service name: " + component.getName() + "/" + componentService.getName(), component);
                 } else {
                     componentServices.put(componentService.getName(), componentService);
                 }
@@ -525,7 +514,7 @@ public class CompositeUtil {
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 if (componentReferences.containsKey(componentReference.getName())) {
-                    problems.add(componentReference);
+                    warning("Duplicate component reference name: " + component.getName() + "/" + componentReference.getName(), component);
                 } else {
                     componentReferences.put(componentReference.getName(), componentReference);
                 }
@@ -539,7 +528,7 @@ public class CompositeUtil {
             }
             for (ComponentProperty componentProperty : component.getProperties()) {
                 if (componentProperties.containsKey(componentProperty.getName())) {
-                    problems.add(componentProperty);
+                    warning("Duplicate component property name: " + component.getName() + "/" + componentProperty.getName(), component);
                 } else {
                     componentProperties.put(componentProperty.getName(), componentProperty);
                 }
@@ -550,9 +539,9 @@ public class CompositeUtil {
             // services/references and create component
             // services/references/properties
             // for the services/references declared by the implementation
-            reconcileServices(component, services, componentServices, problems);
-            reconcileReferences(component, references, componentReferences, problems);
-            reconcileProperties(component, properties, componentProperties, problems);
+            reconcileServices(component, services, componentServices);
+            reconcileReferences(component, references, componentReferences);
+            reconcileProperties(component, properties, componentProperties);
 
             // Create self references to the component's services
             if (!(implementation instanceof Composite)) {
@@ -571,8 +560,7 @@ public class CompositeUtil {
      */
     private void createSCABindings(Composite composite,
                                    Map<String, ComponentService> componentServices,
-                                   Map<String, ComponentReference> componentReferences,
-                                   List<Base> problems) {
+                                   Map<String, ComponentReference> componentReferences) {
 
         for (Component component : composite.getComponents()) {
             int i = 0;
@@ -620,8 +608,7 @@ public class CompositeUtil {
      * @param problems
      */
     private void connectCompositeServices(Composite composite,
-                                          Map<String, ComponentService> componentServices,
-                                          List<Base> problems) {
+                                          Map<String, ComponentService> componentServices) {
 
         for (Service service : composite.getServices()) {
 
@@ -636,14 +623,13 @@ public class CompositeUtil {
                     componentService.promotedAs().add(compositeService);
 
                     // Use the interface contract from the component service if
-                    // none
-                    // is specified on the composite service
+                    // none is specified on the composite service
                     if (compositeService.getInterfaceContract() == null) {
                         compositeService.setInterfaceContract(componentService.getInterfaceContract());
                     }
 
                 } else {
-                    problems.add(compositeService);
+                    warning("Promoted component service not found: " + componentService.getName(), composite);
                 }
             }
         }
@@ -657,8 +643,7 @@ public class CompositeUtil {
      * @param problems
      */
     private void connectCompositeReferences(Composite composite,
-                                            Map<String, ComponentReference> componentReferences,
-                                            List<Base> problems) {
+                                            Map<String, ComponentReference> componentReferences) {
 
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
@@ -681,7 +666,7 @@ public class CompositeUtil {
                         }
 
                     } else {
-                        problems.add(compositeReference);
+                        warning("Promoted component reference not found: " + componentReference.getName(), composite);
                     }
                 }
             }
@@ -698,8 +683,7 @@ public class CompositeUtil {
      */
     private void connectComponentReferences(Composite composite,
                                             Map<String, ComponentService> componentServices,
-                                            Map<String, ComponentReference> componentReferences,
-                                            List<Base> problems) {
+                                            Map<String, ComponentReference> componentReferences) {
 
         for (ComponentReference componentReference : componentReferences.values()) {
             List<ComponentService> targets = componentReference.getTargets();
@@ -742,10 +726,14 @@ public class CompositeUtil {
 
                                 targets.set(i, resolved);
                             } else {
-                                problems.add(target);
+                                warning("Incompatible interfaces on component reference and target: " + componentReference.getName() + " : " + target.getName(), composite);
                             }
                         } else {
-                            problems.add(target);
+                            warning("Component reference target not found: " + target.getName(), composite);
+                            
+                            // Remove the unresolved target
+                            targets.remove(i);
+                            i--;
                         }
                     }
                 }
@@ -767,10 +755,10 @@ public class CompositeUtil {
 
                                 targets.add(resolved);
                             } else {
-                                problems.add(target);
+                                warning("Incompatible interfaces on component reference and target: " + componentReference.getName() + " : " + target.getName(), composite);
                             }
                         } else {
-                            problems.add(target);
+                            warning("Reference target not found: " + target.getName(), composite);
                         }
                     }
                 }
@@ -788,8 +776,7 @@ public class CompositeUtil {
      */
     private void connectWires(Composite composite,
                               Map<String, ComponentService> componentServices,
-                              Map<String, ComponentReference> componentReferences,
-                              List<Base> problems) {
+                              Map<String, ComponentReference> componentReferences) {
 
         // For each wire, resolve the source reference, the target service, and
         // add it to the list of targets of the reference
@@ -807,7 +794,7 @@ public class CompositeUtil {
                 if (resolvedReference != null) {
                     wire.setSource(resolvedReference);
                 } else {
-                    problems.add(source);
+                    warning("Wire source not found: " + source.getName(), composite);
                 }
             } else {
                 resolvedReference = wire.getSource();
@@ -820,7 +807,7 @@ public class CompositeUtil {
                 if (resolvedService != null) {
                     wire.setTarget(target);
                 } else {
-                    problems.add(source);
+                    warning("Wire target not found: " + source.getName(), composite);
                 }
             } else {
                 resolvedService = wire.getTarget();
@@ -829,7 +816,17 @@ public class CompositeUtil {
             // Add the target service to the list of targets of the
             // reference
             if (resolvedReference != null && resolvedService != null) {
-                resolvedReference.getTargets().add(resolvedService);
+                // Check that the target component service provides
+                // a superset of
+                // the component reference interface
+                if (resolvedReference.getInterfaceContract() == null || interfaceContractMapper
+                        .isCompatible(resolvedReference.getInterfaceContract(), resolvedService
+                            .getInterfaceContract())) {
+
+                    resolvedReference.getTargets().add(resolvedService);
+                } else {
+                    warning("Incompatible interfaces on wire source and target: " + source.getName() + " : " + target.getName(), composite);
+                }
             }
         }
 
@@ -909,7 +906,7 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    protected void activateCompositeServices(Composite composite, List<Base> problems) {
+    protected void activateCompositeServices(Composite composite) {
 
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -917,16 +914,26 @@ public class CompositeUtil {
             if (implementation instanceof Composite) {
 
                 // First process nested composites
-                activateCompositeServices((Composite)implementation, problems);
+                activateCompositeServices((Composite)implementation);
 
                 // Process the component services declared on components
                 // in this composite
                 for (ComponentService componentService : component.getServices()) {
                     CompositeService compositeService = (CompositeService)componentService.getService();
                     if (compositeService != null) {
+
+                        // Get the inner most promoted service
                         ComponentService promotedService = getPromotedComponentService(compositeService);
                         if (promotedService != null) {
 
+                            // Default to use the interface from the promoted service
+                            if (compositeService.getInterfaceContract() == null) {
+                                compositeService.setInterfaceContract(promotedService.getInterfaceContract());
+                            }
+                            if (componentService.getInterfaceContract() == null) {
+                                componentService.setInterfaceContract(promotedService.getInterfaceContract());
+                            }
+                            
                             // Create a new component service to represent this composite
                             // service on the promoted component
                             SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
@@ -946,7 +953,7 @@ public class CompositeUtil {
                                 compositeService.setPromotedService(newComponentService);
                                 
                             } else {
-                                problems.add(promotedService);
+                                warning("Promoted component service not found: " + promotedService.getName(), composite);
                             }
                         }
                     }
@@ -957,9 +964,16 @@ public class CompositeUtil {
         // Process composite services declared in this composite
         for (Service service : composite.getServices()) {
             CompositeService compositeService = (CompositeService)service;
+
+            // Get the inner most promoted service
             ComponentService promotedService = getPromotedComponentService(compositeService);
             if (promotedService != null) {
 
+                // Default to use the interface from the promoted service
+                if (compositeService.getInterfaceContract() == null && promotedService.getInterfaceContract() != null) {
+                    compositeService.setInterfaceContract(promotedService.getInterfaceContract());
+                }
+                
                 // Create a new component service to represent this composite
                 // service on the promoted component
                 SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
@@ -978,7 +992,7 @@ public class CompositeUtil {
                     // created component service directly
                     compositeService.setPromotedService(newComponentService);
                 } else {
-                    problems.add(promotedService);
+                    warning("Promoted component service not found: " + promotedService.getName(), composite);
                 }
             }
         }
@@ -990,13 +1004,13 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    protected void wireCompositeReferences(Composite composite, List<Base> problems) {
+    protected void wireCompositeReferences(Composite composite) {
 
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                wireCompositeReferences((Composite)implementation, problems);
+                wireCompositeReferences((Composite)implementation);
             }
         }
 
@@ -1067,13 +1081,13 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    protected void wireComposite(Composite composite, List<Base> problems) {
+    protected void wireComposite(Composite composite) {
 
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                wireComposite((Composite)implementation, problems);
+                wireComposite((Composite)implementation);
             }
         }
 
@@ -1082,18 +1096,18 @@ public class CompositeUtil {
         Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
 
         // Create SCA bindings on all component services and references
-        createSCABindings(composite, componentServices, componentReferences, problems);
+        createSCABindings(composite, componentServices, componentReferences);
 
         // Connect composite services and references to the component
         // services and references that they promote
-        connectCompositeServices(composite, componentServices, problems);
-        connectCompositeReferences(composite, componentReferences, problems);
+        connectCompositeServices(composite, componentServices);
+        connectCompositeReferences(composite, componentReferences);
 
         // Connect component references to their targets
-        connectComponentReferences(composite, componentServices, componentReferences, problems);
+        connectComponentReferences(composite, componentServices, componentReferences);
 
         // Connect component references as described in wires
-        connectWires(composite, componentServices, componentReferences, problems);
+        connectWires(composite, componentServices, componentReferences);
 
         resolveSourcedProperties(composite);
 
@@ -1102,7 +1116,11 @@ public class CompositeUtil {
         for (ComponentReference componentReference : componentReferences.values()) {
             if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
                 .getTargets(), componentReference.promotedAs())) {
-                problems.add(componentReference);
+                if (componentReference.getTargets().isEmpty()) {
+                    warning("No targets for reference: " + componentReference.getName(), composite);
+                } else {
+                    warning("Too many targets on reference: " + componentReference.getName(), composite);
+                }
             }
         }
     }
@@ -1137,7 +1155,7 @@ public class CompositeUtil {
      * @param composite
      * @param problems
      */
-    protected void expandComposites(Composite composite, List<Base> problems) {
+    protected void expandComposites(Composite composite) {
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
@@ -1150,7 +1168,7 @@ public class CompositeUtil {
                     throw new RuntimeException(e);
                 }
                 component.setImplementation(clone);
-                expandComposites(clone, problems);
+                expandComposites(clone);
             }
         }
     }
@@ -1175,6 +1193,29 @@ public class CompositeUtil {
             componentReference.setMultiplicity(Multiplicity.ONE_ONE);
             component.getReferences().add(componentReference);
         }
+    }
+    
+    /**
+     * Report an error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    @SuppressWarnings("unused")
+    private void error(String message, Object model) {
+        monitor.problem(new ProblemImpl(Severity.ERROR, message, model));
+    }
+
+    /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void warning(String message, Object model) {
+        monitor.problem(new ProblemImpl(Severity.WARNING, message, model));
     }
 
 }

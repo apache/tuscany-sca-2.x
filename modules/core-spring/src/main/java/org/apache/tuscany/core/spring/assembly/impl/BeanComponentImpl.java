@@ -27,7 +27,7 @@ import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.assembly.util.Visitor;
+import org.apache.tuscany.assembly.Visitor;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;

@@ -16,22 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.util;
+
+package org.apache.tuscany.assembly.builder;
 
 /**
- * This interface is implemented by object that can accept a visitor.
+ * Reports a composite builder exception.
+ *
+ * @version $Rev$ $Date$
  */
-public interface Visitable {
+public class CompositeBuilderException extends Exception {
+    private static final long serialVersionUID = -8916323176803443856L;
 
-    /**
-     * Accepts the given visitor. The visitor's visit method is called with this
-     * model object. If the visitor returns true, this method visits this
-     * object's children.
-     * 
-     * @param visitor
-     * @return true if the model object's chidren should be visited, false if
-     *         they should be skipped
-     */
-    boolean accept(Visitor visitor);
+    public CompositeBuilderException() {
+    }
+
+    public CompositeBuilderException(String message) {
+        super(message);
+    }
+
+    public CompositeBuilderException(Throwable cause) {
+        super(cause);
+    }
+
+    public CompositeBuilderException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

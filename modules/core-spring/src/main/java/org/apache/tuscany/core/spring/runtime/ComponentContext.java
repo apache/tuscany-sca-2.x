@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.assembly.builder.Problem;
+import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.assembly.util.PrintUtil;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
@@ -40,8 +41,8 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
-import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.BaseJavaClassVisitor;
 import org.apache.tuscany.implementation.java.introspect.impl.ConstructorProcessor;
@@ -150,40 +151,32 @@ public class ComponentContext {
             }
             
             // Wire the top level component's composite
-            wire(composites.get(0), assemblyFactory, interfaceContractMapper);
+            buildComposite(composites.get(0), assemblyFactory, interfaceContractMapper);
             
         } catch (ContributionException e) {
+            throw new RuntimeException(e);
+        } catch (CompositeBuilderException e) {
             throw new RuntimeException(e);
         }
     }
     
-    private void wire(Composite composite, AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
-        CompositeUtil compositeUtil = new CompositeUtil(assemblyFactory, interfaceContractMapper);
+    private void buildComposite(Composite composite, AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
 
-        List<Base> problems = new ArrayList<Base>() {
-            private static final long serialVersionUID = 4819831446590718923L;
-            
-            @Override
-            public boolean add(Base o) {
-                //TODO Use a monitor to report configuration problems
-                
+        CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
+
+            public void problem(Problem problem) {
                 // Uncommenting the following two lines can be useful to detect
                 // and troubleshoot SCA assembly XML composite configuration
                 // problems.
-                
-                System.err.println("Composite configuration problem:");
-                new PrintUtil(System.err).print(o);
-                return super.add(o);
+
+                System.out.println("Composite assembly problem: " + problem.getMessage());
             }
         };
-        
 
         // Configure and wire the composite
-        compositeUtil.configureAndWire(composite, problems);
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(assemblyFactory, interfaceContractMapper, monitor);
+        compositeUtil.build(composite);
 
-//        if (!problems.isEmpty()) {
-//            throw new VariantRuntimeException(new RuntimeException("Problems in the composite..."));
-//        }
     }
 
     public <B> B getService(Class<B> businessInterface, String serviceName) {

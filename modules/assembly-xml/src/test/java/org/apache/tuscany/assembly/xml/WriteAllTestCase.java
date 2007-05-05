@@ -21,17 +21,15 @@ package org.apache.tuscany.assembly.xml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
+import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.util.CompositeUtil;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
@@ -50,14 +48,14 @@ public class WriteAllTestCase extends TestCase {
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
-    private CompositeUtil compositeUtil;
+    private DefaultCompositeBuilder compositeUtil;
 
 
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
         mapper = new DefaultInterfaceContractMapper();
-        compositeUtil = new CompositeUtil(factory, mapper);
+        compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
@@ -84,7 +82,7 @@ public class WriteAllTestCase extends TestCase {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessors.read(is, Composite.class);
         staxProcessors.resolve(composite, resolver);
-        compositeUtil.configureAndWire(composite, new ArrayList<Base>());
+        compositeUtil.build(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessors.write(composite, bos);
     }

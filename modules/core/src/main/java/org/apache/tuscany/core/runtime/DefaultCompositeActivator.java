@@ -19,11 +19,7 @@
 
 package org.apache.tuscany.core.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Base;
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentReference;
@@ -31,8 +27,10 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.assembly.util.CompositeUtil;
-import org.apache.tuscany.assembly.util.PrintUtil;
+import org.apache.tuscany.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.assembly.builder.Problem;
+import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.ReferenceBindingActivator;
@@ -536,29 +534,26 @@ public class DefaultCompositeActivator implements CompositeActivator {
         }
     }
 
-    private void wire(Composite composite,
+    private void buildComposite(Composite composite,
                       AssemblyFactory assemblyFactory,
-                      InterfaceContractMapper interfaceContractMapper) {
-        CompositeUtil compositeUtil = new CompositeUtil(assemblyFactory, interfaceContractMapper);
+                      InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
+        
+        CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
 
-        List<Base> problems = new ArrayList<Base>() {
-            private static final long serialVersionUID = 4819831446590718923L;
-
-            @Override
-            public boolean add(Base o) {
-                // TODO Use a monitor to report configuration problems
-
+            public void problem(Problem problem) {
                 // Uncommenting the following two lines can be useful to detect
                 // and troubleshoot SCA assembly XML composite configuration
                 // problems.
 
-                System.err.println("Composite configuration problem:");
-                new PrintUtil(System.err).print(o);
-                return super.add(o);
+                System.out.println("Composite assembly problem: " + problem.getMessage());
             }
         };
 
-        compositeUtil.configureAndWire(composite, problems);
+        DefaultCompositeBuilder builder =
+            new DefaultCompositeBuilder(assemblyFactory, interfaceContractMapper, monitor);
+
+
+        builder.build(composite);
 
         // if (!problems.isEmpty()) {
         // throw new VariantRuntimeException(new RuntimeException("Problems in
@@ -572,8 +567,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @param composite
      * @throws IncompatibleInterfaceContractException
      */
-    public void activate(Composite composite) throws IncompatibleInterfaceContractException {
-        wire(composite, assemblyFactory, interfaceContractMapper);
+    public void activate(Composite composite)
+            throws IncompatibleInterfaceContractException, CompositeBuilderException {
+        buildComposite(composite, assemblyFactory, interfaceContractMapper);
         configure(composite);
         createRuntimeWires(composite);
         start(composite);

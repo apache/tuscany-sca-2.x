@@ -16,22 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.assembly.util;
 
-import org.apache.tuscany.assembly.Base;
+package org.apache.tuscany.assembly.builder;
+
 
 /**
- * This interface is implemented by objects that visit assembly model trees.
+ * Reports a composite assembly problem. 
+ *
+ * @version $Rev$ $Date$
  */
-public interface Visitor {
+public interface Problem {
+    
+    public enum Severity {
+        INFO,
+        WARNING,
+        ERROR
+    }
+    
+    Severity getSeverity();
 
-    /**
-     * Visits the given assembly model object.
-     * 
-     * @param object
-     * @return true if the model object's chidren should be visited, false if
-     *         they should be skipped
-     */
-    boolean visit(Base object);
+    String getMessage();
+    
+    Object getModel();
 
+    Object getResource();
+    
+    Exception getCause();
 }
