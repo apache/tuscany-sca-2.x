@@ -18,9 +18,7 @@
  */
 package supplychain;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -29,18 +27,14 @@ import org.osoa.sca.ServiceReference;
 public class SupplyChainClient {
 
     public static final void main(String[] args) throws Exception {
-    	SCARuntime.start("supplychain.composite");
-        
-        // Locate the Customer component
-        ComponentContext context = SCARuntime.getComponentContext("CustomerComponent");
-        ServiceReference<Customer> service = context.createSelfReference(Customer.class);
-        Customer customer = service.getService();
+        SCADomain domain = SCADomain.newInstance("supplychain.composite");
+        Customer customer = domain.getService(Customer.class, "CustomerComponent");
 
         System.out.println("Main thread " + Thread.currentThread());
         customer.purchaseGoods();
         System.out.println("Main thread sleeping ...");
         Thread.sleep(1000);
 
-        SCARuntime.stop();
+        domain.close();
     }
 }
