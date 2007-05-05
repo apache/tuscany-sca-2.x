@@ -60,7 +60,7 @@ public class CRUDImplementationProvider extends CRUDImplementationImpl implement
 
     public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
         CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
-        CRUDTargetInvoker invoker = new CRUDTargetInvoker(operation, new ResourceManager(impl.getDirectory()));
+        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(impl.getDirectory()));
         return invoker;
     }
 
