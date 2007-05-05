@@ -191,7 +191,7 @@ public class ContributionServiceImpl implements ContributionService {
                     + contributionURI.toString());
         }
 
-        URI compositeURI = contributionURI.resolve(composite.getName().getLocalPart() + ".composite");
+        URI compositeURI = URI.create(composite.getURI());
         DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact();
         artifact.setURI(compositeURI.toString());
         artifact.setModel(composite);
