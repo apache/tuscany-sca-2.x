@@ -20,9 +20,7 @@ package supplychain;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -30,18 +28,16 @@ import org.osoa.sca.ServiceReference;
  */
 public class SupplyChainClientTestCase extends TestCase {
 
+    private SCADomain domain;
     private Customer customer;
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("supplychain.composite");
-
-        ComponentContext context = SCARuntime.getComponentContext("CustomerComponent");
-        ServiceReference<Customer> service = context.createSelfReference(Customer.class);
-        customer = service.getService();
+        domain = SCADomain.newInstance("supplychain.composite");
+        customer = domain.getService(Customer.class, "CustomerComponent");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 
     public void test() throws Exception {
