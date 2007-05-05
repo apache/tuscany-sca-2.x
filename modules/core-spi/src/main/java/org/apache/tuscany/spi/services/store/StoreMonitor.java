@@ -18,57 +18,54 @@
  */
 package org.apache.tuscany.spi.services.store;
 
-import org.apache.tuscany.spi.annotation.LogLevel;
 
 /**
  * A generic monintor interface for services to log events
- *
+ * 
  * @version $Rev$ $Date$
  */
 public interface StoreMonitor {
 
     /**
      * Signals the service has started
-     *
+     * 
      * @param msg
      */
-    @LogLevel("DEBUG")
     void start(String msg);
 
     /**
      * Signals the service has been shutdown
-     *
+     * 
      * @param msg
      */
-    @LogLevel("DEBUG")
     void stop(String msg);
 
     /**
      * Fired when recovery is started
      */
-    @LogLevel("DEBUG")
+
     void beginRecover();
 
     /**
      * Fired when recovery is completed
      */
-    @LogLevel("DEBUG")
+
     void endRecover();
 
     /**
      * Fired when a record is processed during recovery
-     *
+     * 
      * @param recordId the id of the record being recovered
      */
-    @LogLevel("DEBUG")
+
     void recover(Object recordId);
 
     /**
      * Signals an error event
-     *
+     * 
      * @param e the error
      */
-    @LogLevel("ERROR")
+
     void error(Throwable e);
 
 }
