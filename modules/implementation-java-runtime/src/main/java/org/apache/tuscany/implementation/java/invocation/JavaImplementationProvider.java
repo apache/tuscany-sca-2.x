@@ -39,10 +39,10 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.invocation.TargetInvokerInterceptor;
 import org.apache.tuscany.scope.ScopeContainer;
+import org.apache.tuscany.scope.ScopeNotFoundException;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.Scope;
-import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -103,9 +103,7 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
                     }
                     if (!hasConversationalContract) {
                         String name = getJavaClass().getName();
-                        throw new NoConversationalContractException(
-                                                                    "No conversational contract for conversational implementation",
-                                                                    name);
+                        throw new NoConversationalContractException(name);
                     }
                 }
                 // Now it's ok to set the scope container
@@ -161,11 +159,19 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
 
     public Interceptor createInterceptor(RuntimeComponent component,
                                          ComponentService service,
-                                         Operation operation,
-                                         boolean isCallback) {
+                                         Operation operation) {
         JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
         try {
-            return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(null, operation, isCallback));
+            return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(operation));
+        } catch (TargetInvokerCreationException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
+        JavaAtomicComponent atomicComponent = (JavaAtomicComponent)component.getImplementationConfiguration();
+        try {
+            return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }

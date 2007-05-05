@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.LinkedList;
 
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -30,7 +31,6 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Base class for performing invocations on a wire. Subclasses are responsible for retrieving and supplying the
@@ -105,7 +105,7 @@ public abstract class AbstractInvocationHandler {
     protected Object invokeTarget(InvocationChain chain,
                                   Object[] args,
                                   Object correlationId,
-                                  LinkedList<Wire> callbackWires)
+                                  LinkedList<RuntimeWire> callbackWires)
         throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         assert headInterceptor != null;

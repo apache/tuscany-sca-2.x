@@ -21,8 +21,8 @@ package org.apache.tuscany.core.component.scope;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.easymock.EasyMock;
 
@@ -33,8 +33,8 @@ public class WorkContextTestCase extends TestCase {
 
     public void testSetCurrentAtomicComponent() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
-        AtomicComponent component2 = EasyMock.createNiceMock(AtomicComponent.class);
+        RuntimeComponent component = EasyMock.createNiceMock(RuntimeComponent.class);
+        RuntimeComponent component2 = EasyMock.createNiceMock(RuntimeComponent.class);
         ctx.setCurrentAtomicComponent(component);
         assertEquals(component, ctx.getCurrentAtomicComponent());
         ctx.setCurrentAtomicComponent(component2);
@@ -114,7 +114,7 @@ public class WorkContextTestCase extends TestCase {
     public void testCurrentAtomicComponentDoesNotPropagateToChildThread() throws InterruptedException {
         // NOTE should behaviour be to propagate?
         WorkContext context = new WorkContextImpl();
-        context.setCurrentAtomicComponent(EasyMock.createNiceMock(AtomicComponent.class));
+        context.setCurrentAtomicComponent(EasyMock.createNiceMock(RuntimeComponent.class));
         TestCurrentAtomicComponentChildThread t = new TestCurrentAtomicComponentChildThread(context);
         t.start();
         t.join();

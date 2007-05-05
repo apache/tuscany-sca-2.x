@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.services.store;
 
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.spi.event.Event;
 
 /**
@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class StoreExpirationEvent implements Event {
     private Object source;
-    private SCAObject owner;
+    private RuntimeComponent owner;
     private Object instance;
 
     /**
@@ -38,7 +38,7 @@ public class StoreExpirationEvent implements Event {
      * @param owner    the owner of the expiring object
      * @param instance the expiring object
      */
-    public StoreExpirationEvent(Object source, SCAObject owner, Object instance) {
+    public StoreExpirationEvent(Object source, RuntimeComponent owner, Object instance) {
         assert source != null;
         assert owner != null;
         assert instance != null;
@@ -56,7 +56,7 @@ public class StoreExpirationEvent implements Event {
      *
      * @return the owner of the expiring object.
      */
-    public SCAObject getOwner() {
+    public RuntimeComponent getOwner() {
         return owner;
     }
 

@@ -21,7 +21,8 @@ package org.apache.tuscany.spi.component;
 import java.net.URI;
 import java.util.LinkedList;
 
-import org.apache.tuscany.spi.wire.Wire;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeWire;
 
 /**
  * Implementations track information associated with a request as it is processed by the runtime
@@ -73,13 +74,13 @@ public interface WorkContext {
      *
      * @return the current list of callback wires
      */
-    LinkedList<Wire> getCallbackWires();
+    LinkedList<RuntimeWire> getCallbackWires();
 
     /**
      * Sets an ordered list of callback wires for the current context. Ordering is based on the sequence of service
      * invocations for collocated components
      */
-    void setCallbackWires(LinkedList<Wire> wires);
+    void setCallbackWires(LinkedList<RuntimeWire> wires);
 
     /**
      * Returns the correlation id for the current invocation or null if not available. Transports may use correlation
@@ -103,7 +104,7 @@ public interface WorkContext {
      *
      * @return the current atomic component as a request is processed or null
      */
-    AtomicComponent getCurrentAtomicComponent();
+    RuntimeComponent getCurrentAtomicComponent();
 
     /**
      * Sets the current atomic component that is handling processing of a request. Note that in most cases it will not
@@ -111,7 +112,7 @@ public interface WorkContext {
      *
      * @param component the current atomic component
      */
-    void setCurrentAtomicComponent(AtomicComponent component);
+    void setCurrentAtomicComponent(RuntimeComponent component);
 
     /**
      * Removes and returns the name of the last remotable service to handle the current request

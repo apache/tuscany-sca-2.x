@@ -39,12 +39,19 @@ public interface ImplementationProvider {
      * @param component The component that owns the component service
      * @param service The component service
      * @param operation The operation that the interceptor will handle
-     * @param isCallback A flag to tell if the operation is for the callback
      * @return An interceptor that handles the invocation logic, null should be
      *         returned if no interceptor is required
      */
-    Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation, boolean isCallback);
+    Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation);
 
+    /**
+     * Create an interceptor to call back to the given component
+     * @param component The component that receives the callback
+     * @param operation The operation
+     * @return
+     */
+    Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation);
+    
     /**
      * Get the effective interface contract imposed by the implementation.
      * 

@@ -27,7 +27,7 @@ import javax.script.ScriptException;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.easymock.EasyMock;
 

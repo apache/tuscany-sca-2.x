@@ -31,15 +31,18 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.core.component.ComponentContextImpl;
 import org.apache.tuscany.core.component.ComponentContextProvider;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
+import org.apache.tuscany.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.injection.ArrayMultiplicityObjectFactory;
@@ -49,10 +52,8 @@ import org.apache.tuscany.implementation.java.injection.Injector;
 import org.apache.tuscany.implementation.java.injection.InvalidAccessorException;
 import org.apache.tuscany.implementation.java.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.implementation.java.injection.MethodInjector;
-import org.apache.tuscany.implementation.java.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.implementation.java.injection.ObjectCallbackException;
 import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.spi.CoreRuntimeException;
@@ -78,9 +79,6 @@ import org.osoa.sca.annotations.ConversationID;
  *          2007) $$
  */
 public abstract class PojoAtomicComponent implements ComponentContextProvider {
-
-    protected Map<String, List<RuntimeWire>> wires = new HashMap<String, List<RuntimeWire>>();
-    protected Map<String, List<RuntimeWire>> callBackwires = new HashMap<String, List<RuntimeWire>>();
 
     protected RuntimeComponent component;
     protected PojoConfiguration<?> configuration;
@@ -133,10 +131,6 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
         return configuration.createFactory().newInstance();
     }
 
-    public List<RuntimeWire> getWires(String name) {
-        return wires.get(name);
-    }
-
     public void configureProperties(List<ComponentProperty> definedProperties) {
         for (ComponentProperty p : definedProperties) {
             configureProperty(p);
@@ -156,69 +150,21 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
         }
     }
 
-    public void attachWire(RuntimeWire wire) {
-        String referenceName = wire.getSource().getComponentReference().getName();
-        List<RuntimeWire> wireList = wires.get(referenceName);
-        if (wireList == null) {
-            wireList = new ArrayList<RuntimeWire>();
-            wires.put(referenceName, wireList);
-        }
-        wireList.add(wire);
-
-        JavaElementImpl element = configuration.getDefinition().getReferenceMembers().get(referenceName);
-        if (element != null && !(element.getAnchor() instanceof Constructor)) {
-            configuration.getInjectionSites().add(element);
-        }
-
-        if (element != null) {
-            configuration.setObjectFactory(element, createWireFactory(element.getType(), wire));
-        }
-
-    }
-
-    public void attachWires(List<RuntimeWire> attachWires) {
-        assert attachWires.size() > 0;
-        String referenceName = attachWires.get(0).getSource().getComponentReference().getName();
-        List<RuntimeWire> wireList = wires.get(referenceName);
-        if (wireList == null) {
-            wireList = new ArrayList<RuntimeWire>();
-            wires.put(referenceName, wireList);
-        }
-        wireList.addAll(attachWires);
-        JavaElementImpl element = configuration.getDefinition().getReferenceMembers().get(referenceName);
-
-        Class<?> type = ((JavaInterface)attachWires.get(0).getSource().getInterfaceContract().getInterface())
-            .getJavaClass();
-        if (type == null) {
-            throw new NoMultiplicityTypeException("Java interface must be specified for multiplicity", referenceName);
-        }
-
-        List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
-        for (RuntimeWire wire : wireList) {
-            factories.add(createWireFactory(element.getType(), wire));
-        }
-        configuration.getInjectionSites().add(element);
-        configuration.setObjectFactories(element, factories);
-
-    }
-
-    public void attachCallbackWire(RuntimeWire wire) {
-        // FIXME: [rfeng] This is a hack to get it compiled
-        String callbackName = wire.getSource().getInterfaceContract().getCallbackInterface().toString();
-        assert configuration.getDefinition().getCallbackMembers().get(callbackName) != null;
-        List<RuntimeWire> wireList = callBackwires.get(callbackName);
-        if (wireList == null) {
-            wireList = new ArrayList<RuntimeWire>();
-            callBackwires.put(callbackName, wireList);
-        }
-        wireList.add(wire);
-    }
-
     public void start() throws CoreRuntimeException {
         if (!configuration.getDefinition().getCallbackMembers().isEmpty()) {
+            Map<String, List<RuntimeWire>> callbackWires = new HashMap<String, List<RuntimeWire>>();
+            for (ComponentService service : component.getServices()) {
+
+                RuntimeComponentService componentService = (RuntimeComponentService)service;
+                if (!componentService.getCallbackWires().isEmpty()) {
+                    callbackWires.put(componentService.getCallbackWires().get(0).getTarget().getInterfaceContract()
+                        .getCallbackInterface().toString(), componentService.getCallbackWires());
+                }
+            }
+
             for (Map.Entry<String, JavaElementImpl> entry : configuration.getDefinition().getCallbackMembers()
                 .entrySet()) {
-                List<RuntimeWire> wires = callBackwires.get(entry.getKey());
+                List<RuntimeWire> wires = callbackWires.get(entry.getKey());
                 if (wires == null) {
                     // this can happen when there are no client wires to a
                     // component that has a callback
@@ -412,21 +358,12 @@ public abstract class PojoAtomicComponent implements ComponentContextProvider {
     }
 
     private List<RuntimeWire> getWiresForReference(String name) {
-        List<RuntimeWire> referenceWires = null;
-        if (name.equals("$self$.")) {
-            for (String key : wires.keySet()) {
-                if (key.startsWith(name)) {
-                    if (referenceWires != null) {
-                        throw new IllegalArgumentException("Component" + getUri()
-                                                           + " implements more than one services");
-                    }
-                    referenceWires = wires.get(key);
-                }
+        for (ComponentReference ref : component.getReferences()) {
+            if (ref.getName().equals(name) || (name.equals("$self$.") && ref.getName().startsWith(name))) {
+                return ((RuntimeComponentReference)ref).getRuntimeWires();
             }
-        } else {
-            referenceWires = wires.get(name);
         }
-        return referenceWires;
+        return null;
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) {

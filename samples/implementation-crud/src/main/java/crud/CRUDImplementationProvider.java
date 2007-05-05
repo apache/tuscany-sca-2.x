@@ -48,16 +48,19 @@ public class CRUDImplementationProvider extends CRUDImplementationImpl implement
      * Constructs a new CRUD implementation.
      */
     public CRUDImplementationProvider(AssemblyFactory assemblyFactory,
-                              JavaInterfaceFactory javaFactory,
-                              JavaInterfaceIntrospector introspector) {
+                                      JavaInterfaceFactory javaFactory,
+                                      JavaInterfaceIntrospector introspector) {
         super(assemblyFactory, javaFactory, introspector);
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component,
-                                         ComponentService service,
-                                         Operation operation,
-                                         boolean isCallback) {
+    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
         CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(getDirectory()));
+        return invoker;
+    }
+
+    public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
+        CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
+        CRUDTargetInvoker invoker = new CRUDTargetInvoker(operation, new ResourceManager(impl.getDirectory()));
         return invoker;
     }
 

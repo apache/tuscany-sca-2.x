@@ -31,9 +31,7 @@ import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.DefaultMediator;
-import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.context.JavaComponentBuilder;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
@@ -57,21 +55,16 @@ import org.apache.tuscany.implementation.java.introspect.impl.ScopeProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.implementation.java.invocation.RuntimeJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
-import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.apache.tuscany.scope.ScopeRegistry;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.ProxyService;
 
 /**
  * @version $Rev$ $Date$
@@ -93,7 +86,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(ProxyService.class, new org.apache.tuscany.implementation.java.proxy.JDKProxyService());
         map.put(JavaClassIntrospectorExtensionPoint.class, classVisitors);
         return map;
     }
@@ -140,24 +132,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         JavaImplementationProcessor javaImplementationProcessor =
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
         processors.addArtifactProcessor(javaImplementationProcessor);
-
-        // FIXME: To be removed
-        org.apache.tuscany.implementation.java.proxy.JDKProxyService proxyService =
-            (org.apache.tuscany.implementation.java.proxy.JDKProxyService)registry.getExtensionPoint(ProxyService.class);
-        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
-        proxyService.setInterfaceContractMapper(mapper);
-        proxyService.setWorkContext(workContext);
-
-        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
-        if (builderRegistry != null) {
-            JavaComponentBuilder builder = new JavaComponentBuilder();
-            builder.setProxyService(registry.getExtensionPoint(ProxyService.class));
-            builder.setWorkContext(registry.getExtensionPoint(WorkContext.class));
-            builderRegistry.register(JavaImplementation.class, builder);
-
-            builder.setPropertyValueObjectFactory(factory);
-            builder.setDataBindingRegistry(dataBindings);
-        }
 
     }
 

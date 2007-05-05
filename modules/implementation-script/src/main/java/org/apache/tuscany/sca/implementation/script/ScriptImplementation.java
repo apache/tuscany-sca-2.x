@@ -76,10 +76,14 @@ public class ScriptImplementation extends AbstractImplementation {
         this.scriptSrc = scriptSrc;
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation, boolean isCallback) {
+    public Interceptor createInterceptor(RuntimeComponent component, ComponentService service, Operation operation) {
         return new ScriptInvoker(this, operation.getName());
     }
 
+    public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
+        return new ScriptInvoker(this, operation.getName());
+    }
+    
     public void start(RuntimeComponent component) {
         try {
             scriptEngine = getScriptEngineByExtension(getScriptLanguage());

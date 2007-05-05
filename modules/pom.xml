@@ -46,7 +46,11 @@
                 
 		<module>binding-rmi</module>
                 <module>binding-ws</module>
+
+                <!--
                 <module>binding-ws-axis2</module>
+                -->
+
                 <module>binding-ws-xml</module>
                 <module>commonj-api</module>
                 <module>contribution</module>

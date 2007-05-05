@@ -21,13 +21,13 @@ package org.apache.tuscany.core.wire;
 import java.net.URI;
 import java.util.LinkedList;
 
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Wire;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -143,15 +143,15 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
 
-        public void pushCallbackWire(Wire wire) {
+        public void pushCallbackWire(RuntimeWire wire) {
 
         }
 
-        public LinkedList<Wire> getCallbackWires() {
+        public LinkedList<RuntimeWire> getCallbackWires() {
             return null;
         }
 
-        public void setCallbackWires(LinkedList<Wire> wires) {
+        public void setCallbackWires(LinkedList<RuntimeWire> wires) {
 
         }
 

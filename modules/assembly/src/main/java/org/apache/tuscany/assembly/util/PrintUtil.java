@@ -60,6 +60,9 @@ public class PrintUtil {
      * @param object
      */
     public void print(Object object) {
+        if(true) {
+            return;
+        }
         if (objects.contains(object)) {
 
             // If we've already printed an object, print just it's hashcode

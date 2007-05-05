@@ -22,13 +22,19 @@ package org.apache.tuscany.core.invocation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.AbstractInvocationHandler;
+import org.apache.tuscany.spi.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.wire.InvocationChain;
 
 /**
@@ -39,11 +45,27 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
     private RuntimeWire wire;
     private WorkContext workContext;
 
+    // the name of the source reference the wire is attached to, used during
+    // deserialization
+    private String referenceName;
+    // if the associated wire has a callback
+    private transient boolean callback;
+    // if the associated wire is conversational
+    private transient boolean conversational;
+
     public JDKInvocationHandler(Class<?> proxyInterface, RuntimeWire wire, WorkContext workContext) {
         super();
         this.proxyInterface = proxyInterface;
         this.wire = wire;
         this.workContext = workContext;
+        init(proxyInterface, wire);
+    }
+
+    private void init(Class<?> interfaze, RuntimeWire wire) {
+        InterfaceContract contract = wire.getSource().getInterfaceContract();
+        this.referenceName = wire.getSource().getComponentReference().getName();
+        this.conversational = contract.getInterface().isConversational();
+        this.callback = contract.getCallbackInterface() != null;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -65,8 +87,37 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
         if (chain == null) {
             throw new IllegalArgumentException("No matching opeeration is found: " + method);
         }
+        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
 
-        return invoke(chain, null, args, null, null, workContext);
+        if (conversational) {
+            Object id = workContext.getIdentifier(Scope.CONVERSATION);
+            if (id == null) {
+                String convIdFromThread = createConversationID();
+                workContext.setIdentifier(Scope.CONVERSATION, convIdFromThread);
+            }
+        }
+        LinkedList<URI> list = null;
+        if (callback) {
+            // set up callback address
+            list = workContext.getCallbackUris();
+            if (list == null) {
+                list = new LinkedList<URI>();
+                list.add(URI.create(wire.getSource().getComponent().getURI() + "#"
+                                    + wire.getSource().getComponentReference().getName()));
+                workContext.setCallbackUris(list);
+            }
+        }
+        // send the invocation down the wire
+        Object result = invoke(chain, null, args, null, list, workContext);
+
+        if (callback) {
+            list = workContext.getCallbackUris();
+            if (list != null) {
+                // pop last address
+                list.removeLast();
+            }
+        }
+        return result;
     }
 
     /**
@@ -103,4 +154,12 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
         return null;
     }
 
+    /**
+     * Creates a new conversational id
+     * 
+     * @return the conversational id
+     */
+    private String createConversationID() {
+        return UUID.randomUUID().toString();
+    }
 }

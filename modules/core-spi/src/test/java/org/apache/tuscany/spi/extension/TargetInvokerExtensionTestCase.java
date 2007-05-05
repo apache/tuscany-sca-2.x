@@ -22,12 +22,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.LinkedList;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.Wire;
-
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
@@ -38,7 +38,7 @@ public class TargetInvokerExtensionTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testNonBlockingDispatch() {
         URI from = URI.create("foo");
-        Wire wire = EasyMock.createMock(Wire.class);
+        RuntimeWire wire = EasyMock.createMock(RuntimeWire.class);
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);

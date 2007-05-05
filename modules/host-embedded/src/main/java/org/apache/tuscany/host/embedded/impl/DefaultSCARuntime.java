@@ -18,11 +18,6 @@
  */
 package org.apache.tuscany.host.embedded.impl;
 
-import java.net.URI;
-import java.net.URL;
-
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
 
 /**
  * Default implementation of SCARuntime.
@@ -30,31 +25,5 @@ import org.osoa.sca.ComponentContext;
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("deprecation")
-public class DefaultSCARuntime extends SCARuntime {
-
-    protected SimpleRuntime runtime;
-
-    protected void startup(URL applicationSCDL, String compositePath) throws Exception {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URI contributionURI = URI.create("/default");
-        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(cl, contributionURI, applicationSCDL, compositePath);
-        runtime = new SimpleRuntimeImpl(runtimeInfo);
-
-        try {
-            runtime.start();
-        } catch (Exception e) {
-            throw e;
-        }
-
-    }
-
-    protected void shutdown() throws Exception {
-        runtime.destroy();
-    }
-
-    @Override
-    protected ComponentContext getContext(String componentName) {
-        return runtime.getComponentContext(URI.create(componentName));
-    }
-
+public class DefaultSCARuntime extends DefaultSCARuntimeActivator {
 }

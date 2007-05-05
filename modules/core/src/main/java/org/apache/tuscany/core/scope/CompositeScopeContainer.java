@@ -88,7 +88,10 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
             wrapper = createInstance(component);
             instanceWrappers.put(component, wrapper);
             wrapper.start();
-            destroyQueues.get(contextId).add(wrapper);
+            // FIXME: [rfeng]
+            if (contextId != null) {
+                destroyQueues.get(contextId).add(wrapper);
+            }
         }
         return wrapper;
     }

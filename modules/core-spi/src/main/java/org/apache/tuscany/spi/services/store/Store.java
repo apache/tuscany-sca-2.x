@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.services.store;
 
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.spi.event.EventPublisher;
 
 /**
@@ -46,7 +46,7 @@ public interface Store extends EventPublisher {
      * @param expiration the time in milliseconds when the entry expires
      * @throws StoreWriteException if an error occurs during the write operation
      */
-    void insertRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException;
+    void insertRecord(RuntimeComponent owner, String id, Object object, long expiration) throws StoreWriteException;
 
     /**
      * Updates a given record in the store, overwriting previous information.
@@ -57,7 +57,7 @@ public interface Store extends EventPublisher {
      * @param expiration the time in milliseconds when the entry expires
      * @throws StoreWriteException
      */
-    void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException;
+    void updateRecord(RuntimeComponent owner, String id, Object object, long expiration) throws StoreWriteException;
 
     /**
      * Returns the deserialized object in the store corresponding to the given id
@@ -67,7 +67,7 @@ public interface Store extends EventPublisher {
      * @return the deserialized object or null if one is not found
      * @throws StoreReadException
      */
-    Object readRecord(SCAObject owner, String id) throws StoreReadException;
+    Object readRecord(RuntimeComponent owner, String id) throws StoreReadException;
 
     /**
      * Removes a record from the store
@@ -76,7 +76,7 @@ public interface Store extends EventPublisher {
      * @param id    the unique id of the record
      * @throws StoreWriteException
      */
-    void removeRecord(SCAObject owner, String id) throws StoreWriteException;
+    void removeRecord(RuntimeComponent owner, String id) throws StoreWriteException;
 
     /**
      * Removes all records from the store

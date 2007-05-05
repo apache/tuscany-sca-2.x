@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.host.embedded.impl;
 
-import java.net.URI;
-
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
@@ -36,15 +34,15 @@ import org.osoa.sca.ServiceRuntimeException;
 /**
  * Temporary here to help the bring up of samples and integration tests that
  * still use the 0.95 CompositeContext interface.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class SimpleCompositeContextImpl implements CompositeContext {
-    
-    private SimpleRuntime runtime;
+
+    private MiniRuntimeImpl runtime;
     private Composite composite;
-    
-    public SimpleCompositeContextImpl(SimpleRuntime runtime, Composite composite) {
+
+    public SimpleCompositeContextImpl(MiniRuntimeImpl runtime, Composite composite) {
         this.runtime = runtime;
         this.composite = composite;
     }
@@ -58,7 +56,7 @@ public class SimpleCompositeContextImpl implements CompositeContext {
     }
 
     public String getName() {
-        if (composite.getName() != null) { 
+        if (composite.getName() != null) {
             return composite.getName().getLocalPart();
         } else {
             return null;
@@ -77,7 +75,7 @@ public class SimpleCompositeContextImpl implements CompositeContext {
         String componentName;
         int i = serviceName.indexOf('/');
         if (i == -1) {
-            for (Service service: composite.getServices()) {
+            for (Service service : composite.getServices()) {
                 CompositeService compositeService = (CompositeService)service;
                 if (serviceName.equals(compositeService.getName())) {
                     ComponentService componentService = compositeService.getPromotedService();
@@ -88,24 +86,27 @@ public class SimpleCompositeContextImpl implements CompositeContext {
                             if (component != null) {
                                 ComponentContext context = null;
                                 if (component.getImplementation() instanceof Composite) {
-                                    Service actualService =  componentService.getService();
+                                    Service actualService = componentService.getService();
                                     if (actualService instanceof CompositeService) {
                                         componentService = ((CompositeService)actualService).getPromotedService();
                                         if (componentService != null) {
                                             binding = componentService.getBinding(SCABinding.class);
                                             if (binding != null && binding.getComponent() != null) {
                                                 Component innerComponent = binding.getComponent();
-                                                context = runtime.getComponentContext(URI.create(component.getName() + "/" + innerComponent.getName()));
+                                                context = runtime.getComponentContext(component.getName() + "/"
+                                                                                      + innerComponent.getName());
                                             }
                                         }
                                     }
                                 } else {
-                                    context = runtime.getComponentContext(URI.create(component.getName()));
+                                    context = runtime.getComponentContext(component.getName());
                                 }
                                 if (context == null) {
                                     throw new ServiceRuntimeException("Service not found: " + serviceName);
                                 }
-                                ServiceReference<T> serviceReference = context.createSelfReference(serviceType, componentService.getName());
+                                ServiceReference<T> serviceReference = context.createSelfReference(serviceType,
+                                                                                                   componentService
+                                                                                                       .getName());
                                 return serviceReference.getService();
                             }
                         }
@@ -113,12 +114,12 @@ public class SimpleCompositeContextImpl implements CompositeContext {
                     break;
                 }
             }
-            for (Component component: composite.getComponents()) {
+            for (Component component : composite.getComponents()) {
                 if (serviceName.equals(component.getName())) {
                     ComponentContext context = null;
                     if (component.getImplementation() instanceof Composite) {
                         if (!component.getServices().isEmpty()) {
-                            ComponentService componentService =  component.getServices().get(0);
+                            ComponentService componentService = component.getServices().get(0);
                             CompositeService compositeService = (CompositeService)componentService.getService();
                             if (compositeService != null) {
                                 componentService = compositeService.getPromotedService();
@@ -126,28 +127,31 @@ public class SimpleCompositeContextImpl implements CompositeContext {
                                     SCABinding binding = componentService.getBinding(SCABinding.class);
                                     if (binding != null && binding.getComponent() != null) {
                                         Component innerComponent = binding.getComponent();
-                                        context = runtime.getComponentContext(URI.create(component.getName() + "/" + innerComponent.getName()));
+                                        context = runtime.getComponentContext(component.getName() + "/"
+                                                                              + innerComponent.getName());
                                     }
                                 }
                             }
                         }
                     } else {
-                        context = runtime.getComponentContext(URI.create(component.getName()));
+                        context = runtime.getComponentContext(component.getName());
                     }
                     if (context == null) {
                         throw new ServiceRuntimeException("Service not found: " + serviceName);
                     }
-                    // FIXME: The service name has to be provided if there are more than one services
-                    ServiceReference<T> serviceReference = context.createSelfReference(serviceType, serviceType.getSimpleName());
+                    // FIXME: The service name has to be provided if there are
+                    // more than one services
+                    ServiceReference<T> serviceReference = context.createSelfReference(serviceType, serviceType
+                        .getSimpleName());
                     return serviceReference.getService();
                 }
             }
             throw new ServiceRuntimeException("Service not found: " + serviceName);
-            
+
         } else {
             componentName = serviceName.substring(0, i);
             serviceName = serviceName.substring(i + 1);
-            ComponentContext context = runtime.getComponentContext(URI.create(componentName));
+            ComponentContext context = runtime.getComponentContext(componentName);
             if (context == null) {
                 throw new ServiceRuntimeException("Component not found: " + componentName);
             }

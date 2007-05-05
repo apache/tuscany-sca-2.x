@@ -23,11 +23,11 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.assembly.ComponentProperty;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.invocation.WireObjectFactory;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.context.TargetMethodNotFoundException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
@@ -46,15 +46,10 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         super(component, configuration);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation, boolean isCallback)
+    public TargetInvoker createTargetInvoker(Operation operation)
         throws TargetInvokerCreationException {
+        Class<?> implClass = configuration.getImplementationClass();
 
-        Class<?> implClass;
-        if (isCallback) {
-            implClass = ((JavaInterface)operation.getInterface()).getJavaClass();
-        } else {
-            implClass = configuration.getImplementationClass();
-        }
         try {
             Method method = JavaInterfaceUtil.findMethod(implClass, operation);
             boolean passByValue = operation.getInterface().isRemotable() && (!configuration.getDefinition()
@@ -73,7 +68,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
     }
 
     protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, RuntimeWire wire) {
-        return new org.apache.tuscany.core.invocation.WireObjectFactory<B>(interfaze, wire, proxyService);
+        return new WireObjectFactory<B>(interfaze, wire, proxyService);
     }
 
     protected ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,

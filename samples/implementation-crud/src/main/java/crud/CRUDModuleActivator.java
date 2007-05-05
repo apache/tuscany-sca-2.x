@@ -31,6 +31,7 @@ import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.invocation.ProxyFactory;
 
 /**
  * Implements a module activator for the CRUD implementation extension module.
@@ -52,8 +53,9 @@ public class CRUDModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
+        ProxyFactory proxyFactory = registry.getExtensionPoint(ProxyFactory.class);
         // Create the CRUD implementation factory
-        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory();
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(proxyFactory);
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         JavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);

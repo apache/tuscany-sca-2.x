@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.implementation.java.context;
 
-import org.osoa.sca.ComponentContext;
-
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.implementation.java.invocation.PojoAtomicComponent;
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
