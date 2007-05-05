@@ -35,7 +35,7 @@ public class ScriptInvoker extends AbstractInterceptor {
     protected String operationName;
 
     /**
-     * TODO: pasing in the impl is a hack to get at scriptEngine as thats all this uses
+     * TODO: pasing in the impl is a bit of a hack to get at scriptEngine as thats all this uses
      * but its not created till the start method which is called after the invokers are created 
      */
     public ScriptInvoker(ScriptImplementation impl, String operationName) {

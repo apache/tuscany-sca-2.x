@@ -52,10 +52,13 @@ public abstract class AbstractImplementation implements Implementation, Implemen
     private List<Property> properties = new ArrayList<Property>();
     private ConstrainingType constrainingType;
     private String uri;
-    private boolean unresolved;
+    private boolean unresolved = true;
     private List<Intent> intents;
     private List<PolicySet> policySets;
-    
+
+    public AbstractImplementation() {
+    }
+
     public List<Property> getProperties() {
         return properties;
     }
