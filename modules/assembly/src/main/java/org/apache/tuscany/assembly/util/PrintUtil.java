@@ -34,15 +34,14 @@ import java.util.Set;
 import org.w3c.dom.Node;
 
 /**
- * A simple print utility class to help print assembly model instances.
+ * A simple print utility class to help print model instances.
  * 
  * @version $Rev$ $Date$
  */
 public class PrintUtil {
 
-    PrintWriter out;
-    Set<Object> objects = new HashSet<Object>();
-    int indent;
+    private PrintWriter out;
+    private int indent;
 
     public PrintUtil(OutputStream out) {
         this.out = new PrintWriter(new OutputStreamWriter(out), true);
@@ -55,21 +54,32 @@ public class PrintUtil {
     }
 
     /**
-     * Print a model object.
+     * Print an object.
      * 
      * @param object
      */
     public void print(Object object) {
-        if(true) {
+        Set<Integer> objects = new HashSet<Integer>();
+        print(object, objects);
+    }
+    
+    /**
+     * Print an object.
+     * 
+     * @param object
+     */
+    private void print(Object object, Set<Integer> printed) {
+        if (object == null) {
             return;
         }
-        if (objects.contains(object)) {
+        int id = System.identityHashCode(object);
+        if (printed.contains(id)) {
 
             // If we've already printed an object, print just it's hashcode
             indent();
-            out.println(object.getClass().getName() + "@" + System.identityHashCode(object));
+            out.println(object.getClass().getName() + "@" + id);
         } else {
-            objects.add(object);
+            printed.add(id);
             try {
 
                 // Print the object class name
@@ -104,7 +114,7 @@ public class PrintUtil {
                                     // Print each element, recursively
                                     for (Object element : (List)value) {
                                         indent++;
-                                        print(element);
+                                        print(element, printed);
                                         indent--;
                                     }
                                     indent();
@@ -139,7 +149,7 @@ public class PrintUtil {
                                     indent();
                                     out.println(propertyDescriptor.getName() + "= {");
                                     indent++;
-                                    print(value);
+                                    print(value, printed);
                                     indent--;
                                     indent();
                                     out.println("}");

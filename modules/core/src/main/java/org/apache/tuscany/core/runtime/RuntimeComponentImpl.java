@@ -89,11 +89,11 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
-        List<ComponentReference> refs = getReferences();
-        for (ComponentReference ref : refs) {
-            if (ref.getName().equals(referenceName) || referenceName.equals("$self$.")
-                && ref.getName().startsWith(referenceName)) {
-                RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
+        List<ComponentReference> references = getReferences();
+        for (ComponentReference reference : references) {
+            if (reference.getName().equals(referenceName) || referenceName.equals("$self$.")
+                && reference.getName().startsWith(referenceName)) {
+                RuntimeComponentReference attachPoint = (RuntimeComponentReference)reference;
                 RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
                 WireObjectFactory<B> factory = new WireObjectFactory<B>(businessInterface, wire, proxyService);
                 return new ServiceReferenceImpl<B>(businessInterface, factory);

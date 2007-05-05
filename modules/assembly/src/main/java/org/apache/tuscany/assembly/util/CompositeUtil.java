@@ -18,15 +18,10 @@
  */
 package org.apache.tuscany.assembly.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Base;
@@ -389,7 +384,8 @@ public class CompositeUtil {
 
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                    problems.add(componentProperty);
+                    //FIXME tolerate this for now
+                    //problems.add(componentProperty);
                 }
             }
         }
@@ -559,7 +555,9 @@ public class CompositeUtil {
             reconcileProperties(component, properties, componentProperties, problems);
 
             // Create self references to the component's services
-            createSelfReferences(component);
+            if (!(implementation instanceof Composite)) {
+                createSelfReferences(component);
+            }
         }
     }
 
@@ -929,12 +927,24 @@ public class CompositeUtil {
                         ComponentService promotedService = getPromotedComponentService(compositeService);
                         if (promotedService != null) {
 
-                            // Add the component service to the innermost
-                            // promoted component
+                            // Create a new component service to represent this composite
+                            // service on the promoted component
                             SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
                             if (scaBinding != null) {
                                 Component promotedComponent = scaBinding.getComponent();
-                                promotedComponent.getServices().add(componentService);
+                                ComponentService newComponentService = assemblyFactory.createComponentService();
+                                newComponentService.setName("$promoted$." + compositeService.getName());
+                                //newComponentService.setService(compositeService);
+                                promotedComponent.getServices().add(newComponentService);
+                                newComponentService.getBindings().add(scaBinding);
+                                newComponentService.getBindings().addAll(compositeService.getBindings());
+                                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
+                                newComponentService.setCallback(compositeService.getCallback());
+
+                                // Change the composite service to now promote the newly
+                                // created component service directly
+                                compositeService.setPromotedService(newComponentService);
+                                
                             } else {
                                 problems.add(promotedService);
                             }
@@ -951,23 +961,21 @@ public class CompositeUtil {
             if (promotedService != null) {
 
                 // Create a new component service to represent this composite
-                // service
-                // on the promoted component
+                // service on the promoted component
                 SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
                 if (scaBinding != null) {
-                    Component component = scaBinding.getComponent();
+                    Component promotedComponent = scaBinding.getComponent();
                     ComponentService newComponentService = assemblyFactory.createComponentService();
-                    newComponentService.setName(null);
-                    newComponentService.setService(compositeService);
-                    component.getServices().add(newComponentService);
+                    newComponentService.setName("$promoted$." + compositeService.getName());
+                    //newComponentService.setService(compositeService);
+                    promotedComponent.getServices().add(newComponentService);
                     newComponentService.getBindings().add(scaBinding);
                     newComponentService.getBindings().addAll(compositeService.getBindings());
                     newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
                     newComponentService.setCallback(compositeService.getCallback());
 
                     // Change the composite service to now promote the newly
-                    // created
-                    // component service directly
+                    // created component service directly
                     compositeService.setPromotedService(newComponentService);
                 } else {
                     problems.add(promotedService);

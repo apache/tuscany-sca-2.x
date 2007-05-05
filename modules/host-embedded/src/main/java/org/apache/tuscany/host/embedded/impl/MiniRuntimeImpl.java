@@ -109,7 +109,7 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         }
         Contribution contribution = contributionService.getContribution(uri);
 
-        super.start(contribution);
+        super.start(contribution, runtimeInfo.getCompositePath());
         CompositeContext context = new SimpleCompositeContextImpl(this, domain);
         CurrentCompositeContext.setContext(context);
     }

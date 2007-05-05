@@ -30,8 +30,12 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.util.FileHelper;
@@ -58,7 +62,7 @@ public class DefaultSCADomain extends SCADomain {
     private String[] composites;
     private Composite domainComposite;
     private Contribution contribution;
-    private Map<String, ComponentContext> components = new HashMap<String, ComponentContext>();
+    private Map<String, Component> components = new HashMap<String, Component>();
     private ReallySmallRuntime runtime;
 
     /**
@@ -109,8 +113,18 @@ public class DefaultSCADomain extends SCADomain {
         domainComposite.setName(new QName(Constants.SCA_NS, "domain"));
         domainComposite.setURI(domainURI);
         
-        // Add the deployable composites to the SCA domain by "include"
-        for (Composite composite : contribution.getDeployables()) {
+        // Include all specified deployable composites in the SCA domain
+        Map<String, Composite> compositeArtifacts = new HashMap<String, Composite>();
+        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            if (artifact.getModel() instanceof Composite) {
+                compositeArtifacts.put(artifact.getURI(), (Composite)artifact.getModel());
+            }
+        }
+        for (String compositePath: composites) {
+            Composite composite = compositeArtifacts.get(compositePath);
+            if (composite == null) {
+                throw new ServiceRuntimeException("Composite not found: " + compositePath);
+            }
             domainComposite.getIncludes().add(composite);
         }
 
@@ -130,7 +144,7 @@ public class DefaultSCADomain extends SCADomain {
 
         // Index the top level components
         for (Component component: domainComposite.getComponents()) {
-            components.put(component.getName(), (ComponentContext)component);
+            components.put(component.getName(), component);
         }
     }
 
@@ -226,21 +240,59 @@ public class DefaultSCADomain extends SCADomain {
     }
 
     @Override
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
+    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
+        
+        // Extract the component name
         String componentName;
-        int i = serviceName.indexOf('/'); 
+        String serviceName;
+        int i = name.indexOf('/'); 
         if (i != -1) {
-            componentName = serviceName.substring(0, i);
-            serviceName = serviceName.substring(i+1);
+            componentName = name.substring(0, i);
+            serviceName = name.substring(i+1);
             
         } else {
-            componentName = serviceName;
+            componentName = name;
             serviceName = null;
         }
-        ComponentContext componentContext = components.get(componentName);
-        if (componentContext == null) {
+        
+        // Lookup the component in the domain
+        Component component = components.get(componentName);
+        if (component == null) {
             throw new ServiceRuntimeException("Component not found: " + componentName);
         }
+        ComponentContext componentContext = null;
+        
+        // If the component is a composite, then we need to find the non-composite
+        // component that provides the requested service
+        if (component.getImplementation() instanceof Composite) {
+            ComponentService promotedService = null;
+            for (ComponentService componentService: component.getServices()) {
+                if (serviceName == null || serviceName.equals(componentService.getName())) {
+                    
+                    CompositeService compositeService = (CompositeService)componentService.getService();
+                    if (compositeService != null) {
+                        promotedService = compositeService.getPromotedService();
+                        SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
+                        if (scaBinding != null) {
+                            Component promotedComponent = scaBinding.getComponent();
+                            if (serviceName != null) {
+                                serviceName = "$promoted$." + serviceName;
+                            }
+                            componentContext = (ComponentContext)promotedComponent;
+                        }
+                    }
+                    break;
+                }
+            }
+            if (componentContext == null) {
+                if (component == null) {
+                    throw new ServiceRuntimeException("Composite service not found: " + name);
+                }
+            }
+        } else {
+            componentContext = (ComponentContext)component;
+        }
+        
         ServiceReference<B> serviceReference;
         if (serviceName != null) {
             serviceReference = componentContext.createSelfReference(businessInterface, serviceName);
