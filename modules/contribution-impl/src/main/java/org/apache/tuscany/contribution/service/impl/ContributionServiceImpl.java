@@ -86,7 +86,7 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Contribution registry This is a registry of processed Contributios index by URI
      */
-    private Map<URI, Contribution> contributionRegistry = new HashMap<URI, Contribution>();
+    private Map<String, Contribution> contributionRegistry = new HashMap<String, Contribution>();
 
     /**
      * Contribution model facotry
@@ -112,7 +112,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
 
-    public Contribution contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+    public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
         IOException {
         if (contributionURI == null) {
             throw new IllegalArgumentException("URI for the contribution is null");
@@ -123,7 +123,7 @@ public class ContributionServiceImpl implements ContributionService {
         return addContribution(contributionURI, sourceURL, null, storeInRepository);
     }
 
-    public Contribution contribute(URI contributionURI, URL sourceURL, InputStream input) 
+    public Contribution contribute(String contributionURI, URL sourceURL, InputStream input) 
         throws ContributionException, IOException {
         return addContribution(contributionURI, sourceURL, input, true);
     }
@@ -174,16 +174,16 @@ public class ContributionServiceImpl implements ContributionService {
 
     }
 
-    public Contribution getContribution(URI id) {
+    public Contribution getContribution(String id) {
         return this.contributionRegistry.get(id);
     }
 
-    public void remove(URI contribution) throws ContributionException {
+    public void remove(String contribution) throws ContributionException {
         // remove from repository
         this.contributionRegistry.remove(contribution);
     }
 
-    public void addDeploymentComposite(URI contributionURI, Composite composite) throws ContributionException {
+    public void addDeploymentComposite(String contributionURI, Composite composite) throws ContributionException {
         Contribution contribution = getContribution(contributionURI);
 
         if (contribution == null) {
@@ -225,7 +225,7 @@ public class ContributionServiceImpl implements ContributionService {
      * @throws IOException
      * @throws DeploymentException
      */
-    private Contribution addContribution(URI contributionURI,
+    private Contribution addContribution(String contributionURI,
                                  URL sourceURL,
                                  InputStream contributionStream,
                                  boolean storeInRepository) throws IOException, ContributionException {
@@ -270,7 +270,7 @@ public class ContributionServiceImpl implements ContributionService {
         processResolvePhase(contribution);
         
         // store the contribution on the registry
-        this.contributionRegistry.put(URI.create(contribution.getURI()), contribution);
+        this.contributionRegistry.put(contribution.getURI(), contribution);
         
         return contribution;
     }

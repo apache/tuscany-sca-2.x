@@ -105,7 +105,7 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         super.start();
 
         // Contribute and activate the SCA contribution
-        URI uri = URI.create("sca://default/");
+        String uri = "sca://default/";
         URL root = getContributionLocation(runtimeInfo.getApplicationSCDL(), runtimeInfo.getCompositePath());
         try {
             contributionService.contribute(uri, root, false);

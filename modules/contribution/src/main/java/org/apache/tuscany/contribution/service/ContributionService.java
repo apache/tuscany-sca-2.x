@@ -20,7 +20,6 @@ package org.apache.tuscany.contribution.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
@@ -48,7 +47,7 @@ public interface ContributionService {
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the resource
      */
-    Contribution contribute(URI contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+    Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
         IOException;
 
     /**
@@ -65,7 +64,7 @@ public interface ContributionService {
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the stream
      */
-    Contribution contribute(URI contributionURI, URL sourceURL, InputStream contributionContent)
+    Contribution contribute(String contributionURI, URL sourceURL, InputStream contributionContent)
         throws ContributionException, IOException;
 
     /**
@@ -75,7 +74,7 @@ public interface ContributionService {
      * @return The model for the contribution or null if there is no such
      *         contribution
      */
-    Contribution getContribution(URI contribution);
+    Contribution getContribution(String contribution);
 
     /**
      * Adds or updates a deployment composite using a supplied composite
@@ -85,7 +84,7 @@ public interface ContributionService {
      * matches the "name" attribute of the composite, with a ".composite"
      * suffix.
      */
-    void addDeploymentComposite(URI contribution, Composite composite) throws ContributionException;
+    void addDeploymentComposite(String contribution, Composite composite) throws ContributionException;
 
     /**
      * Remove a contribution from the SCA domain
@@ -93,7 +92,7 @@ public interface ContributionService {
      * @param contribution The URI of the contribution
      * @throws DeploymentException
      */
-    void remove(URI contribution) throws ContributionException;
+    void remove(String contribution) throws ContributionException;
 
     /**
     * Resolve an artifact by QName within the contribution
