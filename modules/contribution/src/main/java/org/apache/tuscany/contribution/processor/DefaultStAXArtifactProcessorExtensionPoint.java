@@ -19,6 +19,7 @@
 package org.apache.tuscany.contribution.processor;
 
 
+
 /**
  * The default implementation of an extension point for StAX artifact processors.
  * 

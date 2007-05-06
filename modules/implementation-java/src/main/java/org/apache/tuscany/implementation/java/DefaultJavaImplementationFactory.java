@@ -16,26 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.interfacedef.java.impl;
-
-import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+package org.apache.tuscany.implementation.java;
 
 /**
  * A factory for the Java model.
  */
-public class DefaultJavaInterfaceFactory implements JavaInterfaceFactory {
+import org.apache.tuscany.implementation.java.impl.JavaImplementationFactoryImpl;
 
-    public DefaultJavaInterfaceFactory() {
-    }
+public class DefaultJavaImplementationFactory extends JavaImplementationFactoryImpl implements JavaImplementationFactory {
 
-    public JavaInterface createJavaInterface() {
-        return new JavaInterfaceImpl();
-    }
-    
-    public JavaInterfaceContract createJavaInterfaceContract() {
-        return new JavaInterfaceContractImpl();
+    public DefaultJavaImplementationFactory() {
     }
 
 }

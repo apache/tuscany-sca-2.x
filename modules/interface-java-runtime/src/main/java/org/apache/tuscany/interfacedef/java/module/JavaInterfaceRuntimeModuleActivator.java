@@ -25,9 +25,9 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
@@ -56,7 +56,7 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
         
         // Register <interface.java> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        JavaInterfaceIntrospector introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);
+        JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
         JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
         processors.addArtifactProcessor(javaInterfaceProcessor);
         

@@ -16,30 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy.impl;
+package org.apache.tuscany.interfacedef.wsdl.impl;
 
-import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.policy.IntentMap;
-import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.PolicySet;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
 
 /**
- * A factory for the policy model.
+ * A factory for the WSDL model.
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultPolicyFactory implements PolicyFactory {
+public abstract class WSDLFactoryImpl implements WSDLFactory {
 
-    public Intent createIntent() {
-        return new IntentImpl();
+    public WSDLInterface createWSDLInterface() {
+        return new WSDLInterfaceImpl();
     }
-
-    public PolicySet createPolicySet() {
-        return new PolicySetImpl();
+    
+    public WSDLDefinition createWSDLDefinition() {
+        return new WSDLDefinitionImpl();
     }
-
-    public IntentMap createIntentMap() {
-        return new IntentMapImpl();
+    
+    public WSDLInterfaceContract createWSDLInterfaceContract() {
+        return new WSDLInterfaceContractImpl();
+    }
+    
+    public XSDefinition createXSDefinition() {
+        return new XSDefinitionImpl();
     }
 
 }

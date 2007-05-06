@@ -24,10 +24,10 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.easymock.EasyMock;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;

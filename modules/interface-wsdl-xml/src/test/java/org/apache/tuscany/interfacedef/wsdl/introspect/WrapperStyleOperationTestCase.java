@@ -30,12 +30,12 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**

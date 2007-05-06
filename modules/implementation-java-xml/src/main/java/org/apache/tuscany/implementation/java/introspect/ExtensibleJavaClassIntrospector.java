@@ -30,15 +30,15 @@ import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 /**
- * Default Java class introspector implementation.
+ * An extensible Java class introspector implementation.
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultJavaClassIntrospector implements JavaClassIntrospector {
+public class ExtensibleJavaClassIntrospector implements JavaClassIntrospector {
     
     private List<JavaClassVisitor> visitors;
 
-    public DefaultJavaClassIntrospector(JavaClassIntrospectorExtensionPoint visitors) {
+    public ExtensibleJavaClassIntrospector(JavaClassIntrospectorExtensionPoint visitors) {
         this.visitors = visitors.getClassVisitors();
     }
 

@@ -25,10 +25,10 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.easymock.EasyMock;
 
 /**
@@ -69,8 +69,8 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
         EasyMock.replay(extension);
         visitors.addClassVisitor(extension);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
-        DefaultJavaClassIntrospector introspector = new DefaultJavaClassIntrospector(visitors);
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
+        ExtensibleJavaClassIntrospector introspector = new ExtensibleJavaClassIntrospector(visitors);
         introspector.introspect(Bar.class, javaImplementationFactory.createJavaImplementation());
         EasyMock.verify(extension);
     }

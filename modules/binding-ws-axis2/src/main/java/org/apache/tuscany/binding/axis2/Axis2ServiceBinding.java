@@ -47,7 +47,7 @@ import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
-import org.apache.tuscany.http.ServletHostExtensionPoint;
+import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.Operation.ConversationSequence;
@@ -60,7 +60,6 @@ import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
-import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 
 /**
  * An implementation of a {@link ServiceBindingExtension} configured with the Axis2 binding
@@ -71,13 +70,13 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     private WebServiceBinding wsBinding;
     private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
-    private ServletHostExtensionPoint servletHost;
+    private ServletHost servletHost;
 
     private static final QName BINDING_WS = new QName(SCA_NS, "binding.ws");
 
     public Axis2ServiceBinding(URI uri,
                                WebServiceBinding wsBinding,
-                               ServletHostExtensionPoint servletHost,
+                               ServletHost servletHost,
                                ConfigurationContext configContext) {
 
         super(uri);

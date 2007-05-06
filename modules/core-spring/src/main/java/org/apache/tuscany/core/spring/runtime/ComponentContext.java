@@ -27,22 +27,22 @@ import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.assembly.builder.Problem;
 import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospector;
+import org.apache.tuscany.implementation.java.introspect.ExtensibleJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
@@ -65,15 +65,15 @@ import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
+import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 /**
@@ -100,7 +100,7 @@ public class ComponentContext {
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
         JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
         
-        JavaInterfaceIntrospector interfaceIntrospector = new DefaultJavaInterfaceIntrospector(javaFactory, interfaceVisitors);
+        JavaInterfaceIntrospector interfaceIntrospector = new ExtensibleJavaInterfaceIntrospector(javaFactory, interfaceVisitors);
         
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
@@ -121,11 +121,11 @@ public class ComponentContext {
         for (JavaClassVisitor e : extensions) {
             classVisitors.addClassVisitor(e);
         }
-        JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector(classVisitors);
+        JavaClassIntrospector classIntrospector = new ExtensibleJavaClassIntrospector(classVisitors);
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        DefaultStAXArtifactProcessor staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory,
                                                                        interfaceContractMapper, staxProcessor);
         staxProcessors.addArtifactProcessor(compositeProcessor);

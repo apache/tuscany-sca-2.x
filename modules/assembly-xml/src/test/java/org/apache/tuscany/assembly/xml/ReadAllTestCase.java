@@ -35,16 +35,16 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class ReadAllTestCase extends TestCase {
-    private DefaultStAXArtifactProcessor staxProcessor;
+    private ExtensibleStAXArtifactProcessor staxProcessor;
 
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
@@ -62,7 +62,7 @@ public class ReadAllTestCase extends TestCase {
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
         
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));

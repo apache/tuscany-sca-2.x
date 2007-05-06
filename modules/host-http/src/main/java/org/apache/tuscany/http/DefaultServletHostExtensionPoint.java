@@ -22,8 +22,6 @@ package org.apache.tuscany.http;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.Servlet;
-
 /**
  * Default implementation of a servlet host extension point.
  * 
@@ -41,20 +39,7 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
         servletHosts.remove(servletHost);
     }
 
-    public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
-        if (servletHosts.isEmpty()) {
-            throw new ServletMappingException("No servlet host available");
-        }
-
-        // TODO implement selection of the correct servlet host based on the mapping
-        // For now just select the first one
-        servletHosts.get(0).addServletMapping(uri, servlet);
+    public List<ServletHost> getServletHosts() {
+        return servletHosts;
     }
-
-    public Servlet removeServletMapping(String uri) throws ServletMappingException {
-        // TODO implement selection of the correct servlet host based on the mapping
-        // For now just select the first one
-        return servletHosts.get(0).removeServletMapping(uri);
-    }
-
 }

@@ -16,36 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http;
+package org.apache.tuscany.interfacedef.wsdl;
 
-import java.util.List;
+import org.apache.tuscany.interfacedef.wsdl.impl.WSDLFactoryImpl;
 
 /**
- * An extension point for servlet hosts.
+ * A factory for the WSDL model.
  * 
  * @version $Rev$ $Date$
  */
-public interface ServletHostExtensionPoint {
-
-    /**
-     * Adds a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void addServletHost(ServletHost servletHost);
-
-    /**
-     * Removes a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void removeServletHost(ServletHost servletHost);
-    
-    /**
-     * Returns a list of servlet host extensions.
-     * 
-     * @return
-     */
-    List<ServletHost> getServletHosts();
+public class DefaultWSDLFactory extends WSDLFactoryImpl implements WSDLFactory {
 
 }

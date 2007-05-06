@@ -31,7 +31,7 @@ import org.apache.tuscany.contribution.service.UnrecognizedElementException;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultURLArtifactProcessor
+public class ExtensibleURLArtifactProcessor
     implements URLArtifactProcessor<Object> {
     
     private URLArtifactProcessorExtensionPoint processors;
@@ -41,7 +41,7 @@ public class DefaultURLArtifactProcessor
      * 
      * @param processors
      */
-    public DefaultURLArtifactProcessor(URLArtifactProcessorExtensionPoint processors) {
+    public ExtensibleURLArtifactProcessor(URLArtifactProcessorExtensionPoint processors) {
         this.processors = processors;
     }
 

@@ -21,9 +21,9 @@ package org.apache.tuscany.implementation.java.invocation;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;

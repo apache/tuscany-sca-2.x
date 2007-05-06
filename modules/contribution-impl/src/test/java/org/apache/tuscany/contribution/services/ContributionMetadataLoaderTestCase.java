@@ -26,9 +26,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.Contribution;
-import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
+import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionMetadataLoaderImpl;
 import org.apache.tuscany.contribution.service.impl.InvalidValueException;
 
@@ -66,7 +66,7 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
         ContributionMetadataLoaderImpl loader = 
-            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
+            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new ContributionFactoryImpl());
         Contribution contribution = loader.load(reader);
         assertNotNull(contribution);
         assertEquals(1, contribution.getImports().size());
@@ -77,7 +77,7 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         ContributionMetadataLoaderImpl loader = 
-            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new DefaultContributionFactory());
+            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new ContributionFactoryImpl());
         try {
             loader.load(reader);
             fail("InvalidException should have been thrown");

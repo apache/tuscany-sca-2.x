@@ -34,10 +34,10 @@ import org.apache.tuscany.contribution.service.util.FileHelper;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultPackageTypeDescriber implements TypeDescriber {
+public class PackageTypeDescriberImpl implements TypeDescriber {
     private final Map<String, String> contentTypeRegistry = new HashMap<String, String>();
 
-    public DefaultPackageTypeDescriber() {
+    public PackageTypeDescriberImpl() {
         super();
         init();
     }

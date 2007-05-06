@@ -23,9 +23,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InvalidOperationException;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Conversational;
@@ -36,12 +36,12 @@ import org.osoa.sca.annotations.EndsConversation;
  */
 public class ConversationalIntrospectionTestCase extends TestCase {
     private JavaInterfaceFactory javaFactory;
-    private DefaultJavaInterfaceIntrospector introspector;
+    private ExtensibleJavaInterfaceIntrospector introspector;
     
     protected void setUp() throws Exception {
         javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        introspector = new DefaultJavaInterfaceIntrospector(javaFactory, visitors);
+        introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
     }
 
     private Operation getOperation(Interface i, String name) {

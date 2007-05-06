@@ -22,10 +22,10 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.apache.tuscany.api.annotation.Resource;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 
 /**
  * @version $Rev$ $Date$

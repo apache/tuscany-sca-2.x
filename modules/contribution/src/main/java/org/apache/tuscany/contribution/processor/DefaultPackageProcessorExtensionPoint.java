@@ -17,13 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.processor.impl;
+package org.apache.tuscany.contribution.processor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.processor.PackageProcessor;
-import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 
 /**
  * Default implementation of ContributionProcessorRegistry

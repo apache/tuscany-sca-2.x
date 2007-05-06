@@ -41,7 +41,7 @@ import org.apache.tuscany.contribution.service.UnrecognizedElementException;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultStAXArtifactProcessor
+public class ExtensibleStAXArtifactProcessor
     implements StAXArtifactProcessor<Object> {
 
     private XMLInputFactory inputFactory;
@@ -53,7 +53,7 @@ public class DefaultStAXArtifactProcessor
      * @param inputFactory
      * @param outputFactory
      */
-    public DefaultStAXArtifactProcessor(StAXArtifactProcessorExtensionPoint processors, XMLInputFactory inputFactory, XMLOutputFactory outputFactory) {
+    public ExtensibleStAXArtifactProcessor(StAXArtifactProcessorExtensionPoint processors, XMLInputFactory inputFactory, XMLOutputFactory outputFactory) {
         super();
         this.processors = processors;
         this.inputFactory = inputFactory;

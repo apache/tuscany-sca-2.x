@@ -16,35 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.interfacedef.wsdl.impl;
+package org.apache.tuscany.binding.ws;
 
-import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
-import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.binding.ws.impl.WebServiceBindingFactoryImpl;
 
 /**
  * A factory for the WSDL model.
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultWSDLFactory implements WSDLFactory {
-
-    public WSDLInterface createWSDLInterface() {
-        return new WSDLInterfaceImpl();
-    }
-    
-    public WSDLDefinition createWSDLDefinition() {
-        return new WSDLDefinitionImpl();
-    }
-    
-    public WSDLInterfaceContract createWSDLInterfaceContract() {
-        return new WSDLInterfaceContractImpl();
-    }
-    
-    public XSDefinition createXSDefinition() {
-        return new XSDefinitionImpl();
-    }
+public class DefaultWebServiceBindingFactory extends WebServiceBindingFactoryImpl implements WebServiceBindingFactory {
 
 }

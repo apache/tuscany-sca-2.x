@@ -16,36 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http;
 
-import java.util.List;
+package org.apache.tuscany.assembly;
+
+import org.apache.tuscany.assembly.impl.AssemblyFactoryImpl;
 
 /**
- * An extension point for servlet hosts.
+ * A factory for the assembly model.
  * 
  * @version $Rev$ $Date$
  */
-public interface ServletHostExtensionPoint {
-
-    /**
-     * Adds a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void addServletHost(ServletHost servletHost);
-
-    /**
-     * Removes a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void removeServletHost(ServletHost servletHost);
-    
-    /**
-     * Returns a list of servlet host extensions.
-     * 
-     * @return
-     */
-    List<ServletHost> getServletHosts();
+public class DefaultAssemblyFactory extends AssemblyFactoryImpl implements AssemblyFactory {
 
 }

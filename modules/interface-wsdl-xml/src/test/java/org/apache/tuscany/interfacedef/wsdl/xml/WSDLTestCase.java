@@ -26,10 +26,10 @@ import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 
 /**
  * Test reading WSDL interfaces.
@@ -40,12 +40,12 @@ public class WSDLTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultURLArtifactProcessorExtensionPoint documentProcessors;
-    DefaultURLArtifactProcessor documentProcessor;
+    ExtensibleURLArtifactProcessor documentProcessor;
 
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
         documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
-        documentProcessor = new DefaultURLArtifactProcessor(documentProcessors);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
         WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
         documentProcessors.addArtifactProcessor(wsdlProcessor);
