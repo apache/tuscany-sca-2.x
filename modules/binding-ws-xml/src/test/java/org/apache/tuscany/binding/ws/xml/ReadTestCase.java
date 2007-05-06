@@ -30,22 +30,22 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ComponentType;
 import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
-import org.apache.tuscany.binding.ws.impl.DefaultWebServiceBindingFactory;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
+import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test reading WSDL interfaces.
@@ -56,7 +56,7 @@ public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    DefaultStAXArtifactProcessor staxProcessor;
+    ExtensibleStAXArtifactProcessor staxProcessor;
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
@@ -70,7 +70,7 @@ public class ReadTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         wsFactory = new DefaultWebServiceBindingFactory();
         wsdlFactory = new DefaultWSDLFactory();
         

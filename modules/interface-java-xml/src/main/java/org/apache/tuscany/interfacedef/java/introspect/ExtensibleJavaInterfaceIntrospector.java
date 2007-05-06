@@ -44,7 +44,7 @@ import org.osoa.sca.annotations.Remotable;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospector {
+public class ExtensibleJavaInterfaceIntrospector implements JavaInterfaceIntrospector {
     public static final String IDL_INPUT = "idl:input";
 
     private static final String UNKNOWN_DATABINDING = null;
@@ -52,7 +52,7 @@ public class DefaultJavaInterfaceIntrospector implements JavaInterfaceIntrospect
     private JavaInterfaceFactory javaFactory;
     private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
 
-    public DefaultJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
+    public ExtensibleJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
         this.javaFactory = javaFactory;
         this.visitors = visitors.getInterfaceVisitors();
     }

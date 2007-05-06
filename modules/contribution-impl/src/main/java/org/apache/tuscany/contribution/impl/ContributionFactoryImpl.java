@@ -16,20 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.ws.impl;
 
-import org.apache.tuscany.binding.ws.WebServiceBinding;
-import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
+package org.apache.tuscany.contribution.impl;
 
-/**
- * A factory for the WSDL model.
- * 
- * @version $Rev$ $Date$
- */
-public class DefaultWebServiceBindingFactory implements WebServiceBindingFactory {
+import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionFactory;
+import org.apache.tuscany.contribution.ContributionImport;
+import org.apache.tuscany.contribution.DeployedArtifact;
 
-    public WebServiceBinding createWebServiceBinding() {
-        return new WebServiceBindingImpl();
+public class ContributionFactoryImpl implements ContributionFactory {
+    
+    public Contribution createContribution() {
+        return new ContributionImpl();
     }
 
+    public DeployedArtifact createDeplyedArtifact() {
+        return new DeployedArtifactImpl();
+    }
+
+    public ContributionImport createContributionImport() {
+        return new ContributionImportImpl();
+    }
 }

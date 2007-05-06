@@ -32,9 +32,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.easymock.EasyMock;
@@ -43,7 +43,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
-    private DefaultJavaInterfaceIntrospector impl;
+    private ExtensibleJavaInterfaceIntrospector impl;
     private DefaultJavaInterfaceIntrospectorExtensionPoint visitors;
 
     public void testSimpleInterface() throws InvalidInterfaceException {
@@ -87,7 +87,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        impl = new DefaultJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
+        impl = new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
 
     }
 

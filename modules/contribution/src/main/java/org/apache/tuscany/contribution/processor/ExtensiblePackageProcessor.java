@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.processor.impl;
+package org.apache.tuscany.contribution.processor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +26,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.tuscany.contribution.processor.PackageProcessor;
-import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.TypeDescriber;
 import org.apache.tuscany.contribution.service.UnsupportedContentTypeException;
@@ -37,7 +35,7 @@ import org.apache.tuscany.contribution.service.UnsupportedContentTypeException;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultPackageProcessor implements PackageProcessor {
+public class ExtensiblePackageProcessor implements PackageProcessor {
 
     private PackageProcessorExtensionPoint processors;
 
@@ -46,7 +44,7 @@ public class DefaultPackageProcessor implements PackageProcessor {
      */
     private TypeDescriber packageTypeDescriber;
 
-    public DefaultPackageProcessor(PackageProcessorExtensionPoint processors, TypeDescriber packageTypeDescriber) {
+    public ExtensiblePackageProcessor(PackageProcessorExtensionPoint processors, TypeDescriber packageTypeDescriber) {
         this.processors = processors; 
         this.packageTypeDescriber = packageTypeDescriber;
     }

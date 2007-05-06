@@ -16,36 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http;
+package org.apache.tuscany.binding.ws.impl;
 
-import java.util.List;
+import org.apache.tuscany.binding.ws.WebServiceBinding;
+import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
 
 /**
- * An extension point for servlet hosts.
+ * A factory for the WSDL model.
  * 
  * @version $Rev$ $Date$
  */
-public interface ServletHostExtensionPoint {
+public abstract class WebServiceBindingFactoryImpl implements WebServiceBindingFactory {
 
-    /**
-     * Adds a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void addServletHost(ServletHost servletHost);
-
-    /**
-     * Removes a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void removeServletHost(ServletHost servletHost);
-    
-    /**
-     * Returns a list of servlet host extensions.
-     * 
-     * @return
-     */
-    List<ServletHost> getServletHosts();
+    public WebServiceBinding createWebServiceBinding() {
+        return new WebServiceBindingImpl();
+    }
 
 }

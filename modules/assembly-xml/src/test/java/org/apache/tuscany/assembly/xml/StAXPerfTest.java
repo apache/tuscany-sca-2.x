@@ -27,13 +27,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test the performance of StAX parsing.
@@ -46,7 +46,7 @@ public class StAXPerfTest {
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper interfaceContractMapper;
-    private DefaultStAXArtifactProcessor staxProcessor;
+    private ExtensibleStAXArtifactProcessor staxProcessor;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
 
     public static void main(String[] args) throws Exception {
@@ -78,7 +78,7 @@ public class StAXPerfTest {
         policyFactory = new DefaultPolicyFactory();
         interfaceContractMapper = new DefaultInterfaceContractMapper();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
     }
 
     public void tearDown() throws Exception {

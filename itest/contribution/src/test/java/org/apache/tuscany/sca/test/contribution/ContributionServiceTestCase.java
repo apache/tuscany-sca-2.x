@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeDocumentProcessor;
@@ -42,17 +42,17 @@ import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
+import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.contribution.processor.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensiblePackageProcessor;
+import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessor;
-import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
@@ -60,15 +60,15 @@ import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
-import org.apache.tuscany.contribution.service.impl.DefaultPackageTypeDescriber;
+import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.contribution.service.util.IOHelper;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * This is more intended to be a integration test then a unit test. *
@@ -94,10 +94,10 @@ public class ContributionServiceTestCase extends TestCase {
         // Add artifact processor extension points
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         extensionRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
-        DefaultStAXArtifactProcessor staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
-        DefaultURLArtifactProcessor documentProcessor = new DefaultURLArtifactProcessor(documentProcessors);
+        ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
         // Register base artifact processors
         staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper,
@@ -112,9 +112,9 @@ public class ContributionServiceTestCase extends TestCase {
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
         // Create package processor extension point
-        DefaultPackageTypeDescriber describer = new DefaultPackageTypeDescriber();
+        PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
-        PackageProcessor packageProcessor = new DefaultPackageProcessor(packageProcessors, describer);
+        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
         extensionRegistry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
 
         // Register base package processors
@@ -128,7 +128,7 @@ public class ContributionServiceTestCase extends TestCase {
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getClass().getClassLoader());
         this.contributionService = new ContributionServiceImpl(repository, packageProcessor, documentProcessor,
                                                                artifactResolver, assemblyFactory,
-                                                               new DefaultContributionFactory(), XMLInputFactory
+                                                               new ContributionFactoryImpl(), XMLInputFactory
                                                                    .newInstance());
     }
 

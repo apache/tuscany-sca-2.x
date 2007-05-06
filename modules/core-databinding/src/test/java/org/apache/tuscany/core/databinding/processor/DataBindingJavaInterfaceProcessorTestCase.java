@@ -27,10 +27,10 @@ import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 

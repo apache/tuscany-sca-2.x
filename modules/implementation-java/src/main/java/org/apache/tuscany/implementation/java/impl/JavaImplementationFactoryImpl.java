@@ -21,17 +21,10 @@ package org.apache.tuscany.implementation.java.impl;
 /**
  * A factory for the Java model.
  */
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 
-public class DefaultJavaImplementationFactory implements JavaImplementationFactory {
-
-    //private AssemblyFactory assemblyFactory;
-
-    public DefaultJavaImplementationFactory(AssemblyFactory assemblyFactory) {
-        //this.assemblyFactory = assemblyFactory;
-    }
+public abstract class JavaImplementationFactoryImpl implements JavaImplementationFactory {
 
     public JavaImplementation createJavaImplementation() {
         JavaImplementation javaImplementation = new JavaImplementationImpl();

@@ -29,17 +29,17 @@ import junit.framework.TestCase;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -48,7 +48,7 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    private DefaultURLArtifactProcessor documentProcessor;
+    private ExtensibleURLArtifactProcessor documentProcessor;
     private DefaultArtifactResolver resolver; 
 
     public void setUp() throws Exception {
@@ -57,11 +57,11 @@ public class ReadDocumentTestCase extends TestCase {
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
         
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
-        documentProcessor = new DefaultURLArtifactProcessor(documentProcessors); 
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
         
         // Create Stax processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        DefaultStAXArtifactProcessor staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));

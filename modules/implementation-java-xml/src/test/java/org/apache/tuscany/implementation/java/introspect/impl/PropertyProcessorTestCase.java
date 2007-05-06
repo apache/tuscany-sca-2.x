@@ -25,10 +25,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;

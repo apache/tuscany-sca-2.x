@@ -46,7 +46,7 @@ import org.apache.tuscany.interfacedef.impl.OperationImpl;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultAssemblyFactory implements AssemblyFactory {
+public abstract class AssemblyFactoryImpl implements AssemblyFactory {
 
     public AbstractProperty createAbstractProperty() {
         return new AbstractPropertyImpl();

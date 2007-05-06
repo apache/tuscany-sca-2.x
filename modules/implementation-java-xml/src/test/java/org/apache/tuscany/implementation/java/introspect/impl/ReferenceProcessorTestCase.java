@@ -25,14 +25,14 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
+import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.impl.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospector;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Reference;
@@ -117,7 +117,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
         type = javaImplementationFactory.createJavaImplementation();
         JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), new DefaultJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors));
+        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors));
     }
 
     private interface Ref {

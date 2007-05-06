@@ -16,36 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http;
+package org.apache.tuscany.interfacedef.java.impl;
 
-import java.util.List;
+import org.apache.tuscany.interfacedef.java.JavaInterface;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 
 /**
- * An extension point for servlet hosts.
- * 
- * @version $Rev$ $Date$
+ * A factory for the Java model.
  */
-public interface ServletHostExtensionPoint {
+public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
 
-    /**
-     * Adds a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void addServletHost(ServletHost servletHost);
-
-    /**
-     * Removes a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void removeServletHost(ServletHost servletHost);
+    public JavaInterface createJavaInterface() {
+        return new JavaInterfaceImpl();
+    }
     
-    /**
-     * Returns a list of servlet host extensions.
-     * 
-     * @return
-     */
-    List<ServletHost> getServletHosts();
+    public JavaInterfaceContract createJavaInterfaceContract() {
+        return new JavaInterfaceContractImpl();
+    }
 
 }

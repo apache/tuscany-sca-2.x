@@ -23,11 +23,11 @@ import static org.apache.tuscany.implementation.java.introspect.impl.ModelHelper
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.Multiplicity;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.DefaultJavaImplementationFactory;
 import org.osoa.sca.annotations.Reference;
 
 /**

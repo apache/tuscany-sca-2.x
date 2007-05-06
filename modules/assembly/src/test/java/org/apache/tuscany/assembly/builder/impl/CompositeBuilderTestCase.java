@@ -28,7 +28,7 @@ import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 
 public class CompositeBuilderTestCase extends TestCase {

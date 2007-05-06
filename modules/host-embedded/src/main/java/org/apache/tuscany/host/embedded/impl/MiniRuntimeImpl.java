@@ -33,17 +33,17 @@ import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
-import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
+import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.contribution.processor.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.ExtensiblePackageProcessor;
+import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessor;
-import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
@@ -51,7 +51,7 @@ import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
-import org.apache.tuscany.contribution.service.impl.DefaultPackageTypeDescriber;
+import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.core.runtime.ActivationException;
@@ -122,10 +122,10 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
     protected ContributionService createContributionService() throws ActivationException {
         // Add artifact processor extension points
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        DefaultStAXArtifactProcessor staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         extensionPointRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
         DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
-        DefaultURLArtifactProcessor documentProcessor = new DefaultURLArtifactProcessor(documentProcessors);
+        ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         extensionPointRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
         // Register base artifact processors
@@ -141,9 +141,9 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
         // Create package processor extension point
-        DefaultPackageTypeDescriber describer = new DefaultPackageTypeDescriber();
+        PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
-        PackageProcessor packageProcessor = new DefaultPackageProcessor(packageProcessors, describer);
+        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
         extensionPointRegistry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
 
         // Register base package processors
@@ -162,7 +162,7 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
                                                                               documentProcessor, artifactResolver,
                                                                               assemblyFactory,
-                                                                              new DefaultContributionFactory(),
+                                                                              new ContributionFactoryImpl(),
                                                                               xmlFactory);
         return contributionService;
     }

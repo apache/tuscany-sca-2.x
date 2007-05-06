@@ -35,9 +35,9 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
-import org.apache.tuscany.interfacedef.wsdl.impl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**

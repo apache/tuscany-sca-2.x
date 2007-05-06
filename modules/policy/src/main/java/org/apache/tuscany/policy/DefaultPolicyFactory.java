@@ -16,36 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http;
+package org.apache.tuscany.policy;
 
-import java.util.List;
+import org.apache.tuscany.policy.impl.PolicyFactoryImpl;
 
 /**
- * An extension point for servlet hosts.
+ * A factory for the policy model.
  * 
  * @version $Rev$ $Date$
  */
-public interface ServletHostExtensionPoint {
-
-    /**
-     * Adds a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void addServletHost(ServletHost servletHost);
-
-    /**
-     * Removes a servlet host extension.
-     * 
-     * @param servletHost
-     */
-    void removeServletHost(ServletHost servletHost);
-    
-    /**
-     * Returns a list of servlet host extensions.
-     * 
-     * @return
-     */
-    List<ServletHost> getServletHosts();
+public class DefaultPolicyFactory extends PolicyFactoryImpl implements PolicyFactory {
 
 }

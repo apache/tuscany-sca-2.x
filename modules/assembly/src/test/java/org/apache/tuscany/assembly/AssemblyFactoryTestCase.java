@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 
 /**
  * Test building of assembly model instances using the assembly factory.
