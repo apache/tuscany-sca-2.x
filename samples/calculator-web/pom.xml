@@ -39,7 +39,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
+            <artifactId>tuscany-host-webapp</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
