@@ -33,11 +33,13 @@ import org.apache.tuscany.contribution.service.ContributionException;
  * @version $Rev$ $Date$
  */
 public interface PackageProcessor {
-    // /**
-    // * Returns the type of package handled by this package processor.
-    // * @return the type of package handled by this package processor
-    // */
-    // String getPackageType();
+    
+    /**
+     * Returns the type of package processed by this package processor.
+     * 
+     * @return the package type
+     */
+    String getPackageType();
 
     /**
      * Retrieve a list of artifacts for the specific package type
@@ -58,4 +60,5 @@ public interface PackageProcessor {
      * @return
      */
     URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException;
+
 }

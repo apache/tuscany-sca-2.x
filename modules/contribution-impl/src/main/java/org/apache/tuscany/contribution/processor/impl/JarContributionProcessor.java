@@ -31,18 +31,15 @@ import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
-import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.service.ContributionException;
 
-public class JarContributionProcessor extends AbstractContributionPackageProcessor implements
-    PackageProcessor {
+public class JarContributionProcessor implements PackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
     public static final String PACKAGE_TYPE = ContentType.JAR;
 
-    public JarContributionProcessor(PackageProcessorExtensionPoint packageProcessors) {
-        super(packageProcessors);
+    public JarContributionProcessor() {
     }
 
     public String getPackageType() {

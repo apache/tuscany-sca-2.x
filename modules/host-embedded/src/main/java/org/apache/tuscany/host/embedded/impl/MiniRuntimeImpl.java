@@ -38,9 +38,11 @@ import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessor;
 import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
@@ -49,7 +51,7 @@ import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
-import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
+import org.apache.tuscany.contribution.service.impl.DefaultPackageTypeDescriber;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.core.runtime.ActivationException;
@@ -139,13 +141,14 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
         // Create package processor extension point
-        PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
-        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint(describer);
+        DefaultPackageTypeDescriber describer = new DefaultPackageTypeDescriber();
+        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
+        PackageProcessor packageProcessor = new DefaultPackageProcessor(packageProcessors, describer);
         extensionPointRegistry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
 
         // Register base package processors
-        new JarContributionProcessor(packageProcessors);
-        new FolderContributionProcessor(packageProcessors);
+        packageProcessors.addPackageProcessor(new JarContributionProcessor());
+        packageProcessors.addPackageProcessor(new FolderContributionProcessor());
 
         // Create contribution service
         ContributionRepository repository;
@@ -156,7 +159,7 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
         }
 
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(hostClassLoader);
-        ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
+        ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
                                                                               documentProcessor, artifactResolver,
                                                                               assemblyFactory,
                                                                               new DefaultContributionFactory(),

@@ -24,9 +24,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.impl.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
-import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 
 public class FolderContributionPackageProcessorTestCase extends TestCase {
     private static final String FOLDER_CONTRIBUTION = ".";
@@ -39,10 +37,7 @@ public class FolderContributionPackageProcessorTestCase extends TestCase {
     }
     
     public final void testProcessPackageArtifacts() throws Exception {
-        PackageProcessorExtensionPoint packageProcessors = 
-            new DefaultPackageProcessorExtensionPoint(new PackageTypeDescriberImpl()); 
-        FolderContributionProcessor folderProcessor = 
-            new FolderContributionProcessor(packageProcessors);
+        FolderContributionProcessor folderProcessor = new FolderContributionProcessor();
 
         List<URI> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
         assertNotNull(artifacts);
