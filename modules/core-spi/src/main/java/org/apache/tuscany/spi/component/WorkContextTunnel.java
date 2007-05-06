@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.spi.component;
 
+import org.apache.tuscany.scope.Scope;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+
 
 /**
  * Class for tunneling a WorkContext through the invocation of a user class.
@@ -25,7 +28,15 @@ package org.apache.tuscany.spi.component;
  * @version $Rev$ $Date$
  */
 public final class WorkContextTunnel {
-    private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();
+
+    private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>(){
+        protected synchronized WorkContext initialValue() {
+            // TODO: is this the correct way to initialize a new WorkContext?
+            WorkContext workContext = new WorkContextImpl();
+            workContext.setIdentifier(Scope.COMPOSITE, ComponentNames.TUSCANY_APPLICATION_ROOT.resolve("default"));
+            return workContext;
+        }
+    };
 
     private WorkContextTunnel() {
     }

@@ -38,7 +38,6 @@ import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -54,6 +53,7 @@ import org.apache.tuscany.rmi.RMIHostExtensionPoint;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 /**
@@ -213,11 +213,6 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         
         Interceptor headInterceptor = chain.getHeadInterceptor();
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        if (workContext == null) {
-            workContext = new WorkContextImpl();
-            workContext.setIdentifier(Scope.COMPOSITE, ComponentNames.TUSCANY_APPLICATION_ROOT.resolve("default"));
-            WorkContextTunnel.setThreadWorkContext(workContext);
-        }
         
         String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
         

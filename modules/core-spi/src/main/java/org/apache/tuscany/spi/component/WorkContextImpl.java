@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component;
+package org.apache.tuscany.spi.component;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.scope.ScopeIdentifier;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext}
