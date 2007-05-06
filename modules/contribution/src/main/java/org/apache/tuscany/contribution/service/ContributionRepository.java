@@ -44,7 +44,7 @@ public interface ContributionRepository {
      * @param contributionStream InputStream with the content of the
      *            distribution
      */
-    URL store(URI contribution, URL sourceURL, InputStream contributionStream) throws IOException;
+    URL store(String contribution, URL sourceURL, InputStream contributionStream) throws IOException;
     /**
      * Copy a contribution from the source URL to the repository
      * @param contribution
@@ -52,7 +52,7 @@ public interface ContributionRepository {
      * @return
      * @throws IOException
      */
-    URL store(URI contribution, URL sourceURL) throws IOException;
+    URL store(String contribution, URL sourceURL) throws IOException;
 
     /**
      * Look up the contribution by URI
@@ -62,19 +62,19 @@ public interface ContributionRepository {
      *         repository, it will be null if the contribution cannot be found
      *         in the repository
      */
-    URL find(URI contribution);
+    URL find(String contribution);
 
     /**
      * Remove a contribution from the repository
      * 
      * @param contribution The URI of the contribution to be removed
      */
-    void remove(URI contribution);
+    void remove(String contribution);
 
     /**
      * Get list of URIs for all the contributions in the repository
      * 
      * @return A list of contribution URIs
      */
-    List<URI> list();
+    List<String> list();
 }

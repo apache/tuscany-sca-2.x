@@ -98,15 +98,13 @@ public class DefaultSCADomain extends SCADomain {
             throw new ServiceRuntimeException(e);
         }
 
-        URI contributionURI = URI.create("sca://default/");
         try {
-            contributionService.contribute(contributionURI, contributionURL, false);
+            contribution = contributionService.contribute(location, contributionURL, false);
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
-        contribution = contributionService.getContribution(contributionURI);
         
         // Create an in-memory domain level composite
         AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
@@ -154,7 +152,7 @@ public class DefaultSCADomain extends SCADomain {
         // Remove the contribution from the in-memory repository
         ContributionService contributionService = runtime.getContributionService();
         try {
-            contributionService.remove(URI.create(location));
+            contributionService.remove(location);
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         }

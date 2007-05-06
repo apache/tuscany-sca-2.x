@@ -21,7 +21,6 @@ package org.apache.tuscany.contribution.services;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 
 import junit.framework.TestCase;
@@ -41,7 +40,7 @@ public class ContributionRepositoryTestCase extends TestCase {
 
     public void testStore() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
-        URI contribution = URI.create("sample-calculator.jar");
+        String contribution = "sample-calculator.jar";
         URL contributionLocation = getClass().getResource(resourceLocation);
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
         repository.store(contribution, contributionLocation, contributionStream);
@@ -52,7 +51,7 @@ public class ContributionRepositoryTestCase extends TestCase {
 
     public void testRemove() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
-        URI contribution = URI.create("sample-calculator.jar");
+        String contribution = "sample-calculator.jar";
         URL contributionLocation = getClass().getResource(resourceLocation);
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
         repository.store(contribution, contributionLocation, contributionStream);
@@ -64,7 +63,7 @@ public class ContributionRepositoryTestCase extends TestCase {
 
     public void testList() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
-        URI contribution = URI.create("sample-calculator.jar");
+        String contribution = "sample-calculator.jar";
         URL contributionLocation = getClass().getResource(resourceLocation);
         InputStream contributionStream = getClass().getResourceAsStream(resourceLocation);
         repository.store(contribution, contributionLocation, contributionStream);

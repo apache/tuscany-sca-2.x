@@ -134,14 +134,14 @@ public class ContributionServiceTestCase extends TestCase {
 
     public void testContributeJAR() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        String contributionId = CONTRIBUTION_001_ID;
         contributionService.contribute(contributionId, contributionLocation, false);
         assertNotNull(contributionService.getContribution(contributionId));
     }
 
     public void testStoreContributionPackageInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        String contributionId = CONTRIBUTION_001_ID;
         contributionService.contribute(contributionId, contributionLocation, true);
 
         assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation()))
@@ -157,7 +157,7 @@ public class ContributionServiceTestCase extends TestCase {
 
     public void testStoreContributionStreamInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        String contributionId = CONTRIBUTION_001_ID;
 
         InputStream contributionStream = contributionLocation.openStream();
         try {
@@ -179,10 +179,10 @@ public class ContributionServiceTestCase extends TestCase {
 
     public void testStoreDuplicatedContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId1 = URI.create(CONTRIBUTION_001_ID);
+        String contributionId1 = CONTRIBUTION_001_ID;
         contributionService.contribute(contributionId1, contributionLocation, true);
         assertNotNull(contributionService.getContribution(contributionId1));
-        URI contributionId2 = URI.create(CONTRIBUTION_002_ID);
+        String contributionId2 = CONTRIBUTION_002_ID;
         contributionService.contribute(contributionId2, contributionLocation, true);
         assertNotNull(contributionService.getContribution(contributionId2));
     }
@@ -204,11 +204,11 @@ public class ContributionServiceTestCase extends TestCase {
 
     public void testAddDeploymentComposites() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
-        URI contributionId = URI.create(CONTRIBUTION_001_ID);
+        String contributionId = CONTRIBUTION_001_ID;
         contributionService.contribute(contributionId, contributionLocation, false);
         assertNotNull(contributionService.getContribution(contributionId));
 
-        URI artifactId = URI.create("contributionComposite.composite");
+        String artifactId = "contributionComposite.composite";
         Composite composite = (new DefaultAssemblyFactory()).createComposite();
         composite.setName(new QName(null, "contributionComposite"));
         composite.setURI("contributionComposite.composite");

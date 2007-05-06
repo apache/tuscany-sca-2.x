@@ -57,7 +57,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
     private static final String NS = "http://tuscany.apache.org/xmlns/1.0-SNAPSHOT";
     private static final String DOMAIN_INDEX_FILENAME = "sca-domain.xml";
     private final File rootFile;
-    private Map<URI, String> contributionMap = new HashMap<URI, String>();
+    private Map<String, String> contributionMap = new HashMap<String, String>();
 
     private URI domain;
     private XMLInputFactory factory;
@@ -125,7 +125,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         }
     }
 
-    public URL store(URI contribution, URL sourceURL, InputStream contributionStream) throws IOException {
+    public URL store(String contribution, URL sourceURL, InputStream contributionStream) throws IOException {
         // where the file should be stored in the repository
         File location = mapToFile(sourceURL);
         FileHelper.forceMkdir(location.getParentFile());
@@ -141,7 +141,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         return contributionURL;
     }
 
-    public URL store(URI contribution, URL sourceURL) throws IOException {
+    public URL store(String contribution, URL sourceURL) throws IOException {
         // where the file should be stored in the repository
         File location = mapToFile(sourceURL);
         File source = FileHelper.toFile(sourceURL);
@@ -165,7 +165,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         return location.toURL();
     }
 
-    public URL find(URI contribution) {
+    public URL find(String contribution) {
         if (contribution == null) {
             return null;
         }
@@ -181,7 +181,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         }
     }
 
-    public void remove(URI contribution) {
+    public void remove(String contribution) {
         URL contributionURL = this.find(contribution);
         if (contributionURL != null) {
             // remove
@@ -195,8 +195,8 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         }
     }
 
-    public List<URI> list() {
-        return new ArrayList<URI>(contributionMap.keySet());
+    public List<String> list() {
+        return new ArrayList<String>(contributionMap.keySet());
     }
 
     public void init() {
@@ -225,7 +225,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
                         if ("contribution".equals(name)) {
                             String uri = reader.getAttributeValue(null, "uri");
                             String location = reader.getAttributeValue(null, "location");
-                            contributionMap.put(URI.create(uri), location);
+                            contributionMap.put(uri, location);
                         }
                         break;
                     default:
@@ -248,7 +248,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));
             writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             writer.println("<domain uri=\"" + getDomain() + "\" xmlns=\"" + NS + "\">");
-            for (Map.Entry<URI, String> e : contributionMap.entrySet()) {
+            for (Map.Entry<String, String> e : contributionMap.entrySet()) {
                 writer.println("    <contribution uri=\"" + e.getKey() + "\" location=\"" + e.getValue() + "\"/>");
             }
             writer.println("</domain>");
