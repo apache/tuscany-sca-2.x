@@ -57,7 +57,6 @@ import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.WireProcessorExtensionPoint;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.invocation.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.core.runtime.ActivationException;
@@ -75,6 +74,7 @@ import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 

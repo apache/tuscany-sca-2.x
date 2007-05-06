@@ -22,8 +22,8 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.WorkContextImpl;
 import org.easymock.EasyMock;
 
 /**
