@@ -70,6 +70,7 @@
                 <module>host-embedded</module>
                 <module>host-spi</module>
                 <module>host-http</module>
+                <module>host-webapp</module>
                 <module>http-jetty</module>
                 <module>http-tomcat</module>
                 <module>interface</module>
