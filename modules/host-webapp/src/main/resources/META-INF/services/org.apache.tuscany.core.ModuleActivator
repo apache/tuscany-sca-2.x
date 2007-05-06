@@ -1,0 +1,2 @@
+# Implementation class for the ModuleActivator
+org.apache.tuscany.sca.webapp.WebAppModuleActivator
