@@ -22,6 +22,7 @@ package org.apache.tuscany.assembly.xml;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -30,6 +31,7 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
@@ -46,6 +48,7 @@ public class ResolveTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private DefaultStAXArtifactProcessor staxProcessor;
     private DefaultArtifactResolver resolver; 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
@@ -57,6 +60,7 @@ public class ResolveTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
@@ -71,7 +75,7 @@ public class ResolveTestCase extends TestCase {
 
     public void testResolveConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors);
+        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ConstrainingType constrainingType = constrainingTypeReader.read(reader);
         is.close();
@@ -79,7 +83,7 @@ public class ResolveTestCase extends TestCase {
         resolver.add(constrainingType);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
         is.close();
@@ -93,7 +97,7 @@ public class ResolveTestCase extends TestCase {
 
     public void testResolveComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite nestedComposite = compositeReader.read(reader);
         is.close();
@@ -101,7 +105,7 @@ public class ResolveTestCase extends TestCase {
         resolver.add(nestedComposite);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
         is.close();

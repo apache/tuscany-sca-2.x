@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
@@ -33,7 +34,9 @@ import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -117,21 +120,23 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
     protected ContributionService createContributionService() throws ActivationException {
         // Add artifact processor extension points
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        DefaultStAXArtifactProcessor staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         extensionPointRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
         DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
+        DefaultURLArtifactProcessor documentProcessor = new DefaultURLArtifactProcessor(documentProcessors);
         extensionPointRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
 
         // Register base artifact processors
         staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, interfaceContractMapper,
-                                                           staxProcessors));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+                                                           staxProcessor));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
 
         XMLInputFactory inputFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass()
             .getClassLoader());
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
         // Create package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
@@ -152,7 +157,7 @@ public class MiniRuntimeImpl extends RuntimeActivatorImpl<SimpleRuntimeInfo> {
 
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(hostClassLoader);
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessors,
-                                                                              documentProcessors, artifactResolver,
+                                                                              documentProcessor, artifactResolver,
                                                                               assemblyFactory,
                                                                               new DefaultContributionFactory(),
                                                                               xmlFactory);

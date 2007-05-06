@@ -22,6 +22,7 @@ package org.apache.tuscany.implementation.java.xml;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -31,6 +32,7 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
@@ -53,6 +55,7 @@ public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    DefaultStAXArtifactProcessor staxProcessor;
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
@@ -63,11 +66,12 @@ public class ReadTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
         JavaClassIntrospector classIntrospector = new DefaultJavaClassIntrospector(new DefaultJavaClassIntrospectorExtensionPoint());
         
-        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         staxProcessors.addArtifactProcessor(compositeProcessor);
 
         JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(factory, policyFactory, javaImplementationFactory, classIntrospector);
@@ -83,7 +87,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
@@ -95,14 +99,14 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadAndResolveComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
         
         ArtifactResolver resolver = new DefaultArtifactResolver(getClass().getClassLoader());
-        staxProcessors.resolve(composite, resolver);
+        staxProcessor.resolve(composite, resolver);
 
         DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
         compositeUtil.build(composite);

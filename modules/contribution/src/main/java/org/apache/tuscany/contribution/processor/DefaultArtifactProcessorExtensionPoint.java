@@ -44,7 +44,7 @@ abstract class DefaultArtifactProcessorExtensionPoint {
      * @param artifactType an artifact type
      * @return the processor associated with the given artifact type
      */
-    protected ArtifactProcessor getProcessor(Object artifactType) {
+    public ArtifactProcessor getProcessor(Object artifactType) {
         return processorsByArtifactType.get(artifactType);
     }
 
@@ -53,7 +53,7 @@ abstract class DefaultArtifactProcessorExtensionPoint {
      * @param modelType a model type
      * @return the processor associated with the given model type
      */
-    protected ArtifactProcessor getProcessor(Class<?> modelType) {
+    public ArtifactProcessor getProcessor(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
         for (Class<?> c : classes) {
             ArtifactProcessor processor = processorsByModelType.get(c);

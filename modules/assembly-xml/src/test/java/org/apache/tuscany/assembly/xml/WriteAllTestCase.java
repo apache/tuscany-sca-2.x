@@ -22,6 +22,9 @@ package org.apache.tuscany.assembly.xml;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
@@ -30,6 +33,7 @@ import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
@@ -44,6 +48,7 @@ import org.apache.tuscany.policy.impl.DefaultPolicyFactory;
  */
 public class WriteAllTestCase extends TestCase {
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private DefaultStAXArtifactProcessor staxProcessor;
     private DefaultArtifactResolver resolver; 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
@@ -57,9 +62,10 @@ public class WriteAllTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessors));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessors));
+        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
         resolver = new DefaultArtifactResolver(getClass().getClassLoader());
     }
 
@@ -73,34 +79,34 @@ public class WriteAllTestCase extends TestCase {
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = staxProcessors.read(is, Composite.class);
+        Composite composite = staxProcessor.read(is, Composite.class);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessors.write(composite, bos);
+        staxProcessor.write(composite, bos);
     }
 
     public void testReadWireWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = staxProcessors.read(is, Composite.class);
-        staxProcessors.resolve(composite, resolver);
+        Composite composite = staxProcessor.read(is, Composite.class);
+        staxProcessor.resolve(composite, resolver);
         compositeUtil.build(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessors.write(composite, bos);
+        staxProcessor.write(composite, bos);
     }
     
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
-        ComponentType componentType = staxProcessors.read(is, ComponentType.class);
-        staxProcessors.resolve(componentType, resolver);
+        ComponentType componentType = staxProcessor.read(is, ComponentType.class);
+        staxProcessor.resolve(componentType, resolver);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessors.write(componentType, bos);
+        staxProcessor.write(componentType, bos);
     }
 
     public void testReadWriteConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = staxProcessors.read(is, ConstrainingType.class);
-        staxProcessors.resolve(constrainingType, resolver);
+        ConstrainingType constrainingType = staxProcessor.read(is, ConstrainingType.class);
+        staxProcessor.resolve(constrainingType, resolver);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessors.write(constrainingType, bos);
+        staxProcessor.write(constrainingType, bos);
     }
 
 }

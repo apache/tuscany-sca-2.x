@@ -22,6 +22,7 @@ package org.apache.tuscany.binding.ws.xml;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -35,6 +36,7 @@ import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.impl.DefaultWebServiceBindingFactory;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
@@ -54,6 +56,7 @@ public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    DefaultStAXArtifactProcessor staxProcessor;
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
@@ -67,6 +70,7 @@ public class ReadTestCase extends TestCase {
         mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         wsFactory = new DefaultWebServiceBindingFactory();
         wsdlFactory = new DefaultWSDLFactory();
         
@@ -81,13 +85,14 @@ public class ReadTestCase extends TestCase {
     public void tearDown() throws Exception {
         inputFactory = null;
         staxProcessors = null;
+        staxProcessor = null;
         policyFactory = null;
         factory = null;
         mapper = null;
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeProcessor componentTypeProcessor = new ComponentTypeProcessor(factory, policyFactory, staxProcessors);
+        ComponentTypeProcessor componentTypeProcessor = new ComponentTypeProcessor(factory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = componentTypeProcessor.read(reader);
@@ -97,7 +102,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessors);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);

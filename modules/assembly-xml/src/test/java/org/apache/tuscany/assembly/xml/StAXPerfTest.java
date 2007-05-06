@@ -22,11 +22,13 @@ package org.apache.tuscany.assembly.xml;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
@@ -44,6 +46,7 @@ public class StAXPerfTest {
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper interfaceContractMapper;
+    private DefaultStAXArtifactProcessor staxProcessor;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
 
     public static void main(String[] args) throws Exception {
@@ -75,6 +78,7 @@ public class StAXPerfTest {
         policyFactory = new DefaultPolicyFactory();
         interfaceContractMapper = new DefaultInterfaceContractMapper();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
     }
 
     public void tearDown() throws Exception {
@@ -87,7 +91,7 @@ public class StAXPerfTest {
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         CompositeProcessor loader = new CompositeProcessor(assemblyFactory,
-                                                           policyFactory, interfaceContractMapper, staxProcessors);
+                                                           policyFactory, interfaceContractMapper, staxProcessor);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 
         Composite composite = loader.read(reader);
