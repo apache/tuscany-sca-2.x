@@ -77,7 +77,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     private JavaInterfaceFactory javaFactory;
     private JavaInterfaceIntrospector interfaceIntrospector;
 
-    public HeuristicPojoProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector interfaceIntrospector) {
+    public HeuristicPojoProcessor(AssemblyFactory assemblyFactory,
+                                  JavaInterfaceFactory javaFactory,
+                                  JavaInterfaceIntrospector interfaceIntrospector) {
         super(assemblyFactory);
         this.interfaceIntrospector = interfaceIntrospector;
         this.javaFactory = javaFactory;
@@ -145,6 +147,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             if (!isPublicSetter(method)) {
                 continue;
             }
+            if (method.isAnnotationPresent(Callback.class)) {
+                continue;
+            }
             if (!isInServiceInterface(method, services)) {
                 // Not part of the service interface
                 String name = toPropertyName(method.getName());
@@ -168,6 +173,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             if (!isProtectedSetter(method)) {
                 continue;
             }
+            if (method.isAnnotationPresent(Callback.class)) {
+                continue;
+            }
             Class<?> param = method.getParameterTypes()[0];
             String name = toPropertyName(method.getName());
             setters.add(name);
@@ -188,6 +196,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         // for the same name
         Set<Field> fields = getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
+            if (field.isAnnotationPresent(Callback.class)) {
+                continue;
+            }
             if (setters.contains(field.getName())) {
                 continue;
             }
@@ -298,8 +309,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    private void calcParamNames(JavaParameterImpl[] parameters, Map<String, JavaElementImpl> props, Map<String, JavaElementImpl> refs)
-        throws AmbiguousConstructorException {
+    private void calcParamNames(JavaParameterImpl[] parameters,
+                                Map<String, JavaElementImpl> props,
+                                Map<String, JavaElementImpl> refs) throws AmbiguousConstructorException {
         // the constructor param types must unambiguously match defined
         // reference or property types
         for (JavaParameterImpl param : parameters) {
@@ -603,14 +615,14 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
 
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
-        
+
         JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
             JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
-        
+
         Interface javaInterface = service.getInterfaceContract().getInterface();
         javaInterface.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
         service.getInterfaceContract().setInterface(javaInterface);
