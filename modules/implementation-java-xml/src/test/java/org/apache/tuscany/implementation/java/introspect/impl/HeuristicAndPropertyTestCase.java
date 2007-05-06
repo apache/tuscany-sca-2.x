@@ -29,8 +29,8 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Property;
 
@@ -42,7 +42,7 @@ public class HeuristicAndPropertyTestCase extends TestCase {
     private PropertyProcessor propertyProcessor;
     private HeuristicPojoProcessor heuristicProcessor;
     private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     /**
      * Verifies the property and heuristic processors don't collide

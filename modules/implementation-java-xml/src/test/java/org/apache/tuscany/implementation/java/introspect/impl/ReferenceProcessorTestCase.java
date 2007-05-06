@@ -32,8 +32,8 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Reference;
 
@@ -114,7 +114,7 @@ public class ReferenceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
         JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
         processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors));

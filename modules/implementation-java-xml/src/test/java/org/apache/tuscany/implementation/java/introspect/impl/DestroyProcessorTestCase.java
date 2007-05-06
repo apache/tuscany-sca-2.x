@@ -35,7 +35,7 @@ import org.osoa.sca.annotations.Destroy;
 public class DestroyProcessorTestCase extends TestCase {
     
     private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     public void testDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);

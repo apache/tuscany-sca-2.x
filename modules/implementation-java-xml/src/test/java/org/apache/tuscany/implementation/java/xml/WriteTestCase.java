@@ -67,7 +67,7 @@ public class WriteTestCase extends TestCase {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(factory);
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         JavaClassIntrospector classIntrospector = new ExtensibleJavaClassIntrospector(new DefaultJavaClassIntrospectorExtensionPoint());
 
         staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessor));

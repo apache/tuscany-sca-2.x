@@ -36,7 +36,7 @@ import org.osoa.sca.annotations.Scope;
  */
 public class ConversationProcessorTestCase extends TestCase {
     private ConversationProcessor processor = new ConversationProcessor(new DefaultAssemblyFactory());
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     public void testMaxIdleTime() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

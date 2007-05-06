@@ -49,7 +49,7 @@ import org.osoa.sca.annotations.Reference;
 public class ConstructorProcessorTestCase extends TestCase {
     private ConstructorProcessor processor = new ConstructorProcessor(new DefaultAssemblyFactory());
     
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     public void testDuplicateConstructor() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

@@ -112,7 +112,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         extension = new TestProcessor();
-        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 
     @Retention(RUNTIME)

@@ -32,8 +32,8 @@ import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Property;
@@ -56,7 +56,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
         ExtensibleJavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
         processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), introspector);
-        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 
     private <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
