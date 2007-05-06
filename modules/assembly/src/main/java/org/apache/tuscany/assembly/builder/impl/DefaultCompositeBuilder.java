@@ -610,6 +610,23 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
     private void connectCompositeServices(Composite composite,
                                           Map<String, ComponentService> componentServices) {
 
+        // Propagate interfaces from inner composite components' services to
+        // their component services
+        for (Component component : composite.getComponents()) {
+            if (component.getImplementation() instanceof Composite) {
+                for (ComponentService componentService : component.getServices()) {
+                    Service service = componentService.getService();
+                    if (service != null) {
+                        if (componentService.getInterfaceContract() == null) {
+                            componentService.setInterfaceContract(service.getInterfaceContract());
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Connect composite services to the component services that they
+        // promote
         for (Service service : composite.getServices()) {
 
             CompositeService compositeService = (CompositeService)service;
@@ -633,6 +650,7 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                 }
             }
         }
+
     }
 
     /**
@@ -645,6 +663,23 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
     private void connectCompositeReferences(Composite composite,
                                             Map<String, ComponentReference> componentReferences) {
 
+        // Propagate interfaces from inner composite components' references to
+        // their component references
+        for (Component component : composite.getComponents()) {
+            if (component.getImplementation() instanceof Composite) {
+                for (ComponentReference componentReference : component.getReferences()) {
+                    Reference reference = componentReference.getReference();
+                    if (reference != null) {
+                        if (componentReference.getInterfaceContract() == null) {
+                            componentReference.setInterfaceContract(reference.getInterfaceContract());
+                        }
+                    }
+                }
+            }
+        }
+
+        // Connect composite references to the component references
+        // that they promote
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
             List<ComponentReference> promotedReferences = compositeReference.getPromotedReferences();
@@ -1098,13 +1133,14 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
         // services and references that they promote
         connectCompositeServices(composite, componentServices);
         connectCompositeReferences(composite, componentReferences);
-
+        
         // Connect component references to their targets
         connectComponentReferences(composite, componentServices, componentReferences);
 
         // Connect component references as described in wires
         connectWires(composite, componentServices, componentReferences);
 
+        // Resolve sourced properties
         resolveSourcedProperties(composite);
 
         // Validate that references are wired or promoted, according
