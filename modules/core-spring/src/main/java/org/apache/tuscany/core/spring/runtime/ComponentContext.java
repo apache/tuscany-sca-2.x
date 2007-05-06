@@ -22,6 +22,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.builder.CompositeBuilderException;
@@ -32,6 +35,7 @@ import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
@@ -121,11 +125,12 @@ public class ComponentContext {
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        DefaultStAXArtifactProcessor staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory,
-                                                                       interfaceContractMapper, staxProcessors);
+                                                                       interfaceContractMapper, staxProcessor);
         staxProcessors.addArtifactProcessor(compositeProcessor);
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new JavaInterfaceProcessor(javaFactory, interfaceIntrospector));
         staxProcessors.addArtifactProcessor(new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector));
         
@@ -139,7 +144,7 @@ public class ComponentContext {
             List<Composite> composites = new ArrayList<Composite>();
             for (String compositeFile: compositeFiles) {
                 InputStream is = classLoader.getResourceAsStream(compositeFile);
-                Composite composite = staxProcessors.read(is, Composite.class);
+                Composite composite = staxProcessor.read(is, Composite.class);
                 resolver.add(composite);
                 composites.add(composite);
             }

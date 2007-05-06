@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.xml.ComponentTypeDocumentProcessor;
@@ -41,7 +42,9 @@ import org.apache.tuscany.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
+import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -142,9 +145,10 @@ public class ReallySmallRuntimeBuilder {
         registry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
 
         // Create and register STAX processors for SCA assembly XML
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessors));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessors));
+        DefaultStAXArtifactProcessor staxProcessor = new DefaultStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
 
         // Create URL artifact processor extension point
         //FIXME use the interface instead of the class
@@ -153,9 +157,9 @@ public class ReallySmallRuntimeBuilder {
         
         // Create and register document processors for SCA assembly XML
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessors, inputFactory));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessors, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
         // Create contribution package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
@@ -177,9 +181,10 @@ public class ReallySmallRuntimeBuilder {
         //FIXME move artifact resolver to each contribution
         DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(classLoader);
         ContributionFactory contributionFactory = new DefaultContributionFactory();
+        DefaultURLArtifactProcessor documentProcessor = new DefaultURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(
                                                                               repository, packageProcessors,
-                                                                              documentProcessors, artifactResolver,
+                                                                              documentProcessor, artifactResolver,
                                                                               assemblyFactory,
                                                                               contributionFactory,
                                                                               xmlFactory);

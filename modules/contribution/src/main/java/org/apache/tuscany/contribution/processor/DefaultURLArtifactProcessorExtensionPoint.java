@@ -18,13 +18,6 @@
  */
 package org.apache.tuscany.contribution.processor;
 
-import java.net.URI;
-import java.net.URL;
-
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
-import org.apache.tuscany.contribution.service.ContributionReadException;
-import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.UnrecognizedElementException;
 
 /**
  * The default implementation of a StAX artifact processor registry.
@@ -33,60 +26,14 @@ import org.apache.tuscany.contribution.service.UnrecognizedElementException;
  */
 public class DefaultURLArtifactProcessorExtensionPoint
     extends DefaultArtifactProcessorExtensionPoint
-    implements URLArtifactProcessorExtensionPoint, URLArtifactProcessor<Object> {
+    implements URLArtifactProcessorExtensionPoint {
 
     /**
-     * Constructs a new loader registry.
-     * @param assemblyFactory
-     * @param policyFactory
-     * @param factory
+     * Constructs a new extension point.
      */
     public DefaultURLArtifactProcessorExtensionPoint() {
     }
 
-    @SuppressWarnings("unchecked")
-    public Object read(URL contributionURL, URI sourceURI, URL sourceURL) throws ContributionReadException {
-        URLArtifactProcessor<Object> processor = null;
-        
-        // Delegate to the processor associated with file extension
-        String extension = sourceURL.getFile();
-        int extensionStart = extension.lastIndexOf('.');
-        //handle files without extension (e.g NOTICE)
-        if (extensionStart > 0) {
-            extension = extension.substring(extensionStart);
-            processor = (URLArtifactProcessor<Object>)this.getProcessor(extension);            
-        }
-        if (processor == null) {
-            return null;
-        }
-        return processor.read(contributionURL, sourceURI, sourceURL);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void resolve(Object model, ArtifactResolver resolver) throws ContributionResolveException {
-
-        // Delegate to the processor associated with the model type
-        if (model != null) {
-            URLArtifactProcessor<Object> processor = 
-                (URLArtifactProcessor<Object>)this.getProcessor((Class<Object>)model.getClass());
-            if (processor != null) {
-                processor.resolve(model, resolver);
-            }
-        }
-    }
-    
-    public <MO> MO read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<MO> type) 
-        throws ContributionReadException {
-        Object mo = read(contributionURL, artifactURI, artifactUrl);
-        if (type.isInstance(mo)) {
-            return type.cast(mo);
-        } else {
-            UnrecognizedElementException e = new UnrecognizedElementException(null);
-            e.setResourceURI(artifactURI.toString());
-            throw e;
-        }
-    }
-    
     public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
@@ -95,14 +42,6 @@ public class DefaultURLArtifactProcessorExtensionPoint
     public void removeArtifactProcessor(URLArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
         processorsByModelType.remove(artifactProcessor.getModelType());        
-    }
-
-    public String getArtifactType() {
-        return null;
-    }
-    
-    public Class<Object> getModelType() {
-        return null;
     }
 
 }

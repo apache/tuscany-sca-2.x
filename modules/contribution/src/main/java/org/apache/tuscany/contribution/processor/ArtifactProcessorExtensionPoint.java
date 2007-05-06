@@ -39,4 +39,18 @@ public interface ArtifactProcessorExtensionPoint<P> {
      */
     void removeArtifactProcessor(P artifactProcessor);
 
+    /**
+     * Returns the processor associated with the given artifact type.
+     * @param artifactType an artifact type
+     * @return the processor associated with the given artifact type
+     */
+    ArtifactProcessor getProcessor(Object artifactType);
+    
+    /**
+     * Returns the processor associated with the given model type.
+     * @param modelType a model type
+     * @return the processor associated with the given model type
+     */
+    ArtifactProcessor getProcessor(Class<?> modelType);
+    
 }
