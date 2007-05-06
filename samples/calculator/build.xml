@@ -16,47 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="sample-calculator" default="compile">
+<project name="sample-calculator" default="run">
     <property environment="env"/>
 	
-	<target name="init">
+    <target name="init">
         <mkdir dir="target/classes"/>
     </target>
 	
-	<target name="compile" depends="init">
-	    <javac srcdir="src/main/java" 
-	    	   destdir="target/classes" 
-	    	   debug="on" 
-	           source="1.5" 
-	    	   target="1.5">
-	        <classpath>
-                <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+    <target name="compile" depends="init">
+        <javac srcdir="src/main/java"
+               destdir="target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
-        </javac>
-	    <copy todir="target/classes">
+        </javac> 
+        <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
-	    <copy todir="target/classes/META-INF">
-            <fileset dir="." includes="LICENSE.txt,NOTICE.txt"/>
-        </copy>
-	    <jar destfile="target/sample-calculator.jar" 
-	    	 basedir="target/classes">
-	        <manifest>
-                <attribute name="Main-Class" 
-                	       value="calculator.CalculatorClient"/>
-            </manifest>
-        </jar>
-    </target>
+    </target>	
 	
-	<target name="run" depends="compile">
-	    <java jar="../../lib/tuscany-sca-manifest.jar" 
-	    	  fork="true">
-            <arg value="target/sample-calculator.jar"/>
+    <target name="run" depends="compile">
+        <java classname="calculator.CalculatorClient"
+              fork="true">
+            <classpath>
+                <pathelement path="target/classes"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
         </java>
     </target>
 	
-	<target name="clean">
-	    <delete quiet="true" includeemptydirs="true">
+    <target name="clean">
+        <delete quiet="true" includeemptydirs="true">
             <fileset dir="target"/>
         </delete>
     </target>
