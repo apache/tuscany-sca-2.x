@@ -31,19 +31,16 @@ import java.util.List;
 
 import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
-import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 
-public class FolderContributionProcessor extends AbstractContributionPackageProcessor implements
-    PackageProcessor {
+public class FolderContributionProcessor implements PackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
     public static final String PACKAGE_TYPE = ContentType.FOLDER;
 
-    public FolderContributionProcessor(PackageProcessorExtensionPoint packageProcessors) {
-        super(packageProcessors);
+    public FolderContributionProcessor() {
     }
 
     public String getPackageType() {

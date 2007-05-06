@@ -19,21 +19,11 @@
 
 package org.apache.tuscany.contribution.processor.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.processor.PackageProcessorExtensionPoint;
-import org.apache.tuscany.contribution.service.ContributionException;
-import org.apache.tuscany.contribution.service.TypeDescriber;
-import org.apache.tuscany.contribution.service.UnsupportedContentTypeException;
-import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 
 /**
  * Default implementation of ContributionProcessorRegistry
@@ -41,50 +31,24 @@ import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
  * @version $Rev$ $Date$
  */
 public class DefaultPackageProcessorExtensionPoint implements PackageProcessorExtensionPoint {
+
     /**
      * Processor registry
      */
     private Map<String, PackageProcessor> registry = new HashMap<String, PackageProcessor>();
 
-    /**
-     * Helper method to describe contentType for each artifact
-     */
-    private TypeDescriber packageTypeDescriber;
-
-    public DefaultPackageProcessorExtensionPoint(TypeDescriber packageTypeDescriber) {
-        if (packageTypeDescriber == null) {
-            this.packageTypeDescriber = new PackageTypeDescriberImpl();
-        } else {
-            this.packageTypeDescriber = packageTypeDescriber;
-        }
+    public DefaultPackageProcessorExtensionPoint() {
     }
 
-    public void register(String contentType, PackageProcessor processor) {
-        registry.put(contentType, processor);
+    public void addPackageProcessor(PackageProcessor processor) {
+        registry.put(processor.getPackageType(), processor);
     }
 
-    public void unregister(String contentType) {
-        registry.remove(contentType);
+    public void removePackageProcessor(PackageProcessor processor) {
+        registry.remove(processor.getPackageType());
     }
 
-    public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) 
-        throws ContributionException, IOException {
-        String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
-        if (contentType == null) {
-            throw new UnsupportedContentTypeException("Unsupported contribution package", packageSourceURL.toString());
-        }
-
-        PackageProcessor packageProcessor = this.registry.get(contentType);
-        if (packageProcessor == null) {
-            throw new UnsupportedContentTypeException(contentType, packageSourceURL.getPath());
-        }
-
-        return packageProcessor.getArtifacts(packageSourceURL, inputStream);
-    }
-
-    public URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException {
-        String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
-        PackageProcessor packageProcessor = this.registry.get(contentType);
-        return packageProcessor.getArtifactURL(packageSourceURL, artifact);
+    public PackageProcessor getPackageProcessor(String contentType) {
+        return registry.get(contentType);
     }
 }

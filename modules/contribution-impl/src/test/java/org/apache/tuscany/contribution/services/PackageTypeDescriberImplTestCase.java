@@ -23,10 +23,10 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.ContentType;
-import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
+import org.apache.tuscany.contribution.service.impl.DefaultPackageTypeDescriber;
 
 public class PackageTypeDescriberImplTestCase extends TestCase {
-    private PackageTypeDescriberImpl packageTypeDescriber;
+    private DefaultPackageTypeDescriber packageTypeDescriber;
 
     public void testResolvePackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables/sample-calculator.jar");
@@ -46,7 +46,7 @@ public class PackageTypeDescriberImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        packageTypeDescriber = new PackageTypeDescriberImpl();
+        packageTypeDescriber = new DefaultPackageTypeDescriber();
     }
 
 }

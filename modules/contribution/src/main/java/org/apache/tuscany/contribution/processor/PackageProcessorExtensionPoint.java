@@ -21,16 +21,26 @@ package org.apache.tuscany.contribution.processor;
 /**
  * @version $Rev$ $Date$
  */
-public interface PackageProcessorExtensionPoint extends PackageProcessor {
-    /**
-     * Register a ContributionPackageProcessor using the package type as the key
-     * @param processor
-     */
-    void register(String packageType, PackageProcessor processor);
+public interface PackageProcessorExtensionPoint {
     
     /**
-     * Unregister a ContributionProcessor by package type
-     * @param packageType
+     * Register a PackageProcessor using the package type as the key
+     * @param processor
      */
-    void unregister(String packageType);
+    void addPackageProcessor(PackageProcessor processor);
+    
+    /**
+     * Unregister a PackageProcessor
+     * @param processor
+     */
+    void removePackageProcessor(PackageProcessor processor);
+    
+    /**
+     * Returns the PackageProcessor for the given package type.
+     * 
+     * @param packageType
+     * @return
+     */
+    PackageProcessor getPackageProcessor(String packageType);
+    
 }
