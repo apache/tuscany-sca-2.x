@@ -42,37 +42,37 @@ public class Component3aImpl implements AccountDataService {
     }
 
     public float deposit(String param6, float param7) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return 0;
     }
 
     public AccountLog getAccountLog(int param0) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public AccountReport getAccountReport(int param19) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public CustomerProfileData getCustomerProfile(String param4) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public StockSummary purchaseStock(int param0, StockSummary parm1) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public StockSummary sellStock(int param13, int param14) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public float withdraw(String param16, float param17) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return 0;
     }
 

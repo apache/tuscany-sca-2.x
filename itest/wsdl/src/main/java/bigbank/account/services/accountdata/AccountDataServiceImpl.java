@@ -32,12 +32,12 @@ import com.bigbank.account.StockSummary;
 public class AccountDataServiceImpl implements AccountDataService {
 
     public CustomerProfileData getCustomerProfile(String logonID) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public AccountReport getAccountReport(int customerID) {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
@@ -55,22 +55,22 @@ public class AccountDataServiceImpl implements AccountDataService {
     }
 
     public float deposit(String param6, float param7) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return 0;
     }
 
     public StockSummary purchaseStock(int param0, StockSummary stock) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public StockSummary sellStock(int param13, int param14) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 
     public float withdraw(String param16, float param17) throws RemoteException {
-        // TODO Auto-generated method stub
+        
         return 0;
     }
 
