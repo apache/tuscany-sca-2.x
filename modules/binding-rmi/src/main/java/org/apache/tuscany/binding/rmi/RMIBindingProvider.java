@@ -51,9 +51,7 @@ import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.rmi.RMIHostExtensionPoint;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 /**
