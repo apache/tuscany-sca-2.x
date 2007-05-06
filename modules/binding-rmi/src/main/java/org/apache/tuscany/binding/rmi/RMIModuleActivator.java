@@ -29,7 +29,7 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.rmi.RMIHost;
 
 public class RMIModuleActivator implements ModuleActivator {
 
@@ -40,7 +40,7 @@ public class RMIModuleActivator implements ModuleActivator {
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         
-        RMIHostExtensionPoint rmiHost = registry.getExtensionPoint(RMIHostExtensionPoint.class);
+        RMIHost rmiHost = registry.getExtensionPoint(RMIHost.class);
         RMIBindingFactory rmiFactory = new DefaultRMIBindingFactory(rmiHost);
         processors.addArtifactProcessor(new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
     }

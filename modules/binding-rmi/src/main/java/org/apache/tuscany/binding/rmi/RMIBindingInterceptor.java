@@ -23,11 +23,11 @@ import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.rmi.RMIHostException;
-import org.apache.tuscany.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.spi.component.WorkContext;
 
 public class RMIBindingInterceptor implements Interceptor {
-    private RMIHostExtensionPoint rmiHost;
+    private RMIHost rmiHost;
     private String host;
     private String port;
     private String svcName;
@@ -36,7 +36,7 @@ public class RMIBindingInterceptor implements Interceptor {
     
     private Interceptor next;
     
-    public RMIBindingInterceptor(RMIHostExtensionPoint rmiHost, String host, String port, String svcName, Method remoteMethod) {
+    public RMIBindingInterceptor(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
         this.rmiHost = rmiHost;
         this.remoteMethod = remoteMethod;
         this.host = host;

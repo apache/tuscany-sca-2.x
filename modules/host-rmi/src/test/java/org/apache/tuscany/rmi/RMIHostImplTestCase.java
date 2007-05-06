@@ -23,12 +23,12 @@ import junit.framework.TestCase;
 public class RMIHostImplTestCase extends TestCase {
 
     public void testInit() {
-        new DefaultRMIHostExtensionPoint();
+        new DefaultRMIHost();
     }
 
     public void testFindServiceBadHost() throws RMIHostRuntimeException, RMIHostException {
         try {
-            new DefaultRMIHostExtensionPoint().findService(null, "0", null);
+            new DefaultRMIHost().findService(null, "0", null);
             fail();
         } catch (RMIHostRuntimeException e) {
             // expected
@@ -36,19 +36,19 @@ public class RMIHostImplTestCase extends TestCase {
     }
 
     public void testRegisterService1() throws RMIHostRuntimeException, RMIHostException {
-        DefaultRMIHostExtensionPoint host = new DefaultRMIHostExtensionPoint();
+        DefaultRMIHost host = new DefaultRMIHost();
         host.registerService("foo1", new MockRemote());
         host.unregisterService("foo1");
     }
 
     public void testRegisterService2() throws RMIHostRuntimeException, RMIHostException {
-        DefaultRMIHostExtensionPoint host = new DefaultRMIHostExtensionPoint();
+        DefaultRMIHost host = new DefaultRMIHost();
         host.registerService("bar1", 9999, new MockRemote());
         host.unregisterService("bar1", 9999);
     }
 
     public void testRegisterServiceAlreadyBound() throws RMIHostRuntimeException, RMIHostException {
-        DefaultRMIHostExtensionPoint host = new DefaultRMIHostExtensionPoint();
+        DefaultRMIHost host = new DefaultRMIHost();
         host.registerService("bar2", 9997, new MockRemote());
         try {
             host.registerService("bar2", 9997, new MockRemote());
@@ -59,7 +59,7 @@ public class RMIHostImplTestCase extends TestCase {
     }
 
     public void testUnRegisterService() throws RMIHostRuntimeException, RMIHostException {
-        DefaultRMIHostExtensionPoint host = new DefaultRMIHostExtensionPoint();
+        DefaultRMIHost host = new DefaultRMIHost();
         try {
             host.unregisterService("bar3", 9998);
             fail();
