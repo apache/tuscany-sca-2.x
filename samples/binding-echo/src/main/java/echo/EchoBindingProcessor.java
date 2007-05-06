@@ -63,11 +63,9 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
     }
 
     public void write(EchoBinding echoBinding, XMLStreamWriter writer) throws ContributionWriteException {
-        // TODO Auto-generated method stub
     }
 
     public void resolve(EchoBinding echoBinding, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
     }
 
 }

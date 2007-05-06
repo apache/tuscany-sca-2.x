@@ -151,9 +151,6 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 		{
 			e.printStackTrace();
 		}
-
-		// TODO Auto-generated method stub
-
 	}
 
 	public void generateWSDL(String[] args) 
@@ -211,7 +208,6 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 	 * @see tuscany.tools.Java2WSDLGeneratorIfc#getOutputStream()
 	 */
 	public OutputStream getOutputStream() {
-		// TODO Auto-generated method stub
 		return outputStream;
 	}
 

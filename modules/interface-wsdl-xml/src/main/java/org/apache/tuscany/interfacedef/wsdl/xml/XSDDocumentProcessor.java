@@ -91,7 +91,6 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
     }
     
     public void resolve(XSDefinition model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
     }
     
     public String getArtifactType() {

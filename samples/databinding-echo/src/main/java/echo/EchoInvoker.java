@@ -66,7 +66,6 @@ public class EchoInvoker implements TargetInvoker {
      * @see org.apache.tuscany.spi.wire.TargetInvoker#invokeTarget(java.lang.Object, short, org.apache.tuscany.spi.component.WorkContext)
      */
     public Object invokeTarget(Object payload, short sequence, WorkContext workContext) throws InvocationTargetException {
-        // TODO Auto-generated method stub
         return null;
     }
 

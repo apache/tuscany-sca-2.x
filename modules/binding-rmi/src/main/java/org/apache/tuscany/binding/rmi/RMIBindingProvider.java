@@ -79,13 +79,9 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
     }
 
     public void start(RuntimeComponent component, RuntimeComponentReference reference) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void stop(RuntimeComponent component, RuntimeComponentReference reference) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void start(RuntimeComponent component, RuntimeComponentService service) {

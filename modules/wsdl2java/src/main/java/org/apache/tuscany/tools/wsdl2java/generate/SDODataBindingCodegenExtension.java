@@ -49,7 +49,6 @@ public class SDODataBindingCodegenExtension extends AbstractDBProcessingExtensio
 //    }
 
     public void engage(CodeGenConfiguration configuration) throws CodeGenerationException {
-        // TODO Auto-generated method stub
         if (testFallThrough(configuration.getDatabindingType())) {
             return;
         }

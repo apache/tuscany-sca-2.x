@@ -32,7 +32,6 @@ public class CallBackCTypeClientImpl implements CallBackCTypeClient, CallBackCTy
     private static Object monitor = new Object();
 
     public CallBackCTypeClientImpl() {
-        // TODO Auto-generated constructor stub
     }
 
     public void run() {

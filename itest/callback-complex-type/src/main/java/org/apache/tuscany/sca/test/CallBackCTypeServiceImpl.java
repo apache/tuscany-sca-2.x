@@ -28,7 +28,6 @@ public class CallBackCTypeServiceImpl implements CallBackCTypeService {
     protected CallBackCTypeCallBack callback;
 
     public CallBackCTypeServiceImpl() {
-        // TODO Auto-generated constructor stub
     }
 
     public void knockKnock(String aString) {

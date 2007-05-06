@@ -178,7 +178,6 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     }
     
     public void resolve(WSDLDefinition model, ArtifactResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
     }
     
     public String getArtifactType() {
