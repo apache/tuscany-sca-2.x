@@ -22,8 +22,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-
-   SCADomain domain = SCADomain.newInstance("Calculator.composite");
+   SCADomain domain = (SCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
    CalculatorService calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
 %>
 <html>
@@ -49,7 +48,3 @@
 </table>
 </body>
 </html>
-
-<%
-   domain.close();
-%>

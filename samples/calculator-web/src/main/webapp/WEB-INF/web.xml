@@ -28,4 +28,8 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
         <welcome-file>calc.jsp</welcome-file>
     </welcome-file-list>
     
+  <listener>
+     <listener-class>org.apache.tuscany.sca.webapp.TuscanyContextListener</listener-class>
+  </listener>
+
 </web-app>
