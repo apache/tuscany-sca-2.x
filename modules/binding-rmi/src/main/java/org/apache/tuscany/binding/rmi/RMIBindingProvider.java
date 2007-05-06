@@ -49,7 +49,7 @@ import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
 import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.rmi.RMIHostException;
-import org.apache.tuscany.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
@@ -61,7 +61,7 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
 public class RMIBindingProvider extends RMIBindingImpl implements ReferenceBindingActivator,
 ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, MethodInterceptor {
 
-    private RMIHostExtensionPoint rmiHost;
+    private RMIHost rmiHost;
     private RuntimeWire wire;
     
     //need this member to morph the service interface to extend from Remote if it does not
@@ -70,7 +70,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
     // and the component match in their service contracts.
     private Interface serviceInterface;
     
-    public RMIBindingProvider(RMIHostExtensionPoint rmiHost) {
+    public RMIBindingProvider(RMIHost rmiHost) {
         this.rmiHost = rmiHost;
     }
 
@@ -238,7 +238,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
     }
     
     protected int getPort(String port) {
-        int portNumber = RMIHostExtensionPoint.RMI_DEFAULT_PORT;
+        int portNumber = RMIHost.RMI_DEFAULT_PORT;
         if (port != null && port.length() > 0) {
             portNumber = Integer.decode(port);
         }

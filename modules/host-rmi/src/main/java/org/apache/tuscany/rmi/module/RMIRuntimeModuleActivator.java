@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.rmi.DefaultRMIHostExtensionPoint;
-import org.apache.tuscany.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.rmi.DefaultRMIHost;
+import org.apache.tuscany.rmi.RMIHost;
 
 /**
  * @version $Rev: 529327 $ $Date: 2007-04-16 22:40:43 +0530 (Mon, 16 Apr 2007) $
@@ -34,7 +34,7 @@ public class RMIRuntimeModuleActivator implements ModuleActivator {
 
     public Map<Class, Object> getExtensionPoints() {
         Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(RMIHostExtensionPoint.class, new DefaultRMIHostExtensionPoint());
+        map.put(RMIHost.class, new DefaultRMIHost());
         return map;
     }
 

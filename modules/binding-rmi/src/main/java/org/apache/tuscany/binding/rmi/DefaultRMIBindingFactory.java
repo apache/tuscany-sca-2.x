@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.rmi.RMIHost;
 
 /**
  * A factory for the WSDL model.
@@ -26,9 +26,9 @@ import org.apache.tuscany.rmi.RMIHostExtensionPoint;
  * @version $Rev: 526508 $ $Date: 2007-04-08 07:42:42 +0530 (Sun, 08 Apr 2007) $
  */
 public class DefaultRMIBindingFactory implements RMIBindingFactory {
-    private RMIHostExtensionPoint rmiHost = null;
+    private RMIHost rmiHost = null;
     
-    public DefaultRMIBindingFactory(RMIHostExtensionPoint rmiHost) {
+    public DefaultRMIBindingFactory(RMIHost rmiHost) {
         this.rmiHost = rmiHost;
     }
     
