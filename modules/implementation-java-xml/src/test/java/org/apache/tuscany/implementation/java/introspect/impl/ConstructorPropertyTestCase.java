@@ -35,7 +35,7 @@ import org.osoa.sca.annotations.Property;
  */
 public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     public void testProperty() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

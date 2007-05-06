@@ -82,7 +82,7 @@ public class ScopeProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        javaImplementationFactory = new DefaultJavaImplementationFactory();
         parent = EasyMock.createNiceMock(Component.class);
     }
 

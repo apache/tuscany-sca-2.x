@@ -51,7 +51,7 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
         processor = new AllowsPassByReferenceProcessor(new DefaultAssemblyFactory());
     }

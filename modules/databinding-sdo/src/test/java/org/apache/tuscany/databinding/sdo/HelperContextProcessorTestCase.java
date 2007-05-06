@@ -49,7 +49,7 @@ public class HelperContextProcessorTestCase extends TestCase {
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
         
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(assemblyFactory);
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         JavaImplementation componentType = javaImplementationFactory.createJavaImplementation();
         componentType.setJavaClass(FooImpl.class);
         for (Field f : FooImpl.class.getDeclaredFields()) {

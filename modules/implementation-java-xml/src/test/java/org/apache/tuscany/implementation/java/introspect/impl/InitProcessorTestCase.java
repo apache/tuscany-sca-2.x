@@ -36,7 +36,7 @@ public class InitProcessorTestCase extends TestCase {
     private JavaImplementationFactory javaImplementationFactory;
     
     public InitProcessorTestCase() {
-        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 
     public void testInit() throws Exception {

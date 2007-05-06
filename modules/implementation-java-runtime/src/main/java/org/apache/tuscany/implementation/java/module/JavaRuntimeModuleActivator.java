@@ -127,7 +127,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         WorkContext workContext = registry.getExtensionPoint(WorkContext.class);
         JavaImplementationFactory javaImplementationFactory =
-            new RuntimeJavaImplementationFactory(assemblyFactory, scopeRegistry, proxyFactory,
+            new RuntimeJavaImplementationFactory(scopeRegistry, proxyFactory,
                                                  workContext, dataBindings, factory);
         JavaImplementationProcessor javaImplementationProcessor =
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);

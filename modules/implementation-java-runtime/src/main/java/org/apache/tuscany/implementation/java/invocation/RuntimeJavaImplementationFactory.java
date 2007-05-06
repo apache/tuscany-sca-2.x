@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.implementation.java.invocation;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
@@ -38,13 +37,12 @@ public class RuntimeJavaImplementationFactory extends DefaultJavaImplementationF
     private WorkContext workContext;
     private ScopeRegistry scopeRegistry;
 
-    public RuntimeJavaImplementationFactory(AssemblyFactory assemblyFactory,
+    public RuntimeJavaImplementationFactory(
                                             ScopeRegistry scopeRegistry,
                                             ProxyFactory proxyService,
                                             WorkContext workContext,
                                             DataBindingExtensionPoint dataBindingRegistry,
                                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
-        super(assemblyFactory);
         this.scopeRegistry = scopeRegistry;
         this.proxyService = proxyService;
         this.workContext = workContext;

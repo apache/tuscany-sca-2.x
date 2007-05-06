@@ -22,7 +22,6 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.apache.tuscany.api.annotation.Resource;
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -32,7 +31,7 @@ import org.apache.tuscany.implementation.java.JavaImplementationFactory;
  */
 public class ConstructorResourceTestCase extends AbstractProcessorTest {
     
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     public void testResource() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

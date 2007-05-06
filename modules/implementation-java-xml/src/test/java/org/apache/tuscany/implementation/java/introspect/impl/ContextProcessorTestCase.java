@@ -138,7 +138,7 @@ public class ContextProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        javaImplementationFactory = new DefaultJavaImplementationFactory();
         processor = new ContextProcessor(new DefaultAssemblyFactory());
         // processor.setWorkContext(EasyMock.createNiceMock(WorkContext.class));
         composite = EasyMock.createNiceMock(Component.class);

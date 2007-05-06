@@ -23,7 +23,6 @@ import static org.apache.tuscany.implementation.java.introspect.impl.ModelHelper
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
@@ -35,7 +34,7 @@ import org.osoa.sca.annotations.Reference;
  */
 public class ConstructorReferenceTestCase extends AbstractProcessorTest {
     
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     public void testReference() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

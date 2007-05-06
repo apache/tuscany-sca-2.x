@@ -107,7 +107,7 @@ public class PropertyProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
         processor = new PropertyProcessor(new DefaultAssemblyFactory());
     }

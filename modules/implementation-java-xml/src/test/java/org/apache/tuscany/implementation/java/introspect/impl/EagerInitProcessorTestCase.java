@@ -34,7 +34,7 @@ import org.osoa.sca.annotations.EagerInit;
 public class EagerInitProcessorTestCase extends TestCase {
 
     private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultAssemblyFactory());
+    private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
     
     public void testNoLevel() throws IntrospectionException {
         EagerInitProcessor processor = new EagerInitProcessor(assemblyFactory);
