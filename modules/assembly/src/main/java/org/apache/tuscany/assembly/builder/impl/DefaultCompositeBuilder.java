@@ -726,8 +726,7 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
             if (componentReference.isAutowire()) {
 
                 // Find suitable targets in the current composite for an
-                // autowired
-                // reference
+                // autowired reference
                 Multiplicity multiplicity = componentReference.getMultiplicity();
                 for (Component component : composite.getComponents()) {
                     for (ComponentService componentService : component.getServices()) {
@@ -1078,15 +1077,13 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                             promotedReference.getBindings().addAll(componentReference.getBindings());
 
                             // Wire the promoted reference to the actual
-                            // non-composite
-                            // component services
+                            // non-composite component services
                             promotedReference.getTargets().clear();
                             for (ComponentService target : componentReference.getTargets()) {
                                 if (target.getService() instanceof CompositeService) {
 
                                     // Wire to the actual component service
-                                    // promoted by a
-                                    // composite service
+                                    // promoted by a composite service
                                     CompositeService compositeService = (CompositeService)target.getService();
                                     ComponentService componentService = compositeService.getPromotedService();
                                     if (componentService != null) {
@@ -1097,6 +1094,26 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                                     // Wire to a non-composite target service
                                     promotedReference.getTargets().add(target);
                                 }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (ComponentReference componentReference : component.getReferences()) {
+
+                    // Wire the component reference to the actual
+                    // non-composite component services
+                    List<ComponentService> targets = componentReference.getTargets();
+                    for (int i = 0, n = targets.size(); i<n; i++) {
+                        ComponentService target = targets.get(i);
+                        if (target.getService() instanceof CompositeService) {
+
+                            // Wire to the actual component service
+                            // promoted by a composite service
+                            CompositeService compositeService = (CompositeService)target.getService();
+                            ComponentService componentService = compositeService.getPromotedService();
+                            if (componentService != null) {
+                                targets.set(i, componentService);
                             }
                         }
                     }
