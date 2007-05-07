@@ -51,6 +51,10 @@ public class SCADomainBean extends SCADomain {
     public String getContributionLocation() {
         return location;
     }
+
+    public void setDeployableComposite(String composite) {
+        setDeployableComposites(composite);
+    }
     
     public void setDeployableComposites(String... composites) {
         this.composites = composites;
