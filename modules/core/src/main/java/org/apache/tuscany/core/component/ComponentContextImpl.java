@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.spi.TuscanyRuntimeException;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
@@ -40,7 +39,7 @@ public class ComponentContextImpl implements ComponentContext {
     public String getURI() {
         try {
             return component.getUri().toString();
-        } catch (TuscanyRuntimeException e) {
+        } catch (RuntimeException e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -48,7 +47,7 @@ public class ComponentContextImpl implements ComponentContext {
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         try {
             return (R) component.cast(target);
-        } catch (TuscanyRuntimeException e) {
+        } catch (RuntimeException e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -56,7 +55,7 @@ public class ComponentContextImpl implements ComponentContext {
     public <B> B getService(Class<B> businessInterface, String referenceName) {
         try {
             return component.getService(businessInterface, referenceName);
-        } catch (TuscanyRuntimeException e) {
+        } catch (RuntimeException e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -64,7 +63,7 @@ public class ComponentContextImpl implements ComponentContext {
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
         try {
             return component.getServiceReference(businessInterface, referenceName);
-        } catch (TuscanyRuntimeException e) {
+        } catch (RuntimeException e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
@@ -72,7 +71,7 @@ public class ComponentContextImpl implements ComponentContext {
     public <B> B getProperty(Class<B> type, String propertyName) {
         try {
             return component.getProperty(type, propertyName);
-        } catch (TuscanyRuntimeException e) {
+        } catch (RuntimeException e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
