@@ -34,7 +34,6 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
@@ -43,9 +42,7 @@ import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.util.FileHelper;
 import org.apache.tuscany.core.runtime.ActivationException;
 import org.apache.tuscany.core.runtime.CompositeActivator;
-import org.apache.tuscany.core.runtime.DefaultCompositeActivator;
 import org.apache.tuscany.host.embedded.SCADomain;
-import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
@@ -54,11 +51,11 @@ import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * A default SCA domain facade implementation.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class DefaultSCADomain extends SCADomain {
-    
+
     private String uri;
     private String location;
     private String[] composites;
@@ -74,8 +71,11 @@ public class DefaultSCADomain extends SCADomain {
      * @param contributionLocation
      * @param composites
      */
-    public DefaultSCADomain(ClassLoader runtimeClassLoader, ClassLoader applicationClassLoader,
-                            String domainURI, String contributionLocation, String... composites) {
+    public DefaultSCADomain(ClassLoader runtimeClassLoader,
+                            ClassLoader applicationClassLoader,
+                            String domainURI,
+                            String contributionLocation,
+                            String... composites) {
         this.uri = domainURI;
         this.location = contributionLocation;
         this.composites = composites;
@@ -84,11 +84,11 @@ public class DefaultSCADomain extends SCADomain {
         runtime = new ReallySmallRuntime(runtimeClassLoader);
         try {
             runtime.start();
-            
+
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
-        
+
         // Contribute the given contribution to an in-memory repository
         ContributionService contributionService = runtime.getContributionService();
         URL contributionURL;
@@ -106,13 +106,13 @@ public class DefaultSCADomain extends SCADomain {
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
-        
+
         // Create an in-memory domain level composite
         AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
         domainComposite = assemblyFactory.createComposite();
         domainComposite.setName(new QName(Constants.SCA_NS, "domain"));
         domainComposite.setURI(domainURI);
-        
+
         // Include all specified deployable composites in the SCA domain
         Map<String, Composite> compositeArtifacts = new HashMap<String, Composite>();
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
@@ -120,7 +120,7 @@ public class DefaultSCADomain extends SCADomain {
                 compositeArtifacts.put(artifact.getURI(), (Composite)artifact.getModel());
             }
         }
-        for (String compositePath: composites) {
+        for (String compositePath : composites) {
             Composite composite = compositeArtifacts.get(compositePath);
             if (composite == null) {
                 throw new ServiceRuntimeException("Composite not found: " + compositePath);
@@ -131,25 +131,23 @@ public class DefaultSCADomain extends SCADomain {
         // Activate and start the SCA domain composite
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
         try {
-            ((DefaultCompositeActivator)compositeActivator).activate(domainComposite);
-        } catch (IncompatibleInterfaceContractException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (CompositeBuilderException e) {
+            compositeActivator.start(domainComposite);
+        } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
 
-        //FIXME remove this
+        // FIXME remove this
         runtime.startDomainWorkContext(domainComposite);
 
         // Index the top level components
-        for (Component component: domainComposite.getComponents()) {
+        for (Component component : domainComposite.getComponents()) {
             components.put(component.getName(), component);
         }
     }
 
     @Override
     public void close() {
-        
+
         // Remove the contribution from the in-memory repository
         ContributionService contributionService = runtime.getContributionService();
         try {
@@ -157,7 +155,7 @@ public class DefaultSCADomain extends SCADomain {
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         }
-        
+
         // Stop the SCA domain composite
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
         try {
@@ -166,7 +164,7 @@ public class DefaultSCADomain extends SCADomain {
             throw new ServiceRuntimeException(e);
 
         }
-        
+
         // Stop the runtime
         try {
             runtime.stop();
@@ -185,7 +183,8 @@ public class DefaultSCADomain extends SCADomain {
      * @return
      * @throws MalformedURLException
      */
-    private URL getContributionLocation(String contributionPath, String[] composites, ClassLoader classLoader) throws MalformedURLException {
+    private URL getContributionLocation(String contributionPath, String[] composites, ClassLoader classLoader)
+        throws MalformedURLException {
         URI contributionURI = URI.create(contributionPath);
         if (contributionURI.isAbsolute() || composites.length == 0) {
             return new URL(contributionPath);
@@ -196,7 +195,7 @@ public class DefaultSCADomain extends SCADomain {
         if (compositeURL == null) {
             throw new IllegalArgumentException("Composite not found: " + compositePath);
         }
-        
+
         URL contributionURL = null;
         // "jar:file://....../something.jar!/a/b/c/app.composite"
         try {
@@ -240,34 +239,35 @@ public class DefaultSCADomain extends SCADomain {
 
     @Override
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
-        
+
         // Extract the component name
         String componentName;
         String serviceName;
-        int i = name.indexOf('/'); 
+        int i = name.indexOf('/');
         if (i != -1) {
             componentName = name.substring(0, i);
-            serviceName = name.substring(i+1);
-            
+            serviceName = name.substring(i + 1);
+
         } else {
             componentName = name;
             serviceName = null;
         }
-        
+
         // Lookup the component in the domain
         Component component = components.get(componentName);
         if (component == null) {
             throw new ServiceRuntimeException("Component not found: " + componentName);
         }
         ComponentContext componentContext = null;
-        
-        // If the component is a composite, then we need to find the non-composite
+
+        // If the component is a composite, then we need to find the
+        // non-composite
         // component that provides the requested service
         if (component.getImplementation() instanceof Composite) {
             ComponentService promotedService = null;
-            for (ComponentService componentService: component.getServices()) {
+            for (ComponentService componentService : component.getServices()) {
                 if (serviceName == null || serviceName.equals(componentService.getName())) {
-                    
+
                     CompositeService compositeService = (CompositeService)componentService.getService();
                     if (compositeService != null) {
                         promotedService = compositeService.getPromotedService();
@@ -289,7 +289,7 @@ public class DefaultSCADomain extends SCADomain {
         } else {
             componentContext = (ComponentContext)component;
         }
-        
+
         ServiceReference<B> serviceReference;
         if (serviceName != null) {
             serviceReference = componentContext.createSelfReference(businessInterface, serviceName);
@@ -297,7 +297,7 @@ public class DefaultSCADomain extends SCADomain {
             serviceReference = componentContext.createSelfReference(businessInterface);
         }
         return serviceReference;
-        
+
     }
 
     @Override

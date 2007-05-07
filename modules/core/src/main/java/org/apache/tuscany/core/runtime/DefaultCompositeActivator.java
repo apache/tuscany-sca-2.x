@@ -89,7 +89,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
     /**
      * Start a composite
      */
-    public void start(Composite composite) {
+    protected void startComposite(Composite composite) {
         for (Component component : composite.getComponents()) {
 
             for (ComponentService service : component.getServices()) {
@@ -110,7 +110,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                start((Composite)implementation);
+                startComposite((Composite)implementation);
             } else if (implementation instanceof ImplementationActivator) {
                 ((ImplementationActivator)implementation).start((RuntimeComponent)component);
             }
@@ -122,17 +122,20 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * Configure a composite
      * 
      * @param composite
+     * @throws IncompatibleInterfaceContractException 
      */
-    public void configure(Composite composite) {
+    protected void configureComposite(Composite composite) throws IncompatibleInterfaceContractException {
         for (Component component : composite.getComponents()) {
 
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                configure((Composite)implementation);
+                configureComposite((Composite)implementation);
             } else if (implementation instanceof ImplementationProvider) {
                 ((ImplementationProvider)implementation).configure((RuntimeComponent)component);
             }
         }
+        
+        createRuntimeWires(composite);
 
     }
 
@@ -160,7 +163,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                start((Composite)implementation);
+                stop((Composite)implementation);
             } else if (implementation instanceof ImplementationActivator) {
                 ((ImplementationActivator)implementation).stop((RuntimeComponent)component);
             }
@@ -560,7 +563,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
         }
     }
 
-    private void buildComposite(Composite composite,
+    protected void buildComposite(Composite composite,
                                 AssemblyFactory assemblyFactory,
                                 InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
 
@@ -591,11 +594,14 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @param composite
      * @throws IncompatibleInterfaceContractException
      */
-    public void activate(Composite composite) throws IncompatibleInterfaceContractException, CompositeBuilderException {
-        buildComposite(composite, assemblyFactory, interfaceContractMapper);
-        configure(composite);
-        createRuntimeWires(composite);
-        start(composite);
+    public void start(Composite composite) throws ActivationException {
+        try {
+            buildComposite(composite, assemblyFactory, interfaceContractMapper);
+            configureComposite(composite);
+            startComposite(composite);
+        } catch (Exception e) {
+            throw new ActivationException(e);
+        }
     }
 
 }
