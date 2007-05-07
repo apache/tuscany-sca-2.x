@@ -19,7 +19,7 @@
 package org.apache.tuscany.store;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.spi.event.EventPublisher;
+import org.apache.tuscany.event.EventPublisher;
 
 /**
  * Implementations provide a persistent store for runtime data such as conversational state. A persistent store could be

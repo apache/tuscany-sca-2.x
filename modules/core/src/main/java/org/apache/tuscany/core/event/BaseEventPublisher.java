@@ -23,11 +23,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.event.EventFilter;
-import org.apache.tuscany.spi.event.EventPublisher;
-import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.event.TrueFilter;
+import org.apache.tuscany.event.Event;
+import org.apache.tuscany.event.EventFilter;
+import org.apache.tuscany.event.EventPublisher;
+import org.apache.tuscany.event.RuntimeEventListener;
+import org.apache.tuscany.event.TrueFilter;
 
 /**
  * Base implementation of an <code>EventPublisher</code>

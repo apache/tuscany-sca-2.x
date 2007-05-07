@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.store.MemoryStore;
-import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.event.RuntimeEventListener;
 import org.apache.tuscany.store.DuplicateRecordException;
 import org.apache.tuscany.store.Store;
 import org.apache.tuscany.store.StoreExpirationEvent;

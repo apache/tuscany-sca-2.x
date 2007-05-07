@@ -27,11 +27,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.event.RequestEnd;
+import org.apache.tuscany.event.Event;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.event.Event;
 
 /**
  * A scope context which manages atomic component instances keyed on the current request context

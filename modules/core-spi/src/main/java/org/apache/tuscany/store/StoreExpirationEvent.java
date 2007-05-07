@@ -19,7 +19,7 @@
 package org.apache.tuscany.store;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.event.Event;
 
 /**
  * Fired when a store implementation expires a resource

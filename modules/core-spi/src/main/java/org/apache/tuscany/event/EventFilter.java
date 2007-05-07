@@ -16,18 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.event;
+package org.apache.tuscany.event;
 
 /**
- * Represents an event that is propagated in the runtime
+ * Evaluates whether a {@link RuntimeEventListener} is applicable to a given runtime event
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface Event {
+public interface EventFilter {
 
     /**
-     * Returns the source of the event
+     * Performs the actual evaluation on an event
      */
-    Object getSource();
+    boolean match(Event event);
 
 }
