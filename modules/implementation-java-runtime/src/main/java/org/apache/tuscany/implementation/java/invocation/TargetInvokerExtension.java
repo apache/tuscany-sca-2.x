@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -35,9 +34,9 @@ import org.apache.tuscany.spi.component.WorkContext;
 public abstract class TargetInvokerExtension implements TargetInvoker {
     protected boolean cacheable;
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
-            Object messageId = msg.getMessageId();
+            Object messageId = msg.getMessageID();
             WorkContext workContext = msg.getWorkContext();
             if (messageId != null) {
                 workContext.setCorrelationId(messageId);

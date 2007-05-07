@@ -50,7 +50,7 @@ public abstract class AbstractInvocationHandler {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         Message msg = new MessageImpl();
         msg.setWorkContext(workContext);
-        msg.setCorrelationId(workContext.getCorrelationId());
+        msg.setCorrelationID(workContext.getCorrelationId());
         Operation operation = chain.getTargetOperation();
         Interface contract = operation.getInterface();
         if (contract != null && contract.isConversational()) {

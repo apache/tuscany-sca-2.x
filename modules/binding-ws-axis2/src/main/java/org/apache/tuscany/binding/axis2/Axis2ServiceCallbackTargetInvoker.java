@@ -85,7 +85,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object correlationId = msg.getCorrelationId();
+            Object correlationId = msg.getCorrelationID();
             if (correlationId == null) {
                 throw new InvocationRuntimeException("Missing correlation id");
             }

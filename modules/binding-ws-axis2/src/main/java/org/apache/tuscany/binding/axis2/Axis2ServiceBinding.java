@@ -211,7 +211,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                 msg.setTargetInvoker(chain.getTargetInvoker());
 //                msg.pushFromAddress(getFromAddress()); // TODO : method gone in the TRUNK???
                 if (messageId != null) {
-                    msg.setMessageId(messageId);
+                    msg.setMessageID(messageId);
                 }
                 msg.setBody(args);
                 msg.setWorkContext(workContext);

@@ -31,8 +31,8 @@ import org.apache.tuscany.spi.component.WorkContext;
 public class MessageImpl implements Message {
     private Object body;
     private LinkedList<RuntimeWire> callbackWires;
-    private Object messageId;
-    private Object correlationId;
+    private Object messageID;
+    private Object correlationID;
     private boolean isFault;
     private short conversationSequence;
     private WorkContext workContext;
@@ -87,20 +87,20 @@ public class MessageImpl implements Message {
         this.callbackWires = wires;
     }
 
-    public Object getMessageId() {
-        return messageId;
+    public Object getMessageID() {
+        return messageID;
     }
 
-    public void setMessageId(Object messageId) {
-        this.messageId = messageId;
+    public void setMessageID(Object messageId) {
+        this.messageID = messageId;
     }
 
-    public Object getCorrelationId() {
-        return correlationId;
+    public Object getCorrelationID() {
+        return correlationID;
     }
 
-    public void setCorrelationId(Object correlationId) {
-        this.correlationId = correlationId;
+    public void setCorrelationID(Object correlationId) {
+        this.correlationID = correlationId;
     }
 
     public boolean isFault() {

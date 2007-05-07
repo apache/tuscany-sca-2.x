@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
 import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a lesser
@@ -65,11 +65,11 @@ public class MockStaticInvoker implements TargetInvoker {
                 return operation.invoke(instance, (Object[]) payload);
             }
         } catch (IllegalAccessException e) {
-            throw new InvocationRuntimeException(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
             Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE, null);
             msg.setBody(resp);

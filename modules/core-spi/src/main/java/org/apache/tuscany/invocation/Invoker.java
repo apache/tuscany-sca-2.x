@@ -18,30 +18,19 @@
  */
 package org.apache.tuscany.invocation;
 
-import org.osoa.sca.ServiceRuntimeException;
-
 /**
- * Denotes a runtime exception thrown during an invocation over a wire
+ * Synchronous, around-style mediation associated with a client- or target- side wire.
  *
  * @version $Rev$ $Date$
  */
-public class InvocationRuntimeException extends ServiceRuntimeException {
-    private static final long serialVersionUID = 5937369877274942095L;
+public interface Invoker {
 
-    public InvocationRuntimeException() {
-        super();
-    }
-
-    public InvocationRuntimeException(String message) {
-        super(message);
-    }
-
-    public InvocationRuntimeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvocationRuntimeException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Process a synchronous wire
+     *
+     * @param msg the request Message for the wire
+     * @return the response Message from the wire
+     */
+    Message invoke(Message msg);
 
 }

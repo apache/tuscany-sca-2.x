@@ -22,7 +22,6 @@ package org.apache.tuscany.implementation.spi;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 
 /**
@@ -34,7 +33,7 @@ public abstract class AbstractInterceptor implements Interceptor {
 
     private Interceptor next;
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
             Object resp = doInvoke((Object[])msg.getBody());
             msg.setBody(resp);

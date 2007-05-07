@@ -122,19 +122,19 @@ public class NonBlockingInterceptor implements Interceptor {
 
         }
 
-        public Object getMessageId() {
+        public Object getMessageID() {
             return null;
         }
 
-        public void setMessageId(Object messageId) {
+        public void setMessageID(Object messageId) {
             throw new UnsupportedOperationException();
         }
 
-        public Object getCorrelationId() {
+        public Object getCorrelationID() {
             return null;
         }
 
-        public void setCorrelationId(Object correlationId) {
+        public void setCorrelationID(Object correlationId) {
             throw new UnsupportedOperationException();
         }
 

@@ -19,8 +19,8 @@
 package org.apache.tuscany.implementation.java.invocation;
 
 import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
+import org.osoa.sca.ServiceRuntimeException;
 
 
 /**
@@ -39,9 +39,9 @@ public class TargetInvokerInterceptor implements Interceptor {
         this.invoker = invoker;
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         if (invoker == null) {
-            throw new InvocationRuntimeException("No target invoker specified on message");
+            throw new ServiceRuntimeException("No target invoker specified on message");
         }
         return invoker.invoke(msg);
     }
