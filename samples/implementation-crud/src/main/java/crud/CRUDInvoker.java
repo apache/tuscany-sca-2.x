@@ -39,7 +39,6 @@ import org.apache.tuscany.invocation.Message;
 public class CRUDInvoker implements Interceptor {
     private Operation operation;
     private ResourceManager resourceManager;
-    private Interceptor next;
     
     public CRUDInvoker(Operation operation, ResourceManager resourceManager) {
         this.operation = operation;
