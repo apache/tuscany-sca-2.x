@@ -124,7 +124,6 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcComponentReference.getName(), "addService");
         assertEquals(calcComponentReference.isAutowire(), false);
         assertEquals(calcComponentReference.isWiredByImpl(), false);
-        assertEquals(calcComponentReference.getMultiplicity(), Multiplicity.ONE_ONE);
         assertEquals(calcComponentReference.getRequiredIntents().get(0).getName(),
                      new QName("http://test/confidentiality", "confidentiality"));
         assertEquals(calcComponentReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
