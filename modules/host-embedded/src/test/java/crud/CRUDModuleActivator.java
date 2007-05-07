@@ -22,15 +22,16 @@ package crud;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.invocation.ProxyFactory;
 
 /**
  * Implements a module activator for the CRUD implementation extension module.
@@ -44,41 +45,33 @@ public class CRUDModuleActivator implements ModuleActivator {
 
     private CRUDImplementationProcessor implementationArtifactProcessor;
 
-    public void start(ExtensionPointRegistry registry) {
-
-        // Add the CRUD implementation extension to the StAXArtifactProcessor
-        // extension point
-        StAXArtifactProcessorExtensionPoint artifactProcessors = registry
-            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-
-        // FIXME: How to pass the assembly factory from the core to extensions?
-        AssemblyFactory assemblyFactory = registry.getExtensionPoint(AssemblyFactory.class);
-        if (assemblyFactory == null) {
-            assemblyFactory = new DefaultAssemblyFactory();
-        }
-
-        JavaInterfaceFactory javaFactory = registry.getExtensionPoint(JavaInterfaceFactory.class);
-        if (javaFactory == null) {
-            javaFactory = new DefaultJavaInterfaceFactory();
-        }
-
-        JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
-        implementationArtifactProcessor = new CRUDImplementationProcessor(assemblyFactory, javaFactory, introspector);
-        artifactProcessors.addArtifactProcessor(implementationArtifactProcessor);
-    }
-
     public Map<Class, Object> getExtensionPoints() {
         // This module extension does not contribute any new
         // extension point
         return null;
     }
 
+    public void start(ExtensionPointRegistry registry) {
+
+        ProxyFactory proxyFactory = registry.getExtensionPoint(ProxyFactory.class);
+        // Create the CRUD implementation factory
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(proxyFactory);
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
+        CRUDImplementationFactory crudFactory = new DefaultCRUDImplementationFactory(assemblyFactory, javaFactory, introspector);
+
+        // Add the CRUD implementation extension to the StAXArtifactProcessor
+        // extension point
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        implementationArtifactProcessor = new CRUDImplementationProcessor(crudFactory);
+        processors.addArtifactProcessor(implementationArtifactProcessor);
+    }
+
     public void stop(ExtensionPointRegistry registry) {
 
         // Remove the contributed extensions
-        StAXArtifactProcessorExtensionPoint artifactProcessors = registry
-            .getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        artifactProcessors.removeArtifactProcessor(implementationArtifactProcessor);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.removeArtifactProcessor(implementationArtifactProcessor);
     }
 }

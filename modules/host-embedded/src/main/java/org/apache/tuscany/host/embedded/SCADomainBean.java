@@ -74,6 +74,7 @@ public class SCADomainBean extends SCADomain {
             instance = SCADomain.createNewInstance(uri, location, composites);
         }
         instance.close();
+        instance = null;
     }
 
     @Override
@@ -92,4 +93,13 @@ public class SCADomainBean extends SCADomain {
         return instance.getServiceReference(businessInterface, referenceName);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        
+        // Make sure that the SCA domain is closed
+        if (instance != null) {
+            instance.close();
+            instance = null;
+        }
+    }
 }
