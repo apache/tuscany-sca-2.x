@@ -20,17 +20,13 @@ package org.apache.tuscany.sca.test.spec;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
 
 import java.util.Date;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.RequestContext;
 
 public class ComponentTestCase {
     private static MyService myService;
@@ -40,7 +36,7 @@ public class ComponentTestCase {
     private static MyService myNCService;
     private static MyListService myListServiceFor2006;
 
-    private static CompositeContext context;
+    private static SCADomain domain;
 
     @Test
     public void testDefaultProperty() {
@@ -83,41 +79,20 @@ public class ComponentTestCase {
         */
     }
 
-    private void test(CompositeContext context) {
-        assertNotNull("composite name is null", context.getName());
-        assertNotNull("composite URI is null", context.getURI());
-
-        System.out.println("composite name :" + context.getName());
-        System.out.println("composite URI:" + context.getURI());
-
-        if (context.getRequestContext() == null)
-            System.out.println("Request context:" + context.getRequestContext());
-        else
-            display(context.getRequestContext());
-    }
-
-    private void display(RequestContext context) {
-        System.out.println("\tService name:" + context.getServiceName());
-        System.out.println("\tSecurity subject:" + context.getSecuritySubject());
-        //System.out.println("\tService reference:" + (Object)context.getServiceReference());
-
-    }
-
     @BeforeClass
     public static void init() throws Exception {
-        SCARuntime.start("CompositeTest.composite");
-        context = CurrentCompositeContext.getContext();
-        myService = context.locateService(MyService.class, "MyService");
-        myServiceByDate = context.locateService(MyServiceByDate.class, "MyServiceByDate");
-        myListService = context.locateService(MyListService.class, "MyListService");
-        myListServiceByYear = context.locateService(MyListServiceByYear.class, "MyListServiceByYear");
-        myNCService = context.locateService(MyService.class, "MyNCService");
-        myListServiceFor2006 = context.locateService(MyListService.class, "MyListServiceFor2006");
+        domain = SCADomain.newInstance("CompositeTest.composite");
+        myService = domain.getService(MyService.class, "MyService");
+        myServiceByDate = domain.getService(MyServiceByDate.class, "MyServiceByDate");
+        myListService = domain.getService(MyListService.class, "MyListService");
+        myListServiceByYear = domain.getService(MyListServiceByYear.class, "MyListServiceByYear");
+        myNCService = domain.getService(MyService.class, "MyNCService");
+        myListServiceFor2006 = domain.getService(MyListService.class, "MyListServiceFor2006");
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
     
 }

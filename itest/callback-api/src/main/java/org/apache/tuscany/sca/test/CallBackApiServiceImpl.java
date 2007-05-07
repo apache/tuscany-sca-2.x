@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.test;
 
 import org.osoa.sca.ComponentContext;
-import org.osoa.sca.CompositeContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;

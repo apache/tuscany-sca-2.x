@@ -22,9 +22,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class CompositeServiceReferenceTestCase extends TestCase {
     private MyTotalService myService1;
@@ -32,7 +30,7 @@ public class CompositeServiceReferenceTestCase extends TestCase {
     private MyTotalService myService3;
     private MyTotalService myService4;
     private MyTotalService myService5;
-    private CompositeContext context;
+    private SCADomain domain;
 
     public void FIXMEtestPropertyWithServiceFromRecursive() {
         assertEquals("CARY", myService1.getLocation());
@@ -79,17 +77,16 @@ public class CompositeServiceReferenceTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("CompositeTest.composite");
-        context = CurrentCompositeContext.getContext();
-        myService1 = context.locateService(MyTotalService.class, "MyTotalServiceFromRecursive");
-        myService2 = context.locateService(MyTotalService.class, "MyTotalServiceInCompositeWithRecursive");
-        myService3 = context.locateService(MyTotalService.class, "MyTotalServiceInCompositeWithComponentService");
-        myService4 = context.locateService(MyTotalService.class, "MyTotalServiceInCompositeWithRecursiveUseService");
+    	domain = SCADomain.newInstance("CompositeTest.composite");
+        myService1 = domain.getService(MyTotalService.class, "MyTotalServiceFromRecursive");
+        myService2 = domain.getService(MyTotalService.class, "MyTotalServiceInCompositeWithRecursive");
+        myService3 = domain.getService(MyTotalService.class, "MyTotalServiceInCompositeWithComponentService");
+        myService4 = domain.getService(MyTotalService.class, "MyTotalServiceInCompositeWithRecursiveUseService");
         myService5 =
-            context.locateService(MyTotalService.class, "MyTotalServiceInCompositeWithComponentServiceUseService");
+            domain.getService(MyTotalService.class, "MyTotalServiceInCompositeWithComponentServiceUseService");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 }

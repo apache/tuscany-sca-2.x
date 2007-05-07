@@ -20,21 +20,22 @@ package org.apache.tuscany.sca.test.spec;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.apache.tuscany.host.embedded.SCARuntime;
+
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
 
 public class ComponentContextTestCase {
+    
+    static SCADomain domain;
 
     @Test
-    public void createSelfReference() {
-
-        ComponentContext context = SCARuntime.getComponentContext("MyService");
-        ServiceReference<MyService> service = context.createSelfReference(MyService.class, "MyService");
-        MyService myService = service.getService();
+    public void getServiceReference() {
+        
+        //FIXME this does not test ComponentContext, we'll need a component impl
+        // to test it
+        MyService myService = domain.getService(MyService.class, "MyService");
 
         assertNotNull(myService);
         assertEquals("RTP", myService.getLocation());
@@ -44,11 +45,11 @@ public class ComponentContextTestCase {
 
     @BeforeClass
     public static void init() throws Exception {
-        SCARuntime.start("CompositeTest.composite");
+        domain = SCADomain.newInstance("CompositeTest.composite");
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        SCARuntime.stop();
+        domain.close();
     }
 }

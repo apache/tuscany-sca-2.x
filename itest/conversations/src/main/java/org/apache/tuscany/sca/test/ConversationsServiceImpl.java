@@ -19,29 +19,24 @@
 
 package org.apache.tuscany.sca.test;
 
-import junit.framework.Assert;
-
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.RequestContext;
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Scope;
-import java.io.File; 
-import org.apache.tuscany.sca.test.ConversationsClient;
+import org.osoa.sca.annotations.Service;
 
 @Service(ConversationsService.class)
 @Scope("CONVERSATION")
 
 public class ConversationsServiceImpl implements ConversationsService {
+    
+        @Context
+        protected ComponentContext context;
 
 	@Callback 
-	// Note injection is not working with a private access modifier.
 	protected ConversationsCallback callback; 
-    private int count=0;
+        private int count=0;
 	
 	public void knockKnock(String aString) { 
 		
@@ -126,11 +121,10 @@ public class ConversationsServiceImpl implements ConversationsService {
 		boolean aBoolean = false; 		
 		
 	    ServiceReference myServiceReference = null; 
-	    CompositeContext ctx = CurrentCompositeContext.getContext();	   
 
 	    try
 	    {
-		 myServiceReference = ctx.createServiceReferenceForSession(this);
+		 myServiceReference = context.createSelfReference(ConversationsService.class);
 		 System.out.println("Laa: Created Service Reference for Session:" + myServiceReference);
 	    }
 	    catch (Exception ex) 

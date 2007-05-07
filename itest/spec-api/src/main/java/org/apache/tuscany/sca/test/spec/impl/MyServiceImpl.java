@@ -24,9 +24,7 @@ import org.apache.tuscany.sca.test.spec.MyListService;
 import org.apache.tuscany.sca.test.spec.MyListServiceByYear;
 import org.apache.tuscany.sca.test.spec.MyService;
 import org.apache.tuscany.sca.test.spec.MyServiceByDate;
-import org.osoa.sca.CompositeContext;
 import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
@@ -49,9 +47,6 @@ public class MyServiceImpl implements MyService, MyServiceByDate, MyListService,
 
     @ComponentName
     private String componentName;
-
-    @Context
-    private CompositeContext context;
 
     public MyServiceImpl() {
         System.out.println("creating service instance...");
@@ -105,10 +100,6 @@ public class MyServiceImpl implements MyService, MyServiceByDate, MyListService,
 
     public String getComponentName() {
         return componentName;
-    }
-
-    public CompositeContext getContext() {
-        return context;
     }
 
     public String getLocation() {
