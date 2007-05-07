@@ -22,25 +22,22 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 import commonj.sdo.DataObject;
 
 public class DASServiceTestCase extends TestCase {
 
+    SCADomain scaDomain;
     private DASService dasService;
     
     protected void setUp() throws Exception {
-        SCARuntime.start("dasservice.composite");
-        ComponentContext context = SCARuntime.getComponentContext("DASServiceComponent");
-        ServiceReference<DASService> service = context.createSelfReference(DASService.class);
-        dasService = service.getService();
+        scaDomain = SCADomain.newInstance("dasservice.composite");
+        dasService = scaDomain.getService(DASService.class, "DASServiceComponent");
     }
     
     protected void tearDown() throws Exception {
-        SCARuntime.stop();
+        scaDomain.close();
     }
 
     public void testDAS() throws Exception{
