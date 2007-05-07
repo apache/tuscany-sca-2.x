@@ -21,13 +21,11 @@ package helloworld;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 import org.apache.tuscany.host.embedded.SCATestCaseRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
 
 /**
  * Test case for helloworld web service client 
@@ -35,17 +33,15 @@ import org.osoa.sca.ServiceReference;
 public class HelloWorldClientTestCase {
 
     private HelloWorldService helloWorldService;
+    private SCADomain domain;
     
     private SCATestCaseRunner server;
 
     @Before
     public void startClient() throws Exception {
         try {
-            SCARuntime.start("helloworldwsclient.composite");
-            
-            ComponentContext context = SCARuntime.getComponentContext("HelloWorldServiceComponent");
-            ServiceReference<HelloWorldService> service = context.createSelfReference(HelloWorldService.class);
-            helloWorldService = service.getService();
+            domain = SCADomain.newInstance("helloworldwsclient.composite");
+            helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
     
             server =  new SCATestCaseRunner(HelloWorldServerTest.class);
             server.before();
@@ -64,7 +60,7 @@ public class HelloWorldClientTestCase {
     @After
     public void stopClient() throws Exception {
     	server.after();
-    	SCARuntime.stop();
+    	domain.close();
     }
 
 }

@@ -58,7 +58,7 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class DefaultSCADomain extends SCADomain {
     
-    private String domainURI;
+    private String uri;
     private String location;
     private String[] composites;
     private Composite domainComposite;
@@ -73,14 +73,14 @@ public class DefaultSCADomain extends SCADomain {
      * @param contributionLocation
      * @param composites
      */
-    public DefaultSCADomain(String domainURI, String contributionLocation, String... composites) {
-        this.domainURI = domainURI;
+    public DefaultSCADomain(ClassLoader runtimeClassLoader, ClassLoader applicationClassLoader,
+                            String domainURI, String contributionLocation, String... composites) {
+        this.uri = domainURI;
         this.location = contributionLocation;
         this.composites = composites;
-        
-        ClassLoader runtimeClassLoader = getClass().getClassLoader();
+
+        // Create and start the runtime
         runtime = new ReallySmallRuntime(runtimeClassLoader);
-        
         try {
             runtime.start();
             
@@ -89,7 +89,6 @@ public class DefaultSCADomain extends SCADomain {
         }
         
         // Contribute the given contribution to an in-memory repository
-        ClassLoader applicationClassLoader = Thread.currentThread().getContextClassLoader(); 
         ContributionService contributionService = runtime.getContributionService();
         URL contributionURL;
         try {
@@ -303,7 +302,7 @@ public class DefaultSCADomain extends SCADomain {
 
     @Override
     public String getURI() {
-        return domainURI;
+        return uri;
     }
 
 }
