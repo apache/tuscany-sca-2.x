@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 
 /**
@@ -45,7 +44,7 @@ public class CRUDInvoker implements Interceptor {
         this.resourceManager = resourceManager;
     }
     
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
             Object[] args = msg.getBody();
             Object resp = doTheWork(args);

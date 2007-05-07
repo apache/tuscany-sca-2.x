@@ -37,7 +37,7 @@ public class EchoBindingInterceptor implements Interceptor {
         return args[0];
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
             Object resp = echo((Object[])msg.getBody());
             msg.setBody(resp);
