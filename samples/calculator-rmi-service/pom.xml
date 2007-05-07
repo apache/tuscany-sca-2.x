@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-calculator-rmi-server</artifactId>
+    <artifactId>sample-calculator-rmi-service</artifactId>
     <name>Apache Tuscany Calculator Sample exposing as RMI Service</name>
 
     <repositories>

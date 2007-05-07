@@ -21,12 +21,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <artifactId>tuscany-samples</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-helloworld-wsclient</artifactId>
-    <name>Apache Tuscany HelloWorld Web Service Client Sample</name>
+    <artifactId>sample-helloworld-ws-service</artifactId>
+    <name>Apache Tuscany HelloWorld Web Service Sample</name>
 
     <repositories>
        <repository>
@@ -58,9 +58,9 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sample-helloworld-ws</artifactId>
+            <artifactId>tuscany-http-tomcat</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
