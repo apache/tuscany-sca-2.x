@@ -23,7 +23,7 @@
     name="helloworldws">
 
     <service name="HelloWorldWebService" promote="HelloWorldServiceComponent">
-        <interface.java class="helloworld.HelloWorldService" />
+        <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </service>
 
