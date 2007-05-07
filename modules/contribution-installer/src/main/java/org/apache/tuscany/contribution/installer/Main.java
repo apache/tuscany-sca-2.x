@@ -20,13 +20,12 @@ package org.apache.tuscany.contribution.installer;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
-import org.apache.tuscany.assembly.impl.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.impl.DefaultContributionFactory;
+import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
@@ -58,7 +57,7 @@ public class Main {
             throw new AssertionError();
         }
 
-        URI contributionURI = new URI(args[0]);
+        String contributionURI = args[0];
         
         File contributionSource = new File(args[1]);
         if (!contributionSource.exists()) {
@@ -69,7 +68,7 @@ public class Main {
         //start the process of installing the contribution
         ContributionRepository contributionRepository = new ContributionRepositoryImpl(null);
         ContributionService contributionService = 
-            new ContributionServiceImpl(contributionRepository, null, null, null, new DefaultAssemblyFactory(), new DefaultContributionFactory());
+            new ContributionServiceImpl(contributionRepository, null, null,  new DefaultAssemblyFactory(), new ContributionFactoryImpl(), null);
 
         URL contributionURL = contributionSource.toURL();
         InputStream contributionStream = null;
