@@ -48,10 +48,11 @@ public class CRUDInvoker implements Interceptor {
     
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = doTheWork((Object[])msg.getBody());
+            Object[] args = msg.getBody();
+            Object resp = doTheWork(args);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
+            msg.setFaultBody(e.getCause());
         }
         return msg;
     }
@@ -80,10 +81,9 @@ public class CRUDInvoker implements Interceptor {
     }
 
     public Interceptor getNext() {
-        return next;
+        return null;
     }
 
     public void setNext(Interceptor next) {
-        this.next = next;
     }
 }
