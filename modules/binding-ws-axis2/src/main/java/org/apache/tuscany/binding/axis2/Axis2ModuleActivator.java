@@ -29,14 +29,13 @@ import org.apache.tuscany.binding.ws.xml.WebServiceBindingProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.http.ServletHostExtensionPoint;
+import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 public class Axis2ModuleActivator implements ModuleActivator {
 
@@ -54,7 +53,7 @@ public class Axis2ModuleActivator implements ModuleActivator {
                                                                               assemblyFactory, policyFactory, wsFactory,
                                                                               wsdlFactory, introspector));
 
-        ServletHostExtensionPoint servletHost = registry.getExtensionPoint(ServletHostExtensionPoint.class);
+        ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
         
         BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
         builder = new Axis2BindingBuilder();
