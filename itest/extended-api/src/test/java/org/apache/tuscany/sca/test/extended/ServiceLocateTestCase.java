@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.tuscany.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -41,6 +42,8 @@ public class ServiceLocateTestCase {
 
     
     //TODO: @Test this fails, how should it be done?
+    @Ignore
+    @Test
     public void managedLocateService() {
 
         BasicService service = domain.getService(BasicService.class, "BasicServiceComponent");
@@ -59,8 +62,15 @@ public class ServiceLocateTestCase {
     @Before
     public void init() throws Exception {
 
-        domain = SCADomain.newInstance("BasicService.composite");
+ //       domain = SCADomain.newInstance("BasicService.composite");
+        
+      domain =  SCADomain.newInstance("sca://local", ".", "BasicService.composite", "MathService.composite");
 
+ //       domain =  SCADomain.newInstance( "http://localhost", ".", "BasicService.composite", "MathService.composite");
+
+           
+       
+       
     }
 
     @After
