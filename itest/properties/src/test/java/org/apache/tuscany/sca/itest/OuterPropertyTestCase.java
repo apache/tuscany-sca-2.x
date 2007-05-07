@@ -36,7 +36,7 @@ public class OuterPropertyTestCase {
     @BeforeClass
     public static void init() throws Exception {
         domain = SCADomain.newInstance("OuterPropertyTest.composite");
-        outerABService = domain.getService(ABComponent.class, "OuterComponent/ABComponent");
+        outerABService = domain.getService(ABComponent.class, "OuterComponent");
     }
 
     @AfterClass
