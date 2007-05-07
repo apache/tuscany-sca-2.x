@@ -47,10 +47,8 @@ import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
-import org.apache.tuscany.invocation.TargetInvoker;
-import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.rmi.RMIHost;
-import org.apache.tuscany.scope.Scope;
+import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
@@ -208,33 +206,19 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         Interceptor headInterceptor = chain.getHeadInterceptor();
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         
-        String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
-        
-        try {
-            if (headInterceptor == null) {
-                // short-circuit the dispatch and invoke the target directly
-                TargetInvoker targetInvoker = chain.getTargetInvoker();
-                if (targetInvoker == null) {
-                    throw new AssertionError("No target invoker [" + chain.getTargetOperation().getName() + "]");
-                }
-                return targetInvoker.invokeTarget(args, TargetInvoker.NONE, null);
-            } else {
-                Message msg = new MessageImpl();
-                msg.setTargetInvoker(chain.getTargetInvoker());
-                msg.setBody(args);
-                msg.setWorkContext(workContext);
+        Message msg = new MessageImpl();
+        msg.setTargetInvoker(chain.getTargetInvoker());
+        msg.setBody(args);
+        msg.setWorkContext(workContext);
 
-                Message resp;
-                // dispatch the wire down the chain and get the response
-                resp = headInterceptor.invoke(msg);
-                Object body = resp.getBody();
-                if (resp.isFault()) {
-                    throw new InvocationTargetException((Throwable) body);
-                }
-                return body;
-            }
-        } finally {
+        Message resp;
+        // dispatch the wire down the chain and get the response
+        resp = headInterceptor.invoke(msg);
+        Object body = resp.getBody();
+        if (resp.isFault()) {
+            throw new InvocationTargetException((Throwable) body);
         }
+        return body;
     }
     
     protected int getPort(String port) {

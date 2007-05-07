@@ -22,9 +22,8 @@ import java.rmi.Remote;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.rmi.RMIHost;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.rmi.RMIHostException;
 
 public class RMIBindingInterceptor implements Interceptor {
     private RMIHost rmiHost;
