@@ -25,23 +25,24 @@ import org.apache.tuscany.host.embedded.SCADomain;
 public class RecursiveCompositeTest extends TestCase {
 
     private SCADomain domain;
-    private Service1 tracker;
+    private Service1 tracker, tracker2;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("Composite1.composite");
-        tracker = domain.getService(Service1.class, "ComponentA");   
-      	
+        domain = SCADomain.newInstance("sca//default", ".", "Composite1.composite", "Composite2.composite");
+        tracker = domain.getService(Service1.class, "ComponentC");
+        tracker2 = domain.getService(Service1.class, "ComponentB");
+
     }
-    
+
     protected void tearDown() throws Exception {
-    	domain.close();
+        domain.close();
     }
 
     public void test() throws Exception {
         try {
             System.out.println("Main thread " + Thread.currentThread());
-            String r = tracker.track("");
-            System.out.println("Tracked " + r);
+            System.out.println(tracker.track("Client"));
+            System.out.println(tracker2.track("Client"));
         } catch (Throwable t) {
             t.printStackTrace();
         }

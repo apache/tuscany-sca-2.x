@@ -32,7 +32,7 @@ public class ComponentAImpl implements Service1 {
     protected Service1 ref;
 
     public String track(String source) {
-        if (ref != null && source.equals("")) {
+        if (ref != null) {
             return ref.track(source + "-->ComponentA");
         }
         return source + "-->ComponentA";

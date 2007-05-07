@@ -24,10 +24,6 @@
 
     <component name="ComponentA">
         <implementation.java class="sample.ComponentAImpl"/>
-
-        <!-- Wired to ComponentB -->
-        <reference name="Reference1" target="ComponentB"/>
-
     </component>
 
     <component name="ComponentB">
