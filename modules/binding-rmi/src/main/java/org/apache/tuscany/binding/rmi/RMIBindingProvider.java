@@ -207,7 +207,6 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         
         Message msg = new MessageImpl();
-        msg.setTargetInvoker(chain.getTargetInvoker());
         msg.setBody(args);
         msg.setWorkContext(workContext);
 
