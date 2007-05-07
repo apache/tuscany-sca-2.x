@@ -387,6 +387,107 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
     protected void configureComponents(Composite composite) {
         configureComponents(composite, null);
     }
+    
+    private void indexImplPropServRef(Component component,
+                                      Map<String, Service> services,
+                                      Map<String, Reference> references,
+                                      Map<String, Property> properties) {
+        // First check that the component has a resolved implementation
+        Implementation implementation = component.getImplementation();
+        if (implementation == null) {
+
+            // A component must have an implementation
+            warning("No implementation for component: " + component.getName(), component);
+
+        } else if (implementation.isUnresolved()) {
+
+            // The implementation must be fully resolved
+            warning("Component implementation not found: " + component.getName()
+                + " : "
+                + implementation.getURI(), component);
+
+        } else {
+
+            // Index properties, services and references, also check for
+            // duplicates
+            for (Property property : implementation.getProperties()) {
+                if (properties.containsKey(property.getName())) {
+                    warning("Duplicate property name: " + component.getName()
+                        + "/"
+                        + property.getName(), component);
+                } else {
+                    properties.put(property.getName(), property);
+                }
+            }
+            for (Service service : implementation.getServices()) {
+                if (services.containsKey(service.getName())) {
+                    warning("Duplicate service name: " + component.getName()
+                        + "/"
+                        + service.getName(), component);
+                } else {
+                    services.put(service.getName(), service);
+                }
+            }
+            for (Reference reference : implementation.getReferences()) {
+                if (references.containsKey(reference.getName())) {
+                    warning("Duplicate reference name: " + component.getName()
+                        + "/"
+                        + reference.getName(), component);
+                } else {
+                    references.put(reference.getName(), reference);
+                }
+            }
+        }
+
+    }
+    
+    private void indexCompPropServRef(Component component,
+                                      Map<String, ComponentService> componentServices,
+                                      Map<String, ComponentReference> componentReferences,
+                                      Map<String, ComponentProperty> componentProperties) {
+        for (ComponentService componentService : component.getServices()) {
+            if (componentServices.containsKey(componentService.getName())) {
+                warning("Duplicate component service name: " + component.getName()
+                    + "/"
+                    + componentService.getName(), component);
+            } else {
+                componentServices.put(componentService.getName(), componentService);
+            }
+
+            // Initialize binding names
+            for (Binding binding : componentService.getBindings()) {
+                if (binding.getName() == null) {
+                    binding.setName(componentService.getName());
+                }
+            }
+        }
+        for (ComponentReference componentReference : component.getReferences()) {
+            if (componentReferences.containsKey(componentReference.getName())) {
+                warning("Duplicate component reference name: " + component.getName()
+                    + "/"
+                    + componentReference.getName(), component);
+            } else {
+                componentReferences.put(componentReference.getName(), componentReference);
+            }
+
+            // Initialize binding names
+            for (Binding binding : componentReference.getBindings()) {
+                if (binding.getName() == null) {
+                    binding.setName(componentReference.getName());
+                }
+            }
+        }
+        for (ComponentProperty componentProperty : component.getProperties()) {
+            if (componentProperties.containsKey(componentProperty.getName())) {
+                warning("Duplicate component property name: " + component.getName()
+                    + "/"
+                    + componentProperty.getName(), component);
+            } else {
+                componentProperties.put(componentProperty.getName(), componentProperty);
+            }
+        }
+
+    }
 
     /**
      * Configure components in the composite.
@@ -449,90 +550,19 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                 component.setAutowire(true);
             }
 
-            // Index properties, services and references
+            
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
+            //Index properties, services and references
+            indexImplPropServRef(component, services, references, properties);
 
-            // First check that the component has a resolved implementation
-            Implementation implementation = component.getImplementation();
-            if (implementation == null) {
-
-                // A component must have an implementation
-                warning("No implementation for component: " + component.getName(), component);
-
-            } else if (implementation.isUnresolved()) {
-
-                // The implementation must be fully resolved
-                warning("Component implementation not found: " + component.getName() + " : " + implementation.getURI(), component);
-
-            } else {
-
-                // Index properties, services and references, also check for
-                // duplicates
-                for (Property property : implementation.getProperties()) {
-                    if (properties.containsKey(property.getName())) {
-                        warning("Duplicate property name: " + component.getName() + "/" + property.getName(), component);
-                    } else {
-                        properties.put(property.getName(), property);
-                    }
-                }
-                for (Service service : implementation.getServices()) {
-                    if (services.containsKey(service.getName())) {
-                        warning("Duplicate service name: " + component.getName() + "/" + service.getName(), component);
-                    } else {
-                        services.put(service.getName(), service);
-                    }
-                }
-                for (Reference reference : implementation.getReferences()) {
-                    if (references.containsKey(reference.getName())) {
-                        warning("Duplicate reference name: " + component.getName() + "/" + reference.getName(), component);
-                    } else {
-                        references.put(reference.getName(), reference);
-                    }
-                }
-            }
-
-            // Index component services, references and properties
-            // Also check for duplicates
             Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
             Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
             Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
-            for (ComponentService componentService : component.getServices()) {
-                if (componentServices.containsKey(componentService.getName())) {
-                    warning("Duplicate component service name: " + component.getName() + "/" + componentService.getName(), component);
-                } else {
-                    componentServices.put(componentService.getName(), componentService);
-                }
-
-                // Initialize binding names
-                for (Binding binding : componentService.getBindings()) {
-                    if (binding.getName() == null) {
-                        binding.setName(componentService.getName());
-                    }
-                }
-            }
-            for (ComponentReference componentReference : component.getReferences()) {
-                if (componentReferences.containsKey(componentReference.getName())) {
-                    warning("Duplicate component reference name: " + component.getName() + "/" + componentReference.getName(), component);
-                } else {
-                    componentReferences.put(componentReference.getName(), componentReference);
-                }
-
-                // Initialize binding names
-                for (Binding binding : componentReference.getBindings()) {
-                    if (binding.getName() == null) {
-                        binding.setName(componentReference.getName());
-                    }
-                }
-            }
-            for (ComponentProperty componentProperty : component.getProperties()) {
-                if (componentProperties.containsKey(componentProperty.getName())) {
-                    warning("Duplicate component property name: " + component.getName() + "/" + componentProperty.getName(), component);
-                } else {
-                    componentProperties.put(componentProperty.getName(), componentProperty);
-                }
-            }
+            //Index component services, references and properties
+            // Also check for duplicates
+            indexCompPropServRef(component, componentServices, componentReferences, componentProperties);
 
             // Reconcile component services/references/properties and
             // implementation
@@ -544,7 +574,7 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
             reconcileProperties(component, properties, componentProperties);
 
             // Create self references to the component's services
-            if (!(implementation instanceof Composite)) {
+            if (!(component.getImplementation() instanceof Composite)) {
                 createSelfReferences(component);
             }
         }
@@ -1158,7 +1188,7 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
         connectWires(composite, componentServices, componentReferences);
 
         // Resolve sourced properties
-        resolveSourcedProperties(composite);
+        resolveSourcedProperties(composite, null);
 
         // Validate that references are wired or promoted, according
         // to their multiplicity
@@ -1174,16 +1204,34 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
         }
     }
 
-    // TODO: Please review this code
+    private ComponentProperty getComponentPropertyByName(String propertyName, List<ComponentProperty> properties) {
+        if (properties != null) {
+            for (ComponentProperty aProperty : properties) {
+                if (aProperty.getName().equals(propertyName)) {
+                    return aProperty;
+                }
+            }
+        }
+        return null;
+    }
+    
+    
     /**
      * @param composite
      */
-    private void resolveSourcedProperties(Composite composite) {
+    private void resolveSourcedProperties(Composite composite, List<ComponentProperty> propertySettings) {
         // Resolve properties
         Map<String, Property> compositeProperties = new HashMap<String, Property>();
+        ComponentProperty componentProperty = null;
         for (Property p : composite.getProperties()) {
-            compositeProperties.put(p.getName(), p);
+            componentProperty = getComponentPropertyByName(p.getName(), propertySettings);
+            if ( componentProperty != null ) {
+                compositeProperties.put(p.getName(), componentProperty);
+            } else {
+                compositeProperties.put(p.getName(), p);
+            }
         }
+        
         for (Component component : composite.getComponents()) {
             try {
                 PropertyUtil.sourceComponentProperties(compositeProperties, component);
@@ -1193,10 +1241,11 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
             }
             Implementation impl = component.getImplementation();
             if (impl instanceof Composite) {
-                resolveSourcedProperties((Composite)impl);
+                resolveSourcedProperties((Composite)impl, component.getProperties());
             }
         }
     }
+
 
     /**
      * Expand composite component implementations.
