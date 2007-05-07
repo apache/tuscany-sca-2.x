@@ -25,8 +25,6 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.TargetInvoker;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Implements a target invoker for CRUD component implementations.
@@ -38,19 +36,19 @@ import org.apache.tuscany.spi.component.WorkContext;
  * 
  * @version $Rev$ $Date$
  */
-public class CRUDTargetInvoker implements TargetInvoker, Interceptor {
+public class CRUDInvoker implements Interceptor {
     private Operation operation;
     private ResourceManager resourceManager;
-    private Interceptor next;
     
-    public CRUDTargetInvoker(Operation operation, ResourceManager resourceManager) {
+    public CRUDInvoker(Operation operation, ResourceManager resourceManager) {
         this.operation = operation;
         this.resourceManager = resourceManager;
     }
     
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), msg.getWorkContext());
+            Object[] args = msg.getBody();
+            Object resp = doTheWork(args);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
@@ -58,8 +56,7 @@ public class CRUDTargetInvoker implements TargetInvoker, Interceptor {
         return msg;
     }
 
-    public Object invokeTarget(Object body, short sequence, WorkContext context) throws InvocationTargetException {
-        Object[] args = (Object[])body;
+    public Object doTheWork(Object[] args) throws InvocationTargetException {
         if (operation.getName().equals("create")) {
             return resourceManager.createResource(args[0]);
             
@@ -71,31 +68,21 @@ public class CRUDTargetInvoker implements TargetInvoker, Interceptor {
             
         } else if (operation.getName().equals("delete")) {
             resourceManager.deleteResource((String)args[0]);
+            return null;
+            
+        } else {
+            return null;
         }
-        return null;
-    }
-
-    public boolean isCacheable() {
-        return false;
     }
 
     public boolean isOptimizable() {
         return false;
     }
 
-    public void setCacheable(boolean cacheable) {
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
     public Interceptor getNext() {
-        return next;
+        return null;
     }
 
     public void setNext(Interceptor next) {
-        this.next = next;
     }
 }
