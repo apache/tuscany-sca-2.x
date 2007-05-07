@@ -35,9 +35,6 @@ import java.lang.reflect.Proxy;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.monitor.FormatterRegistry;
-import org.apache.tuscany.host.monitor.ExceptionFormatter;
 import org.apache.tuscany.api.annotation.LogLevel;
 
 /**

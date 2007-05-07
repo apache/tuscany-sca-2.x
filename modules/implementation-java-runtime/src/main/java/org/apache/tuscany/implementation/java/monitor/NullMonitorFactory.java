@@ -25,8 +25,6 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.monitor.ExceptionFormatter;
 
 /**
  * Implementation of a {@link MonitorFactory} that produces implementations that simply return.

@@ -20,7 +20,6 @@ package org.apache.tuscany.implementation.java.monitor;
 
 import java.io.PrintWriter;
 
-import org.apache.tuscany.host.monitor.ExceptionFormatter;
 import org.apache.tuscany.spi.TuscanyException;
 import org.apache.tuscany.spi.TuscanyRuntimeException;
 

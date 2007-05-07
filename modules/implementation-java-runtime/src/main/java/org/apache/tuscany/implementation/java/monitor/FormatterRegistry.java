@@ -16,19 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.host.monitor;
-
-import java.io.PrintWriter;
+package org.apache.tuscany.implementation.java.monitor;
 
 /**
- * Formats exception data during a monitor event
+ * A registry for exception formatters
  *
  * @version $Rev$ $Date$
  */
-public interface ExceptionFormatter {
+public interface FormatterRegistry {
 
-    boolean canFormat(Class<?> type);
+    /**
+     * Registers the given formatter
+     *
+     * @param formatter the formatter to register
+     */
+    void register(ExceptionFormatter formatter);
 
-    PrintWriter write(PrintWriter writer, Throwable exception);
+    /**
+     * De-registers the given formatter
+     *
+     * @param formatter the formatter to de-register
+     */
+    void unregister(ExceptionFormatter formatter);
 
 }
