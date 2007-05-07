@@ -39,7 +39,7 @@ public abstract class AbstractInterceptor implements Interceptor {
             Object resp = doInvoke((Object[])msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
+            msg.setFaultBody(e.getCause());
         }
         return msg;
     }

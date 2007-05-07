@@ -19,8 +19,6 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.tuscany.interfacedef.Operation;
@@ -45,14 +43,10 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
             if (messageId != null) {
                 workContext.setCorrelationId(messageId);
             }
-            LinkedList<URI> callbackRoutingChain = msg.getCallbackUris();
-            if (callbackRoutingChain != null) {
-                workContext.setCallbackUris(callbackRoutingChain);
-            }
             Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), workContext);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
+            msg.setFaultBody(e.getCause());
         }
         return msg;
     }

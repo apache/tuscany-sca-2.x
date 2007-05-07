@@ -74,9 +74,9 @@ public class MockStaticInvoker implements TargetInvoker {
             Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE, null);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
+            msg.setFaultBody(e.getCause());
         } catch (Throwable e) {
-            msg.setBodyWithFault(e);
+            msg.setFaultBody(e);
         }
         return msg;
     }

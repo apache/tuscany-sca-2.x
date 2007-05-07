@@ -144,7 +144,7 @@ public class DataTransformationInteceptor implements Interceptor {
                 Object newResult =
                     transformException(result, targetDataType, sourceDataType, targetFaultType, sourceFaultType);
                 if (newResult != result) {
-                    resultMsg.setBodyWithFault(newResult);
+                    resultMsg.setFaultBody(newResult);
                 }
             }
 

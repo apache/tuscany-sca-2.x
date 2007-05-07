@@ -93,6 +93,7 @@ public class NonBlockingInterceptor implements Interceptor {
      */
     private static class ImmutableMessage implements Message {
 
+        @SuppressWarnings("unchecked")
         public Object getBody() {
             return null;
         }
@@ -117,30 +118,6 @@ public class NonBlockingInterceptor implements Interceptor {
 
         public TargetInvoker getTargetInvoker() {
             return null;
-        }
-
-        public Message getRelatedCallbackMessage() {
-            return null;
-        }
-
-        public URI getFromAddress() {
-            return null;
-        }
-
-        public void setFromAddress(URI fromAddress) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void pushCallbackUri(URI fromAddress) {
-            throw new UnsupportedOperationException();
-        }
-
-        public LinkedList<URI> getCallbackUris() {
-            return null;
-        }
-
-        public void setCallbackUris(LinkedList<URI> uris) {
-            throw new UnsupportedOperationException();
         }
 
         public void pushCallbackWire(RuntimeWire wire) {
@@ -175,7 +152,7 @@ public class NonBlockingInterceptor implements Interceptor {
             return false;
         }
 
-        public void setBodyWithFault(Object fault) {
+        public void setFaultBody(Object fault) {
             throw new UnsupportedOperationException();
         }
 

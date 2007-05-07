@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.invocation;
 
-import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.core.RuntimeWire;
@@ -34,12 +33,12 @@ public interface Message {
     /**
      * Returns the body of the message, which will be the payload or parameters associated with the wire
      */
-    Object getBody();
+    <T> T getBody();
 
     /**
      * Sets the body of the message.
      */
-    void setBody(Object body);
+    <T> void setBody(T body);
 
     /**
      * Returns the context associated with this invocation.
@@ -66,28 +65,6 @@ public interface Message {
      * @Deprecated
      */
     TargetInvoker getTargetInvoker();
-
-    /**
-     * Adds a URI to the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a
-     * callback.
-     *
-     * @Deprecated
-     */
-    void pushCallbackUri(URI uri);
-
-    /**
-     * Returns the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a callback.
-     *
-     * @Deprecated
-     */
-    LinkedList<URI> getCallbackUris();
-
-    /**
-     * Sets the ordered list of callback URIs. Callback URIs are used to resolve the correct wire for a callback.
-     *
-     * @Deprecated
-     */
-    void setCallbackUris(LinkedList<URI> uris);
 
     /**
      * Adds a callback wire to the ordered list of callbacks for the current invocation
@@ -143,7 +120,7 @@ public interface Message {
      *
      * @param fault The fault object represents an exception
      */
-    void setBodyWithFault(Object fault);
+    <T> void setFaultBody(T fault);
 
     /**
      * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on {@link
