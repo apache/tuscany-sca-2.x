@@ -20,17 +20,9 @@ package org.apache.tuscany.sca.test;
 
 import junit.framework.Assert;
 
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Scope;
-import java.io.File; 
-import org.apache.tuscany.sca.test.ConversationsClient;
+import org.osoa.sca.annotations.Service;
 
 @Service(AnotherService.class)
 @Scope("CONVERSATION")

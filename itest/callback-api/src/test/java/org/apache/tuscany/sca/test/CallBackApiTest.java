@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.test;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCADomain;
-import org.osoa.sca.CurrentCompositeContext;
 
 public class CallBackApiTest extends TestCase {
 

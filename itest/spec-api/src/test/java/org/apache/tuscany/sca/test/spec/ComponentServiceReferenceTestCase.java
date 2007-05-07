@@ -22,14 +22,11 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.RequestContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class ComponentServiceReferenceTestCase extends TestCase {
     private MyTotalService myService;
-    private CompositeContext context;
+    private SCADomain domain;
 
     public void testDefaultProperty() {
         assertEquals("NC", myService.getLocation());
@@ -56,33 +53,12 @@ public class ComponentServiceReferenceTestCase extends TestCase {
         */
     }
 
-    private void test(CompositeContext context) {
-        assertNotNull("composite name is null", context.getName());
-        assertNotNull("composite URI is null", context.getURI());
-
-        System.out.println("composite name :" + context.getName());
-        System.out.println("composite URI:" + context.getURI());
-
-        if (context.getRequestContext() == null)
-            System.out.println("Request context:" + context.getRequestContext());
-        else
-            display(context.getRequestContext());
-    }
-
-    private void display(RequestContext context) {
-        System.out.println("\tService name:" + context.getServiceName());
-        System.out.println("\tSecurity subject:" + context.getSecuritySubject());
-        //System.out.println("\tService reference:" + context.getServiceReference());
-
-    }
-
     protected void setUp() throws Exception {
-    	SCARuntime.start("CompositeTest.composite");
-        context = CurrentCompositeContext.getContext();
-        myService = context.locateService(MyTotalService.class, "MyTotalService");
+    	domain = SCADomain.newInstance("CompositeTest.composite");
+        myService = domain.getService(MyTotalService.class, "MyTotalService");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 }

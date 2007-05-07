@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.test.spec.MyListServiceByYear;
 import org.apache.tuscany.sca.test.spec.MyService;
 import org.apache.tuscany.sca.test.spec.MyServiceByDate;
 import org.apache.tuscany.sca.test.spec.MyTotalService;
-import org.osoa.sca.CompositeContext;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -59,10 +58,6 @@ public class MyTotalServiceImpl implements MyTotalService {
 
     public String getComponentName() {
         return myService.getComponentName();
-    }
-
-    public CompositeContext getContext() {
-        return myService.getContext();
     }
 
     public Date nextHolidayByDate(Date date) {

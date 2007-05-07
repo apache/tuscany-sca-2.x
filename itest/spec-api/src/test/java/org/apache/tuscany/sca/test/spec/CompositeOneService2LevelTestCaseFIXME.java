@@ -20,10 +20,7 @@ package org.apache.tuscany.sca.test.spec;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.RequestContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 @SuppressWarnings("deprecation")
 public class CompositeOneService2LevelTestCaseFIXME extends TestCase {
@@ -33,7 +30,7 @@ public class CompositeOneService2LevelTestCaseFIXME extends TestCase {
     private MyService myServiceMay;
     private MyService myServiceMust;
 
-    private CompositeContext context;
+    private SCADomain domain;
 
     public void testPropertyFromComponent() {
         assertEquals("CARY", myService.getLocation());
@@ -94,37 +91,16 @@ public class CompositeOneService2LevelTestCaseFIXME extends TestCase {
         */
     }
 
-    private void test(CompositeContext context) {
-        assertNotNull("composite name is null", context.getName());
-        assertNotNull("composite URI is null", context.getURI());
-
-        System.out.println("composite name :" + context.getName());
-        System.out.println("composite URI:" + context.getURI());
-
-        if (context.getRequestContext() == null)
-            System.out.println("Request context:" + context.getRequestContext());
-        else
-            display(context.getRequestContext());
-    }
-
-    private void display(RequestContext context) {
-        System.out.println("\tService name:" + context.getServiceName());
-        System.out.println("\tSecurity subject:" + context.getSecuritySubject());
-        //System.out.println("\tService reference:" + (Object)context.getServiceReference());
-
-    }
-
     protected void setUp() throws Exception {
-    	SCARuntime.start("CompositeTest.composite");
-        context = CurrentCompositeContext.getContext();
-        myService = context.locateService(MyService.class, "MySimpleServiceInRecursiveComponent");
-        myServiceDefault = context.locateService(MyService.class, "MySimpleServiceDefault");
-        myServiceNo = context.locateService(MyService.class, "MySimpleServiceNo");
-        myServiceMay = context.locateService(MyService.class, "MySimpleServiceMay");
-        myServiceMust = context.locateService(MyService.class, "MySimpleServiceMust");
+    	domain = SCADomain.newInstance("CompositeTest.composite");
+        myService = domain.getService(MyService.class, "MySimpleServiceInRecursiveComponent");
+        myServiceDefault = domain.getService(MyService.class, "MySimpleServiceDefault");
+        myServiceNo = domain.getService(MyService.class, "MySimpleServiceNo");
+        myServiceMay = domain.getService(MyService.class, "MySimpleServiceMay");
+        myServiceMust = domain.getService(MyService.class, "MySimpleServiceMust");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 }

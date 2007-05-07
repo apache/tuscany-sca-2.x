@@ -22,15 +22,13 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class CompositeServiceReferenceForRefOverrideTestCase extends TestCase {
     private MyTotalService myService1;
     private MyTotalService myService2;
     private MyTotalService myService3;
-    private CompositeContext context;
+    private SCADomain domain;
 
     public void testPropertyWithServiceFromReferenceNo() {
         assertEquals("CARY", myService1.getLocation());
@@ -70,14 +68,13 @@ public class CompositeServiceReferenceForRefOverrideTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("CompositeTest.composite");
-        context = CurrentCompositeContext.getContext();
-        myService1 = context.locateService(MyTotalService.class, "MyTotalServiceNo");
-        myService2 = context.locateService(MyTotalService.class, "MyTotalServiceMay");
-        myService3 = context.locateService(MyTotalService.class, "MyTotalServiceMust");
+    	domain = SCADomain.newInstance("CompositeTest.composite");
+        myService1 = domain.getService(MyTotalService.class, "MyTotalServiceNo");
+        myService2 = domain.getService(MyTotalService.class, "MyTotalServiceMay");
+        myService3 = domain.getService(MyTotalService.class, "MyTotalServiceMust");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 }

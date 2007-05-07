@@ -20,15 +20,13 @@ package org.apache.tuscany.sca.test.spec;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class ComponentServiceReferenceListTestCaseFIXME extends TestCase {
     private MyListService myListService;
     private MyListServiceByYear myListServiceByYear;
 
-    private CompositeContext context;
+    private SCADomain domain;
 
     public void testDefaultProperty() {
         assertEquals("2007", myListService.getYear());
@@ -41,13 +39,12 @@ public class ComponentServiceReferenceListTestCaseFIXME extends TestCase {
     }
 
     protected void setUp() throws Exception {
-    	SCARuntime.start("CompositeTest.composite");
-        context = CurrentCompositeContext.getContext();
-        myListService = context.locateService(MyListService.class, "MyNewListService");
-        myListServiceByYear = context.locateService(MyListServiceByYear.class, "MyNewListService");
+    	domain = SCADomain.newInstance("CompositeTest.composite");
+        myListService = domain.getService(MyListService.class, "MyNewListService");
+        myListServiceByYear = domain.getService(MyListServiceByYear.class, "MyNewListService");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 }

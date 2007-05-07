@@ -18,11 +18,8 @@
  */
 package org.apache.tuscany.sca.test.spec;
 
-import org.osoa.sca.CompositeContext;
 
 public interface SCAComponentService {
     String getComponentName();
-
-    CompositeContext getContext();
 
 }

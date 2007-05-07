@@ -20,14 +20,11 @@ package org.apache.tuscany.sca.test.spec;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.RequestContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class CompositeOneServiceTestCase extends TestCase {
     private MyService myService;
-    private CompositeContext context;
+    private SCADomain domain;
 
     public void testOverrideProperty() {
         assertEquals("CARY", myService.getLocation());
@@ -52,33 +49,12 @@ public class CompositeOneServiceTestCase extends TestCase {
         */
     }
 
-    private void test(CompositeContext context) {
-        assertNotNull("composite name is null", context.getName());
-        assertNotNull("composite URI is null", context.getURI());
-
-        System.out.println("composite name :" + context.getName());
-        System.out.println("composite URI:" + context.getURI());
-
-        if (context.getRequestContext() == null)
-            System.out.println("Request context:" + context.getRequestContext());
-        else
-            display(context.getRequestContext());
-    }
-
-    private void display(RequestContext context) {
-        System.out.println("\tService name:" + context.getServiceName());
-        System.out.println("\tSecurity subject:" + context.getSecuritySubject());
-        //System.out.println("\tService reference:" + context.getServiceReference());
-
-    }
-
     protected void setUp() throws Exception {
-    	SCARuntime.start("CompositeTest.composite");
-        context = CurrentCompositeContext.getContext();
-        myService = context.locateService(MyService.class, "MySimpleServiceInRecursive");
+    	domain = SCADomain.newInstance("CompositeTest.composite");
+        myService = domain.getService(MyService.class, "MySimpleServiceInRecursive");
     }
 
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 }
