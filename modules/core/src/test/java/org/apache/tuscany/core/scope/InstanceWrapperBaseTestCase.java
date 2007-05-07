@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.context;
+package org.apache.tuscany.core.scope;
 
 import junit.framework.TestCase;
 

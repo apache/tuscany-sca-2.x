@@ -30,10 +30,10 @@ import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.services.store.Store;
-import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
-import org.apache.tuscany.spi.services.store.StoreReadException;
-import org.apache.tuscany.spi.services.store.StoreWriteException;
+import org.apache.tuscany.store.Store;
+import org.apache.tuscany.store.StoreExpirationEvent;
+import org.apache.tuscany.store.StoreReadException;
+import org.apache.tuscany.store.StoreWriteException;
 
 /**
  * A scope context which manages atomic component instances keyed on a conversation session

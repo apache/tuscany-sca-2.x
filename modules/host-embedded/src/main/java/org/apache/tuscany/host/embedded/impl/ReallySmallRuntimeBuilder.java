@@ -82,7 +82,7 @@ import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.work.WorkScheduler;
 
 import commonj.work.WorkManager;
 

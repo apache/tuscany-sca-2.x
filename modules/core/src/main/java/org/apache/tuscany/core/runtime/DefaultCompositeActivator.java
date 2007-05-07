@@ -53,7 +53,7 @@ import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.work.WorkScheduler;
 
 /**
  * @version $Rev$ $Date$

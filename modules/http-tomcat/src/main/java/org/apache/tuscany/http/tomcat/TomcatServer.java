@@ -37,7 +37,7 @@ import org.apache.tomcat.util.http.mapper.MappingData;
 import org.apache.tomcat.util.net.JIoEndpoint;
 import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.http.ServletMappingException;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.work.WorkScheduler;
 
 /**
  * A Tomcat based implementation of ServletHost.

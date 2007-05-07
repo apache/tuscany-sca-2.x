@@ -16,38 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.context;
+package org.apache.tuscany.core.scope;
 
-import org.apache.tuscany.core.scope.BaseInstanceWrapper;
-import org.apache.tuscany.implementation.java.injection.EventInvoker;
+import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ReflectiveInstanceWrapper<T> extends BaseInstanceWrapper<T> {
-    private final EventInvoker<T> initInvoker;
-    private final EventInvoker<T> destroyInvoker;
+public class BaseInstanceWrapper<T> implements InstanceWrapper<T> {
+    protected final T instance;
+    private boolean started;
 
-    public ReflectiveInstanceWrapper(T instance, EventInvoker<T> initInvoker, EventInvoker<T> destroyInvoker) {
-        super(instance);
-        this.initInvoker = initInvoker;
-        this.destroyInvoker = destroyInvoker;
+    public BaseInstanceWrapper(T instance) {
+        assert instance != null;
+        this.instance = instance;
+    }
+
+    public T getInstance() {
+        assert started;
+        return instance;
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     public void start() throws TargetInitializationException {
-        if (initInvoker != null) {
-            initInvoker.invokeEvent(instance);
-        }
-        super.start();
+        started = true;
     }
 
-
     public void stop() throws TargetDestructionException {
-        super.stop();
-        if (destroyInvoker != null) {
-            destroyInvoker.invokeEvent(instance);
-        }
+        started = false;
     }
 }
