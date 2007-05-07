@@ -31,8 +31,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
@@ -45,7 +45,7 @@ public class WrapperStyleOperationTestCase extends TestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
     private WSDLDocumentProcessor registry;
-    private ArtifactResolver resolver;
+    private ModelResolver resolver;
     private WSDLFactory wsdlFactory;
 
     /**
@@ -54,7 +54,7 @@ public class WrapperStyleOperationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
-        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        resolver = new DefaultModelResolver(getClass().getClassLoader());
         wsdlFactory = new DefaultWSDLFactory();
     }
 

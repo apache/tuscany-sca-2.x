@@ -33,7 +33,7 @@ import org.apache.tuscany.binding.rmi.RMIBinding;
 import org.apache.tuscany.binding.rmi.RMIBindingConstants;
 import org.apache.tuscany.binding.rmi.RMIBindingFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
@@ -100,7 +100,7 @@ public class RMIBindingProcessor extends BaseArtifactProcessor implements
         }
     }
 
-    public void resolve(RMIBinding model, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(RMIBinding model, ModelResolver resolver) throws ContributionResolveException {
     }
 
     public QName getArtifactType() {

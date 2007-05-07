@@ -20,6 +20,7 @@
 package org.apache.tuscany.contribution.impl;
 
 import org.apache.tuscany.contribution.ContributionImport;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 
 /**
  * The representation of an import for the contribution
@@ -29,6 +30,7 @@ import org.apache.tuscany.contribution.ContributionImport;
 public class ContributionImportImpl implements ContributionImport {
     private String namespace; // The namespace to be imported
     private String location; // Optional location to hint the where it should be imported
+    private ModelResolver modelResolver;
     
     protected ContributionImportImpl() {
     }
@@ -47,5 +49,13 @@ public class ContributionImportImpl implements ContributionImport {
 
     public void setNamespace(String namespace) {
         this.namespace = namespace;
+    }
+    
+    public ModelResolver getModelResolver() {
+        return modelResolver;
+    }
+    
+    public void setModelResolver(ModelResolver modelResolver) {
+        this.modelResolver = modelResolver;
     }
 }

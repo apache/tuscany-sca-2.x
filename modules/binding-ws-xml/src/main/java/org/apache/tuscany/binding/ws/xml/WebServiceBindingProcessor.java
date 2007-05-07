@@ -38,7 +38,7 @@ import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
@@ -211,11 +211,11 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
         }
     }
 
-    public void resolve(WebServiceBinding model, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(WebServiceBinding model, ModelResolver resolver) throws ContributionResolveException {
         WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
         wsdlDefinition.setUnresolved(true);
         wsdlDefinition.setNamespace(model.getNamespace());
-        wsdlDefinition = resolver.resolve(WSDLDefinition.class, wsdlDefinition);
+        wsdlDefinition = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
         if (!wsdlDefinition.isUnresolved()) {
             model.setDefinition(wsdlDefinition);
             Definition definition = wsdlDefinition.getDefinition();

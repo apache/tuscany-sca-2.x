@@ -33,7 +33,7 @@ import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
@@ -49,7 +49,7 @@ public class ResolveTestCase extends TestCase {
     private XMLInputFactory inputFactory;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     private ExtensibleStAXArtifactProcessor staxProcessor;
-    private DefaultArtifactResolver resolver; 
+    private DefaultModelResolver resolver; 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
@@ -61,7 +61,7 @@ public class ResolveTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        resolver = new DefaultModelResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
@@ -80,7 +80,7 @@ public class ResolveTestCase extends TestCase {
         ConstrainingType constrainingType = constrainingTypeReader.read(reader);
         is.close();
         assertNotNull(constrainingType);
-        resolver.add(constrainingType);
+        resolver.addModel(constrainingType);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
         CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
@@ -102,7 +102,7 @@ public class ResolveTestCase extends TestCase {
         Composite nestedComposite = compositeReader.read(reader);
         is.close();
         assertNotNull(nestedComposite);
-        resolver.add(nestedComposite);
+        resolver.addModel(nestedComposite);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
         compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);

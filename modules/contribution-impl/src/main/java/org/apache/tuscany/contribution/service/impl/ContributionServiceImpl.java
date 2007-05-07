@@ -40,7 +40,7 @@ import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
 import org.apache.tuscany.contribution.service.ContributionRepository;
@@ -69,11 +69,6 @@ public class ContributionServiceImpl implements ContributionService {
     private URLArtifactProcessor artifactProcessor;
 
     /**
-     * Artifact Resolver
-     */
-    private ArtifactResolver artifactResolver;
-    
-    /**
      * xml factory used to create reader instance to load contribution metadata
      */
     private XMLInputFactory xmlFactory;
@@ -97,7 +92,7 @@ public class ContributionServiceImpl implements ContributionService {
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
                                    URLArtifactProcessor artifactProcessor,
-                                   ArtifactResolver artifactResolver,
+                                   ModelResolver artifactResolver,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory) {
@@ -105,14 +100,13 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
         this.artifactProcessor = artifactProcessor;
-        this.artifactResolver = artifactResolver;
         this.xmlFactory = xmlFactory;
 
         this.contributionFactory = contributionFactory;
         this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
 
-    public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+    public Contribution contribute(String contributionURI, URL sourceURL, ModelResolver modelResolver, boolean storeInRepository) throws ContributionException,
         IOException {
         if (contributionURI == null) {
             throw new IllegalArgumentException("URI for the contribution is null");
@@ -120,15 +114,17 @@ public class ContributionServiceImpl implements ContributionService {
         if (sourceURL == null) {
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
-        return addContribution(contributionURI, sourceURL, null, storeInRepository);
+        
+        return addContribution(contributionURI, sourceURL, null, modelResolver, storeInRepository);
     }
 
-    public Contribution contribute(String contributionURI, URL sourceURL, InputStream input) 
+    public Contribution contribute(String contributionURI, URL sourceURL, InputStream input, ModelResolver modelResolver) 
         throws ContributionException, IOException {
-        return addContribution(contributionURI, sourceURL, input, true);
+        
+        return addContribution(contributionURI, sourceURL, input, modelResolver, true);
     }
 
-    private Contribution initializeContributionMetadata(URL sourceURL) throws ContributionException {
+    private Contribution initializeContributionMetadata(URL sourceURL, ModelResolver modelResolver) throws ContributionException {
         Contribution contributionMetadata = null;
         URL contributionMetadataURL;
         URL generatedContributionMetadataURL;
@@ -141,16 +137,16 @@ public class ContributionServiceImpl implements ContributionService {
         generatedContributionMetadataURL = cl.getResource(Contribution.SCA_CONTRIBUTION_GENERATED_META);
 
         try {
-            if (contributionMetadataURL == null && generatedContributionMetadataURL == null) {
-                contributionMetadata = this.contributionFactory.createContribution();
-            } else {
+            contributionMetadata = this.contributionFactory.createContribution();
+            contributionMetadata.setModelResolver(modelResolver);
+            if (contributionMetadataURL != null || generatedContributionMetadataURL != null) {
                 URL metadataURL = contributionMetadataURL != null ? contributionMetadataURL
                                                                  : generatedContributionMetadataURL;
 
                 try {
                     metadataStream = metadataURL.openStream();
                     XMLStreamReader xmlReader = this.xmlFactory.createXMLStreamReader(metadataStream);
-                    contributionMetadata = this.contributionLoader.load(xmlReader);
+                    this.contributionLoader.load(contributionMetadata, xmlReader);
 
                 } catch (IOException ioe) {
                     throw new InvalidContributionMetadataException(ioe.getMessage(), metadataURL.toExternalForm(), ioe);
@@ -183,17 +179,9 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionRegistry.remove(contribution);
     }
 
-    public void addDeploymentComposite(String contributionURI, Composite composite) throws ContributionException {
-        Contribution contribution = getContribution(contributionURI);
-
-        if (contribution == null) {
-            throw new InvalidContributionURIException("Invalid/Inexistent contribution uri '" 
-                    + contributionURI.toString());
-        }
-
-        URI compositeURI = URI.create(composite.getURI());
-        DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact();
-        artifact.setURI(compositeURI.toString());
+    public void addDeploymentComposite(Contribution contribution, Composite composite) throws ContributionException {
+        DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
+        artifact.setURI(composite.getURI());
         artifact.setModel(composite);
 
         contribution.getArtifacts().add(artifact);
@@ -228,6 +216,7 @@ public class ContributionServiceImpl implements ContributionService {
     private Contribution addContribution(String contributionURI,
                                  URL sourceURL,
                                  InputStream contributionStream,
+                                 ModelResolver modelResolver,
                                  boolean storeInRepository) throws IOException, ContributionException {
         
         if (contributionStream == null && sourceURL == null) {
@@ -244,7 +233,7 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
 
-        Contribution contribution = initializeContributionMetadata(locationURL);
+        Contribution contribution = initializeContributionMetadata(locationURL, modelResolver);
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(locationURL.toString());
 
@@ -292,9 +281,9 @@ public class ContributionServiceImpl implements ContributionService {
             Object model = this.artifactProcessor.read(contributionURL, a, artifactURL);
             
             if (model != null) {
-                artifactResolver.add(model);
+                contribution.getModelResolver().addModel(model);
                 
-                DeployedArtifact artifact = this.contributionFactory.createDeplyedArtifact();
+                DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
                 artifact.setURI(a.toString());
                 artifact.setLocation(artifactURL.toString());
                 artifact.setModel(model);
@@ -316,14 +305,14 @@ public class ContributionServiceImpl implements ContributionService {
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
             // resolve the model object
             if (artifact.getModel() != null) {
-                this.artifactProcessor.resolve(artifact.getModel(), artifactResolver);
+                this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
             }
         }
         
         //resolve deployables from contribution metadata
         List<Composite> resolvedDeployables = new ArrayList<Composite>();
         for (Composite deployableComposite : contribution.getDeployables()) {
-            Composite resolvedDeployable = artifactResolver.resolve(Composite.class, deployableComposite);
+            Composite resolvedDeployable = contribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
             resolvedDeployables.add(resolvedDeployable);
         }
         

@@ -96,7 +96,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         URI name = URI.create(context.getComponentId() + "#" + compositeReference.getName());
 
         ReferenceBinding referenceBinding = new Axis2ReferenceBinding(name, targetURI, wsBinding);
-        referenceBindings.add(referenceBinding); // track binding so that its resources can be released
+        referenceBindings.addModel(referenceBinding); // track binding so that its resources can be released
         return referenceBinding;
     }
 
@@ -117,7 +117,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         // TODO: if <binding.ws> specifies the wsdl service then should create a service for every port
 
         ServiceBinding serviceBinding = new Axis2ServiceBinding(uri, wsBinding, servletHost, configContext);
-        serviceBindings.add(serviceBinding); // track binding so that its resources can be released
+        serviceBindings.addModel(serviceBinding); // track binding so that its resources can be released
         return serviceBinding;
     }
 

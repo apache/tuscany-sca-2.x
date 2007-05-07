@@ -52,7 +52,7 @@ import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWireException;
@@ -443,17 +443,17 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         }
     }
     
-    public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
         
         // Resolve constraining type
         ConstrainingType constrainingType = composite.getConstrainingType(); 
-        constrainingType = resolver.resolve(ConstrainingType.class, constrainingType); 
+        constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType); 
         composite.setConstrainingType(constrainingType);
         
         // Resolve includes in the composite
         for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
             Composite include = composite.getIncludes().get(i);
-            include = resolver.resolve(Composite.class, include);
+            include = resolver.resolveModel(Composite.class, include);
             composite.getIncludes().set(i, include);
         }
 
@@ -467,7 +467,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         // Resolve component implementations, services and references 
         for (Component component: composite.getComponents()) {
             constrainingType = component.getConstrainingType(); 
-            constrainingType = resolver.resolve(ConstrainingType.class, constrainingType); 
+            constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType); 
             component.setConstrainingType(constrainingType);
 
             Implementation implementation = component.getImplementation();

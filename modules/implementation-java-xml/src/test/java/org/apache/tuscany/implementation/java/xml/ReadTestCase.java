@@ -34,8 +34,8 @@ import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.ExtensibleJavaClassIntrospector;
@@ -105,7 +105,7 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
         
-        ArtifactResolver resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
         staxProcessor.resolve(composite, resolver);
 
         DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);

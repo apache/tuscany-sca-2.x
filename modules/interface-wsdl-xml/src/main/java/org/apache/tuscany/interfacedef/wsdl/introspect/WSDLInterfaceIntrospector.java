@@ -20,7 +20,7 @@ package org.apache.tuscany.interfacedef.wsdl.introspect;
 
 import javax.wsdl.PortType;
 
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
@@ -38,6 +38,6 @@ public interface WSDLInterfaceIntrospector {
      * @param type the portType to inspect
      * @return a WSDLInterface corresponding to the WSDL portType
      */
-    WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ArtifactResolver resolver) throws InvalidInterfaceException;
+    WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException;
 
 }

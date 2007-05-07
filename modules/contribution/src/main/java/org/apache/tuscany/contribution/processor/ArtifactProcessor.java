@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.contribution.processor;
 
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 
 
@@ -37,7 +37,7 @@ public interface ArtifactProcessor <M> {
      * @param model the model to resolve
      * @param the resolver to use to resolve referenced models
      */
-    void resolve(M model, ArtifactResolver resolver) throws ContributionResolveException;
+    void resolve(M model, ModelResolver resolver) throws ContributionResolveException;
     
     /**
      * Returns the type of model handled by this artifact processor.

@@ -19,57 +19,39 @@
 
 package org.apache.tuscany.contribution;
 
-import java.util.List;
-
-import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 
+
 /**
- * The representation of a deployed contribution
- *
+ * The representation of an export for the contribution
+ * 
  * @version $Rev$ $Date$
  */
-public interface Contribution extends Artifact {
-    String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
-    String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
+public interface ContributionExport {
 
+    /**
+     * Get Namespace that identifies the import
+     * @return
+     */
+    String getNamespace();
+
+    /**
+     * Set Namespace that identifies the import
+     * @param namespace
+     */
+    void setNamespace(String namespace);
     
     /**
-     * Get a list of exports based on the Contribution metadata sidefile
-     * @return
-     */
-    List<ContributionExport> getExports();
-
-    /**
-     * Get a list of imports based on the Contribution metadata sidefile
-     * @return
-     */
-    List<ContributionImport> getImports();
-    
-    /**
-     * Get a list of deployables for the contribution
-     * This is based on the contribution medatata sidefile, or all Composites available on the contribution
-     * @return
-     */
-    List<Composite> getDeployables();
-
-    /**
-     * Get a list of artifacts from the contribution
-     * @return
-     */
-    List<DeployedArtifact> getArtifacts();
-
-    /**
-     * Returns the model resolver for the models representing the artifacts
-     * visible in the scope of this contribution.
+     * Returns the model resolver for the models representing artifacts
+     * made available by this export.
      * 
      * @return
      */
     ModelResolver getModelResolver();
     
     /**
-     * Sets the model resolver for the models representing the artifacts
-     * visible in the scope of this contribution.
+     * Sets the model resolver for the models representing artifacts
+     * made available by this export.
      * 
      * @param modelResolver
      */

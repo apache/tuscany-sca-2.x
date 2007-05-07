@@ -37,29 +37,29 @@ package org.apache.tuscany.contribution.resolver;
  * references to concrete artifacts is necessary as part of the operation of the
  * SCA domain.
  * 
- * @version $Rev: 526837 $ $Date: 2007-04-09 10:10:18 -0700 (Mon, 09 Apr 2007) $
+ * @version $Rev$ $Date$
  */
-public interface ArtifactResolver {
+public interface ModelResolver {
 
     /**
-     * Resolve an artifact.
+     * Resolve the model representing an artifact.
      * @param modelClass the type of artifact
-     * @param unresolved the unresolved artifact
-     * @return the resolved artifact
+     * @param unresolved the unresolved model
+     * @return the resolved model
      */
-    <T> T resolve(Class<T> modelClass, T unresolved);
+    <T> T resolveModel(Class<T> modelClass, T unresolved);
     
     /**
-     * Add a resolved artifact.
+     * Add a resolved model.
      * @param resolved
      */
-    void add(Object resolved);
+    void addModel(Object resolved);
     
     /**
-     * Remove a resolved artifact.
+     * Remove a resolved model.
      * @param resolved
-     * @return the removed artifact, or null if the artifact was not removed
+     * @return the removed model, or null if the model was not removed
      */
-    Object remove(Object resolved);
+    Object removeModel(Object resolved);
     
 }

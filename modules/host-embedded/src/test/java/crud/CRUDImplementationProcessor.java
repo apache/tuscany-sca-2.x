@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
@@ -86,7 +86,7 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessor<CRUDIm
         }
     }
 
-    public void resolve(CRUDImplementation impl, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(CRUDImplementation impl, ModelResolver resolver) throws ContributionResolveException {
     }
 
     public void write(CRUDImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {

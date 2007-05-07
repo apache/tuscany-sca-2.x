@@ -28,7 +28,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.resolver.ClassReference;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -104,17 +104,17 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         }
     }
     
-    private JavaInterface resolveJavaInterface(JavaInterface javaInterface, ArtifactResolver resolver) throws ContributionResolveException {
+    private JavaInterface resolveJavaInterface(JavaInterface javaInterface, ModelResolver resolver) throws ContributionResolveException {
         
         if (javaInterface != null && javaInterface.isUnresolved()) {
 
             // Resolve the Java interface
-            javaInterface = resolver.resolve(JavaInterface.class, javaInterface);
+            javaInterface = resolver.resolveModel(JavaInterface.class, javaInterface);
             if (javaInterface.isUnresolved()) {
 
                 // If the Java interface has never been resolved yet, do it now
                 ClassReference classReference = new ClassReference(javaInterface.getName());
-                classReference = resolver.resolve(ClassReference.class, classReference);
+                classReference = resolver.resolveModel(ClassReference.class, classReference);
                 Class javaClass = classReference.getJavaClass();
                 if (javaClass == null) {
                     throw new ContributionResolveException(new ClassNotFoundException(javaInterface.getName()));
@@ -131,13 +131,13 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
 
                 // Cache the resolved interface
                 javaInterface.setUnresolved(false);
-                resolver.add(javaInterface);
+                resolver.addModel(javaInterface);
             }
         }
         return javaInterface;
     }
     
-    public void resolve(JavaInterfaceContract javaInterfaceContract, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(JavaInterfaceContract javaInterfaceContract, ModelResolver resolver) throws ContributionResolveException {
         
         // Resolve the interface and callback interface
         JavaInterface javaInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getInterface(), resolver);

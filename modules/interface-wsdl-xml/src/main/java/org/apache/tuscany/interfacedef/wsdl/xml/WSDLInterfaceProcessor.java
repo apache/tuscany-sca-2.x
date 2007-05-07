@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
@@ -141,12 +141,12 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         }
     }
     
-    private WSDLInterface resolveWSDLInterface(WSDLInterface wsdlInterface, ArtifactResolver resolver) throws ContributionResolveException {
+    private WSDLInterface resolveWSDLInterface(WSDLInterface wsdlInterface, ModelResolver resolver) throws ContributionResolveException {
         
         if (wsdlInterface != null && wsdlInterface.isUnresolved()) {
 
             // Resolve the WSDL interface
-            wsdlInterface = resolver.resolve(WSDLInterface.class, wsdlInterface);
+            wsdlInterface = resolver.resolveModel(WSDLInterface.class, wsdlInterface);
             if (wsdlInterface.isUnresolved()) {
 
                 // If the WSDL interface has never been resolved yet, do it now
@@ -154,7 +154,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                 wsdlDefinition.setUnresolved(true);
                 wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
-                wsdlDefinition = resolver.resolve(WSDLDefinition.class, wsdlDefinition);
+                wsdlDefinition = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
                 if (!wsdlDefinition.isUnresolved()) {
                     PortType portType = wsdlDefinition.getDefinition().getPortType(wsdlInterface.getName());
                     if (portType != null) {
@@ -166,7 +166,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         } catch (InvalidInterfaceException e) {
                             throw new ContributionResolveException(e);
                         }
-                        resolver.add(wsdlInterface);
+                        resolver.addModel(wsdlInterface);
                     }
                 }
             }
@@ -174,7 +174,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         return wsdlInterface;
     }
     
-    public void resolve(WSDLInterfaceContract wsdlInterfaceContract, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(WSDLInterfaceContract wsdlInterfaceContract, ModelResolver resolver) throws ContributionResolveException {
         
         // Resolve the interface and callback interface
         WSDLInterface wsdlInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getInterface(), resolver);

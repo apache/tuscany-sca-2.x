@@ -26,7 +26,7 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 
 /**
@@ -41,12 +41,12 @@ public abstract class AbstractStAXArtifactProcessor<I extends Implementation> im
         this.assemblyFactory = assemblyFactory;
     }
 
-    public void resolve(I model, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(I model, ModelResolver resolver) throws ContributionResolveException {
       addSideFileComponentType(model.getURI(), model, resolver);
       model.setUnresolved(false);
     }
 
-    protected void addSideFileComponentType(String name, Implementation impl, ArtifactResolver resolver) {
+    protected void addSideFileComponentType(String name, Implementation impl, ModelResolver resolver) {
         int lastDot = name.lastIndexOf('.');
         if (lastDot < 0) {
             return;
@@ -57,7 +57,7 @@ public abstract class AbstractStAXArtifactProcessor<I extends Implementation> im
         componentType.setURI(sideFileName);
         componentType.setUnresolved(true);
 
-        componentType = resolver.resolve(ComponentType.class, componentType);
+        componentType = resolver.resolveModel(ComponentType.class, componentType);
 
         if (!componentType.isUnresolved()) {
             for (Reference reference : componentType.getReferences()) {

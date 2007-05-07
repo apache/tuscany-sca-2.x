@@ -54,7 +54,7 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
@@ -182,7 +182,7 @@ public class ReallySmallRuntimeBuilder {
         }
 
         //FIXME move artifact resolver to each contribution
-        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(classLoader);
+        DefaultModelResolver artifactResolver = new DefaultModelResolver(classLoader);
         ContributionFactory contributionFactory = new ContributionFactoryImpl();
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(

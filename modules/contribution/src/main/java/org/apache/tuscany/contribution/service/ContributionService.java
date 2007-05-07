@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 
 
 /**
@@ -41,13 +42,15 @@ public interface ContributionService {
      * 
      * @param contributionURI The URI that is used as the contribution unique ID. 
      * @param sourceURL the location of the resource containing the artifact
+     * @param modelResolver the model resolver to use to resolve models in the
+     *             scope of this contribution
      * @param storeInRepository flag that identifies if you want to copy the
      *            contribution to the repository
      * @return the contribution model representing the contribution 
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the resource
      */
-    Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+    Contribution contribute(String contributionURI, URL sourceURL, ModelResolver modelResolver, boolean storeInRepository) throws ContributionException,
         IOException;
 
     /**
@@ -57,6 +60,8 @@ public interface ContributionService {
      * @param sourceURL the location of the resource containing the artifact. 
      *            This is used to identify what name should be used when storing
      *            the contribution on the repository 
+     * @param modelResolver the model resolver to use to resolve models in the
+     *             scope of this contribution
      * @param contributionContent a stream containing the resource being
      *            contributed; the stream will not be closed but the read
      *            position after the call is undefined
@@ -64,7 +69,7 @@ public interface ContributionService {
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the stream
      */
-    Contribution contribute(String contributionURI, URL sourceURL, InputStream contributionContent)
+    Contribution contribute(String contributionURI, URL sourceURL, InputStream contributionContent, ModelResolver modelResolver)
         throws ContributionException, IOException;
 
     /**
@@ -84,7 +89,7 @@ public interface ContributionService {
      * matches the "name" attribute of the composite, with a ".composite"
      * suffix.
      */
-    void addDeploymentComposite(String contribution, Composite composite) throws ContributionException;
+    void addDeploymentComposite(Contribution contribution, Composite composite) throws ContributionException;
 
     /**
      * Remove a contribution from the SCA domain
