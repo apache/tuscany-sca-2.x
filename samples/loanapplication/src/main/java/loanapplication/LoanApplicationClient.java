@@ -18,24 +18,20 @@
  */
 package loanapplication;
 
+import org.apache.tuscany.host.embedded.SCADomain;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
 
 public class LoanApplicationClient {
-
+    
     public static void main(String[] args) throws Exception {
-    	SCARuntime.start("loanapplication.composite");
+    	SCADomain domain = SCADomain.newInstance("loanapplication.composite");
     	
         // Locate the MyClient component and invoke it
-        CompositeContext context = CurrentCompositeContext.getContext();
-
-        LoanClient loanClient = context.locateService(LoanClient.class, "LoanClientComponent");
+        LoanClient loanClient = domain.getService(LoanClient.class, "LoanClientComponent");
         loanClient.applyForLoan("John Doe", 1000.0f);
         System.out.println(loanClient.displayLoan());
         System.out.println("Loan approved: " + loanClient.isApproved());
         
-        SCARuntime.stop();
+        domain.close();
     }
 }

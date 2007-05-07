@@ -20,23 +20,21 @@ package loanapplication;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCARuntime;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.apache.tuscany.host.embedded.SCADomain;
 
 public class LoanApplicationTestCase extends TestCase {
 
     private LoanClient loanClient;
+    private SCADomain domain;
 
     protected void setUp() throws Exception {
-        SCARuntime.start("loanapplication.composite");
+        domain = SCADomain.newInstance("loanapplication.composite");
 
-        CompositeContext context = CurrentCompositeContext.getContext();
-        loanClient = context.locateService(LoanClient.class, "LoanClientComponent");
+        loanClient = domain.getService(LoanClient.class, "LoanClientComponent");
     }
     
     protected void tearDown() throws Exception {
-    	SCARuntime.stop();
+    	domain.close();
     }
 
     public void test() throws Exception {
