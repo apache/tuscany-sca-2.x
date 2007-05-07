@@ -92,7 +92,6 @@ public class ContributionServiceImpl implements ContributionService {
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
                                    URLArtifactProcessor artifactProcessor,
-                                   ModelResolver artifactResolver,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory) {

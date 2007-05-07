@@ -83,7 +83,7 @@ public class ReallySmallRuntime {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         
         // Create a contribution service
-        contributionService = ReallySmallRuntimeBuilder.createContributionService(registry, assemblyFactory, policyFactory, mapper, classLoader);
+        contributionService = ReallySmallRuntimeBuilder.createContributionService(registry, assemblyFactory, policyFactory, mapper);
         
         // Create a composite activator
         compositeActivator = ReallySmallRuntimeBuilder.createCompositeActivator(registry, assemblyFactory, mapper, workContext, workManager);
