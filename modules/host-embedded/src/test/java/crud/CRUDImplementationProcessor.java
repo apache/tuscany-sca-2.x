@@ -25,14 +25,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ArtifactResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 /**
  * Implements a STAX artifact processor for CRUD implementations.
@@ -47,15 +44,11 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 public class CRUDImplementationProcessor implements StAXArtifactProcessor<CRUDImplementation> {
     private static final QName IMPLEMENTATION_CRUD = new QName("http://crud", "implementation.crud");
     
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector introspector;
+    private CRUDImplementationFactory crudFactory;
     
-    public CRUDImplementationProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector introspector) {
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
-        this.introspector = introspector;
-    } 
+    public CRUDImplementationProcessor(CRUDImplementationFactory crudFactory) {
+        this.crudFactory = crudFactory;
+    }
 
     public QName getArtifactType() {
         // Returns the qname of the XML element processed by this processor
@@ -77,7 +70,7 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessor<CRUDIm
             String directory = reader.getAttributeValue(null, "directory");
 
             // Create an initialize the CRUD implementation model
-            CRUDImplementation implementation = new CRUDImplementation(assemblyFactory, javaFactory, introspector);
+            CRUDImplementation implementation = crudFactory.createCRUDImplementation();
             implementation.setDirectory(directory);
             
             // Skip to end element
