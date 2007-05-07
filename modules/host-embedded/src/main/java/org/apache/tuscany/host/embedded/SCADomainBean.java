@@ -65,7 +65,8 @@ public class SCADomainBean extends SCADomain {
         if (instance == null) {
             instance = SCADomain.createNewInstance(uri, location, composites);
         }
-        return instance.cast(target);
+        R result =instance.cast(target); 
+        return result;
     }
 
     @Override
