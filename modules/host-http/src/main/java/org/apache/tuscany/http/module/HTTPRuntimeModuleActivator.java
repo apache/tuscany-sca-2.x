@@ -25,6 +25,8 @@ import java.util.Map;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.DefaultServletHostExtensionPoint;
+import org.apache.tuscany.http.ExtensibleServletHost;
+import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
 
 /**
@@ -36,7 +38,10 @@ public class HTTPRuntimeModuleActivator implements ModuleActivator {
 
         // Declare Servlet host extension point
         Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(ServletHostExtensionPoint.class, new DefaultServletHostExtensionPoint());
+        ServletHostExtensionPoint hostExtensions = new DefaultServletHostExtensionPoint();
+        ExtensibleServletHost host = new ExtensibleServletHost(hostExtensions);
+        map.put(ServletHostExtensionPoint.class, hostExtensions);
+        map.put(ServletHost.class, host);
         return map;
     }
 
