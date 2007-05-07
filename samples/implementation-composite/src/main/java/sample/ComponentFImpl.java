@@ -29,7 +29,12 @@ public class ComponentFImpl implements Service1 {
     private Service1 ref;
 
     public String track(String source) {
-        return ref.track(source + "-->ComponentF");
+        if (ref != null) {
+            return ref.track(source + "-->ComponentF");
+        } else {
+            System.err.println("Reference1 is not wired...");
+            return source + "-->ComponentF";
+        }
     }
 
     @Reference(name = "Reference1")
