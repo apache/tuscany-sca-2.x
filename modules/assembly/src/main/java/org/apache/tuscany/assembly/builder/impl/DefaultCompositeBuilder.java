@@ -716,7 +716,8 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
             for (int i = 0, n = promotedReferences.size(); i < n; i++) {
                 ComponentReference componentReference = promotedReferences.get(i);
                 if (componentReference.isUnresolved()) {
-                    componentReference = componentReferences.get(componentReference.getName());
+                    String componentReferenceName = componentReference.getName();
+                    componentReference = componentReferences.get(componentReferenceName);
                     if (componentReference != null) {
 
                         // Point to the resolved component reference
@@ -731,7 +732,7 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                         }
 
                     } else {
-                        warning("Promoted component reference not found: " + componentReference.getName(), composite);
+                        warning("Promoted component reference not found: " + componentReferenceName, composite);
                     }
                 }
             }
