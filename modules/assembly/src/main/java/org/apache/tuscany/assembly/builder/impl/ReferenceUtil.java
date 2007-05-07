@@ -55,6 +55,13 @@ class ReferenceUtil {
                 return false;
             }
         }
+        
+        //FIXME workaround, this validation is sometimes invoked too early
+        // because we get a chance to init the multiplicity attribute
+        if (multiplicity == null) {
+            return true;
+        }
+        
         switch (multiplicity) {
             case ZERO_N:
                 break;
