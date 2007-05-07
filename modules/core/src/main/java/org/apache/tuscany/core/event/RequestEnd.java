@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.event;
 
-import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.event.Event;
 
 /**
  * Propagated when a request completes or is ended

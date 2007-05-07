@@ -21,6 +21,8 @@ package org.apache.tuscany.core.scope;
 import java.net.URI;
 
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.event.Event;
+import org.apache.tuscany.event.RuntimeEventListener;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
@@ -28,8 +30,6 @@ import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.store.Store;
 import org.apache.tuscany.store.StoreExpirationEvent;
 import org.apache.tuscany.store.StoreReadException;

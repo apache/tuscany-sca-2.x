@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.event;
-
-import java.util.EventListener;
+package org.apache.tuscany.event;
 
 /**
- * Listeners observe events fired in the SCA runtime.
+ * An event filter that always returns a true condition
  *
- * @version $Rev$ $Date$
+ * @version $$Rev$$ $$Date$$
  */
-public interface RuntimeEventListener extends EventListener {
+public class TrueFilter implements EventFilter {
 
-    void onEvent(Event event);
+    public boolean match(Event event) {
+        return true;
+    }
 }

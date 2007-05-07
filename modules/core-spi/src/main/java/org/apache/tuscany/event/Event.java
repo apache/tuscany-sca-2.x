@@ -16,16 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.event;
+package org.apache.tuscany.event;
 
 /**
- * An event filter that always returns a true condition
+ * Represents an event that is propagated in the runtime
  *
  * @version $$Rev$$ $$Date$$
  */
-public class TrueFilter implements EventFilter {
+public interface Event {
 
-    public boolean match(Event event) {
-        return true;
-    }
+    /**
+     * Returns the source of the event
+     */
+    Object getSource();
+
 }
