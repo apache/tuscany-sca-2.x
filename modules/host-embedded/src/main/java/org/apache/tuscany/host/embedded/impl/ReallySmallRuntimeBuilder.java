@@ -54,15 +54,16 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.WireProcessorExtensionPoint;
+import org.apache.tuscany.core.RuntimeWireProcessor;
+import org.apache.tuscany.core.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.core.invocation.DefaultWireProcessorExtensionPoint;
+import org.apache.tuscany.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.core.runtime.ActivationException;
 import org.apache.tuscany.core.runtime.CompositeActivator;
@@ -118,13 +119,13 @@ public class ReallySmallRuntimeBuilder {
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
         
         // Create a wire post processor extension point
-        //FIXME do we still need this?
-        WireProcessorExtensionPoint wireProcessorExtensionPoint = new DefaultWireProcessorExtensionPoint();
-        registry.addExtensionPoint(WireProcessorExtensionPoint.class, wireProcessorExtensionPoint);
+        RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
+        registry.addExtensionPoint(RuntimeWireProcessorExtensionPoint.class, wireProcessors);
+        RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
         
         // Create the composite activator
         CompositeActivator compositeActivator = new DefaultCompositeActivator(assemblyFactory, mapper, workContext,
-                                                           workScheduler, wireProcessorExtensionPoint);
+                                                           workScheduler, wireProcessor);
 
         return compositeActivator;
     }

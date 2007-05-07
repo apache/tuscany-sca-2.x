@@ -16,32 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.invocation;
+package org.apache.tuscany.core.invocation;
 
+import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.RuntimeWireProcessor;
+import org.apache.tuscany.core.RuntimeWireProcessorExtensionPoint;
 
 /**
- * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from the
- * chain master
+ * The default implementation of an extensible <code>WireProcessor</code>
  *
  * @version $Rev$ $Date$
  */
-public class ChainHolder implements Cloneable {
-    InvocationChain chain;
+public class ExtensibleWireProcessor implements RuntimeWireProcessor {
+    
+    private RuntimeWireProcessorExtensionPoint processors;
 
-    public ChainHolder(InvocationChain config) {
-        this.chain = config;
+    public ExtensibleWireProcessor(RuntimeWireProcessorExtensionPoint processors) {
+        this.processors = processors;
     }
-
-    public InvocationChain getChain() {
-        return chain;
-    }
-
-    @Override
-    public ChainHolder clone() {
-        try {
-            return (ChainHolder) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+    
+    public void process(RuntimeWire wire) {
+        for (RuntimeWireProcessor processor : processors.getWireProcessors()) {
+            processor.process(wire);
         }
     }
+
 }

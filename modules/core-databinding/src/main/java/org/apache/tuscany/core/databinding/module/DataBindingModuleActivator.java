@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.core.WireProcessorExtensionPoint;
+import org.apache.tuscany.core.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTransformer;
 import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
@@ -100,10 +100,10 @@ public class DataBindingModuleActivator implements ModuleActivator {
             .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         introspectors.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 
-        WireProcessorExtensionPoint wireProcessorExtensionPoint = registry
-            .getExtensionPoint(WireProcessorExtensionPoint.class);
+        RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry
+            .getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
-            wireProcessorExtensionPoint.register(new DataBindingRuntimeWireProcessor(mediator));
+            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator));
         }
 
         DOMDataBinding domDataBinding = new DOMDataBinding();

@@ -22,7 +22,7 @@ package org.apache.tuscany.core.databinding.wire;
 import java.util.List;
 
 import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.core.RuntimeWireProcessorExtension;
+import org.apache.tuscany.core.RuntimeWireProcessor;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -35,7 +35,7 @@ import org.apache.tuscany.invocation.InvocationChain;
  * 
  * @version $Rev$ $Date$
  */
-public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessorExtension {
+public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     private Mediator mediator;
 
     public DataBindingRuntimeWireProcessor(Mediator mediator) {

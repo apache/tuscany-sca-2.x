@@ -21,30 +21,27 @@ package org.apache.tuscany.core.invocation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.core.RuntimeWireProcessorExtension;
-import org.apache.tuscany.core.WireProcessorExtensionPoint;
+import org.apache.tuscany.core.RuntimeWireProcessor;
+import org.apache.tuscany.core.RuntimeWireProcessorExtensionPoint;
 
 /**
  * The default implementation of a <code>WireProcessorExtensionPoint</code>
  *
  * @version $Rev$ $Date$
  */
-public class DefaultWireProcessorExtensionPoint implements WireProcessorExtensionPoint {
+public class DefaultWireProcessorExtensionPoint implements RuntimeWireProcessorExtensionPoint {
 
-    private final List<RuntimeWireProcessorExtension> processors = new ArrayList<RuntimeWireProcessorExtension>();
+    private final List<RuntimeWireProcessor> processors = new ArrayList<RuntimeWireProcessor>();
 
-    public void process(RuntimeWire wire) {
-        for (RuntimeWireProcessorExtension processor : processors) {
-            processor.process(wire);
-        }
-    }
-
-    public void register(RuntimeWireProcessorExtension processor) {
+    public void addWireProcessor(RuntimeWireProcessor processor) {
         processors.add(processor);
     }
 
-    public void unregister(RuntimeWireProcessorExtension processor) {
+    public void removeWireProcessor(RuntimeWireProcessor processor) {
         processors.remove(processor);
+    }
+    
+    public List<RuntimeWireProcessor> getWireProcessors() {
+        return processors;
     }
 }
