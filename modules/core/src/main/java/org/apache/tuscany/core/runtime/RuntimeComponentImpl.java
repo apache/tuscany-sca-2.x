@@ -100,6 +100,7 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
 
     }
 
+    @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         Object ref = proxyService.cast(target);
         return (R)ref;
