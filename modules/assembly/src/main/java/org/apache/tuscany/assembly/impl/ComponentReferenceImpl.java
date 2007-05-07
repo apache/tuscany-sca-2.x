@@ -40,6 +40,8 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
      * Constructs a new component reference.
      */
     protected ComponentReferenceImpl() {
+        // Set multiplicity to null so that by default it'll inherit from the Reference
+        setMultiplicity(null);
     }
 
     @Override
