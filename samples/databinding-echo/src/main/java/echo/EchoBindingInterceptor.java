@@ -42,9 +42,9 @@ public class EchoBindingInterceptor implements Interceptor {
             Object resp = echo((Object[])msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
+            msg.setFaultBody(e.getCause());
         } catch (Throwable e) {
-            msg.setBodyWithFault(e);
+            msg.setFaultBody(e);
         }
         return msg;
     }  
