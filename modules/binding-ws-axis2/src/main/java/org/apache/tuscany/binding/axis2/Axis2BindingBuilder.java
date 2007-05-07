@@ -19,8 +19,8 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.net.URI;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPAddress;
@@ -33,13 +33,8 @@ import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.CompositeService;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
-import org.apache.tuscany.http.ServletHostExtensionPoint;
+import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 
 /**
  * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.ReferenceBinding} configured
@@ -47,7 +42,7 @@ import org.apache.tuscany.spi.extension.BindingBuilderExtension;
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
 
-    private ServletHostExtensionPoint servletHost;
+    private ServletHost servletHost;
     private ConfigurationContext configContext;
 
     // track reference bindings and service bindings so that resources can be released
@@ -76,7 +71,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
        }
     }
 
-    public void setServletHost(ServletHostExtensionPoint servletHost) {
+    public void setServletHost(ServletHost servletHost) {
         this.servletHost = servletHost;
     }
 
