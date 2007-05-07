@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.test.contribution;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -192,18 +193,18 @@ public class ContributionServiceTestCase extends TestCase {
     }
 
     public void testContributeFolder() throws Exception {
-        /*
-         * File rootContributionFolder = new File(FOLDER_CONTRIBUTION); URI
-         * contributionId = URI.create(CONTRIBUTION_001_ID); //first rename the
-         * sca-contribution metadata file File calculatorMetadataFile = new
-         * File("target/classes/calculator/sca-contribution.xml"); File
-         * metadataDirectory = new File("target/classes/META-INF/"); if (!
-         * metadataDirectory.exists()) {
-         * FileHelper.forceMkdir(metadataDirectory); }
-         * FileHelper.copyFileToDirectory(calculatorMetadataFile,
-         * metadataDirectory); contributionService.contribute(contributionId,
-         * rootContributionFolder.toURL(), false);
-         */
+         File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
+         String contributionId = CONTRIBUTION_001_ID; 
+         //first rename the sca-contribution metadata file 
+         //File calculatorMetadataFile = new File("target/classes/calculator/sca-contribution.xml"); 
+         //File metadataDirectory = new File("target/classes/META-INF/"); 
+         //if (!metadataDirectory.exists()) {
+         //    FileHelper.forceMkdir(metadataDirectory); 
+         //}
+         //FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory); 
+         ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+         contributionService.contribute(contributionId, rootContributionFolder.toURL(), resolver, false);
+         assertNotNull(contributionService.getContribution(contributionId));
     }
 
     public void testAddDeploymentComposites() throws Exception {
