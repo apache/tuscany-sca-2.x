@@ -68,7 +68,6 @@
                 <module>discovery-jms</module>
                 -->
                 <module>host-embedded</module>
-                <module>host-spi</module>
                 <module>host-http</module>
                 <module>host-webapp</module>
                 <module>http-jetty</module>
