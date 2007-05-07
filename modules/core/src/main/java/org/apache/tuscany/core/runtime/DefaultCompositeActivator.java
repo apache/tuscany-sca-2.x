@@ -205,16 +205,16 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @return
      */
     private InterfaceContract getInterfaceContract(ComponentReference reference, Binding binding) {
-        InterfaceContract sourceContract = reference.getInterfaceContract();
+        InterfaceContract interfaceContract = reference.getInterfaceContract();
         if (binding instanceof ReferenceBindingProvider) {
             ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
             InterfaceContract bindingContract = provider
                 .getBindingInterfaceContract((RuntimeComponentReference)reference);
             if (bindingContract != null) {
-                sourceContract = bindingContract;
+                interfaceContract = bindingContract;
             }
         }
-        return sourceContract;
+        return interfaceContract;
     }
 
     /**
@@ -273,7 +273,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 target = scaBinding.getComponent();
             }
 
-            InterfaceContract targetContract = service.getInterfaceContract();
+            InterfaceContract targetContract = getInterfaceContract(target, service);
 
             RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl((RuntimeComponent)component,
                                                                            (RuntimeComponentReference)reference,
@@ -333,16 +333,31 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @return
      */
     private InterfaceContract getInterfaceContract(ComponentService service, Binding binding) {
-        InterfaceContract sourceContract = service.getInterfaceContract();
+        InterfaceContract interfaceContract = service.getInterfaceContract();
 
         if (binding instanceof ServiceBindingProvider) {
             ServiceBindingProvider provider = (ServiceBindingProvider)binding;
             InterfaceContract bindingContract = provider.getBindingInterfaceContract((RuntimeComponentService)service);
             if (bindingContract != null) {
-                sourceContract = bindingContract;
+                interfaceContract = bindingContract;
             }
         }
-        return sourceContract;
+        return interfaceContract;
+    }
+
+    private InterfaceContract getInterfaceContract(Component component, ComponentService service) {
+        InterfaceContract interfaceContract = service.getInterfaceContract();
+
+        Implementation impl = component != null ? component.getImplementation() : null;
+        if (impl instanceof ImplementationProvider) {
+            InterfaceContract implContract = ((ImplementationProvider)impl)
+                .getImplementationInterfaceContract((RuntimeComponentService)service);
+            if (implContract != null) {
+                interfaceContract = implContract;
+            }
+        }
+
+        return interfaceContract;
     }
 
     /**
