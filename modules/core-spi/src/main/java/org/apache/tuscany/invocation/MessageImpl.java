@@ -36,7 +36,6 @@ public class MessageImpl implements Message {
     private boolean isFault;
     private short conversationSequence;
     private WorkContext workContext;
-    private TargetInvoker targetInvoker;
 
     public MessageImpl(WorkContext workContext, short conversationSequence, Object body) {
         this.workContext = workContext;
@@ -65,14 +64,6 @@ public class MessageImpl implements Message {
         this.workContext = workContext;
     }
     
-    public TargetInvoker getTargetInvoker() {
-        return targetInvoker;
-    }
-    
-    public void setTargetInvoker(TargetInvoker invoker) {
-        this.targetInvoker = invoker;
-    }
-
     public short getConversationSequence() {
         return conversationSequence;
     }

@@ -21,10 +21,10 @@ package org.apache.tuscany.implementation.java.mock;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**

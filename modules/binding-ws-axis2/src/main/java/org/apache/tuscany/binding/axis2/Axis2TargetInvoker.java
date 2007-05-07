@@ -36,9 +36,9 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.implementation.java.invocation.TargetInvokerExtension;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.axis2.transport.http.HTTPConstants;
 
 /**

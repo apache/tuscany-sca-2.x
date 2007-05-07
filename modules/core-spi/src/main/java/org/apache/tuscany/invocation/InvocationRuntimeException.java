@@ -26,6 +26,7 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public class InvocationRuntimeException extends ServiceRuntimeException {
+    private static final long serialVersionUID = 5937369877274942095L;
 
     public InvocationRuntimeException() {
         super();

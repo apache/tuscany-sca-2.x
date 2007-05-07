@@ -34,7 +34,6 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.invocation.AbstractInvocationHandler;
 import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -96,11 +95,10 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         }
         Operation operation = JavaInterfaceUtil.findOperation(method, map.keySet());
         InvocationChain chain = map.get(operation);
-        TargetInvoker invoker = chain.getTargetInvoker();
         Object correlationId = context.getCorrelationId();
         context.setCorrelationId(null);
         try {
-            return invoke(chain, invoker, args, correlationId, callbackUris, context);
+            return invoke(chain, args, correlationId, callbackUris, context);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {

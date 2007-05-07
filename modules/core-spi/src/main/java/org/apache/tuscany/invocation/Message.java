@@ -53,20 +53,6 @@ public interface Message {
     void setWorkContext(WorkContext workContext);
 
     /**
-     * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
-     *
-     * @Deprecated
-     */
-    void setTargetInvoker(TargetInvoker invoker);
-
-    /**
-     * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
-     *
-     * @Deprecated
-     */
-    TargetInvoker getTargetInvoker();
-
-    /**
      * Adds a callback wire to the ordered list of callbacks for the current invocation
      *
      * @param wire the callback wire

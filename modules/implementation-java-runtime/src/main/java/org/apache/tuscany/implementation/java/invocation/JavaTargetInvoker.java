@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * Responsible for synchronously dispatching an invocation to a Java component

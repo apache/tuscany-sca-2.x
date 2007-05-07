@@ -53,20 +53,6 @@ public interface InvocationChain {
     Operation getSourceOperation();
 
     /**
-     * Sets the target invoker to pass down the chain
-     *
-     * @param invoker the invoker
-     */
-    void setTargetInvoker(TargetInvoker invoker);
-
-    /**
-     * Returns the target invoker that is passed down the chain
-     *
-     * @return the target invoker
-     */
-    TargetInvoker getTargetInvoker();
-
-    /**
      * Adds an interceptor to the chain
      *
      * @param interceptor the interceptor to add

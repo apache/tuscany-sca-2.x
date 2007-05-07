@@ -18,11 +18,9 @@
  */
 package org.apache.tuscany.invocation;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.LinkedList;
 
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -45,82 +43,27 @@ public abstract class AbstractInvocationHandler {
     }
 
     protected Object invoke(InvocationChain chain,
-                            TargetInvoker invoker,
                             Object[] args,
                             Object correlationId,
                             LinkedList<URI> callbackUris, WorkContext workContext)
         throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
-        if (headInterceptor == null) {
-            try {
-                // short-circuit the dispatch and invoke the target directly
-                TargetInvoker targetInvoker = chain.getTargetInvoker();
-                if (targetInvoker == null) {
-                    String name = chain.getTargetOperation().getName();
-                    throw new AssertionError("No target invoker [" + name + "]");
-                }
-                return targetInvoker.invokeTarget(args, TargetInvoker.NONE, workContext);
-            } catch (InvocationTargetException e) {
-                // the cause was thrown by the target so throw it
-                throw e.getCause();
-            }
-        } else {
-            Message msg = new MessageImpl();
-            msg.setWorkContext(workContext);
-            msg.setCorrelationId(workContext.getCorrelationId());
-            Operation operation = chain.getTargetOperation();
-            Interface contract = operation.getInterface();
-            if (contract != null && contract.isConversational()) {
-                Operation.ConversationSequence sequence = chain.getTargetOperation().getConversationSequence();
-                if (sequence == Operation.ConversationSequence.CONVERSATION_END) {
-                    msg.setConversationSequence(TargetInvoker.END);
-                    conversationStarted = false;
-                } else if (sequence == Operation.ConversationSequence.CONVERSATION_CONTINUE) {
-                    if (conversationStarted) {
-                        msg.setConversationSequence(TargetInvoker.CONTINUE);
-                    } else {
-                        conversationStarted = true;
-                        msg.setConversationSequence(TargetInvoker.START);
-                    }
-                }
-            }
-            msg.setBody(args);
-            // dispatch the wire down the chain and get the response
-            Message resp = headInterceptor.invoke(msg);
-            Object body = resp.getBody();
-            if (resp.isFault()) {
-                throw (Throwable) body;
-            }
-            return body;
-        }
-    }
-
-    protected Object invokeTarget(InvocationChain chain,
-                                  Object[] args,
-                                  Object correlationId,
-                                  LinkedList<RuntimeWire> callbackWires)
-        throws Throwable {
-        Interceptor headInterceptor = chain.getHeadInterceptor();
-        assert headInterceptor != null;
         Message msg = new MessageImpl();
-        if (correlationId != null) {
-            msg.setCorrelationId(correlationId);
-        }
-        if (callbackWires != null) {
-            msg.setCallbackWires(callbackWires);
-        }
+        msg.setWorkContext(workContext);
+        msg.setCorrelationId(workContext.getCorrelationId());
         Operation operation = chain.getTargetOperation();
-        if (conversational) {
-            Operation.ConversationSequence sequence = operation.getConversationSequence();
+        Interface contract = operation.getInterface();
+        if (contract != null && contract.isConversational()) {
+            Operation.ConversationSequence sequence = chain.getTargetOperation().getConversationSequence();
             if (sequence == Operation.ConversationSequence.CONVERSATION_END) {
-                msg.setConversationSequence(TargetInvoker.END);
+                msg.setConversationSequence(ConversationSequence.END);
                 conversationStarted = false;
             } else if (sequence == Operation.ConversationSequence.CONVERSATION_CONTINUE) {
                 if (conversationStarted) {
-                    msg.setConversationSequence(TargetInvoker.CONTINUE);
+                    msg.setConversationSequence(ConversationSequence.CONTINUE);
                 } else {
                     conversationStarted = true;
-                    msg.setConversationSequence(TargetInvoker.START);
+                    msg.setConversationSequence(ConversationSequence.START);
                 }
             }
         }

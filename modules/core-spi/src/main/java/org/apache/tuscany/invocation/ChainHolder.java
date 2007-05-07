@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.invocation;
 
+
 /**
  * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from the
  * chain master
@@ -26,7 +27,6 @@ package org.apache.tuscany.invocation;
  */
 public class ChainHolder implements Cloneable {
     InvocationChain chain;
-    TargetInvoker cachedInvoker;
 
     public ChainHolder(InvocationChain config) {
         this.chain = config;
@@ -34,14 +34,6 @@ public class ChainHolder implements Cloneable {
 
     public InvocationChain getChain() {
         return chain;
-    }
-
-    public TargetInvoker getCachedInvoker() {
-        return cachedInvoker;
-    }
-
-    public void setCachedInvoker(TargetInvoker invoker) {
-        this.cachedInvoker = invoker;
     }
 
     @Override
