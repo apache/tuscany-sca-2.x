@@ -34,7 +34,7 @@ import org.apache.tuscany.assembly.AbstractService;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
@@ -188,7 +188,7 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
         }
     }
     
-    public void resolve(ConstrainingType constrainingType, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(ConstrainingType constrainingType, ModelResolver resolver) throws ContributionResolveException {
 
         // Resolve component type services and references
         resolveAbstractContracts(constrainingType.getServices(), resolver);

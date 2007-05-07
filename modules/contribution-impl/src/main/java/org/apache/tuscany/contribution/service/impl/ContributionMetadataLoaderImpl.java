@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionExport;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoader;
@@ -61,12 +62,8 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
         return CONTRIBUTION;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.services.contribution.ContributionMetadataLoader#load(javax.xml.stream.XMLStreamReader)
-     */
-    public Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException {
+    public void load(Contribution contribution, XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException {
 
-        Contribution contribution = this.contributionFactory.createContribution();
         while (true) {
             int event = reader.next();
             switch (event) {
@@ -116,12 +113,14 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                         if (ns == null) {
                             throw new InvalidValueException("Attribute 'namespace' is missing");
                         }
-                        contribution.getExports().add(ns);
+                        ContributionExport contributionExport = this.contributionFactory.createContributionExport();
+                        contributionExport.setNamespace(ns);
+                        contribution.getExports().add(contributionExport);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     if (CONTRIBUTION.equals(reader.getName())) {
-                        return contribution;
+                        return;
                     }
                     break;
 

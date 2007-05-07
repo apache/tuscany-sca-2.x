@@ -52,7 +52,7 @@ import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -383,16 +383,16 @@ public abstract class BaseArtifactProcessor implements Constants {
      * @return
      * @throws ContributionResolveException
      */
-    protected Implementation resolveImplementation(Implementation implementation, ArtifactResolver resolver) throws ContributionResolveException {
+    protected Implementation resolveImplementation(Implementation implementation, ModelResolver resolver) throws ContributionResolveException {
         if (implementation != null) {
             if (implementation.isUnresolved()) {
-                implementation = resolver.resolve(Implementation.class, implementation);
+                implementation = resolver.resolveModel(Implementation.class, implementation);
 
                 // Lazily resolve implementations
                 if (implementation.isUnresolved()) {
                     extensionProcessor.resolve(implementation, resolver);
                     if (!implementation.isUnresolved()) {
-                        resolver.add(implementation);
+                        resolver.addModel(implementation);
                     }
                 }
             }
@@ -405,7 +405,7 @@ public abstract class BaseArtifactProcessor implements Constants {
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
-    protected <C extends Contract> void resolveContracts(List<C> contracts, ArtifactResolver resolver) throws ContributionResolveException {
+    protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver) throws ContributionResolveException {
         for (Contract contract: contracts) {
 
             // Resolve the interface contract
@@ -427,7 +427,7 @@ public abstract class BaseArtifactProcessor implements Constants {
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
-    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ArtifactResolver resolver) throws ContributionResolveException {
+    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ModelResolver resolver) throws ContributionResolveException {
         for (AbstractContract contract: contracts) {
 
             // Resolve the interface contract

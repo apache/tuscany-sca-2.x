@@ -40,7 +40,7 @@ import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
@@ -254,7 +254,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         }
     }
     
-    public void resolve(ComponentType componentType, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(ComponentType componentType, ModelResolver resolver) throws ContributionResolveException {
 
         // Resolve component type services and references
         resolveContracts(componentType.getServices(), resolver);

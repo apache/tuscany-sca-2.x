@@ -30,7 +30,7 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.resolver.ClassReference;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
@@ -95,11 +95,11 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
         }
     }
 
-    public void resolve(JavaImplementation javaImplementation, ArtifactResolver resolver)
+    public void resolve(JavaImplementation javaImplementation, ModelResolver resolver)
         throws ContributionResolveException {
 
         ClassReference classReference = new ClassReference(javaImplementation.getName());
-        classReference = resolver.resolve(ClassReference.class, classReference);
+        classReference = resolver.resolveModel(ClassReference.class, classReference);
         Class javaClass = classReference.getJavaClass();
         if (javaClass == null) {
             throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));

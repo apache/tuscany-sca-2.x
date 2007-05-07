@@ -24,8 +24,10 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionExport;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.DeployedArtifact;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 
 /**
  * The representation of a deployed contribution
@@ -33,9 +35,10 @@ import org.apache.tuscany.contribution.DeployedArtifact;
  * @version $Rev: 531146 $ $Date: 2007-04-21 22:40:50 -0700 (Sat, 21 Apr 2007) $
  */
 public class ContributionImpl extends ArtifactImpl implements Contribution {
-    private List<String> exports = new ArrayList<String>();
+    private List<ContributionExport> exports = new ArrayList<ContributionExport>();
     private List<ContributionImport> imports = new ArrayList<ContributionImport>();
     private List<Composite> deployables = new ArrayList<Composite>();
+    private ModelResolver modelResolver;
     
     /**
      * A list of artifacts in the contribution
@@ -45,7 +48,7 @@ public class ContributionImpl extends ArtifactImpl implements Contribution {
     protected ContributionImpl() {
     }
     
-    public List<String> getExports() {
+    public List<ContributionExport> getExports() {
         return exports;
     }
 
@@ -60,5 +63,12 @@ public class ContributionImpl extends ArtifactImpl implements Contribution {
     public List<DeployedArtifact> getArtifacts() {
         return artifacts;
     }
-    
+
+    public ModelResolver getModelResolver() {
+        return modelResolver;
+    }
+
+    public void setModelResolver(ModelResolver modelResolver) {
+        this.modelResolver = modelResolver;
+    }
 }

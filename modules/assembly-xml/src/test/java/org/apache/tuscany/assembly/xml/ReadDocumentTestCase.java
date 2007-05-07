@@ -35,7 +35,7 @@ import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExte
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
@@ -49,7 +49,7 @@ import org.apache.tuscany.policy.PolicyFactory;
 public class ReadDocumentTestCase extends TestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
-    private DefaultArtifactResolver resolver; 
+    private DefaultModelResolver resolver; 
 
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
@@ -72,7 +72,7 @@ public class ReadDocumentTestCase extends TestCase {
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
-        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        resolver = new DefaultModelResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {
@@ -85,7 +85,7 @@ public class ReadDocumentTestCase extends TestCase {
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, null, url);
         assertNotNull(constrainingType);
-        resolver.add(constrainingType);
+        resolver.addModel(constrainingType);
 
         url = getClass().getResource("TestAllCalculator.composite");
         Composite composite = (Composite)documentProcessor.read(null, null, url);
@@ -101,7 +101,7 @@ public class ReadDocumentTestCase extends TestCase {
         URL url = getClass().getResource("Calculator.composite");
         Composite nestedComposite = (Composite)documentProcessor.read(null, null, url);
         assertNotNull(nestedComposite);
-        resolver.add(nestedComposite);
+        resolver.addModel(nestedComposite);
 
         url = getClass().getResource("TestAllCalculator.composite");
         Composite composite = (Composite)documentProcessor.read(null, null, url);

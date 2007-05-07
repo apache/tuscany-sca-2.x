@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.wsdl.PortType;
 
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
@@ -44,7 +44,7 @@ public class DefaultWSDLInterfaceIntrospector implements WSDLInterfaceIntrospect
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
-    protected List<Operation> introspectOperations(PortType portType, XmlSchemaCollection inlineSchemas, ArtifactResolver resolver) throws InvalidInterfaceException {
+    protected List<Operation> introspectOperations(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException {
         List<Operation> operations = new ArrayList<Operation>();
         for (Object o : portType.getOperations()) {
             javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)o;
@@ -54,7 +54,7 @@ public class DefaultWSDLInterfaceIntrospector implements WSDLInterfaceIntrospect
         return operations;
     }
 
-    public WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ArtifactResolver resolver) throws InvalidInterfaceException {
+    public WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException {
         WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
         wsdlInterface.setPortType(portType);
         wsdlInterface.getOperations().addAll(introspectOperations(portType, inlineSchemas, resolver));

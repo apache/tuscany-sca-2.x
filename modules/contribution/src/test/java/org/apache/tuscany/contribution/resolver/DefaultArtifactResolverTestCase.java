@@ -28,10 +28,10 @@ import junit.framework.TestCase;
  */
 public class DefaultArtifactResolverTestCase extends TestCase {
     
-    private ArtifactResolver resolver;
+    private ModelResolver resolver;
     
     protected void setUp() throws Exception {
-        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        resolver = new DefaultModelResolver(getClass().getClassLoader());
     }
     
     protected void tearDown() throws Exception {
@@ -40,27 +40,27 @@ public class DefaultArtifactResolverTestCase extends TestCase {
     
     public void testResolved() {
         Model a = new Model("a");
-        resolver.add(a);
+        resolver.addModel(a);
         Model x = new Model("a");
-        x = resolver.resolve(Model.class, x);
+        x = resolver.resolveModel(Model.class, x);
         assertTrue(x == a);
     }
     
     public void testUnresolved() {
         Model x = new Model("a");
-        Model y = resolver.resolve(Model.class, x);
+        Model y = resolver.resolveModel(Model.class, x);
         assertTrue(x == y);
     }
     
     public void testResolveClass() {
         ClassReference ref = new ClassReference(getClass().getName());
-        ClassReference clazz = resolver.resolve(ClassReference.class, ref);
+        ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
         assertTrue(clazz.getJavaClass() == getClass());
     }
     
     public void testUnresolvedClass() {
         ClassReference ref = new ClassReference("NonExistentClass");
-        ClassReference clazz = resolver.resolve(ClassReference.class, ref);
+        ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
         assertTrue(clazz.isUnresolved());
         assertTrue(clazz.getJavaClass() == null);
     }

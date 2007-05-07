@@ -20,6 +20,7 @@
 package org.apache.tuscany.contribution.impl;
 
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionExport;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.DeployedArtifact;
@@ -30,11 +31,15 @@ public class ContributionFactoryImpl implements ContributionFactory {
         return new ContributionImpl();
     }
 
-    public DeployedArtifact createDeplyedArtifact() {
+    public DeployedArtifact createDeployedArtifact() {
         return new DeployedArtifactImpl();
     }
 
     public ContributionImport createContributionImport() {
         return new ContributionImportImpl();
+    }
+    
+    public ContributionExport createContributionExport() {
+        return new ContributionExportImpl();
     }
 }

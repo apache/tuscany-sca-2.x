@@ -31,7 +31,7 @@ import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
@@ -61,7 +61,7 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  */
 public class WSDLOperation {
     private WSDLFactory wsdlFactory;
-    protected ArtifactResolver resolver;
+    protected ModelResolver resolver;
     protected XmlSchemaCollection inlineSchemas;
     protected javax.wsdl.Operation operation;
     protected Operation operationModel;
@@ -80,7 +80,7 @@ public class WSDLOperation {
                          javax.wsdl.Operation operation,
                          XmlSchemaCollection inlineSchemas,
                          String dataBinding,
-                         ArtifactResolver resolver) {
+                         ModelResolver resolver) {
         super();
         this.wsdlFactory = wsdlFactory;
         this.operation = operation;
@@ -220,7 +220,7 @@ public class WSDLOperation {
             XSDefinition definition = wsdlFactory.createXSDefinition();
             definition.setUnresolved(true);
             definition.setNamespace(elementName.getNamespaceURI());
-            definition = resolver.resolve(XSDefinition.class, definition);
+            definition = resolver.resolveModel(XSDefinition.class, definition);
             if (definition.getSchema() != null) {
                 element = definition.getSchema().getElementByName(elementName);
             }
@@ -234,7 +234,7 @@ public class WSDLOperation {
             XSDefinition definition = wsdlFactory.createXSDefinition();
             definition.setNamespace(typeName.getNamespaceURI());
             definition.setUnresolved(true);
-            definition = resolver.resolve(XSDefinition.class, definition);
+            definition = resolver.resolveModel(XSDefinition.class, definition);
             if (definition.getSchema() != null) {
                 type = definition.getSchema().getTypeByName(typeName);
             }

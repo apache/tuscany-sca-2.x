@@ -37,7 +37,7 @@ import org.apache.tuscany.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
@@ -136,7 +136,7 @@ public class ComponentContext {
         
         // Create a resolver
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        DefaultArtifactResolver resolver = new DefaultArtifactResolver(classLoader);
+        DefaultModelResolver resolver = new DefaultModelResolver(classLoader);
 
         try {
             
@@ -145,7 +145,7 @@ public class ComponentContext {
             for (String compositeFile: compositeFiles) {
                 InputStream is = classLoader.getResourceAsStream(compositeFile);
                 Composite composite = staxProcessor.read(is, Composite.class);
-                resolver.add(composite);
+                resolver.addModel(composite);
                 composites.add(composite);
             }
             

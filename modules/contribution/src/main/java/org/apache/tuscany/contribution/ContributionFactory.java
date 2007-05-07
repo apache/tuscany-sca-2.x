@@ -29,7 +29,7 @@ public interface ContributionFactory {
      * Create a deployedArtifact model object
      * @return
      */
-    DeployedArtifact createDeplyedArtifact();
+    DeployedArtifact createDeployedArtifact();
     
     /**
      * Create a contribution model object
@@ -42,4 +42,11 @@ public interface ContributionFactory {
      * @return
      */
     ContributionImport createContributionImport();
+    
+    /**
+     * Create a contribution import model
+     * @return
+     */
+    ContributionExport createContributionExport();
+    
 }

@@ -28,7 +28,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.Contribution;
+import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.contribution.service.impl.ContributionMetadataLoaderImpl;
 import org.apache.tuscany.contribution.service.impl.InvalidValueException;
 
@@ -65,9 +67,12 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
+        ContributionFactory factory = new ContributionFactoryImpl();
         ContributionMetadataLoaderImpl loader = 
-            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new ContributionFactoryImpl());
-        Contribution contribution = loader.load(reader);
+            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), factory);
+        Contribution contribution = factory.createContribution();
+        contribution.setModelResolver(new DefaultModelResolver(getClass().getClassLoader()));
+        loader.load(contribution, reader);
         assertNotNull(contribution);
         assertEquals(1, contribution.getImports().size());
         assertEquals(1, contribution.getExports().size());
@@ -76,10 +81,13 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
 
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
+        ContributionFactory factory = new ContributionFactoryImpl();
         ContributionMetadataLoaderImpl loader = 
-            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), new ContributionFactoryImpl());
+            new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), factory);
+        Contribution contribution = factory.createContribution();
+        contribution.setModelResolver(new DefaultModelResolver(getClass().getClassLoader()));
         try {
-            loader.load(reader);
+            loader.load(contribution, reader);
             fail("InvalidException should have been thrown");
         } catch (InvalidValueException e) {
             assertTrue(true);

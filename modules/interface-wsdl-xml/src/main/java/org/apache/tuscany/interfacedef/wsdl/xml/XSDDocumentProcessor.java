@@ -26,7 +26,7 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
@@ -90,7 +90,7 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
         }
     }
     
-    public void resolve(XSDefinition model, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(XSDefinition model, ModelResolver resolver) throws ContributionResolveException {
     }
     
     public String getArtifactType() {

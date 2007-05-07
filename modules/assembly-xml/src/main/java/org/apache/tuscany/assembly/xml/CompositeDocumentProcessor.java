@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 
@@ -79,7 +79,7 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
         }
     }
     
-    public void resolve(Composite composite, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
         extensionProcessor.resolve(composite, resolver);
     }
 

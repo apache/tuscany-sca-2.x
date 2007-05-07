@@ -27,10 +27,11 @@ import org.apache.tuscany.contribution.Contribution;
 public interface ContributionMetadataLoader {
     /**
      * Create the model object for Contribution Service metadata information
+     * @param contribution the contribution to load
      * @param reader    the XML stream reader positioned on the applicable START_ELEMENT
      * @return
      * @throws XMLStreamException
      * @throws ContributionMetadataReadException
      */
-    Contribution load(XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException;
+    void load(Contribution contribution, XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException;
 }

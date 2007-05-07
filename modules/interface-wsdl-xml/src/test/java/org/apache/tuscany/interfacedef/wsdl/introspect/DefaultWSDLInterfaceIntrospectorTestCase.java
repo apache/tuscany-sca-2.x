@@ -29,8 +29,8 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
@@ -48,7 +48,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
 
     private WSDLDocumentProcessor registry;
     private PortType portType;
-    private ArtifactResolver resolver;
+    private ModelResolver resolver;
     private WSDLDefinition definition;
 
     /**
@@ -57,7 +57,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
-        resolver = new DefaultArtifactResolver(getClass().getClassLoader());
+        resolver = new DefaultModelResolver(getClass().getClassLoader());
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         definition = registry.read(null, new URI("stockquote.wsdl"), url);
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
