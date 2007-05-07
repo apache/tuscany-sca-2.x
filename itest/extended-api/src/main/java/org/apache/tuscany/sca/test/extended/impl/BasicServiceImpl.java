@@ -28,7 +28,7 @@ import org.osoa.sca.annotations.Service;
 public class BasicServiceImpl implements BasicService {
 
     @Context
-    ComponentContext context;
+    protected ComponentContext context;
     
     public int negate(int theInt) {
         return -theInt;
