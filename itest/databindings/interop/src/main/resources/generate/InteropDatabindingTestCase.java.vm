@@ -21,10 +21,7 @@ package $template.getJavaPackage();
 
 import junit.framework.TestCase;
 
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-
-import org.apache.tuscany.host.embedded.SCARuntime;
+import org.apache.tuscany.host.embedded.SCADomain;
 import ${template.getJavaPackage()}.GreeterService;
 
 // Data types
@@ -46,13 +43,14 @@ public class InteropDatabindingTestCase extends TestCase  {
 
     private static boolean initalised = false;
     private GreeterService greeterClient;
+    private SCADomain domain;
 
     /**
      * Runs before each test method
      */
     protected void setUp() throws Exception {
         if (!initalised) {
-            SCARuntime.start("interopgreeter.composite");
+            domain = SCADomain.newInstance("interopgreeter.composite");
             super.setUp();
             initalised = true;
         }
@@ -73,8 +71,7 @@ public class InteropDatabindingTestCase extends TestCase  {
      * @param ext the protcol required
      */
     private void setUpClient(String ext) throws Exception {
-        CompositeContext ctx = CurrentCompositeContext.getContext();
-        greeterClient = ctx.locateService(GreeterService.class, "SDO" + ext + "GreeterServiceClient");
+        greeterClient = domain.getService(GreeterService.class, "SDO" + ext + "GreeterServiceClient");
     }
 
     /**
