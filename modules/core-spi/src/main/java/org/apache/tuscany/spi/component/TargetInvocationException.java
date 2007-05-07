@@ -25,19 +25,19 @@ package org.apache.tuscany.spi.component;
  */
 public class TargetInvocationException extends TargetException {
 
-    public TargetInvocationException(String message) {
-        super(message);
-    }
-
-    public TargetInvocationException(String message, String identifier) {
-        super(message, identifier);
+    public TargetInvocationException() {
+        super();
     }
 
     public TargetInvocationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TargetInvocationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public TargetInvocationException(String message) {
+        super(message);
+    }
+
+    public TargetInvocationException(Throwable cause) {
+        super(cause);
     }
 }

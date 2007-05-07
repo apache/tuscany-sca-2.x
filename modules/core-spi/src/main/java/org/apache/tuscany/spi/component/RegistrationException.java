@@ -24,19 +24,17 @@ package org.apache.tuscany.spi.component;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class RegistrationException extends ComponentException {
+
     public RegistrationException() {
-    }
-
-    public RegistrationException(String message) {
-        super(message);
-    }
-
-    public RegistrationException(String message, String identifier) {
-        super(message, identifier);
+        super();
     }
 
     public RegistrationException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public RegistrationException(String message) {
+        super(message);
     }
 
     public RegistrationException(Throwable cause) {

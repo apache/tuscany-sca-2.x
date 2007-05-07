@@ -25,15 +25,19 @@ package org.apache.tuscany.spi.component;
  */
 public class TargetInitializationException extends TargetResolutionException {
 
-    public TargetInitializationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public TargetInitializationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public TargetInitializationException() {
+        super();
     }
 
     public TargetInitializationException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public TargetInitializationException(String message) {
+        super(message);
+    }
+
+    public TargetInitializationException(Throwable cause) {
+        super(cause);
     }
 }

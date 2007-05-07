@@ -23,10 +23,6 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.implementation.java.monitor.DefaultExceptionFormatter;
-import org.apache.tuscany.spi.TuscanyException;
-import org.apache.tuscany.spi.TuscanyRuntimeException;
-
 /**
  * @version $Rev$ $Date$
  */
@@ -36,7 +32,7 @@ public class DefaultExceptionFormatterTestCase extends TestCase {
     public void testTuscanyExceptionFormat() throws Exception {
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
-        TuscanyException e = new TuscanyException("somemessage") {
+        Exception e = new Exception("somemessage") {
         };
         formatter.write(pw, e);
         assertTrue(writer.toString().indexOf("somemessage") >= 0);
@@ -45,7 +41,7 @@ public class DefaultExceptionFormatterTestCase extends TestCase {
     public void testTuscanyRuntimeExceptionFormat() throws Exception {
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
-        TuscanyRuntimeException e = new TuscanyRuntimeException("somemessage") {
+        RuntimeException e = new RuntimeException("somemessage") {
         };
         formatter.write(pw, e);
         assertTrue(writer.toString().indexOf("somemessage") >= 0);

@@ -27,8 +27,20 @@ import org.apache.tuscany.spi.ObjectCreationException;
  */
 public class ResourceNotFoundException extends ObjectCreationException {
 
-    public ResourceNotFoundException(String message, String identifier) {
-        super(message, identifier);
+    public ResourceNotFoundException() {
+        super();
+    }
+
+    public ResourceNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+
+    public ResourceNotFoundException(Throwable cause) {
+        super(cause);
     }
 
 }

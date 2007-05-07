@@ -27,7 +27,20 @@ import org.apache.tuscany.spi.ObjectCreationException;
  */
 public class InvalidResourceTypeException extends ObjectCreationException {
 
-    public InvalidResourceTypeException(String message, String identifier) {
-        super(message, identifier);
+    public InvalidResourceTypeException() {
+        super();
     }
+
+    public InvalidResourceTypeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidResourceTypeException(String message) {
+        super(message);
+    }
+
+    public InvalidResourceTypeException(Throwable cause) {
+        super(cause);
+    }
+
 }

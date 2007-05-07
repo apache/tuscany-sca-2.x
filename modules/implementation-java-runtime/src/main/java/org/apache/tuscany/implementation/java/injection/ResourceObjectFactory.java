@@ -70,12 +70,12 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
             if (mappedName == null) {
                 resource = host.resolveResource(type);
                 if (!optional && resource == null) {
-                    throw new ResourceNotFoundException("Resource not found", type.getName());
+                    throw new ResourceNotFoundException("Resource not found: " + type.getName());
                 }
             } else {
                 resource = host.resolveResource(type, mappedName);
                 if (!optional && resource == null) {
-                    throw new ResourceNotFoundException("Resource not found", mappedName);
+                    throw new ResourceNotFoundException("Resource not found: " + mappedName);
                 }
             }
             return resource;

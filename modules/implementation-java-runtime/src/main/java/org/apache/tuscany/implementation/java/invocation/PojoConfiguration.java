@@ -194,7 +194,7 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
                 return new MethodInjector<T>(method, new ListMultiplicityObjectFactory(factories));
             }
         } else {
-            throw new InvalidAccessorException("Member must be a field or method", element.getName());
+            throw new InvalidAccessorException("Member must be a field or method: " + element.getName());
         }
     }
 

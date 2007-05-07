@@ -105,7 +105,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
             return ctr.newInstance(initargs);
         } catch (IllegalArgumentException e) {
             String name = ctr.getName();
-            throw new ObjectCreationException("Exception thrown by constructor", name, e);
+            throw new ObjectCreationException("Exception thrown by constructor: " + name, e);
         } catch (InstantiationException e) {
             String name = ctr.getDeclaringClass().getName();
             throw new AssertionError("Class is not instantiable [" + name + "]");
@@ -114,7 +114,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
             throw new AssertionError("Constructor is not accessible [" + name + "]");
         } catch (InvocationTargetException e) {
             String name = ctr.getName();
-            throw new ObjectCreationException("Exception thrown by constructor", name, e);
+            throw new ObjectCreationException("Exception thrown by constructor: " + name, e);
         }
     }
 }

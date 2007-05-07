@@ -25,16 +25,19 @@ package org.apache.tuscany.spi.component;
  */
 public class TargetDestructionException extends TargetResolutionException {
 
-    public TargetDestructionException(String message, String identifier) {
-        super(message, identifier);
+    public TargetDestructionException() {
+        super();
     }
-
-    public TargetDestructionException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
 
     public TargetDestructionException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public TargetDestructionException(String message) {
+        super(message);
+    }
+
+    public TargetDestructionException(Throwable cause) {
+        super(cause);
     }
 }

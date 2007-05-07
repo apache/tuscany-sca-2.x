@@ -18,38 +18,29 @@
  */
 package org.apache.tuscany.store;
 
-import org.apache.tuscany.spi.TuscanyException;
 
 /**
  * Represents a generic exception thrown by a <code>Store</code>
  *
  * @version $Rev$ $Date$
  */
-public class StoreException extends TuscanyException {
+public class StoreException extends Exception {
     private static final long serialVersionUID = -319152147419962709L;
-    private final String owner;
 
-    public StoreException(String message, String owner, String identifier) {
-        super(message, identifier);
-        this.owner = owner;
+    public StoreException() {
+        super();
     }
 
-    public StoreException(String message, String owner, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-        this.owner = owner;
-    }
-
-    public StoreException(String message, String owner, Throwable cause) {
+    public StoreException(String message, Throwable cause) {
         super(message, cause);
-        this.owner = owner;
+    }
+
+    public StoreException(String message) {
+        super(message);
     }
 
     public StoreException(Throwable cause) {
         super(cause);
-        owner = null;
     }
-
-    public String getOwner() {
-        return owner;
-    }
+    
 }

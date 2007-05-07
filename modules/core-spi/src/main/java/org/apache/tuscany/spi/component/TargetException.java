@@ -25,26 +25,19 @@ package org.apache.tuscany.spi.component;
  */
 public abstract class TargetException extends ComponentException {
 
-    public TargetException(String message) {
-        super(message);
-    }
-
-
-    public TargetException(String message, String identifier) {
-        super(message, identifier);
+    public TargetException() {
+        super();
     }
 
     public TargetException(String message, Throwable cause) {
         super(message, cause);
     }
 
-
-    public TargetException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public TargetException(String message) {
+        super(message);
     }
 
     public TargetException(Throwable cause) {
         super(cause);
     }
-
 }

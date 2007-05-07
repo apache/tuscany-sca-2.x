@@ -114,7 +114,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
             try {
                 configuration.getDestroyInvoker().invokeEvent(instance);
             } catch (ObjectCallbackException e) {
-                throw new TargetDestructionException("Error destroying component instance", getUri().toString(), e);
+                throw new TargetDestructionException("Error destroying component instance : " + getUri().toString(), e);
             }
         }
     }
@@ -257,7 +257,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
             element.setClassifer(ConversationID.class);
             configuration.setObjectFactory(element, factory);
         } else {
-            throw new InvalidAccessorException("Member must be a field or method", member.getName());
+            throw new InvalidAccessorException("Member must be a field or method: " + member.getName());
         }
     }
 
@@ -284,7 +284,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
         } else if (member instanceof Constructor) {
             return null;
         } else {
-            throw new InvalidAccessorException("Member must be a field or method", member.getName());
+            throw new InvalidAccessorException("Member must be a field or method: " + member.getName());
         }
     }
 
@@ -310,7 +310,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
                 return new MethodInjector<Object>(method, new ListMultiplicityObjectFactory(factories));
             }
         } else {
-            throw new InvalidAccessorException("Member must be a field or method", member.getName());
+            throw new InvalidAccessorException("Member must be a field or method: " + member.getName());
         }
     }
 

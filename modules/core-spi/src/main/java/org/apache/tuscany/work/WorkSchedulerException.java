@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.work;
 
-import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
  * Exception thrown by the work scheduler in case of unexpected exceptions.
@@ -27,13 +26,20 @@ import org.apache.tuscany.spi.TuscanyRuntimeException;
  *
  */
 @SuppressWarnings("serial")
-public class WorkSchedulerException extends TuscanyRuntimeException {
+public class WorkSchedulerException extends RuntimeException {
 
-    /**
-     * Wraps the root cause.
-     * 
-     * @param cause Root cause for the exception.
-     */
+    public WorkSchedulerException() {
+        super();
+    }
+
+    public WorkSchedulerException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public WorkSchedulerException(String message) {
+        super(message);
+    }
+
     public WorkSchedulerException(Throwable cause) {
         super(cause);
     }

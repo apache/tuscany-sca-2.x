@@ -24,31 +24,22 @@ package org.apache.tuscany.spi;
  *
  * @version $Rev$ $Date$
  */
-public abstract class CoreRuntimeException extends TuscanyRuntimeException {
+public abstract class CoreRuntimeException extends RuntimeException {
 
     public CoreRuntimeException() {
         super();
-    }
-
-    public CoreRuntimeException(String message) {
-        super(message);
-    }
-
-
-    protected CoreRuntimeException(String message, String identifier) {
-        super(message, identifier);
     }
 
     public CoreRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-
-    protected CoreRuntimeException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public CoreRuntimeException(String message) {
+        super(message);
     }
 
     public CoreRuntimeException(Throwable cause) {
         super(cause);
     }
+
 }

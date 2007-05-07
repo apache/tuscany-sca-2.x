@@ -84,7 +84,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
                 assert !cacheable;
                 return scopeContainer.getAssociatedWrapper(component, contextId);
             default:
-                throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
+                throw new InvalidConversationSequenceException("Unknown sequence type: " + String.valueOf(sequence));
         }
     }
 

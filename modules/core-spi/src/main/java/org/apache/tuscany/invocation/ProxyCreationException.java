@@ -29,25 +29,19 @@ public class ProxyCreationException extends CoreRuntimeException {
     private static final long serialVersionUID = 8002454344828513781L;
 
     public ProxyCreationException() {
-    }
-
-    public ProxyCreationException(String message) {
-        super(message);
-    }
-
-    public ProxyCreationException(String message, String identifier) {
-        super(message, identifier);
+        super();
     }
 
     public ProxyCreationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ProxyCreationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public ProxyCreationException(String message) {
+        super(message);
     }
 
     public ProxyCreationException(Throwable cause) {
         super(cause);
     }
+
 }

@@ -25,12 +25,19 @@ package org.apache.tuscany.spi.component;
  */
 public class TargetNotFoundException extends TargetResolutionException {
 
+    public TargetNotFoundException() {
+        super();
+    }
+
+    public TargetNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public TargetNotFoundException(String message) {
         super(message);
     }
 
-    public TargetNotFoundException(String message, String identifier) {
-        super(message, identifier);
+    public TargetNotFoundException(Throwable cause) {
+        super(cause);
     }
-
 }

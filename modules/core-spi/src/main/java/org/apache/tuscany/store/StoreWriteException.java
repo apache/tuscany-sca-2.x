@@ -26,19 +26,20 @@ package org.apache.tuscany.store;
 public class StoreWriteException extends StoreException {
     private static final long serialVersionUID = 5539070473942048555L;
 
-    public StoreWriteException(String message, String owner, String identifier) {
-        super(message, owner, identifier);
+    public StoreWriteException() {
+        super();
     }
 
-    public StoreWriteException(String message, String owner, String identifier, Throwable cause) {
-        super(message, owner, identifier, cause);
+    public StoreWriteException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public StoreWriteException(String message, String owner, Throwable cause) {
-        super(message, owner, cause);
+    public StoreWriteException(String message) {
+        super(message);
     }
 
     public StoreWriteException(Throwable cause) {
         super(cause);
     }
+
 }
