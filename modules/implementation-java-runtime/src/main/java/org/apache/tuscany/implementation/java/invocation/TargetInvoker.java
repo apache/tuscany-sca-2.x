@@ -20,7 +20,6 @@ package org.apache.tuscany.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -58,10 +57,8 @@ public interface TargetInvoker extends Cloneable {
 
     /**
      * Invokes an operation on a target with the given message
-     *
-     * @throws InvocationRuntimeException
      */
-    Message invoke(Message msg) throws InvocationRuntimeException;
+    Message invoke(Message msg);
 
     /**
      * Determines whether the proxy can be cached on the client/source side

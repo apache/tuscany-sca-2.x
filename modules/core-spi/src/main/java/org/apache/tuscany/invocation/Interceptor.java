@@ -23,15 +23,7 @@ package org.apache.tuscany.invocation;
  *
  * @version $Rev$ $Date$
  */
-public interface Interceptor {
-
-    /**
-     * Process a synchronous wire
-     *
-     * @param msg the request Message for the wire
-     * @return the response Message from the wire
-     */
-    Message invoke(Message msg);
+public interface Interceptor extends Invoker {
 
     /**
      * Sets the next interceptor

@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.rmi.Remote;
 
 import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.rmi.RMIHostException;
@@ -43,7 +42,7 @@ public class RMIBindingInterceptor implements Interceptor {
         this.svcName = svcName;
     }
     
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
             Object resp = invokeTarget((Object[])msg.getBody());
             msg.setBody(resp);

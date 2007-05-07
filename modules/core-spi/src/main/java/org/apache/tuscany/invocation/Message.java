@@ -76,23 +76,23 @@ public interface Message {
     /**
      * Returns the id of the message
      */
-    Object getMessageId();
+    Object getMessageID();
 
     /**
      * Sets the id of the message
      */
-    void setMessageId(Object messageId);
+    void setMessageID(Object messageId);
 
     /**
      * Returns the correlation id of the message or null if one is not available. Correlation ids are used by transports
      * for message routing.
      */
-    Object getCorrelationId();
+    Object getCorrelationID();
 
     /**
      * Sets the correlation id of the message. Correlation ids are used by transports for message routing.
      */
-    void setCorrelationId(Object correlationId);
+    void setCorrelationID(Object correlationId);
 
     /**
      * Determines if the message represents a fault/exception
