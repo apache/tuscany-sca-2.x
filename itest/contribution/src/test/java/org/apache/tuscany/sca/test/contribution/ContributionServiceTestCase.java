@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.test.contribution;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -55,7 +54,8 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.contribution.resolver.DefaultArtifactResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
@@ -125,9 +125,8 @@ public class ContributionServiceTestCase extends TestCase {
         ContributionRepository repository = new ContributionRepositoryImpl("target");
 
         // Create an artifact resolver and contribution service
-        DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver(getClass().getClassLoader());
         this.contributionService = new ContributionServiceImpl(repository, packageProcessor, documentProcessor,
-                                                               artifactResolver, assemblyFactory,
+                                                               assemblyFactory,
                                                                new ContributionFactoryImpl(), XMLInputFactory
                                                                    .newInstance());
     }
@@ -135,14 +134,16 @@ public class ContributionServiceTestCase extends TestCase {
     public void testContributeJAR() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
-        contributionService.contribute(contributionId, contributionLocation, false);
+        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        contributionService.contribute(contributionId, contributionLocation, resolver, false);
         assertNotNull(contributionService.getContribution(contributionId));
     }
 
     public void testStoreContributionPackageInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
-        contributionService.contribute(contributionId, contributionLocation, true);
+        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        contributionService.contribute(contributionId, contributionLocation, resolver, true);
 
         assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation()))
             .exists());
@@ -161,7 +162,8 @@ public class ContributionServiceTestCase extends TestCase {
 
         InputStream contributionStream = contributionLocation.openStream();
         try {
-            contributionService.contribute(contributionId, contributionLocation, contributionStream);
+            ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+            contributionService.contribute(contributionId, contributionLocation, contributionStream, resolver);
         } finally {
             IOHelper.closeQuietly(contributionStream);
         }
@@ -180,10 +182,12 @@ public class ContributionServiceTestCase extends TestCase {
     public void testStoreDuplicatedContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId1 = CONTRIBUTION_001_ID;
-        contributionService.contribute(contributionId1, contributionLocation, true);
+        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        contributionService.contribute(contributionId1, contributionLocation, resolver, true);
         assertNotNull(contributionService.getContribution(contributionId1));
         String contributionId2 = CONTRIBUTION_002_ID;
-        contributionService.contribute(contributionId2, contributionLocation, true);
+        ModelResolver resolver2 = new DefaultModelResolver(getClass().getClassLoader());
+        contributionService.contribute(contributionId2, contributionLocation, resolver2, true);
         assertNotNull(contributionService.getContribution(contributionId2));
     }
 
@@ -205,7 +209,8 @@ public class ContributionServiceTestCase extends TestCase {
     public void testAddDeploymentComposites() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
-        contributionService.contribute(contributionId, contributionLocation, false);
+        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        Contribution contribution = contributionService.contribute(contributionId, contributionLocation, resolver, false);
         assertNotNull(contributionService.getContribution(contributionId));
 
         String artifactId = "contributionComposite.composite";
@@ -213,14 +218,14 @@ public class ContributionServiceTestCase extends TestCase {
         composite.setName(new QName(null, "contributionComposite"));
         composite.setURI("contributionComposite.composite");
 
-        contributionService.addDeploymentComposite(contributionId, composite);
+        contributionService.addDeploymentComposite(contribution, composite);
 
         List deployables = contributionService.getContribution(contributionId).getDeployables();
         Composite composite1 = (Composite)deployables.get(deployables.size() - 1);
         assertEquals("contributionComposite", composite1.getName().toString());
 
         DeployedArtifact artifact = null;
-        Contribution contribution = contributionService.getContribution(contributionId);
+        contribution = contributionService.getContribution(contributionId);
         String id = artifactId.toString();
         for (DeployedArtifact a : contribution.getArtifacts()) {
             if (id.equals(a.getURI())) {
