@@ -37,6 +37,7 @@ import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.util.FileHelper;
@@ -98,7 +99,8 @@ public class DefaultSCADomain extends SCADomain {
         }
 
         try {
-            contribution = contributionService.contribute(location, contributionURL, false);
+            DefaultModelResolver modelResolver = new DefaultModelResolver(applicationClassLoader);
+            contribution = contributionService.contribute(location, contributionURL, modelResolver, false);
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         } catch (IOException e) {

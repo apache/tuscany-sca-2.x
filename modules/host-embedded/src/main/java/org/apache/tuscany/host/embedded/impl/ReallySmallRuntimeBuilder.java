@@ -137,8 +137,7 @@ public class ReallySmallRuntimeBuilder {
     public static ContributionService createContributionService(ExtensionPointRegistry registry,
                                                           AssemblyFactory assemblyFactory,
                                                           PolicyFactory policyFactory,
-                                                          InterfaceContractMapper mapper,
-                                                          ClassLoader classLoader) throws ActivationException {
+                                                          InterfaceContractMapper mapper) throws ActivationException {
         
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
 
@@ -181,13 +180,11 @@ public class ReallySmallRuntimeBuilder {
             throw new ActivationException(e);
         }
 
-        //FIXME move artifact resolver to each contribution
-        DefaultModelResolver artifactResolver = new DefaultModelResolver(classLoader);
         ContributionFactory contributionFactory = new ContributionFactoryImpl();
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(
                                                                               repository, packageProcessor,
-                                                                              documentProcessor, artifactResolver,
+                                                                              documentProcessor,
                                                                               assemblyFactory,
                                                                               contributionFactory,
                                                                               xmlFactory);
