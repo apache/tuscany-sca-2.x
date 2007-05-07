@@ -45,13 +45,11 @@
                 <module>das-service</module>
                 -->
                 <module>databinding-echo</module>
-                <module>helloworld-ws</module>
-                <module>helloworld-wsclient</module>
+                <module>helloworld-ws-service</module>
+                <module>helloworld-ws-reference</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
-                <!--
                 <module>loanapplication</module>
-                -->
                 <module>simple-bigbank</module>
                 <module>simple-callback</module>
                 <module>supplychain</module>
