@@ -21,7 +21,6 @@ package org.apache.tuscany.core.invocation;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.TargetInvoker;
 
 /**
  * Default implementation of an invocation chain
@@ -31,7 +30,6 @@ import org.apache.tuscany.invocation.TargetInvoker;
 public class InvocationChainImpl implements InvocationChain {
     protected Operation sourceOperation;
     protected Operation targetOperation;
-    protected TargetInvoker targetInvoker;
     protected Interceptor interceptorChainHead;
     protected Interceptor interceptorChainTail;
 
@@ -50,14 +48,6 @@ public class InvocationChainImpl implements InvocationChain {
 
     public Operation getTargetOperation() {
         return targetOperation;
-    }
-
-    public void setTargetInvoker(TargetInvoker invoker) {
-        this.targetInvoker = invoker;
-    }
-
-    public TargetInvoker getTargetInvoker() {
-        return targetInvoker;
     }
 
     public void addInterceptor(Interceptor interceptor) {

@@ -28,9 +28,9 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.engine.AxisEngine;
 import org.apache.axis2.util.Utils;
 import org.apache.tuscany.binding.axis2.Axis2ServiceBinding.InvocationContext;
+import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
 import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.spi.component.WorkContext;
 
 public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {

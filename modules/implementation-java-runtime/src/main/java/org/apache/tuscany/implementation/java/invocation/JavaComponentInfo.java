@@ -61,7 +61,6 @@ import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionH
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;

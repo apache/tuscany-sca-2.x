@@ -16,40 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.mock.wire;
 
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Message;
+package org.apache.tuscany.invocation;
 
-public class MockSyncInterceptor implements Interceptor {
-
-    private int count;
-
-    private Interceptor next;
-
-    public MockSyncInterceptor() {
-    }
-
-    public Message invoke(Message msg) {
-        ++count;
-        return next.invoke(msg);
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setNext(Interceptor next) {
-        this.next = next;
-    }
-
-    public Interceptor getNext() {
-        return next;
-    }
-
-    public boolean isOptimizable() {
-        return false;
-    }
-
+//FIXME remove this
+public interface ConversationSequence {
+    /* indicates that no conversational sequence is associated with the message */
+    short NONE = 0;
+    /* indicates that the message initiates a conversation */
+    short START = 1;
+    /* indicates that the message continues a conversation */
+    short CONTINUE = 2;
+    /* indicates that the message ends a conversation */
+    short END = 3;
 }
-

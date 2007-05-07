@@ -38,7 +38,6 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.invocation.TargetInvokerInterceptor;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;

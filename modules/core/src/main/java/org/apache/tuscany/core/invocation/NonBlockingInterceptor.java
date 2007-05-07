@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.core.invocation;
 
-import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.invocation.ConversationSequence;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
@@ -112,16 +111,7 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
 
-        public void setTargetInvoker(TargetInvoker invoker) {
-            throw new UnsupportedOperationException();
-        }
-
-        public TargetInvoker getTargetInvoker() {
-            return null;
-        }
-
         public void pushCallbackWire(RuntimeWire wire) {
-
         }
 
         public LinkedList<RuntimeWire> getCallbackWires() {
@@ -157,7 +147,7 @@ public class NonBlockingInterceptor implements Interceptor {
         }
 
         public short getConversationSequence() {
-            return TargetInvoker.NONE;
+            return ConversationSequence.NONE;
         }
 
         public void setConversationSequence(short sequence) {

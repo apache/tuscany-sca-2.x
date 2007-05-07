@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.invocation;
+package org.apache.tuscany.implementation.java.invocation;
 
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.TargetInvoker;
+
 
 /**
  * Serves as a tail interceptor on a target wire chain. This implementation dispatches to the target invoker passed
@@ -30,15 +30,16 @@ import org.apache.tuscany.invocation.TargetInvoker;
  *
  * @version $Rev$ $Date$
  * @Deprecated
- * @see org.apache.tuscany.invocation.TargetInvoker
+ * @see org.apache.tuscany.implementation.java.invocation.TargetInvoker
  */
-public class InvokerInterceptor implements Interceptor {
-
-    public InvokerInterceptor() {
+public class TargetInvokerInterceptor implements Interceptor {
+    private TargetInvoker invoker;
+    
+    public TargetInvokerInterceptor(TargetInvoker invoker) {
+        this.invoker = invoker;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
-        TargetInvoker invoker = msg.getTargetInvoker();
         if (invoker == null) {
             throw new InvocationRuntimeException("No target invoker specified on message");
         }

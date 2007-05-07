@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.extension;
+package org.apache.tuscany.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -25,7 +25,6 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.TargetInvoker;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**

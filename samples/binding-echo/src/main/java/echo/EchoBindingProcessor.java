@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ArtifactResolver;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
@@ -65,7 +65,7 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
     public void write(EchoBinding echoBinding, XMLStreamWriter writer) throws ContributionWriteException {
     }
 
-    public void resolve(EchoBinding echoBinding, ArtifactResolver resolver) throws ContributionResolveException {
+    public void resolve(EchoBinding echoBinding, ModelResolver resolver) throws ContributionResolveException {
     }
 
 }

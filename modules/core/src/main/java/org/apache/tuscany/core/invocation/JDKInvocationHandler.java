@@ -108,7 +108,7 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
             }
         }
         // send the invocation down the wire
-        Object result = invoke(chain, null, args, null, list, workContext);
+        Object result = invoke(chain, args, null, list, workContext);
 
         if (callback) {
             list = workContext.getCallbackUris();
