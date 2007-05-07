@@ -282,9 +282,7 @@ public class DefaultSCADomain extends SCADomain {
                 }
             }
             if (componentContext == null) {
-                if (component == null) {
-                    throw new ServiceRuntimeException("Composite service not found: " + name);
-                }
+                throw new ServiceRuntimeException("Composite service not found: " + name);
             }
         } else {
             componentContext = (ComponentContext)component;
