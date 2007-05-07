@@ -23,12 +23,20 @@ package org.apache.tuscany.implementation.java.injection;
  */
 public class InvalidAccessorException extends InjectionRuntimeException {
 
+    public InvalidAccessorException() {
+        super();
+    }
+
+    public InvalidAccessorException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public InvalidAccessorException(String message) {
         super(message);
     }
 
-    public InvalidAccessorException(String message, String identifier) {
-        super(message, identifier);
+    public InvalidAccessorException(Throwable cause) {
+        super(cause);
     }
 
 }

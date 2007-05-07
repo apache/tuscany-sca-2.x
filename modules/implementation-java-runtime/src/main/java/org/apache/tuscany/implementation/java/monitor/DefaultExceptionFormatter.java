@@ -20,9 +20,6 @@ package org.apache.tuscany.implementation.java.monitor;
 
 import java.io.PrintWriter;
 
-import org.apache.tuscany.spi.TuscanyException;
-import org.apache.tuscany.spi.TuscanyRuntimeException;
-
 /**
  * Performs basics formatting of exceptions for JDK logging
  *
@@ -38,16 +35,9 @@ public class DefaultExceptionFormatter implements ExceptionFormatter {
     }
 
     public PrintWriter write(PrintWriter writer, Throwable exception) {
-        if (exception instanceof TuscanyException) {
-            TuscanyException e = (TuscanyException) exception;
-            e.appendBaseMessage(writer);
-        } else if (exception instanceof TuscanyRuntimeException) {
-            TuscanyRuntimeException e = (TuscanyRuntimeException) exception;
-            e.appendBaseMessage(writer);
-        }
+        writer.append(exception.getMessage());
         writer.append("\n");
         return writer;
     }
-
 
 }

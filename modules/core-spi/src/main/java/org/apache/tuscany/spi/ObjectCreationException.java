@@ -24,27 +24,19 @@ package org.apache.tuscany.spi;
  *
  * @version $Rev$ $Date$
  */
-public class ObjectCreationException extends TuscanyRuntimeException {
+public class ObjectCreationException extends RuntimeException {
     private static final long serialVersionUID = -6423113430265944499L;
 
     public ObjectCreationException() {
         super();
     }
 
-    public ObjectCreationException(String message) {
-        super(message);
-    }
-
-    public ObjectCreationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public ObjectCreationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ObjectCreationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public ObjectCreationException(String message) {
+        super(message);
     }
 
     public ObjectCreationException(Throwable cause) {

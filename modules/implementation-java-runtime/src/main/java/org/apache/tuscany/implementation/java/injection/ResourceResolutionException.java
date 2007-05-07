@@ -18,16 +18,26 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import org.apache.tuscany.spi.TuscanyException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ResourceResolutionException extends TuscanyException {
+public class ResourceResolutionException extends Exception {
     private static final long serialVersionUID = 13421352711315479L;
 
-    public ResourceResolutionException(String message, String identifier) {
-        super(message, identifier);
+    public ResourceResolutionException() {
+        super();
     }
 
+    public ResourceResolutionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ResourceResolutionException(String message) {
+        super(message);
+    }
+
+    public ResourceResolutionException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -27,22 +27,15 @@ package org.apache.tuscany.spi.component;
 public abstract class TargetInvokerCreationException extends ComponentException {
 
     public TargetInvokerCreationException() {
-    }
-
-    public TargetInvokerCreationException(String message) {
-        super(message);
-    }
-
-    public TargetInvokerCreationException(String message, String identifier) {
-        super(message, identifier);
+        super();
     }
 
     public TargetInvokerCreationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TargetInvokerCreationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public TargetInvokerCreationException(String message) {
+        super(message);
     }
 
     public TargetInvokerCreationException(Throwable cause) {

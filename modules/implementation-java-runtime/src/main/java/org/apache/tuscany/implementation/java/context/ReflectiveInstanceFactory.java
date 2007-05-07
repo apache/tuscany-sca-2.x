@@ -70,7 +70,7 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
         } catch (
             InvocationTargetException e) {
             String name = ctr.getName();
-            throw new ObjectCreationException("Exception thrown by constructor", name, e);
+            throw new ObjectCreationException("Exception thrown by constructor: " + name, e);
         }
 
         if (injectors != null) {

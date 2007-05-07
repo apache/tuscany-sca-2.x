@@ -31,20 +31,12 @@ public abstract class ComponentRuntimeException extends CoreRuntimeException {
         super();
     }
 
-    public ComponentRuntimeException(String message) {
-        super(message);
-    }
-
-    public ComponentRuntimeException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public ComponentRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ComponentRuntimeException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public ComponentRuntimeException(String message) {
+        super(message);
     }
 
     public ComponentRuntimeException(Throwable cause) {

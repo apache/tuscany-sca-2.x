@@ -25,19 +25,19 @@ package org.apache.tuscany.spi.component;
  */
 public class TargetResolutionException extends TargetException {
 
-    public TargetResolutionException(String message) {
-        super(message);
-    }
-
-    public TargetResolutionException(String message, String identifier) {
-        super(message, identifier);
+    public TargetResolutionException() {
+        super();
     }
 
     public TargetResolutionException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TargetResolutionException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public TargetResolutionException(String message) {
+        super(message);
+    }
+
+    public TargetResolutionException(Throwable cause) {
+        super(cause);
     }
 }

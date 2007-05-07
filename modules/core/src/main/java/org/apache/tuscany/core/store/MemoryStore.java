@@ -107,7 +107,7 @@ public class MemoryStore extends BaseEventPublisher implements Store {
             store.put(owner, map);
         }
         if (map.containsKey(id)) {
-            throw new DuplicateRecordException(owner.getURI(), id);
+            throw new DuplicateRecordException("Duplicate record: " + owner.getURI() +" : " + id);
         }
         map.put(id, new Record(object, expiration));
     }
@@ -115,11 +115,11 @@ public class MemoryStore extends BaseEventPublisher implements Store {
     public void updateRecord(RuntimeComponent owner, String id, Object object, long expiration) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            throw new StoreWriteException("Record not found", owner.getURI(), id);
+            throw new StoreWriteException("Record not found: " + owner.getURI() +" : " + id);
         }
         Record record = map.get(id);
         if (record == null) {
-            throw new StoreWriteException("Record not found", owner.getURI(), id);
+            throw new StoreWriteException("Record not found: " + owner.getURI() +" : " + id);
         }
         record.data = object;
     }
@@ -143,10 +143,10 @@ public class MemoryStore extends BaseEventPublisher implements Store {
     public void removeRecord(RuntimeComponent owner, String id) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            throw new StoreWriteException("Owner not found", owner.getURI(), id);
+            throw new StoreWriteException("Owner not found: " + owner.getURI() +" : " + id);
         }
         if (map.remove(id) == null) {
-            throw new StoreWriteException("Owner not found", owner.getURI(), id);
+            throw new StoreWriteException("Owner not found: " + owner.getURI() +" : " + id);
         }
     }
 

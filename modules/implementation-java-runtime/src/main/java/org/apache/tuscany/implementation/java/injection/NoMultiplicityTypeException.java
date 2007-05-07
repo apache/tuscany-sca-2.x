@@ -23,7 +23,20 @@ package org.apache.tuscany.implementation.java.injection;
  */
 public class NoMultiplicityTypeException extends InjectionRuntimeException {
 
-    public NoMultiplicityTypeException(String message, String identifier) {
-        super(message, identifier);
+    public NoMultiplicityTypeException() {
+        super();
     }
+
+    public NoMultiplicityTypeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NoMultiplicityTypeException(String message) {
+        super(message);
+    }
+
+    public NoMultiplicityTypeException(Throwable cause) {
+        super(cause);
+    }
+
 }

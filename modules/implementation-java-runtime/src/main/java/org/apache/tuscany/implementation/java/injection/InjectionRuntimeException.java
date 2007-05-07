@@ -18,34 +18,24 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
  * Root unchecked exception for the injection package
  *
  * @version $Rev$ $Date$
  */
-public abstract class InjectionRuntimeException extends TuscanyRuntimeException {
+public abstract class InjectionRuntimeException extends RuntimeException {
 
     public InjectionRuntimeException() {
         super();
-    }
-
-    public InjectionRuntimeException(String message) {
-        super(message);
-    }
-
-
-    protected InjectionRuntimeException(String message, String identifier) {
-        super(message, identifier);
     }
 
     public InjectionRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    protected InjectionRuntimeException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public InjectionRuntimeException(String message) {
+        super(message);
     }
 
     public InjectionRuntimeException(Throwable cause) {

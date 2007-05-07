@@ -29,16 +29,12 @@ public class ObjectCallbackException extends InjectionRuntimeException {
         super();
     }
 
-    public ObjectCallbackException(String message) {
-        super(message);
-    }
-
-    public ObjectCallbackException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public ObjectCallbackException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public ObjectCallbackException(String message) {
+        super(message);
     }
 
     public ObjectCallbackException(Throwable cause) {

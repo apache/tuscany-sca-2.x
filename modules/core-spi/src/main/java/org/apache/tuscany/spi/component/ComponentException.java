@@ -18,35 +18,28 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.TuscanyException;
 
 /**
  * An checked exception encountered by an {@link org.apache.tuscany.spi.component.Component}
  *
  * @version $Rev$ $Date$
  */
-public abstract class ComponentException extends TuscanyException {
+public abstract class ComponentException extends Exception {
 
-    protected ComponentException() {
+    public ComponentException() {
+        super();
     }
 
-    protected ComponentException(String message) {
-        super(message);
-    }
-
-    protected ComponentException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    protected ComponentException(String message, Throwable cause) {
+    public ComponentException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    protected ComponentException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public ComponentException(String message) {
+        super(message);
     }
 
-    protected ComponentException(Throwable cause) {
+    public ComponentException(Throwable cause) {
         super(cause);
     }
+
 }
