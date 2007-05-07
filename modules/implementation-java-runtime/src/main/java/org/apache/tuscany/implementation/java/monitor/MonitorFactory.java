@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.host;
+package org.apache.tuscany.implementation.java.monitor;
 
 import java.util.Map;
 
-import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
  * A MonitorFactory creates implementations of components' monitor interfaces that interface with a its monitoring

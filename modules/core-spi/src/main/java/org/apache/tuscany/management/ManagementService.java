@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.services.management;
+package org.apache.tuscany.management;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.host.management.ManagementService;
 
 /**
  * Interface for the management service abstraction. The implementaion
@@ -28,7 +27,7 @@ import org.apache.tuscany.host.management.ManagementService;
  *
  * @version $Revision$ $Date$
  */
-public interface TuscanyManagementService extends ManagementService<RuntimeComponent> {
+public interface ManagementService {
 
     /**
      * Registers a component for management.

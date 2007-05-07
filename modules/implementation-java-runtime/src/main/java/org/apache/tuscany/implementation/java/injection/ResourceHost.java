@@ -16,27 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.host.monitor;
+package org.apache.tuscany.implementation.java.injection;
 
 /**
- * A registry for exception formatters
+ * Interface implemented by host environments that allow for resolution of component implementation resources, e.g.
+ * items bound in a JNDI tree.
  *
  * @version $Rev$ $Date$
  */
-public interface FormatterRegistry {
+public interface ResourceHost {
 
     /**
-     * Registers the given formatter
+     * Resolve a resource matching the given type
      *
-     * @param formatter the formatter to register
+     * @param type the type of the resources
+     * @throws ResourceResolutionException if an error is encountered during resolution
      */
-    void register(ExceptionFormatter formatter);
+    <T> T resolveResource(Class<T> type) throws ResourceResolutionException;
 
     /**
-     * De-registers the given formatter
+     * Resolve a resource matching the given type and name
      *
-     * @param formatter the formatter to de-register
+     * @param type       the type of the resources
+     * @param mappedName the mapped name of the resource
+     * @throws ResourceResolutionException if an error is encountered during resolution
      */
-    void unregister(ExceptionFormatter formatter);
+    <T> T resolveResource(Class<T> type, String mappedName) throws ResourceResolutionException;
 
 }

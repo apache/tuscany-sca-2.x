@@ -33,6 +33,7 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -46,7 +47,6 @@ import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.host.ResourceHost;
 import org.osoa.sca.ComponentContext;
 
 /**

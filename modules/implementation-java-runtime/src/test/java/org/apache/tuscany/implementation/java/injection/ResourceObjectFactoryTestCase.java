@@ -21,7 +21,6 @@ package org.apache.tuscany.implementation.java.injection;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.spi.host.ResourceHost;
 import org.easymock.EasyMock;
 
 /**

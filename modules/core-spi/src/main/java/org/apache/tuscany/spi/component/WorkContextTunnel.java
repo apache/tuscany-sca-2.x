@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.net.URI;
+
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
 
 
 /**
@@ -33,7 +34,7 @@ public final class WorkContextTunnel {
         protected synchronized WorkContext initialValue() {
             // TODO: is this the correct way to initialize a new WorkContext?
             WorkContext workContext = new WorkContextImpl();
-            workContext.setIdentifier(Scope.COMPOSITE, ComponentNames.TUSCANY_APPLICATION_ROOT.resolve("default"));
+            workContext.setIdentifier(Scope.COMPOSITE, URI.create("sca://root.application/").resolve("default"));
             return workContext;
         }
     };

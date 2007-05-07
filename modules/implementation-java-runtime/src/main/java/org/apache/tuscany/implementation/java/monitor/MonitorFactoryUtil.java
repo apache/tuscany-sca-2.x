@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.implementation.java.monitor;
 
-import org.apache.tuscany.host.MonitorFactory;
 
 import java.util.Map;
 

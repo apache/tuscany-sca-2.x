@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.api.annotation.LogLevel;
-import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.implementation.java.monitor.JavaLoggingMonitorFactory;
 
 /**

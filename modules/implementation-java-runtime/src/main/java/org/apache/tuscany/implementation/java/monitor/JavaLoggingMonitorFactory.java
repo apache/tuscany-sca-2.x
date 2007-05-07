@@ -30,8 +30,6 @@ import java.util.logging.Logger;
 
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
  * A factory for monitors that forwards events to a {@link java.util.logging.Logger Java Logging (JSR47) Logger}.
