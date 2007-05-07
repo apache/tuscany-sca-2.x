@@ -18,14 +18,11 @@
  */
 package org.apache.tuscany.core.invocation;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.invocation.ChainHolder;
 import org.apache.tuscany.invocation.ProxyCreationException;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -53,16 +50,6 @@ public class JDKProxyService implements ProxyFactory {
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
         assert interfaze != null;
         assert wire != null;
-        JDKInvocationHandler handler = new JDKInvocationHandler(interfaze, wire, context);
-        ClassLoader cl = interfaze.getClassLoader();
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
-    }
-
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Map<Method, ChainHolder> mapping)
-        throws ProxyCreationException {
-        assert interfaze != null;
-        assert wire != null;
-        assert mapping != null;
         JDKInvocationHandler handler = new JDKInvocationHandler(interfaze, wire, context);
         ClassLoader cl = interfaze.getClassLoader();
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));

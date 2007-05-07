@@ -16,21 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.invocation;
-
-import junit.framework.TestCase;
-
-import org.easymock.EasyMock;
+package org.apache.tuscany.core;
 
 /**
+ * Implementations are called after wires are decorated with policy and before they are connected.
+ *
  * @version $Rev$ $Date$
  */
-public class ChainHolderTestCase extends TestCase {
+public interface RuntimeWireProcessor {
 
-    public void testClone() {
-        InvocationChain chain = EasyMock.createMock(InvocationChain.class);
-        EasyMock.replay(chain);
-        ChainHolder holder = new ChainHolder(chain);
-        assertNotNull(holder.clone());
-    }
+    /**
+     * Process the runtime wire to add interceptors
+     * 
+     * @param wire
+     */
+    void process(RuntimeWire wire);
+
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core;
 
+import java.util.List;
+
 /**
  * Acts as a delegating <code>WireProcessorExtensionPoint</code>, delegating
  * processing of wires after policies have been applied and source an targets
@@ -25,20 +27,27 @@ package org.apache.tuscany.core;
  * 
  * @version $Rev$ $Date$
  */
-public interface WireProcessorExtensionPoint extends RuntimeWireProcessorExtension {
+public interface RuntimeWireProcessorExtensionPoint {
 
     /**
      * Registers a wire-processor in the runtime
      * 
      * @param processor the processor to register
      */
-    void register(RuntimeWireProcessorExtension processor);
+    void addWireProcessor(RuntimeWireProcessor processor);
 
     /**
      * De-registers a wire-processor in the runtime
      * 
      * @param processor the processor to de-register
      */
-    void unregister(RuntimeWireProcessorExtension processor);
+    void removeWireProcessor(RuntimeWireProcessor processor);
 
+    /**
+     * Returns a list of registered wire-processors.
+     * 
+     * @return
+     */
+    List<RuntimeWireProcessor> getWireProcessors();
+    
 }

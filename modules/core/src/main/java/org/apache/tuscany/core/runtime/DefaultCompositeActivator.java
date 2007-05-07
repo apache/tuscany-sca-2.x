@@ -39,10 +39,10 @@ import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.RuntimeWireProcessor;
 import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
-import org.apache.tuscany.core.WireProcessorExtensionPoint;
 import org.apache.tuscany.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
@@ -64,7 +64,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
     private final InterfaceContractMapper interfaceContractMapper;
     private final WorkContext workContext;
     private final WorkScheduler workScheduler;
-    private final WireProcessorExtensionPoint wireProcessorExtensionPoint;
+    private final RuntimeWireProcessor wireProcessor;
 
     /**
      * @param assemblyFactory
@@ -77,13 +77,13 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                      InterfaceContractMapper interfaceContractMapper,
                                      WorkContext workContext,
                                      WorkScheduler workScheduler,
-                                     WireProcessorExtensionPoint wireProcessorExtensionPoint) {
+                                     RuntimeWireProcessor wireProcessor) {
         super();
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.workContext = workContext;
         this.workScheduler = workScheduler;
-        this.wireProcessorExtensionPoint = wireProcessorExtensionPoint;
+        this.wireProcessor = wireProcessor;
     }
 
     /**
@@ -264,7 +264,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
             }
             runtimeRef.addRuntimeWire(wire);
-            wireProcessorExtensionPoint.process(wire);
+            wireProcessor.process(wire);
         }
         for (ComponentService service : reference.getTargets()) {
             Component target = null;
@@ -321,7 +321,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     wire.getTarget().getComponentService().addCallbackWire(wire);
                 }
             }
-            wireProcessorExtensionPoint.process(wire);
+            wireProcessor.process(wire);
         }
     }
 
@@ -399,7 +399,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
         // }
 
         runtimeService.addRuntimeWire(wire);
-        wireProcessorExtensionPoint.process(wire);
+        wireProcessor.process(wire);
     }
 
     /**

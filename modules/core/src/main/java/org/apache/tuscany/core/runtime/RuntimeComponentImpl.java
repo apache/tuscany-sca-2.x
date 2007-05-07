@@ -19,10 +19,7 @@
 
 package org.apache.tuscany.core.runtime;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.Property;
