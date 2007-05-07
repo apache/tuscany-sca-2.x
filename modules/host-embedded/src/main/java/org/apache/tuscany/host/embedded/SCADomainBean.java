@@ -64,6 +64,7 @@ public class SCADomainBean extends SCADomain {
         return composites;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         if (instance == null) {

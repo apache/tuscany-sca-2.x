@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.work;
 
-import org.apache.tuscany.spi.services.work.NotificationListener;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.services.work.WorkSchedulerException;
+import org.apache.tuscany.work.NotificationListener;
+import org.apache.tuscany.work.WorkScheduler;
+import org.apache.tuscany.work.WorkSchedulerException;
 
 import commonj.work.WorkEvent;
 import commonj.work.WorkException;

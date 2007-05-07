@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
+import org.apache.tuscany.core.event.HttpSessionEnd;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.TargetDestructionException;
@@ -54,7 +54,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof HttpSessionEnd) {
-            Object key = ((HttpSessionEnd)event).getId();
+            Object key = ((HttpSessionEnd)event).getSessionID();
             shutdownInstances(key);
             workContext.clearIdentifier(key);
         }

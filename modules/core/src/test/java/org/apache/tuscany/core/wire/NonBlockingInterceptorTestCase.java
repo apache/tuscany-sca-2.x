@@ -32,7 +32,7 @@ import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.work.WorkScheduler;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 

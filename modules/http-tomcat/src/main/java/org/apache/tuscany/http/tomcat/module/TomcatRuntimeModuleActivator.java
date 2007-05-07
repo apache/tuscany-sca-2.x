@@ -25,7 +25,7 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.http.tomcat.TomcatServer;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.work.WorkScheduler;
 
 /**
  * @version $Rev$ $Date$
