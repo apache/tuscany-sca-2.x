@@ -17,11 +17,35 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.host.embedded.impl;
 
+import junit.framework.TestCase;
+import crud.CRUD;
 
 /**
- * SCARuntime is used to start a Tuscany SCA runtime.
+ * @version $Rev$ $Date$
  */
-public abstract class SCARuntime extends SCARuntimeActivator {
+public class DefaultSCADomainTestCase extends TestCase {
+    private DefaultSCADomain domain;
+
+    /**
+     * @throws java.lang.Exception
+     */
+    protected void setUp() throws Exception {
+        domain = new DefaultSCADomain(getClass().getClassLoader(), getClass().getClassLoader(),
+                                      "http://localhost", ".", "crud.composite");
+    }
+
+    public void testStart() throws Exception {
+        CRUD service = domain.getService(CRUD.class, "CRUDServiceComponent");
+        assertNotNull(service);
+    }
+
+    /**
+     * @throws java.lang.Exception
+     */
+    protected void tearDown() throws Exception {
+        domain.close();
+    }
+
 }

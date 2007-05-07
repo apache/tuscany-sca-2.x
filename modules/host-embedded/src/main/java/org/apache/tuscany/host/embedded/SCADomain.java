@@ -49,7 +49,7 @@ public abstract class SCADomain {
      * @return
      */
     public static SCADomain newInstance(String domainURI, String contributionLocation, String...composites) {
-        return newInstance(SCADomain.class.getClassLoader(), domainURI, contributionLocation, composites);
+        return createNewInstance(domainURI, contributionLocation, composites);
     }
     
     /**
@@ -70,7 +70,7 @@ public abstract class SCADomain {
      * @return
      */
     public static SCADomain newInstance(String composite) {
-        return newInstance(SCADomain.class.getClassLoader(), "http://localhost", ".", composite);
+        return createNewInstance("http://localhost", ".", composite);
     }
     
     /**
@@ -166,11 +166,12 @@ public abstract class SCADomain {
      * @param composites
      * @return
      */
-    private static SCADomain newInstance(
-                                         final ClassLoader classLoader,
-                                         String domainURI, String contributionLocation, String...composites) {
+    static SCADomain createNewInstance(String domainURI, String contributionLocation, String...composites) {
 
         try {
+            final ClassLoader runtimeClassLoader = SCADomain.class.getClassLoader();
+            final ClassLoader applicationClassLoader = Thread.currentThread().getContextClassLoader();
+            
             final String name = SCADomain.class.getName();
             String className = AccessController.doPrivileged(new PrivilegedAction<String>() {
                 public String run() {
@@ -179,14 +180,17 @@ public abstract class SCADomain {
             });
 
             if (className == null) {
-                className = getServiceName(classLoader, name);
+                className = getServiceName(runtimeClassLoader, name);
             }
             if (className == null) {
-                return new DefaultSCADomain(domainURI, contributionLocation, composites);
+                return new DefaultSCADomain(runtimeClassLoader, applicationClassLoader,
+                                            domainURI, contributionLocation, composites);
             }
-            Class cls = Class.forName(className, true, classLoader);
+            Class cls = Class.forName(className, true, runtimeClassLoader);
             Constructor<?> constructor = cls.getConstructor(String.class, String.class, String[].class);
-            SCADomain domain = (SCADomain)constructor.newInstance(domainURI, contributionLocation, composites);
+            SCADomain domain = (SCADomain)constructor.newInstance(
+                                                                  runtimeClassLoader, applicationClassLoader,
+                                                                  domainURI, contributionLocation, composites);
             return domain;
             
         } catch (Exception e) {

@@ -17,37 +17,45 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded.impl;
+package org.apache.tuscany.host.embedded;
 
 import junit.framework.TestCase;
 
-import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
+
+import crud.CRUD;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SimpleRuntimeImplTestCase extends TestCase {
-    private MiniRuntimeImpl runtime;
+public class SCADomainTestCase extends TestCase {
 
-    /**
-     * @throws java.lang.Exception
-     */
+    private SCADomain domain;
+    
     protected void setUp() throws Exception {
-        SimpleRuntimeInfo runtimeInfo = new SimpleRuntimeInfoImpl(getClass().getClassLoader(), "crud.composite");
-        runtime = new MiniRuntimeImpl(runtimeInfo);
-        runtime.start();
+        domain = SCADomain.newInstance("crud.composite");
     }
 
     public void testStart() throws Exception {
-        ComponentContext context = runtime.getComponentContext("CRUDServiceComponent");
-        assertNotNull(context);
+        ServiceReference<CRUD> serviceReference = domain.getServiceReference(CRUD.class, "CRUDServiceComponent");
+        assertNotNull(serviceReference);
+        CRUD service = serviceReference.getService();
+        String id = service.create("ABC");
+        Object result = service.retrieve(id);
+        assertEquals("ABC", result);
+        service.update(id, "EFG");
+        result = service.retrieve(id);
+        assertEquals("EFG", result);
+        service.delete(id);
+        result = service.retrieve(id);
+        assertNull(result);
     }
 
     /**
      * @throws java.lang.Exception
      */
     protected void tearDown() throws Exception {
-        runtime.stop();
+        domain.close();
     }
 
 }

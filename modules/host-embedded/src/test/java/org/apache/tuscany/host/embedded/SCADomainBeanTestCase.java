@@ -21,7 +21,6 @@ package org.apache.tuscany.host.embedded;
 
 import junit.framework.TestCase;
 
-import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
 import crud.CRUD;
@@ -29,19 +28,19 @@ import crud.CRUD;
 /**
  * @version $Rev$ $Date$
  */
-public class SCARuntimeTestCase extends TestCase {
-    /**
-     * @throws java.lang.Exception
-     */
+public class SCADomainBeanTestCase extends TestCase {
+
+    private SCADomainBean domain;
+    
     protected void setUp() throws Exception {
-        SCARuntimeActivator.start("crud.composite");
+        domain = new SCADomainBean();
+        domain.setDeployableComposites("crud.composite");
     }
 
     public void testStart() throws Exception {
-        ComponentContext context = SCARuntimeActivator.getComponentContext("CRUDServiceComponent");
-        assertNotNull(context);
-        ServiceReference<CRUD> self = context.createSelfReference(CRUD.class);
-        CRUD service = self.getService();
+        ServiceReference<CRUD> serviceReference = domain.getServiceReference(CRUD.class, "CRUDServiceComponent");
+        assertNotNull(serviceReference);
+        CRUD service = serviceReference.getService();
         String id = service.create("ABC");
         Object result = service.retrieve(id);
         assertEquals("ABC", result);
@@ -57,7 +56,7 @@ public class SCARuntimeTestCase extends TestCase {
      * @throws java.lang.Exception
      */
     protected void tearDown() throws Exception {
-        SCARuntimeActivator.stop();
+        domain.close();
     }
 
 }
