@@ -24,9 +24,9 @@ import java.net.URI;
 import java.util.LinkedList;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -107,9 +107,7 @@ public class AbstractInvocationHandlerTestCase extends TestCase {
 
         public Message invoke(Message msg) {
             assertNotNull(msg.getCorrelationId());
-            assertNotNull(msg.getTargetInvoker());
             assertNotNull(msg.getMessageId());
-            assertNotNull(msg.getCallbackUris());
             assertEquals("foo", Array.get(msg.getBody(), 0));
             msg.setBody("response");
             return msg;

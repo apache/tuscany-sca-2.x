@@ -42,7 +42,6 @@ public class TargetInvokerExtensionTestCase extends TestCase {
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCallbackUris(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         Target target = EasyMock.createMock(Target.class);
         target.invoke("test");
@@ -50,7 +49,6 @@ public class TargetInvokerExtensionTestCase extends TestCase {
         Invoker invoker = new Invoker(target);
         Message msg = new MessageImpl();
         msg.setWorkContext(context);
-        msg.pushCallbackUri(from);
         msg.setBody("test");
         invoker.invoke(msg);
         EasyMock.verify(wire);

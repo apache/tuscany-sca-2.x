@@ -92,7 +92,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
             Object resp = invokeTarget(msg.getBody(), correlationId);
             msg.setBody(resp);
         } catch (Throwable e) {
-            msg.setBodyWithFault(e);
+            msg.setFaultBody(e);
         }
         return msg;
     }

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.invocation;
 
-import java.net.URI;
 import java.util.LinkedList;
 
 import org.apache.tuscany.core.RuntimeWire;
@@ -31,14 +30,13 @@ import org.apache.tuscany.spi.component.WorkContext;
  */
 public class MessageImpl implements Message {
     private Object body;
-    private TargetInvoker invoker;
-    private LinkedList<URI> callbackUris;
     private LinkedList<RuntimeWire> callbackWires;
     private Object messageId;
     private Object correlationId;
     private boolean isFault;
     private short conversationSequence;
     private WorkContext workContext;
+    private TargetInvoker targetInvoker;
 
     public MessageImpl(WorkContext workContext, short conversationSequence, Object body) {
         this.workContext = workContext;
@@ -49,6 +47,7 @@ public class MessageImpl implements Message {
     public MessageImpl() {
     }
 
+    @SuppressWarnings("unchecked")
     public Object getBody() {
         return body;
     }
@@ -65,6 +64,14 @@ public class MessageImpl implements Message {
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }
+    
+    public TargetInvoker getTargetInvoker() {
+        return targetInvoker;
+    }
+    
+    public void setTargetInvoker(TargetInvoker invoker) {
+        this.targetInvoker = invoker;
+    }
 
     public short getConversationSequence() {
         return conversationSequence;
@@ -72,29 +79,6 @@ public class MessageImpl implements Message {
 
     public void setConversationSequence(short conversationSequence) {
         this.conversationSequence = conversationSequence;
-    }
-
-    public void setTargetInvoker(TargetInvoker invoker) {
-        this.invoker = invoker;
-    }
-
-    public TargetInvoker getTargetInvoker() {
-        return invoker;
-    }
-
-    public void pushCallbackUri(URI uri) {
-        if (callbackUris == null) {
-            callbackUris = new LinkedList<URI>();
-        }
-        callbackUris.add(uri);
-    }
-
-    public LinkedList<URI> getCallbackUris() {
-        return callbackUris;
-    }
-
-    public void setCallbackUris(LinkedList<URI> callbackRoutingChain) {
-        this.callbackUris = callbackRoutingChain;
     }
 
     public void pushCallbackWire(RuntimeWire wire) {
@@ -132,16 +116,9 @@ public class MessageImpl implements Message {
         return isFault;
     }
 
-    public void setBodyWithFault(Object fault) {
+    public void setFaultBody(Object fault) {
         this.isFault = true;
         this.body = fault;
     }
 
-    public TargetInvoker getInvoker() {
-        return invoker;
-    }
-
-    public void setInvoker(TargetInvoker invoker) {
-        this.invoker = invoker;
-    }
 }

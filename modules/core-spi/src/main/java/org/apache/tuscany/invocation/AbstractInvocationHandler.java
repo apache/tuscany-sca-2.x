@@ -67,9 +67,7 @@ public abstract class AbstractInvocationHandler {
         } else {
             Message msg = new MessageImpl();
             msg.setWorkContext(workContext);
-            msg.setTargetInvoker(invoker);
             msg.setCorrelationId(workContext.getCorrelationId());
-            msg.setCallbackUris(workContext.getCallbackUris());
             Operation operation = chain.getTargetOperation();
             Interface contract = operation.getInterface();
             if (contract != null && contract.isConversational()) {

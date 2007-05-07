@@ -49,9 +49,9 @@ public class RMIBindingInterceptor implements Interceptor {
             Object resp = invokeTarget((Object[])msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
+            msg.setFaultBody(e.getCause());
         } catch (Throwable e) {
-            msg.setBodyWithFault(e);
+            msg.setFaultBody(e);
         }
         return msg;
     }  

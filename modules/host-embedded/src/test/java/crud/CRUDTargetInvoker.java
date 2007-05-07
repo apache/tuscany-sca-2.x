@@ -53,7 +53,7 @@ public class CRUDTargetInvoker implements TargetInvoker, Interceptor {
             Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), msg.getWorkContext());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
+            msg.setFaultBody(e.getCause());
         }
         return msg;
     }
