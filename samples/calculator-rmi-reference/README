@@ -17,7 +17,7 @@ add, subtract, multiple and divide interface and is hosted as an RMI server.
 Rerences specified in the .composite file include an RMI binding which targets
 this RMI server.
 
-This samples adds a number of classes to the basic calculator sample:
+This sample adds a number of classes to the basic calculator sample:
 
 calculator\
   src\
@@ -42,7 +42,7 @@ calculator\
         CalculatorRMIReference.composite - the SCA assembly for this sample
   calculator-rmi-reference.png    - a pictorial representation of the 
                                     .composite file
-  build-server.xml                - the Ant build file for the client
+  build-server.xml                - the Ant build file for the server
   build-client.xml                - the Ant build file for the client
   pom.xml                         - the Maven build file   
   
@@ -91,7 +91,7 @@ Building And Runing The Sample Using Maven
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
-cd binding-echo
+cd calculator-rmi-reference
 mvn
 
 You should see the following output from the test phase.
