@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\calculator-rmi-reference"
+   sodipodi:docname="calculator-rmi-reference.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\calculator-rmi-reference\calculator-rmi-reference.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="553.58838"
+     inkscape:cy="368.42498"
+     inkscape:document-units="px"
+     inkscape:current-layer="g2997"
+     inkscape:window-width="1134"
+     inkscape:window-height="721"
+     inkscape:window-x="1"
+     inkscape:window-y="105" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(0.679966,0,0,1.144214,82.34853,-27.53557)">
+      <rect
+         rx="15.307091"
+         ry="12.692303"
+         y="192.00233"
+         x="258.31146"
+         height="299.99988"
+         width="495.71429"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:2.2674253;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"
+         transform="matrix(1.365843,0,0,1,-103.2086,0)"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">Calculator</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:1.9999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.66247"
+       height="191.57716"
+       x="339.91632"
+       y="262.1673"
+       rx="6.9961648"
+       ry="15.892869" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(79.61125,62.65764)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2972">Calculator</flowPara><flowPara
+         id="flowPara1895">Service</flowPara><flowPara
+         id="flowPara1897">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 322.76581,342.58603 L 356.10085,342.58603 L 362.16176,355.71801 L 355.0907,367.83985 L 322.76581,367.83985 L 330.34196,355.71801 L 322.76581,342.58603 z "
+       id="path3017" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 431.01809,321.46204 L 471.00147,321.46204 L 478.27117,334.59402 L 469.78986,346.71586 L 431.01809,346.71586 L 440.10523,334.59402 L 431.01809,321.46204 z "
+       id="path3019" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.00000024px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 223.15923,328.61046 L 282.4833,328.61046 L 293.26948,355.48529 L 280.68561,380.29286 L 223.15923,380.29286 L 236.64198,355.48529 L 223.15923,328.61046 z "
+       id="path1883" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1885"
+       transform="translate(-46.16225,128.7269)"
+       style="font-family:Bitstream Vera Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:11;text-anchor:start;text-align:start;writing-mode:lr;line-height:125%"><flowRegion
+         id="flowRegion1887"><rect
+           id="rect1889"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-family:Bitstream Vera Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:11;text-anchor:start;text-align:start;writing-mode:lr;line-height:125%" /></flowRegion><flowPara
+         id="flowPara1891">Calculator</flowPara><flowPara
+         id="flowPara1893">Service</flowPara></flowRoot>    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.00000024;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1899"
+       width="115.66247"
+       height="70.148659"
+       x="773.32635"
+       y="331.87738"
+       rx="6.9961648"
+       ry="5.8193965" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1901"
+       transform="translate(498.7355,125.2248)"><flowRegion
+         id="flowRegion1903"><rect
+           id="rect1905"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1907">Calculator</flowPara><flowPara
+         id="flowPara1909">Service</flowPara><flowPara
+         id="flowPara1911">RMI</flowPara><flowPara
+         id="flowPara2004">Impl</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 567.77069,220.86752 L 630.65876,220.86752 L 642.09292,246.48812 L 628.75306,270.13795 L 567.77069,270.13795 L 582.06342,246.48812 L 567.77069,220.86752 z "
+       id="path1913" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1965"
+       transform="translate(161.0221,114.967)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1967"><rect
+           id="rect1969"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1973">add</flowPara><flowPara
+         id="flowPara1977">Service</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 430.65917,357.18186 L 470.64255,357.18186 L 477.91225,370.31384 L 469.43094,382.43568 L 430.65917,382.43568 L 439.74631,370.31384 L 430.65917,357.18186 z "
+       id="path1979" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1981"
+       transform="translate(160.6632,150.6868)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1983"><rect
+           id="rect1985"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1987">subtract</flowPara><flowPara
+         id="flowPara1989">Service</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 431.37346,390.75329 L 471.35684,390.75329 L 478.62654,403.88527 L 470.14523,416.00711 L 431.37346,416.00711 L 440.4606,403.88527 L 431.37346,390.75329 z "
+       id="path1991" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1993"
+       transform="translate(161.3775,184.2583)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1995"><rect
+           id="rect1997"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1999">multiply</flowPara><flowPara
+         id="flowPara2001">Service</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 429.94489,422.18186 L 469.92827,422.18186 L 477.19797,435.31384 L 468.71666,447.43568 L 429.94489,447.43568 L 439.03203,435.31384 L 429.94489,422.18186 z "
+       id="path2003" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2005"
+       transform="translate(159.9489,215.6868)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion2007"><rect
+           id="rect2009"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara2011">divide</flowPara><flowPara
+         id="flowPara2013">Service</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 477.85714,335.52305 L 511.42857,335.52305 L 510.71429,245.52305 L 579.28571,245.52305"
+       id="path2015" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 477.85714,369.80877 L 528.57143,369.80877 L 528.57143,329.80877 L 580,329.80877"
+       id="path2017" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 478.57143,402.66591 L 528.57143,401.95163 L 528.57143,408.3802 L 580,407.66591"
+       id="path2019" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 475.71429,435.52305 L 509.28571,435.52305 L 510,486.95163 L 582.14286,486.23734"
+       id="path2021" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 292.85714,355.52305 L 330,354.80877"
+       id="path2023" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1950"
+       transform="translate(301.0221,17.10977)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1952"><rect
+           id="rect1954"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1958">Add</flowPara><flowPara
+         id="flowPara1962">Reference</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 567.83889,304.45927 L 630.72696,304.45927 L 642.16112,330.07987 L 628.82126,353.7297 L 567.83889,353.7297 L 582.13162,330.07987 L 567.83889,304.45927 z "
+       id="path1964" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1966"
+       transform="translate(301.0903,100.7015)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1968"><rect
+           id="rect1970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1972">Subtract</flowPara><flowPara
+         id="flowPara1974">Reference</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 567.1246,382.31641 L 630.01267,382.31641 L 641.44683,407.93701 L 628.10697,431.58684 L 567.1246,431.58684 L 581.41733,407.93701 L 567.1246,382.31641 z "
+       id="path1976" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1978"
+       transform="translate(300.376,178.5587)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1980"><rect
+           id="rect1982"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1984">Multiply</flowPara><flowPara
+         id="flowPara1986">Reference</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 569.98175,459.45927 L 632.86982,459.45927 L 644.30398,485.07987 L 630.96412,508.7297 L 569.98175,508.7297 L 584.27448,485.07987 L 569.98175,459.45927 z "
+       id="path1988" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1990"
+       transform="translate(303.2332,255.7015)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1992"><rect
+           id="rect1994"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1996">Divide</flowPara><flowPara
+         id="flowPara1998">Reference</flowPara></flowRoot>    <path
+       sodipodi:type="arc"
+       style="opacity:1;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path2000"
+       sodipodi:cx="736.78571"
+       sodipodi:cy="361.95163"
+       sodipodi:rx="39.642857"
+       sodipodi:ry="38.57143"
+       d="M 758.87546,329.92324 A 39.642857,38.57143 0 1 1 757.94075,329.33134"
+       sodipodi:start="5.3034219"
+       sodipodi:end="11.558474"
+       sodipodi:open="true"
+       transform="translate(-22.42857,4.142857)" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2006"
+       transform="translate(411.7392,139.0467)"><flowRegion
+         id="flowRegion2008"><rect
+           id="rect2010"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2016">RMI</flowPara><flowPara
+         id="flowPara2018">Registry</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 642.14286,246.23734 L 692.85714,333.3802"
+       id="path2027" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 640.71429,330.52305 L 677.14286,350.52305"
+       id="path2029" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 640.71429,408.3802 L 677.85714,382.66591"
+       id="path2031" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 645,484.80877 L 693.57143,400.52305"
+       id="path2033" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 753.57143,366.95163 L 773.57143,366.95163"
+       id="path2035" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2037"
+       transform="translate(385.3078,69.25256)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion2039"><rect
+           id="rect2041"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara2045">RMI</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2059"
+       transform="translate(371.9396,116.0363)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion2061"><rect
+           id="rect2063"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara2065">RMI</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2067"
+       transform="translate(366.9396,168.8935)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion2069"><rect
+           id="rect2071"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara2073">RMI</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2075"
+       transform="translate(376.9396,209.6077)"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion2077"><rect
+           id="rect2079"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara2081">RMI</flowPara></flowRoot>  </g>
+</svg>

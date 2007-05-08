@@ -1,0 +1,109 @@
+Calculator RMI Reference Sample
+===============================
+
+This sample illustrates the use of Tuscany RMI Binding to call reference 
+services that are hosted as Java RMI services.  
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+This sample extends the calculator sample by replacing the local wired 
+connections with RMI bindings. Instead of local add, subtract, multiply and 
+divide components a CalculatorServiceRmiImpl.java object now provides the
+add, subtract, multiple and divide interface and is hosted as an RMI server. 
+Rerences specified in the .composite file include an RMI binding which targets
+this RMI server.
+
+This samples adds a number of classes to the basic calculator sample:
+
+calculator\
+  src\
+    main\
+      java\
+        calculator\
+          CalculatorService.java  - as calculator sample
+          AddService.java         - as calculator sample
+          SubtractService.java    - as calculator sample
+          MultipleService.java    - as calculator sample
+          DivideService.java      - as calculator sample
+          CalculatorClient.java   - as calculator sample
+          CalculatorServiceRmiImpl- implements the RMI server interface
+                                    that provides the target for the 
+                                    RMI bindings in the composite 
+          CalculatorServer.java   - starts the Calculator Application 
+                                    as a Java RMI Server. Running this class 
+                                    keeps the Java RMI Server up an running 
+                                    untill the 'Enter Key' is pressed on the 
+                                    console.
+      resources\
+        CalculatorRMIReference.composite - the SCA assembly for this sample
+  calculator-rmi-reference.png    - a pictorial representation of the 
+                                    .composite file
+  build-server.xml                - the Ant build file for the client
+  build-client.xml                - the Ant build file for the client
+  pom.xml                         - the Maven build file   
+  
+Note. As this test creates and uses local network connections you may need to 
+configure you firewall, if you are running one, to allow the test to run
+successfully.         
+
+Building And Runing The Sample Using Ant
+----------------------------------------
+With the binary distribution the sample can be built and run using Ant. Two 
+build files are used to support client and server functions. 
+
+The server provides an RMI server that the acts as a target for the SCA RMI 
+bindings. Start a new console and use the following commands.
+
+cd calculator-rmi-reference
+ant -f build-server.xml
+
+This will run up the server and display the following.
+
+run:
+     [java] Calculator RMI Service bound to RMI Registry at port 8099...
+     [java] ...Press Enter to Exit...
+     
+The client is very similar to the calculator sample. It starts the SCA runtime
+and calls each of the calculator operations. In doing this the RMI bindings
+make calls out the the RMI server you started in the previous step. Start
+a new console and use the following commands. 
+
+cd calculator-rmi-reference
+ant -f build-client.xml
+
+You should see the following output from the run target.
+
+run:
+     [java] 3 + 2=5.0
+     [java] 3 - 2=1.0
+     [java] 3 * 2=6.0
+     [java] 3 / 2=1.5
+     
+If you now return to the console window running the server and press enter the 
+server should stop.     
+
+Building And Runing The Sample Using Maven 
+------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd binding-echo
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running calculator.CalculatorRMIReferenceTestCase
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.308 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
