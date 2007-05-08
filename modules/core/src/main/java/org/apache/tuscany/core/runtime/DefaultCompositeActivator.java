@@ -138,9 +138,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 ((ImplementationProvider)implementation).configure((RuntimeComponent)component);
             }
         }
-        
-        createRuntimeWires(composite);
-
     }
 
     /**
@@ -548,6 +545,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
         try {
             buildComposite(composite, assemblyFactory, interfaceContractMapper);
             configureComposite(composite);
+            createRuntimeWires(composite);
             startComposite(composite);
         } catch (Exception e) {
             throw new ActivationException(e);
