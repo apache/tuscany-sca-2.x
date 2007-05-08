@@ -52,6 +52,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.scope.Scope;
+import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.work.WorkScheduler;
 
@@ -62,6 +63,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
     private final AssemblyFactory assemblyFactory;
     private final InterfaceContractMapper interfaceContractMapper;
+    private final ScopeRegistry scopeRegistry;
     private final WorkContext workContext;
     private final WorkScheduler workScheduler;
     private final RuntimeWireProcessor wireProcessor;
@@ -75,12 +77,14 @@ public class DefaultCompositeActivator implements CompositeActivator {
      */
     public DefaultCompositeActivator(AssemblyFactory assemblyFactory,
                                      InterfaceContractMapper interfaceContractMapper,
+                                     ScopeRegistry scopeRegistry,
                                      WorkContext workContext,
                                      WorkScheduler workScheduler,
                                      RuntimeWireProcessor wireProcessor) {
         super();
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
+        this.scopeRegistry = scopeRegistry;
         this.workContext = workContext;
         this.workScheduler = workScheduler;
         this.wireProcessor = wireProcessor;
@@ -493,7 +497,22 @@ public class DefaultCompositeActivator implements CompositeActivator {
         }
         return Scope.STATELESS;
     }
-
+    
+    private void setScopeContainer(Component component) {
+        if(!(component instanceof RuntimeComponent)) {
+            return;
+        }
+        RuntimeComponent runtimeComponent = (RuntimeComponent) component;
+        Implementation impl = component.getImplementation();
+        if (impl instanceof ScopedImplementationProvider) {
+            ScopedImplementationProvider provider = (ScopedImplementationProvider)impl;
+            Scope scope = provider.getScope();
+            if (scope == null) {
+                scope = Scope.STATELESS;
+            }
+            runtimeComponent.setScopeContainer(scopeRegistry.getScopeContainer(scope));
+        }
+    }    
     protected void buildComposite(Composite composite,
                                 AssemblyFactory assemblyFactory,
                                 InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {

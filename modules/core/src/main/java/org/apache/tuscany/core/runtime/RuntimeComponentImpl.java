@@ -30,6 +30,7 @@ import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.core.invocation.WireObjectFactory;
 import org.apache.tuscany.invocation.ProxyFactory;
+import org.apache.tuscany.scope.ScopeContainer;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
@@ -41,6 +42,7 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     public static final String SELF_REFERENCE_PREFIX = "$self$.";
     protected Object implementationConfiguration;
     protected ProxyFactory proxyService;
+    protected ScopeContainer scopeContainer;
 
     /**
      * @param proxyService
@@ -112,5 +114,13 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
 
     public void setImplementationConfiguration(Object implementationConfiguration) {
         this.implementationConfiguration = implementationConfiguration;
+    }
+
+    public ScopeContainer getScopeContainer() {
+        return scopeContainer;
+    }
+
+    public void setScopeContainer(ScopeContainer scopeContainer) {
+        this.scopeContainer = scopeContainer;
     }
 }

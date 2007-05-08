@@ -45,10 +45,10 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 public class ReallySmallRuntime {
-    
+
     private List<ModuleActivator> modules;
     private ExtensionPointRegistry registry;
-    
+
     private ClassLoader classLoader;
     private AssemblyFactory assemblyFactory;
     private ContributionService contributionService;
@@ -56,72 +56,82 @@ public class ReallySmallRuntime {
     private WorkContext workContext;
     private ThreadPoolWorkManager workManager;
     private ScopeRegistry scopeRegistry;
-    
+
     public ReallySmallRuntime(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
-    
+
     public void start() throws ActivationException {
 
         // Create our extension point registry
         registry = new DefaultExtensionPointRegistry();
-        
+
         // Create a work context
         workContext = ReallySmallRuntimeBuilder.createWorkContext(registry);
-        
+
         // Create a work manager
         workManager = new ThreadPoolWorkManager(10);
 
         // Create an interface contract mapper
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
-        
+
         // Create a proxy factory
         ProxyFactory proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, workContext, mapper);
 
         // Create model factories
         assemblyFactory = new RuntimeAssemblyFactory(proxyFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        
+
         // Create a contribution service
-        contributionService = ReallySmallRuntimeBuilder.createContributionService(registry, assemblyFactory, policyFactory, mapper);
-        
-        // Create a composite activator
-        compositeActivator = ReallySmallRuntimeBuilder.createCompositeActivator(registry, assemblyFactory, mapper, workContext, workManager);
-        
+        contributionService = ReallySmallRuntimeBuilder.createContributionService(registry,
+                                                                                  assemblyFactory,
+                                                                                  policyFactory,
+                                                                                  mapper);
+
+        // Create the ScopeRegistry
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry);
-        
+
+        // Create a composite activator
+        compositeActivator = ReallySmallRuntimeBuilder.createCompositeActivator(registry,
+                                                                                assemblyFactory,
+                                                                                mapper,
+                                                                                scopeRegistry,
+                                                                                workContext,
+                                                                                workManager);
+
         // Start the runtime modules
         modules = startModules(registry, classLoader);
 
     }
-    
+
     public void stop() throws ActivationException {
 
-        //FIXME remove this
+        // FIXME remove this
         workContext.setIdentifier(Scope.COMPOSITE, null);
-        
+
         // Stop and destroy the work manager
         workManager.destroy();
-        
+
         // Stop the runtime modules
         stopModules(registry, modules);
     }
-    
+
     public ContributionService getContributionService() {
         return contributionService;
     }
-    
+
     public CompositeActivator getCompositeActivator() {
         return compositeActivator;
     }
-    
+
     public AssemblyFactory getAssemblyFactory() {
         return assemblyFactory;
     }
-    
+
     @SuppressWarnings("unchecked")
-    private List<ModuleActivator> startModules(ExtensionPointRegistry registry, ClassLoader classLoader) throws ActivationException {
-        
+    private List<ModuleActivator> startModules(ExtensionPointRegistry registry, ClassLoader classLoader)
+        throws ActivationException {
+
         // Load and instantiate the modules found on the classpath
         List<ModuleActivator> modules = ReallySmallRuntimeBuilder.getServices(classLoader, ModuleActivator.class);
         for (ModuleActivator module : modules) {
@@ -140,17 +150,17 @@ public class ReallySmallRuntime {
 
         return modules;
     }
-    
+
     private void stopModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) {
-        for (ModuleActivator module: modules) {
+        for (ModuleActivator module : modules) {
             module.stop(registry);
         }
     }
 
-    //FIXME Remove this
+    // FIXME Remove this
     @SuppressWarnings("unchecked")
     public void startDomainWorkContext(Composite domain) {
-        workContext.setIdentifier(Scope.COMPOSITE, domain);        
+        workContext.setIdentifier(Scope.COMPOSITE, domain);
         WorkContextTunnel.setThreadWorkContext(workContext);
         try {
             scopeRegistry.getScopeContainer(Scope.COMPOSITE).startContext(domain, URI.create("/"));
