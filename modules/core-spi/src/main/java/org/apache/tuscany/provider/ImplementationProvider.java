@@ -29,7 +29,19 @@ import org.apache.tuscany.invocation.Invoker;
  * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationProvider<M> extends Provider {
+public interface ImplementationProvider<M> {
+
+    /**
+     * This method will be invoked when the component implementation
+     * is activated.
+     */
+    void start();
+
+    /**
+     * This method will be invoked when the component implementation
+     * is deactivated.
+     */
+    void stop();
 
     /**
      * Create an invoker for the component implementation in the invocation
