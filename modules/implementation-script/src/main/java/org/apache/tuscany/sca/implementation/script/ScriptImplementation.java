@@ -18,16 +18,16 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
+import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.provider.ImplementationProvider;
-import org.apache.tuscany.provider.ImplementationProviderFactory;
 
 /**
  * Represents a Script implementation.
  */
-public class ScriptImplementation extends AbstractImplementation implements ImplementationProviderFactory {
+public class ScriptImplementation extends AbstractImplementation implements Implementation {
 
     protected String scriptName;
     protected String scriptSrc;

@@ -25,15 +25,16 @@ import org.apache.tuscany.core.RuntimeComponent;
 /**
  * @version $Rev$ $Date$
  */
-public interface ImplementationProviderFactory extends Implementation {
+public interface ImplementationProviderFactory<M extends Implementation> extends ProviderFactory<M> {
     
     /**
      * Creates a new implementation provider for the given
      * component.
      * 
      * @param component
+     * @param implementation
      * @return
      */
-    ImplementationProvider createImplementationProvider(RuntimeComponent component);
+    ImplementationProvider<M> createImplementationProvider(RuntimeComponent component, M Implementation);
     
 }

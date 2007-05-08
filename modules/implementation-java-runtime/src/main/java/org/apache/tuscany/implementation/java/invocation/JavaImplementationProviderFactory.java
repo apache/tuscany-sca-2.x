@@ -23,7 +23,6 @@ import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.provider.ImplementationProvider;
 import org.apache.tuscany.provider.ImplementationProviderFactory;
@@ -32,7 +31,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 /**
  * @version $Rev$ $Date$
  */
-public class JavaImplementationProviderFactory extends JavaImplementationImpl implements JavaImplementation, ImplementationProviderFactory {
+public class JavaImplementationProviderFactory implements ImplementationProviderFactory<JavaImplementation> {
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
     private ProxyFactory proxyService;
@@ -50,7 +49,11 @@ public class JavaImplementationProviderFactory extends JavaImplementationImpl im
         this.propertyValueObjectFactory = propertyValueObjectFactory;
     }
 
-    public ImplementationProvider createImplementationProvider(RuntimeComponent component) {
-        return new JavaImplementationProvider(component, this, proxyService, workContext, dataBindingRegistry, propertyValueObjectFactory);
+    public ImplementationProvider<JavaImplementation> createImplementationProvider(RuntimeComponent component, JavaImplementation implementation) {
+        return new JavaImplementationProvider(component, implementation, proxyService, workContext, dataBindingRegistry, propertyValueObjectFactory);
+    }
+    
+    public Class<JavaImplementation> getModelType() {
+        return JavaImplementation.class;
     }
 }

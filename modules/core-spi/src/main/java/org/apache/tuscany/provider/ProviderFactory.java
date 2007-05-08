@@ -19,25 +19,18 @@
 
 package org.apache.tuscany.provider;
 
-
-
 /**
- * A component implementation can optionally implement this interface to control
- * how a component is started ot stopped.
- * 
+ * A factory for runtime providers.
+ *
  * @version $Rev$ $Date$
  */
-public interface ProviderActivator {
-    /**
-     * This method will be invoked when a component implemented by this
-     * implementation is activated.
-     */
-    void start();
+public interface ProviderFactory<M> {
 
     /**
-     * This method will be invoked when a component implemented by this
-     * implementation is deactivated.
+     * The model type that this factory creates providers for.
+     * 
+     * @return the model type
      */
-    void stop();
-
+    Class<M> getModelType();
+    
 }

@@ -29,6 +29,7 @@ import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.rmi.RMIHost;
 
 public class RMIModuleActivator implements ModuleActivator {
@@ -41,8 +42,11 @@ public class RMIModuleActivator implements ModuleActivator {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         
         RMIHost rmiHost = registry.getExtensionPoint(RMIHost.class);
-        RMIBindingFactory rmiFactory = new DefaultRMIBindingFactory(rmiHost);
+        RMIBindingFactory rmiFactory = new DefaultRMIBindingFactory();
         processors.addArtifactProcessor(new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
+        
+        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        providerFactories.addProviderFactory(new RMIBindingProviderFactory(rmiHost));
     }
 
     public void stop(ExtensionPointRegistry registry) {

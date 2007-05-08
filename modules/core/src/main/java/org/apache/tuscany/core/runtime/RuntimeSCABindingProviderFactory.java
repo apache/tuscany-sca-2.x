@@ -22,34 +22,26 @@ package org.apache.tuscany.core.runtime;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Invoker;
+import org.apache.tuscany.core.RuntimeComponentService;
+import org.apache.tuscany.provider.BindingProviderFactory;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
+import org.apache.tuscany.provider.ServiceBindingProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeSCABindingProvider implements ReferenceBindingProvider<SCABinding> {
-    
-    private RuntimeComponentReference reference;
-    
-    public RuntimeSCABindingProvider(RuntimeComponent component, RuntimeComponentReference reference, SCABinding binding) {
-        this.reference = reference;
-    }
-    
-    public InterfaceContract getBindingInterfaceContract() {
-        return reference.getInterfaceContract();
+public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<SCABinding> {
+
+    public ReferenceBindingProvider<SCABinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, SCABinding binding) {
+        return new RuntimeSCABindingProvider(component, reference, binding);
     }
 
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
+    public ServiceBindingProvider<SCABinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, SCABinding binding) {
         return null;
     }
-
-    public void start() {
+    
+    public Class<SCABinding> getModelType() {
+        return SCABinding.class;
     }
-
-    public void stop() {
-    }
-
+    
 }

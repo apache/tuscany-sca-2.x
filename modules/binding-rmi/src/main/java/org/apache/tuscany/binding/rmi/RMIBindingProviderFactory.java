@@ -32,7 +32,7 @@ import org.apache.tuscany.rmi.RMIHost;
  *
  * @version $Rev$ $Date$
  */
-public class RMIBindingProviderFactory extends RMIBindingImpl implements BindingProviderFactory {
+public class RMIBindingProviderFactory implements BindingProviderFactory<RMIBinding> {
 
     private RMIHost rmiHost;
     
@@ -40,11 +40,15 @@ public class RMIBindingProviderFactory extends RMIBindingImpl implements Binding
         this.rmiHost = rmiHost;
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
-        return new RMIBindingProvider(component, reference, this, rmiHost);
+    public ReferenceBindingProvider<RMIBinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, RMIBinding binding) {
+        return new RMIBindingProvider(component, reference, binding, rmiHost);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service) {
-        return new RMIBindingProvider(component, service, this, rmiHost);
+    public ServiceBindingProvider<RMIBinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, RMIBinding binding) {
+        return new RMIBindingProvider(component, service, binding, rmiHost);
+    }
+    
+    public Class<RMIBinding> getModelType() {
+        return RMIBinding.class;
     }
 }

@@ -31,6 +31,7 @@ import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.DefaultMediator;
+import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
@@ -53,7 +54,7 @@ import org.apache.tuscany.implementation.java.introspect.impl.ReferenceProcessor
 import org.apache.tuscany.implementation.java.introspect.impl.ResourceProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ScopeProcessor;
 import org.apache.tuscany.implementation.java.introspect.impl.ServiceProcessor;
-import org.apache.tuscany.implementation.java.invocation.RuntimeJavaImplementationFactory;
+import org.apache.tuscany.implementation.java.invocation.JavaImplementationProviderFactory;
 import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
@@ -63,6 +64,7 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -123,13 +125,17 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         
         WorkContext workContext = registry.getExtensionPoint(WorkContext.class);
-        JavaImplementationFactory javaImplementationFactory =
-            new RuntimeJavaImplementationFactory(proxyFactory,
-                                                 workContext, dataBindings, factory);
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         JavaImplementationProcessor javaImplementationProcessor =
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
         processors.addArtifactProcessor(javaImplementationProcessor);
 
+        JavaImplementationProviderFactory javaImplementationProviderFactory =
+            new JavaImplementationProviderFactory(proxyFactory,
+                                                 workContext, dataBindings, factory);
+        
+        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        providerFactories.addProviderFactory(javaImplementationProviderFactory);
     }
 
     public void stop(ExtensionPointRegistry registry) {

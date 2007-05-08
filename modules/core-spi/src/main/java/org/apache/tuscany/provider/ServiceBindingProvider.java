@@ -26,7 +26,7 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider extends ProviderActivator {
+public interface ServiceBindingProvider<M> extends Provider {
     /**
      * Get the effective interface contract imposed by the binding. For example,
      * it will be interface contract introspected from the WSDL portType used by
