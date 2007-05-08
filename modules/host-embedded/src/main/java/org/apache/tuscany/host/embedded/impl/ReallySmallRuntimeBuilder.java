@@ -87,59 +87,62 @@ import org.apache.tuscany.work.WorkScheduler;
 import commonj.work.WorkManager;
 
 public class ReallySmallRuntimeBuilder {
-    
+
     public static WorkContext createWorkContext(ExtensionPointRegistry registry) {
-        
+
         // Create a work context
         WorkContext workContext = new WorkContextImpl();
         registry.addExtensionPoint(WorkContext.class, workContext);
         WorkContextTunnel.setThreadWorkContext(workContext);
         return workContext;
     }
-    
+
     public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry,
-                                            WorkContext workContext, InterfaceContractMapper mapper) {
+                                                  WorkContext workContext,
+                                                  InterfaceContractMapper mapper) {
 
         // Create a proxy factory
         ProxyFactory proxyFactory = new JDKProxyService(workContext, mapper);
 
-        //FIXME remove this
+        // FIXME remove this
         registry.addExtensionPoint(ProxyFactory.class, proxyFactory);
 
         return proxyFactory;
     }
-    
+
     public static CompositeActivator createCompositeActivator(ExtensionPointRegistry registry,
-                                                        AssemblyFactory assemblyFactory,
-                                                        InterfaceContractMapper mapper,
-                                                        WorkContext workContext,
-                                                        WorkManager workManager) {
+                                                              AssemblyFactory assemblyFactory,
+                                                              InterfaceContractMapper mapper,
+                                                              ScopeRegistry scopeRegistry,
+                                                              WorkContext workContext,
+                                                              WorkManager workManager) {
 
         // Create a work scheduler
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
-        
+
         // Create a wire post processor extension point
         RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
         registry.addExtensionPoint(RuntimeWireProcessorExtensionPoint.class, wireProcessors);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
-        
+
         // Create the composite activator
-        CompositeActivator compositeActivator = new DefaultCompositeActivator(assemblyFactory, mapper, workContext,
-                                                           workScheduler, wireProcessor);
+        CompositeActivator compositeActivator = new DefaultCompositeActivator(assemblyFactory, mapper, scopeRegistry,
+                                                                              workContext, workScheduler, wireProcessor);
 
         return compositeActivator;
     }
-    
+
     /**
      * Create the contribution service used by this domain.
      * 
      * @throws ActivationException
      */
     public static ContributionService createContributionService(ExtensionPointRegistry registry,
-                                                          AssemblyFactory assemblyFactory,
-                                                          PolicyFactory policyFactory,
-                                                          InterfaceContractMapper mapper) throws ActivationException {
-        
+                                                                AssemblyFactory assemblyFactory,
+                                                                PolicyFactory policyFactory,
+                                                                InterfaceContractMapper mapper)
+        throws ActivationException {
+
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
 
         // Create STAX artifact processor extension point
@@ -147,16 +150,20 @@ public class ReallySmallRuntimeBuilder {
         registry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
 
         // Create and register STAX processors for SCA assembly XML
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor));
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory,
+                                                                                            XMLOutputFactory
+                                                                                                .newInstance());
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper,
+                                                                   staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors
+            .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
 
         // Create URL artifact processor extension point
-        //FIXME use the interface instead of the class
+        // FIXME use the interface instead of the class
         DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         registry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
-        
+
         // Create and register document processors for SCA assembly XML
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
@@ -166,7 +173,7 @@ public class ReallySmallRuntimeBuilder {
         // Create contribution package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
-        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors ,describer);
+        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
         registry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
 
         // Register base package processors
@@ -183,16 +190,12 @@ public class ReallySmallRuntimeBuilder {
 
         ContributionFactory contributionFactory = new ContributionFactoryImpl();
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
-        ContributionService contributionService = new ContributionServiceImpl(
-                                                                              repository, packageProcessor,
-                                                                              documentProcessor,
-                                                                              assemblyFactory,
-                                                                              contributionFactory,
-                                                                              xmlFactory);
+        ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
+                                                                              documentProcessor, assemblyFactory,
+                                                                              contributionFactory, xmlFactory);
         return contributionService;
     }
 
-    
     public static ScopeRegistry createScopeRegistry(ExtensionPointRegistry registry) {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
         AbstractScopeContainer[] containers = new AbstractScopeContainer[] {new CompositeScopeContainer(),
