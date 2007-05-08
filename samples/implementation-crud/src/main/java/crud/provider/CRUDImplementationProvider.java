@@ -20,7 +20,6 @@ package crud.provider;
 
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ImplementationProvider;
@@ -61,10 +60,6 @@ public class CRUDImplementationProvider implements ImplementationProvider {
     public Invoker createCallbackInvoker(Operation operation) {
         CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
-    }
-
-    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
-        return service.getInterfaceContract();
     }
 
     public void start() {
