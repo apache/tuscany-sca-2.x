@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package crud;
+package crud.module;
 
 import java.util.Map;
 
@@ -32,6 +32,10 @@ import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIn
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.invocation.ProxyFactory;
+
+import crud.CRUDImplementationFactory;
+import crud.DefaultCRUDImplementationFactory;
+import crud.impl.CRUDImplementationProcessor;
 
 /**
  * Implements a module activator for the CRUD implementation extension module.

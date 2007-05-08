@@ -1,2 +1,2 @@
 # Implementation class for the ExtensionActivator
-echo.EchoModuleActivator
+echo.module.EchoModuleActivator

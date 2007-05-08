@@ -17,7 +17,9 @@
  * under the License.    
  */
 
-package echo;
+package echo.impl;
+
+import static org.osoa.sca.Constants.SCA_NS;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -29,24 +31,26 @@ import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 
+import echo.EchoBinding;
+import echo.EchoBindingFactory;
+
 /**
  * A processor for <binding.echo> elements.
  * 
  * @version $Rev$ $Date$
  */
 public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> {
-    private final EchoBindingFactory factory;
 
-    public EchoBindingProcessor() {
-        this.factory = new DefaultEchoBindingFactory();
-    }
+    private QName BINDING_ECHO = new QName(SCA_NS, "binding.echo");
+    
+    private final EchoBindingFactory factory;
 
     public EchoBindingProcessor(EchoBindingFactory factory) {
         this.factory = factory;
     }
 
     public QName getArtifactType() {
-        return EchoBinding.BINDING_ECHO;
+        return BINDING_ECHO;
     }
 
     public Class<EchoBinding> getModelType() {

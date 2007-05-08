@@ -17,14 +17,28 @@
  * under the License.    
  */
 
-package echo;
+package echo.provider;
 
-import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.provider.BindingProviderFactory;
+import org.apache.tuscany.provider.ReferenceBindingProvider;
+import org.apache.tuscany.provider.ServiceBindingProvider;
+
+import echo.impl.EchoBindingImpl;
+
 
 /**
- * A model for the sample Echo binding.
+ * Implementation of the Echo binding model.
  *
  * @version $Rev$ $Date$
  */
-public interface EchoBinding extends Binding {
+public class EchoBindingProviderFactory extends EchoBindingImpl implements BindingProviderFactory {
+
+    public ReferenceBindingProvider createReferenceBindingProvider() {
+        return new EchoReferenceBindingProvider();
+    }
+
+    public ServiceBindingProvider createServiceBindingProvider() {
+        return new EchoServiceBindingProvider(this);
+    }
+    
 }

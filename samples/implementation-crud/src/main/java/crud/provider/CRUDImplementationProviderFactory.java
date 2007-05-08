@@ -16,36 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package crud;
+package crud.provider;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.provider.ImplementationProvider;
+import org.apache.tuscany.provider.ImplementationProviderFactory;
 
-import crud.provider.CRUDImplementationProviderFactory;
+import crud.impl.CRUDImplementationImpl;
 
 /**
- * A default factory for the CRUD implementation model.
- *
- * @version $Rev$ $Date$
+ * The model representing a sample CRUD implementation in an SCA assembly model.
+ * 
+ * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
+ *          2007) $$
  */
-public class DefaultCRUDImplementationFactory implements CRUDImplementationFactory {
-    
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector introspector;
-    
-    public DefaultCRUDImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory,
-                                            JavaInterfaceIntrospector introspector) {
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
-        this.introspector = introspector;
+public class CRUDImplementationProviderFactory extends CRUDImplementationImpl implements ImplementationProviderFactory {
+
+    /**
+     * Constructs a new CRUD implementation.
+     */
+    public CRUDImplementationProviderFactory(
+                               AssemblyFactory assemblyFactory,
+                              JavaInterfaceFactory javaFactory,
+                              JavaInterfaceIntrospector introspector) {
+        super(assemblyFactory, javaFactory, introspector);
     }
 
-    public CRUDImplementation createCRUDImplementation() {
-        return new CRUDImplementationProviderFactory(assemblyFactory, javaFactory, introspector);
+    
+    public ImplementationProvider createImplementationProvider() {
+        return new CRUDImplementationProvider(this);
     }
-
 }

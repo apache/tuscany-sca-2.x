@@ -17,13 +17,15 @@
  * under the License.    
  */
 
-package crud;
+package crud.provider;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
+
+import crud.backend.ResourceManager;
 
 /**
  * Implements a target invoker for CRUD component implementations.
