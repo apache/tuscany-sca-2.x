@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package echo;
+package echo.module;
 
 import java.util.Map;
 
@@ -25,13 +25,19 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 
+import echo.DefaultEchoBindingFactory;
+import echo.EchoBindingFactory;
+import echo.impl.EchoBindingProcessor;
+import echo.server.EchoServer;
+
 /**
  * A module activator for the sample Echo binding extension.
  *
  * @version $Rev$ $Date$
  */
 public class EchoModuleActivator implements ModuleActivator {
-    private final EchoBindingProcessor echoBindingProcessor = new EchoBindingProcessor();
+    
+    private EchoBindingProcessor echoBindingProcessor;
 
     public Map<Class, Object> getExtensionPoints() {
         // No extensionPoints being contributed here
@@ -39,9 +45,13 @@ public class EchoModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
+        
+        // Create the Echo model factory
+        EchoBindingFactory echoFactory = new DefaultEchoBindingFactory();
 
         // Add the EchoProcessor extension
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        echoBindingProcessor = new EchoBindingProcessor(echoFactory);
         processors.addArtifactProcessor(echoBindingProcessor);
        
         // Start the Echo server

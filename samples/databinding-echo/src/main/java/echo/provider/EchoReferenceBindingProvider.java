@@ -17,30 +17,23 @@
  * under the License.    
  */
 
-package echo;
+package echo.provider;
 
-import java.net.URI;
-
-import org.apache.tuscany.core.ReferenceBindingActivator;
-import org.apache.tuscany.core.ReferenceBindingProvider;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.core.ServiceBindingActivator;
-import org.apache.tuscany.core.ServiceBindingProvider;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.Invoker;
+import org.apache.tuscany.provider.ReferenceBindingProvider;
+
 
 /**
  * Implementation of the Echo binding provider.
  * 
  * @version $Rev$ $Date$
  */
-public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBindingActivator,
-    ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider {
+public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
 
     public Invoker createInvoker(RuntimeComponent component,
                                          RuntimeComponentReference reference,
@@ -67,22 +60,4 @@ public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBin
         return service.getInterfaceContract();
     }
 
-    public void start(RuntimeComponent component, RuntimeComponentService service) {
-        URI uri = URI.create(component.getURI() + "/" + getName());
-        setURI(uri.toString());
-        RuntimeComponentService componentService = (RuntimeComponentService) service;
-        RuntimeWire wire = componentService.getRuntimeWire(this);
-        InvocationChain chain = wire.getInvocationChains().get(0);
-        // Register with the hosting server
-        EchoServer.getServer().register(new EchoService(chain.getHeadInvoker()), uri);
-    }
-
-    public void stop(RuntimeComponent component, RuntimeComponentService service) {
-        // Register with the hosting server
-        EchoServer.getServer().unregister(URI.create(getURI()));
-    }
-
-    public Object clone() {
-        return this;
-    }
 }

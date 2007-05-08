@@ -22,6 +22,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.host.embedded.SCADomain;
 
+import echo.server.EchoServer;
+
 /**
  * @version $Rev$ $Date$
  */

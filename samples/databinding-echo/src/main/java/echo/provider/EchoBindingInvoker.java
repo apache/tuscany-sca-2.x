@@ -16,43 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
+package echo.provider;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.MessageImpl;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 /**
+ * Interceptor for the sample echo binding.
+ * 
  * @version $Rev$ $Date$
  */
-public class EchoService {
-    private Invoker invoker;
+public class EchoBindingInvoker implements Invoker {
 
-    public EchoService(Invoker invoker) {
-        super();
-        this.invoker = invoker;
+    private Object echo(Object[] args) throws InvocationTargetException {
+        // echo back the result, a real binding would invoke some API for flowing the request
+        return args[0];
     }
 
-    public String sendReceive(String input) throws InvocationTargetException {
-
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-
-        Message msg = new MessageImpl();
-        msg.setBody(new Object[] {input});
-        msg.setWorkContext(workContext);
-        Message resp;
-
-        // dispatch and get the response
-        resp = invoker.invoke(msg);
-        Object body = resp.getBody();
-        if (resp.isFault()) {
-            throw new InvocationTargetException((Throwable)body);
+    public Message invoke(Message msg) {
+        try {
+            Object resp = echo((Object[])msg.getBody());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setFaultBody(e.getCause());
+        } catch (Throwable e) {
+            msg.setFaultBody(e);
         }
-        return (String)body;
-    }
+        return msg;
+    }  
 
 }

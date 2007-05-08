@@ -17,10 +17,9 @@
  * under the License.    
  */
 
-package echo;
+package echo.server;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class EchoServer {
 
     public static EchoServer server;
 
-    private Map<URI, EchoService> services = new HashMap<URI, EchoService>();
+    private Map<String, EchoService> services = new HashMap<String, EchoService>();
 
     public static void start() {
         server = new EchoServer();
@@ -53,12 +52,12 @@ public class EchoServer {
      * @param service
      * @param name
      */
-    public void register(EchoService service, URI name) {
-        services.put(name, service);
+    public void register(String uri, EchoService service) {
+        services.put(uri, service);
     }
 
-    public void unregister(URI name) {
-        services.remove(name);
+    public void unregister(String uri) {
+        services.remove(uri);
     }
 
     /**
@@ -69,7 +68,7 @@ public class EchoServer {
      * @return
      */
     public String sendReceive(String uri, String input) throws InvocationTargetException {
-        return services.get(URI.create(uri)).sendReceive(input);
+        return services.get(uri).sendReceive(input);
     }
 
 }

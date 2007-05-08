@@ -17,13 +17,15 @@
  * under the License.    
  */
 
-package echo;
+package echo.impl;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
+
+import echo.EchoBinding;
 
 /**
  * Implementation of the Echo binding model.
