@@ -20,16 +20,20 @@
 package org.apache.tuscany.core.runtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.provider.ServiceBindingProvider;
 
 public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements RuntimeComponentService {
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
     private List<RuntimeWire> callbackWires = new ArrayList<RuntimeWire>();
+    private Map<Binding, ServiceBindingProvider> bindingProviders = new HashMap<Binding, ServiceBindingProvider>();
 
     public void addRuntimeWire(RuntimeWire wire) {
         wires.add(wire);
@@ -54,5 +58,13 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
 
     public void addCallbackWire(RuntimeWire callbackWire) {
         this.callbackWires.add(callbackWire);
+    }
+    
+    public ServiceBindingProvider getBindingProvider(Binding binding) {
+        return bindingProviders.get(binding);
+    }
+    
+    public void setBindingProvider(Binding binding, ServiceBindingProvider bindingProvider) {
+        bindingProviders.put(binding, bindingProvider);
     }
 }

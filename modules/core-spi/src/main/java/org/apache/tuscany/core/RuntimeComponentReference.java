@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.provider.ReferenceBindingProvider;
 
 /**
  * @version $Rev$ $Date$
@@ -48,4 +49,24 @@ public interface RuntimeComponentReference extends ComponentReference {
      * @return
      */
     RuntimeWire getRuntimeWire(Binding binding);
+
+    /**
+     * Returns the reference binding provider associated with this
+     * component reference and the given binding.
+     * 
+     * @param binding
+     * @return
+     */
+    ReferenceBindingProvider getBindingProvider(Binding binding);
+    
+    /**
+     * Sets the reference binding provider associated with this
+     * component reference and the given binding.
+     * 
+     * @param binding
+     * @param bindingProvider
+     * @return
+     */
+    void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider);
+    
 }

@@ -43,22 +43,24 @@ import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
-import org.apache.tuscany.provider.ReferenceBindingActivator;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
-import org.apache.tuscany.provider.ServiceBindingActivator;
 import org.apache.tuscany.provider.ServiceBindingProvider;
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
-/**
- * @author administrator
- *
- */
-public class RMIBindingProvider extends RMIBindingImpl implements ReferenceBindingActivator,
-ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, MethodInterceptor {
 
+/**
+ * 
+ * RMIBindingProvider
+ *
+ * @version $Rev: $ $Date: $
+ */
+public class RMIBindingProvider implements ReferenceBindingProvider,
+    ServiceBindingProvider, MethodInterceptor {
+
+    private RMIBinding binding;
     private RMIHost rmiHost;
     private RuntimeWire wire;
     
@@ -68,7 +70,8 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
     // and the component match in their service contracts.
     private Interface serviceInterface;
     
-    public RMIBindingProvider(RMIHost rmiHost) {
+    public RMIBindingProvider(RMIBinding binding, RMIHost rmiHost) {
+        this.binding = binding;
         this.rmiHost = rmiHost;
     }
 
@@ -83,8 +86,8 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
     }
 
     public void start(RuntimeComponent component, RuntimeComponentService service) {
-        URI uri = URI.create(component.getURI() + "/" + getName());
-        setURI(uri.toString());
+        URI uri = URI.create(component.getURI() + "/" + binding.getName());
+        binding.setURI(uri.toString());
         RuntimeComponentService componentService = (RuntimeComponentService) service;
         
         //TODO : Need to figure out why we do a get(0)... will this work always...
@@ -94,8 +97,8 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         Remote rmiProxy = createRmiService();
         
         try {
-            rmiHost.registerService(getRmiServiceName(),
-                                    getPort(getRmiPort()),
+            rmiHost.registerService(binding.getRmiServiceName(),
+                                    getPort(binding.getRmiPort()),
                                     rmiProxy);
         } catch (RMIHostException e) {
             throw new NoRemoteServiceException(e);
@@ -104,8 +107,8 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
 
     public void stop(RuntimeComponent component, RuntimeComponentService service) {
         try {
-            rmiHost.unregisterService(getRmiServiceName(), 
-                                      getPort(getRmiPort()));
+            rmiHost.unregisterService(binding.getRmiServiceName(), 
+                                      getPort(binding.getRmiPort()));
         } catch (RMIHostException e) {
             throw new NoRemoteServiceException(e.getMessage());
         }
@@ -118,9 +121,9 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
                 JavaInterfaceUtil.findMethod(((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass(),
                                                 operation);
             return new RMIBindingInvoker(rmiHost, 
-                                             getRmiHostName(), 
-                                             getRmiPort(), 
-                                             getRmiServiceName(), 
+                                             binding.getRmiHostName(), 
+                                             binding.getRmiPort(), 
+                                             binding.getRmiServiceName(), 
                                              remoteMethod);
         } catch (NoSuchMethodException e) {
             throw new NoRemoteMethodException(operation.toString(), e);
