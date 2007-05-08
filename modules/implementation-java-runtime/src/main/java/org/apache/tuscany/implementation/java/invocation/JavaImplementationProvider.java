@@ -31,7 +31,6 @@ import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFac
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.ProxyFactory;
@@ -145,10 +144,6 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
-        return service.getInterfaceContract();
     }
 
     public Scope getScope() {
