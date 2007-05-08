@@ -68,16 +68,16 @@ import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.core.runtime.ActivationException;
 import org.apache.tuscany.core.runtime.CompositeActivator;
 import org.apache.tuscany.core.runtime.DefaultCompositeActivator;
-import org.apache.tuscany.core.scope.AbstractScopeContainer;
-import org.apache.tuscany.core.scope.CompositeScopeContainer;
-import org.apache.tuscany.core.scope.RequestScopeContainer;
+import org.apache.tuscany.core.scope.CompositeScopeContainerFactory;
+import org.apache.tuscany.core.scope.RequestScopeContainerFactory;
 import org.apache.tuscany.core.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.scope.StatelessScopeContainer;
+import org.apache.tuscany.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.core.util.IOHelper;
 import org.apache.tuscany.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.scope.ScopeContainerFactory;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextImpl;
@@ -198,15 +198,14 @@ public class ReallySmallRuntimeBuilder {
 
     public static ScopeRegistry createScopeRegistry(ExtensionPointRegistry registry) {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
-        AbstractScopeContainer[] containers = new AbstractScopeContainer[] {new CompositeScopeContainer(),
-                                                                            new StatelessScopeContainer(),
-                                                                            new RequestScopeContainer(),
+        ScopeContainerFactory[] factories = new ScopeContainerFactory[] {new CompositeScopeContainerFactory(),
+                                                                         new StatelessScopeContainerFactory(),
+                                                                         new RequestScopeContainerFactory(),
         // new ConversationalScopeContainer(monitor),
         // new HttpSessionScopeContainer(monitor)
         };
-        for (AbstractScopeContainer c : containers) {
-            c.start();
-            scopeRegistry.register(c);
+        for (ScopeContainerFactory f : factories) {
+            scopeRegistry.register(f);
         }
 
         registry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);

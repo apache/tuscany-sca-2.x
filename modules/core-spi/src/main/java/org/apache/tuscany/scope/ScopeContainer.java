@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.scope;
 
-import java.net.URI;
-
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.event.RuntimeEventListener;
 import org.apache.tuscany.spi.Lifecycle;
@@ -48,28 +46,12 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
     Scope getScope();
 
     /**
-     * Registers a component with the scope.
-     *
-     * @param component the component to register
-     * @param groupId the id of the group to associate this component with
-     */
-     void register(RuntimeComponent component, URI groupId);
-
-    /**
-     * Unregisters a component with the scope.
-     *
-     * @param component the component to unregister
-     */
-     void unregister(RuntimeComponent component);
-
-    /**
      * Start a new context with the supplied ID.
      *
      * @param contextId an ID that uniquely identifies the context.
-     * @param groupId the group of components to associate with this context
      * @throws GroupInitializationException if an exception was thrown by any eagerInit component
      */
-    void startContext(KEY contextId, URI groupId) throws GroupInitializationException;
+    void startContext(KEY contextId) throws GroupInitializationException;
 
     /**
      * Stop the context with the supplied ID.
@@ -80,38 +62,35 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
 
     /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary
-     *
-     * @param  the type of the target instance
-     * @param component the component
      * @param contextId the id for the scope context
+     * @param  the type of the target instance
+     *
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
-     InstanceWrapper getWrapper(RuntimeComponent component, KEY contextId) throws TargetResolutionException;
+     InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException;
 
     /**
      * Returns an implementation instance associated with the current scope context.
      * If no instance is found, a {@link TargetNotFoundException} is thrown.
-     *
-     * @param  the type of the target instance
-     * @param component the component
      * @param contextId the id for the scope context
+     * @param  the type of the target instance
+     *
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
-     InstanceWrapper getAssociatedWrapper(RuntimeComponent component, KEY contextId)
+     InstanceWrapper getAssociatedWrapper(KEY contextId)
         throws TargetResolutionException;
 
     /**
      * Return a wrapper after use (for example, after invoking the instance).
-     *
-     * @param  the type of the target instance
-     * @param component the component
-     * @param contextId the id for the scope context
      * @param wrapper the wrapper for the target instance being returned
+     * @param contextId the id for the scope context
+     * @param  the type of the target instance
+     *
      * @throws TargetDestructionException if there was a problem returning the target instance
      */
-     void returnWrapper(RuntimeComponent component, InstanceWrapper wrapper, KEY contextId)
+     void returnWrapper(InstanceWrapper wrapper, KEY contextId)
         throws TargetDestructionException;
 
     /**
@@ -120,5 +99,5 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * @param component the owning component
      * @throws PersistenceException if there was a problem removing the instance
      */
-     void remove(RuntimeComponent component) throws PersistenceException;
+     void remove() throws PersistenceException;
 }

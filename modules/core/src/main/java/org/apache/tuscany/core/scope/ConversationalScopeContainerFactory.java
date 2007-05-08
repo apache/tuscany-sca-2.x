@@ -16,39 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.core.scope;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.scope.ScopeContainer;
+import org.apache.tuscany.scope.ScopeContainerFactory;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.store.Store;
 
 /**
- * A scope context which manages stateless atomic component instances in a non-pooled fashion.
- *
  * @version $Rev$ $Date$
  */
-public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
+public class ConversationalScopeContainerFactory implements ScopeContainerFactory {
+    private WorkContext workContext;
+    private Store store;
 
-    public StatelessScopeContainer(RuntimeComponent component) {
-        super(Scope.STATELESS, component);
+    public ConversationalScopeContainerFactory(Store store, WorkContext workContext) {
+        super();
+        this.workContext = workContext;
+        this.store = store;
     }
 
-    public  InstanceWrapper getWrapper(KEY contextId)
-        throws TargetResolutionException {
-        InstanceWrapper ctx = createInstanceWrapper();
-        ctx.start();
-        return ctx;
+    public ScopeContainer createScopeContainer(RuntimeComponent component) {
+        return new ConversationalScopeContainer(store, workContext, component);
     }
 
-    public  InstanceWrapper getAssociatedWrapper(KEY contextId)
-        throws TargetResolutionException {
-        throw new UnsupportedOperationException();
+    public Scope getScope() {
+        return Scope.CONVERSATION;
     }
 
-    public  void returnWrapper(InstanceWrapper wrapper, KEY contextId)
-        throws TargetDestructionException {
-        wrapper.stop();
-    }
 }

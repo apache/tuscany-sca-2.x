@@ -95,6 +95,13 @@ public class DefaultCompositeActivator implements CompositeActivator {
      */
     protected void startComposite(Composite composite) {
         for (Component component : composite.getComponents()) {
+            
+            if (component instanceof RuntimeComponent) {
+                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+                if (runtimeComponent.getScopeContainer() != null) {
+                    runtimeComponent.getScopeContainer().start();
+                }
+            }
 
             for (ComponentService service : component.getServices()) {
                 for (Binding binding : service.getBindings()) {
@@ -136,6 +143,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 configureComposite((Composite)implementation);
             } else if (implementation instanceof ImplementationProvider) {
                 ((ImplementationProvider)implementation).configure((RuntimeComponent)component);
+                setScopeContainer(component);
             }
         }
     }
@@ -145,7 +153,14 @@ public class DefaultCompositeActivator implements CompositeActivator {
      */
     public void stop(Composite composite) {
         for (Component component : composite.getComponents()) {
-
+            
+            if (component instanceof RuntimeComponent) {
+                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+                if (runtimeComponent.getScopeContainer() != null) {
+                    runtimeComponent.getScopeContainer().stop();
+                }
+            }
+            
             for (ComponentService service : component.getServices()) {
                 for (Binding binding : service.getBindings()) {
                     if (binding instanceof ServiceBindingActivator) {
@@ -496,20 +511,13 @@ public class DefaultCompositeActivator implements CompositeActivator {
     }
     
     private void setScopeContainer(Component component) {
-        if(!(component instanceof RuntimeComponent)) {
+        if (!(component instanceof RuntimeComponent)) {
             return;
         }
-        RuntimeComponent runtimeComponent = (RuntimeComponent) component;
-        Implementation impl = component.getImplementation();
-        if (impl instanceof ScopedImplementationProvider) {
-            ScopedImplementationProvider provider = (ScopedImplementationProvider)impl;
-            Scope scope = provider.getScope();
-            if (scope == null) {
-                scope = Scope.STATELESS;
-            }
-            runtimeComponent.setScopeContainer(scopeRegistry.getScopeContainer(scope));
-        }
+        RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+        runtimeComponent.setScopeContainer(scopeRegistry.getScopeContainer(runtimeComponent));
     }    
+    
     protected void buildComposite(Composite composite,
                                 AssemblyFactory assemblyFactory,
                                 InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {

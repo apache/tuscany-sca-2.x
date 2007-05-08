@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.host.embedded.impl;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +39,6 @@ import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeRegistry;
-import org.apache.tuscany.spi.component.GroupInitializationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
@@ -162,12 +160,6 @@ public class ReallySmallRuntime {
     public void startDomainWorkContext(Composite domain) {
         workContext.setIdentifier(Scope.COMPOSITE, domain);
         WorkContextTunnel.setThreadWorkContext(workContext);
-        try {
-            scopeRegistry.getScopeContainer(Scope.COMPOSITE).startContext(domain, URI.create("/"));
-        } catch (GroupInitializationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
 }

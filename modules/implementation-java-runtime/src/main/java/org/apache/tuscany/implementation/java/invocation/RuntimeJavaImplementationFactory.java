@@ -35,15 +35,11 @@ public class RuntimeJavaImplementationFactory extends DefaultJavaImplementationF
     private DataBindingExtensionPoint dataBindingRegistry;
     private ProxyFactory proxyService;
     private WorkContext workContext;
-    private ScopeRegistry scopeRegistry;
 
-    public RuntimeJavaImplementationFactory(
-                                            ScopeRegistry scopeRegistry,
-                                            ProxyFactory proxyService,
+    public RuntimeJavaImplementationFactory(ProxyFactory proxyService,
                                             WorkContext workContext,
                                             DataBindingExtensionPoint dataBindingRegistry,
                                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
-        this.scopeRegistry = scopeRegistry;
         this.proxyService = proxyService;
         this.workContext = workContext;
         this.dataBindingRegistry = dataBindingRegistry;
@@ -52,7 +48,7 @@ public class RuntimeJavaImplementationFactory extends DefaultJavaImplementationF
 
     @Override
     public JavaImplementation createJavaImplementation() {
-        return new JavaImplementationProvider(scopeRegistry, proxyService, workContext, dataBindingRegistry,
+        return new JavaImplementationProvider(proxyService, workContext, dataBindingRegistry,
                                               propertyValueObjectFactory);
     }
 

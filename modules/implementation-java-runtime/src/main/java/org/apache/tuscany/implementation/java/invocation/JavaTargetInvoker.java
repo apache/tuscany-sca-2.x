@@ -43,12 +43,12 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     private final RuntimeComponent component;
     private final ScopeContainer scopeContainer;
 
-    public JavaTargetInvoker(Method operation, RuntimeComponent component, ScopeContainer scopeContainer) {
+    public JavaTargetInvoker(Method operation, RuntimeComponent component) {
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
-        this.scopeContainer = scopeContainer;
-        stateless = Scope.STATELESS == scopeContainer.getScope();
+        this.scopeContainer = component.getScopeContainer();
+        stateless = Scope.STATELESS == this.scopeContainer.getScope();
     }
 
     @Override
@@ -70,19 +70,19 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             case NONE:
                 if (cacheable) {
                     if (target == null) {
-                        target = scopeContainer.getWrapper(component, contextId);
+                        target = scopeContainer.getWrapper(contextId);
                     }
                     return target;
                 } else {
-                    return scopeContainer.getWrapper(component, contextId);
+                    return scopeContainer.getWrapper(contextId);
                 }
             case START:
                 assert !cacheable;
-                return scopeContainer.getWrapper(component, contextId);
+                return scopeContainer.getWrapper(contextId);
             case CONTINUE:
             case END:
                 assert !cacheable;
-                return scopeContainer.getAssociatedWrapper(component, contextId);
+                return scopeContainer.getAssociatedWrapper(contextId);
             default:
                 throw new InvalidConversationSequenceException("Unknown sequence type: " + String.valueOf(sequence));
         }
@@ -100,10 +100,10 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             } else {
                 ret = operation.invoke(instance, (Object[])payload);
             }
-            scopeContainer.returnWrapper(component, wrapper, contextId);
+            scopeContainer.returnWrapper(wrapper, contextId);
             if (sequence == END) {
                 // if end conversation, remove resource
-                scopeContainer.remove(component);
+                scopeContainer.remove();
             }
             return ret;
         } catch (IllegalAccessException e) {
