@@ -33,18 +33,26 @@ import org.apache.tuscany.provider.ReferenceBindingProvider;
  */
 public class RuntimeSCABindingProvider extends SCABindingImpl implements SCABinding, ReferenceBindingProvider {
     
-    public InterfaceContract getBindingInterfaceContract(RuntimeComponentReference reference) {
+    private RuntimeComponent component;
+    private RuntimeComponentReference reference;
+    
+    public RuntimeSCABindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
+        this.component = component;
+        this.reference = reference;
+    }
+    
+    public InterfaceContract getBindingInterfaceContract() {
         return reference.getInterfaceContract();
     }
 
-    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
+    public Invoker createInvoker(Operation operation, boolean isCallback) {
         return null;
     }
 
-    public void start(RuntimeComponent component, RuntimeComponentReference reference) {
+    public void start() {
     }
 
-    public void stop(RuntimeComponent component, RuntimeComponentReference reference) {
+    public void stop() {
     }
 
 }

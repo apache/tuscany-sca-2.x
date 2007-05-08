@@ -68,7 +68,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     protected InstanceWrapper createInstanceWrapper() throws TargetResolutionException {
         ImplementationProvider implementationProvider = component.getImplementationProvider();
         if (implementationProvider instanceof ScopedImplementationProvider) {
-            return ((ScopedImplementationProvider)implementationProvider).createInstanceWrapper(component);
+            return ((ScopedImplementationProvider)implementationProvider).createInstanceWrapper();
         }
         return null;
     }
@@ -91,7 +91,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     protected boolean isEagerInit() {
         ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
         if (implementationProvider instanceof ScopedImplementationProvider) {
-            return ((ScopedImplementationProvider)implementationProvider).isEagerInit(component);
+            return ((ScopedImplementationProvider)implementationProvider).isEagerInit();
         }
         return false;
     }

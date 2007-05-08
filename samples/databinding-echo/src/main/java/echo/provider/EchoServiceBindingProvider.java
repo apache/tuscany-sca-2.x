@@ -37,17 +37,21 @@ import echo.server.EchoService;
  */
 public class EchoServiceBindingProvider implements ServiceBindingProvider {
     
+    private RuntimeComponent component;
+    private RuntimeComponentService service;  
     private EchoBinding binding;
     
-    public EchoServiceBindingProvider(EchoBinding binding) {
+    public EchoServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
+        this.component = component;
+        this.service = service;
         this.binding = binding;
     }
 
-    public InterfaceContract getBindingInterfaceContract(RuntimeComponentService service) {
+    public InterfaceContract getBindingInterfaceContract() {
         return service.getInterfaceContract();
     }
 
-    public void start(RuntimeComponent component, RuntimeComponentService service) {
+    public void start() {
 
         RuntimeComponentService componentService = (RuntimeComponentService) service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
@@ -58,7 +62,7 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider {
         EchoServer.getServer().register(uri, new EchoService(chain.getHeadInvoker()));
     }
 
-    public void stop(RuntimeComponent component, RuntimeComponentService service) {
+    public void stop() {
         
         // Unregister from the hosting server
         String uri = component.getURI() + "/" + binding.getName();

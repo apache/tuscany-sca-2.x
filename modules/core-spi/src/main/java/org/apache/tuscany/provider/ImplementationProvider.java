@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.provider;
 
-import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
@@ -31,19 +30,19 @@ import org.apache.tuscany.invocation.Invoker;
  * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationProvider extends ImplementationActivator {
+public interface ImplementationProvider extends ProviderActivator {
+
     /**
      * Create an invoker for the component implementation in the invocation
      * chain. The invoker will be responsible for calling the implementation
      * logic for the given component.
      * 
-     * @param component The component that owns the component service
      * @param service The component service
      * @param operation The operation that the interceptor will handle
      * @return An invoker that handles the invocation logic, null should be
      *         returned if no invoker is required
      */
-    Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation);
+    Invoker createInvoker(RuntimeComponentService service, Operation operation);
 
     /**
      * Create an invoker to call back to the given component
@@ -52,7 +51,7 @@ public interface ImplementationProvider extends ImplementationActivator {
      * @return An invoker that handles the invocation logic, null should be
      *         returned if no invoker is required
      */
-    Invoker createCallbackInvoker(RuntimeComponent component, Operation operation);
+    Invoker createCallbackInvoker(Operation operation);
     
     /**
      * Get the effective interface contract imposed by the implementation.
@@ -63,9 +62,4 @@ public interface ImplementationProvider extends ImplementationActivator {
      */
     InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service);
   
-    /**
-     * Configure the component by adding additional metadata for the component
-     * @param component The runtime component
-     */
-    void configure(RuntimeComponent component);
 }

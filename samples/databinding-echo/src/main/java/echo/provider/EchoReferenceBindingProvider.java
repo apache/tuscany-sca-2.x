@@ -21,7 +21,6 @@ package echo.provider;
 
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
@@ -34,10 +33,16 @@ import org.apache.tuscany.provider.ReferenceBindingProvider;
  * @version $Rev$ $Date$
  */
 public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
+    
+    private RuntimeComponent component;
+    private RuntimeComponentReference reference;
+    
+    public EchoReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
+        this.component = component;
+        this.reference = reference;
+    }
 
-    public Invoker createInvoker(RuntimeComponent component,
-                                         RuntimeComponentReference reference,
-                                         Operation operation,
+    public Invoker createInvoker(Operation operation,
                                          boolean isCallback) {
         if (isCallback) {
             throw new UnsupportedOperationException();
@@ -46,18 +51,14 @@ public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
         }
     }
 
-    public InterfaceContract getBindingInterfaceContract(RuntimeComponentReference reference) {
+    public InterfaceContract getBindingInterfaceContract() {
         return reference.getInterfaceContract();
     }
 
-    public void start(RuntimeComponent component, RuntimeComponentReference reference) {
+    public void start() {
     }
 
-    public void stop(RuntimeComponent component, RuntimeComponentReference reference) {
-    }
-
-    public InterfaceContract getBindingInterfaceContract(RuntimeComponentService service) {
-        return service.getInterfaceContract();
+    public void stop() {
     }
 
 }

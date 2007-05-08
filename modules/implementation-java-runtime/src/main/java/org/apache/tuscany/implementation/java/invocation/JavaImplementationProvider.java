@@ -47,14 +47,11 @@ import org.osoa.sca.ComponentContext;
  * @version $Rev$ $Date$
  */
 public class JavaImplementationProvider implements ScopedImplementationProvider {
-    private JavaPropertyValueObjectFactory propertyValueObjectFactory;
-    private DataBindingExtensionPoint dataBindingRegistry;
-    private ProxyFactory proxyService;
-    private WorkContext workContext;
     private JavaImplementation implementation;
     private JavaComponentInfo atomicComponent;
 
     public JavaImplementationProvider(
+                                      RuntimeComponent component,
                                       JavaImplementation implementation,
                                       ProxyFactory proxyService,
                                       WorkContext workContext,
@@ -62,13 +59,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
         this.implementation = implementation;
-        this.proxyService = proxyService;
-        this.workContext = workContext;
-        this.dataBindingRegistry = dataBindingRegistry;
-        this.propertyValueObjectFactory = propertyValueObjectFactory;
-    }
 
-    public void configure(RuntimeComponent component) {
         try {
             PojoConfiguration configuration = new PojoConfiguration(implementation);
             configuration.setProxyFactory(proxyService);
@@ -140,7 +131,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         return atomicComponent.createInstance();
     }
 
-    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
+    public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         try {
             return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
@@ -148,7 +139,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         }
     }
 
-    public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
+    public Invoker createCallbackInvoker(Operation operation) {
         try {
             return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
@@ -164,19 +155,19 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         return new Scope(implementation.getJavaScope().getScope());
     }
 
-    public void start(RuntimeComponent component) {
+    public void start() {
         atomicComponent.start();
     }
 
-    public void stop(RuntimeComponent component) {
+    public void stop() {
         atomicComponent.stop();
     }
 
-    public InstanceWrapper createInstanceWrapper(RuntimeComponent component) {
+    public InstanceWrapper createInstanceWrapper() {
         return atomicComponent.createInstanceWrapper();
     }
 
-    public boolean isEagerInit(RuntimeComponent component) {
+    public boolean isEagerInit() {
         return implementation.isEagerInit();
     }
 

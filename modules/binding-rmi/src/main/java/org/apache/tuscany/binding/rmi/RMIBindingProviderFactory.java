@@ -17,6 +17,9 @@
 
 package org.apache.tuscany.binding.rmi;
 
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.provider.BindingProviderFactory;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
 import org.apache.tuscany.provider.ServiceBindingProvider;
@@ -37,11 +40,11 @@ public class RMIBindingProviderFactory extends RMIBindingImpl implements Binding
         this.rmiHost = rmiHost;
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider() {
-        return new RMIBindingProvider(this, rmiHost);
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
+        return new RMIBindingProvider(component, reference, this, rmiHost);
     }
-    
-    public ServiceBindingProvider createServiceBindingProvider() {
-        return new RMIBindingProvider(this, rmiHost);
+
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service) {
+        return new RMIBindingProvider(component, service, this, rmiHost);
     }
 }
