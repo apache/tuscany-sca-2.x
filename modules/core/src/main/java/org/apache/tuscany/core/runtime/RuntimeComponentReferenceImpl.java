@@ -20,15 +20,19 @@
 package org.apache.tuscany.core.runtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.provider.ReferenceBindingProvider;
 
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
+    private Map<Binding, ReferenceBindingProvider> bindingProviders = new HashMap<Binding, ReferenceBindingProvider>();
 
     public void addRuntimeWire(RuntimeWire wire) {
         wires.add(wire);
@@ -45,6 +49,14 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
             }
         }
         return null;
+    }
+    
+    public ReferenceBindingProvider getBindingProvider(Binding binding) {
+        return bindingProviders.get(binding);
+    }
+    
+    public void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider) {
+        bindingProviders.put(binding, bindingProvider);
     }
 
 }

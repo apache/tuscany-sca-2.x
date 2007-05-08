@@ -33,7 +33,7 @@ public class DefaultRMIBindingFactory implements RMIBindingFactory {
     }
     
     public RMIBinding createRMIBinding() {
-        return new RMIBindingProvider(rmiHost);
+        return new RMIBindingProviderFactory(rmiHost);
     }
 
 }

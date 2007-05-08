@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ComponentService;
+import org.apache.tuscany.provider.ServiceBindingProvider;
 
 /**
  * @version $Rev$ $Date$
@@ -62,4 +63,22 @@ public interface RuntimeComponentService extends ComponentService {
      */
     List<RuntimeWire> getCallbackWires();
 
+    /**
+     * Returns the service binding provider associated with this
+     * component service and the given binding.
+     * 
+     * @param binding
+     * @return
+     */
+    ServiceBindingProvider getBindingProvider(Binding binding);
+    
+    /**
+     * Sets the service binding provider associated with this
+     * component service and the given binding.
+     *
+     * @param binding
+     * @param bindingProvider
+     */
+    void setBindingProvider(Binding binding, ServiceBindingProvider bindingProvider);
+    
 }
