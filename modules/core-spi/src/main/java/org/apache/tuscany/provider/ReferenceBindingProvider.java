@@ -26,7 +26,20 @@ import org.apache.tuscany.invocation.Invoker;
 /**
  * @version $Rev$ $Date$
  */
-public interface ReferenceBindingProvider<M> extends Provider {
+public interface ReferenceBindingProvider<M> {
+
+    /**
+     * This method will be invoked when the component reference binding
+     * is activated.
+     */
+    void start();
+
+    /**
+     * This method will be invoked when the component reference binding
+     * is deactivated.
+     */
+    void stop();
+
     /**
      * Create an invoker for the reference binding in the invocation chain.
      * The invoker is responsible for making the outbound invocation over

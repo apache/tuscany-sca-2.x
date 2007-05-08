@@ -26,7 +26,19 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider<M> extends Provider {
+public interface ServiceBindingProvider<M> {
+    /**
+     * This method will be invoked when the component service binding
+     * is activated.
+     */
+    void start();
+
+    /**
+     * This method will be invoked when the component service binding
+     * is deactivated.
+     */
+    void stop();
+
     /**
      * Get the effective interface contract imposed by the binding. For example,
      * it will be interface contract introspected from the WSDL portType used by
