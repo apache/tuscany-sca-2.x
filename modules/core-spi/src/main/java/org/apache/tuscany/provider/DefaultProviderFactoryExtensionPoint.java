@@ -36,11 +36,11 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
     }
 
     public void addProviderFactory(ProviderFactory providerFactory) {
-        providerFactories.put(providerFactory.getClass(), providerFactory);
+        providerFactories.put(providerFactory.getModelType(), providerFactory);
     }
     
     public void removeProviderFactory(ProviderFactory providerFactory) {
-        providerFactories.remove(providerFactory.getClass());
+        providerFactories.remove(providerFactory.getModelType());
     }
     
     public ProviderFactory getProviderFactory(Class<?> modelType) {
