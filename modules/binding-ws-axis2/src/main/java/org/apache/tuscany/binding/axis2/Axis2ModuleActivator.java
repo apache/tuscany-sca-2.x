@@ -23,52 +23,35 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.xml.WebServiceBindingProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.ServletHost;
-import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
-import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.policy.DefaultPolicyFactory;
 
 public class Axis2ModuleActivator implements ModuleActivator {
-
-    private Axis2BindingBuilder builder;
 
     public void start(ExtensionPointRegistry registry) {
 
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
+        ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
+        WebServiceBindingFactory wsFactory = new Axis2BindingFactory(servletHost);
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
         WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
-        processors.addArtifactProcessor(new WebServiceBindingProcessor(
-                                                                              assemblyFactory, policyFactory, wsFactory,
-                                                                              wsdlFactory, introspector));
-
-        ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
-        
-        BuilderRegistry builderRegistry = registry.getExtensionPoint(BuilderRegistry.class);
-        builder = new Axis2BindingBuilder();
-        builder.setBuilderRegistry(builderRegistry);
-        builder.setServletHost(servletHost);
-        builder.init();
-
+        processors.addArtifactProcessor(new WebServiceBindingProcessor(assemblyFactory, policyFactory, wsFactory,
+                                                                       wsdlFactory, introspector));
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        //FIXME
-        // release resources held by bindings
-        // needed because the stop methods in ReferenceImpl and ServiceImpl aren't being called
-        // TODO: revisit this as part of the lifecycle work
-        builder.destroy(); // release connections
     }
 
     public Map<Class, Object> getExtensionPoints() {

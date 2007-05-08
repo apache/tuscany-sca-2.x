@@ -36,15 +36,16 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.implementation.java.invocation.TargetInvokerExtension;
+import org.apache.tuscany.invocation.Invoker;
+import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 
 /**
- * Axis2TargetInvoker uses an Axis2 OperationClient to invoke a remote web service
+ * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
  */
-public class Axis2TargetInvoker extends TargetInvokerExtension {
+public class Axis2BindingInvoker implements Invoker {
 
     private ServiceClient serviceClient;
     private QName wsdlOperationName;
@@ -53,15 +54,37 @@ public class Axis2TargetInvoker extends TargetInvokerExtension {
 
     public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA10_NS,"conversationID");
     
-    public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options, SOAPFactory soapFactory) {
+    public Axis2BindingInvoker(ServiceClient serviceClient, QName wsdlOperationName,
+                               Options options, SOAPFactory soapFactory) {
         this.serviceClient = serviceClient;
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.soapFactory = soapFactory;
     }
 
+    public Message invoke(Message msg) {
+        try {
+            Object messageId = msg.getMessageID();
+            WorkContext workContext = msg.getWorkContext();
+            if (messageId != null) {
+                workContext.setCorrelationId(messageId);
+            }
+            // getCallbackUris() has been removed from the Message interface 
+            // LinkedList<URI> callbackRoutingChain = msg.getCallbackUris();
+            // if (callbackRoutingChain != null) {
+            //     workContext.setCallbackUris(callbackRoutingChain);
+            // }
+            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), workContext);
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setFaultBody(e.getCause());
+        } catch (Throwable e) {
+            msg.setFaultBody(e);
+        }
+        return msg;
+    }
 
-    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
         try {
 
             Object[] args = (Object[]) payload;
@@ -104,10 +127,10 @@ public class Axis2TargetInvoker extends TargetInvokerExtension {
         // Axis2 operationClients can not be shared so create a new one for each request
         OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
 
-        if(workContext != null){
+        if (workContext != null){
             String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
             if(conversationId != null && conversationId.length()!=0){
-                EndpointReference fromEPR= new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
+                EndpointReference fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
                 fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId);
                 options.setFrom(fromEPR);
                 requestMC.setFrom(fromEPR); //who knows why two ways ?
@@ -115,7 +138,7 @@ public class Axis2TargetInvoker extends TargetInvokerExtension {
                 //For now do this the brute force method. Need to figure out how to do axis addressing .. configure mar in flow.
                 SOAPEnvelope sev = requestMC.getEnvelope();
                 SOAPHeader sh = sev.getHeader();
-                OMElement el= fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,AddressingConstants.WSA_FROM,AddressingConstants.WSA_DEFAULT_PREFIX);
+                OMElement el = fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,AddressingConstants.WSA_FROM,AddressingConstants.WSA_DEFAULT_PREFIX);
                 sh.addChild(el);
             }
         }

@@ -28,10 +28,10 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
 
     protected Operation operation;
 
-    private Axis2ServiceBinding axis2Service;
+    private Axis2ServiceBindingProvider provider;
 
-    public Axis2ServiceInMessageReceiver(Axis2ServiceBinding service, Operation operation) {
-        this.axis2Service = service;
+    public Axis2ServiceInMessageReceiver(Axis2ServiceBindingProvider provider, Operation operation) {
+        this.provider = provider;
         this.operation = operation;
     }
 
@@ -44,7 +44,7 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
-            String conversationID = axis2Service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
+            String conversationID = provider.isConversational() ?  Axis2ServiceBindingProvider.getConversationID(inMC) : null;
 
 //            axis2Service.invokeTarget(operation, args, null, conversationID);
 

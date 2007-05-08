@@ -27,24 +27,19 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.engine.AxisEngine;
 import org.apache.axis2.util.Utils;
-import org.apache.tuscany.binding.axis2.Axis2ServiceBinding.InvocationContext;
-import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
+import org.apache.tuscany.binding.axis2.Axis2ServiceBindingProvider.InvocationContext;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.spi.component.WorkContext;
 
-public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
+public class Axis2ServiceCallbackTargetInvoker implements Invoker {
 
-    private Axis2ServiceBinding service;
+    private Axis2ServiceBindingProvider service;
     
     protected static final OMElement RESPONSE = null;
 
-    public Axis2ServiceCallbackTargetInvoker(Axis2ServiceBinding service) {
+    public Axis2ServiceCallbackTargetInvoker(Axis2ServiceBindingProvider service) {
         this.service = service;
-    }
-
-    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
-        throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
 
     private Object invokeTarget(final Object payload, Object correlationId) throws InvocationTargetException {
@@ -83,14 +78,16 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
         return RESPONSE;
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
             Object correlationId = msg.getCorrelationID();
             if (correlationId == null) {
-                throw new InvocationRuntimeException("Missing correlation id");
+                throw new RuntimeException("Missing correlation id");
             }
             Object resp = invokeTarget(msg.getBody(), correlationId);
             msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setFaultBody(e.getCause());
         } catch (Throwable e) {
             msg.setFaultBody(e);
         }
@@ -104,14 +101,6 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
             // will not happen
             return null;
         }
-    }
-
-    public boolean isCacheable() {
-        return true;
-    }
-
-    public void setCacheable(boolean cacheable) {
-
     }
 
 }
