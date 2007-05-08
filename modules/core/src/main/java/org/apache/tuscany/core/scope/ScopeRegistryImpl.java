@@ -21,9 +21,9 @@ package org.apache.tuscany.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.ScopedImplementationProvider;
+import org.apache.tuscany.provider.ImplementationProvider;
+import org.apache.tuscany.provider.ScopedImplementationProvider;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
 import org.apache.tuscany.scope.ScopeContainerFactory;
@@ -45,9 +45,9 @@ public class ScopeRegistryImpl implements ScopeRegistry {
         if (component.getScopeContainer() != null) {
             return component.getScopeContainer();
         }
-        Implementation impl = component.getImplementation();
-        if (impl instanceof ScopedImplementationProvider) {
-            ScopedImplementationProvider provider = (ScopedImplementationProvider)impl;
+        ImplementationProvider implementationProvider = component.getImplementationProvider();
+        if (implementationProvider instanceof ScopedImplementationProvider) {
+            ScopedImplementationProvider provider = (ScopedImplementationProvider)implementationProvider;
             Scope scope = provider.getScope();
             if (scope == null) {
                 scope = Scope.STATELESS;

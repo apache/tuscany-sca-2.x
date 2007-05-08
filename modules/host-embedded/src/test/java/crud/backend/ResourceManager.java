@@ -17,10 +17,12 @@
  * under the License.    
  */
 
-package crud;
+package crud.backend;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import crud.CRUD;
 
 /**
  * A fake resource manager implementation used as a backend by the sample

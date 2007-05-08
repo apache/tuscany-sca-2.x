@@ -18,37 +18,21 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
-import java.io.StringReader;
-
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.provider.ImplementationProvider;
+import org.apache.tuscany.provider.ImplementationProviderFactory;
 
 /**
  * Represents a Script implementation.
  */
-public class ScriptImplementation extends AbstractImplementation {
+public class ScriptImplementation extends AbstractImplementation implements ImplementationProviderFactory {
 
     protected String scriptName;
     protected String scriptSrc;
     protected String scriptLanguage;
 
     protected PropertyValueObjectFactory propertyFactory;
-
-    protected ScriptEngine scriptEngine;
 
     public ScriptImplementation(String scriptName, String scriptLanguage, String scriptSrc, PropertyValueObjectFactory propertyFactory) {
         this.scriptName = scriptName;
@@ -73,52 +57,7 @@ public class ScriptImplementation extends AbstractImplementation {
         this.scriptSrc = scriptSrc;
     }
 
-    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
-        return new ScriptInvoker(this, operation.getName());
-    }
-
-    public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
-        return new ScriptInvoker(this, operation.getName());
-    }
-    
-    public void start(RuntimeComponent component) {
-        try {
-            scriptEngine = getScriptEngineByExtension(getScriptLanguage());
-            if (scriptEngine == null) {
-                throw new ObjectCreationException("no script engine found for language: " + getScriptLanguage());
-            }
-            if (!(scriptEngine instanceof Invocable)) {
-                throw new ObjectCreationException("script engine does not support Invocable: " + scriptEngine);
-            }
-            
-            for (Reference reference : getReferences()) {
-                Object referenceProxy = createReferenceProxy(reference.getName(), component);
-                scriptEngine.put(reference.getName(), referenceProxy);
-            }
-
-            for (Property property : getProperties()) {
-                ObjectFactory<?> propertyValueFactory = propertyFactory.createValueFactory(property);
-                if ( propertyValueFactory != null) {
-                    scriptEngine.put(property.getName(), propertyValueFactory.getInstance());
-                }
-            }
-            
-            scriptEngine.eval(new StringReader(getScriptSrc()));
-
-        } catch (ScriptException e) {
-            throw new ObjectCreationException(e);
-        }
-    }
-
-    /**
-     * Hack for now to work around a problem with the JRuby script engine
-     */
-    private ScriptEngine getScriptEngineByExtension(String scriptExtn) {
-        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-        if ("rb".equals(scriptExtn)) {
-            return new TuscanyJRubyScriptEngine();
-        } else {
-            return scriptEngineManager.getEngineByExtension(scriptExtn);
-        }
+    public ImplementationProvider createImplementationProvider() {
+        return new ScriptImplementationProvider(this);
     }
 }

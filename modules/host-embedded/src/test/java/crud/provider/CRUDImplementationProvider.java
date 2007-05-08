@@ -16,18 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package crud;
+package crud.provider;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.core.ImplementationActivator;
-import org.apache.tuscany.core.ImplementationProvider;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.invocation.Invoker;
+import org.apache.tuscany.provider.ImplementationProvider;
+
+import crud.CRUDImplementation;
+import crud.backend.ResourceManager;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
@@ -41,26 +40,24 @@ import org.apache.tuscany.invocation.Invoker;
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public class CRUDImplementationProvider extends CRUDImplementationImpl implements ImplementationProvider,
-    ImplementationActivator {
+public class CRUDImplementationProvider implements ImplementationProvider {
+    
+    private CRUDImplementation implementation;
 
     /**
      * Constructs a new CRUD implementation.
      */
-    public CRUDImplementationProvider(AssemblyFactory assemblyFactory,
-                                      JavaInterfaceFactory javaFactory,
-                                      JavaInterfaceIntrospector introspector) {
-        super(assemblyFactory, javaFactory, introspector);
+    public CRUDImplementationProvider(CRUDImplementation implementation) {
+        this.implementation = implementation;
     }
 
     public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
-        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(getDirectory()));
+        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
     }
 
     public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
-        CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
-        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(impl.getDirectory()));
+        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
     }
 

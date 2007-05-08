@@ -48,7 +48,8 @@ public class RuntimeJavaImplementationFactory extends DefaultJavaImplementationF
 
     @Override
     public JavaImplementation createJavaImplementation() {
-        return new JavaImplementationProvider(proxyService, workContext, dataBindingRegistry,
+        return new JavaImplementationProviderFactory(
+                                              proxyService, workContext, dataBindingRegistry,
                                               propertyValueObjectFactory);
     }
 

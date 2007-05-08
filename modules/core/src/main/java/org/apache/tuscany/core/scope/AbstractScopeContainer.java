@@ -21,10 +21,10 @@ package org.apache.tuscany.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.event.Event;
+import org.apache.tuscany.provider.ImplementationProvider;
+import org.apache.tuscany.provider.ScopedImplementationProvider;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
@@ -66,9 +66,9 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
      *             instance
      */
     protected InstanceWrapper createInstanceWrapper() throws TargetResolutionException {
-        Implementation impl = component.getImplementation();
-        if (impl instanceof ScopedImplementationProvider) {
-            return ((ScopedImplementationProvider)impl).createInstanceWrapper(component);
+        ImplementationProvider implementationProvider = component.getImplementationProvider();
+        if (implementationProvider instanceof ScopedImplementationProvider) {
+            return ((ScopedImplementationProvider)implementationProvider).createInstanceWrapper(component);
         }
         return null;
     }
@@ -89,9 +89,9 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     }
 
     protected boolean isEagerInit() {
-        Implementation impl = component.getImplementation();
-        if (impl instanceof ScopedImplementationProvider) {
-            return ((ScopedImplementationProvider)impl).isEagerInit(component);
+        ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
+        if (implementationProvider instanceof ScopedImplementationProvider) {
+            return ((ScopedImplementationProvider)implementationProvider).isEagerInit(component);
         }
         return false;
     }

@@ -22,30 +22,18 @@ package org.apache.tuscany.implementation.spi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.core.ImplementationActivator;
-import org.apache.tuscany.core.ImplementationProvider;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.core.invocation.JDKProxyService;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 /**
  * TODO: couldn't something like this class be provided by the runtime?
  */
-public abstract class AbstractImplementation implements Implementation, ImplementationProvider, ImplementationActivator {
+public abstract class AbstractImplementation implements Implementation {
 
     private List<Service> services = new ArrayList<Service>();
     private List<Reference> references = new ArrayList<Reference>();
@@ -108,38 +96,6 @@ public abstract class AbstractImplementation implements Implementation, Implemen
     public void setUnresolved(boolean unresolved) {
         // TODO what is this for?
         this.unresolved = unresolved;
-    }
-
-    public void configure(RuntimeComponent component) {
-        // TODO what is this for?
-    }
-
-    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
-        // TODO what is this for?
-        return null;
-    }
-
-    public void start(RuntimeComponent component) {
-    }
-
-    public void stop(RuntimeComponent component) {
-    }
-
-    /**
-     * TODO: yuk yuk yuk
-     * Maybe RuntimeComponentReference could have a createProxy method?
-     */
-    protected Object createReferenceProxy(String name, RuntimeComponent component) {
-        for (ComponentReference reference : component.getReferences()) {
-            if (reference.getName().equals(name)) {
-                List<RuntimeWire> wireList = ((RuntimeComponentReference)reference).getRuntimeWires();
-                RuntimeWire wire = wireList.get(0);
-                JDKProxyService ps = new JDKProxyService(WorkContextTunnel.getThreadWorkContext(), null);
-                Interface iface = reference.getInterfaceContract().getInterface();
-                return ps.createProxy(((JavaInterface)iface).getJavaClass(), wire);
-            }
-        }
-        throw new IllegalStateException("reference " + name + " not found on component: " + component);
     }
 
 }

@@ -17,24 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core;
+package org.apache.tuscany.provider;
 
-import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.assembly.Implementation;
 
 /**
- * A service binding can optionally implement this interface
- * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider {
-    /**
-     * Get the effective interface contract imposed by the binding. For example,
-     * it will be interface contract introspected from the WSDL portType used by
-     * the endpoint for a WebService binding.
-     * 
-     * @param service The component service that owns the service binding
-     * @return The effective interface contract, if null is returned, the interface contract
-     * for the component service will be used
-     */
-    InterfaceContract getBindingInterfaceContract(RuntimeComponentService service);
+public interface ImplementationProviderFactory extends Implementation {
+    
+    ImplementationProvider createImplementationProvider();
+    
 }

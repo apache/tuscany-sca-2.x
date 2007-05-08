@@ -17,7 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core;
+package org.apache.tuscany.provider;
+
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentService;
 
 
 /**

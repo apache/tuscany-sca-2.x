@@ -17,8 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core;
+package org.apache.tuscany.provider;
 
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
@@ -29,7 +31,7 @@ import org.apache.tuscany.invocation.Invoker;
  * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationProvider {
+public interface ImplementationProvider extends ImplementationActivator {
     /**
      * Create an invoker for the component implementation in the invocation
      * chain. The invoker will be responsible for calling the implementation

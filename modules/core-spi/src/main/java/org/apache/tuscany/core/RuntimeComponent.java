@@ -20,6 +20,7 @@
 package org.apache.tuscany.core;
 
 import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.provider.ImplementationProvider;
 import org.apache.tuscany.scope.ScopeContainer;
 import org.osoa.sca.ComponentContext;
 
@@ -30,14 +31,15 @@ import org.osoa.sca.ComponentContext;
 public interface RuntimeComponent extends Component, ComponentContext {
     /**
      * Set the implementation-specific configuration for this component
-     * @param configuration
+     * @param implementationProvider
      */
-    void setImplementationConfiguration(Object configuration);
+    void setImplementationProvider(ImplementationProvider implementationProvider);
+    
     /**
      * Get the implementation-specific configuation for this component
      * @return
      */
-    Object getImplementationConfiguration();
+    ImplementationProvider getImplementationProvider();
     
     /**
      * Set the associated scope container
