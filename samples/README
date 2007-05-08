@@ -20,7 +20,7 @@ calculator/
   src/              - Holds all of the source files for the sample
     main/           - Groups together the files that implement the sample 
       java/         - Java source files
-      resources/    - Non java resource files such as compiste files
+      resources/    - Non java resource files such as composte files
     test/           - Groups together files that provide sample tests
       java          - Java test sources files. Usually JUnit test cases
   target/           - Holds the files generated when the sample is built
