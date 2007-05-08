@@ -47,6 +47,6 @@ public interface ProviderFactoryExtensionPoint {
      * @param modelType a model type
      * @return the provider factory associated with the given model type
      */
-    <M> ProviderFactory<M> getProviderFactory(Class<?> modelType);
+    ProviderFactory getProviderFactory(Class<?> modelType);
     
 }

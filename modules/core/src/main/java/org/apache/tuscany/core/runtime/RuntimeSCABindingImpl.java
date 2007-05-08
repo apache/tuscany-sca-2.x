@@ -22,13 +22,14 @@ package org.apache.tuscany.core.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.SCABindingImpl;
 import org.apache.tuscany.core.RuntimeWire;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeSCABindingImpl extends SCABindingImpl {
+public class RuntimeSCABindingImpl extends SCABindingImpl implements SCABinding {
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
     
     public void addWire(RuntimeWire wire) {

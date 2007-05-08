@@ -111,6 +111,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                         if (bindingProvider != null) {
                             ((RuntimeComponentService)service).setBindingProvider(binding, bindingProvider);
                         }
+                    } else {
+                        throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
                     }
                 }
             }
@@ -123,6 +125,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                         if (bindingProvider != null) {
                             ((RuntimeComponentReference)reference).setBindingProvider(binding, bindingProvider);
                         }
+                    } else {
+                        throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
                     }
                 }
             }
@@ -138,6 +142,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     if (implementationProvider != null) {
                         ((RuntimeComponent)component).setImplementationProvider(implementationProvider);
                     }
+                } else {
+                    throw new IllegalStateException("Provider factory not found for class: " + implementation.getClass().getName());
                 }
                 setScopeContainer(component);
             }
