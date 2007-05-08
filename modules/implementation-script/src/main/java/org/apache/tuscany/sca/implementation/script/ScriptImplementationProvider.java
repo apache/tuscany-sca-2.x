@@ -35,7 +35,6 @@ import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.invocation.Invoker;
@@ -99,10 +98,6 @@ public class ScriptImplementationProvider implements ImplementationProvider {
     public void stop() {
     }
     
-    public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
-        return null;
-    }
-
     /**
      * TODO: yuk yuk yuk
      * Maybe RuntimeComponentReference could have a createProxy method?
