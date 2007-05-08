@@ -1,9 +1,132 @@
-The Apache Tuscany Samples
-==========================
+The Apache Tuscany SCA Samples
+==============================
+
+The Apache Tuscany SCA samples are built as part of the main Maven build and 
+run, using the provided JUnit tests cases, as extra tests as part of that 
+build. In the binary distribution of Apache Tuscany the samples can also 
+be run using the provided Ant build.xml file. This shows the samples running 
+from a simple main() method without the need for a JUnit test case. 
+
+In these notes text that appears in angled brackets like this <example> means 
+that you need to make a choice and provide you own text at that point. 
+
+Sample Layout
+-------------
+All sample directories are organized in the same way based on the default 
+project template provided by Maven. For example, take a look at the calculator 
+sample;
+
+calculator/        
+  src/              - Holds all of the source files for the sample
+    main/           - Groups together the files that implement the sample 
+      java/         - Java source files
+      resources/    - Non java resource files such as compiste files
+    test/           - Groups together files that provide sample tests
+      java          - Java test sources files. Usually JUnit test cases
+  target/           - Holds the files generated when the sample is built
+    classes/        - For example, Java class files
+
+Getting Ready To Build
+----------------------
+You will need to install the following software before you start. 
+
+J2SE Development Kit (JDK) 5.0
+Apache Ant 1.7.0                - if you are going to use Ant 
+Apache Maven 2.0.6              - if you are going to use Maven
+
+Java and Ant and/or Maven binary directories must be present in your PATH so 
+that their executable programs are available in your environment. You may 
+find it useful to use a script to set up your environment, for example;
+
+For UNIX:
+  JAVA_HOME=/<installation_directory>
+  ANT_HOME=/<installation_directory>/apache-ant-1.7.0
+  MAVEN_HOME=/<installation_directory>/maven-2.0.6
+  export PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
+
+For Windows:
+  set JAVA_HOME=C:\<installation_directory>
+  set ANT_HOME=C:\<installation_directory>\apache-ant-1.7.0
+  set MAVEN_HOME=C:\<installation_directory>\maven-2.0.6
+  set PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin;%MAVEN_HOME%\bin;%PATH%
 
 
-TODO: say how to run the pre-built samples, how to build with Ant or Maven, and how to setup in IDE 
+Building And Running The SCA Samples Using Ant
+----------------------------------------------
+The build.xml files provided with the Apache Tuscany SCA samples are designed 
+to work with the binary distribution. They rely on the tuscany-sca-manifest.jar
+to describe the class path and this jar is only provided as part of the 
+binary distribution.
 
-java -cp target\sample-helloworld-ws.jar;..\..\lib\tuscany-sca-manifest.jar helloworld.HelloWorldServer
+To build and run each sample;
+
+cd <sampledir>
+ant
+
+Once the sample is built you can of course run the samples from the command 
+line. 
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar calculator.CalculatorClient
+
+The class specified on this line of course depends on which sample you want to 
+run. In this case we are running the CalculatorClient. 
+
+
+Building And Running The SCA Samples Using Maven
+------------------------------------------------
+
+The Maven build process will work from both source and binary distributions. 
+To build and test all of the Apache Tuscany SCA sources, including the samples,
+do the following.
+
+cd sca
+mvn
+
+This will take a little while to complete. Experience with Maven tells us that 
+sometimes there are problems downloading the dependencies that Apache Tuscany 
+SCA requires. If Maven reports that it cannot download required dependencies 
+try running the Maven build again. 
+
+Once you have all of the source built you can build and run each sample 
+independently if required.
+
+cd <sampledir>
+mvn
+
+When using Maven the samples are run within JUnit test cases and so you will 
+not see any test output. You will though see an indication of test success or 
+failure. 
+
+
+Using The Samples In An IDE
+---------------------------
+The easiest way to use the samples in an IDE is to use Maven to generate all 
+of the IDE project files for you automatically. This works best if you 
+generate IDE projects for all of the Apache Tuscany modules. You can then 
+include the ones you are interested in working with in you IDE. 
+
+To build IDE project files for all of the modules in Apache Tuscany SCA;
+
+cd sca 
+
+If you are an Eclipse user do the following
+
+mvn -Peclipse eclipse:eclipse  
+
+If you are an IDEA user do the following 
+
+mvn idea:idea
+
+These commands generate project files for each module in Apache Tuscany SCA. 
+The modules you are interested in can now be included in your IDE, for example,
+in Eclipse, if you create a new Java project and use the option to "create a 
+new project from existing source" you can specify an SCA module directory, 
+which includes the generated project files, and Eclipse will treat it like any
+other Java project. 
+
+TODO 
+  running inside an IDE
+  are we happy to go with the simple, non-jar builds, for samples
+
 
 
