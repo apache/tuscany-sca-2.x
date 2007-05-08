@@ -45,10 +45,6 @@ public abstract class AbstractInterceptor implements Interceptor {
 
     abstract public Object doInvoke(Object[] objects) throws InvocationTargetException;
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
     public Interceptor getNext() {
         return next;
     }

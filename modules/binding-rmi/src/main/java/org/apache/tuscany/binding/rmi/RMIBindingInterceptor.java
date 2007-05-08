@@ -94,8 +94,4 @@ public class RMIBindingInterceptor implements Interceptor {
         this.next = next;
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
 }

@@ -47,9 +47,5 @@ public class MockSyncInterceptor implements Interceptor {
         return next;
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
 }
 

@@ -53,10 +53,6 @@ public class MockStaticInvoker implements TargetInvoker {
         this.cacheable = cacheable;
     }
 
-    public boolean isOptimizable() {
-        return isCacheable();
-    }
-
     public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
         try {
             if (payload != null && !payload.getClass().isArray()) {

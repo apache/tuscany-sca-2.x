@@ -54,7 +54,4 @@ public class CallbackInterfaceInterceptor implements Interceptor {
         return next;
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
 }

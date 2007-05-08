@@ -23,11 +23,10 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.Wire;
 import org.apache.tuscany.spi.component.WorkContext;
 
 public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
@@ -87,10 +86,6 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
 
     public void setCacheable(boolean cacheable) {
         this.cacheable = cacheable;
-    }
-
-    public boolean isOptimizable() {
-        return isCacheable(); // we only need to check if the scopes are correct
     }
 
     public Axis2ReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {

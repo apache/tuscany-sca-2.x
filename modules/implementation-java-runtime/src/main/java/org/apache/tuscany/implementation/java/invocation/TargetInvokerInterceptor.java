@@ -54,8 +54,4 @@ public class TargetInvokerInterceptor implements Interceptor {
         return null;
     }
 
-    public boolean isOptimizable() {
-        return true;
-    }
-
 }

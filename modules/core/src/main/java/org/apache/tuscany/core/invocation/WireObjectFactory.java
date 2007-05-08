@@ -47,34 +47,10 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
         this.interfaze = interfaze;
         this.wire = wire;
         this.proxyService = proxyService;
-        /*
-        if (wire.isOptimizable()) {
-            Interface iface = wire.getSource().getInterfaceContract().getInterface();
-            if (iface instanceof JavaInterface) {
-                Class type = ((JavaInterface)iface).getJavaClass();
-                if (interfaze.isAssignableFrom(type)) {
-                    optimizable = true;
-                }
-            }
-        }
-        */
-
     }
 
     public T getInstance() throws ObjectCreationException {
-        /*
-        if (optimizable) {
-            try {
-                return interfaze.cast(wire.getTargetInstance());
-            } catch (TargetResolutionException e) {
-                throw new ObjectCreationException(e);
-            }
-        } else {
-        */
-            return interfaze.cast(proxyService.createProxy(interfaze, wire));
-            /*
-        }
-        */
+        return interfaze.cast(proxyService.createProxy(interfaze, wire));
     }
 
 }

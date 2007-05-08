@@ -83,10 +83,6 @@ public class NonBlockingInterceptor implements Interceptor {
         this.next = next;
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
     /**
      * A dummy message passed back on an invocation
      */
