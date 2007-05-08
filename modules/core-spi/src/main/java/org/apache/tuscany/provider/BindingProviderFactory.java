@@ -27,7 +27,7 @@ import org.apache.tuscany.core.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public interface BindingProviderFactory extends Binding {
+public interface BindingProviderFactory<M extends Binding> extends ProviderFactory<M> {
 
     /**
      * Creates a new reference binding provider for the given
@@ -35,9 +35,13 @@ public interface BindingProviderFactory extends Binding {
      * 
      * @param component
      * @param reference
+     * @param binding
      * @return
      */
-    ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference);
+    ReferenceBindingProvider<M> createReferenceBindingProvider(
+                                                            RuntimeComponent component,
+                                                            RuntimeComponentReference reference,
+                                                            M binding);
 
     /**
      * Creates a new service binding provider for the given
@@ -45,8 +49,12 @@ public interface BindingProviderFactory extends Binding {
      * 
      * @param component
      * @param service
+     * @param binding
      * @return
      */
-    ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service);
+    ServiceBindingProvider<M> createServiceBindingProvider(
+                                                           RuntimeComponent component,
+                                                           RuntimeComponentService service,
+                                                           M binding);
     
 }

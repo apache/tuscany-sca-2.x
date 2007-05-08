@@ -16,27 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.implementation.script;
 
-package org.apache.tuscany.core.runtime;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.assembly.impl.SCABindingImpl;
-import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.provider.ImplementationProvider;
+import org.apache.tuscany.provider.ImplementationProviderFactory;
 
 /**
- * @version $Rev$ $Date$
+ * Represents a Script implementation.
  */
-public class RuntimeSCABindingImpl extends SCABindingImpl {
-    private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
+public class ScriptImplementationProviderFactory implements ImplementationProviderFactory<ScriptImplementation> {
+
+    public ScriptImplementationProviderFactory() {
+    }
+
+    public ImplementationProvider<ScriptImplementation> createImplementationProvider(RuntimeComponent component, ScriptImplementation implementation) {
+        return new ScriptImplementationProvider(component, implementation);
+    }
     
-    public void addWire(RuntimeWire wire) {
-        wires.add(wire);
+    public Class<ScriptImplementation> getModelType() {
+        return ScriptImplementation.class;
     }
-
-    public List<RuntimeWire> getWires() {
-        return wires;
-    }
-
 }

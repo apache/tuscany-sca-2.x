@@ -57,8 +57,8 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
  *
  * @version $Rev: $ $Date: $
  */
-public class RMIBindingProvider implements ReferenceBindingProvider,
-    ServiceBindingProvider, MethodInterceptor {
+public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
+    ServiceBindingProvider<RMIBinding>, MethodInterceptor {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;

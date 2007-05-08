@@ -68,6 +68,7 @@ import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.core.runtime.ActivationException;
 import org.apache.tuscany.core.runtime.CompositeActivator;
 import org.apache.tuscany.core.runtime.DefaultCompositeActivator;
+import org.apache.tuscany.core.runtime.RuntimeSCABindingProviderFactory;
 import org.apache.tuscany.core.scope.CompositeScopeContainerFactory;
 import org.apache.tuscany.core.scope.RequestScopeContainerFactory;
 import org.apache.tuscany.core.scope.ScopeRegistryImpl;
@@ -77,6 +78,8 @@ import org.apache.tuscany.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.provider.DefaultProviderFactoryExtensionPoint;
+import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.scope.ScopeContainerFactory;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -124,10 +127,15 @@ public class ReallySmallRuntimeBuilder {
         RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
         registry.addExtensionPoint(RuntimeWireProcessorExtensionPoint.class, wireProcessors);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
+        
+        // Create a provider factory extension point
+        ProviderFactoryExtensionPoint providerFactories = new DefaultProviderFactoryExtensionPoint();
+        registry.addExtensionPoint(ProviderFactoryExtensionPoint.class, providerFactories);
+        providerFactories.addProviderFactory(new RuntimeSCABindingProviderFactory());
 
         // Create the composite activator
         CompositeActivator compositeActivator = new DefaultCompositeActivator(assemblyFactory, mapper, scopeRegistry,
-                                                                              workContext, workScheduler, wireProcessor);
+                                                                              workContext, workScheduler, wireProcessor, providerFactories);
 
         return compositeActivator;
     }

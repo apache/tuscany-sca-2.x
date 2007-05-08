@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.rmi.RMIHost;
 
 /**
  * A factory for the WSDL model.
@@ -26,14 +25,12 @@ import org.apache.tuscany.rmi.RMIHost;
  * @version $Rev: 526508 $ $Date: 2007-04-08 07:42:42 +0530 (Sun, 08 Apr 2007) $
  */
 public class DefaultRMIBindingFactory implements RMIBindingFactory {
-    private RMIHost rmiHost = null;
     
-    public DefaultRMIBindingFactory(RMIHost rmiHost) {
-        this.rmiHost = rmiHost;
+    public DefaultRMIBindingFactory() {
     }
     
     public RMIBinding createRMIBinding() {
-        return new RMIBindingProviderFactory(rmiHost);
+        return new RMIBindingImpl();
     }
 
 }

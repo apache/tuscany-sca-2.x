@@ -19,37 +19,25 @@
 
 package org.apache.tuscany.provider;
 
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
+
 
 /**
- * A component implementation can implement this interface to provide scope
- * management for the components
+ * A component implementation can optionally implement this interface to control
+ * how a component is started ot stopped.
  * 
  * @version $Rev$ $Date$
  */
-public interface ScopedImplementationProvider<M> extends ImplementationProvider<M> {
+public interface Provider {
     /**
-     * Get the scope for the component implementation
-     * 
-     * @return The scope for the component implementation, if null is returned,
-     *         STATELESS will be used
+     * This method will be invoked when a component implemented by this
+     * implementation is activated.
      */
-    Scope getScope();
+    void start();
 
     /**
-     * Indicate if the component needs to be eagerly initialized
-     * 
-     * @return true if the component is marked to be eagerly initialized, false
-     *         otherwise
+     * This method will be invoked when a component implemented by this
+     * implementation is deactivated.
      */
-    boolean isEagerInit();
-
-    /**
-     * Create a wrapper for the component instance for the scope management
-     * 
-     * @return A wrapper for the component instance
-     */
-    InstanceWrapper createInstanceWrapper();
+    void stop();
 
 }

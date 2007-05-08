@@ -26,7 +26,7 @@ import org.apache.tuscany.invocation.Invoker;
 /**
  * @version $Rev$ $Date$
  */
-public interface ReferenceBindingProvider extends ProviderActivator {
+public interface ReferenceBindingProvider<M> extends Provider {
     /**
      * Create an invoker for the reference binding in the invocation chain.
      * The invoker is responsible for making the outbound invocation over
@@ -49,5 +49,4 @@ public interface ReferenceBindingProvider extends ProviderActivator {
      */
     InterfaceContract getBindingInterfaceContract();
     
-
 }

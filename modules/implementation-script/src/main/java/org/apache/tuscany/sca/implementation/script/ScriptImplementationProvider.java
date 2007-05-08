@@ -47,7 +47,7 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
 /**
  * Represents a Script implementation.
  */
-public class ScriptImplementationProvider implements ImplementationProvider {
+public class ScriptImplementationProvider implements ImplementationProvider<ScriptImplementation> {
 
     protected RuntimeComponent component;
     protected ScriptImplementation implementation;

@@ -29,7 +29,7 @@ import org.apache.tuscany.invocation.Invoker;
  * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationProvider extends ProviderActivator {
+public interface ImplementationProvider<M> extends Provider {
 
     /**
      * Create an invoker for the component implementation in the invocation

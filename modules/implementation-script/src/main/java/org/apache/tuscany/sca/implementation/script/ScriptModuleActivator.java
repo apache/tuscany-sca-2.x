@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.implementation.script;
 import java.util.Map;
 
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
@@ -29,11 +30,10 @@ import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.DefaultMediator;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
+import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 
 public class ScriptModuleActivator implements ModuleActivator {
 
-    protected ScriptArtifactProcessor scriptArtifactProcessor;
-    
     public void start(ExtensionPointRegistry registry) {
 
         // TODO: could the runtime have a default PropertyValueObjectFactory in the registry
@@ -42,15 +42,16 @@ public class ScriptModuleActivator implements ModuleActivator {
         DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
         PropertyValueObjectFactory propertyFactory = new PropertyValueObjectFactory(mediator);
 
-        scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory(), propertyFactory);
+        StAXArtifactProcessor scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory(), propertyFactory);
 
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(scriptArtifactProcessor);
+        
+        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        providerFactories.addProviderFactory(new ScriptImplementationProviderFactory());
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessors.removeArtifactProcessor(scriptArtifactProcessor);
     }
 
     public Map<Class, Object> getExtensionPoints() {

@@ -18,14 +18,11 @@
  */
 package crud.provider;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.provider.ImplementationProvider;
 import org.apache.tuscany.provider.ImplementationProviderFactory;
 
-import crud.impl.CRUDImplementationImpl;
+import crud.CRUDImplementation;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
@@ -33,19 +30,19 @@ import crud.impl.CRUDImplementationImpl;
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public class CRUDImplementationProviderFactory extends CRUDImplementationImpl implements ImplementationProviderFactory {
+public class CRUDImplementationProviderFactory implements ImplementationProviderFactory<CRUDImplementation> {
 
     /**
      * Constructs a new CRUD implementation.
      */
-    public CRUDImplementationProviderFactory(
-                               AssemblyFactory assemblyFactory,
-                              JavaInterfaceFactory javaFactory,
-                              JavaInterfaceIntrospector introspector) {
-        super(assemblyFactory, javaFactory, introspector);
+    public CRUDImplementationProviderFactory() {
     }
 
-    public ImplementationProvider createImplementationProvider(RuntimeComponent component) {
-        return new CRUDImplementationProvider(component, this);
+    public ImplementationProvider<CRUDImplementation> createImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
+        return new CRUDImplementationProvider(component, implementation);
+    }
+    
+    public Class<CRUDImplementation> getModelType() {
+        return CRUDImplementation.class;
     }
 }

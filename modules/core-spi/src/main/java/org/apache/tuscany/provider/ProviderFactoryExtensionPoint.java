@@ -19,37 +19,34 @@
 
 package org.apache.tuscany.provider;
 
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
 
 /**
- * A component implementation can implement this interface to provide scope
- * management for the components
- * 
+ * An extension point for provider factories.
+ *
  * @version $Rev$ $Date$
  */
-public interface ScopedImplementationProvider<M> extends ImplementationProvider<M> {
-    /**
-     * Get the scope for the component implementation
-     * 
-     * @return The scope for the component implementation, if null is returned,
-     *         STATELESS will be used
-     */
-    Scope getScope();
+public interface ProviderFactoryExtensionPoint {
+
 
     /**
-     * Indicate if the component needs to be eagerly initialized
+     * Add a provider factory.
      * 
-     * @return true if the component is marked to be eagerly initialized, false
-     *         otherwise
+     * @param providerFactory the provider factory
      */
-    boolean isEagerInit();
+    void addProviderFactory(ProviderFactory providerFactory);
 
     /**
-     * Create a wrapper for the component instance for the scope management
+     * Remove a provider factory.
      * 
-     * @return A wrapper for the component instance
+     * @param providerFactory the provider factory
      */
-    InstanceWrapper createInstanceWrapper();
+    void removeProviderFactory(ProviderFactory providerFactory);
 
+    /**
+     * Returns the provider factory associated with the given model type.
+     * @param modelType a model type
+     * @return the provider factory associated with the given model type
+     */
+    <M> ProviderFactory<M> getProviderFactory(Class<?> modelType);
+    
 }

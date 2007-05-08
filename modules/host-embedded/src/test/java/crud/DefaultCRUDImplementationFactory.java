@@ -23,7 +23,7 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
-import crud.provider.CRUDImplementationProviderFactory;
+import crud.impl.CRUDImplementationImpl;
 
 /**
  * A default factory for the CRUD implementation model.
@@ -45,7 +45,7 @@ public class DefaultCRUDImplementationFactory implements CRUDImplementationFacto
     }
 
     public CRUDImplementation createCRUDImplementation() {
-        return new CRUDImplementationProviderFactory(assemblyFactory, javaFactory, introspector);
+        return new CRUDImplementationImpl(assemblyFactory, javaFactory, introspector);
     }
 
 }
