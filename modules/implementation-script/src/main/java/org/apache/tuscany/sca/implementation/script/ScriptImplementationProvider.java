@@ -99,9 +99,6 @@ public class ScriptImplementationProvider implements ImplementationProvider {
     public void stop() {
     }
     
-    public void configure() {
-    }
-    
     public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {
         return null;
     }
