@@ -211,7 +211,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                startComposite((Composite)implementation);
+                stop((Composite)implementation);
             } else if (implementation instanceof ImplementationProviderFactory) {
                 ImplementationActivator implementationActivator = ((RuntimeComponent)component).getImplementationProvider();
                 if (implementationActivator != null) {
