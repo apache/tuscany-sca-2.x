@@ -57,7 +57,7 @@ Building And Runing The Sample Using Maven
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
-cd binding-echo
+cd calculator
 mvn
 
 You should see the following output from the test phase.
