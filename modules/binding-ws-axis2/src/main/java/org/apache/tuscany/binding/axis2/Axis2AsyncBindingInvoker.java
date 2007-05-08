@@ -30,23 +30,18 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.spi.component.WorkContext;
 
-public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
+public class Axis2AsyncBindingInvoker extends Axis2BindingInvoker {
 
     private Axis2ReferenceCallbackTargetInvoker callbackInvoker;
 
-    public Axis2AsyncTargetInvoker(ServiceClient serviceClient,
-                                   QName wsdlOperationName,
-                                   Options options,
-                                   SOAPFactory soapFactory) {
+    public Axis2AsyncBindingInvoker(ServiceClient serviceClient,
+                                    QName wsdlOperationName,
+                                    Options options,
+                                    SOAPFactory soapFactory) {
         super(serviceClient, wsdlOperationName, options, soapFactory);
-    }
-
-    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
-        throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
 
     private Object invokeTarget(final Object payload, LinkedList<URI> callbackRoutingChain)

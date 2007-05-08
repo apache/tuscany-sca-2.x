@@ -23,16 +23,16 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.tuscany.assembly.Wire;
-import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.invocation.ConversationSequence;
+import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.core.RuntimeWire;
 
-public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
+public class Axis2ReferenceCallbackTargetInvoker {
 
     private Operation operation;
-    private Wire inboundWire;
+    private RuntimeWire inboundWire;
     private LinkedList<URI> callbackRoutingChain;
     private boolean cacheable;
     Axis2CallbackInvocationHandler invocationHandler;
@@ -40,7 +40,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
     private Object returnPayload;
 
     public Axis2ReferenceCallbackTargetInvoker(Operation operation,
-                                               Wire inboundWire,
+                                               RuntimeWire inboundWire,
                                                Axis2CallbackInvocationHandler invocationHandler) {
 
         this.operation = operation;
@@ -68,9 +68,9 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         }
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
+    public Message invoke(Message msg) {
         try {
-            Object resp = invokeTarget(msg.getBody(), NONE, null);
+            Object resp = invokeTarget(msg.getBody(), ConversationSequence.NONE, null);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
@@ -86,6 +86,10 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
 
     public void setCacheable(boolean cacheable) {
         this.cacheable = cacheable;
+    }
+
+    public boolean isOptimizable() {
+        return isCacheable(); // we only need to check if the scopes are correct
     }
 
     public Axis2ReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {

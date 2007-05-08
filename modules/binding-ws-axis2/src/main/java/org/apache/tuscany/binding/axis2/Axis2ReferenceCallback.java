@@ -24,8 +24,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.client.async.AsyncResult;
 import org.apache.axis2.client.async.Callback;
 import org.apache.axis2.context.MessageContext;
-import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
+import org.apache.tuscany.invocation.ConversationSequence;
 
 public class Axis2ReferenceCallback extends Callback {
 
@@ -39,10 +38,10 @@ public class Axis2ReferenceCallback extends Callback {
         MessageContext responseMC = result.getResponseMessageContext();
         OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();
         try {
-            targetInvoker.invokeTarget(new Object[] {responseOM}, TargetInvoker.NONE, null);
+            targetInvoker.invokeTarget(new Object[] {responseOM}, ConversationSequence.NONE, null);
         } catch (InvocationTargetException e) {
             // FIXME what is the appropriate exception here?
-            throw new InvocationRuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -51,6 +50,6 @@ public class Axis2ReferenceCallback extends Callback {
     }
 
     public void onError(Exception e) {
-        throw new InvocationRuntimeException(e);
+        throw new RuntimeException(e);
     }
 }

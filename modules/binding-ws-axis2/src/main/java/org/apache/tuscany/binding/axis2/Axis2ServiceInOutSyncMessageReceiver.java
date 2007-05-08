@@ -27,19 +27,18 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.InvocationRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 
     protected Operation operation;
 
-    private Axis2ServiceBinding axis2Service;
+    private Axis2ServiceBindingProvider provider;
 
     public Axis2ServiceInOutSyncMessageReceiver() {
     }
 
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBinding service, Operation operation) {
-        this.axis2Service = service;
+    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBindingProvider provider, Operation operation) {
+        this.provider = provider;
         this.operation = operation;
     }
 
@@ -49,9 +48,9 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
             
-            String conversationID = axis2Service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
+            String conversationID = provider.isConversational() ?  Axis2ServiceBindingProvider.getConversationID(inMC) : null;
 
-            OMElement responseOM = (OMElement) axis2Service.invokeTarget(operation, args, null, conversationID);
+            OMElement responseOM = (OMElement) provider.invokeTarget(operation, args, null, conversationID);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if(null != responseOM ){
@@ -66,7 +65,7 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception)t);
             }
-            throw new InvocationRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
             throw AxisFault.makeFault(e);

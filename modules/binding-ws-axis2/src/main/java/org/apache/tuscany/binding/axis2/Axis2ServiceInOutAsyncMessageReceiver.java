@@ -25,19 +25,18 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.MessageId;
 
 public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiver {
 
     private Operation operation;
 
-    private Axis2ServiceBinding service;
+    private Axis2ServiceBindingProvider provider;
 
-    public Axis2ServiceInOutAsyncMessageReceiver(Axis2ServiceBinding service,
+    public Axis2ServiceInOutAsyncMessageReceiver(Axis2ServiceBindingProvider provider,
                                                  Operation operation) {
+        this.provider = provider;
         this.operation = operation;
-        this.service = service;
-    }
+   }
 
     public Axis2ServiceInOutAsyncMessageReceiver() {
     }
@@ -72,7 +71,7 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
-            String conversationID = service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
+            String conversationID = provider.isConversational() ?  Axis2ServiceBindingProvider.getConversationID(inMC) : null;
 //            service.invokeTarget(operation, args, messageId, conversationID);
 //        } catch (InvocationTargetException e) {
 //            Throwable t = e.getCause();
@@ -85,4 +84,45 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
         }
 
     }
+
+    /**
+     * A unique identifier for a message flowing on a wire, potentially end-to-end (ie, through more than one SCAObject to
+     * SCAObject hop).
+     *
+     * This used to be in the org.apache.tuscany.spi.wire package
+     */
+    public class MessageId {
+
+        private long timestamp;
+
+        public MessageId() {
+            this.timestamp = System.currentTimeMillis();
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public String toString() {
+            return "MsgId[" + timestamp + "]";
+        }
+
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            final MessageId messageId = (MessageId) o;
+            return timestamp == messageId.timestamp;
+        }
+
+        public int hashCode() {
+            return (int) (timestamp ^ (timestamp >>> 32));
+        }
+
+    }
+
 }

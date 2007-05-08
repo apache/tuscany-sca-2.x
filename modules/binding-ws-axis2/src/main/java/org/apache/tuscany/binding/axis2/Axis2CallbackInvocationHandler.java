@@ -23,13 +23,13 @@ import java.util.LinkedList;
 
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.AbstractInvocationHandler;
-import org.apache.tuscany.invocation.Wire;
+import org.apache.tuscany.core.RuntimeWire;
 
 public class Axis2CallbackInvocationHandler extends AbstractInvocationHandler {
 
-    private Wire wire;
+    private RuntimeWire wire;
 
-    public Axis2CallbackInvocationHandler(Wire wire) {
+    public Axis2CallbackInvocationHandler(RuntimeWire wire) {
         this.wire = wire;
     }
 

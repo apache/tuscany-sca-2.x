@@ -29,17 +29,17 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.tuscany.spi.component.WorkContext;
 
-public class Axis2OneWayTargetInvoker extends Axis2TargetInvoker {
+public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
-    public Axis2OneWayTargetInvoker(ServiceClient serviceClient,
-                                    QName wsdlOperationName,
-                                    Options options,
-                                    SOAPFactory soapFactory) {
+    public Axis2OneWayBindingInvoker(ServiceClient serviceClient,
+                                         QName wsdlOperationName,
+                                         Options options,
+                                         SOAPFactory soapFactory) {
 
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
 
