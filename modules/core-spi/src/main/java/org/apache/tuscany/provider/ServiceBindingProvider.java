@@ -17,31 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core;
+package org.apache.tuscany.provider;
 
+import org.apache.tuscany.core.RuntimeComponentService;
+import org.apache.tuscany.interfacedef.InterfaceContract;
 
 /**
- * A binding can optionally implement this interface to control how the
- * reference binding is started or stopped.
+ * A service binding can optionally implement this interface
  * 
  * @version $Rev$ $Date$
  */
-public interface ReferenceBindingActivator {
+public interface ServiceBindingProvider extends ServiceBindingActivator {
     /**
-     * This method will be invoked when the reference binding is activated for
-     * the given component reference
+     * Get the effective interface contract imposed by the binding. For example,
+     * it will be interface contract introspected from the WSDL portType used by
+     * the endpoint for a WebService binding.
      * 
-     * @param component The component that owns the reference
-     * @param reference The reference that owns the binding
+     * @param service The component service that owns the service binding
+     * @return The effective interface contract, if null is returned, the interface contract
+     * for the component service will be used
      */
-    void start(RuntimeComponent component, RuntimeComponentReference reference);
-
-    /**
-     * This method will be invoked when the reference binding is deactivated for
-     * the given component reference
-     * 
-     * @param component The component that owns the reference
-     * @param reference The reference that owns the binding
-     */
-    void stop(RuntimeComponent component, RuntimeComponentReference reference);
+    InterfaceContract getBindingInterfaceContract(RuntimeComponentService service);
 }

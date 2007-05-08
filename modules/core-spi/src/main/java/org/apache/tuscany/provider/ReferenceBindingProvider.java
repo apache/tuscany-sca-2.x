@@ -17,8 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core;
+package org.apache.tuscany.provider;
 
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
@@ -26,7 +28,7 @@ import org.apache.tuscany.invocation.Invoker;
 /**
  * @version $Rev$ $Date$
  */
-public interface ReferenceBindingProvider {
+public interface ReferenceBindingProvider extends ReferenceBindingActivator {
     /**
      * Create an invoker for the reference binding in the invocation chain.
      * The invoker is responsible for making the outbound invocation over

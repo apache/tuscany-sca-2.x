@@ -19,36 +19,32 @@
 
 package org.apache.tuscany.core.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.SCABindingImpl;
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.provider.BindingProviderFactory;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
-import org.apache.tuscany.provider.ServiceBindingProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeSCABindingImpl extends SCABindingImpl implements SCABinding, BindingProviderFactory {
-    private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
+public class RuntimeSCABindingProvider extends SCABindingImpl implements SCABinding, ReferenceBindingProvider {
     
-    public void addWire(RuntimeWire wire) {
-        wires.add(wire);
+    public InterfaceContract getBindingInterfaceContract(RuntimeComponentReference reference) {
+        return reference.getInterfaceContract();
     }
 
-    public List<RuntimeWire> getWires() {
-        return wires;
-    }
-
-    public ReferenceBindingProvider createReferenceBindingProvider() {
-        return new RuntimeSCABindingProvider();
-    }
-
-    public ServiceBindingProvider createServiceBindingProvider() {
+    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
         return null;
     }
-    
+
+    public void start(RuntimeComponent component, RuntimeComponentReference reference) {
+    }
+
+    public void stop(RuntimeComponent component, RuntimeComponentReference reference) {
+    }
+
 }

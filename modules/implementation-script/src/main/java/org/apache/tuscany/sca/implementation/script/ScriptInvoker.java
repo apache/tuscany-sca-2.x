@@ -32,22 +32,22 @@ import org.apache.tuscany.invocation.Message;
  */
 public class ScriptInvoker implements Invoker {
 
-    protected ScriptImplementation impl;
+    protected ScriptImplementationProvider provider;
     protected String operationName;
 
     /**
      * TODO: passing in the impl is a bit of a hack to get at scriptEngine as thats all this uses
      * but its not created till the start method which is called after the invokers are created 
      */
-    public ScriptInvoker(ScriptImplementation impl, String operationName) {
-        this.impl = impl;
+    public ScriptInvoker(ScriptImplementationProvider provider, String operationName) {
+        this.provider = provider;
         this.operationName = operationName;
     }
 
     private Object doInvoke(Object[] objects) throws InvocationTargetException {
         try {
 
-            return ((Invocable)impl.scriptEngine).invokeFunction(operationName, objects);
+            return ((Invocable)provider.scriptEngine).invokeFunction(operationName, objects);
 
         } catch (ScriptException e) {
             throw new InvocationTargetException(e);

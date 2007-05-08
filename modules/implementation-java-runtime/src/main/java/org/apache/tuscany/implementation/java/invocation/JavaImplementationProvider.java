@@ -23,14 +23,11 @@ import java.net.URI;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
@@ -38,9 +35,9 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.ProxyFactory;
+import org.apache.tuscany.provider.ScopedImplementationProvider;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -49,18 +46,22 @@ import org.osoa.sca.ComponentContext;
 /**
  * @version $Rev$ $Date$
  */
-public class JavaImplementationProvider extends JavaImplementationImpl implements JavaImplementation,
-    ScopedImplementationProvider, ImplementationActivator {
+public class JavaImplementationProvider implements ScopedImplementationProvider {
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
     private ProxyFactory proxyService;
     private WorkContext workContext;
+    private JavaImplementation implementation;
+    private JavaComponentInfo atomicComponent;
 
-    public JavaImplementationProvider(ProxyFactory proxyService,
+    public JavaImplementationProvider(
+                                      JavaImplementation implementation,
+                                      ProxyFactory proxyService,
                                       WorkContext workContext,
                                       DataBindingExtensionPoint dataBindingRegistry,
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
+        this.implementation = implementation;
         this.proxyService = proxyService;
         this.workContext = workContext;
         this.dataBindingRegistry = dataBindingRegistry;
@@ -69,12 +70,12 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
 
     public void configure(RuntimeComponent component) {
         try {
-            PojoConfiguration configuration = new PojoConfiguration(this);
+            PojoConfiguration configuration = new PojoConfiguration(implementation);
             configuration.setProxyFactory(proxyService);
             configuration.setWorkContext(workContext);
             // FIXME: Group id to be removed
             configuration.setGroupId(URI.create("/"));
-            JavaComponentInfo atomicComponent = new JavaComponentInfo(component, configuration, dataBindingRegistry,
+            atomicComponent = new JavaComponentInfo(component, configuration, dataBindingRegistry,
                                                                       propertyValueObjectFactory);
 
             Scope scope = getScope();
@@ -85,26 +86,25 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
                 // Check for conversational contract if conversational scope
                 if (scope == Scope.CONVERSATION) {
                     boolean hasConversationalContract = false;
-                    for (Service serviceDef : getServices()) {
+                    for (Service serviceDef : implementation.getServices()) {
                         if (serviceDef.getInterfaceContract().getInterface().isConversational()) {
                             hasConversationalContract = true;
                             break;
                         }
                     }
                     if (!hasConversationalContract) {
-                        String name = getJavaClass().getName();
+                        String name = implementation.getJavaClass().getName();
                         throw new NoConversationalContractException(name);
                     }
                 }
             }
-            component.setImplementationConfiguration(atomicComponent);
 
-            if (getConversationIDMember() != null) {
-                atomicComponent.addConversationIDFactory(getConversationIDMember());
+            if (implementation.getConversationIDMember() != null) {
+                atomicComponent.addConversationIDFactory(implementation.getConversationIDMember());
             }
 
             atomicComponent.configureProperties(component.getProperties());
-            handleResources(this, atomicComponent);
+            handleResources(implementation, atomicComponent);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -137,12 +137,10 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     }
 
     public Object createInstance(RuntimeComponent component, ComponentService service) {
-        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         return atomicComponent.createInstance();
     }
 
     public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
-        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         try {
             return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
@@ -151,7 +149,6 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     }
 
     public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
-        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         try {
             return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
@@ -163,30 +160,24 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
         return service.getInterfaceContract();
     }
 
-    /**
-     * @see org.apache.tuscany.core.ImplementationProvider#getScope()
-     */
     public Scope getScope() {
-        return new Scope(getJavaScope().getScope());
+        return new Scope(implementation.getJavaScope().getScope());
     }
 
     public void start(RuntimeComponent component) {
-        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         atomicComponent.start();
     }
 
     public void stop(RuntimeComponent component) {
-        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         atomicComponent.stop();
     }
 
     public InstanceWrapper createInstanceWrapper(RuntimeComponent component) {
-        JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         return atomicComponent.createInstanceWrapper();
     }
 
     public boolean isEagerInit(RuntimeComponent component) {
-        return isEagerInit();
+        return implementation.isEagerInit();
     }
 
 }

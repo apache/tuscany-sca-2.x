@@ -17,17 +17,31 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core;
+package org.apache.tuscany.provider;
 
-import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.core.RuntimeComponent;
+
 
 /**
+ * A component implementation can optionally implement this interface to control
+ * how a component is started ot stopped.
+ * 
  * @version $Rev$ $Date$
  */
-public interface RuntimeImplementation extends Implementation {
-    
-    ImplementationActivator getImplementationActivator();
-    
-    ImplementationProvider getImplementationProvider();
-    
+public interface ImplementationActivator {
+    /**
+     * This method will be invoked when a component implemented by this
+     * implementation is activated.
+     * 
+     * @param component The component to be started
+     */
+    void start(RuntimeComponent component);
+
+    /**
+     * This method will be invoked when a component implemented by this
+     * implementation is deactivated.
+     * 
+     * @param component The component to be stopped
+     */
+    void stop(RuntimeComponent component);
 }
