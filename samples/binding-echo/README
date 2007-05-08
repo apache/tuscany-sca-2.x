@@ -11,7 +11,7 @@ first.
 Sample Overview
 ---------------
 
-This sample contains a implementation of an SCA binding that simple echos back 
+This sample contains a implementation of an SCA binding that simply echoes back 
 any messages that are sent to it. 
 
 binding-echo\
@@ -23,8 +23,16 @@ binding-echo\
           module\   - The activator that loads the binding into the SCA runtime
           provider\ - The bindings runtime classes
           server\   - A dumy server that the binding is plugged into
-
-TBD - more detail required
+      resources\
+        EchoBinding.composite  - the SCA assembly for this sample
+    test\
+      java\ 
+        EchoBindingClient.java - used when Ant is running the sample
+  binding-echo.png  - a pictorial representation of the sample .composite file
+  build.xml         - the Ant build file
+  pom.xml           - the Maven build file
+  
+TBD - more detail required on how this sample adds a new binding to SCA
 
 Building And Runing The Sample Using Ant
 ----------------------------------------

@@ -35,7 +35,7 @@
      inkscape:cx="528.85714"
      inkscape:cy="406.01174"
      inkscape:document-units="px"
-     inkscape:current-layer="g2997"
+     inkscape:current-layer="layer1"
      inkscape:window-width="1142"
      inkscape:window-height="722"
      inkscape:window-x="58"
@@ -79,16 +79,9 @@
              id="rect2958" /></flowRegion><flowPara
            id="flowPara2960">EchoBinding</flowPara></flowRoot>      <path
          style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="M 397.85714,349.09448 L 442.85714,348.3802"
-         id="path1903"
-         transform="matrix(0.962696,0,0,0.990628,28.1648,1.790088)"
-         inkscape:connector-type="polyline" />
-      <path
-         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="M 586.42857,346.95163 L 627.14286,347.66591"
-         id="path1909"
-         transform="matrix(0.962696,0,0,0.990628,28.1648,1.790088)"
-         inkscape:connector-type="polyline" />
+         d="M 397.85714,346.95163 L 440,346.95163"
+         id="path1896"
+         transform="matrix(0.962696,0,0,0.990628,28.1648,1.790088)" />
     </g>
     <rect
        style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
@@ -119,11 +112,11 @@
        id="path3019" />
     <path
        style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.00000012px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 328.15933,322.18185 L 387.4834,322.18185 L 398.26959,349.42811 L 385.68571,374.57852 L 328.15933,374.57852 L 341.64208,349.42811 L 328.15933,322.18185 z "
+       d="M 328.15933,319.32471 L 387.4834,319.32471 L 398.26959,346.57097 L 385.68571,371.72138 L 328.15933,371.72138 L 341.64208,346.57097 L 328.15933,319.32471 z "
        id="path1883" />
     <path
        style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 610.30199,320.61047 L 674.46121,320.61047 L 686.12651,347.48531 L 672.517,372.29287 L 610.30199,372.29287 L 624.88364,347.48531 L 610.30199,320.61047 z "
+       d="M 610.30199,319.1819 L 674.46121,319.1819 L 686.12651,346.05674 L 672.517,370.8643 L 610.30199,370.8643 L 624.88364,346.05674 L 610.30199,319.1819 z "
        id="path1885" />
     <flowRoot
        xml:space="preserve"
@@ -135,8 +128,10 @@
            height="61.42857"
            x="281.42856"
            y="212.66591" /></flowRegion><flowPara
-         id="flowPara1893">Echo</flowPara><flowPara
-         id="flowPara1895">Serivce</flowPara></flowRoot>    <text
+         id="flowPara1893"
+         style="font-family:Bitstream Vera Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:12;text-anchor:start;text-align:start;writing-mode:lr;line-height:125%">Echo</flowPara><flowPara
+         id="flowPara1895"
+         style="font-family:Bitstream Vera Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:12;text-anchor:start;text-align:start;writing-mode:lr;line-height:125%">Serivce</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
        x="625.14288"
@@ -146,10 +141,16 @@
          sodipodi:role="line"
          id="tspan1899"
          x="625.14288"
-         y="343.23737">Echo</tspan><tspan
+         y="343.23737"
+         style="font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:12;text-anchor:start;text-align:start;writing-mode:lr;line-height:100%">Echo</tspan><tspan
          sodipodi:role="line"
          x="625.14288"
-         y="359.23737"
-         id="tspan1901">Reference</tspan></text>
+         y="355.23737"
+         id="tspan1901"
+         style="font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:12;text-anchor:start;text-align:start;writing-mode:lr;line-height:100%">Reference</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 585.71429,345.52305 C 624.28571,345.52305 624.28571,345.52305 624.28571,345.52305"
+       id="path1898" />
   </g>
 </svg>
