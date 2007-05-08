@@ -19,7 +19,7 @@
 
 package echo;
 
-import echo.provider.EchoBindingProviderFactory;
+import echo.impl.EchoBindingImpl;
 
 /**
  * A factory for the sample Echo binding model.
@@ -29,7 +29,7 @@ import echo.provider.EchoBindingProviderFactory;
 public class DefaultEchoBindingFactory implements EchoBindingFactory {
 
     public EchoBinding createEchoBinding() {
-        return new EchoBindingProviderFactory();
+        return new EchoBindingImpl();
     }
 
 }

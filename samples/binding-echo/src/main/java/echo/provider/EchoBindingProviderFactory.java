@@ -26,7 +26,7 @@ import org.apache.tuscany.provider.BindingProviderFactory;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
 import org.apache.tuscany.provider.ServiceBindingProvider;
 
-import echo.impl.EchoBindingImpl;
+import echo.EchoBinding;
 
 
 /**
@@ -34,14 +34,17 @@ import echo.impl.EchoBindingImpl;
  *
  * @version $Rev$ $Date$
  */
-public class EchoBindingProviderFactory extends EchoBindingImpl implements BindingProviderFactory {
+public class EchoBindingProviderFactory implements BindingProviderFactory<EchoBinding> {
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
-        return new EchoReferenceBindingProvider(component, reference);
+    public ReferenceBindingProvider<EchoBinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, EchoBinding binding) {
+        return new EchoReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service) {
-        return new EchoServiceBindingProvider(component, service, this);
+    public ServiceBindingProvider<EchoBinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
+        return new EchoServiceBindingProvider(component, service, binding);
     }
     
+    public Class<EchoBinding> getModelType() {
+        return EchoBinding.class;
+    }
 }

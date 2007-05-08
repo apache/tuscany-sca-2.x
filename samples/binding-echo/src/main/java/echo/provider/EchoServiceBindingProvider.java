@@ -35,7 +35,7 @@ import echo.server.EchoService;
  * 
  * @version $Rev$ $Date$
  */
-public class EchoServiceBindingProvider implements ServiceBindingProvider {
+public class EchoServiceBindingProvider implements ServiceBindingProvider<EchoBinding> {
     
     private RuntimeComponent component;
     private RuntimeComponentService service;  

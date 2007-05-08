@@ -24,10 +24,12 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
+import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 
 import echo.DefaultEchoBindingFactory;
 import echo.EchoBindingFactory;
 import echo.impl.EchoBindingProcessor;
+import echo.provider.EchoBindingProviderFactory;
 import echo.server.EchoServer;
 
 /**
@@ -37,8 +39,6 @@ import echo.server.EchoServer;
  */
 public class EchoModuleActivator implements ModuleActivator {
     
-    private EchoBindingProcessor echoBindingProcessor;
-
     public Map<Class, Object> getExtensionPoints() {
         // No extensionPoints being contributed here
         return null;
@@ -51,19 +51,17 @@ public class EchoModuleActivator implements ModuleActivator {
 
         // Add the EchoProcessor extension
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        echoBindingProcessor = new EchoBindingProcessor(echoFactory);
+        EchoBindingProcessor echoBindingProcessor = new EchoBindingProcessor(echoFactory);
         processors.addArtifactProcessor(echoBindingProcessor);
+        
+        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        providerFactories.addProviderFactory(new EchoBindingProviderFactory());
        
         // Start the Echo server
         EchoServer.start();
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        
-        // Remove the EchoProcessor from the registry
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        processors.removeArtifactProcessor(echoBindingProcessor);
-
         EchoServer.stop();
     }
 

@@ -26,19 +26,19 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
 
+import echo.EchoBinding;
+
 
 /**
  * Implementation of the Echo binding provider.
  * 
  * @version $Rev$ $Date$
  */
-public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
+public class EchoReferenceBindingProvider implements ReferenceBindingProvider<EchoBinding> {
     
-    private RuntimeComponent component;
     private RuntimeComponentReference reference;
     
-    public EchoReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
-        this.component = component;
+    public EchoReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, EchoBinding binding) {
         this.reference = reference;
     }
 
