@@ -36,7 +36,7 @@ public class TuscanyContextListener implements ServletContextListener {
         try {
             SCADomainHelper.initSCADomain(servletContext);
         } catch (Throwable e) {
-            e.printStackTrace();
+            servletContext.log("exception initializing SCADomain", e);
         }
     }
 
