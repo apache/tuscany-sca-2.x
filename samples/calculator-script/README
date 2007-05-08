@@ -1,0 +1,87 @@
+Calculator Script Sample
+========================
+
+This sample implements a simple calculator using SCA components implemented 
+using Java, JavaScript, Ruby, Python and Groovy. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+The sample provides a single calculator service with a default SCA (java) 
+binding. The CalculatorClient exercises this interface by calling add, 
+subtract, multiply and divide operations. This results in messages passing 
+to the appropriate components in the composite across the local wires. Each
+component is implemented using a different language.
+
+calculator\
+  src\
+    main\
+      java\
+        calculator\
+          CalculatorService.java  - the first componet calls +-/* as 
+                                    appropriate
+          AddService.java         - adds two numbers
+          SubtractService.java    - substracts one number from another
+          MultipleService.java    - multiplies two numbers
+          DivideService.java      - divides one number by another
+          CalculatorClient.java   - starts the SCA Runtime and 
+                                    deploys the Calculator.composite. 
+                                    It then calls the deployed Calculator 
+                                    Components services
+      resources\
+        calculator\
+          AddServiceImpl.js       - A JavaScript implementation of the
+                                    Add component
+          SubtractServiceImpl.rb  - A Ruby implementation of the Subtract
+                                    component
+          MultiplyServiceImpl.py  - A Python implementation of the 
+                                    Multiple component
+          DivideServiceImpl.groovy- A Groovy implementation of the 
+                                    Divide component
+        Calculator.composite      - the SCA assembly for this sample
+        
+  calculator-script.png           - a pictorial representation of the 
+                                    sample .composite file
+  build.xml                       - the Ant build file
+  pom.xml                         - the Maven build file        
+
+Building And Runing The Sample Using Ant
+----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd calculator-script
+ant 
+
+You should see the following output from the run target.
+
+run:
+     [java] 3 + 2=5.0
+     [java] 3 - 2=1.0
+     [java] 3 * 2=6.0
+     [java] 3 / 2=1.5
+
+Building And Runing The Sample Using Maven 
+------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd calculator-script
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running calculator.CalculatorTestCase
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.918 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
