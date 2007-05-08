@@ -58,10 +58,6 @@ public class RuntimeWireImpl implements RuntimeWire {
         return chains;
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
     public static class SourceImpl implements RuntimeWire.Source {
         private RuntimeComponent component;
         private RuntimeComponentReference componentReference;

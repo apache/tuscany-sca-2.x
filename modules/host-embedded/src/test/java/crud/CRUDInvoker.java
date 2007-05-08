@@ -74,10 +74,6 @@ public class CRUDInvoker implements Interceptor {
         }
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
     public Interceptor getNext() {
         return null;
     }

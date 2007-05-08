@@ -114,8 +114,4 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
 }

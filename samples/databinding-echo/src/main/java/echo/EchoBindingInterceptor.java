@@ -61,8 +61,4 @@ public class EchoBindingInterceptor implements Interceptor {
         this.next = next;
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
 }

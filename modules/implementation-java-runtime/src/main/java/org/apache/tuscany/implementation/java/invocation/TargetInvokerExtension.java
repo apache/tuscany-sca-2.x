@@ -57,10 +57,6 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
         this.cacheable = cacheable;
     }
 
-    public boolean isOptimizable() {
-        return isCacheable();
-    }
-
     public Object clone() throws CloneNotSupportedException {
         try {
             return super.clone();

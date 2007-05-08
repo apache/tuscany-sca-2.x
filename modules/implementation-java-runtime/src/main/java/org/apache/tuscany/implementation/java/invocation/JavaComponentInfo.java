@@ -119,16 +119,6 @@ public class JavaComponentInfo implements ComponentContextProvider {
         }
     }
 
-    public boolean isOptimizable() {
-        // stateless implementations that require a destroy callback cannot be
-        // optimized since the callback is
-        // performed by the JavaTargetInvoker
-        JavaImplementation impl = configuration.getDefinition();
-        assert impl instanceof ScopedImplementationProvider;
-        return !(((ScopedImplementationProvider)impl).getScope() == Scope.STATELESS && configuration
-            .getDestroyInvoker() != null);
-    }
-
     public Object getTargetInstance() throws TargetResolutionException {
         InstanceWrapper wrapper = scopeContainer.getWrapper(component, groupId);
         if (!wrapper.isStarted()) {

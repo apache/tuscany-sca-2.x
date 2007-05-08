@@ -35,8 +35,4 @@ public interface Interceptor extends Invoker {
      */
     Interceptor getNext();
 
-    /**
-     * Returns true if the interceptor can be optimized away from a wire
-     */
-    boolean isOptimizable();
 }

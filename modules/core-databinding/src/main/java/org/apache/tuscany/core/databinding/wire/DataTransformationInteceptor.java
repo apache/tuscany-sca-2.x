@@ -213,13 +213,6 @@ public class DataTransformationInteceptor implements Interceptor {
     }
 
     /**
-     * @see org.apache.tuscany.invocation.Interceptor#isOptimizable()
-     */
-    public boolean isOptimizable() {
-        return false;
-    }
-
-    /**
      * @see org.apache.tuscany.invocation.Interceptor#setNext(org.apache.tuscany.invocation.Interceptor)
      */
     public void setNext(Interceptor next) {

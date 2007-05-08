@@ -33,11 +33,6 @@ import org.easymock.EasyMock;
  */
 public class CallbackInterfaceInterceptorTestCase extends TestCase {
 
-    public void testOptimize() throws Exception {
-        CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor(true);
-        assertFalse(interceptor.isOptimizable());
-    }
-
     public void testImplements() {
         CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor(true);
         Interceptor next = EasyMock.createMock(Interceptor.class);

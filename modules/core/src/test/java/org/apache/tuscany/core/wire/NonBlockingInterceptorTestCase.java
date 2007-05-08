@@ -68,9 +68,4 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         verify(next);
     }
 
-    public void testOptimizable() {
-        NonBlockingInterceptor interceptor = new NonBlockingInterceptor(null, null);
-        assertFalse(interceptor.isOptimizable());
-    }
-
 }

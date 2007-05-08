@@ -74,9 +74,6 @@ public class InvocationChainImplTestCase extends TestCase {
             return next;
         }
 
-        public boolean isOptimizable() {
-            return false;
-        }
     }
 
 }
