@@ -33,6 +33,7 @@ import org.apache.tuscany.interfacedef.util.XMLType;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
+import commonj.sdo.helper.XMLDocument;
 
 /**
  * SDO DataObject --> AXIOM OMElement transformer
@@ -44,7 +45,6 @@ public class DataObject2OMElement extends BaseTransformer<DataObject, OMElement>
 
     public OMElement transform(DataObject source, TransformationContext context) {
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
-        SDODataSource dataSource = new SDODataSource(source, helperContext);
         OMFactory factory = OMAbstractFactory.getOMFactory();
 
         OMNamespace namespace = null;
@@ -55,18 +55,20 @@ public class DataObject2OMElement extends BaseTransformer<DataObject, OMElement>
             if (logical instanceof XMLType) {
                 XMLType xmlType = (XMLType)logical;
                 if (xmlType.isElement()) {
-                    namespace =
-                        factory.createOMNamespace(xmlType.getElementName().getNamespaceURI(), xmlType.getElementName()
-                            .getPrefix());
+                    namespace = factory.createOMNamespace(xmlType.getElementName().getNamespaceURI(), xmlType
+                        .getElementName().getPrefix());
                     localName = xmlType.getElementName().getLocalPart();
                 }
             }
         }
         if (namespace == null) {
-            namespace =
-                factory.createOMNamespace(ROOT_ELEMENT.getNamespaceURI(), ROOT_ELEMENT.getPrefix());
+            namespace = factory.createOMNamespace(ROOT_ELEMENT.getNamespaceURI(), ROOT_ELEMENT.getPrefix());
         }
 
+        XMLDocument document = helperContext.getXMLHelper().createDocument(source,
+                                                                           namespace.getNamespaceURI(),
+                                                                           localName);
+        SDODataSource dataSource = new SDODataSource(document, helperContext);
         OMElement element = factory.createOMElement(dataSource, localName, namespace);
         return element;
     }
