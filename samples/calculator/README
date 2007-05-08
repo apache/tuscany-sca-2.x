@@ -10,30 +10,31 @@ first.
 Sample Overview
 ---------------
 
-This sample contains a single composite and a number of components as follows.
+The sample provides a single calculator service with a default SCA (java) 
+binding. The CalculatorClient exercises this interface by calling add, 
+subtract, multiply and divide operations. This results in messages passing to 
+the appropriate components in the composite across the local wires.
 
 calculator\
   src\
     main\
       java\
         calculator\
-          CalculatorService.java  - the first componet calls +-/* as appropriate
+          CalculatorService.java  - the first componet calls +-/* as 
+                                    appropriate
           AddService.java         - adds two numbers
           SubtractService.java    - substracts one number from another
           MultipleService.java    - multiplies two numbers
           DivideService.java      - divides one number by another
-          CalculatorClient.java   - used when Ant is running the sample
+          CalculatorClient.java   - starts the SCA Runtime and 
+                                    deploys the Calculator.composite. 
+                                    It then calls the deployed Calculator 
+                                    Components services
       resources\
         Calculator.composite      - the SCA assembly for this sample
   calculator.png - a pictorial representation of the sample .composite file
   build.xml      - the Ant build file
   pom.xml        - the Maven build file        
-
-The sample provides a single service with a default SCA (java) binding. The
-CalculatorClient exercises this interface by calling add, subtract, multiply
-and divide operations. This results in messages paaing to the appropriate 
-components in the composite following the result is returned to the client and
-displayed. 
 
 Building And Runing The Sample Using Ant
 ----------------------------------------
