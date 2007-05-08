@@ -20,7 +20,6 @@
 package org.apache.tuscany.provider;
 
 import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
 
@@ -53,13 +52,4 @@ public interface ImplementationProvider extends ProviderActivator {
      */
     Invoker createCallbackInvoker(Operation operation);
     
-    /**
-     * Get the effective interface contract imposed by the implementation.
-     * 
-     * @param service The component service
-     * @return The effective interface contract, if null is returned, the interface contract
-     * for the component service will be used
-     */
-    InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service);
-  
 }
