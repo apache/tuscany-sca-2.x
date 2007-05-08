@@ -56,7 +56,7 @@ public class RuntimeSCABindingImpl extends SCABindingImpl implements SCABinding,
         return wires;
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
+    public Interceptor createInvoker(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
         return null;
     }
 

@@ -24,6 +24,7 @@ import org.apache.tuscany.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 
 /**
@@ -31,46 +32,32 @@ import org.apache.tuscany.invocation.Message;
  */
 public class InvocationChainImplTestCase extends TestCase {
 
-    public void testInsertAtPos() throws Exception {
-        InvocationChain chain = new InvocationChainImpl(new OperationImpl("foo"));
-        Interceptor inter3 = new MockInterceptor();
-        Interceptor inter2 = new MockInterceptor();
-        Interceptor inter1 = new MockInterceptor();
-        chain.addInterceptor(inter3);
-        chain.addInterceptor(0, inter1);
-        chain.addInterceptor(1, inter2);
-        Interceptor head = chain.getHeadInterceptor();
-        assertEquals(inter1, head);
-        assertEquals(inter2, head.getNext());
-        assertEquals(inter3, head.getNext().getNext());
-    }
-
     public void testInsertAtEnd() throws Exception {
         InvocationChain chain = new InvocationChainImpl(new OperationImpl("foo"));
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
-        chain.addInterceptor(0, inter1);
-        chain.addInterceptor(1, inter2);
-        Interceptor head = chain.getHeadInterceptor();
+        chain.addInterceptor(inter1);
+        chain.addInterceptor(inter2);
+        Interceptor head = (Interceptor)chain.getHeadInvoker();
         assertEquals(inter1, head);
         assertEquals(inter2, head.getNext());
-        assertEquals(inter2, chain.getTailInterceptor());
+        assertEquals(inter2, chain.getTailInvoker());
 
     }
 
     private class MockInterceptor implements Interceptor {
 
-        private Interceptor next;
+        private Invoker next;
 
         public Message invoke(Message msg) {
             return null;
         }
 
-        public void setNext(Interceptor next) {
+        public void setNext(Invoker next) {
             this.next = next;
         }
 
-        public Interceptor getNext() {
+        public Invoker getNext() {
             return next;
         }
 

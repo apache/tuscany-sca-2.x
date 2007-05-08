@@ -16,41 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.implementation.java.invocation;
 
-package org.apache.tuscany.implementation.spi;
-
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
+import org.osoa.sca.ServiceRuntimeException;
+
 
 /**
- * TODO: couldn't something like this class be provided by the runtime?
- *   or even better, how about a new "Invoker" interface that just 
- *   has an invoke method and not the next an optimizable stuff
+ * Serves as a tail interceptor on a target wire chain. This implementation dispatches to the target invoker passed
+ * inside the wire message. Target invokers are passed from the source in order to allow for caching of target
+ * instances.
+ *
+ * @version $Rev$ $Date$
+ * @Deprecated
+ * @see org.apache.tuscany.implementation.java.invocation.TargetInvoker
  */
-public abstract class AbstractInterceptor implements Interceptor {
-
-    private Interceptor next;
+public class TargetInvokerInvoker implements Invoker {
+    private TargetInvoker invoker;
+    
+    public TargetInvokerInvoker(TargetInvoker invoker) {
+        this.invoker = invoker;
+    }
 
     public Message invoke(Message msg) {
-        try {
-            Object resp = doInvoke((Object[])msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setFaultBody(e.getCause());
+        if (invoker == null) {
+            throw new ServiceRuntimeException("No target invoker specified on message");
         }
-        return msg;
-    }
-
-    abstract public Object doInvoke(Object[] objects) throws InvocationTargetException;
-
-    public Interceptor getNext() {
-        return next;
-    }
-
-    public void setNext(Interceptor next) {
-        this.next = next;
+        return invoker.invoke(msg);
     }
 
 }

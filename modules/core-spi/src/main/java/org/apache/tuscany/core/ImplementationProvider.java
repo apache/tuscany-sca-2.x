@@ -21,7 +21,7 @@ package org.apache.tuscany.core;
 
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 
 /**
  * A component implementation can implement this interface to provide additional logic 
@@ -31,25 +31,26 @@ import org.apache.tuscany.invocation.Interceptor;
  */
 public interface ImplementationProvider {
     /**
-     * Create an intercetor for the component implementation in the invocation
-     * chain. The interceptor will be responsible for calling the implementation
+     * Create an invoker for the component implementation in the invocation
+     * chain. The invoker will be responsible for calling the implementation
      * logic for the given component.
      * 
      * @param component The component that owns the component service
      * @param service The component service
      * @param operation The operation that the interceptor will handle
-     * @return An interceptor that handles the invocation logic, null should be
-     *         returned if no interceptor is required
+     * @return An invoker that handles the invocation logic, null should be
+     *         returned if no invoker is required
      */
-    Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentService service, Operation operation);
+    Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation);
 
     /**
-     * Create an interceptor to call back to the given component
+     * Create an invoker to call back to the given component
      * @param component The component that receives the callback
      * @param operation The operation
-     * @return
+     * @return An invoker that handles the invocation logic, null should be
+     *         returned if no invoker is required
      */
-    Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation);
+    Invoker createCallbackInvoker(RuntimeComponent component, Operation operation);
     
     /**
      * Get the effective interface contract imposed by the implementation.

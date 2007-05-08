@@ -21,6 +21,7 @@ package echo;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 
 /**
@@ -28,8 +29,7 @@ import org.apache.tuscany.invocation.Message;
  * 
  * @version $Rev$ $Date$
  */
-public class EchoBindingInterceptor implements Interceptor {
-    private Interceptor next;
+public class EchoBindingInvoker implements Invoker {
 
     private Object echo(Object[] args) throws InvocationTargetException {
         // echo back the result, a real binding would invoke some API for flowing the request
@@ -47,18 +47,5 @@ public class EchoBindingInterceptor implements Interceptor {
         }
         return msg;
     }  
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    public Interceptor getNext() {
-        return next;
-    }
-
-    public void setNext(Interceptor next) {
-        this.next = next;
-    }
 
 }

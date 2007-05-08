@@ -24,18 +24,19 @@ import java.lang.reflect.InvocationTargetException;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
-import org.apache.tuscany.implementation.spi.AbstractInterceptor;
+import org.apache.tuscany.invocation.Invoker;
+import org.apache.tuscany.invocation.Message;
 
 /**
  * Perform the actual script invocation
  */
-public class ScriptInvoker extends AbstractInterceptor {
+public class ScriptInvoker implements Invoker {
 
     protected ScriptImplementation impl;
     protected String operationName;
 
     /**
-     * TODO: pasing in the impl is a bit of a hack to get at scriptEngine as thats all this uses
+     * TODO: passing in the impl is a bit of a hack to get at scriptEngine as thats all this uses
      * but its not created till the start method which is called after the invokers are created 
      */
     public ScriptInvoker(ScriptImplementation impl, String operationName) {
@@ -43,8 +44,7 @@ public class ScriptInvoker extends AbstractInterceptor {
         this.operationName = operationName;
     }
 
-    @Override
-    public Object doInvoke(Object[] objects) throws InvocationTargetException {
+    private Object doInvoke(Object[] objects) throws InvocationTargetException {
         try {
 
             return ((Invocable)impl.scriptEngine).invokeFunction(operationName, objects);
@@ -52,6 +52,16 @@ public class ScriptInvoker extends AbstractInterceptor {
         } catch (ScriptException e) {
             throw new InvocationTargetException(e);
         }
+    }
+
+    public Message invoke(Message msg) {
+        try {
+            Object resp = doInvoke((Object[])msg.getBody());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setFaultBody(e.getCause());
+        }
+        return msg;
     }
 
 }

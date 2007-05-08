@@ -47,7 +47,7 @@ public abstract class AbstractInvocationHandler {
                             Object correlationId,
                             LinkedList<URI> callbackUris, WorkContext workContext)
         throws Throwable {
-        Interceptor headInterceptor = chain.getHeadInterceptor();
+        Invoker headInvoker = chain.getHeadInvoker();
         Message msg = new MessageImpl();
         msg.setWorkContext(workContext);
         msg.setCorrelationID(workContext.getCorrelationId());
@@ -69,7 +69,7 @@ public abstract class AbstractInvocationHandler {
         }
         msg.setBody(args);
         // dispatch the wire down the chain and get the response
-        Message resp = headInterceptor.invoke(msg);
+        Message resp = headInvoker.invoke(msg);
         Object body = resp.getBody();
         if (resp.isFault()) {
             throw (Throwable) body;

@@ -21,24 +21,24 @@ package org.apache.tuscany.core;
 
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface ReferenceBindingProvider {
     /**
-     * Create an intercetor for the reference binding in the invocation chain.
-     * The interceptor is responsible for making the outbound invocation over
+     * Create an invoker for the reference binding in the invocation chain.
+     * The invoker is responsible for making the outbound invocation over
      * the binding protocol.
      * 
      * @param model The service that defines the binding
      * @param operation The operation that the interceptor will handle
      * @param isCallback A flag to tell if the operation is for the callback
-     * @return An interceptor that handles the invocation logic, null should be
-     *         returned if no interceptor is required
+     * @return An invoker that handles the invocation logic, null should be
+     *         returned if no invoker is required
      */
-    Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback);
+    Invoker createInvoker(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback);
 
     /**
      * Get the effective interface contract imposed by the binding. For example,

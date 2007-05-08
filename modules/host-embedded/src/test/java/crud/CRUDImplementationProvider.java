@@ -27,7 +27,7 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
@@ -53,12 +53,12 @@ public class CRUDImplementationProvider extends CRUDImplementationImpl implement
         super(assemblyFactory, javaFactory, introspector);
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
+    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
         CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(getDirectory()));
         return invoker;
     }
 
-    public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
+    public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
         CRUDImplementation impl = (CRUDImplementation)component.getImplementation();
         CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(impl.getDirectory()));
         return invoker;

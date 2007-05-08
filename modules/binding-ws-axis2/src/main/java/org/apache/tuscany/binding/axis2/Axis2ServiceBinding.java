@@ -189,7 +189,7 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
             throw new IllegalStateException("no InvocationChain on wire for operation " + op);
         }
         
-        Interceptor headInterceptor = chain.getHeadInterceptor();
+        Interceptor headInterceptor = chain.getHeadInvoker();
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (isConversational() && conversationID != null) {

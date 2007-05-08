@@ -31,8 +31,8 @@ import org.apache.tuscany.core.ServiceBindingActivator;
 import org.apache.tuscany.core.ServiceBindingProvider;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Invoker;
 
 /**
  * Implementation of the Echo binding provider.
@@ -42,14 +42,14 @@ import org.apache.tuscany.invocation.InvocationChain;
 public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBindingActivator,
     ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider {
 
-    public Interceptor createInterceptor(RuntimeComponent component,
+    public Invoker createInvoker(RuntimeComponent component,
                                          RuntimeComponentReference reference,
                                          Operation operation,
                                          boolean isCallback) {
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {
-            return new EchoBindingInterceptor();
+            return new EchoBindingInvoker();
         }
     }
 
@@ -74,7 +74,7 @@ public class EchoBindingProvider extends EchoBindingImpl implements ReferenceBin
         RuntimeWire wire = componentService.getRuntimeWire(this);
         InvocationChain chain = wire.getInvocationChains().get(0);
         // Register with the hosting server
-        EchoServer.getServer().register(new EchoService(chain.getHeadInterceptor()), uri);
+        EchoServer.getServer().register(new EchoService(chain.getHeadInvoker()), uri);
     }
 
     public void stop(RuntimeComponent component, RuntimeComponentService service) {

@@ -16,37 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.mock;
 
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+package org.apache.tuscany.core;
 
-public class MockSyncInterceptor implements Interceptor {
+import org.apache.tuscany.assembly.Implementation;
 
-    private int count;
-
-    private Invoker next;
-
-    public MockSyncInterceptor() {
-    }
-
-    public Message invoke(Message msg) {
-        ++count;
-        return next.invoke(msg);
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setNext(Invoker next) {
-        this.next = next;
-    }
-
-    public Invoker getNext() {
-        return next;
-    }
-
+/**
+ * @version $Rev$ $Date$
+ */
+public interface RuntimeImplementation extends Implementation {
+    
+    ImplementationActivator getImplementationActivator();
+    
+    ImplementationProvider getImplementationProvider();
+    
 }
-

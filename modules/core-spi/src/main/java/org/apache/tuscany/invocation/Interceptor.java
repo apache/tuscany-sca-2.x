@@ -26,13 +26,13 @@ package org.apache.tuscany.invocation;
 public interface Interceptor extends Invoker {
 
     /**
-     * Sets the next interceptor
+     * Sets the next invoker
      */
-    void setNext(Interceptor next);
+    void setNext(Invoker next);
 
     /**
-     * Returns the next interceptor or null
+     * Returns the next invoker or null
      */
-    Interceptor getNext();
+    Invoker getNext();
 
 }
