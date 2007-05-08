@@ -1,0 +1,69 @@
+Binding Echo Sample
+===================
+
+This sample demonstrates how new bindings are constructed for Apache Tuscany 
+SCA. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+
+This sample contains a implementation of an SCA binding that simple echos back 
+any messages that are sent to it. 
+
+binding-echo\
+  src\
+    main\
+      java\
+        echo\       - The binding interfaces
+          impl      - The bindings model classes
+          module\   - The activator that loads the binding into the SCA runtime
+          provider\ - The bindings runtime classes
+          server\   - A dumy server that the binding is plugged into
+
+TBD - more detail required
+
+Building And Runing The Sample Using Ant
+----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd binding-echo
+ant 
+
+You should see the following output from the run target.
+
+run:
+     [java] Returned message: foo
+     [java] Echo reference = foo
+     [java] Returned message: baa
+     [java] Echo service = baa
+
+Building And Runing The Sample Using Maven 
+------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd binding-echo
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running echo.EchoReferenceTestCase
+Returned message: foo
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.111 sec
+Running echo.EchoServiceTestCase
+Returned message: foo
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.121 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
