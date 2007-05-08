@@ -96,13 +96,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
     protected void startComposite(Composite composite) {
         for (Component component : composite.getComponents()) {
             
-            if (component instanceof RuntimeComponent) {
-                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
-                if (runtimeComponent.getScopeContainer() != null) {
-                    runtimeComponent.getScopeContainer().start();
-                }
-            }
-
             for (ComponentService service : component.getServices()) {
                 for (Binding binding : service.getBindings()) {
                     if (binding instanceof ServiceBindingActivator) {
@@ -125,6 +118,14 @@ public class DefaultCompositeActivator implements CompositeActivator {
             } else if (implementation instanceof ImplementationActivator) {
                 ((ImplementationActivator)implementation).start((RuntimeComponent)component);
             }
+
+            if (component instanceof RuntimeComponent) {
+                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+                if (runtimeComponent.getScopeContainer() != null) {
+                    runtimeComponent.getScopeContainer().start();
+                }
+            }
+            
         }
 
     }
@@ -154,13 +155,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
     public void stop(Composite composite) {
         for (Component component : composite.getComponents()) {
             
-            if (component instanceof RuntimeComponent) {
-                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
-                if (runtimeComponent.getScopeContainer() != null) {
-                    runtimeComponent.getScopeContainer().stop();
-                }
-            }
-            
             for (ComponentService service : component.getServices()) {
                 for (Binding binding : service.getBindings()) {
                     if (binding instanceof ServiceBindingActivator) {
@@ -183,6 +177,15 @@ public class DefaultCompositeActivator implements CompositeActivator {
             } else if (implementation instanceof ImplementationActivator) {
                 ((ImplementationActivator)implementation).stop((RuntimeComponent)component);
             }
+
+            if (component instanceof RuntimeComponent) {
+                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+                if (runtimeComponent.getScopeContainer() != null) {
+                    runtimeComponent.getScopeContainer().stop();
+                }
+            }
+            
+            
         }
 
     }
