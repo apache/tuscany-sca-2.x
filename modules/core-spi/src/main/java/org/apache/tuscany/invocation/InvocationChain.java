@@ -52,25 +52,32 @@ public interface InvocationChain {
     void addInterceptor(Interceptor interceptor);
 
     /**
+     * Adds an invoker to the chain
+     *
+     * @param invoker the invoker to add
+     */
+    void addInvoker(Invoker invoker);
+
+    /**
+     * Returns the first invoker in the chain.
+     *
+     * @return the first invoker in the chain
+     */
+    Invoker getHeadInvoker();
+
+    /**
+     * Returns the last invoker in the chain.
+     *
+     * @return the last invoker in the chain
+     */
+    Invoker getTailInvoker();
+
+    /**
      * Adds an interceptor at the given position in the interceptor stack
      *
      * @param index       the position in the interceptor stack to add the interceptor
      * @param interceptor the interceptor to add
      */
     void addInterceptor(int index, Interceptor interceptor);
-
-    /**
-     * Returns the first interceptor in the chain.
-     *
-     * @return the first interceptor in the chain
-     */
-    Interceptor getHeadInterceptor();
-
-    /**
-     * Returns the last interceptor in the chain.
-     *
-     * @return the last interceptor in the chain
-     */
-    Interceptor getTailInterceptor();
 
 }

@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.invocation.ConversationSequence;
 import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -40,7 +41,7 @@ public class NonBlockingInterceptor implements Interceptor {
 
     private WorkScheduler workScheduler;
     private WorkContext workContext;
-    private Interceptor next;
+    private Invoker next;
 
     public NonBlockingInterceptor(WorkScheduler workScheduler, WorkContext workContext) {
         this.workScheduler = workScheduler;
@@ -75,11 +76,11 @@ public class NonBlockingInterceptor implements Interceptor {
         return RESPONSE;
     }
 
-    public Interceptor getNext() {
+    public Invoker getNext() {
         return next;
     }
 
-    public void setNext(Interceptor next) {
+    public void setNext(Invoker next) {
         this.next = next;
     }
 

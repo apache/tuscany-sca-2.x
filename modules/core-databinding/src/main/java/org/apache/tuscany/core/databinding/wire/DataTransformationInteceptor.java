@@ -33,6 +33,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.FaultException;
 import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 
 /**
@@ -41,7 +42,7 @@ import org.apache.tuscany.invocation.Message;
  * @version $Rev$ $Date$
  */
 public class DataTransformationInteceptor implements Interceptor {
-    private Interceptor next;
+    private Invoker next;
 
     private Operation sourceOperation;
 
@@ -57,10 +58,7 @@ public class DataTransformationInteceptor implements Interceptor {
         this.targetOperation = targetOperation;
     }
 
-    /**
-     * @see org.apache.tuscany.invocation.Interceptor#getNext()
-     */
-    public Interceptor getNext() {
+    public Invoker getNext() {
         return next;
     }
 
@@ -212,10 +210,7 @@ public class DataTransformationInteceptor implements Interceptor {
         return mediator.mediate(source, eSourceDataType, eTargetDataType, metadata);
     }
 
-    /**
-     * @see org.apache.tuscany.invocation.Interceptor#setNext(org.apache.tuscany.invocation.Interceptor)
-     */
-    public void setNext(Interceptor next) {
+    public void setNext(Invoker next) {
         this.next = next;
     }
 

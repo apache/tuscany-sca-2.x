@@ -21,6 +21,7 @@ package org.apache.tuscany.core.invocation;
 import org.osoa.sca.NoRegisteredCallbackException;
 
 import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 
 /**
@@ -31,7 +32,7 @@ import org.apache.tuscany.invocation.Message;
  */
 public class CallbackInterfaceInterceptor implements Interceptor {
     private boolean invokingServiceImplements;
-    private Interceptor next;
+    private Invoker next;
 
     public CallbackInterfaceInterceptor(boolean invokingServiceImplements) {
         this.invokingServiceImplements = invokingServiceImplements;
@@ -46,11 +47,11 @@ public class CallbackInterfaceInterceptor implements Interceptor {
         return next.invoke(msg);
     }
 
-    public void setNext(Interceptor next) {
+    public void setNext(Invoker next) {
         this.next = next;
     }
 
-    public Interceptor getNext() {
+    public Invoker getNext() {
         return next;
     }
 

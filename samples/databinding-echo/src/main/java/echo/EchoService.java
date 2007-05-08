@@ -20,7 +20,7 @@ package echo;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -30,11 +30,11 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
  * @version $Rev$ $Date$
  */
 public class EchoService {
-    private Interceptor interceptor;
+    private Invoker invoker;
 
-    public EchoService(Interceptor interceptor) {
+    public EchoService(Invoker invoker) {
         super();
-        this.interceptor = interceptor;
+        this.invoker = invoker;
     }
 
     public String sendReceive(String input) throws InvocationTargetException {
@@ -47,7 +47,7 @@ public class EchoService {
         Message resp;
 
         // dispatch and get the response
-        resp = interceptor.invoke(msg);
+        resp = invoker.invoke(msg);
         Object body = resp.getBody();
         if (resp.isFault()) {
             throw new InvocationTargetException((Throwable)body);

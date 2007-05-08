@@ -43,8 +43,8 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
 import org.apache.tuscany.rmi.RMIHost;
@@ -112,12 +112,12 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
         
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
+    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
        try {
             Method remoteMethod = 
                 JavaInterfaceUtil.findMethod(((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass(),
                                                 operation);
-            return new RMIBindingInterceptor(rmiHost, 
+            return new RMIBindingInvoker(rmiHost, 
                                              getRmiHostName(), 
                                              getRmiPort(), 
                                              getRmiServiceName(), 
@@ -203,7 +203,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
             throw new IllegalStateException("no InvocationChain on wire for operation " + op);
         }
         
-        Interceptor headInterceptor = chain.getHeadInterceptor();
+        Invoker headInvoker = chain.getHeadInvoker();
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         
         Message msg = new MessageImpl();
@@ -212,7 +212,7 @@ ReferenceBindingProvider, ServiceBindingActivator, ServiceBindingProvider, Metho
 
         Message resp;
         // dispatch the wire down the chain and get the response
-        resp = headInterceptor.invoke(msg);
+        resp = headInvoker.invoke(msg);
         Object body = resp.getBody();
         if (resp.isFault()) {
             throw new InvocationTargetException((Throwable) body);

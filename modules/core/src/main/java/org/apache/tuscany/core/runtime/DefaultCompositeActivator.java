@@ -49,8 +49,8 @@ import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -440,15 +440,15 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                               boolean isCallback) {
         if (component.getImplementation() instanceof ImplementationProvider) {
             ImplementationProvider provider = (ImplementationProvider)component.getImplementation();
-            Interceptor interceptor = null;
+            Invoker invoker = null;
             if (!isCallback) {
-                interceptor = provider.createInterceptor((RuntimeComponent)component,
+                invoker = provider.createInvoker((RuntimeComponent)component,
                                                          (RuntimeComponentService)service,
                                                          operation);
             } else {
-                interceptor = provider.createCallbackInterceptor((RuntimeComponent)component, operation);
+                invoker = provider.createCallbackInvoker((RuntimeComponent)component, operation);
             }
-            chain.addInterceptor(interceptor);
+            chain.addInvoker(invoker);
         }
     }
 
@@ -470,12 +470,12 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                       boolean isCallback) {
         if (binding instanceof ReferenceBindingProvider) {
             ReferenceBindingProvider provider = (ReferenceBindingProvider)binding;
-            Interceptor interceptor = provider.createInterceptor((RuntimeComponent)component,
+            Invoker invoker = provider.createInvoker((RuntimeComponent)component,
                                                                  (RuntimeComponentReference)reference,
                                                                  operation,
                                                                  isCallback);
-            if (interceptor != null) {
-                chain.addInterceptor(interceptor);
+            if (invoker != null) {
+                chain.addInvoker(invoker);
             }
         }
     }

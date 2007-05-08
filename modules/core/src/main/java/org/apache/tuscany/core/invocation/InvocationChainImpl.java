@@ -21,6 +21,7 @@ package org.apache.tuscany.core.invocation;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Invoker;
 
 /**
  * Default implementation of an invocation chain
@@ -28,10 +29,10 @@ import org.apache.tuscany.invocation.InvocationChain;
  * @version $Rev$ $Date$
  */
 public class InvocationChainImpl implements InvocationChain {
-    protected Operation sourceOperation;
-    protected Operation targetOperation;
-    protected Interceptor interceptorChainHead;
-    protected Interceptor interceptorChainTail;
+    private Operation sourceOperation;
+    private Operation targetOperation;
+    private Invoker invokerChainHead;
+    private Invoker invokerChainTail;
 
     public InvocationChainImpl(Operation operation) {
         assert operation != null;
@@ -51,46 +52,35 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     public void addInterceptor(Interceptor interceptor) {
-        if (interceptorChainHead == null) {
-            interceptorChainHead = interceptor;
+        if (invokerChainHead == null) {
+            invokerChainHead = interceptor;
         } else {
-            interceptorChainTail.setNext(interceptor);
+            if (invokerChainHead instanceof Interceptor) {
+                ((Interceptor)invokerChainTail).setNext(interceptor);
+            }
         }
-        interceptorChainTail = interceptor;
+        invokerChainTail = interceptor;
     }
 
-    public void addInterceptor(int index, Interceptor interceptor) {
-        int i = 0;
-        Interceptor next = interceptorChainHead;
-        Interceptor prev = null;
-        while (next != null && i < index) {
-            prev = next;
-            next = next.getNext();
-            i++;
-        }
-        if (i == index) {
-            if (prev != null) {
-                prev.setNext(interceptor);
-            } else {
-                interceptorChainHead = interceptor;
-            }
-            interceptor.setNext(next);
-            if (next == null) {
-                interceptorChainTail = interceptor;
-            }
+    public void addInvoker(Invoker invoker) {
+        if (invokerChainHead == null) {
+            invokerChainHead = invoker;
         } else {
-            throw new ArrayIndexOutOfBoundsException(index);
+            if (invokerChainTail instanceof Interceptor) {
+                ((Interceptor)invokerChainTail).setNext(invoker);
+            }
         }
+        invokerChainTail = invoker;
     }
 
-    public Interceptor getHeadInterceptor() {
-        return interceptorChainHead;
+    public Invoker getHeadInvoker() {
+        return invokerChainHead;
     }
 
-    public Interceptor getTailInterceptor() {
-        return interceptorChainTail;
+    public Invoker getTailInvoker() {
+        return invokerChainTail;
     }
-
+    
     /**
      * @return the sourceOperation
      */
@@ -103,6 +93,34 @@ public class InvocationChainImpl implements InvocationChain {
      */
     public void setSourceOperation(Operation sourceOperation) {
         this.sourceOperation = sourceOperation;
+    }
+
+    public void addInterceptor(int index, Interceptor interceptor) {
+        int i = 0;
+        Invoker next = invokerChainHead;
+        Invoker prev = null;
+        while (next != null && i < index) {
+            prev = next;
+            if (next instanceof Interceptor) {
+                next = ((Interceptor)next).getNext();
+                i++;
+            } else {
+                throw new ArrayIndexOutOfBoundsException(index);
+            }
+        }
+        if (i == index) {
+            if (prev != null) {
+                ((Interceptor)prev).setNext(interceptor);
+            } else {
+                invokerChainHead = interceptor;
+            }
+            interceptor.setNext(next);
+            if (next == null) {
+                invokerChainTail = interceptor;
+            }
+        } else {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
     }
 
 }

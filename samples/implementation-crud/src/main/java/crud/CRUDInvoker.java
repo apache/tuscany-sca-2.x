@@ -22,7 +22,7 @@ package crud;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 
 /**
@@ -35,7 +35,7 @@ import org.apache.tuscany.invocation.Message;
  * 
  * @version $Rev$ $Date$
  */
-public class CRUDInvoker implements Interceptor {
+public class CRUDInvoker implements Invoker {
     private Operation operation;
     private ResourceManager resourceManager;
     
@@ -74,10 +74,4 @@ public class CRUDInvoker implements Interceptor {
         }
     }
 
-    public Interceptor getNext() {
-        return null;
-    }
-
-    public void setNext(Interceptor next) {
-    }
 }

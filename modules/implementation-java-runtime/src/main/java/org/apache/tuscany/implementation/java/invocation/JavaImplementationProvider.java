@@ -38,6 +38,7 @@ import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Interceptor;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
@@ -154,19 +155,19 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
         return atomicComponent.createInstance();
     }
 
-    public Interceptor createInterceptor(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
+    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
         JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         try {
-            return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(operation));
+            return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    public Interceptor createCallbackInterceptor(RuntimeComponent component, Operation operation) {
+    public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
         JavaComponentInfo atomicComponent = (JavaComponentInfo)component.getImplementationConfiguration();
         try {
-            return new TargetInvokerInterceptor(atomicComponent.createTargetInvoker(operation));
+            return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }
