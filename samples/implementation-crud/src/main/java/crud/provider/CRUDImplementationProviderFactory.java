@@ -19,6 +19,7 @@
 package crud.provider;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.provider.ImplementationProvider;
@@ -44,8 +45,7 @@ public class CRUDImplementationProviderFactory extends CRUDImplementationImpl im
         super(assemblyFactory, javaFactory, introspector);
     }
 
-    
-    public ImplementationProvider createImplementationProvider() {
-        return new CRUDImplementationProvider(this);
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component) {
+        return new CRUDImplementationProvider(component, this);
     }
 }

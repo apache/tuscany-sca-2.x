@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.provider.ImplementationProvider;
@@ -57,7 +58,7 @@ public class ScriptImplementation extends AbstractImplementation implements Impl
         this.scriptSrc = scriptSrc;
     }
 
-    public ImplementationProvider createImplementationProvider() {
-        return new ScriptImplementationProvider(this);
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component) {
+        return new ScriptImplementationProvider(component, this);
     }
 }

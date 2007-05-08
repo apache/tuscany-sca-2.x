@@ -42,21 +42,23 @@ import crud.backend.ResourceManager;
  */
 public class CRUDImplementationProvider implements ImplementationProvider {
     
+    private RuntimeComponent component;
     private CRUDImplementation implementation;
 
     /**
      * Constructs a new CRUD implementation.
      */
-    public CRUDImplementationProvider(CRUDImplementation implementation) {
+    public CRUDImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
+        this.component = component;
         this.implementation = implementation;
     }
 
-    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
+    public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
     }
 
-    public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
+    public Invoker createCallbackInvoker(Operation operation) {
         CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
     }
@@ -65,16 +67,12 @@ public class CRUDImplementationProvider implements ImplementationProvider {
         return service.getInterfaceContract();
     }
 
-    public void start(RuntimeComponent component) {
+    public void start() {
         System.out.println("Starting " + component.getName());
     }
 
-    public void stop(RuntimeComponent component) {
+    public void stop() {
         System.out.println("Stopping " + component.getName());
-    }
-
-    public void configure(RuntimeComponent component) {
-        System.out.println("Configuring " + component.getName());
     }
 
 }

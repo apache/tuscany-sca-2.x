@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.provider;
 
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 
 /**
@@ -27,7 +26,7 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider extends ServiceBindingActivator {
+public interface ServiceBindingProvider extends ProviderActivator {
     /**
      * Get the effective interface contract imposed by the binding. For example,
      * it will be interface contract introspected from the WSDL portType used by
@@ -37,5 +36,5 @@ public interface ServiceBindingProvider extends ServiceBindingActivator {
      * @return The effective interface contract, if null is returned, the interface contract
      * for the component service will be used
      */
-    InterfaceContract getBindingInterfaceContract(RuntimeComponentService service);
+    InterfaceContract getBindingInterfaceContract();
 }

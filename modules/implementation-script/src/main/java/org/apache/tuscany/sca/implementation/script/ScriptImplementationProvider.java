@@ -50,22 +50,24 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
  */
 public class ScriptImplementationProvider implements ImplementationProvider {
 
+    protected RuntimeComponent component;
     protected ScriptImplementation implementation;
     protected ScriptEngine scriptEngine;
 
-    public ScriptImplementationProvider(ScriptImplementation implementation) {
+    public ScriptImplementationProvider(RuntimeComponent component, ScriptImplementation implementation) {
+        this.component = component;
         this.implementation = implementation;
     }
 
-    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation) {
+    public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         return new ScriptInvoker(this, operation.getName());
     }
 
-    public Invoker createCallbackInvoker(RuntimeComponent component, Operation operation) {
+    public Invoker createCallbackInvoker(Operation operation) {
         return new ScriptInvoker(this, operation.getName());
     }
     
-    public void start(RuntimeComponent component) {
+    public void start() {
         try {
             scriptEngine = getScriptEngineByExtension(implementation.getScriptLanguage());
             if (scriptEngine == null) {
@@ -94,10 +96,10 @@ public class ScriptImplementationProvider implements ImplementationProvider {
         }
     }
     
-    public void stop(RuntimeComponent component) {
+    public void stop() {
     }
     
-    public void configure(RuntimeComponent component) {
+    public void configure() {
     }
     
     public InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service) {

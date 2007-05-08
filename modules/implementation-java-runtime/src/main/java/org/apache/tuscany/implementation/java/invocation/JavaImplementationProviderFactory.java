@@ -19,38 +19,15 @@
 
 package org.apache.tuscany.implementation.java.invocation;
 
-import java.net.URI;
-
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.scope.CompositeScopeContainer;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.implementation.java.impl.JavaImplementationImpl;
-import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.implementation.java.injection.ResourceHost;
-import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.provider.ImplementationActivator;
 import org.apache.tuscany.provider.ImplementationProvider;
 import org.apache.tuscany.provider.ImplementationProviderFactory;
-import org.apache.tuscany.provider.ScopedImplementationProvider;
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.scope.ScopeNotFoundException;
-import org.apache.tuscany.scope.ScopeRegistry;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -73,7 +50,7 @@ public class JavaImplementationProviderFactory extends JavaImplementationImpl im
         this.propertyValueObjectFactory = propertyValueObjectFactory;
     }
 
-    public ImplementationProvider createImplementationProvider() {
-        return new JavaImplementationProvider(this, proxyService, workContext, dataBindingRegistry, propertyValueObjectFactory);
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component) {
+        return new JavaImplementationProvider(component, this, proxyService, workContext, dataBindingRegistry, propertyValueObjectFactory);
     }
 }

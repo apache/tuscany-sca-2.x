@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.provider;
 
-import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
 
@@ -41,18 +40,16 @@ public interface ScopedImplementationProvider extends ImplementationProvider {
     /**
      * Indicate if the component needs to be eagerly initialized
      * 
-     * @param component The component
      * @return true if the component is marked to be eagerly initialized, false
      *         otherwise
      */
-    boolean isEagerInit(RuntimeComponent component);
+    boolean isEagerInit();
 
     /**
      * Create a wrapper for the component instance for the scope management
      * 
-     * @param component The component
      * @return A wrapper for the component instance
      */
-    InstanceWrapper createInstanceWrapper(RuntimeComponent component);
+    InstanceWrapper createInstanceWrapper();
 
 }

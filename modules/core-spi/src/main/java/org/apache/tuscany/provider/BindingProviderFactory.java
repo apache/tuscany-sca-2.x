@@ -20,14 +20,33 @@
 package org.apache.tuscany.provider;
 
 import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface BindingProviderFactory extends Binding {
-    
-    ReferenceBindingProvider createReferenceBindingProvider();
-    
-    ServiceBindingProvider createServiceBindingProvider();
+
+    /**
+     * Creates a new reference binding provider for the given
+     * component and reference.
+     * 
+     * @param component
+     * @param reference
+     * @return
+     */
+    ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference);
+
+    /**
+     * Creates a new service binding provider for the given
+     * component and service.
+     * 
+     * @param component
+     * @param service
+     * @return
+     */
+    ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service);
     
 }

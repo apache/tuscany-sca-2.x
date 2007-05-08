@@ -19,6 +19,9 @@
 
 package echo.provider;
 
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.provider.BindingProviderFactory;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
 import org.apache.tuscany.provider.ServiceBindingProvider;
@@ -33,12 +36,12 @@ import echo.impl.EchoBindingImpl;
  */
 public class EchoBindingProviderFactory extends EchoBindingImpl implements BindingProviderFactory {
 
-    public ReferenceBindingProvider createReferenceBindingProvider() {
-        return new EchoReferenceBindingProvider();
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
+        return new EchoReferenceBindingProvider(component, reference);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider() {
-        return new EchoServiceBindingProvider(this);
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service) {
+        return new EchoServiceBindingProvider(component, service, this);
     }
     
 }

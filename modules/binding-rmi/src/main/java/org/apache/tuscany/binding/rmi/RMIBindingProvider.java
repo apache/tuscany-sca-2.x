@@ -60,6 +60,9 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
 public class RMIBindingProvider implements ReferenceBindingProvider,
     ServiceBindingProvider, MethodInterceptor {
 
+    private RuntimeComponent component;
+    private RuntimeComponentService service;
+    private RuntimeComponentReference reference;
     private RMIBinding binding;
     private RMIHost rmiHost;
     private RuntimeWire wire;
@@ -70,52 +73,60 @@ public class RMIBindingProvider implements ReferenceBindingProvider,
     // and the component match in their service contracts.
     private Interface serviceInterface;
     
-    public RMIBindingProvider(RMIBinding binding, RMIHost rmiHost) {
+    public RMIBindingProvider(RuntimeComponent component, RuntimeComponentService service, RMIBinding binding, RMIHost rmiHost) {
+        this.component = component;
+        this.service = service;
         this.binding = binding;
         this.rmiHost = rmiHost;
     }
 
-    public InterfaceContract getBindingInterfaceContract(RuntimeComponentService service) {
-        return service.getInterfaceContract();
+    public RMIBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, RMIBinding binding, RMIHost rmiHost) {
+        this.component = component;
+        this.reference = reference;
+        this.binding = binding;
+        this.rmiHost = rmiHost;
     }
 
-    public void start(RuntimeComponent component, RuntimeComponentReference reference) {
+    public InterfaceContract getBindingInterfaceContract() {
+        if (service != null)
+            return service.getInterfaceContract();
+        else
+            return reference.getInterfaceContract();
     }
 
-    public void stop(RuntimeComponent component, RuntimeComponentReference reference) {
-    }
-
-    public void start(RuntimeComponent component, RuntimeComponentService service) {
-        URI uri = URI.create(component.getURI() + "/" + binding.getName());
-        binding.setURI(uri.toString());
-        RuntimeComponentService componentService = (RuntimeComponentService) service;
-        
-        //TODO : Need to figure out why we do a get(0)... will this work always...
-        this.wire = componentService.getRuntimeWires().get(0);
-        this.serviceInterface = service.getInterfaceContract().getInterface();
-        
-        Remote rmiProxy = createRmiService();
-        
-        try {
-            rmiHost.registerService(binding.getRmiServiceName(),
-                                    getPort(binding.getRmiPort()),
-                                    rmiProxy);
-        } catch (RMIHostException e) {
-            throw new NoRemoteServiceException(e);
+    public void start() {
+        if (service != null) {
+            URI uri = URI.create(component.getURI() + "/" + binding.getName());
+            binding.setURI(uri.toString());
+            
+            //TODO : Need to figure out why we do a get(0)... will this work always...
+            this.wire = service.getRuntimeWires().get(0);
+            this.serviceInterface = service.getInterfaceContract().getInterface();
+            
+            Remote rmiProxy = createRmiService();
+            
+            try {
+                rmiHost.registerService(binding.getRmiServiceName(),
+                                        getPort(binding.getRmiPort()),
+                                        rmiProxy);
+            } catch (RMIHostException e) {
+                throw new NoRemoteServiceException(e);
+            }
         }
     }
 
-    public void stop(RuntimeComponent component, RuntimeComponentService service) {
-        try {
-            rmiHost.unregisterService(binding.getRmiServiceName(), 
-                                      getPort(binding.getRmiPort()));
-        } catch (RMIHostException e) {
-            throw new NoRemoteServiceException(e.getMessage());
+    public void stop() {
+        if (service != null) {
+            try {
+                rmiHost.unregisterService(binding.getRmiServiceName(), 
+                                          getPort(binding.getRmiPort()));
+            } catch (RMIHostException e) {
+                throw new NoRemoteServiceException(e.getMessage());
+            }
         }
-        
     }
 
-    public Invoker createInvoker(RuntimeComponent component, RuntimeComponentReference reference, Operation operation, boolean isCallback) {
+    public Invoker createInvoker(Operation operation, boolean isCallback) {
        try {
             Method remoteMethod = 
                 JavaInterfaceUtil.findMethod(((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass(),
@@ -130,10 +141,6 @@ public class RMIBindingProvider implements ReferenceBindingProvider,
         }
     }
 
-    public InterfaceContract getBindingInterfaceContract(RuntimeComponentReference reference) {
-        return reference.getInterfaceContract();
-    }
-    
     protected Remote createRmiService() {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(UnicastRemoteObject.class);

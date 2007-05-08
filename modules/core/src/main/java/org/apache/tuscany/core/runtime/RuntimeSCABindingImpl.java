@@ -24,6 +24,9 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.SCABindingImpl;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.RuntimeComponentReference;
+import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.provider.BindingProviderFactory;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
@@ -43,11 +46,11 @@ public class RuntimeSCABindingImpl extends SCABindingImpl implements SCABinding,
         return wires;
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider() {
-        return new RuntimeSCABindingProvider();
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
+        return new RuntimeSCABindingProvider(component, reference);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider() {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service) {
         return null;
     }
     

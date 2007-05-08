@@ -54,11 +54,11 @@ public abstract class AbstractScopeContainerTestCase<T, KEY> extends TestCase {
 
     protected void preRegisterComponent() throws Exception {
         scopeContainer.start();
-        EasyMock.expect(implementation.isEagerInit(component)).andStubReturn(false);
+        EasyMock.expect(implementation.isEagerInit()).andStubReturn(false);
     }
 
     protected void expectCreateWrapper() throws Exception {
-        EasyMock.expect(implementation.createInstanceWrapper(component)).andReturn(wrapper);
+        EasyMock.expect(implementation.createInstanceWrapper()).andReturn(wrapper);
         wrapper.start();
     }
     

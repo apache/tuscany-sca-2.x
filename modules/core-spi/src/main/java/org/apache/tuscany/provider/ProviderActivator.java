@@ -19,32 +19,25 @@
 
 package org.apache.tuscany.provider;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
 
 
 /**
- * A binding can optionally implement this interface to control how the service
- * binding is started or stopped.
+ * A component implementation can optionally implement this interface to control
+ * how a component is started ot stopped.
  * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingActivator {
+public interface ProviderActivator {
     /**
-     * This method will be invoked when a service binding is activated for the
-     * given component service.
-     * 
-     * @param component The SCA component
-     * @param service The service that owns the binding
+     * This method will be invoked when a component implemented by this
+     * implementation is activated.
      */
-    void start(RuntimeComponent component, RuntimeComponentService service);
+    void start();
 
     /**
-     * This method will be invoked when a service binding is deactivated or the
-     * given component service.
-     * 
-     * @param component The SCA component
-     * @param service The service that owns the binding
+     * This method will be invoked when a component implemented by this
+     * implementation is deactivated.
      */
-    void stop(RuntimeComponent component, RuntimeComponentService service);
+    void stop();
+
 }
