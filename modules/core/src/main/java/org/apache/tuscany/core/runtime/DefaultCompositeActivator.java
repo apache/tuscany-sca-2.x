@@ -339,7 +339,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 target = scaBinding.getComponent();
             }
 
-            InterfaceContract targetContract = getInterfaceContract(target, service);
+            InterfaceContract targetContract = service.getInterfaceContract();
 
             RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl((RuntimeComponent)component,
                                                                            (RuntimeComponentReference)reference,
@@ -410,23 +410,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
             }
         }
-        return interfaceContract;
-    }
-
-    private InterfaceContract getInterfaceContract(Component component, ComponentService service) {
-        InterfaceContract interfaceContract = service.getInterfaceContract();
-
-        Implementation implementation = component != null ? component.getImplementation() : null;
-        if (implementation instanceof ImplementationProviderFactory) {
-            ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
-            if (implementationProvider != null) {
-                InterfaceContract implementationContract = implementationProvider.getImplementationInterfaceContract((RuntimeComponentService)service);
-                if (implementationContract != null) {
-                    interfaceContract = implementationContract;
-                }
-            }
-        }
-
         return interfaceContract;
     }
 
