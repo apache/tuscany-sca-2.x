@@ -16,28 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.scope;
 
 import org.apache.tuscany.core.RuntimeComponent;
 
-
 /**
- * Manages {@link ScopeContainer}s in the runtime
- *
- * @version $$Rev$$ $$Date$$
+ * Factory to create ScopeContainer for components
+ * 
+ * @version $Rev$ $Date$
  */
-public interface ScopeRegistry {
-
-    /**
-     * Returns the scope container for the given scope or null if one not found
-     *
-     * @param scope the scope
-     * @return the scope container for the given scope or null if one not found
-     */
-    ScopeContainer getScopeContainer(RuntimeComponent component);
-
-    /**
-     * @param factory
-     */
-    void register(ScopeContainerFactory factory);
+public interface ScopeContainerFactory {
+    ScopeContainer createScopeContainer(RuntimeComponent component);
+    Scope getScope();
 }

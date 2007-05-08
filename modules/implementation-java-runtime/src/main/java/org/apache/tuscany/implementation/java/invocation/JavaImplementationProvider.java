@@ -27,7 +27,6 @@ import org.apache.tuscany.core.ImplementationActivator;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.ScopedImplementationProvider;
-import org.apache.tuscany.core.scope.CompositeScopeContainer;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
@@ -37,13 +36,10 @@ import org.apache.tuscany.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.scope.ScopeNotFoundException;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
@@ -59,15 +55,12 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
     private DataBindingExtensionPoint dataBindingRegistry;
     private ProxyFactory proxyService;
     private WorkContext workContext;
-    private ScopeRegistry scopeRegistry;
 
-    public JavaImplementationProvider(ScopeRegistry scopeRegistry,
-                                      ProxyFactory proxyService,
+    public JavaImplementationProvider(ProxyFactory proxyService,
                                       WorkContext workContext,
                                       DataBindingExtensionPoint dataBindingRegistry,
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
-        this.scopeRegistry = scopeRegistry;
         this.proxyService = proxyService;
         this.workContext = workContext;
         this.dataBindingRegistry = dataBindingRegistry;
@@ -87,8 +80,7 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
             Scope scope = getScope();
 
             if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
-                // FIXME:
-                atomicComponent.setScopeContainer(new CompositeScopeContainer());
+                // Nothing
             } else {
                 // Check for conversational contract if conversational scope
                 if (scope == Scope.CONVERSATION) {
@@ -104,12 +96,6 @@ public class JavaImplementationProvider extends JavaImplementationImpl implement
                         throw new NoConversationalContractException(name);
                     }
                 }
-                // Now it's ok to set the scope container
-                ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
-                if (scopeContainer == null) {
-                    throw new ScopeNotFoundException(scope.toString());
-                }
-                atomicComponent.setScopeContainer(scopeContainer);
             }
             component.setImplementationConfiguration(atomicComponent);
 

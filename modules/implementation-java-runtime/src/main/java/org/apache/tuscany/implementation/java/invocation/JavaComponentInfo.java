@@ -88,7 +88,6 @@ public class JavaComponentInfo implements ComponentContextProvider {
 
     protected RuntimeComponent component;
     protected PojoConfiguration<?> configuration;
-    protected ScopeContainer scopeContainer;
     protected Scope scope;
     protected ProxyFactory proxyService;
     protected WorkContext workContext;
@@ -120,7 +119,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
     }
 
     public Object getTargetInstance() throws TargetResolutionException {
-        InstanceWrapper wrapper = scopeContainer.getWrapper(component, groupId);
+        InstanceWrapper wrapper = component.getScopeContainer().getWrapper(groupId);
         if (!wrapper.isStarted()) {
             wrapper.start();
         }
@@ -209,8 +208,6 @@ public class JavaComponentInfo implements ComponentContextProvider {
                 }
             }
         }
-        scopeContainer.register(component, groupId);
-
     }
 
     public void addPropertyFactory(String name, ObjectFactory<?> factory) {
@@ -386,17 +383,11 @@ public class JavaComponentInfo implements ComponentContextProvider {
         return configuration;
     }
 
-    public void setScopeContainer(ScopeContainer scopeContainer) {
-        this.scopeContainer = scopeContainer;
-        scope = scopeContainer.getScope();
-    }
-
     public void stop() {
-        scopeContainer.unregister(component);
     }
 
     public void removeInstance() throws ComponentException {
-        scopeContainer.remove(component);
+        component.getScopeContainer().remove();
     }
 
     public URI getUri() {
@@ -411,9 +402,9 @@ public class JavaComponentInfo implements ComponentContextProvider {
             boolean passByValue = operation.getInterface().isRemotable() && (!configuration.getDefinition()
                                       .isAllowsPassByReference(method));
 
-            TargetInvoker invoker = new JavaTargetInvoker(method, component, scopeContainer);
+            TargetInvoker invoker = new JavaTargetInvoker(method, component);
             if (passByValue) {
-                return new PassByValueInvoker(dataBindingRegistry, operation, method, component, scopeContainer);
+                return new PassByValueInvoker(dataBindingRegistry, operation, method, component);
             } else {
                 return invoker;
             }

@@ -30,12 +30,10 @@ import org.apache.tuscany.spi.component.WorkContextTunnel;
  * @version $Rev$ $Date$
  */
 public class ComponentObjectFactory<T, CONTEXT> implements ObjectFactory<T> {
-    private final RuntimeComponent component;
     private final ScopeContainer<CONTEXT> scopeContainer;
 
-    public ComponentObjectFactory(RuntimeComponent component, ScopeContainer<CONTEXT> scopeContainer) {
-        this.component = component;
-        this.scopeContainer = scopeContainer;
+    public ComponentObjectFactory(RuntimeComponent component) {
+        this.scopeContainer = component.getScopeContainer();
     }
 
     public T getInstance() throws ObjectCreationException {
@@ -43,7 +41,7 @@ public class ComponentObjectFactory<T, CONTEXT> implements ObjectFactory<T> {
             WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
             @SuppressWarnings("unchecked")
             CONTEXT contextId = (CONTEXT) workContext.getIdentifier(scopeContainer.getScope());
-            return (T) scopeContainer.getWrapper(component, contextId).getInstance();
+            return (T) scopeContainer.getWrapper(contextId).getInstance();
         } catch (TargetResolutionException e) {
             throw new ObjectCreationException(e);
         }

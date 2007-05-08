@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.core.scope;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,28 +26,26 @@ import org.apache.tuscany.core.event.RequestEnd;
 import org.apache.tuscany.event.Event;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 
 /**
- * A scope context which manages atomic component instances keyed on the current request context
- *
+ * A scope context which manages atomic component instances keyed on the current
+ * request context
+ * 
  * @version $Rev$ $Date$
  */
-public class RequestScopeContainer extends AbstractScopeContainer {
-    private final Map<RuntimeComponent, Map<Thread, InstanceWrapper>> contexts;
-    private final Map<Thread, List<InstanceWrapper>> destroyQueues;
+public class RequestScopeContainer extends AbstractScopeContainer<Thread> {
+    private final Map<Thread, InstanceWrapper> contexts;
 
-    public RequestScopeContainer() {
-        super(Scope.REQUEST);
-        contexts = new ConcurrentHashMap<RuntimeComponent, Map<Thread, InstanceWrapper>>();
-        destroyQueues = new ConcurrentHashMap<Thread, List<InstanceWrapper>>();
+    public RequestScopeContainer(RuntimeComponent component) {
+        super(Scope.REQUEST, component);
+        contexts = new ConcurrentHashMap<Thread, InstanceWrapper>();
     }
 
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof RequestEnd) {
-            shutdownInstances(Thread.currentThread());
+            // shutdownInstances(Thread.currentThread());
         }
     }
 
@@ -64,65 +58,28 @@ public class RequestScopeContainer extends AbstractScopeContainer {
 
     public synchronized void stop() {
         contexts.clear();
-        synchronized (destroyQueues) {
-            destroyQueues.clear();
-        }
+        // synchronized (destroyQueues) {
+        // destroyQueues.clear();
+        // }
         lifecycleState = STOPPED;
     }
 
-    public void register(RuntimeComponent component, URI groupId) {
-        super.register(component, groupId);
-        contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
-    }
-
-    public void unregister(RuntimeComponent component) {
-        // FIXME should all the instances associated with this component be destroyed already
-        contexts.remove(component);
-        super.unregister(component);
-    }
-
-    protected InstanceWrapper getInstanceWrapper(RuntimeComponent component, boolean create)
-        throws TargetResolutionException {
-        Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(component);
-        assert instanceContextMap != null : "Atomic component not registered";
-        InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());
+    protected InstanceWrapper getInstanceWrapper(boolean create) throws TargetResolutionException {
+        InstanceWrapper ctx = wrappers.get(Thread.currentThread());
         if (ctx == null && !create) {
             return null;
         }
         if (ctx == null) {
-            ctx = super.createInstanceWrapper(component);
+            ctx = super.createInstanceWrapper();
             ctx.start();
-            instanceContextMap.put(Thread.currentThread(), ctx);
-            List<InstanceWrapper> destroyQueue = destroyQueues.get(Thread.currentThread());
-            if (destroyQueue == null) {
-                destroyQueue = new ArrayList<InstanceWrapper>();
-                destroyQueues.put(Thread.currentThread(), destroyQueue);
-            }
-            synchronized (destroyQueue) {
-                destroyQueue.add(ctx);
-            }
+            wrappers.put(Thread.currentThread(), ctx);
         }
         return ctx;
     }
 
-    private void shutdownInstances(Thread key) {
-        List<InstanceWrapper> destroyQueue = destroyQueues.remove(key);
-        if (destroyQueue != null && destroyQueue.size() > 0) {
-            Thread thread = Thread.currentThread();
-            for (Map<Thread, InstanceWrapper> map : contexts.values()) {
-                map.remove(thread);
-            }
-            ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
-            synchronized (destroyQueue) {
-                while (iter.hasPrevious()) {
-                    try {
-                        iter.previous().stop();
-                    } catch (TargetDestructionException e) {
-//                        monitor.destructionError(e);
-                    }
-                }
-            }
-        }
+    @Override
+    public InstanceWrapper getWrapper(Thread contextId) throws TargetResolutionException {
+        return getInstanceWrapper(true);
     }
 
 }

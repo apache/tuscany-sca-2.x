@@ -20,6 +20,7 @@ package org.apache.tuscany.implementation.java.integration;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.scope.ConversationalScopeContainer;
 import org.apache.tuscany.core.store.MemoryStore;
 import org.apache.tuscany.scope.ScopeContainer;
@@ -37,11 +38,13 @@ public abstract class AbstractConversationTestCase extends TestCase {
     protected ScopeContainer container;
     protected MemoryStore store;
     protected WorkContext workContext;
+    protected RuntimeComponent component;
 
     protected void createRuntime() {
         workContext = new WorkContextImpl();
         store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
-        container = new ConversationalScopeContainer(store, workContext);
+        component = EasyMock.createMock(RuntimeComponent.class);
+        container = new ConversationalScopeContainer(store, workContext, component);
     }
 
     protected void initializeRuntime() {

@@ -16,39 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.core.scope;
 
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.scope.ScopeContainer;
+import org.apache.tuscany.scope.ScopeContainerFactory;
 
 /**
- * A scope context which manages stateless atomic component instances in a non-pooled fashion.
- *
  * @version $Rev$ $Date$
  */
-public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
+public class RequestScopeContainerFactory implements ScopeContainerFactory {
 
-    public StatelessScopeContainer(RuntimeComponent component) {
-        super(Scope.STATELESS, component);
+    public ScopeContainer createScopeContainer(RuntimeComponent component) {
+        return new RequestScopeContainer(component);
     }
 
-    public  InstanceWrapper getWrapper(KEY contextId)
-        throws TargetResolutionException {
-        InstanceWrapper ctx = createInstanceWrapper();
-        ctx.start();
-        return ctx;
+    public Scope getScope() {
+        return Scope.REQUEST;
     }
 
-    public  InstanceWrapper getAssociatedWrapper(KEY contextId)
-        throws TargetResolutionException {
-        throw new UnsupportedOperationException();
-    }
-
-    public  void returnWrapper(InstanceWrapper wrapper, KEY contextId)
-        throws TargetDestructionException {
-        wrapper.stop();
-    }
 }

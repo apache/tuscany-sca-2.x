@@ -33,8 +33,8 @@ import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.DefaultMediator;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.implementation.java.introspect.ExtensibleJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.implementation.java.introspect.ExtensibleJavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
@@ -63,7 +63,6 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -123,11 +122,9 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         
-        ScopeRegistry scopeRegistry = registry.getExtensionPoint(ScopeRegistry.class);
-
         WorkContext workContext = registry.getExtensionPoint(WorkContext.class);
         JavaImplementationFactory javaImplementationFactory =
-            new RuntimeJavaImplementationFactory(scopeRegistry, proxyFactory,
+            new RuntimeJavaImplementationFactory(proxyFactory,
                                                  workContext, dataBindings, factory);
         JavaImplementationProcessor javaImplementationProcessor =
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);

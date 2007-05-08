@@ -29,7 +29,6 @@ import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.scope.ScopeContainer;
 
 /**
  * An interceptor to enforce pass-by-value semantics for remotable interfaces
@@ -41,18 +40,20 @@ public class PassByValueInvoker extends JavaTargetInvoker {
     private Operation operation;
 
     /**
+     * @param registry
+     * @param operation
      * @param method
      * @param component
-     * @param scopeContainer
-     * @param passByValue
      */
-    public PassByValueInvoker(DataBindingExtensionPoint registry, Operation operation, Method method, RuntimeComponent component, ScopeContainer scopeContainer) {
-        super(method, component, scopeContainer);
+    public PassByValueInvoker(DataBindingExtensionPoint registry,
+                              Operation operation,
+                              Method method,
+                              RuntimeComponent component) {
+        super(method, component);
         this.registry = registry;
         this.operation = operation;
     }
 
-    
     public Message invoke(Message msg) {
         Object obj = msg.getBody();
         msg.setBody(copy((Object[])obj));

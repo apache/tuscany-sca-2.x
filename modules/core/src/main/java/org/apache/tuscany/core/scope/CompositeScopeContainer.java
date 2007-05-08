@@ -18,90 +18,39 @@
  */
 package org.apache.tuscany.core.scope;
 
-import java.net.URI;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 
 /**
  * A scope context which manages atomic component instances keyed by composite
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
-    private static final InstanceWrapper<Object> EMPTY = new InstanceWrapper<Object>() {
-        public Object getInstance() {
-            return null;
-        }
+    private InstanceWrapper<?> wrapper;
 
-        public boolean isStarted() {
-            return true;
-        }
-
-        public void start() throws TargetInitializationException {
-
-        }
-
-        public void stop() throws TargetDestructionException {
-
-        }
-    };
-
-    // there is one instance per component so we can index directly
-    private final Map<RuntimeComponent, InstanceWrapper> instanceWrappers =
-        new ConcurrentHashMap<RuntimeComponent, InstanceWrapper>();
-
-    public CompositeScopeContainer() {
-        super(Scope.COMPOSITE);
-    }
-
-    public  void register(RuntimeComponent component, URI groupId) {
-        super.register(component, groupId);
-        instanceWrappers.put(component, EMPTY);
-    }
-
-    public  void unregister(RuntimeComponent component) {
-        // FIXME should this component be destroyed already or do we need to stop it?
-        instanceWrappers.remove(component);
-        super.unregister(component);
+    public CompositeScopeContainer(RuntimeComponent component) {
+        super(Scope.COMPOSITE, component);
     }
 
     public synchronized void stop() {
         super.stop();
-        instanceWrappers.clear();
+        wrapper = null;
     }
 
-    public  InstanceWrapper getWrapper(RuntimeComponent component, KEY contextId)
-        throws TargetResolutionException {
-        assert instanceWrappers.containsKey(component);
-        @SuppressWarnings("unchecked")
-        InstanceWrapper wrapper = (InstanceWrapper) instanceWrappers.get(component);
-        if (wrapper == EMPTY) {
-            // FIXME is there a potential race condition here that may result in two instances being created
-            wrapper = createInstanceWrapper(component);
-            instanceWrappers.put(component, wrapper);
+    public InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException {
+        if (wrapper == null) {
+            wrapper = createInstanceWrapper();
             wrapper.start();
-            // FIXME: [rfeng]
-            if (contextId != null) {
-                destroyQueues.get(contextId).add(wrapper);
-            }
         }
         return wrapper;
     }
 
-    public  InstanceWrapper getAssociatedWrapper(RuntimeComponent component, KEY contextId)
-        throws TargetResolutionException {
-        assert instanceWrappers.containsKey(component);
-        @SuppressWarnings("unchecked")
-        InstanceWrapper wrapper = (InstanceWrapper) instanceWrappers.get(component);
-        if (wrapper == EMPTY) {
+    public InstanceWrapper getAssociatedWrapper(KEY contextId) throws TargetResolutionException {
+        if (wrapper == null) {
             throw new TargetNotFoundException(component.getURI());
         }
         return wrapper;

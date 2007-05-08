@@ -18,18 +18,11 @@
  */
 package org.apache.tuscany.core.scope;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.event.HttpSessionEnd;
 import org.apache.tuscany.event.Event;
 import org.apache.tuscany.scope.InstanceWrapper;
 import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -39,23 +32,18 @@ import org.apache.tuscany.spi.component.WorkContext;
  * 
  * @version $Rev$ $Date$
  */
-public class HttpSessionScopeContainer extends AbstractScopeContainer {
+public class HttpSessionScopeContainer extends AbstractScopeContainer<Object> {
     private final WorkContext workContext;
-    private final Map<RuntimeComponent, Map<Object, InstanceWrapper>> contexts;
-    private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
-    public HttpSessionScopeContainer(WorkContext workContext) {
-        super(Scope.SESSION);
+    public HttpSessionScopeContainer(WorkContext workContext, RuntimeComponent component) {
+        super(Scope.SESSION, component);
         this.workContext = workContext;
-        contexts = new ConcurrentHashMap<RuntimeComponent, Map<Object, InstanceWrapper>>();
-        destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
     }
 
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof HttpSessionEnd) {
             Object key = ((HttpSessionEnd)event).getSessionID();
-            shutdownInstances(key);
             workContext.clearIdentifier(key);
         }
     }
@@ -68,68 +56,27 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     }
 
     public synchronized void stop() {
-        contexts.clear();
-        synchronized (destroyQueues) {
-            destroyQueues.clear();
-        }
         lifecycleState = STOPPED;
     }
 
-    public void register(RuntimeComponent component, Object groupId) {
-        contexts.put(component, new ConcurrentHashMap<Object, InstanceWrapper>());
-        // component.addListener(this);
-    }
-
-    public void unregister(RuntimeComponent component) {
-        // FIXME should all the instances associated with this component be
-        // destroyed already
-        contexts.remove(component);
-        // component.removeListener(this);
-        super.unregister(component);
-    }
-
-    protected InstanceWrapper getInstanceWrapper(RuntimeComponent component, boolean create)
-        throws TargetResolutionException {
+    protected InstanceWrapper getInstanceWrapper(boolean create) throws TargetResolutionException {
         Object key = workContext.getIdentifier(Scope.SESSION);
         assert key != null : "HTTP session key not bound in work context";
-        Map<Object, InstanceWrapper> wrappers = contexts.get(component);
         InstanceWrapper ctx = wrappers.get(key);
         if (ctx == null && !create) {
             return null;
         }
         if (ctx == null) {
-            ctx = super.createInstanceWrapper(component);
+            ctx = super.createInstanceWrapper();
             ctx.start();
             wrappers.put(key, ctx);
-            List<InstanceWrapper> destroyQueue = destroyQueues.get(key);
-            if (destroyQueue == null) {
-                destroyQueue = new ArrayList<InstanceWrapper>();
-                destroyQueues.put(key, destroyQueue);
-            }
-            synchronized (destroyQueue) {
-                destroyQueue.add(ctx);
-            }
         }
         return ctx;
     }
-
-    private void shutdownInstances(Object key) {
-        List<InstanceWrapper> destroyQueue = destroyQueues.remove(key);
-        if (destroyQueue != null) {
-            for (Map<Object, InstanceWrapper> map : contexts.values()) {
-                map.remove(key);
-            }
-            ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
-            synchronized (destroyQueue) {
-                while (iter.hasPrevious()) {
-                    try {
-                        iter.previous().stop();
-                    } catch (TargetDestructionException e) {
-                        // monitor.destructionError(e);
-                    }
-                }
-            }
-        }
-    }
+    
+    @Override
+    public InstanceWrapper getWrapper(Object contextId) throws TargetResolutionException {
+        return getInstanceWrapper(true);
+    }    
 
 }

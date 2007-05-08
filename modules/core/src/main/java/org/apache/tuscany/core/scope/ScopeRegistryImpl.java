@@ -21,29 +21,43 @@ package org.apache.tuscany.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.core.ScopedImplementationProvider;
 import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeContainer;
+import org.apache.tuscany.scope.ScopeContainerFactory;
 import org.apache.tuscany.scope.ScopeRegistry;
-import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * The default implementation of a scope registry
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
-    private final Map<Scope, ScopeContainer> scopeCache =
-        new ConcurrentHashMap<Scope, ScopeContainer>();
-    private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache =
-        new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
+    private final Map<Scope, ScopeContainerFactory> scopeCache = new ConcurrentHashMap<Scope, ScopeContainerFactory>();
 
-    public void register(ScopeContainer container) {
-        scopeCache.put(container.getScope(), container);
+    public void register(ScopeContainerFactory factory) {
+        scopeCache.put(factory.getScope(), factory);
     }
 
-    public ScopeContainer getScopeContainer(Scope scope) {
-        return scopeCache.get(scope);
+    public ScopeContainer getScopeContainer(RuntimeComponent component) {
+        if (component.getScopeContainer() != null) {
+            return component.getScopeContainer();
+        }
+        Implementation impl = component.getImplementation();
+        if (impl instanceof ScopedImplementationProvider) {
+            ScopedImplementationProvider provider = (ScopedImplementationProvider)impl;
+            Scope scope = provider.getScope();
+            if (scope == null) {
+                scope = Scope.STATELESS;
+            }
+            ScopeContainerFactory factory = scopeCache.get(scope);
+            ScopeContainer container = factory.createScopeContainer(component);
+            component.setScopeContainer(container);
+            return container;
+        }
+        return null;
     }
-
 
 }
