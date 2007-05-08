@@ -112,6 +112,13 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     }
 
     public void startContext(KEY contextId) throws GroupInitializationException {
+        if(isEagerInit()) {
+            try {
+                getWrapper(contextId);
+            } catch (TargetResolutionException e) {
+                // 
+            }
+        }
     }
 
     public synchronized void stop() {
