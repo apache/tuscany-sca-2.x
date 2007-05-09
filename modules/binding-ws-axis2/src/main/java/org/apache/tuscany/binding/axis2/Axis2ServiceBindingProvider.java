@@ -97,16 +97,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     private static final String BASE_URI = "http://localhost:8080/";
 
     public void start() {
-
-        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
-        if (contract == null) {
-            contract = service.getInterfaceContract();
-            wsBinding.setBindingInterfaceContract(contract);
-        }
-
-        // Set to use the Axiom data binding 
-        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
-
         URI uri = computeActualURI(BASE_URI, component, service).normalize();
         wsBinding.setURI(uri.toString());
         
@@ -296,7 +286,15 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     // methods for ServiceBindingProvider
 
     public InterfaceContract getBindingInterfaceContract() {
-        return wsBinding.getBindingInterfaceContract();
+        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
+        if (contract == null) {
+            contract = service.getInterfaceContract();
+            wsBinding.setBindingInterfaceContract(contract);
+        }
+
+        // Set to use the Axiom data binding 
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
+        return contract;
     }
 
     // other methods that were previously in Axis2ServiceBinding
