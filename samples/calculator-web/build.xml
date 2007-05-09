@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="sample-calculator" default="package">
+<project name="calculator-web" default="package">
     <property environment="env"/>
 	
     <target name="init">

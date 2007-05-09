@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="sample-calculator" default="run">
+<project name="calculator-rmi-reference-client" default="run">
     <property environment="env"/>
 	
     <target name="init">
