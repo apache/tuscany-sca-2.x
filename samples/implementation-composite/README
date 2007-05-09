@@ -1,0 +1,89 @@
+Calculator Sample
+=================
+
+This sample shows how composite can be used to implement components. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+
+The sample is comprised of three composites. Take a look at the composite file 
+or the .svg/.png file which shows the composite file in pictorial form. The 
+OuterComposite defines three components two of which are implemented using 
+composites. The SourceComponent calls each TargetComponent in turn. There is a
+callback which returns from each TargetComponent to the SourceComponent. 
+
+calculator/
+  src/
+    main/
+      java/
+        composite/
+          Source.java             - interface for the source component
+          SourceCallback.java     - souce component callback interface
+          Target.java             - interfact for the target component
+          etc.
+          CompositeClient.java    - starts the SCA Runtime and 
+                                    deploys the OuterComposite.composite. 
+                                    This in turn pulls in the two inner
+                                    composites
+      resources/
+        OuterComposite.composite  - the top level SCA assembly for this sample
+        InnerComposite.composite  - included by OuterComposite.composite
+        InnerComposite2.composite - included by OuterComposite.composite
+  implementation-composite.png    - a pictorial representation of the sample 
+                                    .composite file
+  build.xml                       - the Ant build file
+  pom.xml                         - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd implementation-composite
+ant 
+
+You should see the following output from the run target.
+
+run:
+     [java] Main thread Thread[main,5,main]
+     [java] Source: Client.main -> Source.clientMethod
+     [java] Source: Client.main => Source.clientMethod2
+     [java] Sleeping ...
+     [java] Target: Client.main -> Source.clientMethod
+     [java] Work thread Thread[pool-1-thread-1,5,main]
+     [java] Result: Client.main -> Source.clientMethod -> Target.someMethod
+     [java] Target: Client.main => Source.clientMethod2
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd implementation-composite
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running composite.CompositeTestCase
+Main thread Thread[main,5,main]
+Source: Client.main -> Source.clientMethod
+Source: Client.main => Source.clientMethod2
+Sleeping ...
+Target: Client.main -> Source.clientMethod
+Work thread Thread[pool-1-thread-1,5,main]
+Result: Client.main -> Source.clientMethod -> Target.someMethod
+Target: Client.main => Source.clientMethod2
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.374 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
