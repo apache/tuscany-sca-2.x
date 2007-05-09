@@ -30,7 +30,6 @@ import org.apache.axis2.util.Utils;
 import org.apache.tuscany.binding.axis2.Axis2ServiceBindingProvider.InvocationContext;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.spi.component.WorkContext;
 
 public class Axis2ServiceCallbackTargetInvoker implements Invoker {
 

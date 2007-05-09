@@ -18,21 +18,52 @@
  */
 package org.apache.tuscany.assembly;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Binding;
-import org.apache.tuscany.assembly.impl.BindingImpl;
+import java.util.List;
+
+import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.policy.PolicySet;
 
 /**
  * A test interface model.
  * 
  * @version $Rev$ $Date$
  */
-public class TestBinding extends BindingImpl implements Binding {
+public class TestBinding implements Binding {
 
     public TestBinding(AssemblyFactory factory) {
-
-        setName("test");
         setURI("http://test");
     }
 
+    public String getName() {
+        return null;
+    }
+
+    public String getURI() {
+        return "http://test";
+    }
+
+    public void setName(String name) {
+    }
+
+    public void setURI(String uri) {
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return null;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return null;
+    }
+
+    public List<Object> getExtensions() {
+        return null;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+    }
+    
+    public boolean isUnresolved() {
+        return false;
+    }
 }

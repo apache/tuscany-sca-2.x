@@ -19,22 +19,32 @@
 
 package org.apache.tuscany.binding.ws.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.wsdl.Binding;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.impl.BindingImpl;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.policy.PolicySet;
 
 /**
  * Represents a WebService binding.
  *
  * @version $Rev$ $Date$
  */
-public class WebServiceBindingImpl extends BindingImpl implements WebServiceBinding {
+public class WebServiceBindingImpl implements WebServiceBinding {
+    private String name;
+    private String uri;
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private boolean unresolved;
+    private List<Object> extensions = new ArrayList<Object>();
     
     private String location;
     private Binding binding;
@@ -50,6 +60,42 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     private InterfaceContract bindingInterfaceContract;
     
     protected WebServiceBindingImpl() {
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+    
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
+    }
+
+    public List<Object> getExtensions() {
+        return extensions;
     }
     
     public String getLocation() {
