@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
- 
+
 package org.apache.tuscany.core.runtime;
 
 import java.util.ArrayList;
@@ -28,6 +28,9 @@ import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
 
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
@@ -50,13 +53,27 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
         }
         return null;
     }
-    
+
     public ReferenceBindingProvider getBindingProvider(Binding binding) {
         return bindingProviders.get(binding);
     }
-    
+
     public void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider) {
         bindingProviders.put(binding, bindingProvider);
+    }
+
+    public Invoker getInvoker(Binding binding, Operation operation) {
+        RuntimeWire wire = getRuntimeWire(binding);
+        if (wire == null) {
+            return null;
+        }
+        for (InvocationChain chain : wire.getInvocationChains()) {
+            Operation op = chain.getSourceOperation();
+            if (op == operation) {
+                return chain.getHeadInvoker();
+            }
+        }
+        return null;
     }
 
 }

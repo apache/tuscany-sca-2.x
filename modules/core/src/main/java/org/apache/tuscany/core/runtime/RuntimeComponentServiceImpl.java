@@ -28,6 +28,9 @@ import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ServiceBindingProvider;
 
 public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements RuntimeComponentService {
@@ -42,7 +45,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
     public List<RuntimeWire> getRuntimeWires() {
         return wires;
     }
-    
+
     public RuntimeWire getRuntimeWire(Binding binding) {
         for (RuntimeWire wire : wires) {
             if (wire.getTarget().getBinding() == binding) {
@@ -50,7 +53,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
             }
         }
         return null;
-    }    
+    }
 
     public List<RuntimeWire> getCallbackWires() {
         return callbackWires;
@@ -59,12 +62,40 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
     public void addCallbackWire(RuntimeWire callbackWire) {
         this.callbackWires.add(callbackWire);
     }
-    
+
     public ServiceBindingProvider getBindingProvider(Binding binding) {
         return bindingProviders.get(binding);
     }
-    
+
     public void setBindingProvider(Binding binding, ServiceBindingProvider bindingProvider) {
         bindingProviders.put(binding, bindingProvider);
+    }
+
+    public Invoker getInvoker(Binding binding, Operation operation) {
+        RuntimeWire wire = getRuntimeWire(binding);
+        if (wire == null) {
+            return null;
+        }
+        for (InvocationChain chain : wire.getInvocationChains()) {
+            Operation op = chain.getTargetOperation();
+            if (op == operation) {
+                return chain.getHeadInvoker();
+            }
+        }
+        return null;
+    }
+
+    public Invoker getCallbackInvoker(Binding binding, Operation operation) {
+        for (RuntimeWire wire : callbackWires) {
+            if (wire.getTarget().getBinding() == binding) {
+                for (InvocationChain chain : wire.getCallbackInvocationChains()) {
+                    Operation op = chain.getSourceOperation();
+                    if (op == operation) {
+                        return chain.getHeadInvoker();
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
