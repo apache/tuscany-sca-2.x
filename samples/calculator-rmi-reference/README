@@ -14,16 +14,16 @@ This sample extends the calculator sample by replacing the local wired
 connections with RMI bindings. Instead of local add, subtract, multiply and 
 divide components a CalculatorServiceRmiImpl.java object now provides the
 add, subtract, multiple and divide interface and is hosted as an RMI server. 
-Rerences specified in the .composite file include an RMI binding which targets
+References specified in the .composite file include an RMI binding which targets
 this RMI server.
 
 This sample adds a number of classes to the basic calculator sample:
 
-calculator\
-  src\
-    main\
-      java\
-        calculator\
+calculator/
+  src/
+    main/
+      java/
+        calculator/
           CalculatorService.java  - as calculator sample
           AddService.java         - as calculator sample
           SubtractService.java    - as calculator sample
@@ -36,9 +36,9 @@ calculator\
           CalculatorServer.java   - starts the Calculator Application 
                                     as a Java RMI Server. Running this class 
                                     keeps the Java RMI Server up an running 
-                                    untill the 'Enter Key' is pressed on the 
+                                    until the 'Enter Key' is pressed on the 
                                     console.
-      resources\
+      resources/
         CalculatorRMIReference.composite - the SCA assembly for this sample
   calculator-rmi-reference.png    - a pictorial representation of the 
                                     .composite file
@@ -50,8 +50,8 @@ Note. As this test creates and uses local network connections you may need to
 configure you firewall, if you are running one, to allow the test to run
 successfully.         
 
-Building And Runing The Sample Using Ant
-----------------------------------------
+Building And Running The Sample Using Ant
+-----------------------------------------
 With the binary distribution the sample can be built and run using Ant. Two 
 build files are used to support client and server functions. 
 
@@ -86,8 +86,8 @@ run:
 If you now return to the console window running the server and press enter the 
 server should stop.     
 
-Building And Runing The Sample Using Maven 
-------------------------------------------
+Building And Running The Sample Using Maven 
+-------------------------------------------
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
@@ -106,4 +106,5 @@ Results :
 
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
-This shows that the Junit test cases have run successfully. 
+This shows that the Junit test cases have run successfully.
+

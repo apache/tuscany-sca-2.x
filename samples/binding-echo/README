@@ -1,6 +1,5 @@
 Binding Echo Sample
 ===================
-
 This sample demonstrates how new bindings are constructed for Apache Tuscany 
 SCA. 
 
@@ -10,32 +9,33 @@ first.
 
 Sample Overview
 ---------------
-
 This sample contains a implementation of an SCA binding that simply echoes back 
 any messages that are sent to it. 
 
-binding-echo\
-  src\
-    main\
-      java\
-        echo\       - The binding interfaces
-          impl      - The bindings model classes
-          module\   - The activator that loads the binding into the SCA runtime
-          provider\ - The bindings runtime classes
-          server\   - A dumy server that the binding is plugged into
-      resources\
+binding-echo/
+  src/
+    main/
+      java/
+        echo/                  - The binding interfaces
+          impl/                - The bindings model classes
+          module/              - The activator that loads the binding into the 
+                                 SCA runtime
+          provider/            - The bindings runtime classes
+          server/              - A dummy server that the binding is plugged into
+      resources/
         EchoBinding.composite  - the SCA assembly for this sample
-    test\
-      java\ 
+    test/
+      java/ 
         EchoBindingClient.java - used when Ant is running the sample
-  binding-echo.png  - a pictorial representation of the sample .composite file
-  build.xml         - the Ant build file
-  pom.xml           - the Maven build file
+  binding-echo.png             - a pictorial representation of the sample 
+                                 .composite file
+  build.xml                    - the Ant build file
+  pom.xml                      - the Maven build file
   
 TBD - more detail required on how this sample adds a new binding to SCA
 
-Building And Runing The Sample Using Ant
-----------------------------------------
+Building And Running The Sample Using Ant
+-----------------------------------------
 With the binary distribution the sample can be built and run using Ant as 
 follows
 
@@ -50,8 +50,8 @@ run:
      [java] Returned message: baa
      [java] Echo service = baa
 
-Building And Runing The Sample Using Maven 
-------------------------------------------
+Building And Running The Sample Using Maven 
+-------------------------------------------
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 

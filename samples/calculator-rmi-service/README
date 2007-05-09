@@ -18,11 +18,11 @@ by the SCA application using an RMI client.
 
 This sample adds a number of classes to the basic calculator sample:
 
-calculator\
-  src\
-    main\
-      java\
-        calculator\
+calculator/
+  src/
+    main/
+      java/
+        calculator/
           CalculatorService.java  - as calculator sample
           AddService.java         - as calculator sample
           SubtractService.java    - as calculator sample
@@ -37,7 +37,7 @@ calculator\
                                     In doing this the SCA RMI binding
                                     acts to expose the CalculatorService
                                     over RMI.
-      resources\
+      resources/
         CalculatorRMIServer.composite - the SCA assembly for this sample
   calculator-rmi-service.png     - a pictorial representation of the 
                                     .composite file
@@ -49,8 +49,8 @@ Note. As this test creates and uses local network connections you may need to
 configure you firewall, if you are running one, to allow the test to run
 successfully.         
 
-Building And Runing The Sample Using Ant
-----------------------------------------
+Building And Running The Sample Using Ant
+-----------------------------------------
 With the binary distribution the sample can be built and run using Ant. Two 
 build files are used to support client and server functions. 
 
@@ -86,8 +86,8 @@ run:
 If you now return to the console window running the server and press enter the 
 server should stop.     
 
-Building And Runing The Sample Using Maven 
-------------------------------------------
+Building And Running The Sample Using Maven 
+-------------------------------------------
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
