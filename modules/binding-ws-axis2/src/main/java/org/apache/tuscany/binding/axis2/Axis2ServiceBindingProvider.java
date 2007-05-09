@@ -49,12 +49,9 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.ConversationSequence;
-import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
@@ -70,13 +67,12 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     private WebServiceBinding wsBinding;
     private ServletHost servletHost;
     private ConfigurationContext configContext;
-    private RuntimeWire serviceWire;
+
+    // TODO: what to do about the base URI?
+    private static final String BASE_URI = "http://localhost:8080/";
 
     public Axis2ServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service,
                                        WebServiceBinding wsBinding, ServletHost servletHost) {
-
-        // TODO: before the SPI changes, a composite service was passed to the builder.
-        // Is the change to a component service OK?
 
         this.component = component;
         this.service = service;
@@ -93,23 +89,25 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
 
     // methods for ServiceBindingActivator
 
-    // TODO: what to do about the base URI?
-    private static final String BASE_URI = "http://localhost:8080/";
-
     public void start() {
+
+        // TODO: add back in from duplicate code in getBindingInterfaceContract to temporarily bypass NPE
+        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
+        if (contract == null) {
+            contract = service.getInterfaceContract();
+            wsBinding.setBindingInterfaceContract(contract);
+        }
+
+        // Set to use the Axiom data binding 
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
+
         String uri = computeActualURI(BASE_URI, component, service).normalize().toString();
         if (uri.endsWith("/")) {
             uri = uri.substring(0, uri.length() -1);
         }
         wsBinding.setURI(uri.toString());
         
-        // ??? following line was in Axis2BindingBuilder before the SPI changes and code reorg
-        //
         // TODO: if <binding.ws> specifies the wsdl service then should create a service for every port
-        //
-        // is this still a valid to-do?
-
-        serviceWire = service.getRuntimeWire(wsBinding);
 
         try {
             configContext.getAxisConfiguration().addService(createAxisService());
@@ -144,9 +142,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
      * @param parent 
      */
     protected URI computeActualURI(String baseURI, RuntimeComponent component, RuntimeComponentService service) {
-
-        // TODO: before the SPI changes, a CompositeService was passed to the builder.
-        // Is the change to ComponentService OK?
 
         // TODO: support wsa:Address
 
@@ -356,81 +351,33 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
         return conversationID;
     }
 
-    public Object invokeTarget(Operation op, Object[] args, Object messageId, String conversationID) throws InvocationTargetException {
-        InvocationChain chain = null;
-        for (InvocationChain ic : serviceWire.getInvocationChains()) {
-            if (ic.getSourceOperation().equals(op)) {
-                chain = ic;
-            }
+    public Object invokeTarget(Operation op, Object[] args, Object messageId, String conversationID)
+        throws InvocationTargetException {
+
+        Message requestMsg = new MessageImpl();
+
+        if (messageId != null) {
+            requestMsg.setMessageID(messageId);
         }
-        if (chain == null) {
-            throw new IllegalStateException("no InvocationChain on wire for operation " + op);
-        }
-        
-        Invoker headInvoker = chain.getHeadInvoker();
+        requestMsg.setBody(args);
+
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
-        if (isConversational() && conversationID != null) {
-            workContext.setIdentifier(Scope.CONVERSATION, conversationID);
-        } else {
-            workContext.clearIdentifier(Scope.CONVERSATION);
-        }
+        String oldConversationID = (String)workContext.getIdentifier(Scope.CONVERSATION);
         try {
-            if (headInvoker == null) {
-                // can no longer occur because TargetInvoker has been merged with Interceptor   
-                throw new AssertionError("No target invoker interceptor [" + chain.getTargetOperation().getName() + "]");
-
-                // short-circuit the dispatch and invoke the target directly
-                // TargetInvoker targetInvoker = chain.getTargetInvoker();
-                // if (targetInvoker == null) {
-                //     throw new AssertionError("No target invoker [" + chain.getTargetOperation().getName() + "]");
-                // }
-                // return targetInvoker.invokeTarget(args, TargetInvoker.NONE, null);
+            if (isConversational() && conversationID != null) {
+                workContext.setIdentifier(Scope.CONVERSATION, conversationID);
             } else {
-
-                Message msg = new MessageImpl();
-                // no target invokers any more
-                // msg.setTargetInvoker(chain.getTargetInvoker());
-                // msg.pushFromAddress(getFromAddress()); // TODO : method gone in the TRUNK???
-                if (messageId != null) {
-                    msg.setMessageID(messageId);
-                }
-                msg.setBody(args);
-                msg.setWorkContext(workContext);
-
-                Message resp;
-
-                if (isConversational()) {
-
-
-                    Operation.ConversationSequence opSeq = op.getConversationSequence();
-                    if (opSeq == Operation.ConversationSequence.CONVERSATION_END) {
-                        assert seenConversations
-                            .contains(conversationID) : "End of conversation called when no conversation existed";
-                        msg.setConversationSequence(ConversationSequence.END);
-                        seenConversations.remove(conversationID); //if a fault occurs does the conversation end?
-                        //how do I know if a component called locally another opeation that ended this conversation?
-
-                    } else {
-                        boolean ec = seenConversations.contains(conversationID);
-                        if (ec) {
-
-                            msg.setConversationSequence(ConversationSequence.CONTINUE);
-                        } else {
-                            seenConversations.add(conversationID);
-                            msg.setConversationSequence(ConversationSequence.START);
-                        }
-                    }
-
-                }
-                // dispatch the wire down the chain and get the response
-                resp = headInvoker.invoke(msg);
-                Object body = resp.getBody();
-                if (resp.isFault()) {
-                    throw new InvocationTargetException((Throwable) body);
-                }
-                return body;
+                workContext.clearIdentifier(Scope.CONVERSATION);
             }
+            requestMsg.setWorkContext(workContext);
+
+            Message responseMsg = service.getInvoker(wsBinding, op).invoke(requestMsg);
+
+            if (responseMsg.isFault()) {
+                throw new InvocationTargetException((Throwable)responseMsg.getBody());
+            }
+            return responseMsg.getBody();
+
         } finally {
             if (null != oldConversationID) {
                 workContext.setIdentifier(Scope.CONVERSATION, conversationID);
