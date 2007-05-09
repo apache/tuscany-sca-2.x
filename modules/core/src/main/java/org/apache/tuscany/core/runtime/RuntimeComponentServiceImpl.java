@@ -78,7 +78,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         }
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation op = chain.getTargetOperation();
-            if (op == operation) {
+            if (op.equals(operation)) {
                 return chain.getHeadInvoker();
             }
         }
