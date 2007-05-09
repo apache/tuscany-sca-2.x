@@ -32,7 +32,7 @@ String to a DOM object (org.apache.xerces.dom.DeferredDocumentImpl). It
 converts the call1() msg from a String to a XML stream reader 
 (com.ctc.wstx.sr.ValidatingStreamReader).
 
-binding-echo/
+databinding-echo/
   src/
     main/
       java/

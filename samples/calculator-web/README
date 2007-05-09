@@ -20,7 +20,7 @@ binding. The CalculatorClient exercises this interface by calling add,
 subtract, multiply and divide operations. This results in messages passing to 
 the appropriate components in the composite across the local wires.
 
-calculator/
+calculator-web/
   src/
     main/
       java/

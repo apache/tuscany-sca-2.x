@@ -16,7 +16,7 @@ subtract, multiply and divide operations. This results in messages passing
 to the appropriate components in the composite across the local wires. Each
 component is implemented using a different language.
 
-calculator/
+calculator-script/
   src/
     main/
       java/

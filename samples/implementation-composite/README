@@ -16,7 +16,7 @@ OuterComposite defines three components two of which are implemented using
 composites. The SourceComponent calls each TargetComponent in turn. There is a
 callback which returns from each TargetComponent to the SourceComponent. 
 
-calculator/
+implementation-composite/
   src/
     main/
       java/

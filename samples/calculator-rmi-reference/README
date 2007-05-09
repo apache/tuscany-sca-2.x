@@ -19,7 +19,7 @@ this RMI server.
 
 This sample adds a number of classes to the basic calculator sample:
 
-calculator/
+calculator-rmi-reference/
   src/
     main/
       java/

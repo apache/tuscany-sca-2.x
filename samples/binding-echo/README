@@ -16,21 +16,22 @@ binding-echo/
   src/
     main/
       java/
-        echo/                  - The binding interfaces
-          impl/                - The bindings model classes
-          module/              - The activator that loads the binding into the 
-                                 SCA runtime
-          provider/            - The bindings runtime classes
-          server/              - A dummy server that the binding is plugged into
+        echo/                    - The binding interfaces
+          impl/                  - The bindings model classes
+          module/                - The activator that loads the binding into the 
+                                   SCA runtime
+          provider/              - The bindings runtime classes
+          server/                - A dummy server that the binding is plugged into
       resources/
-        EchoBinding.composite  - the SCA assembly for this sample
+        EchoBinding.composite    - the SCA assembly for this sample
     test/
       java/ 
-        EchoBindingClient.java - used when Ant is running the sample
-  binding-echo.png             - a pictorial representation of the sample 
-                                 .composite file
-  build.xml                    - the Ant build file
-  pom.xml                      - the Maven build file
+        echo/
+          EchoBindingClient.java - used when Ant is running the sample
+  binding-echo.png               - a pictorial representation of the sample 
+                                   .composite file
+  build.xml                      - the Ant build file
+  pom.xml                        - the Maven build file
   
 TBD - more detail required on how this sample adds a new binding to SCA
 
