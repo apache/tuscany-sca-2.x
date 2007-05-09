@@ -1,0 +1,138 @@
+DataBinding Echo Sample
+=======================
+
+This sample demonstrates how databindings are used to convert data formats as 
+the data flows between components. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+If reference and service interfaces are the same in all but the formats of 
+data being passed to and returned from the operations of the interfaces then SCA
+will try to apply appropriate transformations to the data formats to allow 
+messages to pass. 
+
+This sample shows this happening. ComponentA implements Interface1 which
+defines;
+
+ String call(String msg)
+ String call1(String msg) 
+ 
+ComponentA defines a reference to ComponentB with Interface1. ComponentB 
+however implements Interface2 which defines;
+
+ Node call(Node msg);
+ XMLStreamReader call1(XMLStreamReader msg);
+ 
+You can see from the test output below that SCA converts the call() msg from a 
+String to a DOM object (org.apache.xerces.dom.DeferredDocumentImpl). It
+converts the call1() msg from a String to a XML stream reader 
+(com.ctc.wstx.sr.ValidatingStreamReader).
+
+binding-echo\
+  src\
+    main\
+      java\
+        echo\          - The implementation files from the binding-echo test
+          ...
+    test\
+      java\ 
+        echo\          - The classes and interfaces implementing the test 
+                         components
+  databinding-echo.png - a pictorial representation of the sample .composite 
+                         file
+  build.xml            - the Ant build file
+  pom.xml              - the Maven build file
+  
+TODO - Needs more description of what else is going on in this test
+       properties, wsdl?
+  
+Building And Runing The Sample Using Ant
+----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd databinding-echo
+ant 
+
+You should see the following output from the run target.
+
+run:
+     [java] Composite assembly problem: No type specified on component property:
+ ComponentA/omProperty
+     [java] [Property] prefix: ABC
+     [java] [Property] prefix1: ABC
+     [java] [Property] bar: BAR
+     [java] ComponentA --> Received message: <message><foo>123</foo></message> [
+java.lang.String]
+     [java] ComponentB --> Received message: [#document: null] [org.apache.xerce
+s.dom.DeferredDocumentImpl]
+     [java] ComponentB --> Returned message: [#document: null] [org.apache.xerce
+s.dom.DeferredDocumentImpl]
+     [java] ComponentA --> Returned message: <?xml version="1.0" encoding="UTF-8
+"?><message><foo>123</foo></message> [java.lang.String]
+     [java] [Property] prefix: ABC
+     [java] [Property] prefix1: ABC
+     [java] [Property] bar: BAR
+     [java] ComponentA --> Received message: <message><foo>123</foo></message> [
+java.lang.String]
+     [java] ComponentB --> Received message: com.ctc.wstx.sr.ValidatingStreamRea
+der@4c444c44 [com.ctc.wstx.sr.ValidatingStreamReader]
+     [java] ComponentB --> Returned message: com.ctc.wstx.sr.ValidatingStreamRea
+der@4c444c44 [com.ctc.wstx.sr.ValidatingStreamReader]
+     [java] ComponentA --> Returned message: <?xml version='1.0' encoding='UTF-8
+'?><message><foo>123</foo></message> [java.lang.String]
+     [java] call  response = <?xml version="1.0" encoding="UTF-8"?><message><foo
+>123</foo></message>
+     [java] call1 response = <?xml version='1.0' encoding='UTF-8'?><message><foo
+>123</foo></message>
+
+
+Building And Runing The Sample Using Maven 
+------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd databinding-echo
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running echo.EchoDataBindingTestCase
+Composite assembly problem: No type specified on component property: ComponentA/
+omProperty
+[Property] prefix: ABC
+[Property] prefix1: ABC
+[Property] bar: BAR
+ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.St
+ring]
+ComponentB --> Received message: [#document: null] [org.apache.xerces.dom.Deferr
+edDocumentImpl]
+ComponentB --> Returned message: [#document: null] [org.apache.xerces.dom.Deferr
+edDocumentImpl]
+ComponentA --> Returned message: <?xml version="1.0" encoding="UTF-8"?><message>
+<foo>123</foo></message> [java.lang.String]
+[Property] prefix: ABC
+[Property] prefix1: ABC
+[Property] bar: BAR
+ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.St
+ring]
+ComponentB --> Received message: com.ctc.wstx.sr.ValidatingStreamReader@74e274e2
+ [com.ctc.wstx.sr.ValidatingStreamReader]
+ComponentB --> Returned message: com.ctc.wstx.sr.ValidatingStreamReader@74e274e2
+ [com.ctc.wstx.sr.ValidatingStreamReader]
+ComponentA --> Returned message: <?xml version='1.0' encoding='UTF-8'?><message>
+<foo>123</foo></message> [java.lang.String]
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.653 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
