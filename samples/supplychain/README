@@ -10,10 +10,12 @@ first.
 Sample Overview
 ---------------
 
-The sample provides a single calculator service with a default SCA (java) 
-binding. The CalculatorClient exercises this interface by calling add, 
-subtract, multiply and divide operations. This results in messages passing to 
-the appropriate components in the composite across the local wires.
+The sample provides a Customer service with a purchaseGoods operation
+and a notifyShipment operation annotated with the SCA @OneWay annotation.
+The SupplyChainClient exercises this interface by calling the
+purchaseGoods operation. This results in messages passing to 
+the Retailer, Warehouse, and Shipper components and the result returned
+to the Customer service on a seperate callback thread.
 
 calculator/
   src/
