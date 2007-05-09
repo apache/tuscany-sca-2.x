@@ -56,6 +56,7 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
@@ -147,7 +148,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             if (!isPublicSetter(method)) {
                 continue;
             }
-            if (method.isAnnotationPresent(Callback.class)) {
+            if (method.isAnnotationPresent(Callback.class) || method.isAnnotationPresent(Context.class)) {
                 continue;
             }
             if (!isInServiceInterface(method, services)) {
@@ -173,7 +174,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             if (!isProtectedSetter(method)) {
                 continue;
             }
-            if (method.isAnnotationPresent(Callback.class)) {
+            if (method.isAnnotationPresent(Callback.class) || method.isAnnotationPresent(Context.class)) {
                 continue;
             }
             Class<?> param = method.getParameterTypes()[0];
@@ -196,7 +197,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         // for the same name
         Set<Field> fields = getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Callback.class)) {
+            if (field.isAnnotationPresent(Callback.class) || field.isAnnotationPresent(Context.class)) {
                 continue;
             }
             if (setters.contains(field.getName())) {
