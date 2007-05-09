@@ -1,0 +1,80 @@
+SupplyChain Sample
+==================
+
+This sample demonstrates using the SCA components using the asynchronous API.
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+
+The sample provides a single calculator service with a default SCA (java) 
+binding. The CalculatorClient exercises this interface by calling add, 
+subtract, multiply and divide operations. This results in messages passing to 
+the appropriate components in the composite across the local wires.
+
+calculator/
+  src/
+    main/
+      java/
+        supplychain/
+          Customer.java                - Defines the Java interface implemented
+                                         by the Customer component
+          CustomerComponentImpl.java   - Implements the SCA Customer component
+          Retailer.java                - Defines the Java interface implemented
+                                         by the Retailer component
+          RetailerComponentImpl.java   - Implements the SCA RetailerComponent component
+          Shipper.java                 - Defines the Java interface implemented 
+                                         by the Shipper component
+          ShipperComponentImpl.java    - Implements the SCA ShipperComponent component
+          SupplyChainClient.java       - SupplyChainClient.java loads SCA runtime
+          Warehouse.java               - Defines the Java interface implemented
+                                         by the Warehouse component
+          WarehouseComponentImpl.java  - Implements the SCA WarehouseComponent component
+                                       
+      resources/                        
+        supplychain.composite          - the SCA assembly for this sample
+  build.xml                            - the Ant build file
+  pom.xml                              - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd calculator
+ant 
+
+You should see the following output from the run target.
+
+run:
+     [java] Main thread Thread[main,5,main]
+     [java] Main thread sleeping ...
+     [java] Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfilled, shipped
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd supplychain
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running supplychain.SupplyChainClientTestCase
+Main thread Thread[main,5,main]
+Sleeping ...
+Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfilled, shipped
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.625 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
