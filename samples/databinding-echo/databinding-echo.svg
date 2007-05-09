@@ -15,7 +15,10 @@
    inkscape:version="0.44"
    sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\databinding-echo"
    sodipodi:docname="databinding-echo.svg"
-   version="1.0">
+   version="1.0"
+   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\databinding-echo\databinding-echo.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -140,7 +143,7 @@
        ry="0" />
     <path
        style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 368.4801,289.0146 L 401.81514,289.0146 L 407.87605,302.14658 L 400.80499,314.26842 L 368.4801,314.26842 L 376.05625,302.14658 L 368.4801,289.0146 z "
+       d="M 368.48016,289.0146 L 412.69432,289.0146 L 420.73325,302.14658 L 411.3545,314.26842 L 368.48016,314.26842 L 378.52884,302.14658 L 368.48016,289.0146 z "
        id="path3017" />
     <path
        style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.00000024px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -342,5 +345,20 @@
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:3,1;stroke-dashoffset:0"
        d="M 677.85714,397.66591 C 684.28571,376.95163 684.28571,376.95163 684.28571,376.95163"
        id="path2997" />
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3886"
+       transform="translate(96.76088,84.52404)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+       inkscape:transform-center-y="72.857143"
+       inkscape:transform-center-x="90.714286"><flowRegion
+         id="flowRegion3888"><rect
+           id="rect3890"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+         id="flowPara3892">interface1</flowPara></flowRoot>  </g>
 </svg>
