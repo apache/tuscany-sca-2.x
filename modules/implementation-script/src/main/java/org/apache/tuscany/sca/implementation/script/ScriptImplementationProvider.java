@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.implementation.script;
 
 import java.io.StringReader;
-import java.util.List;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -30,12 +29,8 @@ import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
 import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
-import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.invocation.Invoker;
@@ -43,7 +38,6 @@ import org.apache.tuscany.provider.ImplementationProvider;
 import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 /**
  * Represents a Script implementation.
@@ -80,8 +74,7 @@ public class ScriptImplementationProvider implements ImplementationProvider<Scri
             }
             
             for (Reference reference : implementation.getReferences()) {
-                Object referenceProxy = createReferenceProxy(reference.getName(), component);
-                scriptEngine.put(reference.getName(), referenceProxy);
+                scriptEngine.put(reference.getName(), createReferenceProxy(reference.getName(), component));
             }
 
             for (Property property : implementation.getProperties()) {
@@ -100,22 +93,16 @@ public class ScriptImplementationProvider implements ImplementationProvider<Scri
     
     public void stop() {
     }
-    
-    /**
-     * TODO: yuk yuk yuk
-     * Maybe RuntimeComponentReference could have a createProxy method?
-     */
-    private Object createReferenceProxy(String name, RuntimeComponent component) {
+
+    @SuppressWarnings("unchecked")
+    protected Object createReferenceProxy(String name, RuntimeComponent component) {
         for (ComponentReference reference : component.getReferences()) {
             if (reference.getName().equals(name)) {
-                List<RuntimeWire> wireList = ((RuntimeComponentReference)reference).getRuntimeWires();
-                RuntimeWire wire = wireList.get(0);
-                JDKProxyService ps = new JDKProxyService(WorkContextTunnel.getThreadWorkContext(), null);
-                Interface iface = reference.getInterfaceContract().getInterface();
-                return ps.createProxy(((JavaInterface)iface).getJavaClass(), wire);
+                Class iface = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
+                return component.getService(iface, name);
             }
         }
-        throw new IllegalStateException("reference " + name + " not found on component: " + component);
+        throw new IllegalArgumentException("reference " + name + " not found on component: " + component);
     }
 
     /**
