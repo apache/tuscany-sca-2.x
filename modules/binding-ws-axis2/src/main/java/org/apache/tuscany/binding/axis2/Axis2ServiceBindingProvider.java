@@ -251,7 +251,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
-        String path = wsBinding.getURI();
+        String path = URI.create(wsBinding.getURI()).getPath();
         if (path != null && path.length() > 1 && path.startsWith("/")) {
             path = path.substring(1);
         }
