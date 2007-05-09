@@ -33,13 +33,11 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.invocation.MessageImpl;
@@ -47,15 +45,10 @@ import org.apache.tuscany.provider.ReferenceBindingProvider;
 import org.apache.tuscany.provider.ServiceBindingProvider;
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.rmi.RMIHostException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
-
 /**
- * 
  * RMIBindingProvider
- *
- * @version $Rev: $ $Date: $
  */
 public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
     ServiceBindingProvider<RMIBinding>, MethodInterceptor {
@@ -65,7 +58,6 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
     private RuntimeComponentReference reference;
     private RMIBinding binding;
     private RMIHost rmiHost;
-    private RuntimeWire wire;
     
     //need this member to morph the service interface to extend from Remote if it does not
     // the base class's member variable interfaze is to be maintained to enable the connection
@@ -99,8 +91,6 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
             URI uri = URI.create(component.getURI() + "/" + binding.getName());
             binding.setURI(uri.toString());
             
-            //TODO : Need to figure out why we do a get(0)... will this work always...
-            this.wire = service.getRuntimeWires().get(0);
             this.serviceInterface = service.getInterfaceContract().getInterface();
             
             Remote rmiProxy = createRmiService();
@@ -194,40 +184,22 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
         // since incoming method signatures have 'remotemethod invocation' it will not match with the
         // wired component's method signatures. Hence need to pull in the corresponding method from the
         // component's service contract interface to make this invocation.
-        
-        
+
         return invokeTarget(JavaInterfaceUtil.findOperation(method, serviceInterface.getOperations()), 
                                                             args);
     }
     
-    public Object invokeTarget(Operation op, 
-                               Object[] args) throws InvocationTargetException {
-        InvocationChain chain = null;
-        
-        for (InvocationChain ic : wire.getInvocationChains()) {
-            if (ic.getSourceOperation().equals(op)) {
-                chain = ic;
-            }
-        }
-        if (chain == null) {
-            throw new IllegalStateException("no InvocationChain on wire for operation " + op);
-        }
-        
-        Invoker headInvoker = chain.getHeadInvoker();
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        
-        Message msg = new MessageImpl();
-        msg.setBody(args);
-        msg.setWorkContext(workContext);
+    public Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
+        Message requestMsg = new MessageImpl();
+        requestMsg.setWorkContext(WorkContextTunnel.getThreadWorkContext());
+        requestMsg.setBody(args);
 
-        Message resp;
-        // dispatch the wire down the chain and get the response
-        resp = headInvoker.invoke(msg);
-        Object body = resp.getBody();
-        if (resp.isFault()) {
-            throw new InvocationTargetException((Throwable) body);
+        Message responseMsg = service.getInvoker(binding, op).invoke(requestMsg);
+
+        if (responseMsg.isFault()) {
+            throw new InvocationTargetException((Throwable)responseMsg.getBody());
         }
-        return body;
+        return responseMsg.getBody();
     }
     
     protected int getPort(String port) {
