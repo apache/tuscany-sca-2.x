@@ -16,23 +16,23 @@ subtract, multiply and divide operations. This results in messages passing
 to the appropriate components in the composite across the local wires. Each
 component is implemented using a different language.
 
-calculator\
-  src\
-    main\
-      java\
-        calculator\
-          CalculatorService.java  - the first componet calls +-/* as 
+calculator/
+  src/
+    main/
+      java/
+        calculator/
+          CalculatorService.java  - the first component calls +-/* as 
                                     appropriate
           AddService.java         - adds two numbers
-          SubtractService.java    - substracts one number from another
+          SubtractService.java    - subtracts one number from another
           MultipleService.java    - multiplies two numbers
           DivideService.java      - divides one number by another
           CalculatorClient.java   - starts the SCA Runtime and 
                                     deploys the Calculator.composite. 
                                     It then calls the deployed Calculator 
                                     Components services
-      resources\
-        calculator\
+      resources/
+        calculator/
           AddServiceImpl.js       - A JavaScript implementation of the
                                     Add component
           SubtractServiceImpl.rb  - A Ruby implementation of the Subtract
@@ -48,8 +48,8 @@ calculator\
   build.xml                       - the Ant build file
   pom.xml                         - the Maven build file        
 
-Building And Runing The Sample Using Ant
-----------------------------------------
+Building And Running The Sample Using Ant
+-----------------------------------------
 With the binary distribution the sample can be built and run using Ant as 
 follows
 
@@ -64,8 +64,8 @@ run:
      [java] 3 * 2=6.0
      [java] 3 / 2=1.5
 
-Building And Runing The Sample Using Maven 
-------------------------------------------
+Building And Running The Sample Using Maven 
+-------------------------------------------
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
