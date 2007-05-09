@@ -122,6 +122,7 @@ public class ReallySmallRuntimeBuilder {
 
         // Create a work scheduler
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
+        registry.addExtensionPoint(WorkScheduler.class, workScheduler);
 
         // Create a wire post processor extension point
         RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
