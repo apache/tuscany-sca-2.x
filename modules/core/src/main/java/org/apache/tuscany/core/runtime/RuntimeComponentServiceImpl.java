@@ -78,7 +78,9 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         }
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation op = chain.getTargetOperation();
-            if (op.equals(operation)) {
+            // TODO: Operation.equals doesn seem to work with Operations with diff databindings
+            //       so just check the name for now 
+            if (op.getName().equals(operation.getName())) {
                 return chain.getHeadInvoker();
             }
         }
