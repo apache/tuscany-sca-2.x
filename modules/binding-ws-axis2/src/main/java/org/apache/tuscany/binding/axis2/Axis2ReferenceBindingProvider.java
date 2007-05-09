@@ -72,12 +72,12 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
         }
-    }
+        initServiceClient();
+        }
 
     // methods for ReferenceBindingActivator
 
-    public void start() {
-
+    public void initServiceClient() {
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
             contract = reference.getInterfaceContract();
@@ -94,10 +94,13 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
         // targetURI was passed to the ReferenceBindingExtension constructor and apparently was unused
         // Do we still need a targetURI?
 
-        wsBinding.setURI(component.getURI() + "#" + reference.getName());
+//        wsBinding.setURI(component.getURI() + "#" + reference.getName());
 
         // create an Axis2 ServiceClient
         serviceClient = createServiceClient();
+    }
+
+    public void start() {
     }
 
     public void stop() {
@@ -133,6 +136,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
     }
 
     public Invoker createInvoker(Operation operation, boolean isCallback) {
+
         Axis2BindingInvoker invoker;
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();

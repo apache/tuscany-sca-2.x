@@ -217,11 +217,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
             actualURI += "/" + wsdlURI.toString();
         }
 
-        // Axis2 fails if the endpoint has a trailing slash
-        if (actualURI.endsWith("/")) {
-            actualURI = actualURI.substring(0, actualURI.length() -1);
-        }
-        
         return URI.create(actualURI);
     }
 
@@ -252,9 +247,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
         AxisService axisService = builder.populateService();
 
         String path = URI.create(wsBinding.getURI()).getPath();
-        if (path != null && path.length() > 1 && path.startsWith("/")) {
-            path = path.substring(1);
-        }
         axisService.setName(path);
         axisService.setServiceDescription("Tuscany configured AxisService for service: " + wsBinding.getURI());
 
