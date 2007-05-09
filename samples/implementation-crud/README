@@ -1,0 +1,92 @@
+Implementation CRUD Sample
+==========================
+This sample demonstrates how new implementation types are constructed for 
+Apache Tuscany SCA. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+This sample contains a CRUD implementation type as an example of how to create
+new implementation types. Components using this implementation type always
+expose the same Create, Retrieve, Update and Delete interface. This sample
+uses a singleton ResourceManager to perform the CRUD operations but of course
+a real component would provide a real implementation. 
+
+implementation-crud/
+  src/
+    main/
+      java/
+        crud/                  - implementation model interfaces
+        crud.backend/          - fake component implementation
+        crud.impl/             - implementations of the model interfaces
+        crud.module/           - gets the implementation-crud module registered
+                                 with the SCA runtime
+        crud.provider/         - runtime implementation
+      resources/
+        crud.composite         - the SCA assembly for this sample
+    test/
+      java/
+        crud/ 
+          CRUDClient.java      - used when Ant is running the sample
+  implementation-crud.png      - a pictorial representation of the sample 
+                                 .composite file
+  build.xml                    - the Ant build file
+  pom.xml                      - the Maven build file
+  
+TBD - more detail required on how this sample adds a new implementation to SCA
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd implementation-crud
+ant 
+
+You should see the following output from the run target.
+
+run:
+     [java] Starting CRUDServiceComponent
+     [java] create(ABC) in tmp
+     [java] retrieve(0)
+     [java] Result from create: ABC
+     [java] update(0)
+     [java] retrieve(0)
+     [java] Result from update: EFG
+     [java] delete(0)
+     [java] retrieve(0)
+     [java] Result from delete: null
+     [java] Stopping CRUDServiceComponent
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd implementation-crud
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running crud.CRUDTestCase
+Starting CRUDServiceComponent
+create(ABC) in tmp
+retrieve(0)
+update(0)
+retrieve(0)
+delete(0)
+retrieve(0)
+Stopping CRUDServiceComponent
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.212 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 

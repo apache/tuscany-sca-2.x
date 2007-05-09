@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\implementation-crud"
+   sodipodi:docname="implementation-crud.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\implementation-crud\implementation-crud.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="528.85714"
+     inkscape:cy="406.01174"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1142"
+     inkscape:window-height="722"
+     inkscape:window-x="107"
+     inkscape:window-y="128" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(1.038749,0,0,1.009461,-29.25616,-1.807024)">
+      <rect
+         rx="8.7034655"
+         ry="12.692303"
+         y="192.00233"
+         x="375.89822"
+         height="299.99988"
+         width="281.85843"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:1.95312572;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"
+         transform="translate(104.5213,-10.61387)"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">crud</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.66247"
+       height="85.862968"
+       x="450.63062"
+       y="302.8819"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(183.0398,96.94336)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2972">CRUDService</flowPara><flowPara
+         id="flowPara1894">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 433.4801,334.72889 L 466.81514,334.72889 L 472.87605,347.86087 L 465.80499,359.98271 L 433.4801,359.98271 L 441.05625,347.86087 L 433.4801,334.72889 z "
+       id="path3017" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1904"
+       transform="translate(158.2681,129.761)"><flowRegion
+         id="flowRegion1906"><rect
+           id="rect1908"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1912"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">CRUD</flowPara></flowRoot>  </g>
+</svg>
