@@ -63,7 +63,7 @@ import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.WorkContextTunnel;
 
-public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
+public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebServiceBinding> {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;

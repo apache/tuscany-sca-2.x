@@ -30,8 +30,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.spi.component.WorkContext;
 
 public class Axis2AsyncBindingInvoker extends Axis2BindingInvoker {
 

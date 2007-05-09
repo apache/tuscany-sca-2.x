@@ -174,6 +174,21 @@ public interface WebServiceBinding extends Binding {
      */
     void setNamespace(String namespace);
     
+    /**
+     * Returns true if the model element is unresolved.
+     * 
+     * @return true if the model element is unresolved.
+     */
+    boolean isUnresolved();
+
+    /**
+     * Sets whether the model element is unresolved.
+     * 
+     * @param unresolved whether the model element is unresolved
+     */
+    void setUnresolved(boolean unresolved);
+    
     InterfaceContract getBindingInterfaceContract();
+    
     void setBindingInterfaceContract(InterfaceContract bindingInterfaceContract);
 }

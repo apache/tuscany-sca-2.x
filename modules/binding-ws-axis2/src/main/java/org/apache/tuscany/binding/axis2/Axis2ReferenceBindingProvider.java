@@ -36,7 +36,6 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
@@ -48,7 +47,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
 
-public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
+public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<WebServiceBinding> {
 
     private RuntimeComponent component;
     private RuntimeComponentReference reference;

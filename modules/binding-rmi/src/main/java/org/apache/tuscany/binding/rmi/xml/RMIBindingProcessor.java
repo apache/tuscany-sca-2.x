@@ -54,7 +54,6 @@ public class RMIBindingProcessor extends BaseArtifactProcessor implements
     public RMIBinding read(XMLStreamReader reader) throws ContributionReadException {
         try {
             RMIBinding rmiBinding = rmiBindingFactory.createRMIBinding();
-            rmiBinding.setUnresolved(true);
             
             //Read policies
             readPolicies(rmiBinding, reader);

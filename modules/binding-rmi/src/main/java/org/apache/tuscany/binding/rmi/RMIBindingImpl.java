@@ -16,17 +16,26 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.assembly.impl.BindingImpl;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.policy.PolicySet;
+
 
 /**
  * Represents a binding to an RMI service.
  *
  * @version $Rev: 490475 $ $Date: 2006-12-27 15:53:42 +0530 (Wed, 27 Dec 2006) $
  */
-public class RMIBindingImpl extends BindingImpl implements RMIBinding, RMIBindingConstants {
+public class RMIBindingImpl implements RMIBinding, RMIBindingConstants {
+    private String name;
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
     private String host;
     private String port;
     private String serviceName;
+    private List<Object> extensions = new ArrayList<Object>();
     
     protected RMIBindingImpl() {
     }
@@ -68,6 +77,36 @@ public class RMIBindingImpl extends BindingImpl implements RMIBinding, RMIBindin
         this.serviceName = serviceName;
     }
     
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setURI(String uri) {
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+    
+    public List<Object> getExtensions() {
+        return extensions;
+    }
+    
+    public boolean isUnresolved() {
+        return false;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+    }
+
     private void extractFromUri() {
         if (getURI() != null && getURI().length() > 0) {
             int colonIndex = getURI().indexOf(COLON);

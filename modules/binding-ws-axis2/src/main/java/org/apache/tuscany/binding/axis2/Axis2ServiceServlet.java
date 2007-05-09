@@ -42,10 +42,6 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextImpl;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
 
 /**
  * This overrides the servlet init of the AxisServlet so Tuscany can use

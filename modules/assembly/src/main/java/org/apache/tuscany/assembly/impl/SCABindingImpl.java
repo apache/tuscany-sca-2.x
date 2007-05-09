@@ -18,15 +18,25 @@
  */
 package org.apache.tuscany.assembly.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.assembly.Component;
 import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.policy.PolicySet;
 
 /**
  * Represents an SCA binding.
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl extends BindingImpl implements SCABinding {
+public class SCABindingImpl implements SCABinding {
+    private String name;
+    private String uri;
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<Object> extensions = new ArrayList<Object>();
     
     private Component component;
     
@@ -44,4 +54,38 @@ public class SCABindingImpl extends BindingImpl implements SCABinding {
         this.component = component;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Object> getExtensions() {
+        return extensions;
+    }
+    
+    public boolean isUnresolved() {
+        return false;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+    }
 }

@@ -23,32 +23,40 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.xml.WebServiceBindingProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.ServletHost;
-import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
-import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
+import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 
 public class Axis2ModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
-        WebServiceBindingFactory wsFactory = new Axis2BindingFactory(servletHost);
+        WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
-        processors.addArtifactProcessor(new WebServiceBindingProcessor(assemblyFactory, policyFactory, wsFactory,
-                                                                       wsdlFactory, introspector));
+        WebServiceBindingProcessor processor =
+            new WebServiceBindingProcessor(assemblyFactory, policyFactory, wsFactory, wsdlFactory, introspector); 
+        processors.addArtifactProcessor(processor);
+
+        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
+        Axis2BindingProviderFactory providerFactory = new Axis2BindingProviderFactory(servletHost);
+        providerFactories.addProviderFactory(providerFactory);
     }
 
     public void stop(ExtensionPointRegistry registry) {

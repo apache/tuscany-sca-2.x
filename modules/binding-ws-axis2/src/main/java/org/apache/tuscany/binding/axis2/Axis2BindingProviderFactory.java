@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-import org.apache.tuscany.binding.ws.impl.WebServiceBindingImpl;
+import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
@@ -33,7 +33,7 @@ import org.apache.tuscany.provider.ServiceBindingProvider;
  * @version $Rev$ $Date$
  */
 
-public class Axis2BindingProviderFactory extends WebServiceBindingImpl implements BindingProviderFactory {
+public class Axis2BindingProviderFactory implements BindingProviderFactory<WebServiceBinding> {
 
     private ServletHost servletHost;
 
@@ -41,11 +41,15 @@ public class Axis2BindingProviderFactory extends WebServiceBindingImpl implement
         this.servletHost = servletHost;
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference) {
-        return new Axis2ReferenceBindingProvider(component, reference, this);
+    public ReferenceBindingProvider<WebServiceBinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, WebServiceBinding binding) {
+        return new Axis2ReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service) {
-        return new Axis2ServiceBindingProvider(component, service, this, servletHost);
+    public ServiceBindingProvider<WebServiceBinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, WebServiceBinding binding) {
+        return new Axis2ServiceBindingProvider(component, service, binding, servletHost);
+    }
+    
+    public Class<WebServiceBinding> getModelType() {
+        return WebServiceBinding.class;
     }
 }
