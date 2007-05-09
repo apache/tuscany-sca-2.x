@@ -49,9 +49,7 @@ import org.apache.tuscany.provider.ImplementationProvider;
 import org.apache.tuscany.provider.ImplementationProviderFactory;
 import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
-import org.apache.tuscany.provider.ScopedImplementationProvider;
 import org.apache.tuscany.provider.ServiceBindingProvider;
-import org.apache.tuscany.scope.Scope;
 import org.apache.tuscany.scope.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.work.WorkScheduler;
@@ -99,6 +97,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @param composite
      * @throws IncompatibleInterfaceContractException 
      */
+    @SuppressWarnings("unchecked")
     protected void configureComposite(Composite composite) throws IncompatibleInterfaceContractException {
         for (Component component : composite.getComponents()) {
 
@@ -316,7 +315,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 if (operation.isNonBlocking()) {
                     chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                 }
-                addBindingIntercepor(component, reference, binding, chain, operation, false);
+                addBindingInterceptor(component, reference, binding, chain, operation, false);
                 wire.getInvocationChains().add(chain);
             }
             if (sourceContract.getCallbackInterface() != null) {
@@ -327,7 +326,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     if (operation.isNonBlocking()) {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                     }
-                    addBindingIntercepor(component, reference, binding, chain, operation, true);
+                    addBindingInterceptor(component, reference, binding, chain, operation, true);
                     wire.getCallbackInvocationChains().add(chain);
                 }
             }
@@ -359,7 +358,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 if (operation.isNonBlocking()) {
                     chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                 }
-                addBindingIntercepor(component, reference, binding, chain, operation, false);
+                addBindingInterceptor(component, reference, binding, chain, operation, false);
                 if (target != null) {
                     addImplementationInterceptor(target, service, chain, operation, false);
                 }
@@ -377,7 +376,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     if (operation.isNonBlocking()) {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                     }
-                    addBindingIntercepor(component, reference, binding, chain, operation, true);
+                    addBindingInterceptor(component, reference, binding, chain, operation, true);
                     addImplementationInterceptor(component, null, chain, operation, true);
                     wire.getCallbackInvocationChains().add(chain);
                 }
@@ -506,7 +505,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @param operation
      * @param isCallback
      */
-    private void addBindingIntercepor(Component component,
+    private void addBindingInterceptor(Component component,
                                       ComponentReference reference,
                                       Binding binding,
                                       InvocationChain chain,
@@ -521,24 +520,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
         }
     }
 
-    /**
-     * Get the scope for a component
-     * 
-     * @param component
-     * @return
-     */
-    private Scope getScope(Component component) {
-        ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
-        if (implementationProvider instanceof ScopedImplementationProvider) {
-            ScopedImplementationProvider provider = (ScopedImplementationProvider)implementationProvider;
-            Scope scope = provider.getScope();
-            if (scope == null) {
-                return Scope.STATELESS;
-            }
-        }
-        return Scope.STATELESS;
-    }
-    
     private void setScopeContainer(Component component) {
         if (!(component instanceof RuntimeComponent)) {
             return;
