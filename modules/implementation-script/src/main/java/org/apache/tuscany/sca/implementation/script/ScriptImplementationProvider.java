@@ -34,6 +34,7 @@ import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.core.invocation.JDKProxyService;
+import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
@@ -52,10 +53,12 @@ public class ScriptImplementationProvider implements ImplementationProvider<Scri
     protected RuntimeComponent component;
     protected ScriptImplementation implementation;
     protected ScriptEngine scriptEngine;
+    protected PropertyValueObjectFactory propertyFactory;
 
-    public ScriptImplementationProvider(RuntimeComponent component, ScriptImplementation implementation) {
+    public ScriptImplementationProvider(RuntimeComponent component, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
         this.component = component;
         this.implementation = implementation;
+        this.propertyFactory = propertyFactory;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
@@ -82,7 +85,7 @@ public class ScriptImplementationProvider implements ImplementationProvider<Scri
             }
 
             for (Property property : implementation.getProperties()) {
-                ObjectFactory<?> propertyValueFactory = implementation.propertyFactory.createValueFactory(property);
+                ObjectFactory<?> propertyValueFactory = propertyFactory.createValueFactory(property);
                 if ( propertyValueFactory != null) {
                     scriptEngine.put(property.getName(), propertyValueFactory.getInstance());
                 }

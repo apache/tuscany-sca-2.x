@@ -19,10 +19,7 @@
 package org.apache.tuscany.sca.implementation.script;
 
 import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
-import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
-import org.apache.tuscany.provider.ImplementationProvider;
 
 /**
  * Represents a Script implementation.
@@ -33,13 +30,10 @@ public class ScriptImplementation extends AbstractImplementation implements Impl
     protected String scriptSrc;
     protected String scriptLanguage;
 
-    protected PropertyValueObjectFactory propertyFactory;
-
-    public ScriptImplementation(String scriptName, String scriptLanguage, String scriptSrc, PropertyValueObjectFactory propertyFactory) {
+    public ScriptImplementation(String scriptName, String scriptLanguage, String scriptSrc) {
         this.scriptName = scriptName;
         this.scriptLanguage = scriptLanguage;
         this.scriptSrc = scriptSrc;
-        this.propertyFactory = propertyFactory;
     }
 
     public String getScriptName() {
@@ -58,7 +52,4 @@ public class ScriptImplementation extends AbstractImplementation implements Impl
         this.scriptSrc = scriptSrc;
     }
 
-    public ImplementationProvider createImplementationProvider(RuntimeComponent component) {
-        return new ScriptImplementationProvider(component, this);
-    }
 }

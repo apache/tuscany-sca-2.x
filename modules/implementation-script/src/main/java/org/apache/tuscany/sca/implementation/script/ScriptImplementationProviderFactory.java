@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.script;
 
 import org.apache.tuscany.core.RuntimeComponent;
+import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.provider.ImplementationProvider;
 import org.apache.tuscany.provider.ImplementationProviderFactory;
 
@@ -27,11 +28,14 @@ import org.apache.tuscany.provider.ImplementationProviderFactory;
  */
 public class ScriptImplementationProviderFactory implements ImplementationProviderFactory<ScriptImplementation> {
 
-    public ScriptImplementationProviderFactory() {
+    private PropertyValueObjectFactory propertyFactory;
+
+    public ScriptImplementationProviderFactory(PropertyValueObjectFactory propertyFactory) {
+        this.propertyFactory = propertyFactory;
     }
 
     public ImplementationProvider<ScriptImplementation> createImplementationProvider(RuntimeComponent component, ScriptImplementation implementation) {
-        return new ScriptImplementationProvider(component, implementation);
+        return new ScriptImplementationProvider(component, implementation, propertyFactory);
     }
     
     public Class<ScriptImplementation> getModelType() {
