@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.ComponentReference;
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ReferenceBindingProvider;
 
 /**
@@ -68,5 +70,14 @@ public interface RuntimeComponentReference extends ComponentReference {
      * @return
      */
     void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider);
+    
+    
+    /**
+     * Get the invoker for the given binding and operation
+     * @param binding
+     * @param operation
+     * @return
+     */
+    Invoker getInvoker(Binding binding, Operation operation);
     
 }
