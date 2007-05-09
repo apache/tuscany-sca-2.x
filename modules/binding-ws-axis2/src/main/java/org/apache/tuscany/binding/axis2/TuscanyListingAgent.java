@@ -76,10 +76,7 @@ public class TuscanyListingAgent extends ListingAgent {
 // Change the Axis2 code so as to use the complete ServletPath as the service name
 // this line is the only change to to Axis2 code
         String serviceName = req.getServletPath();
-        if (serviceName.startsWith("/")) {
-            serviceName = serviceName.substring(1);
-        }
-        
+
         HashMap services = configContext.getAxisConfiguration().getServices();
         String query = req.getQueryString();
         int wsdl2 = query.indexOf("wsdl2");

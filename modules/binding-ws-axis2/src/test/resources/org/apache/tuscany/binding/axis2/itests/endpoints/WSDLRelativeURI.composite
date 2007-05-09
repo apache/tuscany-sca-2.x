@@ -43,7 +43,7 @@
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld-om-relative-uri#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om-relative-uri#wsdl.binding(HelloWorldSoapBinding)"
-                    uri="http://localhost:8080/HelloWorldService/myRelativeURI"/>
+                    uri="http://localhost:8080/HelloWorldService/helloWorld/myRelativeURI"/>
     </reference>
 
 </composite>
