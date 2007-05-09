@@ -44,6 +44,16 @@ public interface ScopedImplementationProvider<M> extends ImplementationProvider<
      *         otherwise
      */
     boolean isEagerInit();
+    
+    /**
+     * @return the maxAge
+     */
+    long getMaxAge();
+
+    /**
+     * @return the maxIdleTime
+     */
+    long getMaxIdleTime();    
 
     /**
      * Create a wrapper for the component instance for the scope management
