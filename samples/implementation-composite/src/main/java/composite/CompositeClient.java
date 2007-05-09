@@ -35,7 +35,8 @@ public class CompositeClient {
         
         System.out.println("Main thread " + Thread.currentThread());
         source.clientMethod("Client.main");
-        Thread.sleep(500);
+        System.out.println("Sleeping ...");
+        Thread.sleep(1000);
         
         domain.close();
     }
