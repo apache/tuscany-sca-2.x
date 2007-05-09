@@ -32,15 +32,15 @@ String to a DOM object (org.apache.xerces.dom.DeferredDocumentImpl). It
 converts the call1() msg from a String to a XML stream reader 
 (com.ctc.wstx.sr.ValidatingStreamReader).
 
-binding-echo\
-  src\
-    main\
-      java\
-        echo\          - The implementation files from the binding-echo test
+binding-echo/
+  src/
+    main/
+      java/
+        echo/          - The implementation files from the binding-echo test
           ...
-    test\
-      java\ 
-        echo\          - The classes and interfaces implementing the test 
+    test/
+      java/ 
+        echo/          - The classes and interfaces implementing the test 
                          components
   databinding-echo.png - a pictorial representation of the sample .composite 
                          file
@@ -50,8 +50,8 @@ binding-echo\
 TODO - Needs more description of what else is going on in this test
        properties, wsdl?
   
-Building And Runing The Sample Using Ant
-----------------------------------------
+Building And Running The Sample Using Ant
+-----------------------------------------
 With the binary distribution the sample can be built and run using Ant as 
 follows
 
@@ -91,8 +91,8 @@ der@4c444c44 [com.ctc.wstx.sr.ValidatingStreamReader]
 >123</foo></message>
 
 
-Building And Runing The Sample Using Maven 
-------------------------------------------
+Building And Running The Sample Using Maven 
+-------------------------------------------
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
