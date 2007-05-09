@@ -41,6 +41,8 @@
             <classpath>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
+            <exclude name="echo/EchoReferenceTestCase.java"/>
+            <exclude name="echo/EchoServiceTestCase.java"/>        	
         </javac> 
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
