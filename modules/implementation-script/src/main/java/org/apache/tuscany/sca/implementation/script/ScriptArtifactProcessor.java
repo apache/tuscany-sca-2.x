@@ -30,7 +30,6 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.implementation.spi.AbstractStAXArtifactProcessor;
-import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.implementation.spi.ResourceHelper;
 
 /**
@@ -42,12 +41,8 @@ public class ScriptArtifactProcessor extends AbstractStAXArtifactProcessor<Scrip
 
     private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, "implementation.script");
 
-    // TODO: runtime needs to provide a better way to get the PropertyValueObjectFactory
-    private PropertyValueObjectFactory propertyFactory;
-
-    public ScriptArtifactProcessor(AssemblyFactory assemblyFactory, PropertyValueObjectFactory propertyFactory) {
+    public ScriptArtifactProcessor(AssemblyFactory assemblyFactory) {
         super(assemblyFactory);
-        this.propertyFactory = propertyFactory;
     }
 
     public QName getArtifactType() {
@@ -74,7 +69,7 @@ public class ScriptArtifactProcessor extends AbstractStAXArtifactProcessor<Scrip
         }
 
         String scriptSrc = ResourceHelper.readResource(scriptName);
-        ScriptImplementation scriptImpl = new ScriptImplementation(scriptName, scriptLanguage, scriptSrc, propertyFactory);
+        ScriptImplementation scriptImpl = new ScriptImplementation(scriptName, scriptLanguage, scriptSrc);
 
         // TODO: How to get the script URI? Should use the contrabution service
         //   the uri is used in the resolve method (perhaps incorrectly?) to get the .componentType sidefile
