@@ -97,7 +97,10 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     private static final String BASE_URI = "http://localhost:8080/";
 
     public void start() {
-        URI uri = computeActualURI(BASE_URI, component, service).normalize();
+        String uri = computeActualURI(BASE_URI, component, service).normalize().toString();
+        if (uri.endsWith("/")) {
+            uri = uri.substring(0, uri.length() -1);
+        }
         wsBinding.setURI(uri.toString());
         
         // ??? following line was in Axis2BindingBuilder before the SPI changes and code reorg
