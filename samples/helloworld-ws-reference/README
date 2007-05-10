@@ -6,6 +6,35 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
+If you just want to run it to see what happens you need to run the server first 
+so open a command prompt, navigate to the helloworld-ws-service sample directory 
+and do 
+
+ant
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-service.jar helloworld.HelloWorldServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-service.jar helloworld.HelloWorldServer
+
+
+Once the server is running open a command prompt, navigate to this sample 
+directory and do:
+
+ant 
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-reference.jar helloworld.HelloWorldClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-reference.jar helloworld.HelloWorldClient
+
+
 Sample Overview
 ---------------
 The sample provides a single component that is wired to a reference with a 
@@ -44,10 +73,11 @@ and you will see you need the following commands
 cd helloworld-ws-service
 ant
 
-Once done you now need to run this sample using the following commands;
+Once done you can now compile and run this sample using the following commands;
 
 cd helloworld-ws-reference
-ant 
+ant compile
+ant
 
 You should see the following output from the run target.
 
