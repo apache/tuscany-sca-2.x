@@ -46,6 +46,7 @@
                 <module>das-service</module>
                 -->
                 <module>databinding-echo</module>
+                <module>helloworld-jsonrpc</module>
                 <module>helloworld-ws-service</module>
                 <module>helloworld-ws-reference</module>
                 <module>implementation-composite</module>
