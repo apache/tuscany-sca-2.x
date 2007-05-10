@@ -147,6 +147,8 @@ public class DefaultSCADomain extends SCADomain {
 
     @Override
     public void close() {
+        
+        super.close();
 
         // Remove the contribution from the in-memory repository
         ContributionService contributionService = runtime.getContributionService();
@@ -155,7 +157,7 @@ public class DefaultSCADomain extends SCADomain {
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         }
-
+        
         // Stop the SCA domain composite
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
         try {
