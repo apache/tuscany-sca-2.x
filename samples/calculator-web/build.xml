@@ -17,7 +17,6 @@
  * under the License.    
 -->
 <project name="calculator-web" default="package">
-    <property environment="env"/>
 	
     <target name="init">
         <mkdir dir="target/classes"/>

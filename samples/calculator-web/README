@@ -8,10 +8,15 @@ general instructions about building and running samples. Take a look there
 first. 
 
 As this sample provides a web app there is a manual step where the WAR file
-that contains the sample is copied to your web app container. 
+that contains the sample is copied to your web app container. If you just want 
+to give this sample a go deploy the WAR file (target/sample-calculator-web.war)
+to you web application server. 
 
-Note. If you are using Tomcat to run this sample you must be running 
-on Tomcat6 as Tuscany SCA runtime currently depends on servlet API 2.5.
+Once the web app is deployed use your browser to visit the following URL;
+
+http://localhost:8080/sample-calculator-web/calc.jsp
+
+The port and hostname will of course vary depending on your local installation. 
 
 Sample Overview
 ---------------
