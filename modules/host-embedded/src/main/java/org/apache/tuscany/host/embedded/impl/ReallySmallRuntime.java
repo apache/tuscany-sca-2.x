@@ -104,14 +104,15 @@ public class ReallySmallRuntime {
 
     public void stop() throws ActivationException {
 
+        // Stop the runtime modules
+        stopModules(registry, modules);
+
         // FIXME remove this
         workContext.setIdentifier(Scope.COMPOSITE, null);
 
         // Stop and destroy the work manager
         workManager.destroy();
-
-        // Stop the runtime modules
-        stopModules(registry, modules);
+        
     }
 
     public ContributionService getContributionService() {
