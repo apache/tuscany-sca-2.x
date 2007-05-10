@@ -41,8 +41,8 @@
                 <module>assembly-xml</module>
                 <!--
                 <module>binding-jms</module>
-                <module>binding-jsonrpc</module>
 		-->
+                <module>binding-jsonrpc</module>
                 <module>binding-rmi</module>
                 <module>binding-ws</module>
                 <module>binding-ws-axis2</module>
