@@ -28,8 +28,10 @@ import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.binding.ws.WebServiceBinding;
+import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 
@@ -208,6 +210,12 @@ public class WebServiceBindingImpl implements WebServiceBinding {
     }
 
     public WSDLDefinition getWSDLDefinition() {
+        if (wsdlDefinition == null) {
+            Interface iface = bindingInterfaceContract.getInterface();
+            if (iface instanceof WSDLInterface) {
+                wsdlDefinition = ((WSDLInterface) iface).getWsdlDefinition();
+            }
+        }
         return wsdlDefinition;
     }
 

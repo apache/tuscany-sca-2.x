@@ -71,7 +71,7 @@
 
     <wsdl:service name="HelloWorldService">
         <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorldSoapPort">
-            <wsdlsoap:address location="http://localhost:8080/services/HelloWorldWebService"/>
+            <wsdlsoap:address location="http://endpoint.not.used"/>
         </wsdl:port>
     </wsdl:service>
 
