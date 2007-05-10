@@ -28,12 +28,20 @@ import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.Invoker;
 import org.apache.tuscany.provider.ServiceBindingProvider;
 
 public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements RuntimeComponentService {
+    private InterfaceContractMapper mapper;
+
+    public RuntimeComponentServiceImpl(InterfaceContractMapper mapper) {
+        super();
+        this.mapper = mapper;
+    }
+
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
     private List<RuntimeWire> callbackWires = new ArrayList<RuntimeWire>();
     private Map<Binding, ServiceBindingProvider> bindingProviders = new HashMap<Binding, ServiceBindingProvider>();
@@ -78,9 +86,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         }
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation op = chain.getTargetOperation();
-            // TODO: Operation.equals doesn seem to work with Operations with diff databindings
-            //       so just check the name for now 
-            if (op.getName().equals(operation.getName())) {
+            if (mapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
                 return chain.getHeadInvoker();
             }
         }
@@ -92,7 +98,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
             if (wire.getTarget().getBinding() == binding) {
                 for (InvocationChain chain : wire.getCallbackInvocationChains()) {
                     Operation op = chain.getSourceOperation();
-                    if (op == operation) {
+                    if (mapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
                         return chain.getHeadInvoker();
                     }
                 }
