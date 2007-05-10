@@ -80,6 +80,12 @@
 				<exclude>bigbank/**/*</exclude>
 				<exclude>das-service</exclude>
 				<exclude>das-service/**/*</exclude>
+				<exclude>helloworld-jsonrpc/src/main/webapp/dojo</exclude>
+				<exclude>helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
+				<exclude>calculator-web/target/sample-calculator-web</exclude>
+				<exclude>calculator-web/target/sample-calculator-web/**/*</exclude>
+				<exclude>helloworld-jsonrpc/target/sample-helloworldjsonrpc</exclude>
+				<exclude>helloworld-jsonrpc/target/sample-helloworldjsonrpc/**/*</exclude>
 				<exclude>loanapplication</exclude>
 				<exclude>loanapplication/**/*</exclude>
 				<exclude>*/.classpath</exclude>
