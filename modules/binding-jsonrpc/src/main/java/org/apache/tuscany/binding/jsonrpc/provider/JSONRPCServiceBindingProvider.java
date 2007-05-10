@@ -47,7 +47,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider<JSO
     // path to the JSONRPC javascript servlet
     public static final String SCRIPT_GETTER_SERVICE_MAPPING = "/SCA/scripts";
     
-    public static final String JSONRPC_SERVICE_MAPPING_PREFIX = "/services/";
+    public static final String JSONRPC_SERVICE_MAPPING_PREFIX = "/";
     
     public JSONRPCServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JSONRPCBinding binding, ServletHost servletHost) {
         this.component = component;
