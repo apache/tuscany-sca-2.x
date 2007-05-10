@@ -366,7 +366,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
                 addBindingInterceptor(component, reference, binding, chain, operation, false);
                 if (target != null) {
-                    addImplementationInterceptor(target, service, chain, operation, false);
+                    addImplementationInterceptor(target, service, chain, targetOperation, false);
                 }
                 wire.getInvocationChains().add(chain);
             }
@@ -383,7 +383,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                         chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
                     }
                     addBindingInterceptor(component, reference, binding, chain, operation, true);
-                    addImplementationInterceptor(component, null, chain, operation, true);
+                    addImplementationInterceptor(component, null, chain, targetOperation, true);
                     wire.getCallbackInvocationChains().add(chain);
                 }
             }
@@ -452,7 +452,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
             }
 
-            addImplementationInterceptor(component, service, chain, operation, false);
+            addImplementationInterceptor(component, service, chain, targetOperation, false);
             wire.getInvocationChains().add(chain);
         }
         // if (sourceContract.getCallbackInterface() != null) {

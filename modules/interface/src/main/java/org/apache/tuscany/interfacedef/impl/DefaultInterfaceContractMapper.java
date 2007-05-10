@@ -41,7 +41,9 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
             // For local case
             return target.getPhysical() == source.getPhysical();
         } else {
-            return target.getLogical().equals(source.getLogical());
+            // FIXME: How to test if two remotable data type is compatible?
+            // return target.getLogical().equals(source.getLogical());
+            return true;
         }
 
     }
@@ -69,7 +71,13 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
         }
 
         List<DataType> sourceInputType = source.getInputType().getLogical();
+        if (source.isWrapperStyle()) {
+            sourceInputType = source.getWrapper().getUnwrappedInputType().getLogical();
+        }
         List<DataType> targetInputType = target.getInputType().getLogical();
+        if (target.isWrapperStyle()) {
+            targetInputType = target.getWrapper().getUnwrappedInputType().getLogical();
+        }
 
         if (sourceInputType.size() != targetInputType.size()) {
             return false;
@@ -86,8 +94,9 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
         for (DataType targetFaultType : target.getFaultTypes()) {
             // Source fault types must be the same or superset of target fault
             // types
-            boolean found = false;
+            boolean found = true;
             for (DataType sourceFaultType : source.getFaultTypes()) {
+                found = false;
                 if (isCompatible(targetFaultType, sourceFaultType, remotable)) {
                     // Target fault type can be covered by the source fault type
                     found = true;

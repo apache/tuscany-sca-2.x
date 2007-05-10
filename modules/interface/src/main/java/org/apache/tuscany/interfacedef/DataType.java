@@ -54,10 +54,10 @@ public interface DataType<L> extends Cloneable {
      * Returns the logical identifier used by the assembly. The type of this
      * value identifies the logical type system in use. Known values are:
      * <ul>
-     * <li>a java.lang.reflect.Type identifies a Java type by name and
+     * <li>a Class identifies a Java type by name and
      * ClassLoader; this includes Java Classes as they are specializations of
      * Type</li>
-     * <li>a javax.xml.namespace.QName identifies an XML type by local name and
+     * <li>a XMLType identifies an XML type by local name and
      * namespace</li>
      * </ul>
      * 

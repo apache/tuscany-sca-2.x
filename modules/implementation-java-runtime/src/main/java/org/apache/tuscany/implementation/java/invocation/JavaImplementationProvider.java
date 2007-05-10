@@ -45,7 +45,7 @@ import org.osoa.sca.ComponentContext;
 /**
  * @version $Rev$ $Date$
  */
-public class JavaImplementationProvider implements ScopedImplementationProvider<JavaImplementation> {
+public class JavaImplementationProvider implements ScopedImplementationProvider {
     private JavaImplementation implementation;
     private JavaComponentInfo atomicComponent;
 

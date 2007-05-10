@@ -28,6 +28,7 @@ import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.invocation.InvocationChain;
 import org.apache.tuscany.invocation.Invoker;
@@ -36,6 +37,12 @@ import org.apache.tuscany.provider.ReferenceBindingProvider;
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
     private Map<Binding, ReferenceBindingProvider> bindingProviders = new HashMap<Binding, ReferenceBindingProvider>();
+    private InterfaceContractMapper mapper;
+
+    public RuntimeComponentReferenceImpl(InterfaceContractMapper mapper) {
+        super();
+        this.mapper = mapper;
+    }
 
     public void addRuntimeWire(RuntimeWire wire) {
         wires.add(wire);
@@ -69,7 +76,7 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
         }
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation op = chain.getSourceOperation();
-            if (op == operation) {
+            if (mapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
                 return chain.getHeadInvoker();
             }
         }

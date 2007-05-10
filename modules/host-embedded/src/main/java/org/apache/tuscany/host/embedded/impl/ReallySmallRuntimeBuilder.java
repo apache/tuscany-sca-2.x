@@ -109,6 +109,7 @@ public class ReallySmallRuntimeBuilder {
 
         // FIXME remove this
         registry.addExtensionPoint(ProxyFactory.class, proxyFactory);
+        registry.addExtensionPoint(InterfaceContractMapper.class, mapper);
 
         return proxyFactory;
     }

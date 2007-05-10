@@ -26,6 +26,7 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.core.ExtensionPointRegistry;
 import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.runtime.RuntimeAssemblyFactory;
+import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
@@ -58,8 +59,10 @@ public class CRUDModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
 
         ProxyFactory proxyFactory = registry.getExtensionPoint(ProxyFactory.class);
+        InterfaceContractMapper mapper = registry.getExtensionPoint(InterfaceContractMapper.class);
         // Create the CRUD implementation factory
-        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(proxyFactory);
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(mapper, proxyFactory);
+
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
