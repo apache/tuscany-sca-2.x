@@ -21,11 +21,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <artifactId>tuscany-modules</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>binding-jsonrpc</artifactId>
+
+    <artifactId>tuscany-binding-jsonrpc</artifactId>
     <name>Apache Tuscany JSON-RPC Binding</name>
 
     <repositories>
@@ -83,10 +84,23 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-http</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
         
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version> <!-- to keep compatible with older servlet containers --> 
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-http-jetty</artifactId>
@@ -115,9 +129,5 @@
         </dependency>
 
     </dependencies>
-
-    <build>
-       <finalName>${artifactId}</finalName>
-    </build>
 
 </project>
