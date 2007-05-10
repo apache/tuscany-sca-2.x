@@ -1,4 +1,22 @@
-Installing Apache Tuscany 1.0-beta1
-===================================
+Installing Apache Tuscany 0.90 (May 2007) Release
+=================================================
+
+Unzip Tuscany binary distribution archive and you get the following:
+
+tuscany-sca-0.90-incubating        
+   DISCLAIMER - the ASF incubation disclaimer
+   INSTALL    - this help file
+   LICENSE    - the Apache License and any dependecy licenses
+   NOTICE     - attribution notices associated with the licenses
+
+   /doc       - Javadoc for the SCA APIs and the Tuscany SPIs
+
+   /lib       - all the Tuscany jars and their and dependencies
+
+   /modules   - all of the individual Tuscany jars
+
+   /samples   - all the Tuscany samples, see the README in that directory
+
+
 
 
