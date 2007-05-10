@@ -34,7 +34,7 @@ public class ScriptImplementationProviderFactory implements ImplementationProvid
         this.propertyFactory = propertyFactory;
     }
 
-    public ImplementationProvider<ScriptImplementation> createImplementationProvider(RuntimeComponent component, ScriptImplementation implementation) {
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, ScriptImplementation implementation) {
         return new ScriptImplementationProvider(component, implementation, propertyFactory);
     }
     

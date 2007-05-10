@@ -28,7 +28,7 @@ import org.apache.tuscany.scope.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public interface ScopedImplementationProvider<M> extends ImplementationProvider<M> {
+public interface ScopedImplementationProvider<M> extends ImplementationProvider {
     /**
      * Get the scope for the component implementation
      * 

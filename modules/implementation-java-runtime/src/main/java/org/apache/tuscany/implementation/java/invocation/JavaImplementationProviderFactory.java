@@ -49,7 +49,7 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
         this.propertyValueObjectFactory = propertyValueObjectFactory;
     }
 
-    public ImplementationProvider<JavaImplementation> createImplementationProvider(RuntimeComponent component, JavaImplementation implementation) {
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, JavaImplementation implementation) {
         return new JavaImplementationProvider(component, implementation, proxyService, workContext, dataBindingRegistry, propertyValueObjectFactory);
     }
     

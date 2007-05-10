@@ -29,7 +29,7 @@ import org.apache.tuscany.invocation.Invoker;
  * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationProvider<M> {
+public interface ImplementationProvider {
 
     /**
      * This method will be invoked when the component implementation
@@ -63,5 +63,7 @@ public interface ImplementationProvider<M> {
      *         returned if no invoker is required
      */
     Invoker createCallbackInvoker(Operation operation);
+    
+    // InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service);
     
 }

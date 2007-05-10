@@ -35,6 +35,6 @@ public interface ImplementationProviderFactory<M extends Implementation> extends
      * @param implementation
      * @return
      */
-    ImplementationProvider<M> createImplementationProvider(RuntimeComponent component, M Implementation);
+    ImplementationProvider createImplementationProvider(RuntimeComponent component, M Implementation);
     
 }
