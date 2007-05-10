@@ -17,7 +17,8 @@
  * under the License.    
 -->
 <project name="sample-supplychain" default="run">
-    <property environment="env"/>
+    <property name="test.class" value="supplychain.SupplyChainClient" />
+	<property name="test.jar"   value="sample-supplychain.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -36,10 +37,15 @@
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
+        <jar destfile="target/${test.jar}" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
+        </jar>    	
     </target>	
 	
-    <target name="run" depends="compile">
-        <java classname="supplychain.SupplyChainClient"
+    <target name="run-classes">
+        <java classname="${test.class}"
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
@@ -47,6 +53,16 @@
             </classpath>
         </java>
     </target>
+	
+    <target name="run">
+        <java classname="${test.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="target/${test.jar}"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </java>    	
+    </target>	
 	
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">

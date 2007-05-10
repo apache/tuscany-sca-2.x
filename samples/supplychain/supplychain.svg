@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\supplychain"
+   sodipodi:docname="supplychain.svg"
+   version="1.0">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="521.44872"
+     inkscape:cy="414.63224"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1128"
+     inkscape:window-height="721"
+     inkscape:window-x="89"
+     inkscape:window-y="126" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(1.047575,0,0,1,-9.726882,0)">
+      <rect
+         rx="19.999123"
+         ry="12.692303"
+         y="192.00233"
+         x="205.45438"
+         height="299.99988"
+         width="647.66394"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:1.95405793;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"
+         transform="translate(-38.86527,-2.857143)"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">supplychain</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.66247"
+       height="85.862968"
+       x="241.34489"
+       y="300.02475"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(-26.24589,94.08621)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2972">Customer</flowPara><flowPara
+         id="flowPara1939">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 224.19438,331.87174 L 257.52942,331.87174 L 263.59033,345.00372 L 256.51927,357.12556 L 224.19438,357.12556 L 231.77053,345.00372 L 224.19438,331.87174 z "
+       id="path3017" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 337.44682,330.03346 L 370.78186,330.03346 L 376.84277,343.16544 L 369.77171,355.28728 L 337.44682,355.28728 L 345.02297,343.16544 L 337.44682,330.03346 z "
+       id="path3019" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1897"
+       width="115.66247"
+       height="85.862968"
+       x="405.82632"
+       y="298.30585"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1899"
+       transform="translate(138.2355,92.36731)"><flowRegion
+         id="flowRegion1901"><rect
+           id="rect1903"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1905">Retailer</flowPara><flowPara
+         id="flowPara1941">Component </flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 388.67581,330.15284 L 422.01085,330.15284 L 428.07176,343.28482 L 421.0007,355.40666 L 388.67581,355.40666 L 396.25196,343.28482 L 388.67581,330.15284 z "
+       id="path1907" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 501.92825,328.31456 L 535.26329,328.31456 L 541.3242,341.44654 L 534.25314,353.56838 L 501.92825,353.56838 L 509.5044,341.44654 L 501.92825,328.31456 z "
+       id="path1909" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1911"
+       width="115.66247"
+       height="85.862968"
+       x="567.96918"
+       y="296.87729"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1913"
+       transform="translate(300.3784,90.93874)"><flowRegion
+         id="flowRegion1915"><rect
+           id="rect1917"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1919">Wharehouse</flowPara><flowPara
+         id="flowPara1943">Component </flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 550.81867,328.72427 L 584.15371,328.72427 L 590.21462,341.85625 L 583.14356,353.97809 L 550.81867,353.97809 L 558.39482,341.85625 L 550.81867,328.72427 z "
+       id="path1921" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 664.07111,326.88599 L 697.40615,326.88599 L 703.46706,340.01797 L 696.396,352.13981 L 664.07111,352.13981 L 671.64726,340.01797 L 664.07111,326.88599 z "
+       id="path1923" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1925"
+       width="115.66247"
+       height="85.862968"
+       x="727.96918"
+       y="294.73444"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1927"
+       transform="translate(460.3784,88.79589)"><flowRegion
+         id="flowRegion1929"><rect
+           id="rect1931"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1933">Shipper</flowPara><flowPara
+         id="flowPara1945">Component </flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 710.81866,326.58142 L 744.1537,326.58142 L 750.21461,339.7134 L 743.14355,351.83524 L 710.81866,351.83524 L 718.39481,339.7134 L 710.81866,326.58142 z "
+       id="path1935" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 824.0711,324.74314 L 857.40614,324.74314 L 863.46705,337.87512 L 856.39599,349.99696 L 824.0711,349.99696 L 831.64725,337.87512 L 824.0711,324.74314 z "
+       id="path1937" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 376.42857,343.3802 C 395.71429,343.3802 395.71429,343.3802 395.71429,343.3802"
+       id="path1947" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 540.71429,341.23734 C 557.85714,341.23734 557.85714,341.23734 557.85714,341.23734"
+       id="path1949" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 702.14286,340.52305 C 717.85714,340.52305 717.85714,340.52305 717.85714,340.52305"
+       id="path1951" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 863.57143,337.66591 C 875.71429,337.66591 875.71429,337.66591 875.71429,337.66591 L 875,427.66591 L 212.14286,429.09448 L 210.71429,344.09448 L 231.42857,344.09448"
+       id="path1953"
+       inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\supplychain\supplychain.png"
+       inkscape:export-xdpi="52.84"
+       inkscape:export-ydpi="52.84" />
+  </g>
+</svg>
