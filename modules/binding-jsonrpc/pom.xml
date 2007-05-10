@@ -21,13 +21,103 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-modules</artifactId>
-        <version>${version}</version>
+        <artifactId>tuscany-sca</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-binding-jsonrpc</artifactId>
+    <artifactId>binding-jsonrpc</artifactId>
     <name>Apache Tuscany JSON-RPC Binding</name>
-    
+
+    <repositories>
+       <repository>
+          <id>apache.incubator</id>
+          <url>http://people.apache.org/repo/m2-incubating-repository</url>
+       </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>com.metaparadigm</groupId>
+            <artifactId>json-rpc</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+	        <groupId>net.sf.json-lib</groupId>
+	        <artifactId>json-lib</artifactId>
+	        <version>0.8</version>
+	        <scope>test</scope>
+        </dependency>
+     
+        <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-http</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-http-jetty</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+	        <groupId>httpunit</groupId>
+	        <artifactId>httpunit</artifactId>
+	        <version>1.6.1</version>
+	        <scope>test</scope>
+        </dependency>
+
     </dependencies>
+
+    <build>
+       <finalName>${artifactId}</finalName>
+    </build>
+
 </project>

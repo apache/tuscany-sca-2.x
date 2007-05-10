@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,23 +16,19 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-package org.apache.tuscany.binding.jsonrpc;
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://jsonrpc"
+	xmlns:jsonrpc="http://jsonrpc"
+	name="JSONRPCBinding">
 
-import junit.framework.TestCase;
+    <service name="EchoService" promote="EchoComponent">
+        <interface.java interface="org.apache.tuscany.binding.jsonrpc.Echo"/>
+        <binding.jsonrpc />
+    </service>
 
-public class JSONRPCBindingTestCase extends TestCase {
-
-    public void testGetURI() {
-        JSONRPCBindingDefinition jsonBinding = new JSONRPCBindingDefinition();
-        jsonBinding.uri = "test_uri";
-        assertEquals("test_uri", jsonBinding.getURI());
-    }
-
-    public void testSetURI() {
-        JSONRPCBindingDefinition jsonBinding = new JSONRPCBindingDefinition();
-        jsonBinding.setURI("test_uri");
-        assertEquals("test_uri", jsonBinding.uri);
-    }
-
-}
+    <component name="EchoComponent">
+        <implementation.java class="org.apache.tuscany.binding.jsonrpc.EchoComponentImpl"/>
+    </component>
+    
+</composite>

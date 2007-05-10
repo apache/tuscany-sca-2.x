@@ -18,83 +18,46 @@
  */
 package org.apache.tuscany.binding.jsonrpc;
 
-import javax.servlet.Servlet;
-
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.host.ServletHost;
-import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.model.ServiceContract;
-
-import static org.easymock.classextension.EasyMock.*;
-import org.easymock.EasyMock;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.host.embedded.SCADomain;
+import org.json.JSONObject;
+
+import com.meterware.httpunit.PostMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
+
+/**
+ * @version $Rev: 536083 $ $Date: 2007-05-08 02:18:29 -0400 (Tue, 08 May 2007) $
+ */
 public class JSONRPCServiceTestCase extends TestCase {
-    private static final String SERVICE_NAME = "test_service_name";    
 
-    @SuppressWarnings({"unchecked"})
-    public void testStart() {
-        CompositeComponent mockParent = createMock(CompositeComponent.class);
-        replay(mockParent);
-        WireService mockWireService = createMock(WireService.class);
-        expect(mockWireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class))).andReturn(this);
-        replay(mockWireService);
-        ServletHost mockServletHost = createMock(ServletHost.class);
-        expect(mockServletHost.isMappingRegistered(JSONRPCServiceBinding.SCRIPT_GETTER_SERVICE_MAPPING)).andReturn(false);
-        mockServletHost.registerMapping(eq("/" + SERVICE_NAME), (Servlet) notNull());
-        mockServletHost.registerMapping(eq(JSONRPCServiceBinding.SCRIPT_GETTER_SERVICE_MAPPING), (Servlet) notNull());
-        replay(mockServletHost);
+    private static final String SERVICE_PATH = "services/EchoService";
+    private static final String SERVICE_URL = "http://localhost:8080/" + SERVICE_PATH;
+    private SCADomain domain;
 
-        ServiceContract contract = new ServiceContract(Object.class){
-
-        };
-        JSONRPCServiceBinding jsonRpcService = new JSONRPCServiceBinding(SERVICE_NAME, mockParent, mockWireService, mockServletHost );
-        InboundWire wire = EasyMock.createNiceMock(InboundWire.class);
-        EasyMock.expect(wire.getServiceContract()).andReturn(contract);
-        EasyMock.replay(wire);
-        jsonRpcService.setInboundWire(wire);
-        jsonRpcService.start();
+    protected void setUp() throws Exception {
+        domain = SCADomain.newInstance("JSONRPCBinding.composite");
+    }
+    
+    protected void tearDown() throws Exception {
+    	domain.close();
     }
 
-    @SuppressWarnings({"unchecked"})
-    public void testStop() {
-        CompositeComponent mockParent = createMock(CompositeComponent.class);
-        replay(mockParent);
-        WireService mockWireService = createMock(WireService.class);
-        expect(mockWireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class))).andReturn(this);
-        replay(mockWireService);
-        ServletHost mockServletHost = createMock(ServletHost.class);
-        expect(mockServletHost.isMappingRegistered(JSONRPCServiceBinding.SCRIPT_GETTER_SERVICE_MAPPING)).andReturn(false);
-        mockServletHost.registerMapping(eq("/" + SERVICE_NAME), (Servlet) notNull());
-        mockServletHost.registerMapping(eq(JSONRPCServiceBinding.SCRIPT_GETTER_SERVICE_MAPPING), (Servlet) notNull());
-        expect(mockServletHost.unregisterMapping(eq("/" + SERVICE_NAME))).andReturn(null);
-        expect(mockServletHost.unregisterMapping(eq(JSONRPCServiceBinding.SCRIPT_GETTER_SERVICE_MAPPING))).andReturn(null);
-        replay(mockServletHost);
+    public void testJSONRPCBinding() throws Exception {
+        JSONObject jsonRequest = new JSONObject("{ \"method\": \"echo\", \"params\": [\"Hello JSON-RPC\"], \"id\": 1}");
         
-        ServiceContract contract = new ServiceContract(Object.class){
-
-        };
-        JSONRPCServiceBinding jsonRpcService = new JSONRPCServiceBinding(SERVICE_NAME, mockParent, mockWireService, mockServletHost );
-        InboundWire wire = EasyMock.createNiceMock(InboundWire.class);
-        EasyMock.expect(wire.getServiceContract()).andReturn(contract);
-        EasyMock.replay(wire);
-        jsonRpcService.setInboundWire(wire);
-        jsonRpcService.start();
-        jsonRpcService.stop();
+        WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");        
+        WebResponse response = wc.getResource(request);
+                   
+        assertEquals(200, response.getResponseCode());
+        JSONObject jsonResp = new JSONObject(response.getText());                                   
+        assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
     }
 
-    public void testJSONRPCService() {
-        CompositeComponent mockParent = createMock(CompositeComponent.class);    
-        replay(mockParent);
-        WireService mockWireService = createMock(WireService.class);        
-        replay(mockWireService);
-        ServletHost mockServletHost = createMock(ServletHost.class);        
-        replay(mockServletHost);
-        
-        JSONRPCServiceBinding jsonRpcService = new JSONRPCServiceBinding(SERVICE_NAME, mockParent, mockWireService, mockServletHost );
-        assertNotNull(jsonRpcService);
-    }
 
 }
