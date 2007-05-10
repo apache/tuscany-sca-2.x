@@ -26,14 +26,17 @@ public class HelloWorldServiceComponent implements HelloWorldService {
     HelloWorldService helloWorldService;
 
     public String getGreetings(String name) {
+        System.out.println("Called getGreetings");
         return helloWorldService.getGreetings(name);
     }
 
     public HelloWorldService getHelloWorldService() {
+        System.out.println("Got Injected helloWorldService");
         return helloWorldService;
     }
 
     public void setHelloWorldService(HelloWorldService helloWorldService) {
+        System.out.println("Injected helloWorldService");        
         this.helloWorldService = helloWorldService;
     }
 }
