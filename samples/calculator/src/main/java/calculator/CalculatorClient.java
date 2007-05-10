@@ -30,8 +30,8 @@ public class CalculatorClient {
 
         SCADomain domain = SCADomain.newInstance("http://calc", ".", "Calculator.composite");
         
-        CalculatorService calculatorService = domain.getService(CalculatorService.class,
-                                                                                "CalculatorServiceComponent");
+        CalculatorService calculatorService = 
+            domain.getService(CalculatorService.class, "CalculatorServiceComponent");
 
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
