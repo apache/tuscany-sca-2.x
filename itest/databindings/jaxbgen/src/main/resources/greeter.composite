@@ -29,7 +29,6 @@
 
     <component name="WSGreeterServiceClient">
         <implementation.java class="org.apache.tuscany.sca.itest.jaxbdatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService" target="JAXBGreeterServiceWSRef"/>
     </component>
 
     <reference name="JAXBGreeterServiceWSReference" promote="WSGreeterServiceClient/greeterService">
