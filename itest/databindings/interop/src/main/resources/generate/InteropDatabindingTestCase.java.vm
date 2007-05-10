@@ -43,7 +43,7 @@ public class InteropDatabindingTestCase extends TestCase  {
 
     private static boolean initalised = false;
     private GreeterService greeterClient;
-    private SCADomain domain;
+    private static SCADomain domain;
 
     /**
      * Runs before each test method
