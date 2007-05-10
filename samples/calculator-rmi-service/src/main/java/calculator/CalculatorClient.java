@@ -21,8 +21,6 @@ package calculator;
 
 import java.rmi.Naming;
 
-import org.apache.tuscany.host.embedded.SCADomain;
-
 /**
  * This client program shows how to create an SCA runtime, start it,
  * and locate and invoke a SCA component
