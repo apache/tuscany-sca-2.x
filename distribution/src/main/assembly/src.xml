@@ -78,6 +78,8 @@
 		 <exclude>**/var/journal</exclude>
 		 <exclude>**/build.out*</exclude>
 		 <exclude>velocity.log</exclude>
+             <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo</exclude>
+             <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
           </excludes>
 	 </fileSet>
      </fileSets>
