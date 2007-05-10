@@ -22,6 +22,7 @@ import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.interfacedef.impl.InterfaceImpl;
+import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 
 /**
@@ -33,6 +34,7 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
 
     private QName name;
     private PortType portType;
+    private WSDLDefinition wsdlDefinition;
 
     protected WSDLInterfaceImpl() {
         setRemotable(true);
@@ -79,5 +81,13 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
         } else {
             return false;
         }
+    }
+
+    public WSDLDefinition getWsdlDefinition() {
+        return wsdlDefinition;
+    }
+
+    public void setWsdlDefinition(WSDLDefinition wsdlDefinition) {
+        this.wsdlDefinition = wsdlDefinition;
     }
 }

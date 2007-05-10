@@ -167,6 +167,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                             throw new ContributionResolveException(e);
                         }
                         resolver.addModel(wsdlInterface);
+                        wsdlInterface.setWsdlDefinition(wsdlDefinition);
                     }
                 }
             }

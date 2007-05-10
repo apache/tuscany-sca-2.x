@@ -59,4 +59,8 @@ public interface WSDLInterface extends Interface {
      */
     void setPortType(PortType portType);
 
+    public WSDLDefinition getWsdlDefinition();
+
+    public void setWsdlDefinition(WSDLDefinition wsdlDefinition);
+
 }
