@@ -6,6 +6,20 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant 
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-simple-callback.jar simplecallback.SimpleCallbackClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-simple-callback.jar simplecallback.SimpleCallbackClient
+
+
 Sample Overview
 ---------------
 The sample provides a single composite with two components. MyClientComponent is 

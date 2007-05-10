@@ -17,7 +17,8 @@
  * under the License.    
 -->
 <project name="simple-callback" default="run">
-    <property environment="env"/>
+    <property name="test.class" value="simplecallback.SimpleCallbackClient" />
+	<property name="test.jar"   value="sample-simple-callback.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -36,16 +37,31 @@
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
+        <jar destfile="target/${test.jar}" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
+        </jar>    	
     </target>	
 	
-    <target name="run" depends="compile">
-        <java classname="simplecallback.SimpleCallbackClient"
+    <target name="run-classes">
+        <java classname="${test.class}"
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </java>
+    </target>
+	
+    <target name="run">
+        <java classname="${test.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="target/${test.jar}"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </java>    	
     </target>
 	
     <target name="clean">
