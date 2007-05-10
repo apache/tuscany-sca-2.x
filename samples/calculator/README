@@ -1,15 +1,26 @@
 Calculator Sample
 =================
-
 This sample implements a simple calculator using SCA components. 
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
 first. 
 
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant 
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
+
 Sample Overview
 ---------------
-
 The sample provides a single calculator service with a default SCA (java) 
 binding. The CalculatorClient exercises this interface by calling add, 
 subtract, multiply and divide operations. This results in messages passing to 
@@ -43,7 +54,8 @@ With the binary distribution the sample can be built and run using Ant as
 follows
 
 cd calculator
-ant 
+ant compile
+ant
 
 You should see the following output from the run target.
 
