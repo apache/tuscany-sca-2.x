@@ -10,6 +10,33 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant -f build-server.xml
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-rmi-service.jar calculator.CalculatorServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-service.jar calculator.CalculatorServer
+
+Now you have the server running you need to open another command prompt, navigate
+to this sample directory and do:
+
+ant -f build-client.xml
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-rmi-service.jar calculator.CalculatorClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-service.jar calculator.CalculatorClient
+
+
 Sample Overview
 ---------------
 This sample extends the calculator sample by replacing the local service 
@@ -59,7 +86,8 @@ which exposes an RMI service. Start a new console and use the following
 commands.
 
 cd calculator-rmi-service
-ant -f build-server.xml
+ant -f build-server.xml compile
+ant -f build-server.xml 
 
 This will run up the server and display the following.
 
@@ -73,6 +101,7 @@ It locates the RMI service that the SCA runtime is exposing and calls each of
 the calculator operations. Start a new console and use the following commands. 
 
 cd calculator-rmi-service
+ant -f build-client.xml compile
 ant -f build-client.xml
 
 You should see the following output from the run target.
