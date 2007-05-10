@@ -2,8 +2,8 @@ The Apache Tuscany SCA Samples
 ==============================
 
 The Apache Tuscany SCA samples are built as part of the main Maven build and 
-run, using the provided JUnit tests cases, as extra tests as part of that 
-build. In the binary distribution of Apache Tuscany the samples can also 
+run, using the provided JUnit tests cases, as extra tests in the Maven build. 
+In the binary distribution of Apache Tuscany the samples can also 
 be run using the provided Ant build.xml file. This shows the samples running 
 from a simple main() method without the need for a JUnit test case. 
 
@@ -58,18 +58,58 @@ to work with the binary distribution. They rely on the tuscany-sca-manifest.jar
 to describe the class path and this jar is only provided as part of the 
 binary distribution.
 
-To build and run each sample;
+The binary distribution of SCA also includes precompiled versions of each sample. 
+If you look in the target directory of each sample you will see this jar file. To
+run a sample based on all of the precompiled artifacts all you have to do is:
 
 cd <sampledir>
 ant
 
-Once the sample is built you can of course run the samples from the command 
-line. 
+Check each <sampledir>/README file as some samples require that two progams are
+run to get the desired result. 
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar calculator.CalculatorClient
+If you want to rebuild a sample, for example, if you have changed it, do the
+following:
 
-The class specified on this line of course depends on which sample you want to 
-run. In this case we are running the CalculatorClient. 
+cd <sampledir>
+ant compile
+
+Once the sample is built you have the option of running the sample in whatever 
+way best suits you. Two alternatives are provided in the ant build files.
+
+The compile target builds the class files and then builds the jar so you can use 
+the same command as before:
+
+ant
+
+This will use the generated jar to run the samples. The command line version of
+this is:
+
+on Windows
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
+
+on *nux 
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
+
+
+You can use the compiled classes directly using
+
+ant run-classes
+
+The command line version of this is:
+
+on Windows
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\classes calculator.CalculatorClient
+
+on *nux 
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/classes calculator.CalculatorClient
+
+The class specified on the command of course depends on which sample you want to 
+run. In this case we are running the CalculatorClient from the calculator sample. 
 
 
 Building And Running The SCA Samples Using Maven
@@ -94,9 +134,8 @@ cd <sampledir>
 mvn
 
 When using Maven the samples are run within JUnit test cases and so you will 
-not see any test output. You will though see an indication of test success or 
-failure. 
-
+sometimes not see any test output. You will always see an indication of test 
+success or failure. 
 
 Using The Samples In An IDE
 ---------------------------
@@ -126,7 +165,7 @@ other Java project.
 
 TODO 
   running inside an IDE
-  are we happy to go with the simple, non-jar builds, for samples
+
 
 
 
