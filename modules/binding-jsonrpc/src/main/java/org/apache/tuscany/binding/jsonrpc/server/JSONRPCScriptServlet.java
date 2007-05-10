@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.jsonrpc;
+package org.apache.tuscany.binding.jsonrpc.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ScriptGetterServlet extends HttpServlet {
+public class JSONRPCScriptServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
