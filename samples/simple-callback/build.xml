@@ -1,0 +1,56 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project name="simple-callback" default="run">
+    <property environment="env"/>
+	
+    <target name="init">
+        <mkdir dir="target/classes"/>
+    </target>
+	
+    <target name="compile" depends="init">
+        <javac srcdir="src/main/java"
+               destdir="target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </javac> 
+        <copy todir="target/classes">
+            <fileset dir="src/main/resources"/>
+        </copy>
+    </target>	
+	
+    <target name="run" depends="compile">
+        <java classname="simplecallback.SimpleCallbackClient"
+              fork="true">
+            <classpath>
+                <pathelement path="target/classes"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </java>
+    </target>
+	
+    <target name="clean">
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="target"/>
+        </delete>
+    </target>
+</project>

@@ -1,0 +1,78 @@
+Simple Callback Sample
+======================
+This sample demonstrates asynchronous messaging using a callback. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+The sample provides a single composite with two components. MyClientComponent is 
+wired to MyServiceComponent. The interface of MyServiceComponent describes one
+method as ONEWAY and with a callback semantic. When a message passes from 
+client to service the response is returned via the callback asynchronously.  
+
+simple-callback/
+  src/
+    main/
+      java/
+        simplecallback/
+          MyCient.java            - client interface 
+          MyClientImpl.java       - implements the client and service callback
+                                    interfaces
+          MyService.java          - service interface
+          MyServiceCallback.java  - service callback interface, implemented by the 
+                                    client
+          MyServiceImple.java     - implements the service interface
+          SimpleCallbackClient.java - starts the SCA Runtime and 
+                                    deploys the simplecallback.composite. 
+                                    It then calls MyClientComponent which in turn
+                                    calls MyServiceComponent
+      resources/
+        simplecallbac.composite   - the SCA assembly for this sample
+  simple-callback.png             - a pictorial representation of the sample 
+                                    .composite file
+  build.xml                       - the Ant build file
+  pom.xml                         - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd simple-callback
+ant 
+
+You should see the following output from the run target.
+
+run:
+     [java] Main thread Thread[main,5,main]
+     [java] Work thread Thread[pool-1-thread-1,5,main]
+     [java] Result: -> someMethod -> receiveResult
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd simple-callback
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running simplecallback.SimpleCallbackTestCase
+Main thread Thread[main,5,main]
+Sleeping ...
+Work thread Thread[pool-1-thread-1,5,main]
+Result: -> someMethod -> receiveResult
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.692 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
