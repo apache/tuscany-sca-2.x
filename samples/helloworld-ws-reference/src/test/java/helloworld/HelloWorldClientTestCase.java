@@ -46,7 +46,7 @@ public class HelloWorldClientTestCase {
             server =  new SCATestCaseRunner(HelloWorldServerTest.class);
             server.before();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }

@@ -36,7 +36,6 @@
 
     <component name="WSGreeterServiceClient">
         <implementation.java class="org.apache.tuscany.sca.itest.sdodatabinding.GreeterServiceClientImpl" />
-        <reference name="greeterService" target="SDOGreeterServiceWSReference"/>
     </component>
 
     <reference name="SDOGreeterServiceWSReference" promote="WSGreeterServiceClient/greeterService">

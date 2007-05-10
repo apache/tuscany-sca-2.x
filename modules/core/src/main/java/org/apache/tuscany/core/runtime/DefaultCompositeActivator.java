@@ -339,8 +339,14 @@ public class DefaultCompositeActivator implements CompositeActivator {
             if (scaBinding != null) {
                 target = scaBinding.getComponent();
             }
+            
+            // FIXME: [rfeng] Ignore unresolved services
+            if(service.isUnresolved()) {
+                continue;
+            }
 
-            InterfaceContract targetContract = service.getInterfaceContract();
+            // FIXME: [rfeng] We might need a better way to get the impl interface contract
+            InterfaceContract targetContract = service.getService().getInterfaceContract();
 
             RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl((RuntimeComponent)component,
                                                                            (RuntimeComponentReference)reference,
@@ -425,7 +431,9 @@ public class DefaultCompositeActivator implements CompositeActivator {
         }
         RuntimeComponentService runtimeService = (RuntimeComponentService)service;
 
-        InterfaceContract targetContract = service.getInterfaceContract();
+        // FIXME: [rfeng] We might need a better way to get the impl interface contract
+        InterfaceContract targetContract = service.getService().getInterfaceContract();
+
         InterfaceContract sourceContract = getInterfaceContract(service, binding);
 
         RuntimeWire.Source wireSource = new RuntimeWireImpl.SourceImpl(null, null, binding, sourceContract);

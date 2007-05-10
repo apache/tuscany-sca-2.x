@@ -38,7 +38,7 @@ public class CRUDImplementationProviderFactory implements ImplementationProvider
     public CRUDImplementationProviderFactory() {
     }
 
-    public ImplementationProvider<CRUDImplementation> createImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
         return new CRUDImplementationProvider(component, implementation);
     }
     

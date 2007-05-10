@@ -1008,6 +1008,9 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                                 newComponentService.getBindings().addAll(compositeService.getBindings());
                                 newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
                                 newComponentService.setCallback(compositeService.getCallback());
+                                
+                                // FIXME: [rfeng] Set the service to promoted
+                                 newComponentService.setService(promotedService.getService());
 
                                 // Change the composite service to now promote the newly
                                 // created component service directly
@@ -1048,6 +1051,9 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
                     newComponentService.getBindings().addAll(compositeService.getBindings());
                     newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
                     newComponentService.setCallback(compositeService.getCallback());
+                    
+                    // FIXME: [rfeng] Set the service to promoted
+                    newComponentService.setService(promotedService.getService());
 
                     // Change the composite service to now promote the newly
                     // created component service directly

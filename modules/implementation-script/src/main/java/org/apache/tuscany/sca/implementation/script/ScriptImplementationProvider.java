@@ -42,7 +42,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 /**
  * Represents a Script implementation.
  */
-public class ScriptImplementationProvider implements ImplementationProvider<ScriptImplementation> {
+public class ScriptImplementationProvider implements ImplementationProvider {
 
     protected RuntimeComponent component;
     protected ScriptImplementation implementation;
