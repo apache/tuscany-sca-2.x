@@ -17,7 +17,8 @@
  * under the License.    
 -->
 <project name="calculator-script" default="run">
-    <property environment="env"/>
+    <property name="test.class" value="calculator.CalculatorClient" />
+	<property name="test.jar"   value="sample-calculator-script.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -38,14 +39,24 @@
         </copy>
     </target>	
 	
-    <target name="run" depends="compile">
-        <java classname="calculator.CalculatorClient"
+    <target name="run-classes">
+        <java classname="${test.class}"
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </java>
+    </target>
+	
+    <target name="run">
+        <java classname="${test.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="target/${test.jar}"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </java>    	
     </target>
 	
     <target name="clean">
