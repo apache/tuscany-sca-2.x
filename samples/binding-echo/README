@@ -7,6 +7,19 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant 
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-binding-echo.jar echo.EchoBindingClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-binding-echo.jar echo.EchoBindingClient
+
 Sample Overview
 ---------------
 This sample contains a implementation of an SCA binding that simply echoes back 
@@ -41,7 +54,8 @@ With the binary distribution the sample can be built and run using Ant as
 follows
 
 cd binding-echo
-ant 
+ant compile
+ant
 
 You should see the following output from the run target.
 
