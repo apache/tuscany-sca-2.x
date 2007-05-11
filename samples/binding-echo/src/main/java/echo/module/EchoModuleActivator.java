@@ -22,9 +22,9 @@ package echo.module;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
-import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 import echo.DefaultEchoBindingFactory;
 import echo.EchoBindingFactory;

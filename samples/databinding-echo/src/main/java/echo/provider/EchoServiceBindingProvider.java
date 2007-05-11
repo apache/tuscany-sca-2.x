@@ -19,12 +19,12 @@
 
 package echo.provider;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 import echo.EchoBinding;
 import echo.server.EchoServer;
