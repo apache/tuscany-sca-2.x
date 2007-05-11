@@ -42,9 +42,7 @@
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
                 <module>calculator-web</module>
-                <!--
                 <module>das-service</module>
-                -->
                 <module>databinding-echo</module>
                 <module>helloworld-jsonrpc</module>
                 <module>helloworld-ws-service</module>
