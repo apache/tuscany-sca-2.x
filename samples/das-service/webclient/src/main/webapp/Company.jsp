@@ -20,9 +20,7 @@
 
 <%@ page import="java.util.*" %>
 
-<%@ page import="org.apache.tuscany.host.embedded.SCARuntime"%>
-<%@ page import="org.osoa.sca.ComponentContext" %>
-<%@ page import="org.osoa.sca.ServiceReference" %>
+<%@ page import="org.apache.tuscany.host.embedded.SCADomain"%>
 
 <%@ page import="commonj.sdo.*" %>
 <%@ page import="das.*" %>
@@ -32,17 +30,24 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 
-   SCARuntime.start("dasservice.composite");
+   SCADomain domain = (SCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain"); 
+   if (domain == null) {
+    System.out.println("domain == NULL");
+   }
+
+
+   DASService dasService = domain.getService(DASService.class, "DASServiceComponent");
    
-   ComponentContext context = SCARuntime.getComponentContext("DASServiceComponent");
-   ServiceReference<DASService> service = context.createSelfReference(DASService.class);
-   DASService dasService = service.getService();
+   if (dasService == null) {
+       System.out.println("DASService == NULL");
+   }
+
    List companyList = null;
 
    try{
 		dasService.configureService(getClass().getClassLoader().getResourceAsStream("CompanyConfig.xml"));
 		DataObject root = dasService.executeCommand("all companies", null);
-   	companyList = root.getList("COMPANY");
+   	    companyList = root.getList("COMPANY");
    }catch(Exception e){
        //TODO: handle case where dasService can't be initiated properly
    }
@@ -85,8 +90,4 @@
 
 </form>
 </body>
-<% 
-   //stop the runtime
-   SCARuntime.stop();
-%>
 </html>
