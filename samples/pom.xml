@@ -43,6 +43,7 @@
                 <module>calculator-script</module>
                 <module>calculator-web</module>
                 <module>das-service</module>
+                <module>das-service-web</module>
                 <module>databinding-echo</module>
                 <module>helloworld-jsonrpc</module>
                 <module>helloworld-ws-service</module>
