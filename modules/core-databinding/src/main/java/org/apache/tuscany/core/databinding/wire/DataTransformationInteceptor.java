@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.ExceptionHandler;
 import org.apache.tuscany.databinding.Mediator;
@@ -32,9 +31,10 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.FaultException;
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * An interceptor to transform data accross databindings on the wire

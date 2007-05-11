@@ -19,9 +19,9 @@
 package org.apache.tuscany.core.invocation;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
 
 /**
  * Default implementation of an invocation chain

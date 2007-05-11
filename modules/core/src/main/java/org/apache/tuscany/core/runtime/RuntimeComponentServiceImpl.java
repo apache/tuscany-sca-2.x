@@ -26,13 +26,13 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
-import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements RuntimeComponentService {
     private InterfaceContractMapper mapper;

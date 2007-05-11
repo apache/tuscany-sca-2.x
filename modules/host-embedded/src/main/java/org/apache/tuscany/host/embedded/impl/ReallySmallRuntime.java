@@ -25,22 +25,22 @@ import java.util.Map;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.service.ContributionService;
-import org.apache.tuscany.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.runtime.ActivationException;
 import org.apache.tuscany.core.runtime.CompositeActivator;
 import org.apache.tuscany.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
-import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopeRegistry;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 public class ReallySmallRuntime {
 

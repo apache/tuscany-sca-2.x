@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.webapp;
 
 import java.util.Map;
 
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
 
 /**
  * Activates the webapp host by registering the webapp ServletHost impl

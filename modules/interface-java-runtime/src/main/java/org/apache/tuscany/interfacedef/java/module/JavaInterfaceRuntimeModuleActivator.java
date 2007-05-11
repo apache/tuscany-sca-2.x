@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
@@ -32,6 +30,8 @@ import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntro
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
 
 /**
  * @version $Rev$ $Date$

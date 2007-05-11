@@ -21,8 +21,6 @@ package org.apache.tuscany.databinding.jaxb.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.jaxb.JAXB2Node;
@@ -32,6 +30,8 @@ import org.apache.tuscany.databinding.jaxb.Node2JAXB;
 import org.apache.tuscany.databinding.jaxb.Reader2JAXB;
 import org.apache.tuscany.databinding.jaxb.XMLStreamReader2JAXB;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
 
 /**
  * Module activator for JAXB databinding

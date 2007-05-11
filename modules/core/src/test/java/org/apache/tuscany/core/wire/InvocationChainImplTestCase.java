@@ -22,10 +22,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * @version $Rev$ $Date$

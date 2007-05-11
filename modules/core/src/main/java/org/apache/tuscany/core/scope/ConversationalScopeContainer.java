@@ -18,18 +18,18 @@
  */
 package org.apache.tuscany.core.scope;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.event.Event;
-import org.apache.tuscany.event.RuntimeEventListener;
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.spi.component.PersistenceException;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.store.Store;
-import org.apache.tuscany.store.StoreExpirationEvent;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.event.Event;
+import org.apache.tuscany.sca.event.RuntimeEventListener;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.spi.component.PersistenceException;
+import org.apache.tuscany.sca.spi.component.TargetDestructionException;
+import org.apache.tuscany.sca.spi.component.TargetResolutionException;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.store.Store;
+import org.apache.tuscany.sca.store.StoreExpirationEvent;
 
 /**
  * A scope context which manages atomic component instances keyed on a

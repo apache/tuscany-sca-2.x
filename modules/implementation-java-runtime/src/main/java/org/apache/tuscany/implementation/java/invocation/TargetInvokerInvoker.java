@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.implementation.java.invocation;
 
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 import org.osoa.sca.ServiceRuntimeException;
 
 

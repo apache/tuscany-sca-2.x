@@ -19,14 +19,14 @@
 
 package org.apache.tuscany.implementation.java.invocation;
 
-import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.provider.ImplementationProvider;
-import org.apache.tuscany.provider.ImplementationProviderFactory;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$

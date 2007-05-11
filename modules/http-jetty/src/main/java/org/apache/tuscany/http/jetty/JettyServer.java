@@ -28,7 +28,7 @@ import javax.servlet.ServletException;
 
 import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.http.ServletMappingException;
-import org.apache.tuscany.work.WorkScheduler;
+import org.apache.tuscany.sca.work.WorkScheduler;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;

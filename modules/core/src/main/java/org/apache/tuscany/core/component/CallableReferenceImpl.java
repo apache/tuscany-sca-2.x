@@ -21,7 +21,7 @@ package org.apache.tuscany.core.component;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
 
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * Base class for implementations of service and callback references.

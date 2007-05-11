@@ -27,12 +27,12 @@ import static org.easymock.EasyMock.verify;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.invocation.NonBlockingInterceptor;
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.MessageImpl;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.work.WorkScheduler;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageImpl;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.work.WorkScheduler;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 

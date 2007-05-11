@@ -22,10 +22,10 @@ package org.apache.tuscany.rmi.module;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.rmi.DefaultRMIHost;
 import org.apache.tuscany.rmi.RMIHost;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
 
 /**
  * @version $Rev: 529327 $ $Date: 2007-04-16 22:40:43 +0530 (Mon, 16 Apr 2007) $

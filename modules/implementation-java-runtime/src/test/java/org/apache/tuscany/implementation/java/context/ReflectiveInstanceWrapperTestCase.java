@@ -24,8 +24,8 @@ import org.easymock.EasyMock;
 
 import org.apache.tuscany.implementation.java.context.ReflectiveInstanceWrapper;
 import org.apache.tuscany.implementation.java.injection.EventInvoker;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.sca.spi.component.TargetDestructionException;
+import org.apache.tuscany.sca.spi.component.TargetInitializationException;
 
 /**
  * @version $Rev$ $Date$

@@ -25,8 +25,6 @@ import java.util.Map;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.core.invocation.JDKProxyService;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
@@ -61,11 +59,13 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.invocation.ProxyFactory;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$

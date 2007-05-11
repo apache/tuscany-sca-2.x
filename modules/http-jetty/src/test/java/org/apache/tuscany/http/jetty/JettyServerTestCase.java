@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.http.jetty.JettyServer;
-import org.apache.tuscany.work.NotificationListener;
-import org.apache.tuscany.work.WorkScheduler;
+import org.apache.tuscany.sca.work.NotificationListener;
+import org.apache.tuscany.sca.work.WorkScheduler;
 
 import junit.framework.TestCase;
 

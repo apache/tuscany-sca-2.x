@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.core.invocation;
 
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * Uses a wire to return an object instance

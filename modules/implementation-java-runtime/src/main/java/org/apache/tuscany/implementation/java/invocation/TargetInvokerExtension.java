@@ -22,9 +22,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * The default implementation of a TargetInvoker

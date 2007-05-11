@@ -17,13 +17,13 @@
 
 package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.provider.BindingProviderFactory;
-import org.apache.tuscany.provider.ReferenceBindingProvider;
-import org.apache.tuscany.provider.ServiceBindingProvider;
 import org.apache.tuscany.rmi.RMIHost;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 
 /**

@@ -20,7 +20,7 @@ package org.apache.tuscany.core.component;
 
 import org.osoa.sca.ServiceReference;
 
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * Default implementation of a ServiceReference.

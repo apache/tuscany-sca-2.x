@@ -20,7 +20,7 @@ package org.apache.tuscany.core.event;
 
 import java.net.URI;
 
-import org.apache.tuscany.event.Event;
+import org.apache.tuscany.sca.event.Event;
 
 /**
  * Propagated when a component stops

@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.assembly.impl.SCABindingImpl;
-import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.sca.core.RuntimeWire;
 
 /**
  * @version $Rev$ $Date$

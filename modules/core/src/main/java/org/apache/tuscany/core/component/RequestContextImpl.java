@@ -24,7 +24,7 @@ import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.CallableReference;
 
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$

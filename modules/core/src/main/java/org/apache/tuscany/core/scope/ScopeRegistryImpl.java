@@ -21,13 +21,13 @@ package org.apache.tuscany.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.provider.ImplementationProvider;
-import org.apache.tuscany.provider.ScopedImplementationProvider;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.scope.ScopeContainerFactory;
-import org.apache.tuscany.scope.ScopeRegistry;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.scope.ScopeContainerFactory;
+import org.apache.tuscany.sca.scope.ScopeRegistry;
 
 /**
  * The default implementation of a scope registry

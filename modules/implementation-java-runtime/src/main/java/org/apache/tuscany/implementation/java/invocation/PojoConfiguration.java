@@ -44,9 +44,9 @@ import org.apache.tuscany.implementation.java.injection.ListMultiplicityObjectFa
 import org.apache.tuscany.implementation.java.injection.MethodEventInvoker;
 import org.apache.tuscany.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
-import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Encapsulates confuration for a Java-based atomic component

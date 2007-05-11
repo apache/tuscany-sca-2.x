@@ -28,8 +28,8 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.engine.AxisEngine;
 import org.apache.axis2.util.Utils;
 import org.apache.tuscany.binding.axis2.Axis2ServiceBindingProvider.InvocationContext;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 public class Axis2ServiceCallbackTargetInvoker implements Invoker {
 

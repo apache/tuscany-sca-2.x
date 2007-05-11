@@ -36,10 +36,10 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 
 /**

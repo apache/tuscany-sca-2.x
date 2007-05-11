@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.implementation.java.context;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.component.TargetResolutionException;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$

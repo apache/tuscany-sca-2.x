@@ -29,12 +29,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.invocation.AbstractInvocationHandler;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.AbstractInvocationHandler;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.NoRegisteredCallbackException;
 
 /**
