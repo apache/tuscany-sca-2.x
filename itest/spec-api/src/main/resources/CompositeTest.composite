@@ -22,12 +22,12 @@
     xmlns:foo="http://foo" 
     name="CompositeTest">
    
-    <include>foo:myTotalService</include>
-    <include>foo:myListService</include>
-    <include>foo:mySimpleServiceInRecursive</include>
-    <include>foo:myServiceInRecursive</include>
-    <include>foo:mySimpleServiceInRecursive2</include>
-    <include>foo:myTotalServiceInRecursive</include>
-    <include>foo:myTotalServiceInRecursiveForReferenceOverride</include>
+    <include name="foo:myTotalService"></include>
+    <include name="foo:myListService"></include>
+    <include name="foo:mySimpleServiceInRecursive">foo:mySimpleServiceInRecursive</include>
+    <include name="foo:myServiceInRecursive">foo:myServiceInRecursive</include>
+    <include name="foo:mySimpleServiceInRecursive2">foo:mySimpleServiceInRecursive2</include>
+    <include name="foo:myTotalServiceInRecursive">foo:myTotalServiceInRecursive</include>
+    <include name="foo:myTotalServiceInRecursiveForReferenceOverride">foo:myTotalServiceInRecursiveForReferenceOverride</include>
     
 </composite>

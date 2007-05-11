@@ -55,7 +55,7 @@
 		<reference name="MyListServiceByYearRef" target="MyServiceInComponent/MyListServiceByYear"/>
     </component>
 
-    <component name="MyServiceInComponent">
+    <component name="myTotalServiceInRecursive_MyServiceInComponent">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyServiceImpl"/>
 		<property name="location">CARY</property>
 		<property name="year">2007</property>

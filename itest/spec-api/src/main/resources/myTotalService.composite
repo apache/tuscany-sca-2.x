@@ -22,7 +22,7 @@
 	targetNamespace="http://foo"
     name="myTotalService">
    
-    <include>foo:myservice</include>
+    <include name="foo:myservice">foo:myservice</include>
     
     <component name="MyTotalService">
         <implementation.java class="org.apache.tuscany.sca.test.spec.impl.MyTotalServiceImpl"/>
