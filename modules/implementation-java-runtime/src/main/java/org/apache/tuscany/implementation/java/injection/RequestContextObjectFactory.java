@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import org.apache.tuscany.core.component.RequestContextImpl;
+import org.apache.tuscany.sca.core.component.RequestContextImpl;
 import org.apache.tuscany.sca.spi.ObjectCreationException;
 import org.apache.tuscany.sca.spi.ObjectFactory;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.RequestContext;
 
 /**
- * Creates instances of {@link org.apache.tuscany.core.component.RequestContextImpl} for injection on
+ * Creates instances of {@link org.apache.tuscany.sca.core.component.RequestContextImpl} for injection on
  * component implementation instances
  *
  * @version $Rev$ $Date$

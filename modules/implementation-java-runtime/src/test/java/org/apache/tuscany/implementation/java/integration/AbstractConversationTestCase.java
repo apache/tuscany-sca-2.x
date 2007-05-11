@@ -20,9 +20,9 @@ package org.apache.tuscany.implementation.java.integration;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.scope.ConversationalScopeContainer;
-import org.apache.tuscany.core.store.MemoryStore;
 import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
+import org.apache.tuscany.sca.core.store.MemoryStore;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.spi.component.WorkContextImpl;
