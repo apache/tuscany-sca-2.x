@@ -17,9 +17,17 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="DASServiceComposite">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           	targetNamespace="http://DASService"
+            name="DASService">
 
+    <service name="DASService"  promote="DASServiceComponent">
+        <interface.java interface="das.DASService"/>
+        <reference>DASServiceComponent</reference>
+    </service>
+    
     <component name="DASServiceComponent">
-		<implementation.composite name="DASServiceComposite" jarLocation="lib/sample-das-service-1.0-incubator-SNAPSHOT.jar"/>
+	    <implementation.java class="das.DASServiceImpl"/>
     </component>
+
 </composite>

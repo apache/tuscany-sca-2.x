@@ -35,7 +35,7 @@
         <!-- runtime is need for webapp integration to include jar -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
+            <artifactId>tuscany-host-webapp</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -46,13 +46,7 @@
             <scope>runtime</scope>
         </dependency>
         
-        <!--  das service -->
-        <dependency>
-	    <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-samples-das-service-service</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-        
+        <!--  das & sdo -->
         <dependency>
             <groupId>org.apache.tuscany.das</groupId>
             <artifactId>tuscany-das-rdb</artifactId>
@@ -67,28 +61,18 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <!-- this will place the java source files inside the war -->
     <build>
-       <!-- <finalName>companyweb-service-client</finalName> -->
-       <!-- plugins>
-    	<plugin>
-    	    <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
-    	    <artifactId>tuscany-war-plugin</artifactId>
-    	    <executions>
-    		<execution>
-    		    <id>tuscany-war</id>
-    		    <goals>
-    			<goal>tuscany-war</goal>
-    		    </goals>
-    		</execution>
-    	    </executions>
-    	</plugin>
-       </plugins -->
-
-    
-    
+        <finalName>${artifactId}</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>

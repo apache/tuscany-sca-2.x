@@ -28,19 +28,8 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     </welcome-file-list>
 
     <!--  SCA Related configuration -->
-    <!--
-    <filter>
-        <filter-name>TuscanyFilter</filter-name>
-        <filter-class>org.apache.tuscany.runtime.webapp.TuscanyFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>TuscanyFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <listener>
-        <listener-class>org.apache.tuscany.runtime.webapp.TuscanyContextListener</listener-class>
+     <listener-class>org.apache.tuscany.sca.webapp.TuscanyContextListener</listener-class>
     </listener>
-    -->
     <!--  END of SCA Related configuration -->
 </web-app>
