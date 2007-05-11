@@ -32,16 +32,20 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
  */
 public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<SCABinding> {
 
-    public ReferenceBindingProvider<SCABinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, SCABinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
+                                                                   RuntimeComponentReference reference,
+                                                                   SCABinding binding) {
         return new RuntimeSCABindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider<SCABinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, SCABinding binding) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
+                                                               RuntimeComponentService service,
+                                                               SCABinding binding) {
         return null;
     }
-    
+
     public Class<SCABinding> getModelType() {
         return SCABinding.class;
     }
-    
+
 }

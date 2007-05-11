@@ -26,24 +26,24 @@ import org.apache.tuscany.sca.invocation.Invoker;
 /**
  * @version $Rev$ $Date$
  */
-public interface ReferenceBindingProvider<M> {
+public interface ReferenceBindingProvider {
 
     /**
-     * This method will be invoked when the component reference binding
-     * is activated.
+     * This method will be invoked when the component reference binding is
+     * activated.
      */
     void start();
 
     /**
-     * This method will be invoked when the component reference binding
-     * is deactivated.
+     * This method will be invoked when the component reference binding is
+     * deactivated.
      */
     void stop();
 
     /**
-     * Create an invoker for the reference binding in the invocation chain.
-     * The invoker is responsible for making the outbound invocation over
-     * the binding protocol.
+     * Create an invoker for the reference binding in the invocation chain. The
+     * invoker is responsible for making the outbound invocation over the
+     * binding protocol.
      * 
      * @param operation The operation that the interceptor will handle
      * @param isCallback A flag to tell if the operation is for the callback
@@ -57,9 +57,9 @@ public interface ReferenceBindingProvider<M> {
      * it will be interface contract introspected from the WSDL portType used by
      * the endpoint for a WebService binding.
      * 
-     * @return The effective interface contract, if null is returned, the interface contract
-     * for the component reference will be used
+     * @return The effective interface contract, if null is returned, the
+     *         interface contract for the component reference will be used
      */
     InterfaceContract getBindingInterfaceContract();
-    
+
 }

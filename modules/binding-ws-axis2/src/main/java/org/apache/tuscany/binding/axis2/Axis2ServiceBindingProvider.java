@@ -60,7 +60,7 @@ import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
-public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebServiceBinding> {
+public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
@@ -71,8 +71,10 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     // TODO: what to do about the base URI?
     private static final String BASE_URI = "http://localhost:8080/";
 
-    public Axis2ServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service,
-                                       WebServiceBinding wsBinding, ServletHost servletHost) {
+    public Axis2ServiceBindingProvider(RuntimeComponent component,
+                                       RuntimeComponentService service,
+                                       WebServiceBinding wsBinding,
+                                       ServletHost servletHost) {
 
         this.component = component;
         this.service = service;
@@ -91,23 +93,25 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
 
     public void start() {
 
-        // TODO: add back in from duplicate code in getBindingInterfaceContract to temporarily bypass NPE
+        // TODO: add back in from duplicate code in getBindingInterfaceContract
+        // to temporarily bypass NPE
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
             contract = service.getInterfaceContract();
             wsBinding.setBindingInterfaceContract(contract);
         }
 
-        // Set to use the Axiom data binding 
+        // Set to use the Axiom data binding
         contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
         String uri = computeActualURI(BASE_URI, component, service).normalize().toString();
         if (uri.endsWith("/")) {
-            uri = uri.substring(0, uri.length() -1);
+            uri = uri.substring(0, uri.length() - 1);
         }
         wsBinding.setURI(uri.toString());
-        
-        // TODO: if <binding.ws> specifies the wsdl service then should create a service for every port
+
+        // TODO: if <binding.ws> specifies the wsdl service then should create a
+        // service for every port
 
         try {
             configContext.getAxisConfiguration().addService(createAxisService());
@@ -132,22 +136,25 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     }
 
     /**
-     * Compute the endpoint URI based on section 2.1.1 of the WS binding spec
-     * 1. The URIs in the endpoint(s) of the referenced WSDL, which may be relative
-     * 2. The URI specified by the wsa:Address element of the wsa:EndpointReference, which may be relative
-     * 3. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be relative,
-     * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec 
-     * If the <binding.ws> has no wsdlElement but does have a uri attribute then the uri takes precidence
-     * over any implicitly used WSDL.
-     * @param parent 
+     * Compute the endpoint URI based on section 2.1.1 of the WS binding spec 1.
+     * The URIs in the endpoint(s) of the referenced WSDL, which may be relative
+     * 2. The URI specified by the wsa:Address element of the
+     * wsa:EndpointReference, which may be relative 3. The explicitly stated URI
+     * in the "uri" attribute of the binding.ws element, which may be relative,
+     * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec
+     * If the <binding.ws> has no wsdlElement but does have a uri attribute then
+     * the uri takes precidence over any implicitly used WSDL.
+     * 
+     * @param parent
      */
     protected URI computeActualURI(String baseURI, RuntimeComponent component, RuntimeComponentService service) {
 
         // TODO: support wsa:Address
 
-        URI wsdlURI = null;         
+        URI wsdlURI = null;
         if (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null) {
-            // <binding.ws> explicitly points at a wsdl port, may be a relative URI
+            // <binding.ws> explicitly points at a wsdl port, may be a relative
+            // URI
             wsdlURI = getEndpoint(wsBinding.getPort());
         }
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
@@ -156,15 +163,16 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
             }
             return URI.create(wsdlURI.toString());
         }
-        
+
         // either there is no wsdl port endpoint URI or that URI is relative
-        
+
         URI bindingURI = null;
         if (wsBinding.getURI() != null) {
             bindingURI = URI.create(wsBinding.getURI());
         }
         if (bindingURI != null && bindingURI.isAbsolute()) {
-            // there is an absoulte uri specified on the binding: <binding.ws uri="xxx"
+            // there is an absoulte uri specified on the binding: <binding.ws
+            // uri="xxx"
             if (wsdlURI != null) {
                 // there is a relative URI in the wsdl port
                 return URI.create(bindingURI + "/" + wsdlURI);
@@ -172,22 +180,24 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
                 return bindingURI;
             }
         }
-        
-        // both the WSDL endpoint and binding uri are either unspecified or relative so
+
+        // both the WSDL endpoint and binding uri are either unspecified or
+        // relative so
         // the endpoint is based on the component name and service binding URI
- 
+
         URI componentURI = URI.create(component.getName());
-        
+
         String actualURI;
         if (componentURI.isAbsolute()) {
             actualURI = componentURI.toString();
         } else {
             actualURI = baseURI + "/" + componentURI;
         }
-        
+
         // with multiple services the default binding URI is the binding name
         if (bindingURI == null && component.getServices().size() > 1) {
-            // if the binding doesn't have a name use the name of the service (assumption, not in spec)
+            // if the binding doesn't have a name use the name of the service
+            // (assumption, not in spec)
             if (wsBinding.getName() != null) {
                 bindingURI = URI.create(wsBinding.getName());
             } else {
@@ -198,7 +208,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
         // add any relative binding URI
         if (bindingURI != null) {
             actualURI += "/" + bindingURI;
-         }
+        }
 
         // add any relative WSDL port URI
         if (wsdlURI != null) {
@@ -216,7 +226,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
             List wsdlPortExtensions = wsdlPort.getExtensibilityElements();
             for (Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
-                    return URI.create(((SOAPAddress) extension).getLocationURI());
+                    return URI.create(((SOAPAddress)extension).getLocationURI());
                 }
             }
         }
@@ -226,11 +236,14 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     private AxisService createAxisService() throws AxisFault {
         Definition definition = wsBinding.getWSDLDefinition().getDefinition();
 
-        // WSDLToAxisServiceBuilder only uses the service and port to find the wsdl4J Binding
-        // An SCA service with binding.ws does not require a service or port so we may not have these
-        // but 
+        // WSDLToAxisServiceBuilder only uses the service and port to find the
+        // wsdl4J Binding
+        // An SCA service with binding.ws does not require a service or port so
+        // we may not have these
+        // but
 
-        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, wsBinding.getServiceName(), wsBinding.getPortName());
+        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, wsBinding.getServiceName(),
+                                                                          wsBinding.getPortName());
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
@@ -246,7 +259,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
         axisService.addParameter(userWSDL);
 
         for (Iterator i = axisService.getOperations(); i.hasNext();) {
-            AxisOperation axisOp = (AxisOperation) i.next();
+            AxisOperation axisOp = (AxisOperation)i.next();
             Operation op = getOperation(axisOp);
             if (op != null) {
 
@@ -274,9 +287,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     protected Operation getOperation(AxisOperation axisOp) {
         String operationName = axisOp.getName().getLocalPart();
         for (Operation op : wsBinding.getBindingInterfaceContract().getInterface().getOperations()) {
-           if (op.getName().equalsIgnoreCase(operationName)) {
-               return op;
-           }
+            if (op.getName().equalsIgnoreCase(operationName)) {
+                return op;
+            }
         }
         return null;
     }
@@ -290,7 +303,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
             wsBinding.setBindingInterfaceContract(contract);
         }
 
-        // Set to use the Axiom data binding 
+        // Set to use the Axiom data binding
         contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
         return contract;
     }
@@ -302,11 +315,11 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
 
     public Invoker createTargetInvoker(InterfaceContract contract, Operation operation) {
-//        if (!operation.isCallback()) { TODO: no isCallback methjod yet?
-//            throw new UnsupportedOperationException();
-//        } else {
-            return new Axis2ServiceCallbackTargetInvoker(this);
-//        }
+        // if (!operation.isCallback()) { TODO: no isCallback methjod yet?
+        // throw new UnsupportedOperationException();
+        // } else {
+        return new Axis2ServiceCallbackTargetInvoker(this);
+        // }
     }
 
     public void addMapping(Object msgId, InvocationContext invCtx) {
@@ -332,15 +345,13 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebSe
         for (; i.hasNext();) {
             Object a = i.next();
             if (a instanceof OMElement) {
-                OMElement ao = (OMElement) a;
-                for (Iterator rpI =
-                    ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters"));
-                     rpI.hasNext();) {
-                    OMElement rpE = (OMElement) rpI.next();
-                    for (
-                        Iterator cidI = rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN);
-                        cidI.hasNext();) {
-                        OMElement cidE = (OMElement) cidI.next();
+                OMElement ao = (OMElement)a;
+                for (Iterator rpI = ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing",
+                                                                     "ReferenceParameters")); rpI.hasNext();) {
+                    OMElement rpE = (OMElement)rpI.next();
+                    for (Iterator cidI = rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN); cidI
+                        .hasNext();) {
+                        OMElement cidE = (OMElement)cidI.next();
                         conversationID = cidE.getText();
                     }
                 }

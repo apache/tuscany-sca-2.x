@@ -50,29 +50,37 @@ import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 /**
  * RMIBindingProvider
  */
-public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
-    ServiceBindingProvider<RMIBinding>, MethodInterceptor {
+public class RMIBindingProvider implements ReferenceBindingProvider, ServiceBindingProvider, MethodInterceptor {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
     private RuntimeComponentReference reference;
     private RMIBinding binding;
     private RMIHost rmiHost;
-    
-    //need this member to morph the service interface to extend from Remote if it does not
-    // the base class's member variable interfaze is to be maintained to enable the connection
-    // of the service outbound to the component's inbound wire which requires that the service
+
+    // need this member to morph the service interface to extend from Remote if
+    // it does not
+    // the base class's member variable interfaze is to be maintained to enable
+    // the connection
+    // of the service outbound to the component's inbound wire which requires
+    // that the service
     // and the component match in their service contracts.
     private Interface serviceInterface;
-    
-    public RMIBindingProvider(RuntimeComponent component, RuntimeComponentService service, RMIBinding binding, RMIHost rmiHost) {
+
+    public RMIBindingProvider(RuntimeComponent component,
+                              RuntimeComponentService service,
+                              RMIBinding binding,
+                              RMIHost rmiHost) {
         this.component = component;
         this.service = service;
         this.binding = binding;
         this.rmiHost = rmiHost;
     }
 
-    public RMIBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, RMIBinding binding, RMIHost rmiHost) {
+    public RMIBindingProvider(RuntimeComponent component,
+                              RuntimeComponentReference reference,
+                              RMIBinding binding,
+                              RMIHost rmiHost) {
         this.component = component;
         this.reference = reference;
         this.binding = binding;
@@ -90,15 +98,13 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
         if (service != null) {
             URI uri = URI.create(component.getURI() + "/" + binding.getName());
             binding.setURI(uri.toString());
-            
+
             this.serviceInterface = service.getInterfaceContract().getInterface();
-            
+
             Remote rmiProxy = createRmiService();
-            
+
             try {
-                rmiHost.registerService(binding.getRmiServiceName(),
-                                        getPort(binding.getRmiPort()),
-                                        rmiProxy);
+                rmiHost.registerService(binding.getRmiServiceName(), getPort(binding.getRmiPort()), rmiProxy);
             } catch (RMIHostException e) {
                 throw new NoRemoteServiceException(e);
             }
@@ -108,8 +114,7 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
     public void stop() {
         if (service != null) {
             try {
-                rmiHost.unregisterService(binding.getRmiServiceName(), 
-                                          getPort(binding.getRmiPort()));
+                rmiHost.unregisterService(binding.getRmiServiceName(), getPort(binding.getRmiPort()));
             } catch (RMIHostException e) {
                 throw new NoRemoteServiceException(e.getMessage());
             }
@@ -117,15 +122,11 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
     }
 
     public Invoker createInvoker(Operation operation, boolean isCallback) {
-       try {
-            Method remoteMethod = 
-                JavaInterfaceUtil.findMethod(((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass(),
-                                                operation);
-            return new RMIBindingInvoker(rmiHost, 
-                                             binding.getRmiHostName(), 
-                                             binding.getRmiPort(), 
-                                             binding.getRmiServiceName(), 
-                                             remoteMethod);
+        try {
+            Method remoteMethod = JavaInterfaceUtil.findMethod(((JavaInterface)reference.getInterfaceContract()
+                .getInterface()).getJavaClass(), operation);
+            return new RMIBindingInvoker(rmiHost, binding.getRmiHostName(), binding.getRmiPort(), binding
+                .getRmiServiceName(), remoteMethod);
         } catch (NoSuchMethodException e) {
             throw new NoRemoteMethodException(operation.toString(), e);
         }
@@ -137,28 +138,31 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
         enhancer.setCallback(this);
         Class targetJavaInterface = getTargetJavaClass(serviceInterface);
         if (!Remote.class.isAssignableFrom(targetJavaInterface)) {
-            RMIServiceClassLoader classloader =
-                new RMIServiceClassLoader(getClass().getClassLoader());
+            RMIServiceClassLoader classloader = new RMIServiceClassLoader(getClass().getClassLoader());
             final byte[] byteCode = generateRemoteInterface(targetJavaInterface);
             targetJavaInterface = classloader.defineClass(byteCode);
             enhancer.setClassLoader(classloader);
         }
-        enhancer.setInterfaces(new Class[]{targetJavaInterface});
-        return (Remote) enhancer.create();
+        enhancer.setInterfaces(new Class[] {targetJavaInterface});
+        return (Remote)enhancer.create();
     }
-    
-    // if the interface of the component whose serviceBindings must be exposed as RMI Service, does not
-    // implement java.rmi.Remote, then generate such an interface. This method will stop with
-    // just generating the bytecode. Defining the class from the byte code must tbe the responsibility
-    // of the caller of this method, since it requires a classloader to be created to define and load
+
+    // if the interface of the component whose serviceBindings must be exposed
+    // as RMI Service, does not
+    // implement java.rmi.Remote, then generate such an interface. This method
+    // will stop with
+    // just generating the bytecode. Defining the class from the byte code must
+    // tbe the responsibility
+    // of the caller of this method, since it requires a classloader to be
+    // created to define and load
     // this interface.
     protected byte[] generateRemoteInterface(Class serviceInterface) {
         String interfazeName = serviceInterface.getCanonicalName();
         ClassWriter cw = new ClassWriter(false);
 
         String simpleName = serviceInterface.getSimpleName();
-        cw.visit(Constants.V1_5, Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT + Constants.ACC_INTERFACE,
-            interfazeName.replace('.', '/'), "java/lang/Object", new String[]{"java/rmi/Remote"}, simpleName + ".java");
+        cw.visit(Constants.V1_5, Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT + Constants.ACC_INTERFACE, interfazeName
+            .replace('.', '/'), "java/lang/Object", new String[] {"java/rmi/Remote"}, simpleName + ".java");
 
         StringBuffer argsAndReturn = null;
         Method[] methods = serviceInterface.getMethods();
@@ -173,22 +177,26 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
             argsAndReturn.append(")");
             argsAndReturn.append(Type.getType(returnType));
 
-            cw.visitMethod(Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT, method.getName(), argsAndReturn.toString(),
-                new String[]{"java/rmi/RemoteException"}, null);
+            cw.visitMethod(Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT,
+                           method.getName(),
+                           argsAndReturn.toString(),
+                           new String[] {"java/rmi/RemoteException"},
+                           null);
         }
         cw.visitEnd();
         return cw.toByteArray();
     }
-    
+
     public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-        // since incoming method signatures have 'remotemethod invocation' it will not match with the
-        // wired component's method signatures. Hence need to pull in the corresponding method from the
+        // since incoming method signatures have 'remotemethod invocation' it
+        // will not match with the
+        // wired component's method signatures. Hence need to pull in the
+        // corresponding method from the
         // component's service contract interface to make this invocation.
 
-        return invokeTarget(JavaInterfaceUtil.findOperation(method, serviceInterface.getOperations()), 
-                                                            args);
+        return invokeTarget(JavaInterfaceUtil.findOperation(method, serviceInterface.getOperations()), args);
     }
-    
+
     public Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
         Message requestMsg = new MessageImpl();
         requestMsg.setWorkContext(WorkContextTunnel.getThreadWorkContext());
@@ -201,7 +209,7 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
         }
         return responseMsg.getBody();
     }
-    
+
     protected int getPort(String port) {
         int portNumber = RMIHost.RMI_DEFAULT_PORT;
         if (port != null && port.length() > 0) {
@@ -210,13 +218,15 @@ public class RMIBindingProvider implements ReferenceBindingProvider<RMIBinding>,
 
         return portNumber;
     }
-    
+
     private Class<?> getTargetJavaClass(Interface targetInterface) {
-        //TODO: right now assume that the target is always a Java Implementation.  Need to figure out
-        // how to generate Java Interface in cases where the target is not a Java Implementation
+        // TODO: right now assume that the target is always a Java
+        // Implementation. Need to figure out
+        // how to generate Java Interface in cases where the target is not a
+        // Java Implementation
         return ((JavaInterface)targetInterface).getJavaClass();
     }
-    
+
     private class RMIServiceClassLoader extends ClassLoader {
         public RMIServiceClassLoader(ClassLoader parent) {
             super(parent);

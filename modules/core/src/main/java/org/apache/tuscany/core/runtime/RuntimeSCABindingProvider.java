@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeSCABindingProvider implements ReferenceBindingProvider<SCABinding> {
+public class RuntimeSCABindingProvider implements ReferenceBindingProvider {
     
     private RuntimeComponentReference reference;
     

@@ -43,11 +43,11 @@ public class JSONRPCBindingProviderFactory implements BindingProviderFactory<JSO
         this.servletHost = servletHost;
     }
 
-    public ReferenceBindingProvider<JSONRPCBinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JSONRPCBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JSONRPCBinding binding) {
         return new JSONRPCReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider<JSONRPCBinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JSONRPCBinding binding) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JSONRPCBinding binding) {
         return new JSONRPCServiceBindingProvider(component, service, binding, servletHost);
     }
     

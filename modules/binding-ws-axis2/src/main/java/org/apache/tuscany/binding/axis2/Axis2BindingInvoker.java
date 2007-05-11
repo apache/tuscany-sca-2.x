@@ -93,7 +93,8 @@ public class Axis2BindingInvoker implements Invoker {
             // ensure connections are tracked so that they can be closed by the reference binding
             MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
             requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
-            
+            requestMC.getOptions().setTimeOutInMilliSeconds(120000L);
+                      
             operationClient.execute(true);
 
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);

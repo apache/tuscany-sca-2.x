@@ -28,22 +28,22 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 import echo.EchoBinding;
 
-
 /**
  * Implementation of the Echo binding provider.
  * 
  * @version $Rev$ $Date$
  */
-public class EchoReferenceBindingProvider implements ReferenceBindingProvider<EchoBinding> {
-    
+public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
+
     private RuntimeComponentReference reference;
-    
-    public EchoReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, EchoBinding binding) {
+
+    public EchoReferenceBindingProvider(RuntimeComponent component,
+                                        RuntimeComponentReference reference,
+                                        EchoBinding binding) {
         this.reference = reference;
     }
 
-    public Invoker createInvoker(Operation operation,
-                                         boolean isCallback) {
+    public Invoker createInvoker(Operation operation, boolean isCallback) {
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {

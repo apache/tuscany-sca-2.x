@@ -40,11 +40,11 @@ public class RMIBindingProviderFactory implements BindingProviderFactory<RMIBind
         this.rmiHost = rmiHost;
     }
 
-    public ReferenceBindingProvider<RMIBinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, RMIBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, RMIBinding binding) {
         return new RMIBindingProvider(component, reference, binding, rmiHost);
     }
 
-    public ServiceBindingProvider<RMIBinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, RMIBinding binding) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, RMIBinding binding) {
         return new RMIBindingProvider(component, service, binding, rmiHost);
     }
     
