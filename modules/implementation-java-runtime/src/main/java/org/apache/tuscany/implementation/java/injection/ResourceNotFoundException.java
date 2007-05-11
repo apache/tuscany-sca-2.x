@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
 
 /**
  * Denotes an exception thrown when a runtime resource is not found

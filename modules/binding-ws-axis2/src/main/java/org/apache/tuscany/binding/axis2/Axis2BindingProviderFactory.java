@@ -19,13 +19,13 @@
 package org.apache.tuscany.binding.axis2;
 
 import org.apache.tuscany.binding.ws.WebServiceBinding;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.http.ServletHost;
-import org.apache.tuscany.provider.BindingProviderFactory;
-import org.apache.tuscany.provider.ReferenceBindingProvider;
-import org.apache.tuscany.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 /**
  * Axis2BindingProviderFactory

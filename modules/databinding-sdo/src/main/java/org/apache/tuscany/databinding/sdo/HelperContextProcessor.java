@@ -29,8 +29,8 @@ import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.impl.BaseJavaClassVisitor;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 import commonj.sdo.helper.HelperContext;
 

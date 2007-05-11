@@ -22,7 +22,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.implementation.java.injection.JNDIObjectFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

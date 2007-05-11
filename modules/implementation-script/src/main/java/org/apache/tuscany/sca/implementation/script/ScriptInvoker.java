@@ -24,8 +24,8 @@ import java.lang.reflect.InvocationTargetException;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * Perform the actual script invocation

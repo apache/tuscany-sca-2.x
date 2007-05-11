@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.scope;
 
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.spi.component.TargetDestructionException;
+import org.apache.tuscany.sca.spi.component.TargetInitializationException;
 
 /**
  * @version $Rev$ $Date$

@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.implementation.java.injection.PojoObjectFactory;
 import org.apache.tuscany.implementation.java.injection.SingletonObjectFactory;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 import junit.framework.TestCase;
 

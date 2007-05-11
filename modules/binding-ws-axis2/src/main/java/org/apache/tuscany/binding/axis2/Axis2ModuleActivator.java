@@ -27,8 +27,6 @@ import org.apache.tuscany.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.binding.ws.xml.WebServiceBindingProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
@@ -36,7 +34,9 @@ import org.apache.tuscany.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntro
 import org.apache.tuscany.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 public class Axis2ModuleActivator implements ModuleActivator {
 

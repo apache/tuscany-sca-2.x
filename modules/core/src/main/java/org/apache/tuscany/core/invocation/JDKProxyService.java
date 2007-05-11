@@ -21,11 +21,11 @@ package org.apache.tuscany.core.invocation;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.invocation.ProxyCreationException;
-import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.ProxyCreationException;
+import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.CallableReference;
 
 /**

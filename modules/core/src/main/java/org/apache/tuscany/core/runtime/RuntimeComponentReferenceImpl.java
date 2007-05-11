@@ -26,13 +26,13 @@ import java.util.Map;
 
 import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
-import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();

@@ -18,11 +18,11 @@
  */
 package crud.provider;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.provider.ImplementationProvider;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
 
 import crud.CRUDImplementation;
 import crud.backend.ResourceManager;

@@ -21,8 +21,8 @@ package org.apache.tuscany.core.invocation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.core.RuntimeWireProcessor;
-import org.apache.tuscany.core.RuntimeWireProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.RuntimeWireProcessor;
+import org.apache.tuscany.sca.core.RuntimeWireProcessorExtensionPoint;
 
 /**
  * The default implementation of a <code>WireProcessorExtensionPoint</code>

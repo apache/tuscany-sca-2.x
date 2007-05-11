@@ -30,22 +30,22 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.MessageImpl;
-import org.apache.tuscany.provider.ReferenceBindingProvider;
-import org.apache.tuscany.provider.ServiceBindingProvider;
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.rmi.RMIHostException;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageImpl;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 /**
  * RMIBindingProvider

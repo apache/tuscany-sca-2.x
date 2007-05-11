@@ -25,12 +25,12 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.binding.rmi.xml.RMIBindingProcessor;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.core.ExtensionPointRegistry;
-import org.apache.tuscany.core.ModuleActivator;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.rmi.RMIHost;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 public class RMIModuleActivator implements ModuleActivator {
 

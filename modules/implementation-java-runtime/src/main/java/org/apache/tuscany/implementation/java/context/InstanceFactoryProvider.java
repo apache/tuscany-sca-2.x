@@ -19,7 +19,7 @@
 package org.apache.tuscany.implementation.java.context;
 
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$

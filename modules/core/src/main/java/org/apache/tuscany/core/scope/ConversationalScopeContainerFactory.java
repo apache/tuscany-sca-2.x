@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.core.scope;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.scope.ScopeContainerFactory;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.store.Store;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.scope.ScopeContainerFactory;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.store.Store;
 
 /**
  * @version $Rev$ $Date$

@@ -21,18 +21,18 @@ package org.apache.tuscany.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.event.Event;
-import org.apache.tuscany.provider.ImplementationProvider;
-import org.apache.tuscany.provider.ScopedImplementationProvider;
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.spi.component.GroupInitializationException;
-import org.apache.tuscany.spi.component.PersistenceException;
-import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.event.Event;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.spi.AbstractLifecycle;
+import org.apache.tuscany.sca.spi.component.GroupInitializationException;
+import org.apache.tuscany.sca.spi.component.PersistenceException;
+import org.apache.tuscany.sca.spi.component.TargetDestructionException;
+import org.apache.tuscany.sca.spi.component.TargetResolutionException;
 
 /**
  * Implements functionality common to scope contexts.

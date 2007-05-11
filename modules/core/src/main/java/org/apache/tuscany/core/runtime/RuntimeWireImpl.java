@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.assembly.Binding;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentReference;
-import org.apache.tuscany.core.RuntimeComponentService;
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**
  * @version $Rev$ $Date$

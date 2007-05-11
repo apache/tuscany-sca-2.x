@@ -28,16 +28,16 @@ import javax.script.ScriptException;
 import org.apache.tuscany.assembly.ComponentReference;
 import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.provider.ImplementationProvider;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * Represents a Script implementation.

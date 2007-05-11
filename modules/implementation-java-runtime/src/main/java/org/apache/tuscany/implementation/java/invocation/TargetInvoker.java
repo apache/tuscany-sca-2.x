@@ -20,8 +20,8 @@ package org.apache.tuscany.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a

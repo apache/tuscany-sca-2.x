@@ -20,9 +20,9 @@ package org.apache.tuscany.core.invocation;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * An interceptor applied to the forward direction of a wire that ensures the callback target implements the required

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * Resolves a runtime resource to be injected on a field or method of a Java component type marked with {@link

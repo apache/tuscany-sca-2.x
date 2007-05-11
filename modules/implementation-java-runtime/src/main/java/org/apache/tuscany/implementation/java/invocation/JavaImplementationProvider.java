@@ -23,8 +23,6 @@ import java.net.URI;
 
 import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.context.JavaPropertyValueObjectFactory;
@@ -32,14 +30,16 @@ import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.ProxyFactory;
-import org.apache.tuscany.provider.ScopedImplementationProvider;
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.spi.ObjectFactory;
+import org.apache.tuscany.sca.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.ComponentContext;
 
 /**

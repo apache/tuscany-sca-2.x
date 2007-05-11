@@ -22,8 +22,8 @@ package crud.provider;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 import crud.backend.ResourceManager;
 

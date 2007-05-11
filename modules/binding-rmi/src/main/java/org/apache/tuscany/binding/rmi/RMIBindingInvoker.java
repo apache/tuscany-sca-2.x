@@ -19,10 +19,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.rmi.RMIHostException;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 public class RMIBindingInvoker implements Invoker {
     private RMIHost rmiHost;

@@ -103,7 +103,7 @@
                     <header>Apache Tuscany SCA Core SPI</header>
                     <footer>Apache Tuscany SCA Core SPI</footer>
                     <sourcepath>${basedir}/src/main/java${path.separator}${basedir}/target/generated/src/main/java</sourcepath>
-                    <subpackages>org.apache.tuscany.spi</subpackages>
+                    <subpackages>org.apache.tuscany.sca.spi</subpackages>
                 </configuration>
             </plugin>
         </plugins>

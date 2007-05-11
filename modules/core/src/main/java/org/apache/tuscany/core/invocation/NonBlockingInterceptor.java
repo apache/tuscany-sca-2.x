@@ -20,14 +20,14 @@ package org.apache.tuscany.core.invocation;
 
 import java.util.LinkedList;
 
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.invocation.ConversationSequence;
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.work.WorkScheduler;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.ConversationSequence;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.work.WorkScheduler;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**

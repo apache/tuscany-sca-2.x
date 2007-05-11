@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.injection;
 
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.sca.spi.ObjectCreationException;
 
 /**
  * Implementations inject a pre-configured context type (interface) on an instance.

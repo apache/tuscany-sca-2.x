@@ -22,9 +22,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.implementation.java.invocation.TargetInvoker;
-import org.apache.tuscany.invocation.Interceptor;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**

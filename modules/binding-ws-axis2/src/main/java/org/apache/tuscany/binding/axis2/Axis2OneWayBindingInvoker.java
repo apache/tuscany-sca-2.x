@@ -27,7 +27,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 

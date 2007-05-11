@@ -21,7 +21,7 @@ package org.apache.tuscany.core.component;
 import org.osoa.sca.RequestContext;
 
 import org.apache.tuscany.core.component.RequestContextImpl;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

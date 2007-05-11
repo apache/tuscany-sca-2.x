@@ -23,10 +23,10 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.provider.ScopedImplementationProvider;
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.ScopeContainer;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 

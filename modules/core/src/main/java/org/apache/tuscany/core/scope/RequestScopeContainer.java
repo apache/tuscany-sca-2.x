@@ -21,12 +21,12 @@ package org.apache.tuscany.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.RuntimeComponent;
 import org.apache.tuscany.core.event.RequestEnd;
-import org.apache.tuscany.event.Event;
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.event.Event;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.spi.component.TargetResolutionException;
 
 /**
  * A scope context which manages atomic component instances keyed on the current

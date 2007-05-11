@@ -27,15 +27,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.tuscany.core.RuntimeWire;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.AbstractInvocationHandler;
-import org.apache.tuscany.invocation.InvocationChain;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.AbstractInvocationHandler;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$

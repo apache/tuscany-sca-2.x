@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.binding.jsonrpc.provider;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentReference;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 import org.apache.tuscany.binding.jsonrpc.JSONRPCBinding;
 

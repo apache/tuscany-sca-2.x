@@ -20,7 +20,7 @@ package org.apache.tuscany.implementation.java.injection;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.RuntimeWire;
+import org.apache.tuscany.sca.core.RuntimeWire;
 import org.easymock.EasyMock;
 
 /**

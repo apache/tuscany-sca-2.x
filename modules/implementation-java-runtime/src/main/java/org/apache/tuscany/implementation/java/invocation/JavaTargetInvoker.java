@@ -21,14 +21,14 @@ package org.apache.tuscany.implementation.java.invocation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.scope.InstanceWrapper;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.scope.ScopeContainer;
-import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.spi.component.ComponentException;
+import org.apache.tuscany.sca.spi.component.InvalidConversationSequenceException;
+import org.apache.tuscany.sca.spi.component.TargetException;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Responsible for synchronously dispatching an invocation to a Java component

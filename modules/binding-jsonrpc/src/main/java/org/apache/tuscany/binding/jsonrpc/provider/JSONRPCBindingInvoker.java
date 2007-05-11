@@ -20,8 +20,8 @@ package org.apache.tuscany.binding.jsonrpc.provider;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * Interceptor for the sample JSONRPC binding.

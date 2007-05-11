@@ -47,18 +47,18 @@ import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.ws.WebServiceBinding;
-import org.apache.tuscany.core.RuntimeComponent;
-import org.apache.tuscany.core.RuntimeComponentService;
 import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.Invoker;
-import org.apache.tuscany.invocation.Message;
-import org.apache.tuscany.invocation.MessageImpl;
-import org.apache.tuscany.provider.ServiceBindingProvider;
-import org.apache.tuscany.scope.Scope;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.WorkContextTunnel;
+import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageImpl;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 public class Axis2ServiceBindingProvider implements ServiceBindingProvider<WebServiceBinding> {
 

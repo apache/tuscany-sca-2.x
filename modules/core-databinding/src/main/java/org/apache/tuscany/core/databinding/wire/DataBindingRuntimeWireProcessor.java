@@ -21,13 +21,13 @@ package org.apache.tuscany.core.databinding.wire;
 
 import java.util.List;
 
-import org.apache.tuscany.core.RuntimeWire;
-import org.apache.tuscany.core.RuntimeWireProcessor;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.invocation.InvocationChain;
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.core.RuntimeWireProcessor;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**
  * This processor is responsible to add an interceptor to invocation chain if

@@ -19,7 +19,7 @@
 package org.apache.tuscany.implementation.java.injection;
 
 import org.apache.tuscany.implementation.java.injection.RequestContextObjectFactory;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.sca.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
