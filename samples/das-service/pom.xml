@@ -37,7 +37,7 @@
     </repositories>
 
     <modules>
-        <module>service</module>
-        <module>webclient</module>
+        <module>das-service</module>
+        <module>das-service-web</module>
     </modules>
 </project>
