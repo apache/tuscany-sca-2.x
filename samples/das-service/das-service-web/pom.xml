@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     
-    <artifactId>samples-das-service-client</artifactId>
+    <artifactId>samples-das-service-web</artifactId>
     <name>Apache Tuscany DAS Pojo Service Sample - WebClient</name>
     <packaging>war</packaging>
 
