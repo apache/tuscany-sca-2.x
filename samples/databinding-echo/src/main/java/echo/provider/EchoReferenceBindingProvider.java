@@ -34,7 +34,7 @@ import echo.EchoBinding;
  * 
  * @version $Rev$ $Date$
  */
-public class EchoReferenceBindingProvider implements ReferenceBindingProvider<EchoBinding> {
+public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
     
     private RuntimeComponentReference reference;
     

@@ -30,31 +30,29 @@ import org.apache.tuscany.sca.core.RuntimeComponentService;
 public interface BindingProviderFactory<M extends Binding> extends ProviderFactory<M> {
 
     /**
-     * Creates a new reference binding provider for the given
-     * component and reference.
+     * Creates a new reference binding provider for the given component and
+     * reference.
      * 
      * @param component
      * @param reference
      * @param binding
      * @return
      */
-    ReferenceBindingProvider<M> createReferenceBindingProvider(
-                                                            RuntimeComponent component,
+    ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                             RuntimeComponentReference reference,
                                                             M binding);
 
     /**
-     * Creates a new service binding provider for the given
-     * component and service.
+     * Creates a new service binding provider for the given component and
+     * service.
      * 
      * @param component
      * @param service
      * @param binding
      * @return
      */
-    ServiceBindingProvider<M> createServiceBindingProvider(
-                                                           RuntimeComponent component,
-                                                           RuntimeComponentService service,
-                                                           M binding);
-    
+    ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
+                                                        RuntimeComponentService service,
+                                                        M binding);
+
 }

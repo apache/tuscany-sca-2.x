@@ -36,11 +36,11 @@ import echo.EchoBinding;
  */
 public class EchoBindingProviderFactory implements BindingProviderFactory<EchoBinding> {
 
-    public ReferenceBindingProvider<EchoBinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, EchoBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, EchoBinding binding) {
         return new EchoReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider<EchoBinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
         return new EchoServiceBindingProvider(component, service, binding);
     }
     

@@ -35,12 +35,12 @@ import echo.server.EchoService;
  * 
  * @version $Rev$ $Date$
  */
-public class EchoServiceBindingProvider implements ServiceBindingProvider<EchoBinding> {
-    
+public class EchoServiceBindingProvider implements ServiceBindingProvider {
+
     private RuntimeComponent component;
-    private RuntimeComponentService service;  
+    private RuntimeComponentService service;
     private EchoBinding binding;
-    
+
     public EchoServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
         this.component = component;
         this.service = service;
@@ -53,17 +53,17 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider<EchoBi
 
     public void start() {
 
-        RuntimeComponentService componentService = (RuntimeComponentService) service;
+        RuntimeComponentService componentService = (RuntimeComponentService)service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
         InvocationChain chain = wire.getInvocationChains().get(0);
-        
+
         // Register with the hosting server
         String uri = component.getURI() + "/" + binding.getName();
         EchoServer.getServer().register(uri, new EchoService(chain.getHeadInvoker()));
     }
 
     public void stop() {
-        
+
         // Unregister from the hosting server
         String uri = component.getURI() + "/" + binding.getName();
         EchoServer.getServer().unregister(uri);

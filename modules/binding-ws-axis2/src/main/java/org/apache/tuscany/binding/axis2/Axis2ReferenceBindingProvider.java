@@ -47,7 +47,7 @@ import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
-public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<WebServiceBinding> {
+public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
@@ -59,7 +59,8 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
                                          RuntimeComponentReference reference,
                                          WebServiceBinding wsBinding) {
 
-        // TODO: before the SPI changes, a composite reference was passed to the builder.
+        // TODO: before the SPI changes, a composite reference was passed to the
+        // builder.
         // Is the change to a component reference OK?
 
         this.component = component;
@@ -73,7 +74,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
             throw new RuntimeException(e); // TODO: better exception
         }
         initServiceClient();
-        }
+    }
 
     // methods for ReferenceBindingActivator
 
@@ -84,17 +85,20 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
             wsBinding.setBindingInterfaceContract(contract);
         }
 
-        // Set to use the Axiom data binding 
-        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());        
+        // Set to use the Axiom data binding
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
-        // ??? following line was in Axis2BindingBuilder before the SPI changes and code reorg
+        // ??? following line was in Axis2BindingBuilder before the SPI changes
+        // and code reorg
         //
-        // URI targetURI = wsBinding.getURI() != null ? URI.create(wsBinding.getURI()) : URI.create("foo");
+        // URI targetURI = wsBinding.getURI() != null ?
+        // URI.create(wsBinding.getURI()) : URI.create("foo");
         //
-        // targetURI was passed to the ReferenceBindingExtension constructor and apparently was unused
+        // targetURI was passed to the ReferenceBindingExtension constructor and
+        // apparently was unused
         // Do we still need a targetURI?
 
-//        wsBinding.setURI(component.getURI() + "#" + reference.getName());
+        // wsBinding.setURI(component.getURI() + "#" + reference.getName());
 
         // create an Axis2 ServiceClient
         serviceClient = createServiceClient();
@@ -105,10 +109,11 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
 
     public void stop() {
 
-        // close all connections that we have initiated, so that the jetty server
+        // close all connections that we have initiated, so that the jetty
+        // server
         // can be restarted without seeing ConnectExceptions
         HttpClient httpClient = (HttpClient)serviceClient.getServiceContext().getConfigurationContext()
-                .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
+            .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
         if (httpClient != null)
             ((MultiThreadedHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
     }
@@ -121,7 +126,10 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
             QName serviceQName = wsBinding.getServiceName();
             String portName = wsBinding.getPortName();
             Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
-            AxisService axisService = AxisService.createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
+            AxisService axisService = AxisService.createClientSideAxisService(wsdlDefinition,
+                                                                              serviceQName,
+                                                                              portName,
+                                                                              new Options());
 
             return new ServiceClient(configContext, axisService);
         } catch (AxisFault e) {
@@ -144,24 +152,32 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
             contract = reference.getInterfaceContract();
             wsBinding.setBindingInterfaceContract(contract);
         }
- 
+
         if (wsBinding.getBindingInterfaceContract().getCallbackInterface() == null) {
             invoker = createOperationInvoker(serviceClient, operation, false, operation.isNonBlocking());
         } else {
-            // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.
+            // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
+            // as parameters.
 
-            // FIXME: This makes the (BIG) assumption that there is only one callback method
-            // Relaxing this assumption, however, does not seem to be trivial, it may depend on knowledge
-            // of what actual callback method was invoked by the service at the other end
+            // FIXME: This makes the (BIG) assumption that there is only one
+            // callback method
+            // Relaxing this assumption, however, does not seem to be trivial,
+            // it may depend on knowledge
+            // of what actual callback method was invoked by the service at the
+            // other end
 
             RuntimeWire wire = reference.getRuntimeWire(wsBinding);
             Operation callbackOperation = findCallbackOperation(wire);
             Axis2CallbackInvocationHandler invocationHandler = new Axis2CallbackInvocationHandler(wire);
-            Axis2ReferenceCallbackTargetInvoker callbackInvoker =
-                new Axis2ReferenceCallbackTargetInvoker(callbackOperation, wire, invocationHandler);
+            Axis2ReferenceCallbackTargetInvoker callbackInvoker = new Axis2ReferenceCallbackTargetInvoker(
+                                                                                                          callbackOperation,
+                                                                                                          wire,
+                                                                                                          invocationHandler);
 
-            Axis2AsyncBindingInvoker asyncInvoker = 
-                (Axis2AsyncBindingInvoker)createOperationInvoker(serviceClient, operation, true, false);
+            Axis2AsyncBindingInvoker asyncInvoker = (Axis2AsyncBindingInvoker)createOperationInvoker(serviceClient,
+                                                                                                     operation,
+                                                                                                     true,
+                                                                                                     false);
             asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
             invoker = asyncInvoker;
         }
@@ -170,12 +186,14 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
     }
 
     private Operation findCallbackOperation(RuntimeWire wire) {
-        InterfaceContract contract = wire.getTarget().getInterfaceContract(); // TODO: which end?
+        InterfaceContract contract = wire.getTarget().getInterfaceContract(); // TODO:
+                                                                                // which
+                                                                                // end?
         List callbackOperations = contract.getCallbackInterface().getOperations();
         if (callbackOperations.size() != 1) {
             throw new RuntimeException("Can only handle one callback operation");
         }
-        Operation callbackOperation = (Operation) callbackOperations.get(0);
+        Operation callbackOperation = (Operation)callbackOperations.get(0);
         return callbackOperation;
     }
 
@@ -214,14 +232,14 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
 
         return invoker;
     }
-    
+
     protected EndpointReference getPortLocationEPR() {
         String ep = wsBinding.getURI();
         if (ep == null && wsBinding.getPort() != null) {
             List wsdlPortExtensions = wsBinding.getPort().getExtensibilityElements();
             for (final Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
-                    ep = ((SOAPAddress) extension).getLocationURI();
+                    ep = ((SOAPAddress)extension).getLocationURI();
                     break;
                 }
             }
@@ -233,7 +251,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider<W
         Binding binding = wsBinding.getBinding();
         if (binding != null) {
             for (Object o : binding.getBindingOperations()) {
-                BindingOperation bop = (BindingOperation) o;
+                BindingOperation bop = (BindingOperation)o;
                 if (bop.getName().equalsIgnoreCase(operationName)) {
                     for (Object o2 : bop.getExtensibilityElements()) {
                         if (o2 instanceof SOAPOperation) {

@@ -28,22 +28,22 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 import org.apache.tuscany.binding.jsonrpc.JSONRPCBinding;
 
-
 /**
  * Implementation of the JSONRPC binding provider.
  * 
  * @version $Rev$ $Date$
  */
-public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider<JSONRPCBinding> {
-    
+public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider {
+
     private RuntimeComponentReference reference;
-    
-    public JSONRPCReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JSONRPCBinding binding) {
+
+    public JSONRPCReferenceBindingProvider(RuntimeComponent component,
+                                           RuntimeComponentReference reference,
+                                           JSONRPCBinding binding) {
         this.reference = reference;
     }
 
-    public Invoker createInvoker(Operation operation,
-                                         boolean isCallback) {
+    public Invoker createInvoker(Operation operation, boolean isCallback) {
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {

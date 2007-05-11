@@ -41,11 +41,11 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
         this.servletHost = servletHost;
     }
 
-    public ReferenceBindingProvider<WebServiceBinding> createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, WebServiceBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, WebServiceBinding binding) {
         return new Axis2ReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider<WebServiceBinding> createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, WebServiceBinding binding) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, WebServiceBinding binding) {
         return new Axis2ServiceBindingProvider(component, service, binding, servletHost);
     }
     

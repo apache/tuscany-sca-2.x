@@ -93,9 +93,9 @@ public class DefaultMediator implements Mediator {
                                                               Transformer transformer,
                                                               Map<String, Object> metadata) {
         DataType sourceType = (index == 0) ? sourceDataType : new DataTypeImpl<Object>(transformer
-            .getSourceDataBinding(), Object.class, null);
+            .getSourceDataBinding(), Object.class, sourceDataType.getLogical());
         DataType targetType = (index == size - 1) ? targetDataType : new DataTypeImpl<Object>(transformer
-            .getTargetDataBinding(), Object.class, null);
+            .getTargetDataBinding(), Object.class, targetDataType.getLogical());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader, metadata);
         return context;

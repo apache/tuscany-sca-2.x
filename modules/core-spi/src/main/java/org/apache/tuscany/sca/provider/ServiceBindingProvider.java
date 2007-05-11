@@ -26,16 +26,16 @@ import org.apache.tuscany.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider<M> {
+public interface ServiceBindingProvider {
     /**
-     * This method will be invoked when the component service binding
-     * is activated.
+     * This method will be invoked when the component service binding is
+     * activated.
      */
     void start();
 
     /**
-     * This method will be invoked when the component service binding
-     * is deactivated.
+     * This method will be invoked when the component service binding is
+     * deactivated.
      */
     void stop();
 
@@ -45,8 +45,8 @@ public interface ServiceBindingProvider<M> {
      * the endpoint for a WebService binding.
      * 
      * @param service The component service that owns the service binding
-     * @return The effective interface contract, if null is returned, the interface contract
-     * for the component service will be used
+     * @return The effective interface contract, if null is returned, the
+     *         interface contract for the component service will be used
      */
     InterfaceContract getBindingInterfaceContract();
 }
