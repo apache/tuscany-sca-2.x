@@ -35,8 +35,8 @@ import org.apache.coyote.http11.Http11Protocol;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.apache.tomcat.util.http.mapper.MappingData;
 import org.apache.tomcat.util.net.JIoEndpoint;
-import org.apache.tuscany.http.ServletHost;
-import org.apache.tuscany.http.ServletMappingException;
+import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletMappingException;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**

@@ -17,17 +17,17 @@
  * under the License.    
  */
 
-package org.apache.tuscany.http.module;
+package org.apache.tuscany.sca.http.module;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.http.DefaultServletHostExtensionPoint;
-import org.apache.tuscany.http.ExtensibleServletHost;
-import org.apache.tuscany.http.ServletHost;
-import org.apache.tuscany.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.http.DefaultServletHostExtensionPoint;
+import org.apache.tuscany.sca.http.ExtensibleServletHost;
+import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 
 /**
  * @version $Rev$ $Date$

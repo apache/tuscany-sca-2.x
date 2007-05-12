@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http;
+package org.apache.tuscany.sca.http;
 
 /**
  * Indicates an exception while registering a servlet mapping.
