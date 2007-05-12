@@ -16,23 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.spi;
+package org.apache.tuscany.sca.factory;
+
+import org.apache.tuscany.sca.factory.SingletonObjectFactory;
 
 import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AssertionTestCase extends TestCase {
-    /**
-     * test case that confirms that JRE assertions are enabled
-     */
-    public void testAssertionsAreEnabled() {
-        try {
-            assert false;
-            fail("assertions are not enabled");
-        } catch (AssertionError e) {
-            // ok
-        }
+public class SingletonObjectFactoryTestCase extends TestCase {
+
+    public void testSingleton() throws Exception {
+        Object o = new Object();
+        SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(o);
+        assertEquals(o, factory.getInstance());
     }
 }

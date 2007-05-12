@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.spi;
+package org.apache.tuscany.sca.factory;
 
 import org.apache.tuscany.sca.scope.Scope;
 
