@@ -16,34 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.databinding.sdo2om;
+package org.apache.tuscany.sca.databinding.sdo;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+import java.io.StringWriter;
+
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
-import org.apache.tuscany.sca.databinding.sdo.SDOContextHelper;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.helper.XMLHelper;
 
-/**
- * SDO XMLDocument --> AXIOM OMElement transformer
- * @version $Rev$ $Date$
- */
-public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElement> implements
-    PullTransformer<XMLDocument, OMElement> {
+public class XMLDocument2String extends BaseTransformer<XMLDocument, String> implements
+    PullTransformer<XMLDocument, String> {
 
-    public OMElement transform(XMLDocument source, TransformationContext context) {
-        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
-        SDODataSource dataSource = new SDODataSource(source, helperContext);
-        OMFactory factory = OMAbstractFactory.getOMFactory();
-        OMNamespace namespace = factory.createOMNamespace(source.getRootElementURI(), source.getRootElementName());
-        OMElement element = factory.createOMElement(dataSource, source.getRootElementName(), namespace);
-        return element;
+    public String transform(XMLDocument source, TransformationContext context) {
+        try {
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+            XMLHelper xmlHelper = helperContext.getXMLHelper();
+            StringWriter writer = new StringWriter();
+            xmlHelper.save(source, writer, null);
+            return writer.toString();
+        } catch (Exception e) {
+            throw new TransformationException(e);
+        }
     }
 
     public Class getSourceType() {
@@ -51,11 +49,11 @@ public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElemen
     }
 
     public Class getTargetType() {
-        return OMElement.class;
+        return String.class;
     }
 
     public int getWeight() {
-        return 10;
+        return 40;
     }
 
 }
