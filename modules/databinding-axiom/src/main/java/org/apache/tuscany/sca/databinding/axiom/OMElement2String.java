@@ -16,20 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
-import javax.xml.stream.XMLStreamReader;
+import java.io.StringWriter;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStreamReader> implements PullTransformer<OMElement, XMLStreamReader> {
+/**
+ * Transformer to convert data from an OMElement to XML String
+ */
+public class OMElement2String extends BaseTransformer<OMElement, String> implements PullTransformer<OMElement, String> {
     // private XmlOptions options;
     
-    public XMLStreamReader transform(OMElement source, TransformationContext context) {
-        return source.getXMLStreamReader();
+    public String transform(OMElement source, TransformationContext context) {
+        try {
+            StringWriter writer = new StringWriter();
+            source.serialize(writer);
+            return writer.toString();
+        } catch (XMLStreamException e) {
+            throw new TransformationException(e);
+        }
     }
 
     public Class getSourceType() {
@@ -37,11 +49,11 @@ public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStr
     }
 
     public Class getTargetType() {
-        return XMLStreamReader.class;
+        return String.class;
     }
 
     public int getWeight() {
-        return 10;
+        return 40;
     }
 
 }

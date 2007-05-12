@@ -16,37 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
-import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.impl.Java2SimpleTypeTransformer;
+import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-/**
- * Transformer to convert data from an simple OMElement to Java Object
- */
-public class Object2OMElement extends Java2SimpleTypeTransformer<OMElement> {
-
-    private OMFactory factory;
-
-    public Object2OMElement() {
-        super();
-        factory = OMAbstractFactory.getOMFactory();
+public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStreamReader> implements PullTransformer<OMElement, XMLStreamReader> {
+    // private XmlOptions options;
+    
+    public XMLStreamReader transform(OMElement source, TransformationContext context) {
+        return source.getXMLStreamReader();
     }
 
-    protected OMElement createElement(QName element, String text, TransformationContext context) {
-        OMElement omElement = factory.createOMElement(element, null);
-        factory.createOMText(omElement, text);
-        return omElement;
-    }
-
-    @Override
-    public Class getTargetType() {
+    public Class getSourceType() {
         return OMElement.class;
+    }
+
+    public Class getTargetType() {
+        return XMLStreamReader.class;
+    }
+
+    public int getWeight() {
+        return 10;
     }
 
 }

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.ExceptionHandler;
