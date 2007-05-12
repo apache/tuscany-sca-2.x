@@ -20,10 +20,10 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.UUID;
 
+import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -62,11 +62,11 @@ public abstract class AbstractInvocationHandler {
         Operation operation = chain.getTargetOperation();
         Interface contract = operation.getInterface();
         if (contract != null && contract.isConversational()) {
-            Operation.ConversationSequence sequence = chain.getTargetOperation().getConversationSequence();
-            if (sequence == Operation.ConversationSequence.CONVERSATION_END) {
+            ConversationSequence sequence = chain.getTargetOperation().getConversationSequence();
+            if (sequence == ConversationSequence.CONVERSATION_END) {
                 msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;
-            } else if (sequence == Operation.ConversationSequence.CONVERSATION_CONTINUE) {
+            } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
                 if (conversationStarted) {
                     msg.setConversationSequence(ConversationSequence.CONVERSATION_CONTINUE);
                 } else {

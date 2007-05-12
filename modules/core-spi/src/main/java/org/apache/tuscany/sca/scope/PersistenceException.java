@@ -24,6 +24,8 @@ package org.apache.tuscany.sca.scope;
  * @version $Rev$ $Date$
  */
 public class PersistenceException extends Exception {
+    private static final long serialVersionUID = -908468170919651248L;
+
     public PersistenceException() {
     }
 

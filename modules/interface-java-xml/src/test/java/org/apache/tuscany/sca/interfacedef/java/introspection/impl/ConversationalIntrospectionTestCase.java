@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.interfacedef.java.introspection.impl;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -57,10 +58,10 @@ public class ConversationalIntrospectionTestCase extends TestCase {
         Interface i = introspector.introspect(Foo.class);
         assertNotNull(i);
         assertTrue(i.isConversational());
-        Operation.ConversationSequence seq = getOperation(i, "operation").getConversationSequence();
-        assertEquals(Operation.ConversationSequence.CONVERSATION_CONTINUE, seq);
+        ConversationSequence seq = getOperation(i, "operation").getConversationSequence();
+        assertEquals(ConversationSequence.CONVERSATION_CONTINUE, seq);
         seq = getOperation(i, "endOperation").getConversationSequence();
-        assertEquals(Operation.ConversationSequence.CONVERSATION_END, seq);
+        assertEquals(ConversationSequence.CONVERSATION_END, seq);
     }
 
     public void testBadServiceContract() throws Exception {
@@ -75,9 +76,9 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     public void testNonConversationalInformationIntrospection() throws Exception {
         Interface i = introspector.introspect(NonConversationalFoo.class);
         assertFalse(i.isConversational());
-        Operation.ConversationSequence seq = getOperation(i, "operation")
+        ConversationSequence seq = getOperation(i, "operation")
             .getConversationSequence();
-        assertEquals(Operation.ConversationSequence.NO_CONVERSATION, seq);
+        assertEquals(ConversationSequence.CONVERSATION_NONE, seq);
     }
 
     @Conversational
