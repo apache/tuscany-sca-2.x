@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy.impl;
+package org.apache.tuscany.sca.policy.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.sca.policy.Intent;
 
 /**
  * Represents a policy intent.

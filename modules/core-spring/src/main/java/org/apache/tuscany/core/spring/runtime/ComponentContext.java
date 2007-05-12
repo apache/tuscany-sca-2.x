@@ -62,8 +62,6 @@ import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIn
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.xml.JavaInterfaceProcessor;
-import org.apache.tuscany.policy.DefaultPolicyFactory;
-import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -74,6 +72,8 @@ import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 /**

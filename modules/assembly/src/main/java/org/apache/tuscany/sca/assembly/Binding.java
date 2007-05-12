@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.policy.IntentAttachPoint;
-import org.apache.tuscany.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents a binding.

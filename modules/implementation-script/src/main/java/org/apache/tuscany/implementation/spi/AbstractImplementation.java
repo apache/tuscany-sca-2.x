@@ -22,13 +22,13 @@ package org.apache.tuscany.implementation.spi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * TODO: couldn't something like this class be provided by the runtime?

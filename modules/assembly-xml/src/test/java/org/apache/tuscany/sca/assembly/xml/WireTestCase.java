@@ -32,8 +32,6 @@ import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
-import org.apache.tuscany.policy.DefaultPolicyFactory;
-import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
@@ -41,6 +39,8 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * Test the wiring of SCA XML assemblies.

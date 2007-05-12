@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
-import org.apache.tuscany.policy.IntentAttachPoint;
-import org.apache.tuscany.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents a callback object describing the bindings to use for callbacks.

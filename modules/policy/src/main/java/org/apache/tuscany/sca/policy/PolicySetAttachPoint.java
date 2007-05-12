@@ -16,30 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy.impl;
+package org.apache.tuscany.sca.policy;
 
-import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.policy.IntentMap;
-import org.apache.tuscany.policy.PolicyFactory;
-import org.apache.tuscany.policy.PolicySet;
+import java.util.List;
 
 /**
- * A factory for the policy model.
- * 
- * @version $Rev$ $Date$
+ * Base interface for all assembly model objects that can have policy sets
+ * attached to them.
  */
-public abstract class PolicyFactoryImpl implements PolicyFactory {
+public interface PolicySetAttachPoint extends IntentAttachPoint {
 
-    public Intent createIntent() {
-        return new IntentImpl();
-    }
-
-    public PolicySet createPolicySet() {
-        return new PolicySetImpl();
-    }
-
-    public IntentMap createIntentMap() {
-        return new IntentMapImpl();
-    }
+    /**
+     * Returns a list of policy sets. See the Policy Framework specification for
+     * a description of this attribute.
+     * 
+     * @return a list of policy sets.
+     */
+    List<PolicySet> getPolicySets();
 
 }

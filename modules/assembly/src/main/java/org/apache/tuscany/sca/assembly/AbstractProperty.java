@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
 
 /**
  * A property allows for the configuration of an implementation with externally

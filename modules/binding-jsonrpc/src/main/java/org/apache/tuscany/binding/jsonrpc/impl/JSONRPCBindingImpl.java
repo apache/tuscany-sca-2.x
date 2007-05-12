@@ -22,8 +22,8 @@ package org.apache.tuscany.binding.jsonrpc.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.policy.PolicySet;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 import org.apache.tuscany.binding.jsonrpc.JSONRPCBinding;
 

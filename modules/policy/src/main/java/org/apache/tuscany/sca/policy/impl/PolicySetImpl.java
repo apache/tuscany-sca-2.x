@@ -16,51 +16,61 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy.impl;
+package org.apache.tuscany.sca.policy.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.policy.IntentMap;
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
- * Represents an intent map.
+ * Represents a policy set.
  * 
  * @version $Rev$ $Date$
  */
-public class IntentMapImpl implements IntentMap {
+public class PolicySetImpl implements PolicySet {
 
-    private boolean unresolved;
-    private IntentMap defaultQualifiedIntentMap;
+    private QName name;
+    private List<Operation> operations = new ArrayList<Operation>();
+    private List<QName> appliesTo;
+    private List<Intent> providedIntents;
+    private List<PolicySet> referencedPolicySets;
     private List<Object> policies;
-    private Intent providedIntent;
-    private List<IntentMap> qualifiedIntentMaps;
+    private boolean unresolved;
     
-    protected IntentMapImpl() {
+    protected PolicySetImpl() {
     }
 
-    public IntentMap getDefaultQualifiedIntentMap() {
-        return defaultQualifiedIntentMap;
+    public QName getName() {
+        return name;
+    }
+
+    public void setName(QName name) {
+        this.name = name;
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    public List<QName> getAppliesTo() {
+        return appliesTo;
+    }
+
+    public List<Intent> getProvidedIntents() {
+        return providedIntents;
+    }
+
+    public List<PolicySet> getReferencedPolicySets() {
+        return referencedPolicySets;
     }
 
     public List<Object> getPolicies() {
         return policies;
-    }
-
-    public Intent getProvidedIntent() {
-        return providedIntent;
-    }
-
-    public List<IntentMap> getQualifiedIntentMaps() {
-        return qualifiedIntentMaps;
-    }
-
-    public void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap) {
-        this.defaultQualifiedIntentMap = defaultQualifiedIntentMap;
-    }
-
-    public void setProvidedIntent(Intent providedIntent) {
-        this.providedIntent = providedIntent;
     }
 
     public boolean isUnresolved() {

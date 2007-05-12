@@ -31,8 +31,6 @@ import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExt
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
-import org.apache.tuscany.policy.DefaultPolicyFactory;
-import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -47,6 +45,8 @@ import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
+import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * Test reading/write WSDL interfaces.

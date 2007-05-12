@@ -22,8 +22,6 @@ package org.apache.tuscany.sca.binding.rmi;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.policy.DefaultPolicyFactory;
-import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -32,6 +30,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 public class RMIModuleActivator implements ModuleActivator {

@@ -23,12 +23,12 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Visitor;
+import org.apache.tuscany.sca.policy.Intent;
 
 /**
  * Represents a constraining type.

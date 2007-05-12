@@ -33,9 +33,9 @@ import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.policy.DefaultPolicyFactory;
-import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.Intent;
 import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy;
+package org.apache.tuscany.sca.policy;
 
-import org.apache.tuscany.policy.impl.PolicyFactoryImpl;
+import org.apache.tuscany.sca.policy.impl.PolicyFactoryImpl;
 
 /**
  * A factory for the policy model.

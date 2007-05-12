@@ -16,32 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy;
+package org.apache.tuscany.sca.policy.impl;
+
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A factory for the policy model.
+ * 
+ * @version $Rev$ $Date$
  */
-public interface PolicyFactory {
+public abstract class PolicyFactoryImpl implements PolicyFactory {
 
-    /**
-     * Create a new intent.
-     * 
-     * @return a new intent
-     */
-    Intent createIntent();
+    public Intent createIntent() {
+        return new IntentImpl();
+    }
 
-    /**
-     * Create a new policy set.
-     * 
-     * @return a new policy set
-     */
-    PolicySet createPolicySet();
+    public PolicySet createPolicySet() {
+        return new PolicySetImpl();
+    }
 
-    /**
-     * Create a new intent map.
-     * 
-     * @return a new intent map
-     */
-    IntentMap createIntentMap();
+    public IntentMap createIntentMap() {
+        return new IntentMapImpl();
+    }
 
 }
