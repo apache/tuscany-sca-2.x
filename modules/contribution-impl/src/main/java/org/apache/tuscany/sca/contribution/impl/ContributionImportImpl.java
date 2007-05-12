@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.contribution.impl;
 
 import org.apache.tuscany.contribution.ContributionImport;
-import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * The representation of an import for the contribution

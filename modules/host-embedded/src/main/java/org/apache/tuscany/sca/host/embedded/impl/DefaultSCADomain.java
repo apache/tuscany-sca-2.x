@@ -30,15 +30,15 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
-import org.apache.tuscany.contribution.service.ContributionException;
-import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;

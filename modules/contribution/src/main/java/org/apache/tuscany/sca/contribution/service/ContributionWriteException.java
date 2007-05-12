@@ -16,27 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.service;
+package org.apache.tuscany.sca.contribution.service;
 
 
 /**
- * Denotes a problem while wiring models inside an SCA contribution.
+ * Denotes an exception while writing artifacts inside an SCA contribution.
  *
  * @version $Rev: 526268 $ $Date: 2007-04-06 13:13:26 -0700 (Fri, 06 Apr 2007) $
  */
-public class ContributionWireException extends ContributionException {
+public class ContributionWriteException extends ContributionException {
     private static final long serialVersionUID = -7459051598906813461L;
+    private String resourceURI;
 
-    public ContributionWireException(String message) {
+    public ContributionWriteException(String message) {
         super(message);
     }
 
-    public ContributionWireException(String message, Throwable cause) {
+    public ContributionWriteException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ContributionWireException(Throwable cause) {
+    public ContributionWriteException(Throwable cause) {
         super(cause);
     }
     
+    /**
+     * Returns the location of the resource that was being written.
+     *
+     * @return the location of the resource that was being written
+     */
+    public String getResourceURI() {
+        return resourceURI;
+    }
+
+    /**
+     * Sets the location of the resource that was being written.
+     *
+     * @param resourceURI the location of the resource that was being written
+     */
+    public void setResourceURI(String resourceURI) {
+        this.resourceURI = resourceURI;
+    }
+
 }

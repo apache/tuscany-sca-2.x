@@ -16,26 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.contribution.processor.impl;
 
-import org.apache.tuscany.sca.contribution.service.ContributionException;
+package org.apache.tuscany.sca.contribution.service;
 
-/**
- * Exception that indicates that the supplied XML Document invalid.
- *
- */
-public class InvalidFolderContributionException extends ContributionException {
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.contribution.Contribution;
+
+public interface ContributionMetadataLoader {
     /**
-     * 
+     * Create the model object for Contribution Service metadata information
+     * @param contribution the contribution to load
+     * @param reader    the XML stream reader positioned on the applicable START_ELEMENT
+     * @return
+     * @throws XMLStreamException
+     * @throws ContributionMetadataReadException
      */
-    private static final long serialVersionUID = 1564255850052593282L;
-
-    protected InvalidFolderContributionException(String componentDefinitionLocatoin) {
-        super(componentDefinitionLocatoin);
-    }
-    
-    protected InvalidFolderContributionException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    void load(Contribution contribution, XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException;
 }

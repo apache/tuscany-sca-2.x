@@ -16,30 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.service;
 
+package org.apache.tuscany.sca.contribution.service;
+
+import java.net.URL;
 
 /**
- * Base class for runtime exceptions raised by contribution services.
+ * Provide content type for a given resource
  *
- * @version $Rev: 526837 $ $Date: 2007-04-09 10:10:18 -0700 (Mon, 09 Apr 2007) $
+ * @version $Rev: 526079 $ $Date: 2007-04-06 00:17:44 -0700 (Fri, 06 Apr 2007) $
  */
-public class ContributionRuntimeException extends RuntimeException {
-    private static final long serialVersionUID = 7711215366287498896L;
-
-    protected ContributionRuntimeException() {
-        super();
-    }
-
-    protected ContributionRuntimeException(String message) {
-        super(message);
-    }
-
-    protected ContributionRuntimeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ContributionRuntimeException(Throwable cause) {
-        super(cause);
-    }
+public interface TypeDescriber {
+    /**
+     * @param resourceURL the resource url
+     * @param defaultType the default content type
+     * @return the content type
+     */
+    String getType(URL resourceURL, String defaultType);
 }

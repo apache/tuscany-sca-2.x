@@ -24,8 +24,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.contribution.service.ContributionReadException;
-import org.apache.tuscany.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 /**
  * An artifact processor that can read models from a StAX XMLStreamReader.

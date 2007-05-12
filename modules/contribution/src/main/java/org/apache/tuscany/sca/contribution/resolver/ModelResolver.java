@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.resolver;
+package org.apache.tuscany.sca.contribution.resolver;
 
 
 

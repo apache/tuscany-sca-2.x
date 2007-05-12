@@ -16,26 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.service;
+package org.apache.tuscany.sca.contribution.service;
 
 
 /**
- * Denotes a problem while resolving models inside an SCA contribution.
+ * Denotes a problem while wiring models inside an SCA contribution.
  *
  * @version $Rev: 526268 $ $Date: 2007-04-06 13:13:26 -0700 (Fri, 06 Apr 2007) $
  */
-public class ContributionResolveException extends ContributionException {
+public class ContributionWireException extends ContributionException {
     private static final long serialVersionUID = -7459051598906813461L;
 
-    public ContributionResolveException(String message) {
+    public ContributionWireException(String message) {
         super(message);
     }
 
-    public ContributionResolveException(String message, Throwable cause) {
+    public ContributionWireException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ContributionResolveException(Throwable cause) {
+    public ContributionWireException(Throwable cause) {
         super(cause);
     }
     

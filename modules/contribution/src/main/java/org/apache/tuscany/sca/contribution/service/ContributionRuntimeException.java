@@ -16,26 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.contribution.processor.impl;
+package org.apache.tuscany.sca.contribution.service;
 
-import org.apache.tuscany.sca.contribution.service.ContributionException;
 
 /**
- * Exception that indicates that the supplied XML Document invalid.
+ * Base class for runtime exceptions raised by contribution services.
  *
+ * @version $Rev: 526837 $ $Date: 2007-04-09 10:10:18 -0700 (Mon, 09 Apr 2007) $
  */
-public class InvalidFolderContributionException extends ContributionException {
+public class ContributionRuntimeException extends RuntimeException {
+    private static final long serialVersionUID = 7711215366287498896L;
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1564255850052593282L;
-
-    protected InvalidFolderContributionException(String componentDefinitionLocatoin) {
-        super(componentDefinitionLocatoin);
+    protected ContributionRuntimeException() {
+        super();
     }
-    
-    protected InvalidFolderContributionException(String message, Throwable cause) {
+
+    protected ContributionRuntimeException(String message) {
+        super(message);
+    }
+
+    protected ContributionRuntimeException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public ContributionRuntimeException(Throwable cause) {
+        super(cause);
     }
 }

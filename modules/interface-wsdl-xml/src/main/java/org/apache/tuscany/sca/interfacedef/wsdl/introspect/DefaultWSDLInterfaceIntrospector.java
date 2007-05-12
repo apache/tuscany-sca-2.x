@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.wsdl.PortType;
 
-import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;

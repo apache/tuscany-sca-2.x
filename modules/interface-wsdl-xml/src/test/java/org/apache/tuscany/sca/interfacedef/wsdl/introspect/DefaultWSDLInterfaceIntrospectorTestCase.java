@@ -29,8 +29,8 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.resolver.ModelResolver;
-import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;

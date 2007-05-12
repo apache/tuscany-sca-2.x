@@ -26,8 +26,8 @@ import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionExport;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * The representation of a deployed contribution

@@ -21,10 +21,10 @@ package org.apache.tuscany.contribution.processor;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.resolver.ModelResolver;
-import org.apache.tuscany.contribution.service.ContributionReadException;
-import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.UnrecognizedElementException;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
 
 /**
  * The default implementation of a URL artifact processor.

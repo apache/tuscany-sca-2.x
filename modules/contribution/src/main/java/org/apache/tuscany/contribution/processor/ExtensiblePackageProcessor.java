@@ -26,9 +26,9 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.tuscany.contribution.service.ContributionException;
-import org.apache.tuscany.contribution.service.TypeDescriber;
-import org.apache.tuscany.contribution.service.UnsupportedContentTypeException;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.TypeDescriber;
+import org.apache.tuscany.sca.contribution.service.UnsupportedContentTypeException;
 
 /**
  * Default implementation of PackageProcessor.

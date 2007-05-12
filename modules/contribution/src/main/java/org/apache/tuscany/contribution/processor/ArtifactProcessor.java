@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.contribution.processor;
 
-import org.apache.tuscany.contribution.resolver.ModelResolver;
-import org.apache.tuscany.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
 
 

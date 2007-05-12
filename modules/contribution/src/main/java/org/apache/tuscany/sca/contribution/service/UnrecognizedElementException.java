@@ -6,28 +6,43 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.
+ * under the License.    
  */
-package org.apache.tuscany.contribution.service;
+package org.apache.tuscany.sca.contribution.service;
+
+import javax.xml.namespace.QName;
 
 /**
- * Denotes an invalid configuration artifact
- * 
+ * Exception that indicates an element was encountered that could not be handled.
+ *
  * @version $Rev: 525638 $ $Date: 2007-04-04 16:36:03 -0700 (Wed, 04 Apr 2007) $
  */
-public class InvalidConfigurationException extends ContributionReadException {
-    private static final long serialVersionUID = -4312958640212000366L;
+public class UnrecognizedElementException extends ContributionReadException {
+    private static final long serialVersionUID = 2549543622209829032L;
+    private final QName element;
 
-    public InvalidConfigurationException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * Constructor that indicates which element could not be handled.
+     * @param element the element that could not be handled
+     */
+    public UnrecognizedElementException(QName element) {
+        super("Unrecognized element: " + element.toString());
+        this.element = element;
     }
 
+    /**
+     * Returns the element that could not be handled.
+     * @return the element that could not be handled.
+     */
+    public QName getElement() {
+        return element;
+    }
 }

@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.contribution.Contribution;
-import org.apache.tuscany.contribution.service.TypeDescriber;
+import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
 /**
