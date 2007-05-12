@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.sdo2om;
 
-import static org.apache.tuscany.databinding.sdo.SDODataBinding.ROOT_ELEMENT;
+import static org.apache.tuscany.sca.databinding.sdo.SDODataBinding.ROOT_ELEMENT;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -27,7 +27,7 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
-import org.apache.tuscany.databinding.sdo.SDOContextHelper;
+import org.apache.tuscany.sca.databinding.sdo.SDOContextHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 

@@ -16,34 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.databinding.sdo2om;
+package org.apache.tuscany.sca.databinding.sdo;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
-import org.apache.tuscany.sca.databinding.sdo.SDOContextHelper;
+import org.apache.tuscany.sdo.helper.XMLStreamHelper;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 
-/**
- * SDO XMLDocument --> AXIOM OMElement transformer
- * @version $Rev$ $Date$
- */
-public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElement> implements
-    PullTransformer<XMLDocument, OMElement> {
-
-    public OMElement transform(XMLDocument source, TransformationContext context) {
-        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
-        SDODataSource dataSource = new SDODataSource(source, helperContext);
-        OMFactory factory = OMAbstractFactory.getOMFactory();
-        OMNamespace namespace = factory.createOMNamespace(source.getRootElementURI(), source.getRootElementName());
-        OMElement element = factory.createOMElement(dataSource, source.getRootElementName(), namespace);
-        return element;
+public class XMLDocument2XMLStreamReader extends BaseTransformer<XMLDocument, XMLStreamReader> implements
+    PullTransformer<XMLDocument, XMLStreamReader> {
+    /**
+     * @param source
+     * @param context
+     * @return
+     */
+    public XMLStreamReader transform(XMLDocument source, TransformationContext context) {
+        try {
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
+            return streamHelper.createXMLStreamReader(source);
+        } catch (XMLStreamException e) {
+            throw new TransformationException(e);
+        }
     }
 
     public Class getSourceType() {
@@ -51,7 +53,7 @@ public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElemen
     }
 
     public Class getTargetType() {
-        return OMElement.class;
+        return XMLStreamReader.class;
     }
 
     public int getWeight() {

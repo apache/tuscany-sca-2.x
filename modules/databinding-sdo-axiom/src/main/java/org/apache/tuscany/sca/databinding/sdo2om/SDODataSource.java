@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.databinding.sdo2om;
 
-import static org.apache.tuscany.databinding.sdo.SDODataBinding.ROOT_ELEMENT;
+import static org.apache.tuscany.sca.databinding.sdo.SDODataBinding.ROOT_ELEMENT;
 
 import java.io.IOException;
 import java.io.OutputStream;
