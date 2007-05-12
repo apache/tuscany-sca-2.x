@@ -30,6 +30,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;
+import org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;
+import org.apache.tuscany.sca.databinding.jaxb.Reader2JAXB;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;

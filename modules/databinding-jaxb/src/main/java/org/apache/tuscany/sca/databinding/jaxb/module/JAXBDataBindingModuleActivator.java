@@ -17,20 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.jaxb.module;
+package org.apache.tuscany.sca.databinding.jaxb.module;
 
 import java.util.Map;
 
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.databinding.jaxb.JAXB2Node;
-import org.apache.tuscany.databinding.jaxb.JAXBDataBinding;
-import org.apache.tuscany.databinding.jaxb.JAXWSJavaInterfaceProcessor;
-import org.apache.tuscany.databinding.jaxb.Node2JAXB;
-import org.apache.tuscany.databinding.jaxb.Reader2JAXB;
-import org.apache.tuscany.databinding.jaxb.XMLStreamReader2JAXB;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
+import org.apache.tuscany.sca.databinding.jaxb.JAXWSJavaInterfaceProcessor;
+import org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;
+import org.apache.tuscany.sca.databinding.jaxb.Reader2JAXB;
+import org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
