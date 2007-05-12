@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -25,6 +25,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.databinding.axiom.AxiomDataBinding;
+import org.apache.tuscany.sca.databinding.axiom.OMElement2String;
+import org.apache.tuscany.sca.databinding.axiom.OMElement2XMLStreamReader;
+import org.apache.tuscany.sca.databinding.axiom.String2OMElement;
+import org.apache.tuscany.sca.databinding.axiom.XMLStreamReader2OMElement;
 
 public class OMElementTestCase extends TestCase {
     private static final String IPO_XML =

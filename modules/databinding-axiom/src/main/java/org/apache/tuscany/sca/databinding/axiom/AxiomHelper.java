@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
 import javax.xml.namespace.QName;
 

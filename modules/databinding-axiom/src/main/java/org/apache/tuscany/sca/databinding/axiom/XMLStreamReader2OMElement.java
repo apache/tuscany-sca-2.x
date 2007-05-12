@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
-import java.io.ByteArrayInputStream;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
@@ -27,13 +27,16 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-public class String2OMElement extends BaseTransformer<String, OMElement> implements
-    PullTransformer<String, OMElement> {
+public class XMLStreamReader2OMElement extends BaseTransformer<XMLStreamReader, OMElement> implements
+    PullTransformer<XMLStreamReader, OMElement> {
 
-    @SuppressWarnings("unchecked")
-    public OMElement transform(String source, TransformationContext context) {
+    public XMLStreamReader2OMElement() {
+        super();
+    }
+
+    public OMElement transform(XMLStreamReader source, TransformationContext context) {
         try {
-            StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(source.getBytes()));
+            StAXOMBuilder builder = new StAXOMBuilder(source);
             OMElement element = builder.getDocumentElement();
             AxiomHelper.adjustElementName(context, element);
             return element;
@@ -47,11 +50,11 @@ public class String2OMElement extends BaseTransformer<String, OMElement> impleme
     }
 
     public Class getSourceType() {
-        return String.class;
+        return XMLStreamReader.class;
     }
 
     public int getWeight() {
-        return 40;
+        return 10;
     }
 
 }

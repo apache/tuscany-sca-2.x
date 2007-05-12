@@ -16,39 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
-import java.io.StringWriter;
-
-import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayInputStream;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
 
-/**
- * Transformer to convert data from an OMElement to XML String
- */
-public class OMElement2String extends BaseTransformer<OMElement, String> implements PullTransformer<OMElement, String> {
-    // private XmlOptions options;
-    
-    public String transform(OMElement source, TransformationContext context) {
+public class String2OMElement extends BaseTransformer<String, OMElement> implements
+    PullTransformer<String, OMElement> {
+
+    @SuppressWarnings("unchecked")
+    public OMElement transform(String source, TransformationContext context) {
         try {
-            StringWriter writer = new StringWriter();
-            source.serialize(writer);
-            return writer.toString();
-        } catch (XMLStreamException e) {
+            StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(source.getBytes()));
+            OMElement element = builder.getDocumentElement();
+            AxiomHelper.adjustElementName(context, element);
+            return element;
+        } catch (Exception e) {
             throw new TransformationException(e);
         }
     }
 
-    public Class getSourceType() {
+    public Class getTargetType() {
         return OMElement.class;
     }
 
-    public Class getTargetType() {
+    public Class getSourceType() {
         return String.class;
     }
 

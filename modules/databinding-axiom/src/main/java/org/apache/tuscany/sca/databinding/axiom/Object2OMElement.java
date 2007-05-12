@@ -16,22 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.sca.databinding.axiom;
 
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.databinding.impl.SimpleType2JavaTransformer;
+import org.apache.axiom.om.OMFactory;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.impl.Java2SimpleTypeTransformer;
 
 /**
- * Transformer to convert data from a simple java bject to OMElement
+ * Transformer to convert data from an simple OMElement to Java Object
  */
-public class OMElement2Object extends SimpleType2JavaTransformer<OMElement> {
+public class Object2OMElement extends Java2SimpleTypeTransformer<OMElement> {
+
+    private OMFactory factory;
+
+    public Object2OMElement() {
+        super();
+        factory = OMAbstractFactory.getOMFactory();
+    }
+
+    protected OMElement createElement(QName element, String text, TransformationContext context) {
+        OMElement omElement = factory.createOMElement(element, null);
+        factory.createOMText(omElement, text);
+        return omElement;
+    }
 
     @Override
-    protected String getText(OMElement source) {
-        return source.getText();
-    }
-
-    public Class getSourceType() {
+    public Class getTargetType() {
         return OMElement.class;
     }
+
 }
