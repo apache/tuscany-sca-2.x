@@ -29,6 +29,7 @@ public class BigBankBuilderTestCase extends TestCase {
 
 		BigBankBuilder builder = new BigBankBuilder();
 		CompositeBuilder domain = builder.build();
+                assertNotNull(domain);
 		
 		//System.out.println();
 		//new PrintUtil(System.out).print(domain);
