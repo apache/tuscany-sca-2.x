@@ -27,8 +27,8 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.implementation.java.mock.Target;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 public class JavaIntrospectionHelperTestCase extends TestCase {
 
