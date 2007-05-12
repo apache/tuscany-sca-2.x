@@ -25,7 +25,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Utility class to initialize the SCADomian associated with a webapp

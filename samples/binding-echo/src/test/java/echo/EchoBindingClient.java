@@ -18,7 +18,8 @@
  */
 package echo;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+
 import echo.server.EchoServer;
 
 /**

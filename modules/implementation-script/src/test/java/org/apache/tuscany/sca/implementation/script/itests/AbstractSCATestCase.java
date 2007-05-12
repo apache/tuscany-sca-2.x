@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.script.itests;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public abstract class AbstractSCATestCase<T> extends TestCase {
 

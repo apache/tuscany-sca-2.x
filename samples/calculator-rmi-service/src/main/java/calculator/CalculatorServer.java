@@ -19,7 +19,7 @@
 
 package calculator;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * @version $Rev: 529177 $ $Date: 2007-04-16 14:34:39 +0530 (Mon, 16 Apr 2007) $

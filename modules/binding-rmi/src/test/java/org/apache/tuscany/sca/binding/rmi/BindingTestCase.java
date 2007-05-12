@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.rmi;
 import helloworld.HelloWorldRmiService;
 import junit.framework.Assert;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

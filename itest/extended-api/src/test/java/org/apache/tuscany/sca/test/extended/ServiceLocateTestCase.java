@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test.extended;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

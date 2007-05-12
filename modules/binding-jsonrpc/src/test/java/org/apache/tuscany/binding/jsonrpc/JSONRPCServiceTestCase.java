@@ -22,7 +22,7 @@ import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.json.JSONObject;
 
 import com.meterware.httpunit.PostMethodWebRequest;

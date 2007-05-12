@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.sca.host.embedded;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

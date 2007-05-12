@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test.spec;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 @SuppressWarnings("deprecation")
 public class CompositeOneService2LevelTestCaseFIXME extends TestCase {

@@ -23,7 +23,7 @@ import static junit.framework.Assert.assertEquals;
 
 import java.util.Iterator;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

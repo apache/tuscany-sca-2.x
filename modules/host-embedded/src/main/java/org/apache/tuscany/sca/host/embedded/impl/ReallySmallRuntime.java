@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded.impl;
+package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.util.List;
 import java.util.Map;

@@ -21,8 +21,8 @@ package helloworld;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.host.embedded.SCADomain;
-import org.apache.tuscany.host.embedded.SCATestCaseRunner;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

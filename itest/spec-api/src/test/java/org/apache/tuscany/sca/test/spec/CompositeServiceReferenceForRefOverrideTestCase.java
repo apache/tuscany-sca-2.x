@@ -22,7 +22,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public class CompositeServiceReferenceForRefOverrideTestCase extends TestCase {
     private MyTotalService myService1;
