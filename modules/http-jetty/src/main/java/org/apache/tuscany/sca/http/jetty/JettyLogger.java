@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http.jetty;
+package org.apache.tuscany.sca.http.jetty;
 
 import org.mortbay.log.Logger;
 
