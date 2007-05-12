@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.ws.impl;
+package org.apache.tuscany.sca.binding.ws.impl;
 
-import org.apache.tuscany.binding.ws.WebServiceBinding;
-import org.apache.tuscany.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 
 /**
  * A factory for the WSDL model.

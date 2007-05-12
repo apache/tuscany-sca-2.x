@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.ws;
+package org.apache.tuscany.sca.binding.ws;
 
 import javax.wsdl.Port;
 import javax.wsdl.Service;
