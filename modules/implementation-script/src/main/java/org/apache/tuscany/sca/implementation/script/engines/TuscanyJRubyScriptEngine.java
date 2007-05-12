@@ -75,7 +75,7 @@ import com.sun.script.jruby.JRubyScriptEngineFactory;
  * to work around problems with Tuscany setting SCA properties and references as global variable in JRuby
  * Should only need it temporarily till a new BSF release fixes it.
  */
-
+@SuppressWarnings("unchecked")
 public class TuscanyJRubyScriptEngine extends AbstractScriptEngine 
         implements Compilable, Invocable { 
 
@@ -123,12 +123,12 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
     }
 
     // Invocable methods
-    public Object invokeFunction(String name, Object... args) 
+    public Object invokeFunction(String name, Object[] args) 
                          throws ScriptException {       
         return invokeImpl(null, name, args, Object.class);
     }
 
-    public Object invokeMethod(Object obj, String name, Object... args) 
+    public Object invokeMethod(Object obj, String name, Object[] args) 
                          throws ScriptException {       
         if (obj == null) {
             throw new IllegalArgumentException("script object is null");
