@@ -22,10 +22,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.PullTransformer;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 public class XMLStreamReader2OMElement extends BaseTransformer<XMLStreamReader, OMElement> implements
     PullTransformer<XMLStreamReader, OMElement> {

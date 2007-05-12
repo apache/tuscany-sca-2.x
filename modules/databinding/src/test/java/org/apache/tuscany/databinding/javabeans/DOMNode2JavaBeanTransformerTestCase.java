@@ -29,8 +29,10 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;

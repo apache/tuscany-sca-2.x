@@ -23,11 +23,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.databinding.DataBinding;
-import org.apache.tuscany.databinding.ExceptionHandler;
-import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.databinding.DataBinding;
+import org.apache.tuscany.sca.databinding.ExceptionHandler;
+import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;

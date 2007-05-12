@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.databinding.xml.StAXHelper;
+import org.apache.tuscany.sca.databinding.xml.StAXHelper;
 
 import junit.framework.TestCase;
 

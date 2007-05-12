@@ -21,13 +21,13 @@ package org.apache.tuscany.sca.databinding.sdo.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.sdo.DataObject2String;
 import org.apache.tuscany.sca.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextProcessor;

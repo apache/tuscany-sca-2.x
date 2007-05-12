@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.databinding.jaxb.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.JAXWSJavaInterfaceProcessor;

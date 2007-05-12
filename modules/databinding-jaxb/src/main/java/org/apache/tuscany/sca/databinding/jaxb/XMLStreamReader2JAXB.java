@@ -22,10 +22,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.PullTransformer;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 public class XMLStreamReader2JAXB extends BaseTransformer<XMLStreamReader, Object> implements
     PullTransformer<XMLStreamReader, Object> {

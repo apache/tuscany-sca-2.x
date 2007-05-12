@@ -28,11 +28,11 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.impl.DOMHelper;
-import org.apache.tuscany.databinding.impl.PipedTransformer;
-import org.apache.tuscany.databinding.xml.Node2Writer;
-import org.apache.tuscany.databinding.xml.StreamDataPipe;
-import org.apache.tuscany.databinding.xml.Writer2ReaderDataPipe;
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
+import org.apache.tuscany.sca.databinding.xml.Node2Writer;
+import org.apache.tuscany.sca.databinding.xml.StreamDataPipe;
+import org.apache.tuscany.sca.databinding.xml.Writer2ReaderDataPipe;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

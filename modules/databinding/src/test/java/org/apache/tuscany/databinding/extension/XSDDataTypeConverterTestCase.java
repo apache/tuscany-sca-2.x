@@ -23,7 +23,7 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.apache.tuscany.databinding.impl.XSDDataTypeConverter;
+import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter;
 
 import junit.framework.TestCase;
 

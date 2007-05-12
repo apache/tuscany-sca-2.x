@@ -30,13 +30,13 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.xml.InputSource2Node;
-import org.apache.tuscany.databinding.xml.InputSource2SAX;
-import org.apache.tuscany.databinding.xml.InputStream2Node;
-import org.apache.tuscany.databinding.xml.InputStream2SAX;
-import org.apache.tuscany.databinding.xml.Node2OutputStream;
-import org.apache.tuscany.databinding.xml.Node2Writer;
-import org.apache.tuscany.databinding.xml.Reader2Node;
+import org.apache.tuscany.sca.databinding.xml.InputSource2Node;
+import org.apache.tuscany.sca.databinding.xml.InputSource2SAX;
+import org.apache.tuscany.sca.databinding.xml.InputStream2Node;
+import org.apache.tuscany.sca.databinding.xml.InputStream2SAX;
+import org.apache.tuscany.sca.databinding.xml.Node2OutputStream;
+import org.apache.tuscany.sca.databinding.xml.Node2Writer;
+import org.apache.tuscany.sca.databinding.xml.Reader2Node;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

@@ -28,9 +28,9 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
+import org.apache.tuscany.sca.databinding.Transformer;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 
 /**
  * 

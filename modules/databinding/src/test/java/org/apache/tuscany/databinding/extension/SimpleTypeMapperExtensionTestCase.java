@@ -26,8 +26,8 @@ import javax.xml.namespace.NamespaceContext;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.easymock.EasyMock;
 

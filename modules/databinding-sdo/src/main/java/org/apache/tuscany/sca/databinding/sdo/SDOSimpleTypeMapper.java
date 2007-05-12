@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.databinding.SimpleTypeMapper;
-import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
+import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.Type;

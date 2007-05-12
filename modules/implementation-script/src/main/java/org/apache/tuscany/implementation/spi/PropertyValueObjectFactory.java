@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.databinding.SimpleTypeMapper;
-import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.spi.ObjectCreationException;

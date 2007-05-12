@@ -23,9 +23,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.Transformer;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.easymock.EasyMock;
 import org.w3c.dom.Node;
 

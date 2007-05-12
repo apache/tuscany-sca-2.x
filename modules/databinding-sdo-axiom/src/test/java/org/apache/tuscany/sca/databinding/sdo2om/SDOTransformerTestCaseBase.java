@@ -23,8 +23,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 
 import com.example.ipo.sdo.PurchaseOrderType;

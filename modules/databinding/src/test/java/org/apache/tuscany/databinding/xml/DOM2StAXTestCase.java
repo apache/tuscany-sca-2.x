@@ -22,9 +22,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.xml.Node2XMLStreamReader;
-import org.apache.tuscany.databinding.xml.String2Node;
-import org.apache.tuscany.databinding.xml.XMLStreamReader2String;
+import org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;
+import org.apache.tuscany.sca.databinding.xml.String2Node;
+import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.w3c.dom.Node;
 
 public class DOM2StAXTestCase extends TestCase {

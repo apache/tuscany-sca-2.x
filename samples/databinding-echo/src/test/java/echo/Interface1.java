@@ -18,7 +18,7 @@
  */
 package echo;
 
-import org.apache.tuscany.databinding.annotation.DataBinding;
+import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.osoa.sca.annotations.Remotable;
 
 /**

@@ -22,7 +22,7 @@ package org.apache.tuscany.databinding.extension;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.tuscany.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

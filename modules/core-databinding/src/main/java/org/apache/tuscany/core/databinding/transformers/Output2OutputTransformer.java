@@ -21,14 +21,14 @@ package org.apache.tuscany.core.databinding.transformers;
 
 import java.util.List;
 
-import org.apache.tuscany.databinding.DataBinding;
-import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.DataBinding;
+import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.databinding.PullTransformer;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.databinding.Transformer;
+import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -74,7 +74,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
     }
 
     /**
-     * @see org.apache.tuscany.databinding.impl.BaseTransformer#getSourceType()
+     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getSourceType()
      */
     @Override
     protected Class getSourceType() {
@@ -82,7 +82,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
     }
 
     /**
-     * @see org.apache.tuscany.databinding.impl.BaseTransformer#getTargetType()
+     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getTargetType()
      */
     @Override
     protected Class getTargetType() {
@@ -90,7 +90,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
     }
 
     /**
-     * @see org.apache.tuscany.databinding.Transformer#getWeight()
+     * @see org.apache.tuscany.sca.databinding.Transformer#getWeight()
      */
     public int getWeight() {
         return 10;

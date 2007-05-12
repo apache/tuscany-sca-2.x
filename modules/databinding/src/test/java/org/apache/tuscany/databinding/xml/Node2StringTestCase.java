@@ -20,8 +20,8 @@ package org.apache.tuscany.databinding.xml;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.impl.DOMHelper;
-import org.apache.tuscany.databinding.xml.Node2String;
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
