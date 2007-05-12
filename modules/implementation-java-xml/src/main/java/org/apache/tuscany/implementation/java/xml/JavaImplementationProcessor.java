@@ -36,10 +36,10 @@ import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
-import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 public class JavaImplementationProcessor extends BaseArtifactProcessor implements
     StAXArtifactProcessor<JavaImplementation>, JavaImplementationConstants {

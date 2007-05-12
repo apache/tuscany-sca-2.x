@@ -19,8 +19,8 @@ package org.apache.tuscany.sca.binding.rmi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.policy.Intent;
-import org.apache.tuscany.policy.PolicySet;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 
 /**

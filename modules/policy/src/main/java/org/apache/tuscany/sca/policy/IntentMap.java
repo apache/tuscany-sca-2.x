@@ -16,76 +16,59 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy;
+package org.apache.tuscany.sca.policy;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.interfacedef.Operation;
-
 /**
- * Represents a policy intent. See the Policy Framework specification for a
+ * Represents a policy intent map. See the Policy Framework specification for a
  * description of this element.
  */
-public interface Intent {
+public interface IntentMap {
 
     /**
-     * Returns the intent name.
+     * Returns the intent realized by this intent map.
      * 
-     * @return the intent name
+     * @return the intent realized by this intent map
      */
-    QName getName();
+    Intent getProvidedIntent();
 
     /**
-     * Sets the intent name
+     * Sets the intent realized by this intent map.
      * 
-     * @param name the intent name
+     * @param providedIntent the intent realized by this intent map
      */
-    void setName(QName name);
+    void setProvidedIntent(Intent providedIntent);
 
     /**
-     * Returns the list of operations that this intent applies to.
+     * Returns the default qualified intent map.
+     * 
+     * @return the default qualified intent map
+     */
+    IntentMap getDefaultQualifiedIntentMap();
+
+    /**
+     * Sets the default qualified intent map.
+     * 
+     * @param defaultQualifiedIntentMap the default qualified intent map
+     */
+    void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap);
+
+    /**
+     * Returns the list of children qualified intent maps.
      * 
      * @return
      */
-    List<Operation> getOperations();
+    List<IntentMap> getQualifiedIntentMaps();
 
     /**
-     * Returns the list of SCA constructs that this intent is meant to
-     * configure.
+     * Returns the list of concrete policies, either WS-Policy policy
+     * attachments, policy references, or policies expressed in another policy
+     * language.
      * 
-     * @return the list of SCA constructs that this intent is meant to configure
+     * @return the list of concrete policies
      */
-    List<QName> getConstrains();
-
-    /**
-     * Returns the list of required intents.
-     * 
-     * @return
-     */
-    List<Intent> getRequiredIntents();
-
-    /**
-     * Returns the list of children qualified intents.
-     * 
-     * @return the list of children qualified intents.
-     */
-    List<Intent> getQualifiedIntents();
-
-    /**
-     * Returns the intent description.
-     * 
-     * @return the intent description
-     */
-    String getDescription();
-
-    /**
-     * Sets the intent description.
-     * 
-     * @param description the intent description
-     */
-    void setDescription(String description);
+    List<Object> getPolicies();
 
     /**
      * Returns true if the model element is unresolved.

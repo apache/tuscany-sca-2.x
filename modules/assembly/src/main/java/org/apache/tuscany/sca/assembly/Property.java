@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A property allows for the configuration of an implementation with externally

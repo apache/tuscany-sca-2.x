@@ -24,8 +24,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
+import org.apache.tuscany.sca.policy.Intent;
 
 /**
  * Represents an abstract property.

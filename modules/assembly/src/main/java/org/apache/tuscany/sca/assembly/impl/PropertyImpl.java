@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents a property.

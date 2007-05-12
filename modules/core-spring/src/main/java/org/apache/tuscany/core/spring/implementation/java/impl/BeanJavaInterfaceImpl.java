@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
-import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.sca.policy.Intent;
 
 /**
  * An alternate implementation of the SCA Java assembly model JavaInterface

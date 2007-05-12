@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
-import org.apache.tuscany.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents a contract. A contract can be either a service or a reference.

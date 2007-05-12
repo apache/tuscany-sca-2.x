@@ -16,22 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.policy;
-
-import java.util.List;
+package org.apache.tuscany.sca.policy;
 
 /**
- * Base interface for all assembly model objects that can be have policy intents
- * attached to them.
+ * A factory for the policy model.
  */
-public interface IntentAttachPoint {
+public interface PolicyFactory {
 
     /**
-     * Returns a list of policy intents. See the Policy Framework specification
-     * for a description of this attribute.
+     * Create a new intent.
      * 
-     * @return a list of policy intents.
+     * @return a new intent
      */
-    List<Intent> getRequiredIntents();
+    Intent createIntent();
+
+    /**
+     * Create a new policy set.
+     * 
+     * @return a new policy set
+     */
+    PolicySet createPolicySet();
+
+    /**
+     * Create a new intent map.
+     * 
+     * @return a new intent map
+     */
+    IntentMap createIntentMap();
 
 }
