@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.scope;
  * @version $$Rev$$ $$Date$$
  */
 public class TargetNotFoundException extends TargetResolutionException {
+    private static final long serialVersionUID = 5541830480658471186L;
 
     public TargetNotFoundException() {
         super();

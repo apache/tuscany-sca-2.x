@@ -18,14 +18,15 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.scope.CoreRuntimeException;
+import org.apache.tuscany.sca.factory.ObjectCreationException;
+
 
 /**
  * Denotes an error creating a proxy
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ProxyCreationException extends CoreRuntimeException {
+public class ProxyCreationException extends ObjectCreationException {
     private static final long serialVersionUID = 8002454344828513781L;
 
     public ProxyCreationException() {

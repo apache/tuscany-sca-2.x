@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.scope;
  * @version $Rev$ $Date$
  * @Deprecated
  */
-public abstract class TargetInvokerCreationException extends ComponentException {
+public abstract class TargetInvokerCreationException extends Exception {
 
     public TargetInvokerCreationException() {
         super();

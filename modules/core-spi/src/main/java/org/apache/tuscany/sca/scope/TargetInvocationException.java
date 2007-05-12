@@ -23,7 +23,9 @@ package org.apache.tuscany.sca.scope;
  *
  * @version $Rev$ $Date$
  */
-public class TargetInvocationException extends TargetException {
+public class TargetInvocationException extends Exception {
+
+    private static final long serialVersionUID = -6553427708442761743L;
 
     public TargetInvocationException() {
         super();

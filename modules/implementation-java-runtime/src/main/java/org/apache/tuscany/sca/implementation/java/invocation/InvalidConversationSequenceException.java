@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.scope;
+package org.apache.tuscany.sca.implementation.java.invocation;
+
+import org.apache.tuscany.sca.scope.TargetInvocationException;
 
 /**
  * Denotes an unknown operation sequence in a conversation

@@ -23,7 +23,8 @@ package org.apache.tuscany.sca.scope;
  *
  * @version $Rev$ $Date$
  */
-public class TargetResolutionException extends TargetException {
+public class TargetResolutionException extends Exception {
+    private static final long serialVersionUID = 2912513650522019405L;
 
     public TargetResolutionException() {
         super();
