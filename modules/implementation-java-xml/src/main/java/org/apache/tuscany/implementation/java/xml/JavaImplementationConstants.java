@@ -20,7 +20,7 @@ package org.apache.tuscany.implementation.java.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 
 public interface JavaImplementationConstants {
 

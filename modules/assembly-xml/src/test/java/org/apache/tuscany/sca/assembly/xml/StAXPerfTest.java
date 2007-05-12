@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.xml;
+package org.apache.tuscany.sca.assembly.xml;
 
 import java.io.InputStream;
 
@@ -34,6 +34,7 @@ import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 
 /**
  * Test the performance of StAX parsing.

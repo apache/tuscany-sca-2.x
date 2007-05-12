@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.assembly.xml.Constants;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.resolver.ClassReference;
@@ -38,6 +37,7 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
 
