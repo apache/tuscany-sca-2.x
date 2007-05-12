@@ -16,21 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.contribution.service;
 
-package org.apache.tuscany.contribution.service;
-
-import java.net.URL;
 
 /**
- * Provide content type for a given resource
+ * Denotes a problem while resolving models inside an SCA contribution.
  *
- * @version $Rev: 526079 $ $Date: 2007-04-06 00:17:44 -0700 (Fri, 06 Apr 2007) $
+ * @version $Rev: 526268 $ $Date: 2007-04-06 13:13:26 -0700 (Fri, 06 Apr 2007) $
  */
-public interface TypeDescriber {
-    /**
-     * @param resourceURL the resource url
-     * @param defaultType the default content type
-     * @return the content type
-     */
-    String getType(URL resourceURL, String defaultType);
+public class ContributionResolveException extends ContributionException {
+    private static final long serialVersionUID = -7459051598906813461L;
+
+    public ContributionResolveException(String message) {
+        super(message);
+    }
+
+    public ContributionResolveException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ContributionResolveException(Throwable cause) {
+        super(cause);
+    }
+    
 }

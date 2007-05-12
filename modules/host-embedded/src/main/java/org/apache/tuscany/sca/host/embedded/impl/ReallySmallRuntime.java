@@ -22,9 +22,9 @@ package org.apache.tuscany.sca.host.embedded.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;

@@ -31,7 +31,7 @@ import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
-import org.apache.tuscany.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
 
 public class JarContributionProcessor implements PackageProcessor {
     /**

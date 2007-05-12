@@ -26,9 +26,9 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ModelResolver;
-import org.apache.tuscany.contribution.service.ContributionReadException;
-import org.apache.tuscany.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.contribution.processor.impl;
 
-import org.apache.tuscany.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
 
 /**
  * Exception that indicates that the supplied XML Document invalid.

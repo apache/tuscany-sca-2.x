@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.service.impl;
 
-import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
+import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 
 
 public class InvalidValueException extends ContributionMetadataLoaderException {

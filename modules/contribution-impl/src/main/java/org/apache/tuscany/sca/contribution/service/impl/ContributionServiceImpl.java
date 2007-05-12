@@ -38,13 +38,13 @@ import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
-import org.apache.tuscany.contribution.resolver.ModelResolver;
-import org.apache.tuscany.contribution.service.ContributionException;
-import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
-import org.apache.tuscany.contribution.service.ContributionRepository;
-import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
+import org.apache.tuscany.sca.contribution.service.ContributionRepository;
+import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 /**

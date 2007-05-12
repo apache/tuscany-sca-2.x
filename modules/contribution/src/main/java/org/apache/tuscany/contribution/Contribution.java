@@ -21,8 +21,8 @@ package org.apache.tuscany.contribution;
 
 import java.util.List;
 
-import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * The representation of a deployed contribution

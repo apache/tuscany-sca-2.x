@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
  * TODO: Shouldn't this be using the contrabution service?

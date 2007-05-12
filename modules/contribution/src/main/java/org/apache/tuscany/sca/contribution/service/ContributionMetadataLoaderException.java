@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.service;
+package org.apache.tuscany.sca.contribution.service;
 
 public class ContributionMetadataLoaderException extends ContributionException {
     private static final long serialVersionUID = 2442537028550702609L;

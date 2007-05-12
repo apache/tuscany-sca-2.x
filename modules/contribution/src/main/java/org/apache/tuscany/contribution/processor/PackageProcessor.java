@@ -25,7 +25,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.tuscany.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
 
 /**
  * Interface for services that can process contributions.

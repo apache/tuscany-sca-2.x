@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.contribution;
 
-import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 
 /**

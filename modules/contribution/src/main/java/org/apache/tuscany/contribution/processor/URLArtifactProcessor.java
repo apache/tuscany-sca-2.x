@@ -22,7 +22,7 @@ package org.apache.tuscany.contribution.processor;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
  * An artifact processor that can read models from an InputStream.
