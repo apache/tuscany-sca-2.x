@@ -23,11 +23,11 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateResourceException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.IllegalResourceException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;

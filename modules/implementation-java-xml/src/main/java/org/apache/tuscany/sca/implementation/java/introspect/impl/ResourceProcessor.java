@@ -22,11 +22,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 
 /**

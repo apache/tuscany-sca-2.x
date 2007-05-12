@@ -22,8 +22,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
 
 /**
  * Implementations process class-level metadata, typically parsing annotations

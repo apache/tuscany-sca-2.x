@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.java.impl;
+package org.apache.tuscany.sca.implementation.java.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;

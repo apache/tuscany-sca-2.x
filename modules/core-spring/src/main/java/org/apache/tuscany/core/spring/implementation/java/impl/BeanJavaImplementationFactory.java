@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.spring.implementation.java.impl;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**

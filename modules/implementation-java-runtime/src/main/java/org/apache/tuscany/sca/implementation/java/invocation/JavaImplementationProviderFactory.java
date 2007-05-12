@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.implementation.java.invocation;
 
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;

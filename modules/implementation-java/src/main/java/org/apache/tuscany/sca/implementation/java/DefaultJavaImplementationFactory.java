@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java;
+package org.apache.tuscany.sca.implementation.java;
 
 /**
  * A factory for the Java model.
  */
-import org.apache.tuscany.implementation.java.impl.JavaImplementationFactoryImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaImplementationFactoryImpl;
 
 public class DefaultJavaImplementationFactory extends JavaImplementationFactoryImpl implements JavaImplementationFactory {
 

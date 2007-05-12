@@ -40,13 +40,13 @@ import java.util.Set;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.api.annotation.Resource;
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;

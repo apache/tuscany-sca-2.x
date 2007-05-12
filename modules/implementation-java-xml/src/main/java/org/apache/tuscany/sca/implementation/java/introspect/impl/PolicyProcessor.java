@@ -23,10 +23,10 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;

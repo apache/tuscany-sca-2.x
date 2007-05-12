@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.context;
 
-import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**

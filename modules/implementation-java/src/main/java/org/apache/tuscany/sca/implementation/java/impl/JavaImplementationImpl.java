@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.impl;
+package org.apache.tuscany.sca.implementation.java.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 
 /**
  * A component type specialization for POJO implementations

@@ -26,14 +26,14 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionP
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.databinding.impl.DefaultMediator;
-import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;

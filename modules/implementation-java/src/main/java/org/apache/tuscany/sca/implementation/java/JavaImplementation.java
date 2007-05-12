@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.java;
+package org.apache.tuscany.sca.implementation.java;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
@@ -25,10 +25,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.implementation.java.impl.JavaScopeImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
 
 /**
  * Represents a Java implementation.

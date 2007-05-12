@@ -31,13 +31,13 @@ import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExt
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
-import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;

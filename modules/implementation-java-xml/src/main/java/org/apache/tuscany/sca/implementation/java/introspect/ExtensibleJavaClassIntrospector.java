@@ -24,9 +24,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 /**

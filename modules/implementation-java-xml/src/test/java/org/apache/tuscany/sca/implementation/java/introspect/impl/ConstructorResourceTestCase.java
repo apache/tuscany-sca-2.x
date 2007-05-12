@@ -22,9 +22,9 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.apache.tuscany.api.annotation.Resource;
-import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateResourceException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidConstructorException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidResourceException;
@@ -40,7 +40,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
-        org.apache.tuscany.implementation.java.impl.JavaResourceImpl resource = type.getResources().get("myResource");
+        org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl resource = type.getResources().get("myResource");
         assertFalse(resource.isOptional());
     }
 
