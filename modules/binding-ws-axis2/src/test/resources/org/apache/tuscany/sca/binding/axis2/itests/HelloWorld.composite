@@ -23,22 +23,22 @@
 
     <service name="helloWorld" promote="HelloWorldService">
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
-        <!-- interface.java interface="org.apache.tuscany.binding.axis2.itests.HelloWorld" / -->
+        <!-- interface.java interface="org.apache.tuscany.sca.binding.axis2.itests.HelloWorld" / -->
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </service>
 
     <component name="HelloWorldService">
-		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldService"/>
+		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldService"/>
     </component>
 
     <component name="HelloWorldComponent">
-		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldComponent"/>
+		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldComponent"/>
         <reference name="helloWorldWS" />
     </component>
 
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
-        <!-- interface.java interface="org.apache.tuscany.binding.axis2.itests.HelloWorld" / -->
+        <!-- interface.java interface="org.apache.tuscany.sca.binding.axis2.itests.HelloWorld" / -->
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </reference>
 

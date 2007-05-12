@@ -45,7 +45,7 @@ public class HelloWorldOMTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/binding/axis2/itests/helloworld-om.composite");
+        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/helloworld-om.composite");
         helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
     
