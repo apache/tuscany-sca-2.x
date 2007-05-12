@@ -32,7 +32,7 @@
     </service>
 
     <component name="HelloWorldService">
-		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldOMService"/>
+		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldOMService"/>
     </component>
 
 </composite>

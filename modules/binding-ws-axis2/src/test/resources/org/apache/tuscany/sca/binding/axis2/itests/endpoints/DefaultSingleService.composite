@@ -33,11 +33,11 @@
     </service>
 
     <component name="HelloWorldService">
-		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldOMService"/>
+		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldOMService"/>
     </component>
 
     <component name="HelloWorldComponent">
-		<implementation.java class="org.apache.tuscany.binding.axis2.itests.HelloWorldOMComponent"/>
+		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldOMComponent"/>
         <reference name="helloWorldWS" />
     </component>
 

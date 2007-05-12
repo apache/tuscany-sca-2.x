@@ -90,7 +90,7 @@ public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/binding/axis2/itests/questionmark-wsdl.composite");
+        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/questionmark-wsdl.composite");
     }
     
     protected void tearDown() throws Exception {

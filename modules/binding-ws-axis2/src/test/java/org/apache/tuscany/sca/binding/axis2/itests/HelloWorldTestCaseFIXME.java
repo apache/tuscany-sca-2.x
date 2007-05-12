@@ -33,7 +33,7 @@ public class HelloWorldTestCaseFIXME extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/binding/axis2/itests/HelloWorld.composite");
+        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/HelloWorld.composite");
         helloWorld = domain.getService(HelloWorld.class, "HelloWorldComponent");
     }
     

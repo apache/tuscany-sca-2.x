@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.    
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.binding.sca.axis2.Axis2ModuleActivator
+org.apache.tuscany.sca.binding.axis2.Axis2ModuleActivator
