@@ -17,9 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-import org.apache.tuscany.assembly.dsl.impl.AssemblyBuilderImpl;
+import org.apache.tuscany.sca.assembly.dsl.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.dsl.impl.AssemblyBuilderImpl;
 
 public class BigBankBuilder extends AssemblyBuilderImpl {
 	

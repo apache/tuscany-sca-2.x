@@ -17,8 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-public class AccountServiceImpl {
+public interface StockQuoteService {
 
 }

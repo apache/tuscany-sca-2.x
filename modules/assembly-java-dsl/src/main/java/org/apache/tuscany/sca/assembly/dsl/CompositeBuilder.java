@@ -17,8 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-public interface AccountDataService {
+
+public interface CompositeBuilder {
+	
+	CompositeBuilder contains(ComponentBuilder... components);
+	
+	CompositeBuilder includes(CompositeBuilder... includes);
 
 }

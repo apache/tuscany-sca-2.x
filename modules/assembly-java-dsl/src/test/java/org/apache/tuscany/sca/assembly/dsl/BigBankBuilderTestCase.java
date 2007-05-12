@@ -17,12 +17,23 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-public interface ComponentPropertyBuilder {
+import org.apache.tuscany.sca.assembly.dsl.CompositeBuilder;
+
+import junit.framework.TestCase;
+
+public class BigBankBuilderTestCase extends TestCase {
 	
-	ComponentPropertyBuilder ofType(String type);
-	
-	ComponentPropertyBuilder configuredTo(Object value);
+	public void testBuild() throws Exception {
+
+		BigBankBuilder builder = new BigBankBuilder();
+		CompositeBuilder domain = builder.build();
+		
+		//System.out.println();
+		//new PrintUtil(System.out).print(domain);
+		//System.out.println();
+		
+	}
 
 }

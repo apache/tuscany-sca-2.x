@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl.impl;
+package org.apache.tuscany.sca.assembly.dsl.impl;
 
-import org.apache.tuscany.assembly.dsl.ComponentServiceBuilder;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.dsl.ComponentServiceBuilder;
 import org.apache.tuscany.sca.assembly.impl.ComponentServiceImpl;
 
 public class ComponentServiceBuilderImpl extends ComponentServiceImpl implements ComponentServiceBuilder {

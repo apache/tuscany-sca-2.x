@@ -17,16 +17,16 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl.impl;
+package org.apache.tuscany.sca.assembly.dsl.impl;
 
 import java.util.List;
 
-import org.apache.tuscany.assembly.dsl.ComponentBuilder;
-import org.apache.tuscany.assembly.dsl.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.dsl.ComponentBuilder;
+import org.apache.tuscany.sca.assembly.dsl.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.impl.CompositeImpl;
 
 public class CompositeBuilderImpl extends CompositeImpl implements CompositeBuilder {

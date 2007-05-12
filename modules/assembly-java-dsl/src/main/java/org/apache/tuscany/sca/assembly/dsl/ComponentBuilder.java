@@ -17,8 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-public class AccountDataServiceImpl {
+public interface ComponentBuilder {
+
+	ComponentBuilder implementedBy(Class clazz);
+	
+	ComponentBuilder implementedBy(CompositeBuilder composite);
+	
+	public ComponentBuilder uses(ComponentReferenceBuilder... componentReferences);
+
+	public ComponentBuilder provides(ComponentServiceBuilder... componentServices);
+	
+	public ComponentBuilder declares(ComponentPropertyBuilder...componentProperties);
 
 }
