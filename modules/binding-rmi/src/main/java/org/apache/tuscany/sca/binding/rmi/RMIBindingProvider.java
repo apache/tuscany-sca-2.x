@@ -30,8 +30,6 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.rmi.RMIHost;
-import org.apache.tuscany.rmi.RMIHostException;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
@@ -45,6 +43,8 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.rmi.RMIHost;
+import org.apache.tuscany.sca.rmi.RMIHostException;
 import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 /**
