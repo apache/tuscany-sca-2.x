@@ -17,18 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.implementation.java.xml;
+package org.apache.tuscany.sca.implementation.java.xml;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.ExtensibleJavaClassIntrospector;
@@ -37,20 +39,20 @@ import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
+import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
- * Test writing Java implementations.
+ * Test reading Java implementations.
  * 
  * @version $Rev$ $Date$
  */
-public class WriteTestCase extends TestCase {
+public class ReadTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
@@ -69,10 +71,9 @@ public class WriteTestCase extends TestCase {
         
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         JavaClassIntrospector classIntrospector = new ExtensibleJavaClassIntrospector(new DefaultJavaClassIntrospectorExtensionPoint());
-
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(factory, policyFactory, mapper, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
+        
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
+        staxProcessors.addArtifactProcessor(compositeProcessor);
 
         JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(factory, policyFactory, javaImplementationFactory, classIntrospector);
         staxProcessors.addArtifactProcessor(javaProcessor);
@@ -86,12 +87,32 @@ public class WriteTestCase extends TestCase {
         mapper = null;
     }
 
-    public void testReadWriteComposite() throws Exception {
+    public void testReadComposite() throws Exception {
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        Composite composite = staxProcessor.read(is, Composite.class);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, bos);
+
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
+
+    }
+
+    public void testReadAndResolveComposite() throws Exception {
+        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
+        InputStream is = getClass().getResourceAsStream("Calculator.composite");
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        Composite composite = compositeProcessor.read(reader);
+        assertNotNull(composite);
+        
+        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        staxProcessor.resolve(composite, resolver);
+
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
+
+        //new PrintUtil(System.out).print(composite);
     }
 
 }

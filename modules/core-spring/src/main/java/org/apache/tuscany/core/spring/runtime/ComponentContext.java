@@ -37,7 +37,6 @@ import org.apache.tuscany.implementation.java.introspect.DefaultJavaClassIntrosp
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
-import org.apache.tuscany.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -63,6 +62,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProce
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
+import org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
