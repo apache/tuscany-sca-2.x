@@ -31,10 +31,10 @@ import javax.xml.ws.ResponseWrapper;
 
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.util.ElementInfo;
-import org.apache.tuscany.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
+import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**
  * The databinding annotation processor for java interfaces

@@ -33,7 +33,7 @@ import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
-import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Transformer to convert data from XML to JavaBean

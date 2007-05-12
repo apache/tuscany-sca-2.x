@@ -17,25 +17,36 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.util;
+package org.apache.tuscany.sca.interfacedef.util;
 
 import javax.xml.namespace.QName;
 
 /**
- * An abstraction of XML schema elements
+ * An abstraction of XML schema types
  */
-public class ElementInfo {
-    private final QName name;
-    private final TypeInfo type;
+public class TypeInfo {
+    private QName name;
+
+    private boolean isSimpleType;
+
+    private TypeInfo baseType;
 
     /**
      * @param name
-     * @param type
+     * @param isSimpleType
      */
-    public ElementInfo(QName name, TypeInfo type) {
+    public TypeInfo(QName name, boolean isSimpleType, TypeInfo baseType) {
         super();
         this.name = name;
-        this.type = type;
+        this.isSimpleType = isSimpleType;
+        this.baseType = baseType;
+    }
+
+    /**
+     * @return the isSimpleType
+     */
+    public boolean isSimpleType() {
+        return isSimpleType;
     }
 
     /**
@@ -46,15 +57,16 @@ public class ElementInfo {
     }
 
     /**
-     * @return the type
+     * @return the baseType
      */
-    public TypeInfo getType() {
-        return type;
+    public TypeInfo getBaseType() {
+        return baseType;
     }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("Element: ").append(name).append(" ").append(type);
+        sb.append("Type: ").append(name);
         return sb.toString();
     }
+
 }

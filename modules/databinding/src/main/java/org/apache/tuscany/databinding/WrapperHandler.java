@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding;
 
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 
 /**
  * A contract for transformers to deal with wrapping/unwrapping for WSDL wrapper style operations

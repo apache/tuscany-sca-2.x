@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**
  * Represents a service interface.

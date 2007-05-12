@@ -32,7 +32,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 
 public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements SimpleTypeMapper {
 

@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
