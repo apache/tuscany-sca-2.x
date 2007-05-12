@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.interfacedef.impl.InterfaceImpl;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 

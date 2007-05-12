@@ -26,7 +26,7 @@ import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.databinding.annotation.DataBinding;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;

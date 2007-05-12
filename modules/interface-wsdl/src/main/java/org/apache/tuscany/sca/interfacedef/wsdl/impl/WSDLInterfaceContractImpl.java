@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
-import org.apache.tuscany.interfacedef.impl.InterfaceContractImpl;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 
 /**

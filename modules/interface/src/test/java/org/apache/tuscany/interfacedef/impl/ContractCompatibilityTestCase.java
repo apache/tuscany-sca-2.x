@@ -32,6 +32,11 @@ import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 
 /**
  * TODO some tests commented out due to DataType.equals() needing to be strict

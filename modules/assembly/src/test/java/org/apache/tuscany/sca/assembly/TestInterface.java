@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.assembly;
 
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 
 /**
  * A test interface model.

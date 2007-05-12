@@ -22,7 +22,7 @@ package org.apache.tuscany.databinding.axiom;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.ExceptionHandler;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
-import org.apache.tuscany.interfacedef.impl.InterfaceImpl;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 
 /**
