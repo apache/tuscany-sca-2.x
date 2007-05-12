@@ -16,31 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi;
+
+import org.apache.tuscany.sca.binding.rmi.NoRemoteMethodException;
 
 import junit.framework.TestCase;
 
-public class NoRemoteServiceExceptionTestCase extends TestCase {
+public class NoRemoteMethodExceptionTestCase extends TestCase {
     
     public void testNoArgs() {
-        assertNotNull(new NoRemoteServiceException());
+        assertNotNull(new NoRemoteMethodException());
     }
 
     public void testMsgArg() {
-        NoRemoteServiceException e = new NoRemoteServiceException("foo");
+        NoRemoteMethodException e = new NoRemoteMethodException("foo");
         assertEquals("foo", e.getMessage());
     }
 
     public void test2Args() {
         Exception cause = new Exception();
-        NoRemoteServiceException e = new NoRemoteServiceException("foo", cause);
+        NoRemoteMethodException e = new NoRemoteMethodException("foo", cause);
         assertEquals("foo", e.getMessage());
         assertEquals(cause, e.getCause());
     }
 
     public void testCauseArgs() {
         Exception cause = new Exception();
-        NoRemoteServiceException e = new NoRemoteServiceException(cause);
+        NoRemoteMethodException e = new NoRemoteMethodException(cause);
         assertEquals(cause, e.getCause());
     }
 

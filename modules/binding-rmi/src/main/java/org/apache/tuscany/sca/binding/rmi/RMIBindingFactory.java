@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi;
 
 /**
  * Factory for the RMI binding model.

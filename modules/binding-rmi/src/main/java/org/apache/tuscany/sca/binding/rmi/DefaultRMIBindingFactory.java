@@ -16,32 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi;
 
-import junit.framework.TestCase;
 
-public class NoRemoteMethodExceptionTestCase extends TestCase {
+/**
+ * A factory for the WSDL model.
+ * 
+ * @version $Rev: 526508 $ $Date: 2007-04-08 07:42:42 +0530 (Sun, 08 Apr 2007) $
+ */
+public class DefaultRMIBindingFactory implements RMIBindingFactory {
     
-    public void testNoArgs() {
-        assertNotNull(new NoRemoteMethodException());
+    public DefaultRMIBindingFactory() {
     }
-
-    public void testMsgArg() {
-        NoRemoteMethodException e = new NoRemoteMethodException("foo");
-        assertEquals("foo", e.getMessage());
-    }
-
-    public void test2Args() {
-        Exception cause = new Exception();
-        NoRemoteMethodException e = new NoRemoteMethodException("foo", cause);
-        assertEquals("foo", e.getMessage());
-        assertEquals(cause, e.getCause());
-    }
-
-    public void testCauseArgs() {
-        Exception cause = new Exception();
-        NoRemoteMethodException e = new NoRemoteMethodException(cause);
-        assertEquals(cause, e.getCause());
+    
+    public RMIBinding createRMIBinding() {
+        return new RMIBindingImpl();
     }
 
 }
