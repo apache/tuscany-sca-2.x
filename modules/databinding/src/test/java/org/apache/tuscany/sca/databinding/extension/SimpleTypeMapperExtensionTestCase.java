@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.extension;
+package org.apache.tuscany.sca.databinding.extension;
 
 import java.util.HashMap;
 import java.util.Map;
