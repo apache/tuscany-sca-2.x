@@ -22,8 +22,6 @@ package org.apache.tuscany.sca.assembly.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
@@ -36,10 +34,8 @@ import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
-import org.apache.tuscany.contribution.service.ContributionWireException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Component;
@@ -56,7 +52,6 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
-import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
