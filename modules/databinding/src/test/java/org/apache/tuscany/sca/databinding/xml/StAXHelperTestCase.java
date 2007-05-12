@@ -16,21 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.xml;
+
+package org.apache.tuscany.sca.databinding.xml;
+
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.sca.databinding.xml.StAXHelper;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
-import org.apache.tuscany.sca.databinding.xml.Node2String;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+/**
+ * Test Case for StAXHelper
+ */
+public class StAXHelperTestCase extends TestCase {
+    private static final String XML =
+        "<a:foo xmlns:a='http://a' name='foo'><bar name='bar'>" + "<doo a:name='doo' xmlns:a='http://doo'/>"
+            + "</bar></a:foo>";
 
-public class Node2StringTestCase extends TestCase {
-    public void testTransformation() throws Exception {
-        Document document = DOMHelper.newDocument();
-        Element element = document.createElementNS("http://ns1", "test");
-        document.appendChild(element);
-
-        new Node2String().transform(document, null);
+    /**
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
     }
+
+    public void testHelper() throws Exception {
+        XMLStreamReader reader = StAXHelper.createXMLStreamReader(XML);
+        String xml = StAXHelper.save(reader);
+        reader = StAXHelper.createXMLStreamReader(xml);
+    }
+
 }

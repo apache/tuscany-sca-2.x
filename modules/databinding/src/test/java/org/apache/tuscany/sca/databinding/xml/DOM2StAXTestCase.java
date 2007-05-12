@@ -16,22 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.xml;
+package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
-import org.apache.tuscany.sca.databinding.xml.Node2String;
-import org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;
-import org.apache.tuscany.sca.databinding.xml.String2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2SAX;
+import org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;
+import org.apache.tuscany.sca.databinding.xml.String2Node;
+import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.w3c.dom.Node;
-import org.xml.sax.ContentHandler;
 
-public class PushTransformationTestCase extends TestCase {
+public class DOM2StAXTestCase extends TestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -62,6 +58,10 @@ public class PushTransformationTestCase extends TestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
+    private static final String CRAZY_XML =
+        "<p:e1 xmlns=\"http://ns0\" xmlns:p=\"http://p1\">" 
+        + "<p:e2 xmlns:p=\"http://p2\"/><e3/><e4 xmlns=\"\">E4</e4></p:e1>";
+
     /**
      * @see junit.framework.TestCase#setUp()
      */
@@ -70,16 +70,23 @@ public class PushTransformationTestCase extends TestCase {
     }
 
     public void testTransformation() {
-        String2XMLStreamReader t1 = new String2XMLStreamReader();
-        XMLStreamReader reader = t1.transform(IPO_XML, null);
-        XMLStreamReader2SAX t2 = new XMLStreamReader2SAX();
-        PipedTransformer<XMLStreamReader, ContentHandler, Node> t3 =
-            new PipedTransformer<XMLStreamReader, ContentHandler, Node>(t2, new SAX2DOMPipe());
-        Node node = t3.transform(reader, null);
-        Assert.assertNotNull(node);
-        Node2String t4 = new Node2String();
-        String xml = t4.transform(node, null);
-        Assert.assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
+        String2Node t1 = new String2Node();
+        Node node = t1.transform(IPO_XML, null);
+        Node2XMLStreamReader t2 = new Node2XMLStreamReader();
+        XMLStreamReader reader = t2.transform(node, null);
+        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        String xml = t3.transform(reader, null);
+        assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }
 
+    public void testTransformation2() {
+        String2Node t1 = new String2Node();
+        Node node = t1.transform(CRAZY_XML, null);
+        Node2XMLStreamReader t2 = new Node2XMLStreamReader();
+        XMLStreamReader reader = t2.transform(node, null);
+        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        String xml = t3.transform(reader, null);
+        System.out.println(xml);
+        assertTrue(xml.contains("<p:e2 xmlns:p=\"http://p2\""));
+    }
 }

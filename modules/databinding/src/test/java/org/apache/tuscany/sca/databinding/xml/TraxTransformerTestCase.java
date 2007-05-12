@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.xml;
+package org.apache.tuscany.sca.databinding.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

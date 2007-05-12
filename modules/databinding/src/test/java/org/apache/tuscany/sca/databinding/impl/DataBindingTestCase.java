@@ -16,34 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.databinding.impl;
 
-package org.apache.tuscany.databinding.xml;
+import java.lang.reflect.Method;
 
-import javax.xml.stream.XMLStreamReader;
+import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 
-import org.apache.tuscany.sca.databinding.xml.StAXHelper;
-
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
-/**
- * Test Case for StAXHelper
- */
-public class StAXHelperTestCase extends TestCase {
-    private static final String XML =
-        "<a:foo xmlns:a='http://a' name='foo'><bar name='bar'>" + "<doo a:name='doo' xmlns:a='http://doo'/>"
-            + "</bar></a:foo>";
+public class DataBindingTestCase extends TestCase {
+    @SuppressWarnings("unused")
+    public void testDataType() throws Exception {
+        Class<Test> testClass = Test.class;
+        DataBinding d = testClass.getAnnotation(DataBinding.class);
+        Assert.assertEquals(d.value(), "sdo");
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
+        Method method = testClass.getMethod("test", new Class[] {Object.class});
+        DataBinding d2 = method.getAnnotation(DataBinding.class);
+        Assert.assertEquals(d2.value(), "jaxb");
     }
 
-    public void testHelper() throws Exception {
-        XMLStreamReader reader = StAXHelper.createXMLStreamReader(XML);
-        String xml = StAXHelper.save(reader);
-        reader = StAXHelper.createXMLStreamReader(xml);
+    @DataBinding("sdo")
+    private static interface Test {
+        @DataBinding("jaxb")
+        Object test(Object object);
     }
-
 }

@@ -16,30 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.impl;
+package org.apache.tuscany.sca.databinding.xml;
 
-import java.lang.reflect.Method;
-
-import org.apache.tuscany.sca.databinding.annotation.DataBinding;
-
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-public class DataBindingTestCase extends TestCase {
-    @SuppressWarnings("unused")
-    public void testDataType() throws Exception {
-        Class<Test> testClass = Test.class;
-        DataBinding d = testClass.getAnnotation(DataBinding.class);
-        Assert.assertEquals(d.value(), "sdo");
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.databinding.xml.Node2String;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-        Method method = testClass.getMethod("test", new Class[] {Object.class});
-        DataBinding d2 = method.getAnnotation(DataBinding.class);
-        Assert.assertEquals(d2.value(), "jaxb");
-    }
+public class Node2StringTestCase extends TestCase {
+    public void testTransformation() throws Exception {
+        Document document = DOMHelper.newDocument();
+        Element element = document.createElementNS("http://ns1", "test");
+        document.appendChild(element);
 
-    @DataBinding("sdo")
-    private static interface Test {
-        @DataBinding("jaxb")
-        Object test(Object object);
+        new Node2String().transform(document, null);
     }
 }
