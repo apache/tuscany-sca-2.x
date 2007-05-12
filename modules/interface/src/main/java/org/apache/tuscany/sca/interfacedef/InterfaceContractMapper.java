@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef;
+package org.apache.tuscany.sca.interfacedef;
 
 /**
  * The InterfaceContractMapper is responsible to match interfaces

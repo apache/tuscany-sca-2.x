@@ -24,12 +24,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.InvalidCallbackException;
-import org.apache.tuscany.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.interfacedef.InvalidOperationException;
-import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.OverloadedOperationException;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;

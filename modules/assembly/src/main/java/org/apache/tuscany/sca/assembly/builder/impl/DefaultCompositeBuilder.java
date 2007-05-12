@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -45,6 +44,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
  * A builder that handles the configuration of the components inside a

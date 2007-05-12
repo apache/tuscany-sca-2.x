@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java;
 
-import org.apache.tuscany.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.Interface;
 
 /**
  * Represents a Java interface.

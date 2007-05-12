@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.contribution.service.ContributionService;
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -34,6 +33,7 @@ import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.work.ThreadPoolWorkManager;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;

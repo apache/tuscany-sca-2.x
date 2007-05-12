@@ -23,9 +23,9 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * Contains methods for mapping between an operation in a

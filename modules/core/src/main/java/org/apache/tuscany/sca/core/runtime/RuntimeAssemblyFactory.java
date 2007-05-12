@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
  * @version $Rev$ $Date$

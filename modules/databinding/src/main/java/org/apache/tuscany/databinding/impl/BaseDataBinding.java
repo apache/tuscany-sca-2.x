@@ -27,7 +27,7 @@ import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.ExceptionHandler;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**

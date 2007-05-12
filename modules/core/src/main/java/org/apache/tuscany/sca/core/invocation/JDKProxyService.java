@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.core.invocation;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.CallableReference;

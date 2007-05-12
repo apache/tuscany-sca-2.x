@@ -30,7 +30,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Node;

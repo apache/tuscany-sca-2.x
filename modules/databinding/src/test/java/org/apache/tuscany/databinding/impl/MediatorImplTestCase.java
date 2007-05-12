@@ -33,7 +33,7 @@ import org.apache.tuscany.databinding.xml.Node2String;
 import org.apache.tuscany.databinding.xml.Node2Writer;
 import org.apache.tuscany.databinding.xml.SAX2DOMPipe;
 import org.apache.tuscany.databinding.xml.String2SAX;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

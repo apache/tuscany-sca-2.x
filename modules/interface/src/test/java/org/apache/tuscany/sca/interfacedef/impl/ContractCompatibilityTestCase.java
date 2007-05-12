@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.interfacedef.impl;
+package org.apache.tuscany.sca.interfacedef.impl;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
  * @version $Rev$ $Date$
  */
 public class ContractCompatibilityTestCase extends TestCase {
-    private static final Operation.ConversationSequence NO_CONVERSATION = Operation.ConversationSequence.NO_CONVERSATION;
+
     private InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
 
     public void testNoOperation() throws Exception {

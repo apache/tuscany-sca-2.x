@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sdo.impl.AttributeImpl;
 import org.apache.tuscany.sdo.impl.ReferenceImpl;
 import org.apache.tuscany.sdo.util.SDOUtil;

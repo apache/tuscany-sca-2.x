@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 
 /**

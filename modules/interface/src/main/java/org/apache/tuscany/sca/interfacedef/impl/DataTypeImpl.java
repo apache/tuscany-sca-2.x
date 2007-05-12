@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.impl;
 
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
  * Representation of the type of data associated with an operation. Data is

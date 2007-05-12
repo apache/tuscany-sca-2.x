@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.invocation;
 
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * A wire consists of 1..n invocation chains associated with the operations of its source service contract.

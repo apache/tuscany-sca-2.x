@@ -20,7 +20,7 @@ package org.apache.tuscany.databinding;
 
 import java.util.Map;
 
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
  * This interface will be used as a Tuscany system service to perform data mediations

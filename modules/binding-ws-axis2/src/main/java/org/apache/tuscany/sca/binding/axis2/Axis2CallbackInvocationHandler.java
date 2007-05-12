@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.binding.axis2;
 import java.net.URI;
 import java.util.LinkedList;
 
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.core.invocation.AbstractInvocationHandler;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 
 public class Axis2CallbackInvocationHandler extends AbstractInvocationHandler {

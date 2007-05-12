@@ -20,9 +20,9 @@ package org.apache.tuscany.sca.interfacedef.java.introspection.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InvalidOperationException;
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;

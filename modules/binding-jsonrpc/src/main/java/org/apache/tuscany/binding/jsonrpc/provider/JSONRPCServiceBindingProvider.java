@@ -22,11 +22,11 @@ package org.apache.tuscany.binding.jsonrpc.provider;
 import org.apache.tuscany.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.binding.jsonrpc.server.JSONRPCEntryPointServlet;
 import org.apache.tuscany.binding.jsonrpc.server.JSONRPCScriptServlet;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 

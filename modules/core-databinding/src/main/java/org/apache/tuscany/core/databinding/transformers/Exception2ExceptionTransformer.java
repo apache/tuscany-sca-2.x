@@ -26,7 +26,7 @@ import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 

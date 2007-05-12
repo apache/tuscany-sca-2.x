@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.core;
 
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**

@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
 
 /**

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.introspect;
 
-import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 
 /**
