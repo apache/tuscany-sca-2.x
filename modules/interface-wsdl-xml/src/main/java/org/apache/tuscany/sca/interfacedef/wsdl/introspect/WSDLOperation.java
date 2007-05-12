@@ -135,6 +135,7 @@ public class WSDLOperation {
      * @return
      * @throws NotSupportedWSDLException
      */
+    @SuppressWarnings("unchecked")
     public DataType<XMLType> getOutputType() throws InvalidWSDLException {
         if (outputType == null) {
             Output output = operation.getOutput();

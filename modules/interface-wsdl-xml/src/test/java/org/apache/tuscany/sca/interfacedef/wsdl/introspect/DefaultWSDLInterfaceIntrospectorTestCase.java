@@ -64,6 +64,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
+    @SuppressWarnings("unchecked")
     public final void testIntrospectPortType() throws InvalidInterfaceException {
         DefaultWSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(new DefaultWSDLFactory());
         WSDLInterface contract = introspector.introspect(portType, definition.getInlinedSchemas(), resolver);
