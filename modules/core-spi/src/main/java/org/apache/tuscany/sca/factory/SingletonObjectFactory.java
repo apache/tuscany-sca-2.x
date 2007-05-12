@@ -16,30 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.spi;
+package org.apache.tuscany.sca.factory;
 
 
 /**
- * The root exception for the runtime package. Exceptions occurring in the runtime are generally non-recoverable
+ * Implementation of ObjectFactory that returns a single instance, typically an immutable type.
  *
  * @version $Rev$ $Date$
  */
-public abstract class CoreRuntimeException extends RuntimeException {
+public class SingletonObjectFactory<T> implements ObjectFactory<T> {
+    private final T instance;
 
-    public CoreRuntimeException() {
-        super();
+    public SingletonObjectFactory(T instance) {
+        this.instance = instance;
     }
 
-    public CoreRuntimeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public CoreRuntimeException(String message) {
-        super(message);
-    }
-
-    public CoreRuntimeException(Throwable cause) {
-        super(cause);
+    public T getInstance() {
+        return instance;
     }
 
 }

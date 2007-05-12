@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 
 /**
- * Thrown when an {@link org.apache.tuscany.sca.spi.model.Operation} cannot be mapped to a method on an interface 
+ * Thrown when an {@link org.apache.tuscany.sca.factory.model.Operation} cannot be mapped to a method on an interface 
  * @version $Rev$ $Date$
  */
 public class NoMethodForOperationException extends ProxyCreationException {

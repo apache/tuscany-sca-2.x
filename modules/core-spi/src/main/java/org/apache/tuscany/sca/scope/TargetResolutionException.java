@@ -16,28 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.spi.component;
+package org.apache.tuscany.sca.scope;
 
 /**
- * Denotes an error initializing a target
+ * Denotes an error retrieving a target instance
  *
  * @version $Rev$ $Date$
  */
-public class TargetInitializationException extends TargetResolutionException {
+public class TargetResolutionException extends TargetException {
 
-    public TargetInitializationException() {
+    public TargetResolutionException() {
         super();
     }
 
-    public TargetInitializationException(String message, Throwable cause) {
+    public TargetResolutionException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TargetInitializationException(String message) {
+    public TargetResolutionException(String message) {
         super(message);
     }
 
-    public TargetInitializationException(Throwable cause) {
+    public TargetResolutionException(Throwable cause) {
         super(cause);
     }
 }

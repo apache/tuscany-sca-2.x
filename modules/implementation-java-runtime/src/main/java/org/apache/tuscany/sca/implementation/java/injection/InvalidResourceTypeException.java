@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import org.apache.tuscany.sca.spi.ObjectCreationException;
+import org.apache.tuscany.sca.factory.ObjectCreationException;
 
 /**
  * Denotes an invalid resource type, i.e. that is not a component

@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.implementation.java.injection;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.implementation.java.injection.JNDIObjectFactory;
-import org.apache.tuscany.sca.spi.ObjectCreationException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

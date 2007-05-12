@@ -6,43 +6,39 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.sca.spi.component;
-
-import java.util.List;
+package org.apache.tuscany.sca.scope;
 
 /**
+ * Denotes an error creating a target invoker
+ *
  * @version $Rev$ $Date$
+ * @Deprecated
  */
-public class GroupInitializationException extends TargetResolutionException {
-    private final List<Exception> causes;
+public abstract class TargetInvokerCreationException extends ComponentException {
 
-    /**
-     * Exception indicating a problem initializing a group of components.
-     *
-     * @param contextId an identified for the context being initialized
-     * @param causes the individual exceptions that occurred
-     */
-    public GroupInitializationException(String contextId, List<Exception> causes) {
-        super(contextId);
-        this.causes = causes;
+    public TargetInvokerCreationException() {
+        super();
     }
 
-    /**
-     * Return the exceptions that occurred as the group was initialized.
-     *
-     * @return a list of exceptions that occurred
-     */
-    public List<Exception> getCauses() {
-        return causes;
+    public TargetInvokerCreationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TargetInvokerCreationException(String message) {
+        super(message);
+    }
+
+    public TargetInvokerCreationException(Throwable cause) {
+        super(cause);
     }
 }

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.spi.CoreRuntimeException;
+import org.apache.tuscany.sca.scope.CoreRuntimeException;
 
 /**
  * Denotes an error creating a proxy

@@ -6,38 +6,36 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.sca.spi.component;
+package org.apache.tuscany.sca.scope;
 
 /**
- * Thrown when an error is encountered registering a service or reference on a composite
+ * Raised when an error persisting a component implementation instance is encountered
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public abstract class RegistrationException extends ComponentException {
-
-    public RegistrationException() {
-        super();
+public class PersistenceException extends ComponentException {
+    public PersistenceException() {
     }
 
-    public RegistrationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public RegistrationException(String message) {
+    public PersistenceException(String message) {
         super(message);
     }
 
-    public RegistrationException(Throwable cause) {
+    public PersistenceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PersistenceException(Throwable cause) {
         super(cause);
     }
 }

@@ -24,13 +24,13 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.factory.ObjectCreationException;
+import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
-import org.apache.tuscany.sca.spi.ObjectCreationException;
-import org.apache.tuscany.sca.spi.ObjectFactory;
 
 import commonj.sdo.helper.HelperContext;
 

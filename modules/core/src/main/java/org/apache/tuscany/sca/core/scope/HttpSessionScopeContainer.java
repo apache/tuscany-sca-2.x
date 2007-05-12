@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.core.event.HttpSessionEnd;
 import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.spi.component.TargetResolutionException;
+import org.apache.tuscany.sca.scope.TargetResolutionException;
 
 /**
  * A scope context which manages atomic component instances keyed on HTTP

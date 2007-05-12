@@ -16,20 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.spi;
+package org.apache.tuscany.sca.scope;
+
 
 /**
- * Implementations create new instances of a particular type
+ * The root exception for the runtime package. Exceptions occurring in the runtime are generally non-recoverable
  *
  * @version $Rev$ $Date$
  */
-public interface ObjectFactory<T> {
+public abstract class CoreRuntimeException extends RuntimeException {
 
-    /**
-     * Return a instance of the type that this factory creates.
-     *
-     * @return a instance from this factory
-     */
-    T getInstance() throws ObjectCreationException;
+    public CoreRuntimeException() {
+        super();
+    }
+
+    public CoreRuntimeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public CoreRuntimeException(String message) {
+        super(message);
+    }
+
+    public CoreRuntimeException(Throwable cause) {
+        super(cause);
+    }
 
 }

@@ -28,12 +28,12 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.scope.ComponentException;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.InvalidConversationSequenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
-import org.apache.tuscany.sca.spi.component.ComponentException;
-import org.apache.tuscany.sca.spi.component.InvalidConversationSequenceException;
-import org.apache.tuscany.sca.spi.component.TargetException;
+import org.apache.tuscany.sca.scope.TargetException;
 
 /**
  * Responsible for synchronously dispatching an invocation to a Java component

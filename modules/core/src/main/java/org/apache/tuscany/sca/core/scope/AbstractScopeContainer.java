@@ -25,14 +25,13 @@ import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
+import org.apache.tuscany.sca.scope.AbstractLifecycle;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
-import org.apache.tuscany.sca.spi.AbstractLifecycle;
-import org.apache.tuscany.sca.spi.component.GroupInitializationException;
-import org.apache.tuscany.sca.spi.component.PersistenceException;
-import org.apache.tuscany.sca.spi.component.TargetDestructionException;
-import org.apache.tuscany.sca.spi.component.TargetResolutionException;
+import org.apache.tuscany.sca.scope.TargetDestructionException;
+import org.apache.tuscany.sca.scope.TargetResolutionException;
 
 /**
  * Implements functionality common to scope contexts.
@@ -111,7 +110,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         setLifecycleState(RUNNING);
     }
 
-    public void startContext(KEY contextId) throws GroupInitializationException {
+    public void startContext(KEY contextId) {
         if(isEagerInit()) {
             try {
                 getWrapper(contextId);

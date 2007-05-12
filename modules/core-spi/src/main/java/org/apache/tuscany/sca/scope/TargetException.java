@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.spi.component;
+package org.apache.tuscany.sca.scope;
 
 /**
  * Denotes an error while performing an operation on a target component implementation instance
