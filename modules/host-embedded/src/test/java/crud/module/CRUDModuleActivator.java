@@ -23,16 +23,16 @@ import java.util.Map;
 
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 import crud.CRUDImplementationFactory;

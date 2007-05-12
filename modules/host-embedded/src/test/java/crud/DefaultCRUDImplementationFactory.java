@@ -19,9 +19,9 @@
 
 package crud;
 
-import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 import crud.impl.CRUDImplementationImpl;
 
