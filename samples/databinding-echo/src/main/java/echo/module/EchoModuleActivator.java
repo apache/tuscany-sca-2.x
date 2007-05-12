@@ -24,6 +24,8 @@ import java.util.Map;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 import echo.DefaultEchoBindingFactory;
@@ -55,7 +57,8 @@ public class EchoModuleActivator implements ModuleActivator {
         processors.addArtifactProcessor(echoBindingProcessor);
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        providerFactories.addProviderFactory(new EchoBindingProviderFactory());
+        MessageFactory messageFactory = new MessageFactoryImpl();
+        providerFactories.addProviderFactory(new EchoBindingProviderFactory(messageFactory));
        
         // Start the Echo server
         EchoServer.start();

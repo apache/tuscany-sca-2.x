@@ -143,12 +143,12 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
 
-        public short getConversationSequence() {
-            return ConversationSequence.NONE;
+        public void setConversationSequence(ConversationSequence sequence) {
+            throw new UnsupportedOperationException();
         }
-
-        public void setConversationSequence(short sequence) {
-
+        
+        public ConversationSequence getConversationSequence() {
+            return null;
         }
 
     }

@@ -24,12 +24,14 @@ import java.util.LinkedList;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.AbstractInvocationHandler;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 
 public class Axis2CallbackInvocationHandler extends AbstractInvocationHandler {
 
     private RuntimeWire wire;
 
-    public Axis2CallbackInvocationHandler(RuntimeWire wire) {
+    public Axis2CallbackInvocationHandler(MessageFactory messageFactory, RuntimeWire wire) {
+        super(messageFactory, false);
         this.wire = wire;
     }
 

@@ -26,10 +26,10 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.MessageImpl;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -58,7 +58,7 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         context.setCorrelationId(null);
         context.setIdentifier(Scope.CONVERSATION, convID);
         EasyMock.replay(context);
-        Message msg = new MessageImpl();
+        Message msg = new MessageFactoryImpl().createMessage();
         Interceptor next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.eq(msg))).andReturn(msg);
         EasyMock.replay(next);

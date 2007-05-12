@@ -16,9 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.invocation;
 
-public enum ConversationSequence {
-    CONVERSATION_START, CONVERSATION_CONTINUE, CONVERSATION_END 
+
+/**
+ * A factory for messages
+ *
+ * @version $Rev $Date
+ */
+public interface MessageFactory {
+
+    /**
+     * Creates a new message.
+     * 
+     * @return
+     */
+    Message createMessage();
+    
 }

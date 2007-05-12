@@ -18,15 +18,14 @@
  */
 package org.apache.tuscany.sca.core.wire;
 
-import org.osoa.sca.NoRegisteredCallbackException;
+import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.invocation.CallbackInterfaceInterceptor;
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.MessageImpl;
-
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.osoa.sca.NoRegisteredCallbackException;
 
 /**
  * @version $Rev$ $Date$
@@ -39,14 +38,14 @@ public class CallbackInterfaceInterceptorTestCase extends TestCase {
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(null);
         EasyMock.replay(next);
         interceptor.setNext(next);
-        interceptor.invoke(new MessageImpl());
+        interceptor.invoke(new MessageFactoryImpl().createMessage());
         EasyMock.verify(next);
     }
 
     public void testDoesNotImplement() {
         CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor(false);
         try {
-            interceptor.invoke(new MessageImpl());
+            interceptor.invoke(new MessageFactoryImpl().createMessage());
             fail();
         } catch (NoRegisteredCallbackException e) {
             // expected

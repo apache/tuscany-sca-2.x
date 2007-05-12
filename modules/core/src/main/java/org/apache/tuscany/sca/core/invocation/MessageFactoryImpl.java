@@ -17,8 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.invocation;
+package org.apache.tuscany.sca.core.invocation;
 
-public enum ConversationSequence {
-    CONVERSATION_START, CONVERSATION_CONTINUE, CONVERSATION_END 
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
+
+/**
+ * Implementation of MessageFactory.
+ *
+ * @version $Rev$ $Date$
+ */
+public class MessageFactoryImpl implements MessageFactory {
+
+    public Message createMessage() {
+        return new MessageImpl();
+    }
+
 }

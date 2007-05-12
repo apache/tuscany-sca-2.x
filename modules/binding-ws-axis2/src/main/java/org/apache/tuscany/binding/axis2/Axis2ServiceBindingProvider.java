@@ -54,7 +54,7 @@ import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.MessageImpl;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.spi.component.WorkContext;
@@ -67,6 +67,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     private WebServiceBinding wsBinding;
     private ServletHost servletHost;
     private ConfigurationContext configContext;
+    private MessageFactory messageFactory;
 
     // TODO: what to do about the base URI?
     private static final String BASE_URI = "http://localhost:8080/";
@@ -74,12 +75,14 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     public Axis2ServiceBindingProvider(RuntimeComponent component,
                                        RuntimeComponentService service,
                                        WebServiceBinding wsBinding,
-                                       ServletHost servletHost) {
+                                       ServletHost servletHost,
+                                       MessageFactory messageFactory) {
 
         this.component = component;
         this.service = service;
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
+        this.messageFactory = messageFactory;
 
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
@@ -365,7 +368,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     public Object invokeTarget(Operation op, Object[] args, Object messageId, String conversationID)
         throws InvocationTargetException {
 
-        Message requestMsg = new MessageImpl();
+        Message requestMsg = messageFactory.createMessage();
 
         if (messageId != null) {
             requestMsg.setMessageID(messageId);

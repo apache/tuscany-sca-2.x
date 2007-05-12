@@ -20,6 +20,7 @@ package org.apache.tuscany.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 
@@ -31,14 +32,6 @@ import org.apache.tuscany.sca.spi.component.WorkContext;
  * @Deprecated
  */
 public interface TargetInvoker extends Cloneable {
-    /* indicates that no conversational sequence is associated with the message */
-    short NONE = 0;
-    /* indicates that the message initiates a conversation */
-    short START = 1;
-    /* indicates that the message continues a conversation */
-    short CONTINUE = 2;
-    /* indicates that the message ends a conversation */
-    short END = 3;
 
     /**
      * Invokes an operation on a target with the given payload. Used in optmized cases where messages do not need to be
@@ -52,7 +45,7 @@ public interface TargetInvoker extends Cloneable {
      * @return the result of the invocation
      * @throws InvocationTargetException if there was a problem invoking the target
      */
-    Object invokeTarget(final Object payload, final short sequence, WorkContext workContext)
+    Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext)
         throws InvocationTargetException;
 
     /**

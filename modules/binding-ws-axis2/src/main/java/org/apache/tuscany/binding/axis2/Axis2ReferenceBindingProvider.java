@@ -45,10 +45,12 @@ import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
+    private MessageFactory messageFactory;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private WebServiceBinding wsBinding;
@@ -57,15 +59,13 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
     public Axis2ReferenceBindingProvider(RuntimeComponent component,
                                          RuntimeComponentReference reference,
-                                         WebServiceBinding wsBinding) {
-
-        // TODO: before the SPI changes, a composite reference was passed to the
-        // builder.
-        // Is the change to a component reference OK?
+                                         WebServiceBinding wsBinding,
+                                         MessageFactory messageFactory) {
 
         this.component = component;
         this.reference = reference;
         this.wsBinding = wsBinding;
+        this.messageFactory = messageFactory;
 
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
@@ -168,7 +168,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
             RuntimeWire wire = reference.getRuntimeWire(wsBinding);
             Operation callbackOperation = findCallbackOperation(wire);
-            Axis2CallbackInvocationHandler invocationHandler = new Axis2CallbackInvocationHandler(wire);
+            Axis2CallbackInvocationHandler invocationHandler = new Axis2CallbackInvocationHandler(messageFactory, wire);
             Axis2ReferenceCallbackTargetInvoker callbackInvoker = new Axis2ReferenceCallbackTargetInvoker(
                                                                                                           callbackOperation,
                                                                                                           wire,
