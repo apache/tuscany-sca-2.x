@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import org.apache.tuscany.sca.spi.ObjectFactory;
+import org.apache.tuscany.sca.factory.ObjectFactory;
 
 /**
  * Implementation of ObjectFactory that returns a single instance, typically an immutable type.

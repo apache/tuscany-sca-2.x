@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.context;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
 
 /**
  * @version $Rev$ $Date$

@@ -16,26 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.spi.component;
+package org.apache.tuscany.sca.scope;
+
 
 /**
- * Raised when an error persisting a component implementation instance is encountered
+ * An checked exception encountered by a component
  *
  * @version $Rev$ $Date$
  */
-public class PersistenceException extends ComponentException {
-    public PersistenceException() {
+public abstract class ComponentException extends Exception {
+
+    public ComponentException() {
+        super();
     }
 
-    public PersistenceException(String message) {
-        super(message);
-    }
-
-    public PersistenceException(String message, Throwable cause) {
+    public ComponentException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public PersistenceException(Throwable cause) {
+    public ComponentException(String message) {
+        super(message);
+    }
+
+    public ComponentException(Throwable cause) {
         super(cause);
     }
+
 }

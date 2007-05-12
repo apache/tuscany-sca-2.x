@@ -20,12 +20,6 @@ package org.apache.tuscany.sca.scope;
 
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.event.RuntimeEventListener;
-import org.apache.tuscany.sca.spi.Lifecycle;
-import org.apache.tuscany.sca.spi.component.GroupInitializationException;
-import org.apache.tuscany.sca.spi.component.PersistenceException;
-import org.apache.tuscany.sca.spi.component.TargetDestructionException;
-import org.apache.tuscany.sca.spi.component.TargetNotFoundException;
-import org.apache.tuscany.sca.spi.component.TargetResolutionException;
 
 
 /**
@@ -49,9 +43,8 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * Start a new context with the supplied ID.
      *
      * @param contextId an ID that uniquely identifies the context.
-     * @throws GroupInitializationException if an exception was thrown by any eagerInit component
      */
-    void startContext(KEY contextId) throws GroupInitializationException;
+    void startContext(KEY contextId);
 
     /**
      * Stop the context with the supplied ID.
@@ -63,7 +56,6 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
     /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary
      * @param contextId the id for the scope context
-     * @param  the type of the target instance
      *
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
@@ -74,7 +66,6 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * Returns an implementation instance associated with the current scope context.
      * If no instance is found, a {@link TargetNotFoundException} is thrown.
      * @param contextId the id for the scope context
-     * @param  the type of the target instance
      *
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
@@ -86,7 +77,6 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * Return a wrapper after use (for example, after invoking the instance).
      * @param wrapper the wrapper for the target instance being returned
      * @param contextId the id for the scope context
-     * @param  the type of the target instance
      *
      * @throws TargetDestructionException if there was a problem returning the target instance
      */

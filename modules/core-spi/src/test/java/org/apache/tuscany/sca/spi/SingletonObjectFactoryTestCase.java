@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.spi;
 
-import org.apache.tuscany.sca.spi.SingletonObjectFactory;
+import org.apache.tuscany.sca.factory.SingletonObjectFactory;
 
 import junit.framework.TestCase;
 

@@ -108,8 +108,7 @@ public interface Message {
     <T> void setFaultBody(T fault);
 
     /**
-     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on {@link
-     * TargetInvoker}
+     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on TargetInvoker}
      *
      * @return the conversational sequence the message is associated with
      */

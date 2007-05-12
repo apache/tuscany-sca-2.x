@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.core.component;
 
-import org.apache.tuscany.sca.spi.ObjectFactory;
+import org.apache.tuscany.sca.factory.ObjectFactory;
 
 /**
  * Default implementation of a callback reference.

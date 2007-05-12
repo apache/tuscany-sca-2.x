@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.context;
 
+import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$

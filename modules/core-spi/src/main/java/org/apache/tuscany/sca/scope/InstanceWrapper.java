@@ -18,14 +18,10 @@
  */
 package org.apache.tuscany.sca.scope;
 
-import org.apache.tuscany.sca.spi.component.TargetDestructionException;
-import org.apache.tuscany.sca.spi.component.TargetInitializationException;
 
 /**
  * Provides lifecycle management for an implementation instance associated with
- * an {@link org.apache.tuscany.sca.spi.component.AtomicComponent} for use by the
- * atomic component's associated {@link
- * org.apache.tuscany.sca.spi.component.ScopeContainer}
+ * a component for use by the component's associated {@link org.apache.tuscany.sca.scope.ScopeContainer}
  * 
  * @version $Rev$ $Date$
  */

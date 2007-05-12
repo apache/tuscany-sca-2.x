@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.implementation.java.injection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.spi.ObjectCreationException;
-import org.apache.tuscany.sca.spi.ObjectFactory;
+import org.apache.tuscany.sca.factory.ObjectCreationException;
+import org.apache.tuscany.sca.factory.ObjectFactory;
 
 /**
  * Resolves targets configured in a multiplicity by delegating to object factories and returning an <code>List</code>

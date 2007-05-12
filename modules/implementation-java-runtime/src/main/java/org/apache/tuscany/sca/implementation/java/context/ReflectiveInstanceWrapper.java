@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.implementation.java.context;
 
 import org.apache.tuscany.sca.core.scope.BaseInstanceWrapper;
 import org.apache.tuscany.sca.implementation.java.injection.EventInvoker;
-import org.apache.tuscany.sca.spi.component.TargetDestructionException;
-import org.apache.tuscany.sca.spi.component.TargetInitializationException;
+import org.apache.tuscany.sca.scope.TargetDestructionException;
+import org.apache.tuscany.sca.scope.TargetInitializationException;
 
 /**
  * @version $Rev$ $Date$

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.InstanceFactory;
 import org.apache.tuscany.sca.implementation.java.context.InstanceFactoryProvider;
@@ -45,7 +46,6 @@ import org.apache.tuscany.sca.implementation.java.injection.ListMultiplicityObje
 import org.apache.tuscany.sca.implementation.java.injection.MethodEventInvoker;
 import org.apache.tuscany.sca.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
-import org.apache.tuscany.sca.spi.ObjectFactory;
 
 /**
  * Encapsulates confuration for a Java-based atomic component

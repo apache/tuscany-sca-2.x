@@ -16,28 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.spi.component;
+package org.apache.tuscany.sca.scope;
 
 /**
- * Denotes an error destroying a target
+ * Denotes an error initializing a target
  *
  * @version $Rev$ $Date$
  */
-public class TargetDestructionException extends TargetResolutionException {
+public class TargetInitializationException extends TargetResolutionException {
 
-    public TargetDestructionException() {
+    public TargetInitializationException() {
         super();
     }
 
-    public TargetDestructionException(String message, Throwable cause) {
+    public TargetInitializationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TargetDestructionException(String message) {
+    public TargetInitializationException(String message) {
         super(message);
     }
 
-    public TargetDestructionException(Throwable cause) {
+    public TargetInitializationException(Throwable cause) {
         super(cause);
     }
 }

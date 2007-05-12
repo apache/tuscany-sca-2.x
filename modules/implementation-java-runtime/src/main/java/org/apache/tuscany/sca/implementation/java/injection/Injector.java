@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import org.apache.tuscany.sca.spi.ObjectCreationException;
+import org.apache.tuscany.sca.factory.ObjectCreationException;
 
 /**
  * Implementations inject a pre-configured value on an instance
