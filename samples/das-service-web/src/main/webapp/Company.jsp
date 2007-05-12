@@ -20,7 +20,7 @@
 
 <%@ page import="java.util.*" %>
 
-<%@ page import="org.apache.tuscany.host.embedded.SCADomain"%>
+<%@ page import="org.apache.tuscany.sca.host.embedded.SCADomain"%>
 
 <%@ page import="commonj.sdo.*" %>
 <%@ page import="das.*" %>

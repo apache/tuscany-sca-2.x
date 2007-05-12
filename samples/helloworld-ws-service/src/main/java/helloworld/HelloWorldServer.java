@@ -20,7 +20,7 @@ package helloworld;
 
 import java.io.IOException;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * This server program shows how to create an SCA runtime, and start it which

@@ -21,7 +21,7 @@ package $template.getJavaPackage();
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 

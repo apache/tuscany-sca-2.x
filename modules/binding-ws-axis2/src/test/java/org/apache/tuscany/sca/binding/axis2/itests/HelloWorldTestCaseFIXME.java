@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.axis2.itests;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public class HelloWorldTestCaseFIXME extends TestCase {
 

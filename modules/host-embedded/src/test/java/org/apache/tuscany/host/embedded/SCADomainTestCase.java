@@ -21,6 +21,7 @@ package org.apache.tuscany.host.embedded;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.osoa.sca.ServiceReference;
 
 import crud.CRUD;

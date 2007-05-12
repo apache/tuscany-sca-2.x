@@ -21,7 +21,7 @@ package helloworld;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

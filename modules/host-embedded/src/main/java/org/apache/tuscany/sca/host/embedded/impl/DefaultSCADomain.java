@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded.impl;
+package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,9 +40,9 @@ import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.util.FileHelper;
-import org.apache.tuscany.host.embedded.SCADomain;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;

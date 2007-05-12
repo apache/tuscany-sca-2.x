@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public class CallBackApiTest extends TestCase {
 

@@ -19,7 +19,7 @@
 
 package calculator;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * This client program shows how to create an SCA runtime, start it,

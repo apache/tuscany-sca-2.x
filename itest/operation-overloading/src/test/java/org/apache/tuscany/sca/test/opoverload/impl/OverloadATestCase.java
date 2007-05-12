@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test.opoverload.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
 
 public class OverloadATestCase extends TestCase {

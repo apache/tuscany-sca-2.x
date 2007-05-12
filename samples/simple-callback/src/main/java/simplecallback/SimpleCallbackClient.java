@@ -18,7 +18,7 @@
  */
 package simplecallback;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Demonstrates resolving the client service and initiating the callback sequence

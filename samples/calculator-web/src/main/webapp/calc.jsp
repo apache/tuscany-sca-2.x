@@ -17,7 +17,7 @@
  * under the License.
 --%>
 
-<%@ page import="org.apache.tuscany.host.embedded.SCADomain"%>
+<%@ page import="org.apache.tuscany.sca.host.embedded.SCADomain"%>
 <%@ page import="calculator.CalculatorService" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

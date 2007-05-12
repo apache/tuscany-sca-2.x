@@ -20,7 +20,7 @@ package simplecallback;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * A testcase that demonstrates resolving the client service and initiating the callback sequence

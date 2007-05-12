@@ -19,7 +19,7 @@
 
 package composite;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Simple client program that invokes the components that we wired together.

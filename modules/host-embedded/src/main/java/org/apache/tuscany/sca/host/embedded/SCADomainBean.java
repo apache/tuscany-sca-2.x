@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.sca.host.embedded;
 
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;

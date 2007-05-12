@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.test.extended.impl;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.extended.BasicService;
 import org.apache.tuscany.sca.test.extended.MathService;
 import org.osoa.sca.ComponentContext;

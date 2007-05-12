@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.host.embedded.impl;
 
+import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
+
 import junit.framework.TestCase;
 import crud.CRUD;
 

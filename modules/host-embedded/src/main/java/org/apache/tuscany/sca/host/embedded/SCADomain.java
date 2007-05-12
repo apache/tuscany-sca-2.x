@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.host.embedded;
+package org.apache.tuscany.sca.host.embedded;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.apache.tuscany.host.embedded.impl.DefaultSCADomain;
+import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
@@ -177,11 +177,11 @@ public abstract class SCADomain {
 
     /**
      * Returns an SCADomain instance. If the system property
-     * "org.apache.tuscany.host.embedded.SCADomain" is set, its value is used as
+     * "org.apache.tuscany.sca.host.embedded.SCADomain" is set, its value is used as
      * the name of the implementation class. Otherwise, if the resource
-     * "META-INF/services/org.apache.tuscany.host.embedded.SCADomain" can be
+     * "META-INF/services/org.apache.tuscany.sca.host.embedded.SCADomain" can be
      * loaded from the supplied classloader. Otherwise, it will use
-     * "org.apache.tuscany.host.embedded.impl.DefaultSCADomain" as the default.
+     * "org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain" as the default.
      * The named class is loaded from the supplied classloader.
      * 
      * @param classLoader

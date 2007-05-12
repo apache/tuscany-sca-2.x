@@ -22,7 +22,7 @@ import java.rmi.Naming;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * This shows how to test the Calculator service component.
