@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.interfacedef.java.module;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;

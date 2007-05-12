@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;

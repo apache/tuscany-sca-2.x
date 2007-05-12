@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution;
+package org.apache.tuscany.sca.contribution;
 
 import java.util.List;
 

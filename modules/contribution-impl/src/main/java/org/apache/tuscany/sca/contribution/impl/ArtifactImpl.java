@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.impl;
 
-import org.apache.tuscany.contribution.Artifact;
+import org.apache.tuscany.sca.contribution.Artifact;
 
 public abstract class ArtifactImpl implements Artifact {
     private String uri;

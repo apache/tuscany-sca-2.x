@@ -17,26 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution;
-
+package org.apache.tuscany.sca.contribution.processor;
 
 /**
- * Representation of a deployed artifact
- *
+ * An extension point for contribution post processor extensions.
+ * 
  * @version $Rev$ $Date$
  */
-public interface DeployedArtifact extends Artifact {
+public interface ContributionPostProcessorExtensionPoint {
     
     /**
-     * Get the model associated with this artifact
-     * @return
+     * Add a ContributionPostProcessor
+     * @param processor
      */
-    Object getModel();
+    void addPostProcessor(ContributionPostProcessor processor);
     
     /**
-     * Set the model associated with this artifact
-     * @param modelObject
+     * Remove a ContributionPostProcessor
+     * @param processor
      */
-    void setModel(Object modelObject);
-    
+    void removePostProcessor(ContributionPostProcessor processor);
 }

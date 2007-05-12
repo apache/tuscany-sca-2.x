@@ -16,41 +16,53 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.processor;
+package org.apache.tuscany.sca.contribution.processor;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
 
 /**
- * An extension point for artifact processors.
+ * The default implementation of an artifact processor registry.
  * 
  * @version $Rev$ $Date$
  */
-public interface ArtifactProcessorExtensionPoint<P> {
+abstract class DefaultArtifactProcessorExtensionPoint {
+    protected final Map<Object, ArtifactProcessor> processorsByArtifactType = 
+        new HashMap<Object, ArtifactProcessor>();
+    protected final Map<Class<?>, ArtifactProcessor> processorsByModelType = 
+        new HashMap<Class<?>, ArtifactProcessor>();
 
     /**
-     * Add an artifact processor.
-     * 
-     * @param artifactProcessor the artifact processor to add
+     * Constructs a new loader registry.
      */
-    void addArtifactProcessor(P artifactProcessor);
-
-    /**
-     * Remove an artifact processor.
-     * 
-     * @param artifactProcessor the artifact processor to remove
-     */
-    void removeArtifactProcessor(P artifactProcessor);
+    public DefaultArtifactProcessorExtensionPoint() {
+    }
 
     /**
      * Returns the processor associated with the given artifact type.
      * @param artifactType an artifact type
      * @return the processor associated with the given artifact type
      */
-    ArtifactProcessor getProcessor(Object artifactType);
-    
+    public ArtifactProcessor getProcessor(Object artifactType) {
+        return processorsByArtifactType.get(artifactType);
+    }
+
     /**
      * Returns the processor associated with the given model type.
      * @param modelType a model type
      * @return the processor associated with the given model type
      */
-    ArtifactProcessor getProcessor(Class<?> modelType);
-    
+    public ArtifactProcessor getProcessor(Class<?> modelType) {
+        Class<?>[] classes = modelType.getInterfaces();
+        for (Class<?> c : classes) {
+            ArtifactProcessor processor = processorsByModelType.get(c);
+            if (processor != null) {
+                return processor;
+            }
+        }
+        return processorsByModelType.get(modelType);
+    }
+
 }

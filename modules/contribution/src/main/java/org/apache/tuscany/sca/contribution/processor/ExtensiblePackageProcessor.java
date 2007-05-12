@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.processor;
+package org.apache.tuscany.sca.contribution.processor;
 
 import java.io.IOException;
 import java.io.InputStream;

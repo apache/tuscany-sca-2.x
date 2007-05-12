@@ -17,34 +17,43 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.processor;
+package org.apache.tuscany.sca.contribution.processor;
 
-import java.net.URI;
-import java.net.URL;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 /**
- * An artifact processor that can read models from an InputStream.
+ * An artifact processor that can read models from a StAX XMLStreamReader.
  * 
  * @version $Rev$ $Date$
  */
-public interface URLArtifactProcessor<M> extends ArtifactProcessor<M> {
+public interface StAXArtifactProcessor<M> extends ArtifactProcessor<M> {
 
     /**
-     * Reads a model from an input source. Examples of input 
-     * sources are: a URI, a DOM node, an XML reader.
-     * @param contributionURL
-     * @param artifactURI
-     * @param artifactURL
+     * Reads a model from an input source. Examples of input sources are: a URI, a
+     * DOM node, an XML reader.
+     * @param source
      * @return a model representation of the input.
      */
-    M read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException;
+    M read(XMLStreamReader inputSource) throws ContributionReadException, XMLStreamException;
+    
+    /**
+     * Writes a model to an ouput source. Examples of output sources are: a URI, a
+     * DOM node, an XML writer.
+     * @param source
+     * @return a model representation of the source.
+     */
+    void write(M model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException;
     
     /**
      * Returns the type of artifact handled by this artifact processor. 
      * @return the type of artifact handled by this artifact processor
      */
-    String getArtifactType();
+    QName getArtifactType();
 
 }

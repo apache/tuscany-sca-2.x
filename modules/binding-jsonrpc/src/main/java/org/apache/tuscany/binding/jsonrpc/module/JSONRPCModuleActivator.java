@@ -25,7 +25,7 @@ import org.apache.tuscany.binding.jsonrpc.DefaultJSONRPCBindingFactory;
 import org.apache.tuscany.binding.jsonrpc.JSONRPCBindingFactory;
 import org.apache.tuscany.binding.jsonrpc.impl.JSONRPCBindingProcessor;
 import org.apache.tuscany.binding.jsonrpc.provider.JSONRPCBindingProviderFactory;
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.http.ServletHost;

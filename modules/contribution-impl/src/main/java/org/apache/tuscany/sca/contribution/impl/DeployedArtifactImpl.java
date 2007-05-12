@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.impl;
 
-import org.apache.tuscany.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
 
 /**
  * Representation of a deployed artifact

@@ -17,21 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.service;
+package org.apache.tuscany.sca.contribution;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.contribution.Contribution;
-
-public interface ContributionMetadataLoader {
+/**
+ * Representation of a deployed artifact
+ *
+ * @version $Rev$ $Date$
+ */
+public interface DeployedArtifact extends Artifact {
+    
     /**
-     * Create the model object for Contribution Service metadata information
-     * @param contribution the contribution to load
-     * @param reader    the XML stream reader positioned on the applicable START_ELEMENT
+     * Get the model associated with this artifact
      * @return
-     * @throws XMLStreamException
-     * @throws ContributionMetadataReadException
      */
-    void load(Contribution contribution, XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException;
+    Object getModel();
+    
+    /**
+     * Set the model associated with this artifact
+     * @param modelObject
+     */
+    void setModel(Object modelObject);
+    
 }
