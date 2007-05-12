@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 # Implementation class for the ModuleActivator
-org.apache.tuscany.implementation.java.module.JavaRuntimeModuleActivator
+org.apache.tuscany.sca.implementation.java.module.JavaRuntimeModuleActivator
