@@ -17,76 +17,91 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.processor.impl;
+package org.apache.tuscany.sca.contribution.processor.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
-public class JarContributionProcessor implements PackageProcessor {
+public class FolderContributionProcessor implements PackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
-    public static final String PACKAGE_TYPE = ContentType.JAR;
+    public static final String PACKAGE_TYPE = ContentType.FOLDER;
 
-    public JarContributionProcessor() {
+    public FolderContributionProcessor() {
     }
 
     public String getPackageType() {
         return PACKAGE_TYPE;
     }
 
-    public URL getArtifactURL(URL sourceURL, URI artifact) throws MalformedURLException {
-        if (sourceURL.toString().startsWith("jar:")) {
-            return new URL(sourceURL, artifact.toString());
-        } else {
-            return new URL("jar:" + sourceURL.toExternalForm() + "!/" + artifact);
+    /**
+     * Recursively traverse a root directory
+     * 
+     * @param fileList
+     * @param file
+     * @throws IOException
+     */
+    private void traverse(List<URI> fileList, File file, File root) throws IOException {
+        if (file.isFile()) {
+            fileList.add(root.toURI().relativize(file.toURI()));
+        } else if (file.isDirectory()) {
+            // FIXME: Maybe we should externalize it as a property
+            // Regular expression to exclude .xxx files
+            File[] files = file.listFiles(FileHelper.getFileFilter("[^\u002e].*", true));
+            for (int i = 0; i < files.length; i++) {
+                traverse(fileList, files[i], root);
+            }
         }
     }
+    
+    public URL getArtifactURL(URL sourceURL, URI artifact) throws MalformedURLException {
+        return new URL(sourceURL, artifact.toString());
+    }
 
+    /**
+     * Get a list of files from the directory
+     * 
+     * @return
+     * @throws IOException
+     */
     public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException,
         IOException {
         if (packageSourceURL == null) {
             throw new IllegalArgumentException("Invalid null package source URL.");
         }
 
-        if (inputStream == null) {
-            throw new IllegalArgumentException("Invalid null source inputstream.");
-        }
-
         List<URI> artifacts = new ArrayList<URI>();
 
         // Assume the root is a jar file
-        JarInputStream jar = new JarInputStream(inputStream);
+        File rootFolder;
+
         try {
-            while (true) {
-                JarEntry entry = jar.getNextJarEntry();
-                if (entry == null) {
-                    // EOF
-                    break;
-                }
-                if (entry.isDirectory()) {
-                    continue;
+            rootFolder = new File(packageSourceURL.toURI());
+            if (rootFolder.isDirectory()) {
+                if (!rootFolder.exists()) {
+                    throw new InvalidFolderContributionException(rootFolder.getAbsolutePath());
                 }
 
-                // FIXME: Maybe we should externalize the filter as a property
-                if (!entry.getName().startsWith(".")) {
-                    artifacts.add(URI.create(entry.getName()));
-                }
+                this.traverse(artifacts, rootFolder, rootFolder);
             }
-        } finally {
-            jar.close();
+
+        } catch (URISyntaxException e) {
+            throw new InvalidFolderContributionURIException(packageSourceURL.toExternalForm(), e);
         }
+
         return artifacts;
     }
 }

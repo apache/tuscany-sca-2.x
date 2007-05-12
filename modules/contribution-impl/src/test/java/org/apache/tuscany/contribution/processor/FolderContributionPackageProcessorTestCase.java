@@ -24,7 +24,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.impl.FolderContributionProcessor;
+import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 
 public class FolderContributionPackageProcessorTestCase extends TestCase {
     private static final String FOLDER_CONTRIBUTION = ".";
