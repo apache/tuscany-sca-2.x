@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.xml;
+package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

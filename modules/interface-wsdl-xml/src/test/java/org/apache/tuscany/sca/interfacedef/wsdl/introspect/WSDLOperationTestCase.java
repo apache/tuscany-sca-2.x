@@ -17,10 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.introspect;
+package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
@@ -31,20 +32,23 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.introspect.InvalidWSDLException;
+import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLOperation;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**
  * Test case for WSDLOperation
  */
-public class WrapperStyleOperationTestCase extends TestCase {
-    private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
+public class WSDLOperationTestCase extends TestCase {
+    private static final QName PORTTYPE_NAME =
+        new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
-    private WSDLDocumentProcessor registry;
+    private WSDLDocumentProcessor processor;
     private ModelResolver resolver;
     private WSDLFactory wsdlFactory;
 
@@ -53,32 +57,70 @@ public class WrapperStyleOperationTestCase extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
+        processor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
         resolver = new DefaultModelResolver(getClass().getClassLoader());
         wsdlFactory = new DefaultWSDLFactory();
     }
 
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        WSDLDefinition definition = registry.read(null, new URI("stockquote.wsdl"), url);
+        WSDLDefinition definition = processor.read(null, new URI("stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
+
         WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+
+        DataType<List<DataType>> inputType = op.getInputType();
+        Assert.assertEquals(1, inputType.getLogical().size());
+        DataType<XMLType> type = inputType.getLogical().get(0);
+        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePrice"), type.getLogical().getElementName());
+
+        DataType<XMLType> outputType = op.getOutputType();
+        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePriceResponse"),
+                            outputType.getLogical().getElementName());
         Assert.assertTrue(op.isWrapperStyle());
-        Assert.assertEquals(1, op.getWrapper().getInputChildElements().size());
-        Assert.assertEquals(1, op.getWrapper().getOutputChildElements().size());
+
+        DataType<List<DataType>> unwrappedInputType = op.getWrapper().getWrapperInfo().getUnwrappedInputType();
+        List<DataType> childTypes = unwrappedInputType.getLogical();
+        Assert.assertEquals(1, childTypes.size());
+        DataType<XMLType> childType = childTypes.get(0);
+        Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical().getElementName());
+
+        childType = op.getWrapper().getWrapperInfo().getUnwrappedOutputType();
+        Assert.assertEquals(new QName(null, "price"), childType.getLogical().getElementName());
     }
 
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
-        WSDLDefinition definition = registry.read(null, new URI("unwrapped-stockquote.wsdl"), url);
+        WSDLDefinition definition = processor.read(null, new URI("unwrapped-stockquote.wsdl"), url);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
+
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
         WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertEquals(1, op.getInputType().getLogical().size());
+
         operation = portType.getOperation("getLastTradePrice2", null, null);
         op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertEquals(2, op.getInputType().getLogical().size());
+    }
+
+    public final void testInvalidWSDL() throws Exception {
+        URL url = getClass().getResource("../xml/invalid-stockquote.wsdl");
+        WSDLDefinition definition = processor.read(null, new URI("invalid-stockquote.wsdl"), url);
+        PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
+
+        Operation operation = portType.getOperation("getLastTradePrice", null, null);
+        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+
+        try {
+            op.isWrapperStyle();
+            fail("InvalidWSDLException should have been thrown");
+        } catch (InvalidWSDLException e) {
+            // Expected
+        }
+
     }
 
 }

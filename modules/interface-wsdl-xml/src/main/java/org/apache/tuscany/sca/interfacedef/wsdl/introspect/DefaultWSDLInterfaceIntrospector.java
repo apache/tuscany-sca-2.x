@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.introspect;
+package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
 
 import java.util.ArrayList;
 import java.util.List;
