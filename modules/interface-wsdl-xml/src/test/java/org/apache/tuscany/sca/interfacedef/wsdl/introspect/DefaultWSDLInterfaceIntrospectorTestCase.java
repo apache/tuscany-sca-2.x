@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.introspect;
+package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
 
 import java.net.URI;
 import java.net.URL;
@@ -38,7 +38,8 @@ import org.apache.tuscany.interfacedef.util.XMLType;
 import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
-import org.apache.tuscany.interfacedef.wsdl.xml.WSDLDocumentProcessor;
+import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**
  * Test case for InterfaceWSDLIntrospectorImpl

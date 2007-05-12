@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.xml;
+package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import java.io.InputStream;
 
@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
 
 /**
  * Test reading WSDL interfaces.

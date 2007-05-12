@@ -16,20 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
 
-package org.apache.tuscany.interfacedef.wsdl.introspect;
+import javax.wsdl.PortType;
 
+import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
- * An exception to indicate the WSDL definition is invalid
+ * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
  *
  * @version $Rev$ $Date$
  */
-public class InvalidWSDLException extends InvalidInterfaceException {
-    private static final long serialVersionUID = 3742887584293256519L;
+public interface WSDLInterfaceIntrospector {
 
-    public InvalidWSDLException(String message) {
-        super(message);
-    }
+    /**
+     * Introspect a WSDL portType and return a WSDL interface definition.
+     *
+     * @param type the portType to inspect
+     * @return a WSDLInterface corresponding to the WSDL portType
+     */
+    WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException;
+
 }

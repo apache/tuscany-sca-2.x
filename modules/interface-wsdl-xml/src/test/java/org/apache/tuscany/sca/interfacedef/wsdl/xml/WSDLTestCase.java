@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.xml;
+package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import java.net.URI;
 import java.net.URL;
@@ -30,6 +30,7 @@ import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExte
 import org.apache.tuscany.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**
  * Test reading WSDL interfaces.
