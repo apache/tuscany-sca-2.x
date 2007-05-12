@@ -68,7 +68,6 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
         // mock.expects(once()).method("visitEnd");
         EasyMock.replay(extension);
         visitors.addClassVisitor(extension);
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         ExtensibleJavaClassIntrospector introspector = new ExtensibleJavaClassIntrospector(visitors);
         introspector.introspect(Bar.class, javaImplementationFactory.createJavaImplementation());
