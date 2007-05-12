@@ -26,8 +26,8 @@ import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;

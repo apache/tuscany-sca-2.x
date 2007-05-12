@@ -33,13 +33,13 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.contribution.Contribution;
-import org.apache.tuscany.contribution.ContributionFactory;
-import org.apache.tuscany.contribution.DeployedArtifact;
-import org.apache.tuscany.contribution.processor.PackageProcessor;
-import org.apache.tuscany.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;

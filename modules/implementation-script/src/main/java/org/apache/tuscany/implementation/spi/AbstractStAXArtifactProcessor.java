@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.implementation.spi;
 
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 

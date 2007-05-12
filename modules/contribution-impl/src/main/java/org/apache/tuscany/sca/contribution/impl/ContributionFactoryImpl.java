@@ -19,11 +19,11 @@
 
 package org.apache.tuscany.sca.contribution.impl;
 
-import org.apache.tuscany.contribution.Contribution;
-import org.apache.tuscany.contribution.ContributionExport;
-import org.apache.tuscany.contribution.ContributionFactory;
-import org.apache.tuscany.contribution.ContributionImport;
-import org.apache.tuscany.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionExport;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
 
 public class ContributionFactoryImpl implements ContributionFactory {
     

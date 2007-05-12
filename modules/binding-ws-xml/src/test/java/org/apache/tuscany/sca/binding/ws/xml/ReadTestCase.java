@@ -27,8 +27,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -39,6 +37,8 @@ import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.xml.WebServiceBindingProcessor;
+import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;

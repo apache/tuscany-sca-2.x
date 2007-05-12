@@ -16,56 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.contribution;
-
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-
+package org.apache.tuscany.sca.contribution.processor;
 
 /**
- * The representation of an import for the contribution
+ * An extension point for artifact processors.
  * 
  * @version $Rev$ $Date$
  */
-public interface ContributionImport {
+public interface ArtifactProcessorExtensionPoint<P> {
 
     /**
+     * Add an artifact processor.
      * 
-     * @return
+     * @param artifactProcessor the artifact processor to add
      */
-    String getLocation();
+    void addArtifactProcessor(P artifactProcessor);
 
     /**
-     * @param location
+     * Remove an artifact processor.
+     * 
+     * @param artifactProcessor the artifact processor to remove
      */
-    void setLocation(String location);
+    void removeArtifactProcessor(P artifactProcessor);
 
     /**
-     * Get Namespace that identifies the import
-     * @return
+     * Returns the processor associated with the given artifact type.
+     * @param artifactType an artifact type
+     * @return the processor associated with the given artifact type
      */
-    String getNamespace();
-
-    /**
-     * Set Namespace that identifies the import
-     * @param namespace
-     */
-    void setNamespace(String namespace);
+    ArtifactProcessor getProcessor(Object artifactType);
     
     /**
-     * Returns the model resolver for the models representing artifacts
-     * made available by this import.
-     * 
-     * @return
+     * Returns the processor associated with the given model type.
+     * @param modelType a model type
+     * @return the processor associated with the given model type
      */
-    ModelResolver getModelResolver();
-
-    /**
-     * Sets the model resolver for the models representing artifacts
-     * made available by this import.
-     * 
-     * @param modelResolver
-     */
-    void setModelResolver(ModelResolver modelResolver);
+    ArtifactProcessor getProcessor(Class<?> modelType);
     
 }

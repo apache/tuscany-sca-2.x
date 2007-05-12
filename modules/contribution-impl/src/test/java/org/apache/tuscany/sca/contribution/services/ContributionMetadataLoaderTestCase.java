@@ -26,9 +26,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.Contribution;
-import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataLoaderImpl;

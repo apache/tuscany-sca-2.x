@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 

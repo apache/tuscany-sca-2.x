@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.binding.rmi;
 
 import java.util.Map;
 
-import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.binding.rmi.xml.RMIBindingProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;

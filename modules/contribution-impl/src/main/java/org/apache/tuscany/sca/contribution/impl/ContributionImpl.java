@@ -22,11 +22,11 @@ package org.apache.tuscany.sca.contribution.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.contribution.Contribution;
-import org.apache.tuscany.contribution.ContributionExport;
-import org.apache.tuscany.contribution.ContributionImport;
-import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionExport;
+import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**

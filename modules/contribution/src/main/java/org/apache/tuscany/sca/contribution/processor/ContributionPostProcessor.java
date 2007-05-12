@@ -17,36 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.processor;
+package org.apache.tuscany.sca.contribution.processor;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apache.tuscany.sca.contribution.Contribution;
 
 /**
- * Default implementation of ContributionProcessorRegistry
+ * A processor invoked after the contribution is loaded 
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultPackageProcessorExtensionPoint implements PackageProcessorExtensionPoint {
-
-    /**
-     * Processor registry
-     */
-    private Map<String, PackageProcessor> registry = new HashMap<String, PackageProcessor>();
-
-    public DefaultPackageProcessorExtensionPoint() {
-    }
-
-    public void addPackageProcessor(PackageProcessor processor) {
-        registry.put(processor.getPackageType(), processor);
-    }
-
-    public void removePackageProcessor(PackageProcessor processor) {
-        registry.remove(processor.getPackageType());
-    }
-
-    public PackageProcessor getPackageProcessor(String contentType) {
-        return registry.get(contentType);
-    }
+public interface ContributionPostProcessor {
+    void visit(Contribution contribution);
 }

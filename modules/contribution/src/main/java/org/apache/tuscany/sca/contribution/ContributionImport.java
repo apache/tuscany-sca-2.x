@@ -17,36 +17,55 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.impl;
+package org.apache.tuscany.sca.contribution;
 
-import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
+
 /**
- * The representation of an export for the contribution
+ * The representation of an import for the contribution
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionExportImpl implements ContributionExport {
-    private String namespace; // The namespace to be imported
-    private ModelResolver modelResolver;
-    
-    protected ContributionExportImpl() {
-    }
-    
-    public String getNamespace() {
-        return namespace;
-    }
+public interface ContributionImport {
 
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
+    /**
+     * 
+     * @return
+     */
+    String getLocation();
+
+    /**
+     * @param location
+     */
+    void setLocation(String location);
+
+    /**
+     * Get Namespace that identifies the import
+     * @return
+     */
+    String getNamespace();
+
+    /**
+     * Set Namespace that identifies the import
+     * @param namespace
+     */
+    void setNamespace(String namespace);
     
-    public ModelResolver getModelResolver() {
-        return modelResolver;
-    }
+    /**
+     * Returns the model resolver for the models representing artifacts
+     * made available by this import.
+     * 
+     * @return
+     */
+    ModelResolver getModelResolver();
+
+    /**
+     * Sets the model resolver for the models representing artifacts
+     * made available by this import.
+     * 
+     * @param modelResolver
+     */
+    void setModelResolver(ModelResolver modelResolver);
     
-    public void setModelResolver(ModelResolver modelResolver) {
-        this.modelResolver = modelResolver;
-    }
 }

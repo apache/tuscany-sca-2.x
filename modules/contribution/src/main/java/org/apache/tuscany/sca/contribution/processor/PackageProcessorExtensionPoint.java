@@ -16,33 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.processor;
-
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-
-
+package org.apache.tuscany.sca.contribution.processor;
 
 /**
- * Interface for extensions that can process contributions.
- * 
  * @version $Rev$ $Date$
  */
-public interface ArtifactProcessor <M> {
+public interface PackageProcessorExtensionPoint {
     
     /**
-     * Resolve references from this model to other models. For example references
-     * from a composite to another one, or references from a composite to a WSDL
-     * model.
-     * @param model the model to resolve
-     * @param the resolver to use to resolve referenced models
+     * Register a PackageProcessor using the package type as the key
+     * @param processor
      */
-    void resolve(M model, ModelResolver resolver) throws ContributionResolveException;
+    void addPackageProcessor(PackageProcessor processor);
     
     /**
-     * Returns the type of model handled by this artifact processor.
-     * @return the type of model handled by this artifact processor
+     * Unregister a PackageProcessor
+     * @param processor
      */
-    Class<M> getModelType(); 
+    void removePackageProcessor(PackageProcessor processor);
+    
+    /**
+     * Returns the PackageProcessor for the given package type.
+     * 
+     * @param packageType
+     * @return
+     */
+    PackageProcessor getPackageProcessor(String packageType);
     
 }
