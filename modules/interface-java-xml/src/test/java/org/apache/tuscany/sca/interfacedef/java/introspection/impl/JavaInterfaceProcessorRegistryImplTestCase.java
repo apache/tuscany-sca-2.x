@@ -46,6 +46,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     private ExtensibleJavaInterfaceIntrospector impl;
     private DefaultJavaInterfaceIntrospectorExtensionPoint visitors;
 
+    @SuppressWarnings("unchecked")
     public void testSimpleInterface() throws InvalidInterfaceException {
         JavaInterface intf = (JavaInterface)impl.introspect(Simple.class);
 
