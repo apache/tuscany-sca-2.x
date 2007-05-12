@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**

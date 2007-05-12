@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.databinding.ExceptionHandler;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 

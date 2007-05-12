@@ -25,9 +25,9 @@ import java.util.Map;
 
 import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**

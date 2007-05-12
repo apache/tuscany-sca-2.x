@@ -23,8 +23,8 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.spi.component.WorkContext;

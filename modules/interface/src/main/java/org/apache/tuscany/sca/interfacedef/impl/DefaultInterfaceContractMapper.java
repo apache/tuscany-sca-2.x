@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.interfacedef.impl;
 
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * @version $Rev$ $Date$
@@ -239,8 +239,8 @@ public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
     }
 
     /**
-     * @see org.apache.tuscany.interfacedef.InterfaceContractMapper#map(org.apache.tuscany.interfacedef.Interface,
-     *      org.apache.tuscany.interfacedef.Operation)
+     * @see org.apache.tuscany.sca.interfacedef.InterfaceContractMapper#map(org.apache.tuscany.sca.interfacedef.Interface,
+     *      org.apache.tuscany.sca.interfacedef.Operation)
      */
     public Operation map(Interface target, Operation source) {
         if (target.isRemotable()) {

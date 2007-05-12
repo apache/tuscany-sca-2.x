@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 
 /**

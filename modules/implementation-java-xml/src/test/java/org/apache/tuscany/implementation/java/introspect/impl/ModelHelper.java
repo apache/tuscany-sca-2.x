@@ -20,13 +20,13 @@
 package org.apache.tuscany.implementation.java.introspect.impl;
 
 import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;

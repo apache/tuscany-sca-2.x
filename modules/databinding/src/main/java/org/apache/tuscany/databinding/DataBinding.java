@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding;
 
 import java.lang.annotation.Annotation;
 
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
  * DataBinding represents a data representation, for example, SDO, JAXB and AXIOM

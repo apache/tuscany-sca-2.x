@@ -22,7 +22,7 @@ package org.apache.tuscany.databinding.impl;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
  * This is a special transformer to transform the output from one IDL to the

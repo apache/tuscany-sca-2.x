@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 /**
  * A service binding can optionally implement this interface

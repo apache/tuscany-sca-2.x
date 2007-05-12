@@ -22,12 +22,12 @@ package org.apache.tuscany.sca.core.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**

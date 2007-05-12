@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.java;
 
-import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 /**
  * Represents a Java interface contract.

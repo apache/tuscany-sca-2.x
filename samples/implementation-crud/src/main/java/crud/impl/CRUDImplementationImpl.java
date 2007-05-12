@@ -21,12 +21,12 @@ package crud.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;

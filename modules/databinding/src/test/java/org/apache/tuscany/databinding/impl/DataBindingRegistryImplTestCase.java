@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.easymock.EasyMock;
 import org.xml.sax.ContentHandler;

@@ -30,7 +30,7 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**

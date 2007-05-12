@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.impl;
 
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 /**
  * Represents an interface contract.

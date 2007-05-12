@@ -28,7 +28,7 @@ import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.apache.tuscany.databinding.sdo.SDOContextHelper;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 import commonj.sdo.DataObject;

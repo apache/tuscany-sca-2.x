@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.Interface;
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**

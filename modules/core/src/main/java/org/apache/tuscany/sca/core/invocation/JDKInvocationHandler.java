@@ -27,10 +27,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.scope.Scope;

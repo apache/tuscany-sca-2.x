@@ -21,7 +21,7 @@ package org.apache.tuscany.core.spring.implementation.java.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.policy.Intent;
 

@@ -26,9 +26,9 @@ import java.util.Map;
 
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.annotation.DataBinding;
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.osoa.sca.annotations.Reference;
@@ -108,7 +108,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
 
             // FIXME: We need a better way to identify simple java types
-            for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getInputType().getLogical()) {
+            for (org.apache.tuscany.sca.interfacedef.DataType<?> d : operation.getInputType().getLogical()) {
                 if (d.getDataBinding() == null) {
                     d.setDataBinding(dataBindingId);
                 }
@@ -121,7 +121,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 }
                 dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
-            for (org.apache.tuscany.interfacedef.DataType<?> d : operation.getFaultTypes()) {
+            for (org.apache.tuscany.sca.interfacedef.DataType<?> d : operation.getFaultTypes()) {
                 if (d.getDataBinding() == null) {
                     d.setDataBinding(dataBindingId);
                 }

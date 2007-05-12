@@ -25,11 +25,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;

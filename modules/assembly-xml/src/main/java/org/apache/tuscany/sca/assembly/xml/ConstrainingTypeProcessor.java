@@ -32,14 +32,14 @@ import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**

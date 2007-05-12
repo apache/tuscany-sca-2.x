@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.assembly.AbstractContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 
 public class ContractImpl extends BaseImpl implements AbstractContract {

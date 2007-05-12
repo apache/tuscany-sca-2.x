@@ -20,8 +20,8 @@ package org.apache.tuscany.databinding;
 
 import java.util.Map;
 
-import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * Context for data transformation

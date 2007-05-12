@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.interfacedef;
+package org.apache.tuscany.sca.interfacedef;
 
 import java.util.List;
 

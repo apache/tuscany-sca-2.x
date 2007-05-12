@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
 
-import org.apache.tuscany.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 
 /**
  * An exception to indicate the WSDL definition is invalid

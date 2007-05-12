@@ -24,7 +24,7 @@ import java.lang.annotation.Annotation;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.impl.BaseDataBinding;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**

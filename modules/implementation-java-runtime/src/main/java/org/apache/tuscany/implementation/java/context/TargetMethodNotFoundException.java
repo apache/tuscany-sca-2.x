@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.context;
 
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.spi.component.TargetInvokerCreationException;
 
 /**

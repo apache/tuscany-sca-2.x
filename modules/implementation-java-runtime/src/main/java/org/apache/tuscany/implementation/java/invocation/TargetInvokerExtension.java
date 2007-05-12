@@ -21,7 +21,7 @@ package org.apache.tuscany.implementation.java.invocation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.spi.component.WorkContext;

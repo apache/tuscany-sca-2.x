@@ -18,9 +18,9 @@
  */
 package crud.provider;
 
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 

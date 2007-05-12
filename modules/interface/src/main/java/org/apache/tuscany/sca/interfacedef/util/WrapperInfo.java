@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.interfacedef.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**

@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * Represents a policy intent. See the Policy Framework specification for a

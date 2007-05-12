@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
-import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
-import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -42,6 +38,10 @@ import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.core.RuntimeWireProcessor;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;

@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.DOMHelper;
-import org.apache.tuscany.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
