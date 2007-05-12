@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.MessageImpl;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
@@ -56,6 +56,7 @@ public class RMIBindingProvider implements ReferenceBindingProvider, ServiceBind
     private RuntimeComponentService service;
     private RuntimeComponentReference reference;
     private RMIBinding binding;
+    private MessageFactory messageFactory;
     private RMIHost rmiHost;
 
     // need this member to morph the service interface to extend from Remote if
@@ -70,11 +71,13 @@ public class RMIBindingProvider implements ReferenceBindingProvider, ServiceBind
     public RMIBindingProvider(RuntimeComponent component,
                               RuntimeComponentService service,
                               RMIBinding binding,
+                              MessageFactory messageFactory,
                               RMIHost rmiHost) {
         this.component = component;
         this.service = service;
         this.binding = binding;
         this.rmiHost = rmiHost;
+        this.messageFactory = messageFactory;
     }
 
     public RMIBindingProvider(RuntimeComponent component,
@@ -198,7 +201,8 @@ public class RMIBindingProvider implements ReferenceBindingProvider, ServiceBind
     }
 
     public Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
-        Message requestMsg = new MessageImpl();
+        
+        Message requestMsg = messageFactory.createMessage();
         requestMsg.setWorkContext(WorkContextTunnel.getThreadWorkContext());
         requestMsg.setBody(args);
 

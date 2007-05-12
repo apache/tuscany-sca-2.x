@@ -21,7 +21,6 @@ package org.apache.tuscany.contribution.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
 
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
@@ -99,16 +98,4 @@ public interface ContributionService {
      */
     void remove(String contribution) throws ContributionException;
 
-    /**
-    * Resolve an artifact by QName within the contribution
-    * 
-    * @param <T> The java type of the artifact such as javax.wsdl.Definition
-    * @param contribution The URI of the contribution
-    * @param definitionType The java type of the artifact
-    * @param namespace The namespace of the artifact
-    * @param name The name of the artifact
-    * @return The resolved artifact
-    */
-    <M> M resolve(Class modelClass, Class<M> elementClass, Object modelKey, Object elementKey, Map<String, Object> attributes);
- 
 }

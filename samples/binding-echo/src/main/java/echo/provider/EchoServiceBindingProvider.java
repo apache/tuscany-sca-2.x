@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 import echo.EchoBinding;
@@ -36,15 +37,18 @@ import echo.server.EchoService;
  * @version $Rev$ $Date$
  */
 public class EchoServiceBindingProvider implements ServiceBindingProvider {
-
+    
     private RuntimeComponent component;
-    private RuntimeComponentService service;
+    private RuntimeComponentService service;  
     private EchoBinding binding;
-
-    public EchoServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
+    private MessageFactory messageFactory;
+    
+    public EchoServiceBindingProvider(RuntimeComponent component,
+                                      RuntimeComponentService service, EchoBinding binding, MessageFactory messageFactory) {
         this.component = component;
         this.service = service;
         this.binding = binding;
+        this.messageFactory = messageFactory;
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -53,17 +57,17 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider {
 
     public void start() {
 
-        RuntimeComponentService componentService = (RuntimeComponentService)service;
+        RuntimeComponentService componentService = (RuntimeComponentService) service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
         InvocationChain chain = wire.getInvocationChains().get(0);
-
+        
         // Register with the hosting server
         String uri = component.getURI() + "/" + binding.getName();
-        EchoServer.getServer().register(uri, new EchoService(chain.getHeadInvoker()));
+        EchoServer.getServer().register(uri, new EchoService(chain.getHeadInvoker(), messageFactory));
     }
 
     public void stop() {
-
+        
         // Unregister from the hosting server
         String uri = component.getURI() + "/" + binding.getName();
         EchoServer.getServer().unregister(uri);

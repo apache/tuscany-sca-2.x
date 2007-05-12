@@ -67,6 +67,7 @@ import org.apache.tuscany.sca.core.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.DefaultCompositeActivator;
@@ -77,6 +78,7 @@ import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.sca.core.util.IOHelper;
 import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.ProxyFactory;
 import org.apache.tuscany.sca.provider.DefaultProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -105,7 +107,8 @@ public class ReallySmallRuntimeBuilder {
                                                   InterfaceContractMapper mapper) {
 
         // Create a proxy factory
-        ProxyFactory proxyFactory = new JDKProxyService(workContext, mapper);
+        MessageFactory messageFactory = new MessageFactoryImpl();
+        ProxyFactory proxyFactory = new JDKProxyService(messageFactory, workContext, mapper);
 
         // FIXME remove this
         registry.addExtensionPoint(ProxyFactory.class, proxyFactory);

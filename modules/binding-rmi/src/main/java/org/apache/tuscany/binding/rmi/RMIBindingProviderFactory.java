@@ -21,6 +21,7 @@ import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -35,9 +36,11 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 public class RMIBindingProviderFactory implements BindingProviderFactory<RMIBinding> {
 
     private RMIHost rmiHost;
+    private MessageFactory messageFactory;
     
-    public RMIBindingProviderFactory(RMIHost rmiHost) {
+    public RMIBindingProviderFactory(MessageFactory messageFactory, RMIHost rmiHost) {
         this.rmiHost = rmiHost;
+        this.messageFactory = messageFactory;
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, RMIBinding binding) {
@@ -45,7 +48,7 @@ public class RMIBindingProviderFactory implements BindingProviderFactory<RMIBind
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, RMIBinding binding) {
-        return new RMIBindingProvider(component, service, binding, rmiHost);
+        return new RMIBindingProvider(component, service, binding, messageFactory, rmiHost);
     }
     
     public Class<RMIBinding> getModelType() {

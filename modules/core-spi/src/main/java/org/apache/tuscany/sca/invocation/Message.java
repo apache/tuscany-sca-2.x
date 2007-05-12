@@ -114,14 +114,13 @@ public interface Message {
      *
      * @return the conversational sequence the message is associated with
      */
-    short getConversationSequence();
+    ConversationSequence getConversationSequence();
 
     /**
-     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on {@link
-     * TargetInvoker}
+     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END
      *
      * @param sequence the conversational sequence
      */
-    void setConversationSequence(short sequence);
+    void setConversationSequence(ConversationSequence sequence);
 
 }

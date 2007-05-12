@@ -36,6 +36,7 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.assembly.xml.Constants;
+import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.scope.Scope;
@@ -84,7 +85,7 @@ public class Axis2BindingInvoker implements Invoker {
         return msg;
     }
 
-    protected Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext) throws InvocationTargetException {
         try {
 
             Object[] args = (Object[]) payload;

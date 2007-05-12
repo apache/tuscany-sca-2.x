@@ -16,11 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.invocation;
+package org.apache.tuscany.sca.core.invocation;
 
 import java.util.LinkedList;
 
 import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.invocation.ConversationSequence;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
@@ -34,16 +36,10 @@ public class MessageImpl implements Message {
     private Object messageID;
     private Object correlationID;
     private boolean isFault;
-    private short conversationSequence;
+    private ConversationSequence conversationSequence;
     private WorkContext workContext;
 
-    public MessageImpl(WorkContext workContext, short conversationSequence, Object body) {
-        this.workContext = workContext;
-        this.conversationSequence = conversationSequence;
-        this.body = body;
-    }
-
-    public MessageImpl() {
+    protected MessageImpl() {
     }
 
     @SuppressWarnings("unchecked")
@@ -64,11 +60,11 @@ public class MessageImpl implements Message {
         this.workContext = workContext;
     }
     
-    public short getConversationSequence() {
+    public ConversationSequence getConversationSequence() {
         return conversationSequence;
     }
 
-    public void setConversationSequence(short conversationSequence) {
+    public void setConversationSequence(ConversationSequence conversationSequence) {
         this.conversationSequence = conversationSequence;
     }
 

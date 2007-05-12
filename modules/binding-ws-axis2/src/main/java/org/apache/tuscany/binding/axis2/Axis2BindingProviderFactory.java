@@ -23,6 +23,7 @@ import org.apache.tuscany.http.ServletHost;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -35,18 +36,20 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 public class Axis2BindingProviderFactory implements BindingProviderFactory<WebServiceBinding> {
 
+    private MessageFactory messageFactory;
     private ServletHost servletHost;
 
-    public Axis2BindingProviderFactory(ServletHost servletHost) {
+    public Axis2BindingProviderFactory(ServletHost servletHost, MessageFactory messageFactory) {
         this.servletHost = servletHost;
+        this.messageFactory = messageFactory;
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, WebServiceBinding binding) {
-        return new Axis2ReferenceBindingProvider(component, reference, binding);
+        return new Axis2ReferenceBindingProvider(component, reference, binding, messageFactory);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, WebServiceBinding binding) {
-        return new Axis2ServiceBindingProvider(component, service, binding, servletHost);
+        return new Axis2ServiceBindingProvider(component, service, binding, servletHost, messageFactory);
     }
     
     public Class<WebServiceBinding> getModelType() {

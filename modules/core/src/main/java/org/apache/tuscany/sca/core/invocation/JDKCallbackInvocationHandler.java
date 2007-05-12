@@ -34,6 +34,7 @@ import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.AbstractInvocationHandler;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -52,12 +53,14 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
     /**
      * Constructor used for deserialization only
      */
-    public JDKCallbackInvocationHandler() {
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory) {
+        super(messageFactory, false);
         sourceWireNames = new ArrayList<String>();
         wires = new HashMap<URI, RuntimeWire>();
     }
 
-    public JDKCallbackInvocationHandler(List<RuntimeWire> wireList, WorkContext context) {
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory, List<RuntimeWire> wireList, WorkContext context) {
+        super(messageFactory, false);
         this.context = context;
         this.wires = new HashMap<URI, RuntimeWire>();
         for (RuntimeWire wire : wireList) {

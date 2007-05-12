@@ -48,7 +48,7 @@ public class Axis2ReferenceCallbackTargetInvoker {
         this.invocationHandler = invocationHandler;
     }
 
-    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext) throws InvocationTargetException {
         Object[] args;
         if (payload != null && !payload.getClass().isArray()) {
             args = new Object[]{payload};
@@ -70,7 +70,7 @@ public class Axis2ReferenceCallbackTargetInvoker {
 
     public Message invoke(Message msg) {
         try {
-            Object resp = invokeTarget(msg.getBody(), ConversationSequence.NONE, null);
+            Object resp = invokeTarget(msg.getBody(), null, null);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());

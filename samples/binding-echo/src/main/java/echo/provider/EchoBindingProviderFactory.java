@@ -22,6 +22,7 @@ package echo.provider;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -35,13 +36,19 @@ import echo.EchoBinding;
  * @version $Rev$ $Date$
  */
 public class EchoBindingProviderFactory implements BindingProviderFactory<EchoBinding> {
+    
+    private MessageFactory messageFactory;
+    
+    public EchoBindingProviderFactory(MessageFactory messageFactory) {
+        this.messageFactory = messageFactory;
+    }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, EchoBinding binding) {
         return new EchoReferenceBindingProvider(component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
-        return new EchoServiceBindingProvider(component, service, binding);
+        return new EchoServiceBindingProvider(component, service, binding, messageFactory);
     }
     
     public Class<EchoBinding> getModelType() {

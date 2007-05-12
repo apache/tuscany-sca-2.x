@@ -34,12 +34,11 @@ import org.apache.tuscany.sca.spi.component.WorkContext;
 public abstract class AbstractInvocationHandler {
     protected boolean conversational;
     private boolean conversationStarted;
+    private MessageFactory messageFactory;
 
-    protected AbstractInvocationHandler(boolean conversational) {
+    protected AbstractInvocationHandler(MessageFactory messageFactory, boolean conversational) {
         this.conversational = conversational;
-    }
-
-    public AbstractInvocationHandler() {
+        this.messageFactory = messageFactory;
     }
 
     protected Object invoke(InvocationChain chain,
@@ -48,7 +47,7 @@ public abstract class AbstractInvocationHandler {
                             LinkedList<URI> callbackUris, WorkContext workContext)
         throws Throwable {
         Invoker headInvoker = chain.getHeadInvoker();
-        Message msg = new MessageImpl();
+        Message msg = messageFactory.createMessage();
         msg.setWorkContext(workContext);
         msg.setCorrelationID(workContext.getCorrelationId());
         Operation operation = chain.getTargetOperation();
@@ -56,14 +55,14 @@ public abstract class AbstractInvocationHandler {
         if (contract != null && contract.isConversational()) {
             Operation.ConversationSequence sequence = chain.getTargetOperation().getConversationSequence();
             if (sequence == Operation.ConversationSequence.CONVERSATION_END) {
-                msg.setConversationSequence(ConversationSequence.END);
+                msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;
             } else if (sequence == Operation.ConversationSequence.CONVERSATION_CONTINUE) {
                 if (conversationStarted) {
-                    msg.setConversationSequence(ConversationSequence.CONTINUE);
+                    msg.setConversationSequence(ConversationSequence.CONVERSATION_CONTINUE);
                 } else {
                     conversationStarted = true;
-                    msg.setConversationSequence(ConversationSequence.START);
+                    msg.setConversationSequence(ConversationSequence.CONVERSATION_START);
                 }
             }
         }

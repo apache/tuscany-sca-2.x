@@ -25,9 +25,9 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -79,9 +79,9 @@ public class ContributionServiceImpl implements ContributionService {
     private ContributionMetadataLoaderImpl contributionLoader;
 
     /**
-     * Contribution registry This is a registry of processed Contributios index by URI
+     * Contribution registry This is a registry of processed Contributions indexed by URI
      */
-    private Map<String, Contribution> contributionRegistry = new HashMap<String, Contribution>();
+    private Map<String, Contribution> contributionRegistry = new ConcurrentHashMap<String, Contribution>();
 
     /**
      * Contribution model facotry
@@ -174,7 +174,6 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public void remove(String contribution) throws ContributionException {
-        // remove from repository
         this.contributionRegistry.remove(contribution);
     }
 
@@ -186,14 +185,6 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.getArtifacts().add(artifact);
 
         contribution.getDeployables().add(composite);
-    }
-
-    public <M> M resolve(Class modelClass,
-                         Class<M> elementClass,
-                         Object modelKey,
-                         Object elementKey,
-                         Map<String, Object> attributes) {
-        return null;
     }
 
     /**

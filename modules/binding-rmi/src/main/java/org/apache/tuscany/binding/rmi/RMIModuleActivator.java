@@ -30,6 +30,8 @@ import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 public class RMIModuleActivator implements ModuleActivator {
@@ -46,7 +48,8 @@ public class RMIModuleActivator implements ModuleActivator {
         processors.addArtifactProcessor(new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        providerFactories.addProviderFactory(new RMIBindingProviderFactory(rmiHost));
+        MessageFactory messageFactory = new MessageFactoryImpl();
+        providerFactories.addProviderFactory(new RMIBindingProviderFactory(messageFactory, rmiHost));
     }
 
     public void stop(ExtensionPointRegistry registry) {

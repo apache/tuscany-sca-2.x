@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.MessageImpl;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
@@ -31,25 +31,26 @@ import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
  */
 public class EchoService {
     private Invoker invoker;
+    private MessageFactory messageFactory;
 
-    public EchoService(Invoker invoker) {
+    public EchoService(Invoker invoker, MessageFactory messageFactory) {
         super();
         this.invoker = invoker;
+        this.messageFactory = messageFactory;
     }
 
     public String sendReceive(String input) throws InvocationTargetException {
 
+        Message request = messageFactory.createMessage();
+        request.setBody(new Object[] {input});
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-
-        Message msg = new MessageImpl();
-        msg.setBody(new Object[] {input});
-        msg.setWorkContext(workContext);
-        Message resp;
+        request.setWorkContext(workContext);
+        Message response;
 
         // dispatch and get the response
-        resp = invoker.invoke(msg);
-        Object body = resp.getBody();
-        if (resp.isFault()) {
+        response = invoker.invoke(request);
+        Object body = response.getBody();
+        if (response.isFault()) {
             throw new InvocationTargetException((Throwable)body);
         }
         return (String)body;

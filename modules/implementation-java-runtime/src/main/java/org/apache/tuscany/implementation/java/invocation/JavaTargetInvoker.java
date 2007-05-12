@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
@@ -65,30 +66,33 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     /**
      * Resolves the target service instance or returns a cached one
      */
-    protected InstanceWrapper getInstance(short sequence, Object contextId) throws TargetException {
-        switch (sequence) {
-            case NONE:
-                if (cacheable) {
-                    if (target == null) {
-                        target = scopeContainer.getWrapper(contextId);
-                    }
-                    return target;
-                } else {
-                    return scopeContainer.getWrapper(contextId);
+    protected InstanceWrapper getInstance(ConversationSequence sequence, Object contextId) throws TargetException {
+        if (sequence == null) {
+            if (cacheable) {
+                if (target == null) {
+                    target = scopeContainer.getWrapper(contextId);
                 }
-            case START:
-                assert !cacheable;
+                return target;
+            } else {
                 return scopeContainer.getWrapper(contextId);
-            case CONTINUE:
-            case END:
-                assert !cacheable;
-                return scopeContainer.getAssociatedWrapper(contextId);
-            default:
-                throw new InvalidConversationSequenceException("Unknown sequence type: " + String.valueOf(sequence));
+            }
+        }
+        else {
+            switch (sequence) {
+                case CONVERSATION_START:
+                    assert !cacheable;
+                    return scopeContainer.getWrapper(contextId);
+                case CONVERSATION_CONTINUE:
+                case CONVERSATION_END:
+                    assert !cacheable;
+                    return scopeContainer.getAssociatedWrapper(contextId);
+                default:
+                    throw new InvalidConversationSequenceException("Unknown sequence type: " + String.valueOf(sequence));
+            }
         }
     }
 
-    public Object invokeTarget(final Object payload, final short sequence, WorkContext workContext)
+    public Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext)
         throws InvocationTargetException {
         Object contextId = workContext.getIdentifier(scopeContainer.getScope());
         try {
@@ -101,7 +105,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
                 ret = operation.invoke(instance, (Object[])payload);
             }
             scopeContainer.returnWrapper(wrapper, contextId);
-            if (sequence == END) {
+            if (sequence == ConversationSequence.CONVERSATION_END) {
                 // if end conversation, remove resource
                 scopeContainer.remove();
             }

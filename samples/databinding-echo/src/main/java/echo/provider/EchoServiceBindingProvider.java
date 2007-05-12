@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 import echo.EchoBinding;
@@ -40,11 +41,14 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider {
     private RuntimeComponent component;
     private RuntimeComponentService service;  
     private EchoBinding binding;
+    private MessageFactory messageFactory;
     
-    public EchoServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, EchoBinding binding) {
+    public EchoServiceBindingProvider(RuntimeComponent component,
+                                      RuntimeComponentService service, EchoBinding binding, MessageFactory messageFactory) {
         this.component = component;
         this.service = service;
         this.binding = binding;
+        this.messageFactory = messageFactory;
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -59,7 +63,7 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider {
         
         // Register with the hosting server
         String uri = component.getURI() + "/" + binding.getName();
-        EchoServer.getServer().register(uri, new EchoService(chain.getHeadInvoker()));
+        EchoServer.getServer().register(uri, new EchoService(chain.getHeadInvoker(), messageFactory));
     }
 
     public void stop() {

@@ -36,6 +36,8 @@ import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 public class Axis2ModuleActivator implements ModuleActivator {
@@ -46,6 +48,7 @@ public class Axis2ModuleActivator implements ModuleActivator {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        MessageFactory messageFactory = new MessageFactoryImpl();
         
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
@@ -55,7 +58,7 @@ public class Axis2ModuleActivator implements ModuleActivator {
 
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
-        Axis2BindingProviderFactory providerFactory = new Axis2BindingProviderFactory(servletHost);
+        Axis2BindingProviderFactory providerFactory = new Axis2BindingProviderFactory(servletHost, messageFactory);
         providerFactories.addProviderFactory(providerFactory);
     }
 

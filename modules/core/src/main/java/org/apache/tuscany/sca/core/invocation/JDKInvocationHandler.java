@@ -33,6 +33,7 @@ import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.AbstractInvocationHandler;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
@@ -53,8 +54,8 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
     // if the associated wire is conversational
     private transient boolean conversational;
 
-    public JDKInvocationHandler(Class<?> proxyInterface, RuntimeWire wire, WorkContext workContext) {
-        super();
+    public JDKInvocationHandler(MessageFactory messageFactory, Class<?> proxyInterface, RuntimeWire wire, WorkContext workContext) {
+        super(messageFactory, false);
         this.proxyInterface = proxyInterface;
         this.wire = wire;
         this.workContext = workContext;
