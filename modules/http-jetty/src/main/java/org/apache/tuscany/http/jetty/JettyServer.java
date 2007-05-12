@@ -26,8 +26,8 @@ import java.util.List;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.apache.tuscany.http.ServletHost;
-import org.apache.tuscany.http.ServletMappingException;
+import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletMappingException;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;

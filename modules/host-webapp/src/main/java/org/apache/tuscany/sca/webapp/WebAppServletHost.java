@@ -25,8 +25,8 @@ import java.util.Map;
 
 import javax.servlet.Servlet;
 
-import org.apache.tuscany.http.ServletHost;
-import org.apache.tuscany.http.ServletMappingException;
+import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletMappingException;
 
 /**
  * ServletHost impl singleton thats shared between the SCADomain
