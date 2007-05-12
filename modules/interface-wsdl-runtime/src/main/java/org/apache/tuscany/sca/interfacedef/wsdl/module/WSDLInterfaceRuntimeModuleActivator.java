@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.module;
+package org.apache.tuscany.sca.interfacedef.wsdl.module;
 
 import java.util.Map;
 
