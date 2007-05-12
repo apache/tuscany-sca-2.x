@@ -42,7 +42,6 @@ import org.apache.tuscany.implementation.java.injection.InvalidAccessorException
 import org.apache.tuscany.implementation.java.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.implementation.java.injection.ObjectCallbackException;
-import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -58,6 +57,7 @@ import org.apache.tuscany.sca.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.provider.ScopedImplementationProvider;

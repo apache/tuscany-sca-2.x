@@ -43,8 +43,8 @@ import org.apache.tuscany.implementation.java.injection.InvalidAccessorException
 import org.apache.tuscany.implementation.java.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.implementation.java.injection.MethodEventInvoker;
 import org.apache.tuscany.implementation.java.injection.MethodInjector;
-import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.spi.ObjectFactory;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 

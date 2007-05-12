@@ -27,7 +27,7 @@ import java.util.Set;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 /**
  * An extensible Java class introspector implementation.
