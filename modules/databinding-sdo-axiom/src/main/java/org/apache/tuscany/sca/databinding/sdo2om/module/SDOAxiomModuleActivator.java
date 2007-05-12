@@ -17,15 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.sdo2om.module;
+package org.apache.tuscany.sca.databinding.sdo2om.module;
 
 import java.util.Map;
 
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.databinding.sdo2om.DataObject2OMElement;
-import org.apache.tuscany.databinding.sdo2om.XMLDocument2OMElement;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.databinding.sdo2om.DataObject2OMElement;
+import org.apache.tuscany.sca.databinding.sdo2om.XMLDocument2OMElement;
 
 /**
  * Module activator for SDO/AXIOM databinding

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.sdo2om;
+package org.apache.tuscany.sca.databinding.sdo2om;
 
 import static org.apache.tuscany.databinding.sdo.SDODataBinding.ROOT_ELEMENT;
 
