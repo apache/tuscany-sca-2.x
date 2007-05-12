@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.ws.xml;
+package org.apache.tuscany.sca.binding.ws.xml;
 
 import java.io.InputStream;
 
@@ -46,6 +46,7 @@ import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.xml.WebServiceBindingProcessor;
 
 /**
  * Test reading WSDL interfaces.

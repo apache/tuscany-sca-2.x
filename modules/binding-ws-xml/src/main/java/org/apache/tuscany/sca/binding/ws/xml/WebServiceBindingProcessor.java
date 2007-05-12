@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.ws.xml;
+package org.apache.tuscany.sca.binding.ws.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
