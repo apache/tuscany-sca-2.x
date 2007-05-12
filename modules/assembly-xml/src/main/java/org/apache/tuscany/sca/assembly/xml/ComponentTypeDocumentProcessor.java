@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.xml;
+package org.apache.tuscany.sca.assembly.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

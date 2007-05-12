@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.xml;
+package org.apache.tuscany.sca.assembly.xml;
 
 import java.io.InputStream;
 
@@ -31,6 +31,7 @@ import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
@@ -38,30 +39,32 @@ import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 
 /**
- * Test resolving SCA XML assemblies.
+ * Test the wiring of SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class ResolveTestCase extends TestCase {
+public class WireTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    private ExtensibleStAXArtifactProcessor staxProcessor;
+    private ExtensibleStAXArtifactProcessor staxProcessor; 
     private DefaultModelResolver resolver; 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
 
     public void setUp() throws Exception {
-        factory = new DefaultAssemblyFactory();
-        policyFactory = new DefaultPolicyFactory();
-        mapper = new DefaultInterfaceContractMapper();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         resolver = new DefaultModelResolver(getClass().getClassLoader());
+        factory = new DefaultAssemblyFactory();
+        policyFactory = new DefaultPolicyFactory();
+        mapper = new DefaultInterfaceContractMapper();
     }
 
     public void tearDown() throws Exception {
@@ -90,6 +93,8 @@ public class ResolveTestCase extends TestCase {
         assertNotNull(composite);
         
         compositeReader.resolve(composite, resolver);
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
@@ -111,6 +116,8 @@ public class ResolveTestCase extends TestCase {
         is.close();
         
         compositeReader.resolve(composite, resolver);
+        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        compositeUtil.build(composite);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }

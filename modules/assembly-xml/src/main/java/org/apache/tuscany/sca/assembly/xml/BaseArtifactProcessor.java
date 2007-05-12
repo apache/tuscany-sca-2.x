@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.xml;
+package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;

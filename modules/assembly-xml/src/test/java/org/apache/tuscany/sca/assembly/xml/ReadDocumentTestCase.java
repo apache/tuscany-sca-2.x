@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.xml;
+package org.apache.tuscany.sca.assembly.xml;
 
 import java.net.URL;
 
@@ -40,6 +40,12 @@ import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
+import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 
 /**
  * Test reading SCA XML assembly documents.
