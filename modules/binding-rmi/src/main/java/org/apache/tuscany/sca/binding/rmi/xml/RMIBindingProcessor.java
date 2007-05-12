@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.rmi.xml;
+package org.apache.tuscany.sca.binding.rmi.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -29,15 +29,15 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.assembly.xml.Constants;
-import org.apache.tuscany.binding.rmi.RMIBinding;
-import org.apache.tuscany.binding.rmi.RMIBindingConstants;
-import org.apache.tuscany.binding.rmi.RMIBindingFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.contribution.service.ContributionResolveException;
 import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
+import org.apache.tuscany.sca.binding.rmi.RMIBindingConstants;
+import org.apache.tuscany.sca.binding.rmi.RMIBindingFactory;
 
 public class RMIBindingProcessor extends BaseArtifactProcessor implements
     StAXArtifactProcessor<RMIBinding>, RMIBindingConstants {

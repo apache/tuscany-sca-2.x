@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.tuscany.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi;
 
 import org.apache.tuscany.rmi.RMIHost;
 import org.apache.tuscany.sca.core.RuntimeComponent;

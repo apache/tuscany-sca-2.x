@@ -14,25 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi;
+
 
 /**
  */
-public class NoRemoteServiceException extends RMIRuntimeException {
-   private static final long serialVersionUID = 4940083022809126473L;
-
-    public NoRemoteServiceException() { 
+public abstract class RMIRuntimeException extends RuntimeException {
+    protected RMIRuntimeException() {
     }
 
-    public NoRemoteServiceException(String message) {
+    protected RMIRuntimeException(String message) {
         super(message);
     }
 
-    public NoRemoteServiceException(String message, Throwable cause) {
+    protected RMIRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public NoRemoteServiceException(Throwable cause) {
+    protected RMIRuntimeException(Throwable cause) {
         super(cause);
     }
 }
