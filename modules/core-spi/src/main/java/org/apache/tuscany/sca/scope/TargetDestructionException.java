@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.scope;
  * @version $Rev$ $Date$
  */
 public class TargetDestructionException extends TargetResolutionException {
+    private static final long serialVersionUID = -6126684147851674709L;
 
     public TargetDestructionException() {
         super();

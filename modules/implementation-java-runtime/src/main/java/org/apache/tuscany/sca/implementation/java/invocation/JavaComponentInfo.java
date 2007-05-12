@@ -62,9 +62,8 @@ import org.apache.tuscany.sca.implementation.java.injection.ObjectCallbackExcept
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.sca.scope.ComponentException;
-import org.apache.tuscany.sca.scope.CoreRuntimeException;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
@@ -145,7 +144,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
         }
     }
 
-    public void start() throws CoreRuntimeException {
+    public void start() {
         if (!configuration.getDefinition().getCallbackMembers().isEmpty()) {
             Map<String, List<RuntimeWire>> callbackWires = new HashMap<String, List<RuntimeWire>>();
             for (ComponentService service : component.getServices()) {
@@ -382,7 +381,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
     public void stop() {
     }
 
-    public void removeInstance() throws ComponentException {
+    public void removeInstance() throws PersistenceException {
         component.getScopeContainer().remove();
     }
 

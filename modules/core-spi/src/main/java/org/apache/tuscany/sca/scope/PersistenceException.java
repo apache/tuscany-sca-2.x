@@ -23,7 +23,7 @@ package org.apache.tuscany.sca.scope;
  *
  * @version $Rev$ $Date$
  */
-public class PersistenceException extends ComponentException {
+public class PersistenceException extends Exception {
     public PersistenceException() {
     }
 

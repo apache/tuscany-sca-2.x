@@ -28,12 +28,11 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.scope.ComponentException;
+import org.apache.tuscany.sca.scope.CoreRuntimeException;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.InvalidConversationSequenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
-import org.apache.tuscany.sca.scope.TargetException;
+import org.apache.tuscany.sca.scope.TargetResolutionException;
 
 /**
  * Responsible for synchronously dispatching an invocation to a Java component
@@ -72,7 +71,8 @@ public class JavaTargetInvoker implements TargetInvoker {
     /**
      * Resolves the target service instance or returns a cached one
      */
-    protected InstanceWrapper getInstance(ConversationSequence sequence, Object contextId) throws TargetException {
+    protected InstanceWrapper getInstance(ConversationSequence sequence, Object contextId)
+        throws TargetResolutionException, InvalidConversationSequenceException {
         if (sequence == null) {
             if (cacheable) {
                 if (target == null) {
@@ -82,8 +82,7 @@ public class JavaTargetInvoker implements TargetInvoker {
             } else {
                 return scopeContainer.getWrapper(contextId);
             }
-        }
-        else {
+        } else {
             switch (sequence) {
                 case CONVERSATION_START:
                     assert !cacheable;
@@ -100,7 +99,7 @@ public class JavaTargetInvoker implements TargetInvoker {
 
     public Object invokeTarget(final Object payload, final ConversationSequence sequence)
         throws InvocationTargetException {
-        
+
         // FIXME: How to deal with other scopes
         Object contextId = ThreadMessageContext.getMessageContext().getConversationID();
         try {
@@ -118,9 +117,7 @@ public class JavaTargetInvoker implements TargetInvoker {
                 scopeContainer.remove();
             }
             return ret;
-        } catch (IllegalAccessException e) {
-            throw new InvocationTargetException(e);
-        } catch (ComponentException e) {
+        } catch (Exception e) {
             throw new InvocationTargetException(e);
         }
     }
@@ -156,5 +153,5 @@ public class JavaTargetInvoker implements TargetInvoker {
         }
         return null;
     }
-    
+
 }
