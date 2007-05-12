@@ -24,8 +24,6 @@ import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
 import org.apache.tuscany.sca.core.store.MemoryStore;
 import org.apache.tuscany.sca.scope.ScopeContainer;
-import org.apache.tuscany.sca.spi.component.WorkContext;
-import org.apache.tuscany.sca.spi.component.WorkContextImpl;
 import org.apache.tuscany.sca.store.StoreMonitor;
 import org.easymock.EasyMock;
 
@@ -37,14 +35,12 @@ import org.easymock.EasyMock;
 public abstract class AbstractConversationTestCase extends TestCase {
     protected ScopeContainer container;
     protected MemoryStore store;
-    protected WorkContext workContext;
     protected RuntimeComponent component;
 
     protected void createRuntime() {
-        workContext = new WorkContextImpl();
         store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
         component = EasyMock.createMock(RuntimeComponent.class);
-        container = new ConversationalScopeContainer(store, workContext, component);
+        container = new ConversationalScopeContainer(store, component);
     }
 
     protected void initializeRuntime() {

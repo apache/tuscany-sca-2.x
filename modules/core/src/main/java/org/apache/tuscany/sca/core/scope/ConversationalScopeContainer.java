@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.core.scope;
 
 import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.event.RuntimeEventListener;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
@@ -27,7 +28,6 @@ import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.spi.component.PersistenceException;
 import org.apache.tuscany.sca.spi.component.TargetDestructionException;
 import org.apache.tuscany.sca.spi.component.TargetResolutionException;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.store.Store;
 import org.apache.tuscany.sca.store.StoreExpirationEvent;
 
@@ -38,12 +38,10 @@ import org.apache.tuscany.sca.store.StoreExpirationEvent;
  * @version $Rev: 452655 $ $Date: 2006-10-03 18:09:02 -0400 (Tue, 03 Oct 2006) $
  */
 public class ConversationalScopeContainer extends AbstractScopeContainer implements ScopeContainer {
-    private final WorkContext workContext;
     private final Store nonDurableStore;
 
-    public ConversationalScopeContainer(Store store, WorkContext workContext, RuntimeComponent component) {
+    public ConversationalScopeContainer(Store store, RuntimeComponent component) {
         super(Scope.CONVERSATION, component);
-        this.workContext = workContext;
         this.nonDurableStore = store;
         if (store != null) {
             store.addListener(new ExpirationListener());
@@ -143,7 +141,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
      * @return the conversation id
      */
     private String getConversationId() {
-        String conversationId = (String)workContext.getIdentifier(Scope.CONVERSATION);
+        String conversationId = ThreadMessageContext.getMessageContext().getConversationID();
         assert conversationId != null;
         return conversationId;
     }

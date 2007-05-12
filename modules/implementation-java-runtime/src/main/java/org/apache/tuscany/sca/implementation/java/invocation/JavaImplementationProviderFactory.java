@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$
@@ -35,24 +34,22 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
     private JavaPropertyValueObjectFactory propertyValueObjectFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
     private ProxyFactory proxyService;
-    private WorkContext workContext;
 
-    public JavaImplementationProviderFactory(
-                                      ProxyFactory proxyService,
-                                      WorkContext workContext,
-                                      DataBindingExtensionPoint dataBindingRegistry,
-                                      JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+    public JavaImplementationProviderFactory(ProxyFactory proxyService,
+                                             DataBindingExtensionPoint dataBindingRegistry,
+                                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
         this.proxyService = proxyService;
-        this.workContext = workContext;
         this.dataBindingRegistry = dataBindingRegistry;
         this.propertyValueObjectFactory = propertyValueObjectFactory;
     }
 
-    public ImplementationProvider createImplementationProvider(RuntimeComponent component, JavaImplementation implementation) {
-        return new JavaImplementationProvider(component, implementation, proxyService, workContext, dataBindingRegistry, propertyValueObjectFactory);
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component,
+                                                               JavaImplementation implementation) {
+        return new JavaImplementationProvider(component, implementation, proxyService, dataBindingRegistry,
+                                              propertyValueObjectFactory);
     }
-    
+
     public Class<JavaImplementation> getModelType() {
         return JavaImplementation.class;
     }

@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.CallableReference;
 
 /**
@@ -34,12 +34,14 @@ import org.osoa.sca.CallableReference;
  *          2007) $$
  */
 public class JDKProxyService implements ProxyFactory {
-    protected WorkContext context;
     protected InterfaceContractMapper contractMapper;
     private MessageFactory messageFactory;
 
-    public JDKProxyService(MessageFactory messageFactory, WorkContext context, InterfaceContractMapper mapper) {
-        this.context = context;
+    public JDKProxyService() {
+        this(new MessageFactoryImpl(), new DefaultInterfaceContractMapper());
+    }
+
+    public JDKProxyService(MessageFactory messageFactory, InterfaceContractMapper mapper) {
         this.contractMapper = mapper;
         this.messageFactory = messageFactory;
     }
@@ -47,27 +49,30 @@ public class JDKProxyService implements ProxyFactory {
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
         assert interfaze != null;
         assert wire != null;
-        JDKInvocationHandler handler = new JDKInvocationHandler(messageFactory, interfaze, wire, context);
+        JDKInvocationHandler handler = new JDKInvocationHandler(messageFactory, interfaze, wire);
         ClassLoader cl = interfaze.getClassLoader();
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
     }
 
     public Object createCallbackProxy(Class<?> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
         ClassLoader cl = interfaze.getClassLoader();
-        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, wires, context);
+        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, wires);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         throw new UnsupportedOperationException();
-        /*
-         * InvocationHandler handler = Proxy.getInvocationHandler(target); if
-         * (handler instanceof JDKInvocationHandler) { // TODO return a
-         * ServiceReference throw new UnsupportedOperationException(); } else if
-         * (handler instanceof JDKCallbackInvocationHandler) { // TODO return a
-         * CallbackReference throw new UnsupportedOperationException(); } else {
-         * throw new IllegalArgumentException("Not a Tuscany SCA proxy"); }
-         */
+
+        //        InvocationHandler handler = Proxy.getInvocationHandler(target);
+        //        if (handler instanceof JDKInvocationHandler) {
+        //            // TODO return a ServiceReference 
+        //            throw new UnsupportedOperationException();
+        //        } else if (handler instanceof JDKCallbackInvocationHandler) {
+        //            // TODO return a          CallbackReference 
+        //            throw new UnsupportedOperationException();
+        //        } else {
+        //            throw new IllegalArgumentException("Not a Tuscany SCA proxy");
+        //        }
 
     }
 }

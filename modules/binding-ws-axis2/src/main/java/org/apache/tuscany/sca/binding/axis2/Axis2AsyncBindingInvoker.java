@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 import javax.xml.namespace.QName;
@@ -42,12 +40,11 @@ public class Axis2AsyncBindingInvoker extends Axis2BindingInvoker {
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    private Object invokeTarget(final Object payload, LinkedList<URI> callbackRoutingChain)
+    private Object invokeTarget(final Object payload, String conversationId)
         throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
-            OperationClient operationClient = createOperationClient(args, null);
-            callbackInvoker.setCallbackRoutingChain(callbackRoutingChain);
+            OperationClient operationClient = createOperationClient(args, conversationId);
             Axis2ReferenceCallback callback = new Axis2ReferenceCallback(callbackInvoker);
             operationClient.setCallback(callback);
 

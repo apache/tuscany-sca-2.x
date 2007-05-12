@@ -51,7 +51,6 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
@@ -62,7 +61,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
     private final AssemblyFactory assemblyFactory;
     private final InterfaceContractMapper interfaceContractMapper;
     private final ScopeRegistry scopeRegistry;
-    private final WorkContext workContext;
     private final WorkScheduler workScheduler;
     private final RuntimeWireProcessor wireProcessor;
     private final ProviderFactoryExtensionPoint providerFactories;
@@ -77,7 +75,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
     public DefaultCompositeActivator(AssemblyFactory assemblyFactory,
                                      InterfaceContractMapper interfaceContractMapper,
                                      ScopeRegistry scopeRegistry,
-                                     WorkContext workContext,
                                      WorkScheduler workScheduler,
                                      RuntimeWireProcessor wireProcessor,
                                      ProviderFactoryExtensionPoint providerFactories) {
@@ -85,7 +82,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.scopeRegistry = scopeRegistry;
-        this.workContext = workContext;
         this.workScheduler = workScheduler;
         this.wireProcessor = wireProcessor;
         this.providerFactories = providerFactories;
@@ -313,7 +309,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 Operation targetOperation = interfaceContractMapper.map(bindingContract.getInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 if (operation.isNonBlocking()) {
-                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
                 }
                 addBindingInterceptor(component, reference, binding, chain, operation, false);
                 wire.getInvocationChains().add(chain);
@@ -324,7 +320,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                                                             operation);
                     InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                     if (operation.isNonBlocking()) {
-                        chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                        chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
                     }
                     addBindingInterceptor(component, reference, binding, chain, operation, true);
                     wire.getCallbackInvocationChains().add(chain);
@@ -362,7 +358,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 if (operation.isNonBlocking()) {
-                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                    chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
                 }
                 addBindingInterceptor(component, reference, binding, chain, operation, false);
                 if (target != null) {
@@ -380,7 +376,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                                                                             operation);
                     InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                     if (operation.isNonBlocking()) {
-                        chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                        chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
                     }
                     addBindingInterceptor(component, reference, binding, chain, operation, true);
                     addImplementationInterceptor(component, null, chain, targetOperation, true);
@@ -449,7 +445,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
             /* lresende */
             if (operation.isNonBlocking()) {
-                chain.addInterceptor(new NonBlockingInterceptor(workScheduler, workContext));
+                chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
             }
 
             addImplementationInterceptor(component, service, chain, targetOperation, false);

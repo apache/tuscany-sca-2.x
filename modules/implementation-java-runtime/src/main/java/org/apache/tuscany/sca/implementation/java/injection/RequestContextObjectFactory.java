@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.java.injection;
 import org.apache.tuscany.sca.core.component.RequestContextImpl;
 import org.apache.tuscany.sca.spi.ObjectCreationException;
 import org.apache.tuscany.sca.spi.ObjectFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.RequestContext;
 
 /**
@@ -31,14 +30,11 @@ import org.osoa.sca.RequestContext;
  * @version $Rev$ $Date$
  */
 public class RequestContextObjectFactory implements ObjectFactory<RequestContext> {
-    private WorkContext workContext;
 
-    public RequestContextObjectFactory(WorkContext workContext) {
-        assert workContext != null;
-        this.workContext = workContext;
+    public RequestContextObjectFactory() {
     }
 
     public RequestContext getInstance() throws ObjectCreationException {
-        return new RequestContextImpl(workContext);
+        return new RequestContextImpl();
     }
 }

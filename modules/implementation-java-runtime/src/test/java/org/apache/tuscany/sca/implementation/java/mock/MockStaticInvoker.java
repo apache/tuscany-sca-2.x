@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.implementation.java.invocation.TargetInvoker;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -54,7 +53,7 @@ public class MockStaticInvoker implements TargetInvoker {
         this.cacheable = cacheable;
     }
 
-    public Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final ConversationSequence sequence) throws InvocationTargetException {
         try {
             if (payload != null && !payload.getClass().isArray()) {
                 return operation.invoke(instance, payload);
@@ -68,7 +67,7 @@ public class MockStaticInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) {
         try {
-            Object resp = invokeTarget(msg.getBody(), null, null);
+            Object resp = invokeTarget(msg.getBody(), null);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());

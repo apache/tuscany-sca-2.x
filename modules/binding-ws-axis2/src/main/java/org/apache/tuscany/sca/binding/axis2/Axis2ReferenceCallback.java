@@ -38,7 +38,7 @@ public class Axis2ReferenceCallback extends Callback {
         MessageContext responseMC = result.getResponseMessageContext();
         OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();
         try {
-            targetInvoker.invokeTarget(new Object[] {responseOM}, null, null);
+            targetInvoker.invokeTarget(new Object[] {responseOM}, null);
         } catch (InvocationTargetException e) {
             // FIXME what is the appropriate exception here?
             throw new RuntimeException(e);

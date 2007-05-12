@@ -18,10 +18,7 @@
  */
 package org.apache.tuscany.sca.invocation;
 
-import java.util.LinkedList;
-
 import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Represents a request, response, or exception flowing through a wire
@@ -41,37 +38,39 @@ public interface Message {
     <T> void setBody(T body);
 
     /**
-     * Returns the context associated with this invocation.
-     * @return the context associated with this invocation
+     * Get the conversation id
+     * @return
      */
-    WorkContext getWorkContext();
+    String getConversationID();
 
     /**
-     * Sets the context associated with this invocation.
-     * @param workContext the context associated with this invocation
+     * Set the conversation id
+     * @param conversationId
      */
-    void setWorkContext(WorkContext workContext);
+    void setConversationID(String conversationId);
 
     /**
-     * Adds a callback wire to the ordered list of callbacks for the current invocation
-     *
-     * @param wire the callback wire
+     * Get the URI of the source reference
+     * @return
      */
-    void pushCallbackWire(RuntimeWire wire);
+    String getFrom();
 
     /**
-     * Returns the ordered list of callback wires for the current invocation
-     *
-     * @return the ordered list of callback wires for the current invocation
+     * 
+     * @param from
      */
-    LinkedList<RuntimeWire> getCallbackWires();
+    void setFrom(String from);
 
     /**
-     * Sets the ordered list of callback wires for the current invocation
-     *
-     * @param wires the ordered list of callback wires for the current invocation
+     * Get the URI of target service
+     * @return
      */
-    void setCallbackWires(LinkedList<RuntimeWire> wires);
+    String getTo();
+
+    /**
+     * @param to
+     */
+    void setTo(String to);
 
     /**
      * Returns the id of the message
@@ -122,5 +121,9 @@ public interface Message {
      * @param sequence the conversational sequence
      */
     void setConversationSequence(ConversationSequence sequence);
+    
+    // FIXME: Remove the runtime wire once we can resolve the addresses for To and From
+    RuntimeWire getWire();
 
+    void setWire(RuntimeWire wire);
 }

@@ -33,6 +33,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -45,7 +46,6 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.rmi.RMIHost;
 import org.apache.tuscany.sca.rmi.RMIHostException;
-import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 /**
  * RMIBindingProvider
@@ -203,7 +203,7 @@ public class RMIBindingProvider implements ReferenceBindingProvider, ServiceBind
     public Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
         
         Message requestMsg = messageFactory.createMessage();
-        requestMsg.setWorkContext(WorkContextTunnel.getThreadWorkContext());
+        ThreadMessageContext.setMessageContext(requestMsg);
         requestMsg.setBody(args);
 
         Message responseMsg = service.getInvoker(binding, op).invoke(requestMsg);

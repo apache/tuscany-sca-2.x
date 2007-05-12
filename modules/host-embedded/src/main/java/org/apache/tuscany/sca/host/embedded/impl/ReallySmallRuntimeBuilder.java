@@ -84,31 +84,17 @@ import org.apache.tuscany.sca.provider.DefaultProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
-import org.apache.tuscany.sca.spi.component.WorkContext;
-import org.apache.tuscany.sca.spi.component.WorkContextImpl;
-import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 import commonj.work.WorkManager;
 
 public class ReallySmallRuntimeBuilder {
 
-    public static WorkContext createWorkContext(ExtensionPointRegistry registry) {
-
-        // Create a work context
-        WorkContext workContext = new WorkContextImpl();
-        registry.addExtensionPoint(WorkContext.class, workContext);
-        WorkContextTunnel.setThreadWorkContext(workContext);
-        return workContext;
-    }
-
-    public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry,
-                                                  WorkContext workContext,
-                                                  InterfaceContractMapper mapper) {
+    public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry, InterfaceContractMapper mapper) {
 
         // Create a proxy factory
         MessageFactory messageFactory = new MessageFactoryImpl();
-        ProxyFactory proxyFactory = new JDKProxyService(messageFactory, workContext, mapper);
+        ProxyFactory proxyFactory = new JDKProxyService(messageFactory, mapper);
 
         // FIXME remove this
         registry.addExtensionPoint(ProxyFactory.class, proxyFactory);
@@ -121,7 +107,6 @@ public class ReallySmallRuntimeBuilder {
                                                               AssemblyFactory assemblyFactory,
                                                               InterfaceContractMapper mapper,
                                                               ScopeRegistry scopeRegistry,
-                                                              WorkContext workContext,
                                                               WorkManager workManager) {
 
         // Create a work scheduler
@@ -132,7 +117,7 @@ public class ReallySmallRuntimeBuilder {
         RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
         registry.addExtensionPoint(RuntimeWireProcessorExtensionPoint.class, wireProcessors);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
-        
+
         // Create a provider factory extension point
         ProviderFactoryExtensionPoint providerFactories = new DefaultProviderFactoryExtensionPoint();
         registry.addExtensionPoint(ProviderFactoryExtensionPoint.class, providerFactories);
@@ -140,7 +125,8 @@ public class ReallySmallRuntimeBuilder {
 
         // Create the composite activator
         CompositeActivator compositeActivator = new DefaultCompositeActivator(assemblyFactory, mapper, scopeRegistry,
-                                                                              workContext, workScheduler, wireProcessor, providerFactories);
+                                                                              workScheduler, wireProcessor,
+                                                                              providerFactories);
 
         return compositeActivator;
     }

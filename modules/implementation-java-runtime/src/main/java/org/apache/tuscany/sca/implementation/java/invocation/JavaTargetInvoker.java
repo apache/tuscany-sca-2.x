@@ -20,16 +20,20 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.spi.component.ComponentException;
 import org.apache.tuscany.sca.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.sca.spi.component.TargetException;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Responsible for synchronously dispatching an invocation to a Java component
@@ -37,10 +41,12 @@ import org.apache.tuscany.sca.spi.component.WorkContext;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaTargetInvoker extends TargetInvokerExtension {
+public class JavaTargetInvoker implements TargetInvoker {
     protected Method operation;
     protected boolean stateless;
     protected InstanceWrapper target;
+    protected boolean cacheable;
+
     private final RuntimeComponent component;
     private final ScopeContainer scopeContainer;
 
@@ -92,9 +98,11 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         }
     }
 
-    public Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext)
+    public Object invokeTarget(final Object payload, final ConversationSequence sequence)
         throws InvocationTargetException {
-        Object contextId = workContext.getIdentifier(scopeContainer.getScope());
+        
+        // FIXME: How to deal with other scopes
+        Object contextId = ThreadMessageContext.getMessageContext().getConversationID();
         try {
             InstanceWrapper wrapper = getInstance(sequence, contextId);
             Object instance = wrapper.getInstance();
@@ -117,4 +125,36 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         }
     }
 
+    public Message invoke(Message msg) {
+        try {
+            Object messageId = msg.getMessageID();
+            Message workContext = ThreadMessageContext.getMessageContext();
+            if (messageId != null) {
+                workContext.setCorrelationID(messageId);
+            }
+            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setFaultBody(e.getCause());
+        }
+        return msg;
+    }
+
+    public boolean isCacheable() {
+        return cacheable;
+    }
+
+    public void setCacheable(boolean cacheable) {
+        this.cacheable = cacheable;
+    }
+
+    protected InvocationChain getInvocationChain(List<InvocationChain> chains, Operation targetOperation) {
+        for (InvocationChain chain : chains) {
+            if (chain.getTargetOperation().equals(targetOperation)) {
+                return chain;
+            }
+        }
+        return null;
+    }
+    
 }

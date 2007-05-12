@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a
@@ -41,12 +40,10 @@ public interface TargetInvoker extends Cloneable {
      * @param sequence    if the invocation is part of a conversation, the sequence. Valid values are {@link #NONE} for
      *                    non-conversational, {@link #START} to begin a conversation, {@link #CONTINUE} to continue a
      *                    conversation, or {@link #END} to end a conversation
-     * @param workContext work context associated with this invocation
      * @return the result of the invocation
      * @throws InvocationTargetException if there was a problem invoking the target
      */
-    Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext)
-        throws InvocationTargetException;
+    Object invokeTarget(final Object payload, final ConversationSequence sequence) throws InvocationTargetException;
 
     /**
      * Invokes an operation on a target with the given message

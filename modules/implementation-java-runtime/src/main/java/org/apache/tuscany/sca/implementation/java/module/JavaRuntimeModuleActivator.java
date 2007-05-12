@@ -65,7 +65,6 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospe
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$
@@ -124,15 +123,13 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         
-        WorkContext workContext = registry.getExtensionPoint(WorkContext.class);
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         JavaImplementationProcessor javaImplementationProcessor =
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
         processors.addArtifactProcessor(javaImplementationProcessor);
 
         JavaImplementationProviderFactory javaImplementationProviderFactory =
-            new JavaImplementationProviderFactory(proxyFactory,
-                                                 workContext, dataBindings, factory);
+            new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory);
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(javaImplementationProviderFactory);

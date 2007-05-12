@@ -20,11 +20,10 @@ package echo.server;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
-import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$
@@ -41,14 +40,14 @@ public class EchoService {
 
     public String sendReceive(String input) throws InvocationTargetException {
 
+        Message msg = new MessageImpl();
+        msg.setBody(new Object[] {input});
+
         Message request = messageFactory.createMessage();
         request.setBody(new Object[] {input});
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        request.setWorkContext(workContext);
-        Message response;
 
         // dispatch and get the response
-        response = invoker.invoke(request);
+        Message response = invoker.invoke(request);
         Object body = response.getBody();
         if (response.isFault()) {
             throw new InvocationTargetException((Throwable)body);

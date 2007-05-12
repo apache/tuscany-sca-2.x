@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -37,10 +36,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
-import org.apache.tuscany.sca.spi.component.WorkContext;
-import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 public class ReallySmallRuntime {
 
@@ -51,7 +47,6 @@ public class ReallySmallRuntime {
     private AssemblyFactory assemblyFactory;
     private ContributionService contributionService;
     private CompositeActivator compositeActivator;
-    private WorkContext workContext;
     private ThreadPoolWorkManager workManager;
     private ScopeRegistry scopeRegistry;
 
@@ -64,9 +59,6 @@ public class ReallySmallRuntime {
         // Create our extension point registry
         registry = new DefaultExtensionPointRegistry();
 
-        // Create a work context
-        workContext = ReallySmallRuntimeBuilder.createWorkContext(registry);
-
         // Create a work manager
         workManager = new ThreadPoolWorkManager(10);
 
@@ -74,7 +66,7 @@ public class ReallySmallRuntime {
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
 
         // Create a proxy factory
-        ProxyFactory proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, workContext, mapper);
+        ProxyFactory proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, mapper);
 
         // Create model factories
         assemblyFactory = new RuntimeAssemblyFactory(mapper, proxyFactory);
@@ -94,7 +86,6 @@ public class ReallySmallRuntime {
                                                                                 assemblyFactory,
                                                                                 mapper,
                                                                                 scopeRegistry,
-                                                                                workContext,
                                                                                 workManager);
 
         // Start the runtime modules
@@ -106,9 +97,6 @@ public class ReallySmallRuntime {
 
         // Stop the runtime modules
         stopModules(registry, modules);
-
-        // FIXME remove this
-        workContext.setIdentifier(Scope.COMPOSITE, null);
 
         // Stop and destroy the work manager
         workManager.destroy();
@@ -154,13 +142,6 @@ public class ReallySmallRuntime {
         for (ModuleActivator module : modules) {
             module.stop(registry);
         }
-    }
-
-    // FIXME Remove this
-    @SuppressWarnings("unchecked")
-    public void startDomainWorkContext(Composite domain) {
-        workContext.setIdentifier(Scope.COMPOSITE, domain);
-        WorkContextTunnel.setThreadWorkContext(workContext);
     }
 
 }
