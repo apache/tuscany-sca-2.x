@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.databinding.axiom;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.databinding.ExceptionHandler;
+import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;

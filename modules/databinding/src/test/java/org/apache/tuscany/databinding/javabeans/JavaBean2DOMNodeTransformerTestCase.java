@@ -27,7 +27,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.easymock.EasyMock;

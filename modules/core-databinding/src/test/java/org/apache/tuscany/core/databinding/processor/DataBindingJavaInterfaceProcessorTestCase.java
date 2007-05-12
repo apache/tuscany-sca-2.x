@@ -21,9 +21,9 @@ package org.apache.tuscany.core.databinding.processor;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
-import org.apache.tuscany.databinding.annotation.DataBinding;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;

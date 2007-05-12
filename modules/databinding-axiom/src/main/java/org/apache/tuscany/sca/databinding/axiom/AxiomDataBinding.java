@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.databinding.axiom;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.databinding.ExceptionHandler;
-import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.databinding.ExceptionHandler;
+import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 
 /**
  * DataBinding for AXIOM
@@ -37,7 +37,7 @@ public class AxiomDataBinding extends BaseDataBinding {
     }
 
     /**
-     * @see org.apache.tuscany.databinding.impl.BaseDataBinding#getWrapperHandler()
+     * @see org.apache.tuscany.sca.databinding.impl.BaseDataBinding#getWrapperHandler()
      */
     @Override
     public WrapperHandler getWrapperHandler() {

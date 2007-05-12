@@ -23,10 +23,10 @@ import java.lang.annotation.Annotation;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.databinding.ExceptionHandler;
-import org.apache.tuscany.databinding.SimpleTypeMapper;
-import org.apache.tuscany.databinding.WrapperHandler;
-import org.apache.tuscany.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.databinding.ExceptionHandler;
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
+import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 

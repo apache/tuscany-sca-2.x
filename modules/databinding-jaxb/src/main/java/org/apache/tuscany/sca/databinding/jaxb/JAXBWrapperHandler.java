@@ -29,9 +29,9 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 
 /**
@@ -99,7 +99,7 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
     }
 
     /**
-     * @see org.apache.tuscany.databinding.WrapperHandler#getChildren(java.lang.Object)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getChildren(java.lang.Object)
      */
     public List getChildren(JAXBElement<?> wrapper) {
         Object wrapperValue = wrapper.getValue();
