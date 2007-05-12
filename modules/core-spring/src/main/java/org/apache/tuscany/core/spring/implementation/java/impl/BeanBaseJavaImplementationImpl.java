@@ -21,11 +21,11 @@ package org.apache.tuscany.core.spring.implementation.java.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.implementation.java.BaseJavaImplementation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.implementation.java.BaseJavaImplementation;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;

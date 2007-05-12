@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 
 /**
  * Implementations are responsible for walking a component implementation class,

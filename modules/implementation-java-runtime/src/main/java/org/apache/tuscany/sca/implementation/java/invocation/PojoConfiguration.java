@@ -29,13 +29,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.InstanceFactory;
 import org.apache.tuscany.sca.implementation.java.context.InstanceFactoryProvider;
 import org.apache.tuscany.sca.implementation.java.context.ReflectiveInstanceFactory;
+import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.EventInvoker;
 import org.apache.tuscany.sca.implementation.java.injection.FieldInjector;

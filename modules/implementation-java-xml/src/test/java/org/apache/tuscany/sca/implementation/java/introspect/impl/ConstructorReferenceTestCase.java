@@ -23,10 +23,10 @@ import static org.apache.tuscany.sca.implementation.java.introspect.impl.ModelHe
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateReferenceException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidConstructorException;
 import org.osoa.sca.annotations.Reference;

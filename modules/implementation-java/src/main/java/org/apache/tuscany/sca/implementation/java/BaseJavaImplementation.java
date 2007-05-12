@@ -16,20 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java;
+package org.apache.tuscany.sca.implementation.java;
+
+import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
- * Factory for the Java model
+ * Represents a Java implementation.
  * 
  * @version $Rev$ $Date$
  */
-public interface JavaImplementationFactory {
+public interface BaseJavaImplementation extends Implementation {
 
     /**
-     * Creates a new Java implementation.
+     * Returns the name of the Java implementation class.
      * 
-     * @return
+     * @return the name of the Java implementation class
      */
-    JavaImplementation createJavaImplementation();
+    String getName();
+
+    /**
+     * Sets the name of the Java implementation class.
+     * 
+     * @param className the name of the Java implementation class
+     */
+    void setName(String className);
+
+    /**
+     * Returns the Java implementation class.
+     * 
+     * @return the Java implementation class
+     */
+    Class<?> getJavaClass();
+
+    /**
+     * Sets the Java implementation class.
+     * 
+     * @param javaClass the Java implementation class
+     */
+    void setJavaClass(Class<?> javaClass);
 
 }

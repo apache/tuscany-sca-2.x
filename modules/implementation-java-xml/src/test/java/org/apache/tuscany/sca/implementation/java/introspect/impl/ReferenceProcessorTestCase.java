@@ -25,11 +25,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateReferenceException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.IllegalReferenceException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;

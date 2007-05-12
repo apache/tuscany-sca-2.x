@@ -23,10 +23,10 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidConversationalImplementation;
 import org.osoa.sca.annotations.ConversationAttributes;
@@ -67,7 +67,7 @@ public class ConversationProcessorTestCase extends TestCase {
     public void testImplicitScope() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(ImplicitFooScope.class, type);
-        assertEquals(org.apache.tuscany.implementation.java.impl.JavaScopeImpl.CONVERSATION, type.getJavaScope());
+        assertEquals(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION, type.getJavaScope());
     }
 
     public void testBadFooScope() throws Exception {
@@ -84,7 +84,7 @@ public class ConversationProcessorTestCase extends TestCase {
         // TODO do we want these semantics
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooJustConversation.class, type);
-        assertEquals(org.apache.tuscany.implementation.java.impl.JavaScopeImpl.CONVERSATION, type.getJavaScope());
+        assertEquals(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION, type.getJavaScope());
         assertEquals(-1, type.getMaxAge());
         assertEquals(-1, type.getMaxIdleTime());
     }

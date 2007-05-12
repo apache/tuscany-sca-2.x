@@ -16,43 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java;
+package org.apache.tuscany.sca.implementation.java.impl;
 
-import org.apache.tuscany.sca.assembly.Implementation;
+import java.lang.reflect.Constructor;
 
 /**
- * Represents a Java implementation.
+ * Hold injection information for the constructor used to instantiate a
+ * component implementation instance
  * 
  * @version $Rev$ $Date$
  */
-public interface BaseJavaImplementation extends Implementation {
+public class JavaConstructorImpl<T> {
+
+    private Constructor<T> constructor;
+    private JavaParameterImpl[] parameters;
+
+    public JavaConstructorImpl(Constructor<T> constructor) {
+        this.constructor = constructor;
+        int size = constructor.getParameterTypes().length;
+        parameters = new JavaParameterImpl[size];
+        for (int i = 0; i < size; i++) {
+            parameters[i] = new JavaParameterImpl(constructor, i);
+        }
+    }
+
+    public Constructor<T> getConstructor() {
+        return constructor;
+    }
 
     /**
-     * Returns the name of the Java implementation class.
-     * 
-     * @return the name of the Java implementation class
+     * @return the parameters
      */
-    String getName();
-
-    /**
-     * Sets the name of the Java implementation class.
-     * 
-     * @param className the name of the Java implementation class
-     */
-    void setName(String className);
-
-    /**
-     * Returns the Java implementation class.
-     * 
-     * @return the Java implementation class
-     */
-    Class<?> getJavaClass();
-
-    /**
-     * Sets the Java implementation class.
-     * 
-     * @param javaClass the Java implementation class
-     */
-    void setJavaClass(Class<?> javaClass);
-
+    public JavaParameterImpl[] getParameters() {
+        return parameters;
+    }
 }

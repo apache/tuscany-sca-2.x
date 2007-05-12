@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
@@ -51,7 +51,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         Scope scope = clazz.getAnnotation(Scope.class);
         if (scope == null) {
             // implicitly assume conversation
-            type.setJavaScope(org.apache.tuscany.implementation.java.impl.JavaScopeImpl.CONVERSATION);
+            type.setJavaScope(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION);
         } else if (scope != null && !"CONVERSATION".equals(scope.value().toUpperCase())) {
             throw new InvalidConversationalImplementation(
                                                           "Service is marked with @ConversationAttributes but the scope is not @Scope(\"CONVERSATION\")"

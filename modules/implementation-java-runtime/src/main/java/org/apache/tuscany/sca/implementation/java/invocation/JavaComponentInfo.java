@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.implementation.java.JavaImplementation;
-import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -47,8 +45,10 @@ import org.apache.tuscany.sca.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.context.TargetMethodNotFoundException;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ConversationIDObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.FieldInjector;
@@ -221,7 +221,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
-        org.apache.tuscany.implementation.java.impl.JavaResourceImpl resource = configuration.getDefinition()
+        org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl resource = configuration.getDefinition()
             .getResources().get(name);
 
         if (resource != null && !(resource.getElement().getAnchor() instanceof Constructor)) {

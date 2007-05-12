@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.impl;
+package org.apache.tuscany.sca.implementation.java.impl;
 
-import org.apache.tuscany.implementation.java.BaseJavaImplementation;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.implementation.java.BaseJavaImplementation;
 
 /**
  * Represents a Java implementation.
