@@ -22,7 +22,7 @@ import javax.wsdl.PortType;
 
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**

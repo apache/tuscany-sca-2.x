@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl;
+package org.apache.tuscany.sca.interfacedef.wsdl;
 
 import org.apache.ws.commons.schema.XmlSchema;
 

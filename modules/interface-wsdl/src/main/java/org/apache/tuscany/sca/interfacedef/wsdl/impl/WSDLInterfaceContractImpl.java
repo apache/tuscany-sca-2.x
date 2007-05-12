@@ -16,41 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.interfacedef.wsdl;
+package org.apache.tuscany.sca.interfacedef.wsdl.impl;
+
+import org.apache.tuscany.interfacedef.impl.InterfaceContractImpl;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 
 /**
- * Factory for the WSDL model.
+ * Represents a WSDL interface contract.
  * 
  * @version $Rev$ $Date$
  */
-public interface WSDLFactory {
-
-    /**
-     * Creates a new WSDL interface.
-     * 
-     * @return a new WSDL interface
-     */
-    WSDLInterface createWSDLInterface();
+public class WSDLInterfaceContractImpl extends InterfaceContractImpl implements WSDLInterfaceContract {
+    private String location;
     
-    /**
-     * Creates a new WSDL definition.
-     * 
-     * @return a new WSDL definition
-     */
-    WSDLDefinition createWSDLDefinition();
+    protected WSDLInterfaceContractImpl() {
+    }
     
-    /**
-     * Creates a new XML Schema definition.
-     * 
-     * @return a new XML Schema definition
-     */
-    XSDefinition createXSDefinition();
+    public String getLocation() {
+        return location;
+    }
     
-    /**
-     * Creates a new WSDL interface contract.
-     * 
-     * @return
-     */
-    WSDLInterfaceContract createWSDLInterfaceContract();
-
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
