@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.invocation.ProxyFactory;
 import org.apache.tuscany.sca.spi.ObjectCreationException;
 import org.apache.tuscany.sca.spi.ObjectFactory;
 

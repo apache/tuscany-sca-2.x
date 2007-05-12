@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.invocation.ProxyCreationException;
 
 /**
  * Thrown when an {@link org.apache.tuscany.sca.spi.model.Operation} cannot be mapped to a method on an interface 

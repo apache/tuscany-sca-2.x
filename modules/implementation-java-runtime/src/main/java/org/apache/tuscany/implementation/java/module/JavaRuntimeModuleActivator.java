@@ -63,7 +63,7 @@ import org.apache.tuscany.policy.PolicyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
-import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 

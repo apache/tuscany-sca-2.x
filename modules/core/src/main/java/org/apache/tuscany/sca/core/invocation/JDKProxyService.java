@@ -24,8 +24,6 @@ import java.util.List;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.invocation.ProxyCreationException;
-import org.apache.tuscany.sca.invocation.ProxyFactory;
 import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.CallableReference;
 

@@ -25,7 +25,7 @@ import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.SCABinding;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 
 /**
  * @version $Rev$ $Date$

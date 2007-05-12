@@ -31,7 +31,6 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.invocation.AbstractInvocationHandler;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.scope.Scope;
