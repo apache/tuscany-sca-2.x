@@ -34,14 +34,12 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.spi.component.WorkContext;
-import org.apache.axis2.transport.http.HTTPConstants;
+import org.osoa.sca.Constants;
 
 /**
  * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
@@ -53,7 +51,7 @@ public class Axis2BindingInvoker implements Invoker {
     private Options options;
     private SOAPFactory soapFactory;
 
-    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA10_NS,"conversationID");
+    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA_NS,"conversationID");
     
     public Axis2BindingInvoker(ServiceClient serviceClient, QName wsdlOperationName,
                                Options options, SOAPFactory soapFactory) {
@@ -65,17 +63,12 @@ public class Axis2BindingInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
-            Object messageId = msg.getMessageID();
-            WorkContext workContext = msg.getWorkContext();
-            if (messageId != null) {
-                workContext.setCorrelationId(messageId);
-            }
             // getCallbackUris() has been removed from the Message interface 
             // LinkedList<URI> callbackRoutingChain = msg.getCallbackUris();
             // if (callbackRoutingChain != null) {
             //     workContext.setCallbackUris(callbackRoutingChain);
             // }
-            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), workContext);
+            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), msg.getConversationID());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
@@ -85,11 +78,11 @@ public class Axis2BindingInvoker implements Invoker {
         return msg;
     }
 
-    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext) throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, String conversationId) throws InvocationTargetException {
         try {
 
             Object[] args = (Object[]) payload;
-            OperationClient operationClient = createOperationClient(args, workContext);
+            OperationClient operationClient = createOperationClient(args, conversationId);
 
             // ensure connections are tracked so that they can be closed by the reference binding
             MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
@@ -110,7 +103,7 @@ public class Axis2BindingInvoker implements Invoker {
     }
 
     @SuppressWarnings("deprecation")
-    protected OperationClient createOperationClient(Object[] args, WorkContext workContext) throws AxisFault {
+    protected OperationClient createOperationClient(Object[] args, String conversationId) throws AxisFault {
         SOAPEnvelope env = soapFactory.getDefaultEnvelope();
         if (args != null && args.length > 0) {
             SOAPBody body = env.getBody();
@@ -129,20 +122,19 @@ public class Axis2BindingInvoker implements Invoker {
         // Axis2 operationClients can not be shared so create a new one for each request
         OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
 
-        if (workContext != null){
-            String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
-            if(conversationId != null && conversationId.length()!=0){
-                EndpointReference fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
-                fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId);
-                options.setFrom(fromEPR);
-                requestMC.setFrom(fromEPR); //who knows why two ways ?
-            
-                //For now do this the brute force method. Need to figure out how to do axis addressing .. configure mar in flow.
-                SOAPEnvelope sev = requestMC.getEnvelope();
-                SOAPHeader sh = sev.getHeader();
-                OMElement el = fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,AddressingConstants.WSA_FROM,AddressingConstants.WSA_DEFAULT_PREFIX);
-                sh.addChild(el);
-            }
+        if (conversationId != null && conversationId.length() != 0) {
+            EndpointReference fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
+            fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId);
+            options.setFrom(fromEPR);
+            requestMC.setFrom(fromEPR); //who knows why two ways ?
+
+            //For now do this the brute force method. Need to figure out how to do axis addressing .. configure mar in flow.
+            SOAPEnvelope sev = requestMC.getEnvelope();
+            SOAPHeader sh = sev.getHeader();
+            OMElement el = fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,
+                                        AddressingConstants.WSA_FROM,
+                                        AddressingConstants.WSA_DEFAULT_PREFIX);
+            sh.addChild(el);
         }
 
         operationClient.setOptions(options);

@@ -23,24 +23,21 @@ import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.scope.ScopeContainerFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.store.Store;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConversationalScopeContainerFactory implements ScopeContainerFactory {
-    private WorkContext workContext;
     private Store store;
 
-    public ConversationalScopeContainerFactory(Store store, WorkContext workContext) {
+    public ConversationalScopeContainerFactory(Store store) {
         super();
-        this.workContext = workContext;
         this.store = store;
     }
 
     public ScopeContainer createScopeContainer(RuntimeComponent component) {
-        return new ConversationalScopeContainer(store, workContext, component);
+        return new ConversationalScopeContainer(store, component);
     }
 
     public Scope getScope() {

@@ -24,7 +24,6 @@ import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.spi.component.TargetResolutionException;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * A scope context which manages atomic component instances keyed on HTTP
@@ -33,18 +32,16 @@ import org.apache.tuscany.sca.spi.component.WorkContext;
  * @version $Rev$ $Date$
  */
 public class HttpSessionScopeContainer extends AbstractScopeContainer<Object> {
-    private final WorkContext workContext;
 
-    public HttpSessionScopeContainer(WorkContext workContext, RuntimeComponent component) {
+    public HttpSessionScopeContainer(RuntimeComponent component) {
         super(Scope.SESSION, component);
-        this.workContext = workContext;
     }
 
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof HttpSessionEnd) {
             Object key = ((HttpSessionEnd)event).getSessionID();
-            workContext.clearIdentifier(key);
+            // FIXME: Remove the session id
         }
     }
 
@@ -60,7 +57,9 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer<Object> {
     }
 
     protected InstanceWrapper getInstanceWrapper(boolean create) throws TargetResolutionException {
-        Object key = workContext.getIdentifier(Scope.SESSION);
+//        Object key = workContext.getIdentifier(Scope.SESSION);
+        // FIXME: Need to fix this
+        Object key ="http-session-id";
         assert key != null : "HTTP session key not bound in work context";
         InstanceWrapper ctx = wrappers.get(key);
         if (ctx == null && !create) {

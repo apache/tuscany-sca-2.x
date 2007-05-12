@@ -18,17 +18,16 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import java.net.URI;
-import java.util.LinkedList;
+import java.util.UUID;
 
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Base class for performing invocations on a wire. Subclasses are responsible for retrieving and supplying the
@@ -46,15 +45,20 @@ public abstract class AbstractInvocationHandler {
         this.messageFactory = messageFactory;
     }
 
-    protected Object invoke(InvocationChain chain,
-                            Object[] args,
-                            Object correlationId,
-                            LinkedList<URI> callbackUris, WorkContext workContext)
-        throws Throwable {
-        Invoker headInvoker = chain.getHeadInvoker();
+    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
+
+        Message msgContext = ThreadMessageContext.getMessageContext();
         Message msg = messageFactory.createMessage();
-        msg.setWorkContext(workContext);
-        msg.setCorrelationID(workContext.getCorrelationId());
+        if (conversational) {
+            Object id = msgContext.getConversationID();
+            if (id == null) {
+                String convIdFromThread = createConversationID();
+                msg.setConversationID(convIdFromThread);
+            }
+        }
+
+        Invoker headInvoker = chain.getHeadInvoker();
+        msg.setCorrelationID(msgContext.getCorrelationID());
         Operation operation = chain.getTargetOperation();
         Interface contract = operation.getInterface();
         if (contract != null && contract.isConversational()) {
@@ -72,13 +76,28 @@ public abstract class AbstractInvocationHandler {
             }
         }
         msg.setBody(args);
-        // dispatch the wire down the chain and get the response
-        Message resp = headInvoker.invoke(msg);
-        Object body = resp.getBody();
-        if (resp.isFault()) {
-            throw (Throwable) body;
+        msg.setWire(wire);
+        ThreadMessageContext.setMessageContext(msg);
+        try {
+            // dispatch the wire down the chain and get the response
+            Message resp = headInvoker.invoke(msg);
+            Object body = resp.getBody();
+            if (resp.isFault()) {
+                throw (Throwable)body;
+            }
+            return body;
+        } finally {
+            ThreadMessageContext.setMessageContext(msgContext);
         }
-        return body;
+    }
+
+    /**
+     * Creates a new conversational id
+     * 
+     * @return the conversational id
+     */
+    private String createConversationID() {
+        return UUID.randomUUID().toString();
     }
 
 }

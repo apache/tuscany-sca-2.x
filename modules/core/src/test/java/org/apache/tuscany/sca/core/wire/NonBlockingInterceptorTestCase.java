@@ -26,12 +26,10 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
@@ -52,20 +50,23 @@ public class NonBlockingInterceptorTestCase extends TestCase {
             }
         });
         replay(scheduler);
-        WorkContext context = createMock(WorkContext.class);
+        Message context = createMock(Message.class);
         String convID = "convID";
-        EasyMock.expect(context.getIdentifier(Scope.CONVERSATION)).andReturn(convID);
-        context.setCorrelationId(null);
-        context.setIdentifier(Scope.CONVERSATION, convID);
+        EasyMock.expect(context.getConversationID()).andReturn(convID);
         EasyMock.replay(context);
-        Message msg = new MessageFactoryImpl().createMessage();
+        ThreadMessageContext.setMessageContext(context);
+        Message msg = createMock(Message.class);
+        msg.setCorrelationID(null);
+        msg.setConversationID(convID);
         Interceptor next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.eq(msg))).andReturn(msg);
         EasyMock.replay(next);
-        Interceptor interceptor = new NonBlockingInterceptor(scheduler, context, next);
+        EasyMock.replay(msg);
+        Interceptor interceptor = new NonBlockingInterceptor(scheduler, next);
         interceptor.invoke(msg);
         verify(context);
         verify(next);
+        verify(msg);
     }
 
 }

@@ -19,21 +19,17 @@
 package org.apache.tuscany.sca.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 public class Axis2ReferenceCallbackTargetInvoker {
 
     private Operation operation;
     private RuntimeWire inboundWire;
-    private LinkedList<URI> callbackRoutingChain;
     private boolean cacheable;
     Axis2CallbackInvocationHandler invocationHandler;
     private CountDownLatch signal;
@@ -48,7 +44,7 @@ public class Axis2ReferenceCallbackTargetInvoker {
         this.invocationHandler = invocationHandler;
     }
 
-    public Object invokeTarget(final Object payload, final ConversationSequence sequence, WorkContext workContext) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final ConversationSequence sequence) throws InvocationTargetException {
         Object[] args;
         if (payload != null && !payload.getClass().isArray()) {
             args = new Object[]{payload};
@@ -70,7 +66,7 @@ public class Axis2ReferenceCallbackTargetInvoker {
 
     public Message invoke(Message msg) {
         try {
-            Object resp = invokeTarget(msg.getBody(), null, null);
+            Object resp = invokeTarget(msg.getBody(), null);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
@@ -96,16 +92,11 @@ public class Axis2ReferenceCallbackTargetInvoker {
         Axis2ReferenceCallbackTargetInvoker invoker = (Axis2ReferenceCallbackTargetInvoker) super.clone();
         invoker.operation = this.operation;
         invoker.inboundWire = this.inboundWire;
-        invoker.callbackRoutingChain = this.callbackRoutingChain;
         invoker.cacheable = this.cacheable;
         invoker.invocationHandler = this.invocationHandler;
         return invoker;
     }
 
-    public void setCallbackRoutingChain(LinkedList<URI> callbackRoutingChain) {
-        this.callbackRoutingChain = callbackRoutingChain;
-    }
-    
     public void setSignal(CountDownLatch signal) {
         this.signal = signal;
     }

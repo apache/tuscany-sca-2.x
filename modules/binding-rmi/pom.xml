@@ -29,6 +29,13 @@
     <name>Apache Tuscany Java RMI Binding</name>
 
     <dependencies>
+        <!-- FIXME: The MessageFactoryImpl is in tuscany-core -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+            
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>

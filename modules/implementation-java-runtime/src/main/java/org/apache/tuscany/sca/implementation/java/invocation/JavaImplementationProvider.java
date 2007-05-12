@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.spi.ObjectFactory;
 import org.apache.tuscany.sca.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.ComponentContext;
 
 /**
@@ -53,7 +52,6 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                       RuntimeComponent component,
                                       JavaImplementation implementation,
                                       ProxyFactory proxyService,
-                                      WorkContext workContext,
                                       DataBindingExtensionPoint dataBindingRegistry,
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
@@ -62,7 +60,6 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         try {
             PojoConfiguration configuration = new PojoConfiguration(implementation);
             configuration.setProxyFactory(proxyService);
-            configuration.setWorkContext(workContext);
             // FIXME: Group id to be removed
             configuration.setGroupId(URI.create("/"));
             atomicComponent = new JavaComponentInfo(component, configuration, dataBindingRegistry,

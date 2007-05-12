@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.implementation.java.injection.MethodEventInvoker;
 import org.apache.tuscany.sca.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.spi.ObjectFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * Encapsulates confuration for a Java-based atomic component
@@ -56,7 +55,6 @@ import org.apache.tuscany.sca.spi.component.WorkContext;
 public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
     private JavaImplementation definition;
     private ProxyFactory proxyService;
-    private WorkContext workContext;
     private URI groupId;
     private URI name;
 
@@ -104,14 +102,6 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
 
     public void setProxyFactory(ProxyFactory proxyService) {
         this.proxyService = proxyService;
-    }
-
-    public WorkContext getWorkContext() {
-        return workContext;
-    }
-
-    public void setWorkContext(WorkContext workContext) {
-        this.workContext = workContext;
     }
 
     /**

@@ -18,11 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import org.apache.tuscany.sca.implementation.java.injection.RequestContextObjectFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
-
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -30,8 +26,7 @@ import org.easymock.EasyMock;
 public class RequestContextObjectFactoryTestCase extends TestCase {
 
     public void testInstanceCreate() {
-        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
-        RequestContextObjectFactory factory = new RequestContextObjectFactory(workContext);
+        RequestContextObjectFactory factory = new RequestContextObjectFactory();
         assertNotNull(factory.getInstance());
     }
 

@@ -136,9 +136,6 @@ public class DefaultSCADomain extends SCADomain {
             throw new ServiceRuntimeException(e);
         }
 
-        // FIXME remove this
-        runtime.startDomainWorkContext(domainComposite);
-
         // Index the top level components
         for (Component component : domainComposite.getComponents()) {
             components.put(component.getName(), component);

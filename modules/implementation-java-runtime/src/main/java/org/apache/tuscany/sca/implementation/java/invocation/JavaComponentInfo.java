@@ -45,10 +45,10 @@ import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.context.TargetMethodNotFoundException;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ConversationIDObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.FieldInjector;
@@ -60,10 +60,8 @@ import org.apache.tuscany.sca.implementation.java.injection.ObjectCallbackExcept
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.spi.CoreRuntimeException;
 import org.apache.tuscany.sca.spi.ObjectCreationException;
 import org.apache.tuscany.sca.spi.ObjectFactory;
@@ -71,7 +69,6 @@ import org.apache.tuscany.sca.spi.component.ComponentException;
 import org.apache.tuscany.sca.spi.component.TargetDestructionException;
 import org.apache.tuscany.sca.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.sca.spi.component.TargetResolutionException;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
@@ -90,7 +87,6 @@ public class JavaComponentInfo implements ComponentContextProvider {
     protected PojoConfiguration<?> configuration;
     protected Scope scope;
     protected ProxyFactory proxyService;
-    protected WorkContext workContext;
     protected URI groupId;
 
     private final ComponentContext componentContext;
@@ -221,7 +217,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
     }
 
     public void addResourceFactory(String name, ObjectFactory<?> factory) {
-        org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl resource = configuration.getDefinition()
+        JavaResourceImpl resource = configuration.getDefinition()
             .getResources().get(name);
 
         if (resource != null && !(resource.getElement().getAnchor() instanceof Constructor)) {
@@ -232,7 +228,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
     }
 
     public void addConversationIDFactory(Member member) {
-        ObjectFactory<String> factory = new ConversationIDObjectFactory(workContext);
+        ObjectFactory<String> factory = new ConversationIDObjectFactory();
 
         if (member instanceof Field) {
             JavaElementImpl element = new JavaElementImpl((Field)member);

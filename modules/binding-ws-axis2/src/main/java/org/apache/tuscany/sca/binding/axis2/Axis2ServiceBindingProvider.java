@@ -19,13 +19,10 @@ package org.apache.tuscany.sca.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import javax.wsdl.Definition;
@@ -49,6 +46,7 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -56,9 +54,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.spi.component.WorkContext;
-import org.apache.tuscany.sca.spi.component.WorkContextTunnel;
 
 public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
 
@@ -315,7 +310,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     // TODO: are these still needed?
 
     private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
-    private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
 
     public Invoker createTargetInvoker(InterfaceContract contract, Operation operation) {
         // if (!operation.isCallback()) { TODO: no isCallback methjod yet?
@@ -375,15 +369,15 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         }
         requestMsg.setBody(args);
 
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        String oldConversationID = (String)workContext.getIdentifier(Scope.CONVERSATION);
+        Message workContext = ThreadMessageContext.getMessageContext();
+        
+        ThreadMessageContext.setMessageContext(requestMsg);
         try {
             if (isConversational() && conversationID != null) {
-                workContext.setIdentifier(Scope.CONVERSATION, conversationID);
+                requestMsg.setConversationID(conversationID);
             } else {
-                workContext.clearIdentifier(Scope.CONVERSATION);
+                requestMsg.setConversationID(null);
             }
-            requestMsg.setWorkContext(workContext);
 
             Message responseMsg = service.getInvoker(wsBinding, op).invoke(requestMsg);
 
@@ -393,11 +387,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
             return responseMsg.getBody();
 
         } finally {
-            if (null != oldConversationID) {
-                workContext.setIdentifier(Scope.CONVERSATION, conversationID);
-            } else {
-                workContext.clearIdentifier(Scope.CONVERSATION);
-            }
+            ThreadMessageContext.setMessageContext(workContext);
         }
     }
 

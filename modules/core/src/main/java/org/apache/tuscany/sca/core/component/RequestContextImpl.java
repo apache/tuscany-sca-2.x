@@ -20,20 +20,16 @@ package org.apache.tuscany.sca.core.component;
 
 import javax.security.auth.Subject;
 
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
-import org.osoa.sca.CallableReference;
-
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RequestContextImpl implements RequestContext {
-    private WorkContext workContext;
 
-    public RequestContextImpl(WorkContext workContext) {
-        this.workContext = workContext;
+    public RequestContextImpl() {
     }
 
     public Subject getSecuritySubject() {
@@ -41,7 +37,7 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public String getServiceName() {
-        return workContext.getCurrentServiceName();
+        throw new UnsupportedOperationException();
     }
 
     public <B> ServiceReference<B> getServiceReference() {

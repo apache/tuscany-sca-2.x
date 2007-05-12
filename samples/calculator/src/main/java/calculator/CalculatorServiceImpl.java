@@ -18,12 +18,17 @@
  */
 package calculator;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 
 
 /**
  * An implementation of the Calculator service.
  */
+@Scope("COMPOSITE")
+@EagerInit
 public class CalculatorServiceImpl implements CalculatorService {
 
     private AddService addService;
@@ -31,6 +36,11 @@ public class CalculatorServiceImpl implements CalculatorService {
     private MultiplyService multiplyService;
     private DivideService divideService;
 
+    @Init
+    public void init() {
+        int i =0 ;
+    }
+    
     @Reference
     public void setAddService(AddService addService) {
         this.addService = addService;

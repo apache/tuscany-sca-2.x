@@ -25,7 +25,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.osoa.sca.NoRegisteredCallbackException;
 
 /**
@@ -45,7 +43,6 @@ import org.osoa.sca.NoRegisteredCallbackException;
  */
 public class JDKCallbackInvocationHandler extends AbstractInvocationHandler implements InvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
-    private transient WorkContext context;
     private transient Map<URI, RuntimeWire> wires;
     private List<String> sourceWireNames;
 
@@ -58,9 +55,8 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         wires = new HashMap<URI, RuntimeWire>();
     }
 
-    public JDKCallbackInvocationHandler(MessageFactory messageFactory, List<RuntimeWire> wireList, WorkContext context) {
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory, List<RuntimeWire> wireList) {
         super(messageFactory, false);
-        this.context = context;
         this.wires = new HashMap<URI, RuntimeWire>();
         for (RuntimeWire wire : wireList) {
             URI uri = URI.create(wire.getSource().getComponent().getURI() + "#"
@@ -84,11 +80,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
             return hashCode();
             // TODO beter hash algorithm
         }
-        LinkedList<URI> callbackUris = context.getCallbackUris();
-        assert callbackUris != null;
-        URI targetAddress = callbackUris.getLast();
-        assert targetAddress != null;
-        RuntimeWire wire = wires.get(targetAddress);
+        RuntimeWire wire = ThreadMessageContext.getMessageContext().getWire();
         assert wire != null;
         List<InvocationChain> chains = wire.getCallbackInvocationChains();
         IdentityHashMap<Operation, InvocationChain> map = new IdentityHashMap<Operation, InvocationChain>();
@@ -97,10 +89,8 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         }
         Operation operation = JavaInterfaceUtil.findOperation(method, map.keySet());
         InvocationChain chain = map.get(operation);
-        Object correlationId = context.getCorrelationId();
-        context.setCorrelationId(null);
         try {
-            return invoke(chain, args, correlationId, callbackUris, context);
+            return invoke(chain, args, wire);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {
@@ -110,7 +100,4 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         }
     }
 
-    public void setWorkContext(WorkContext context) {
-        this.context = context;
-    }
 }

@@ -27,23 +27,22 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
     public Axis2OneWayBindingInvoker(ServiceClient serviceClient,
-                                         QName wsdlOperationName,
-                                         Options options,
-                                         SOAPFactory soapFactory) {
+                                     QName wsdlOperationName,
+                                     Options options,
+                                     SOAPFactory soapFactory) {
 
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    protected Object invokeTarget(final Object payload, final short sequence, WorkContext workContext) throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final short sequence, String conversationId) throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
 
-            OperationClient operationClient = createOperationClient(args, workContext);
+            OperationClient operationClient = createOperationClient(args, conversationId);
             operationClient.execute(false);
 
             // REVIEW it seems ok to return null

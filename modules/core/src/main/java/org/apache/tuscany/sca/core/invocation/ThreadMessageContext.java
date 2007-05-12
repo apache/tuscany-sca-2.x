@@ -16,30 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.spi.component;
+package org.apache.tuscany.sca.core.invocation;
 
-import java.net.URI;
-
-import org.apache.tuscany.sca.scope.Scope;
-
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * Class for tunneling a WorkContext through the invocation of a user class.
  *
  * @version $Rev$ $Date$
  */
-public final class WorkContextTunnel {
+public final class ThreadMessageContext {
 
-    private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>(){
-        protected synchronized WorkContext initialValue() {
-            // TODO: is this the correct way to initialize a new WorkContext?
-            WorkContext workContext = new WorkContextImpl();
-            workContext.setIdentifier(Scope.COMPOSITE, URI.create("sca://root.application/").resolve("default"));
-            return workContext;
+    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>() {
+        protected synchronized Message initialValue() {
+            return new MessageImpl();
         }
     };
 
-    private WorkContextTunnel() {
+    private ThreadMessageContext() {
     }
 
     /**
@@ -57,8 +51,8 @@ public final class WorkContextTunnel {
      * @param context
      * @return the current work context for the thread; this must be restored after the invocation is made
      */
-    public static WorkContext setThreadWorkContext(WorkContext context) {
-        WorkContext old = CONTEXT.get();
+    public static Message setMessageContext(Message context) {
+        Message old = CONTEXT.get();
         CONTEXT.set(context);
         return old;
     }
@@ -68,7 +62,7 @@ public final class WorkContextTunnel {
      *
      * @return the WorkContext for the current thread
      */
-    public static WorkContext getThreadWorkContext() {
+    public static Message getMessageContext() {
         return CONTEXT.get();
     }
 }

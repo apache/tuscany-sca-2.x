@@ -25,8 +25,6 @@ import org.apache.tuscany.sca.invocation.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.spi.component.WorkContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -40,34 +38,36 @@ public class NonBlockingInterceptor implements Interceptor {
     private static final Message RESPONSE = new ImmutableMessage();
 
     private WorkScheduler workScheduler;
-    private WorkContext workContext;
     private Invoker next;
 
-    public NonBlockingInterceptor(WorkScheduler workScheduler, WorkContext workContext) {
+    public NonBlockingInterceptor(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
-        this.workContext = workContext;
     }
 
-    public NonBlockingInterceptor(WorkScheduler workScheduler, WorkContext workContext, Interceptor next) {
+    public NonBlockingInterceptor(WorkScheduler workScheduler, Interceptor next) {
         this.workScheduler = workScheduler;
-        this.workContext = workContext;
         this.next = next;
     }
 
     public Message invoke(final Message msg) {
         // Retrieve conversation id to transfer to new thread
         // Notice that we cannot clear the conversation id from the current thread
-        final Object conversationID = workContext.getIdentifier(Scope.CONVERSATION);
+        final String conversationID = ThreadMessageContext.getMessageContext().getConversationID();
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
                 public void run() {
-                    workContext.setCorrelationId(null);
+                    msg.setCorrelationID(null);
                     // if we got a conversation id, transfer it to new thread
                     if (conversationID != null) {
-                        workContext.setIdentifier(Scope.CONVERSATION, conversationID);
+                        msg.setConversationID(conversationID);
                     }
-                    next.invoke(msg);
+                    Message context = ThreadMessageContext.setMessageContext(msg);
+                    try {
+                        next.invoke(msg);
+                    } finally {
+                        ThreadMessageContext.setMessageContext(context);
+                    }
                 }
             });
         } catch (Exception e) {
@@ -89,6 +89,22 @@ public class NonBlockingInterceptor implements Interceptor {
      */
     private static class ImmutableMessage implements Message {
 
+        public String getConversationID() {
+            return null;
+        }
+
+        public RuntimeWire getWire() {
+            return null;
+        }
+
+        public void setConversationID(String conversationId) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setWire(RuntimeWire wire) {
+            throw new UnsupportedOperationException();
+        }
+
         @SuppressWarnings("unchecked")
         public Object getBody() {
             return null;
@@ -98,21 +114,6 @@ public class NonBlockingInterceptor implements Interceptor {
             if (body != null) {
                 throw new UnsupportedOperationException();
             }
-        }
-
-        public WorkContext getWorkContext() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void setWorkContext(WorkContext workContext) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void pushCallbackWire(RuntimeWire wire) {
-        }
-
-        public LinkedList<RuntimeWire> getCallbackWires() {
-            return null;
         }
 
         public void setCallbackWires(LinkedList<RuntimeWire> wires) {
@@ -149,6 +150,22 @@ public class NonBlockingInterceptor implements Interceptor {
         
         public ConversationSequence getConversationSequence() {
             return null;
+        }
+
+        public String getFrom() {
+            return null;
+        }
+
+        public String getTo() {
+            return null;
+        }
+
+        public void setFrom(String from) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setTo(String to) {
+            throw new UnsupportedOperationException();
         }
 
     }

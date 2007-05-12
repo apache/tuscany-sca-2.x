@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.invocation;
 
+/**
+ * The enumeration for conversation actions
+ * 
+ * @version $Rev$ $Date$
+ */
 public enum ConversationSequence {
     CONVERSATION_START, CONVERSATION_CONTINUE, CONVERSATION_END 
 }
