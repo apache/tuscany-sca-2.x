@@ -28,6 +28,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     protected SCADomain domain;
     protected T service;
 
+    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance(getCompositeName());
         service = (T) domain.getService(getServiceClass(), "ClientComponent");
