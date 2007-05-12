@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.rmi;
+package org.apache.tuscany.sca.rmi;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;

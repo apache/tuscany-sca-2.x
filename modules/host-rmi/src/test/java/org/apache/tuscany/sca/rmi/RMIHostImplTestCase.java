@@ -14,9 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.rmi;
+package org.apache.tuscany.sca.rmi;
 
 import java.rmi.Remote;
+
+import org.apache.tuscany.sca.rmi.DefaultRMIHost;
+import org.apache.tuscany.sca.rmi.RMIHostException;
+import org.apache.tuscany.sca.rmi.RMIHostRuntimeException;
 
 import junit.framework.TestCase;
 
