@@ -32,7 +32,7 @@ import java.util.List;
 import org.apache.tuscany.contribution.ContentType;
 import org.apache.tuscany.contribution.processor.PackageProcessor;
 import org.apache.tuscany.contribution.service.ContributionException;
-import org.apache.tuscany.contribution.service.util.FileHelper;
+import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
 public class FolderContributionProcessor implements PackageProcessor {
     /**

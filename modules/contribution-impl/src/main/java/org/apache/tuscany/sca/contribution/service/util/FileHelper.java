@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.service.util;
+package org.apache.tuscany.sca.contribution.service.util;
 
 import java.io.File;
 import java.io.FileFilter;

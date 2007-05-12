@@ -45,8 +45,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.contribution.service.ContributionRepository;
-import org.apache.tuscany.contribution.service.util.FileHelper;
-import org.apache.tuscany.contribution.service.util.IOHelper;
+import org.apache.tuscany.sca.contribution.service.util.FileHelper;
+import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 /**
  * The default implementation of ContributionRepository
