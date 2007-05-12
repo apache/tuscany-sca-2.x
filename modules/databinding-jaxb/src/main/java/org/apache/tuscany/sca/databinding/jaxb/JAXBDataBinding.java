@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.jaxb;
+package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;

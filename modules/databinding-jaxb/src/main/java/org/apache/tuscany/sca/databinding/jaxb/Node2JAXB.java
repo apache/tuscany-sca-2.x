@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.jaxb;
+package org.apache.tuscany.sca.databinding.jaxb;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
