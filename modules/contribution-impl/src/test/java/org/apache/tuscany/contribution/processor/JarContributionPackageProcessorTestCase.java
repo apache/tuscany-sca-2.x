@@ -25,7 +25,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
+import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 public class JarContributionPackageProcessorTestCase extends TestCase {
