@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.impl;
+package org.apache.tuscany.sca.contribution.impl;
 
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.resolver.ModelResolver;

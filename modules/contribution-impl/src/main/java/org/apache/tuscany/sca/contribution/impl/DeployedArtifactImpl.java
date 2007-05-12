@@ -16,30 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.processor;
 
-import java.io.File;
-import java.net.URI;
-import java.util.List;
+package org.apache.tuscany.sca.contribution.impl;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.contribution.DeployedArtifact;
 
-import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
+/**
+ * Representation of a deployed artifact
+ *
+ * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
+ */
+public class DeployedArtifactImpl extends ArtifactImpl implements DeployedArtifact {
+    private Object modelObject;
 
-public class FolderContributionPackageProcessorTestCase extends TestCase {
-    private static final String FOLDER_CONTRIBUTION = ".";
-    
-    private File contributionRoot;
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.contributionRoot = new File(FOLDER_CONTRIBUTION);
+    protected DeployedArtifactImpl() {
+        super();
     }
     
-    public final void testProcessPackageArtifacts() throws Exception {
-        FolderContributionProcessor folderProcessor = new FolderContributionProcessor();
-
-        List<URI> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
-        assertNotNull(artifacts);
+    public Object getModel() {
+        return modelObject;
+    }
+    
+    public void setModel(Object modelObject) {
+        this.modelObject = modelObject;
     }
 }
