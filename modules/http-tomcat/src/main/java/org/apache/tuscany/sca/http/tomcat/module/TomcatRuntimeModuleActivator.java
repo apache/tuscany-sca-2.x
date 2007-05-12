@@ -17,14 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.http.tomcat.module;
+package org.apache.tuscany.sca.http.tomcat.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.http.tomcat.TomcatServer;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.http.tomcat.TomcatServer;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**

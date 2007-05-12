@@ -1,2 +1,2 @@
 # Implementation class for the ModuleActivator
-org.apache.tuscany.http.tomcat.module.TomcatRuntimeModuleActivator
+org.apache.tuscany.sca.http.tomcat.module.TomcatRuntimeModuleActivator

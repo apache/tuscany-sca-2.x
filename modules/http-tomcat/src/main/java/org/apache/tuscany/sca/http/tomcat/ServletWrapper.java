@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.http.tomcat;
+package org.apache.tuscany.sca.http.tomcat;
 
 import javax.servlet.Servlet;
 
