@@ -22,12 +22,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 
 /**
  * Processes an {@link @Resource} annotation, updating the component type with

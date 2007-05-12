@@ -22,11 +22,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.implementation.java.introspect.JavaClassVisitor;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 
 /**
  * A convenience class for annotation processors which alleviates the need to

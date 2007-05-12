@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.assembly.Composite;
 
 
 /**

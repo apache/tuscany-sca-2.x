@@ -22,8 +22,6 @@ package org.apache.tuscany.implementation.java.module;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
@@ -60,6 +58,8 @@ import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;

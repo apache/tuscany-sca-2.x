@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.spi.ObjectCreationException;
 import org.apache.tuscany.sca.spi.ObjectFactory;
 import org.w3c.dom.Document;

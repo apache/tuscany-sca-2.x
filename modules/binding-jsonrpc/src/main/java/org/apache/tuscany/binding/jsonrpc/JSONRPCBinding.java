@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.binding.jsonrpc;
 
-import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
  * A model for the sample JSONRPC binding.

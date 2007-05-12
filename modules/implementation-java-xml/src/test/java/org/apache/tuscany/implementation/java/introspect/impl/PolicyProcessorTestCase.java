@@ -25,7 +25,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -36,6 +35,7 @@ import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIn
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.policy.DefaultPolicyFactory;
 import org.apache.tuscany.policy.Intent;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 
@@ -116,13 +116,13 @@ public class PolicyProcessorTestCase extends TestCase {
         // name then it would seem that wrong values were put on the @Service annotation
         // or the wrong interfaces were specified on the implements list of the class
         // statement?
-        Map<String, org.apache.tuscany.assembly.Service> serviceMap = new HashMap<String, org.apache.tuscany.assembly.Service>();
-        for (org.apache.tuscany.assembly.Service service: type.getServices()) {
+        Map<String, org.apache.tuscany.sca.assembly.Service> serviceMap = new HashMap<String, org.apache.tuscany.sca.assembly.Service>();
+        for (org.apache.tuscany.sca.assembly.Service service: type.getServices()) {
             serviceMap.put(service.getName(), service);
         }
         for (Class interfaceClass : serviceImplClass.getInterfaces()) {
             Requires interfaceIntentAnnotation = (Requires)interfaceClass.getAnnotation(Requires.class);
-            org.apache.tuscany.assembly.Service service = serviceMap.get(interfaceClass.getSimpleName());
+            org.apache.tuscany.sca.assembly.Service service = serviceMap.get(interfaceClass.getSimpleName());
             if (service == null) {
                 fail("No service defined for interface " + interfaceClass.getSimpleName()
                     + " on Service Implementation "

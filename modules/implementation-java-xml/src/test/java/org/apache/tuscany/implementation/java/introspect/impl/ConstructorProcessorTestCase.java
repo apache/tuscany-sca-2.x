@@ -28,9 +28,6 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -40,6 +37,9 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -177,19 +177,19 @@ public class ConstructorProcessorTestCase extends TestCase {
             propertyProcessor.visitConstructorParameter(parameters[i], type);
         }
 
-        org.apache.tuscany.assembly.Reference ref0 = getReference(type, "_ref0");
+        org.apache.tuscany.sca.assembly.Reference ref0 = getReference(type, "_ref0");
         assertNotNull(ref0);
         assertEquals(Multiplicity.ONE_N, ref0.getMultiplicity());
-        org.apache.tuscany.assembly.Reference ref1 = getReference(type, "bar");
+        org.apache.tuscany.sca.assembly.Reference ref1 = getReference(type, "bar");
         assertNotNull(ref1);
         assertEquals(Multiplicity.ONE_N, ref1.getMultiplicity());
-        org.apache.tuscany.assembly.Reference ref2 = getReference(type, "xyz");
+        org.apache.tuscany.sca.assembly.Reference ref2 = getReference(type, "xyz");
         assertNotNull(ref2);
         assertEquals(Multiplicity.ONE_N, ref2.getMultiplicity());
-        org.apache.tuscany.assembly.Property prop1 = getProperty(type, "foo");
+        org.apache.tuscany.sca.assembly.Property prop1 = getProperty(type, "foo");
         assertNotNull(prop1);
         assertTrue(prop1.isMany());
-        org.apache.tuscany.assembly.Property prop2 = getProperty(type, "abc");
+        org.apache.tuscany.sca.assembly.Property prop2 = getProperty(type, "abc");
         assertNotNull(prop2);
         assertTrue(prop2.isMany());
     }

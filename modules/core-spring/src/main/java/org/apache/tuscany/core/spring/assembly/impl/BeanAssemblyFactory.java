@@ -18,27 +18,27 @@
  */
 package org.apache.tuscany.core.spring.assembly.impl;
 
-import org.apache.tuscany.assembly.AbstractProperty;
-import org.apache.tuscany.assembly.AbstractReference;
-import org.apache.tuscany.assembly.AbstractService;
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Callback;
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentProperty;
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.ComponentType;
-import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.CompositeReference;
-import org.apache.tuscany.assembly.CompositeService;
-import org.apache.tuscany.assembly.ConstrainingType;
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.assembly.Service;
-import org.apache.tuscany.assembly.Wire;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.assembly.AbstractProperty;
+import org.apache.tuscany.sca.assembly.AbstractReference;
+import org.apache.tuscany.sca.assembly.AbstractService;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Callback;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentProperty;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.Wire;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**

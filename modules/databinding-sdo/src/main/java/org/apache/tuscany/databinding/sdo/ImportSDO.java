@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.impl.BaseImpl;
+import org.apache.tuscany.sca.assembly.impl.BaseImpl;
 
 import commonj.sdo.helper.HelperContext;
 

@@ -22,8 +22,6 @@ import static org.apache.tuscany.implementation.java.introspect.impl.ModelHelper
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -34,6 +32,8 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
@@ -69,7 +69,7 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
      */
     public void testSingleConstructorWithParam() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        org.apache.tuscany.assembly.Property prop = factory.createProperty();
+        org.apache.tuscany.sca.assembly.Property prop = factory.createProperty();
         prop.setName("foo");
         type.getProperties().add(prop);
         // Hack to add a property member
@@ -85,7 +85,7 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
      */
     public void testSingleConstructorWithRef() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        org.apache.tuscany.assembly.Reference ref = factory.createReference();
+        org.apache.tuscany.sca.assembly.Reference ref = factory.createReference();
         ref.setName("foo");
         type.getReferences().add(ref);
         type.getReferenceMembers().put("foo", new JavaElementImpl("foo", String.class, null));
@@ -101,14 +101,14 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
     public void testSingleConstructorWithPropRef() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
 
-        org.apache.tuscany.assembly.Property prop = factory.createProperty();
+        org.apache.tuscany.sca.assembly.Property prop = factory.createProperty();
         prop.setName("foo");
         type.getProperties().add(prop);
         // Hack to add a property member
         JavaElementImpl element = new JavaElementImpl("foo", String.class, null);
         type.getPropertyMembers().put("foo", element);
 
-        org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
+        org.apache.tuscany.sca.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
         type.getReferences().add(ref);
         type.getReferenceMembers().put("ref", new JavaElementImpl("ref", Foo1.class, null));
         visitEnd(Foo2.class, type);
@@ -130,10 +130,10 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
 
     public void testSingleConstructorAmbiguousRef() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        org.apache.tuscany.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
+        org.apache.tuscany.sca.assembly.Reference ref = ModelHelper.createReference(factory, javaFactory, "ref", Foo1.class);
         type.getReferences().add(ref);
         type.getReferenceMembers().put("ref", new JavaElementImpl("ref", Foo1.class, null));
-        org.apache.tuscany.assembly.Reference ref2 = ModelHelper.createReference(factory, javaFactory, "ref2", Foo1.class);
+        org.apache.tuscany.sca.assembly.Reference ref2 = ModelHelper.createReference(factory, javaFactory, "ref2", Foo1.class);
         type.getReferences().add(ref2);
         type.getReferenceMembers().put("ref2", new JavaElementImpl("ref2", Foo1.class, null));
         try {

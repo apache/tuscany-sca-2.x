@@ -26,10 +26,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.contribution.service.ContributionReadException;
 import org.apache.tuscany.implementation.spi.AbstractStAXArtifactProcessor;
 import org.apache.tuscany.implementation.spi.ResourceHelper;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**

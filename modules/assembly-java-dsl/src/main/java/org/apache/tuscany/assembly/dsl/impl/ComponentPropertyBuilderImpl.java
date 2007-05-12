@@ -22,7 +22,7 @@ package org.apache.tuscany.assembly.dsl.impl;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.assembly.dsl.ComponentPropertyBuilder;
-import org.apache.tuscany.assembly.impl.ComponentPropertyImpl;
+import org.apache.tuscany.sca.assembly.impl.ComponentPropertyImpl;
 
 public class ComponentPropertyBuilderImpl extends ComponentPropertyImpl implements ComponentPropertyBuilder {
 	

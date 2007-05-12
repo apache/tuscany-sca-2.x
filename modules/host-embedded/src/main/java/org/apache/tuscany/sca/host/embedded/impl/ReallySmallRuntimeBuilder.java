@@ -33,7 +33,6 @@ import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.contribution.processor.DefaultPackageProcessorExtensionPoint;
@@ -55,6 +54,7 @@ import org.apache.tuscany.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;

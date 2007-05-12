@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.spring.assembly.impl;
 
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 
 /**

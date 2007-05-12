@@ -23,9 +23,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Callback;
-import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
@@ -34,6 +31,9 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Callback;
+import org.apache.tuscany.sca.assembly.Service;
 import org.osoa.sca.annotations.Requires;
 
 /**

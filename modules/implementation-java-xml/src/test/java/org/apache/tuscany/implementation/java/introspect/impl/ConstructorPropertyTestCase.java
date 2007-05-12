@@ -23,11 +23,11 @@ import static org.apache.tuscany.implementation.java.introspect.impl.ModelHelper
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.osoa.sca.annotations.Property;
 
 /**
@@ -41,7 +41,7 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
-        org.apache.tuscany.assembly.Property property = getProperty(type, "myProp");
+        org.apache.tuscany.sca.assembly.Property property = getProperty(type, "myProp");
         assertTrue(property.isMustSupply());
         assertEquals("myProp", property.getName());
     }

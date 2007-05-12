@@ -19,22 +19,22 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Binding;
-import org.apache.tuscany.assembly.Component;
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.Composite;
-import org.apache.tuscany.assembly.Implementation;
-import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.assembly.builder.Problem;
-import org.apache.tuscany.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.sca.assembly.builder.Problem;
+import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;

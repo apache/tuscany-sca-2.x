@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.databinding.DefaultTransformerExtensionPoint;
@@ -38,6 +37,7 @@ import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.interfacedef.util.TypeInfo;
 import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.spi.ObjectCreationException;
 import org.apache.tuscany.sca.spi.ObjectFactory;
 import org.w3c.dom.Document;

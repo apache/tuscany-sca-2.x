@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
-import org.apache.tuscany.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Composite;
 
 /**
  * Start/stop a composite

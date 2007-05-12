@@ -22,9 +22,9 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.Binding;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.assembly.Binding;
 
 
 /**

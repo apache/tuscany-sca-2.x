@@ -20,13 +20,13 @@ package org.apache.tuscany.assembly.dsl.impl;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.assembly.dsl.AssemblyBuilder;
 import org.apache.tuscany.assembly.dsl.ComponentBuilder;
 import org.apache.tuscany.assembly.dsl.ComponentPropertyBuilder;
 import org.apache.tuscany.assembly.dsl.ComponentReferenceBuilder;
 import org.apache.tuscany.assembly.dsl.ComponentServiceBuilder;
 import org.apache.tuscany.assembly.dsl.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 
 public class AssemblyBuilderImpl extends DefaultAssemblyFactory implements AssemblyBuilder {
 

@@ -21,8 +21,6 @@ package org.apache.tuscany.databinding.sdo.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
@@ -39,6 +37,8 @@ import org.apache.tuscany.databinding.sdo.XMLDocument2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2DataObject;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument;
 import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 

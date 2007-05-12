@@ -25,14 +25,14 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionExport;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoader;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 
 /**
  * Loader that handles contribution metadata files

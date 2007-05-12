@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.core;
 
-import org.apache.tuscany.assembly.Component;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.osoa.sca.ComponentContext;

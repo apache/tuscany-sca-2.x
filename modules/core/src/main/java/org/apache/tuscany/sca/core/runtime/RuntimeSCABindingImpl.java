@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.core.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.assembly.SCABinding;
-import org.apache.tuscany.assembly.impl.SCABindingImpl;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.impl.SCABindingImpl;
 import org.apache.tuscany.sca.core.RuntimeWire;
 
 /**

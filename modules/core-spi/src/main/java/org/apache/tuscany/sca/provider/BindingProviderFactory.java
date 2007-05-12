@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;

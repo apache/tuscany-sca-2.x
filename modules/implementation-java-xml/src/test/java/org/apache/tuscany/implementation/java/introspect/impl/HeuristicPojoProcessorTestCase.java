@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -36,6 +35,7 @@ import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntro
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
@@ -95,7 +95,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertTrue(ModelHelper
             .matches(ModelHelper.getService(type, Interface1.class.getSimpleName()), Interface1.class));
         assertEquals(1, type.getProperties().size());
-        org.apache.tuscany.assembly.Property prop = ModelHelper.getProperty(type, "property");
+        org.apache.tuscany.sca.assembly.Property prop = ModelHelper.getProperty(type, "property");
         assertNotNull(prop);
         assertEquals(ComplexProperty.class, type.getPropertyMembers().get("property").getType());
         assertEquals(1, type.getReferences().size());
@@ -180,19 +180,19 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      */
     public void testExcludedPropertyAndReference() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        org.apache.tuscany.assembly.Reference ref = factory.createReference();
+        org.apache.tuscany.sca.assembly.Reference ref = factory.createReference();
         ref.setName("reference");
         type.getReferences().add(ref);
         type.getReferenceMembers().put("reference", new JavaElementImpl("reference", Ref.class, null));
-        org.apache.tuscany.assembly.Reference ref2 = factory.createReference();
+        org.apache.tuscany.sca.assembly.Reference ref2 = factory.createReference();
         ref2.setName("reference2");
         type.getReferences().add(ref2);
         type.getReferenceMembers().put("reference2", new JavaElementImpl("reference2", Ref.class, null));
-        org.apache.tuscany.assembly.Property prop1 = factory.createProperty();
+        org.apache.tuscany.sca.assembly.Property prop1 = factory.createProperty();
         prop1.setName("string1");
         type.getProperties().add(prop1);
         type.getPropertyMembers().put("string1", new JavaElementImpl("string1", String.class, null));
-        org.apache.tuscany.assembly.Property prop2 = factory.createProperty();
+        org.apache.tuscany.sca.assembly.Property prop2 = factory.createProperty();
         prop2.setName("string2");
         type.getProperties().add(prop2);
         type.getPropertyMembers().put("string2", new JavaElementImpl("string2", String.class, null));
@@ -221,7 +221,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         Constructor<PropertyIntTypeOnConstructor> ctor = PropertyIntTypeOnConstructor.class.getConstructor();
         type.setConstructor(new JavaConstructorImpl<PropertyIntTypeOnConstructor>(ctor));
         processor.visitEnd(PropertyIntTypeOnConstructor.class, type);
-        org.apache.tuscany.assembly.Property foo = ModelHelper.getProperty(type, "foo");
+        org.apache.tuscany.sca.assembly.Property foo = ModelHelper.getProperty(type, "foo");
         assertEquals(int.class, type.getPropertyMembers().get("foo").getType());
         assertEquals(new QName(JavaXMLMapper.URI_2001_SCHEMA_XSD, "int"), foo.getXSDType());
     }

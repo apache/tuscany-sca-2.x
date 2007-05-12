@@ -20,7 +20,6 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -29,6 +28,7 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
@@ -43,7 +43,7 @@ public class ServiceProcessorTestCase extends TestCase {
     public void testMultipleInterfaces() throws Exception {
         processor.visitClass(FooMultiple.class, type);
         assertEquals(2, type.getServices().size());
-        org.apache.tuscany.assembly.Service service = ModelHelper.getService(type, Baz.class.getSimpleName());
+        org.apache.tuscany.sca.assembly.Service service = ModelHelper.getService(type, Baz.class.getSimpleName());
         assertEquals(Baz.class, ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Bar.class, ((JavaInterface)service.getInterfaceContract().getCallbackInterface()).getJavaClass());
         assertNotNull(ModelHelper.getService(type, Bar.class.getSimpleName()));
@@ -71,7 +71,7 @@ public class ServiceProcessorTestCase extends TestCase {
     public void testRemotableNoService() throws Exception {
         processor.visitClass(FooRemotableNoService.class, type);
         assertEquals(1, type.getServices().size());
-        org.apache.tuscany.assembly.Service service = ModelHelper.getService(type, BazRemotable.class.getSimpleName());
+        org.apache.tuscany.sca.assembly.Service service = ModelHelper.getService(type, BazRemotable.class.getSimpleName());
         assertEquals(BazRemotable.class, ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass());
     }
 

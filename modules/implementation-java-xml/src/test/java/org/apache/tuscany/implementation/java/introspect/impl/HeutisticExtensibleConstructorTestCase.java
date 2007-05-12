@@ -20,8 +20,6 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.assembly.Property;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -32,6 +30,8 @@ import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.Property;
 
 /**
  * Verifies constructors that have extensible annotation types, i.e. that have
