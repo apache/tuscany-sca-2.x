@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**
  * The "Wrapper Style" WSDL operation is defined by The Java API for XML-Based

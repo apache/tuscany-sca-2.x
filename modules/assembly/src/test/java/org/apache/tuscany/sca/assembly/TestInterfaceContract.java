@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.assembly;
 
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.impl.InterfaceContractImpl;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 
 /**
  * A test interface contract model.

@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.assembly.impl;
 
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
@@ -40,6 +39,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 
 /**
  * A factory for the assembly model.

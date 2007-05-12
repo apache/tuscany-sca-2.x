@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.core.wire;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;

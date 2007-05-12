@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 import com.example.ipo.jaxb.ObjectFactory;

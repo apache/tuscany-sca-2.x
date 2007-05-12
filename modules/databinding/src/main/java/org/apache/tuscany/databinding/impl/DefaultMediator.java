@@ -31,7 +31,7 @@ import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**
  * Default Mediator implementation

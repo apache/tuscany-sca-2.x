@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.impl;
+package org.apache.tuscany.sca.interfacedef.impl;
 
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;

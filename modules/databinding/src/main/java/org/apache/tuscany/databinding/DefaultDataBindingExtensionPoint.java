@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.tuscany.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**
  * The default implementation of a data binding extension point.

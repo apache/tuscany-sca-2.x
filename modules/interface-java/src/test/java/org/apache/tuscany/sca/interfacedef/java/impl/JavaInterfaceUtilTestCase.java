@@ -28,8 +28,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 
 /**
  * @version $Rev$ $Date$

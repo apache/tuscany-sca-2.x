@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.databinding.jaxb.fault.InvalidSymbolFault;
 import org.apache.tuscany.databinding.jaxb.fault.InvalidSymbolFault_Exception;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
