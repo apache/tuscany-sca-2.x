@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 
 import org.apache.tuscany.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.interfacedef.DataType;
-import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * A DataBinding for the XML string

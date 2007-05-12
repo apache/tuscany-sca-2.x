@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.util;
+package org.apache.tuscany.sca.interfacedef.util;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -32,9 +32,9 @@ import org.apache.tuscany.databinding.impl.BaseTransformer;
 import org.apache.tuscany.interfacedef.DataType;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.interfacedef.util.ElementInfo;
-import org.apache.tuscany.interfacedef.util.WrapperInfo;
-import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 

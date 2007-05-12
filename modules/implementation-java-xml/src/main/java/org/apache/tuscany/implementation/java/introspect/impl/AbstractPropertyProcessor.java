@@ -30,9 +30,9 @@ import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.implementation.java.introspect.IllegalPropertyException;
 import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 
 /**
  * Base class for ImplementationProcessors that handle annotations that add

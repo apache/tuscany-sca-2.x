@@ -20,7 +20,7 @@ package org.apache.tuscany.interfacedef;
 
 import java.util.List;
 
-import org.apache.tuscany.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**
  * Represents an operation on a service interface.

@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
-import org.apache.tuscany.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.easymock.EasyMock;
 
 /**

@@ -34,7 +34,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.impl.SimpleTypeMapperImpl;
-import org.apache.tuscany.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 
 public final class BeanUtil {
     private static final Object[] NULL = (Object[])null;

@@ -21,7 +21,7 @@ package org.apache.tuscany.databinding.impl;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.SimpleTypeMapper;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Transformer to convert data from a databinding's representation of simple

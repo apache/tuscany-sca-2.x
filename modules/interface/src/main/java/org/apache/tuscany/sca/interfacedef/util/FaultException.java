@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.util;
+package org.apache.tuscany.sca.interfacedef.util;
 
 import javax.xml.namespace.QName;
 
