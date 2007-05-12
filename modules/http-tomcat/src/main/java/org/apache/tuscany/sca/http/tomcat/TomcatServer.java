@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * 
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("deprecation")
 public class TomcatServer implements ServletHost {
 
     private static final int DEFAULT_PORT = 8080;
