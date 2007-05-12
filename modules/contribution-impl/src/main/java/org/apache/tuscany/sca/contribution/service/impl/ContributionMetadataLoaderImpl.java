@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.contribution.service.impl;
+package org.apache.tuscany.sca.contribution.service.impl;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 

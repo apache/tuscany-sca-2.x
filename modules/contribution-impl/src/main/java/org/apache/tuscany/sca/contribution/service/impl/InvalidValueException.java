@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.service.impl;
+package org.apache.tuscany.sca.contribution.service.impl;
 
 import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
 
