@@ -17,20 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl.impl;
 
-public interface ComponentReferenceBuilder {
-	
-	ComponentReferenceBuilder wiredTo(String target);
-	
-	ComponentReferenceBuilder wiredTo(ComponentServiceBuilder target);
-	
-	ComponentReferenceBuilder typedBy(Class interfaceClass);
-	
-	ComponentReferenceBuilder promotedAs(String promoted);
+import javax.xml.namespace.QName;
 
-	ComponentReferenceBuilder promoted();
+import org.apache.tuscany.sca.assembly.dsl.ComponentPropertyBuilder;
+import org.apache.tuscany.sca.assembly.impl.ComponentPropertyImpl;
+
+public class ComponentPropertyBuilderImpl extends ComponentPropertyImpl implements ComponentPropertyBuilder {
 	
-	ComponentReferenceBuilder boundTo(String uri);
+	public ComponentPropertyBuilderImpl ofType(String type) {
+		//TODO handle namespace
+		this.setXSDType(new QName("", type));
+		return this;
+	}
+	
+	public ComponentPropertyBuilderImpl configuredTo(Object value) {
+		this.setValue(value);
+		return this;
+	}
 
 }

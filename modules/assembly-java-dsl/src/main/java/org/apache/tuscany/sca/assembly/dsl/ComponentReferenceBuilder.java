@@ -17,18 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-public interface ComponentBuilder {
+public interface ComponentReferenceBuilder {
+	
+	ComponentReferenceBuilder wiredTo(String target);
+	
+	ComponentReferenceBuilder wiredTo(ComponentServiceBuilder target);
+	
+	ComponentReferenceBuilder typedBy(Class interfaceClass);
+	
+	ComponentReferenceBuilder promotedAs(String promoted);
 
-	ComponentBuilder implementedBy(Class clazz);
+	ComponentReferenceBuilder promoted();
 	
-	ComponentBuilder implementedBy(CompositeBuilder composite);
-	
-	public ComponentBuilder uses(ComponentReferenceBuilder... componentReferences);
-
-	public ComponentBuilder provides(ComponentServiceBuilder... componentServices);
-	
-	public ComponentBuilder declares(ComponentPropertyBuilder...componentProperties);
+	ComponentReferenceBuilder boundTo(String uri);
 
 }

@@ -17,8 +17,16 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-public interface AccountService {
-
+public interface ComponentServiceBuilder {
+	
+	ComponentServiceBuilder typedBy(Class interfaceClass);
+	
+	ComponentServiceBuilder promotedAs(String promoted);
+	
+	ComponentServiceBuilder promoted();
+	
+	ComponentServiceBuilder boundTo(String uri);
+	
 }

@@ -17,13 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl.impl;
+package org.apache.tuscany.sca.assembly.dsl.impl;
 
-import org.apache.tuscany.assembly.dsl.ComponentReferenceBuilder;
-import org.apache.tuscany.assembly.dsl.ComponentServiceBuilder;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.dsl.ComponentReferenceBuilder;
+import org.apache.tuscany.sca.assembly.dsl.ComponentServiceBuilder;
 import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.sca.assembly.impl.ComponentServiceImpl;
 

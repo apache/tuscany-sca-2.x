@@ -17,16 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.assembly.dsl;
+package org.apache.tuscany.sca.assembly.dsl;
 
-public interface ComponentServiceBuilder {
+public interface ComponentPropertyBuilder {
 	
-	ComponentServiceBuilder typedBy(Class interfaceClass);
+	ComponentPropertyBuilder ofType(String type);
 	
-	ComponentServiceBuilder promotedAs(String promoted);
-	
-	ComponentServiceBuilder promoted();
-	
-	ComponentServiceBuilder boundTo(String uri);
-	
+	ComponentPropertyBuilder configuredTo(Object value);
+
 }
