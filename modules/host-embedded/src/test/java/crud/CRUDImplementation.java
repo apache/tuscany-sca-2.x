@@ -18,7 +18,7 @@
  */
 package crud;
 
-import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.

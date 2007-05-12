@@ -22,12 +22,12 @@ package org.apache.tuscany.contribution.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionExport;
 import org.apache.tuscany.contribution.ContributionImport;
 import org.apache.tuscany.contribution.DeployedArtifact;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.assembly.Composite;
 
 /**
  * The representation of a deployed contribution

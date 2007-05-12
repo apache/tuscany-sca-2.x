@@ -33,8 +33,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Composite;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.DeployedArtifact;
@@ -46,6 +44,8 @@ import org.apache.tuscany.contribution.service.ContributionMetadataLoaderExcepti
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
 import org.apache.tuscany.contribution.service.util.IOHelper;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 
 /**
  * @version $Rev$ $Date$

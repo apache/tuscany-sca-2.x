@@ -25,8 +25,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.implementation.java.impl.JavaParameterImpl;
@@ -36,6 +34,8 @@ import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -72,7 +72,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
 
         JavaElementImpl element = new JavaElementImpl(method, 0);
-        org.apache.tuscany.assembly.Reference reference = createReference(element, name);
+        org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, element);
     }
@@ -90,7 +90,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
             throw new DuplicateReferenceException(name);
         }
         JavaElementImpl element = new JavaElementImpl(field);
-        org.apache.tuscany.assembly.Reference reference = createReference(element, name);
+        org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, element);
     }
@@ -106,7 +106,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         if (type.getReferenceMembers().get(name) != null) {
             throw new DuplicateReferenceException(name);
         }
-        org.apache.tuscany.assembly.Reference reference = createReference(parameter, name);
+        org.apache.tuscany.sca.assembly.Reference reference = createReference(parameter, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, parameter);
         parameter.setClassifer(Reference.class);
@@ -127,8 +127,8 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    private org.apache.tuscany.assembly.Reference createReference(JavaElementImpl element, String name) throws IntrospectionException {
-        org.apache.tuscany.assembly.Reference reference = assemblyFactory.createReference();
+    private org.apache.tuscany.sca.assembly.Reference createReference(JavaElementImpl element, String name) throws IntrospectionException {
+        org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
         

@@ -19,17 +19,17 @@
 
 package org.apache.tuscany.implementation.java.context;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.Reference;
-import org.apache.tuscany.assembly.Service;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 
 /**
  * @version $Rev$ $Date$
@@ -74,7 +74,7 @@ public class ModelHelper {
 
     public static ComponentService createService(AssemblyFactory factory,
                                                  JavaInterfaceFactory javaFactory, Class<?> type) {
-        org.apache.tuscany.assembly.ComponentService ref = factory.createComponentService();
+        org.apache.tuscany.sca.assembly.ComponentService ref = factory.createComponentService();
         ref.setName(type.getSimpleName());
         JavaInterface i = javaFactory.createJavaInterface();
         i.setJavaClass(type);
@@ -86,7 +86,7 @@ public class ModelHelper {
 
     public static Reference createReference(AssemblyFactory factory,
                                             JavaInterfaceFactory javaFactory, String name, Class<?> type) {
-        org.apache.tuscany.assembly.Reference ref = factory.createReference();
+        org.apache.tuscany.sca.assembly.Reference ref = factory.createReference();
         ref.setName(name);
         JavaInterface i = javaFactory.createJavaInterface();
         i.setJavaClass(type);

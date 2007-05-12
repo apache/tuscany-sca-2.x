@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.implementation.java.introspect.impl;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.osoa.sca.annotations.Property;
 
 /**
@@ -37,7 +37,7 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
         return annotation.name();
     }
 
-    protected void initProperty(org.apache.tuscany.assembly.Property property, Property annotation) {
+    protected void initProperty(org.apache.tuscany.sca.assembly.Property property, Property annotation) {
         property.setMustSupply(annotation.required());
     }
 

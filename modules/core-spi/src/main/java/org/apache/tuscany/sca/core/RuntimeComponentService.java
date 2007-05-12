@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.core;
 
 import java.util.List;
 
-import org.apache.tuscany.assembly.Binding;
-import org.apache.tuscany.assembly.ComponentService;
 import org.apache.tuscany.interfacedef.Operation;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 

@@ -40,9 +40,6 @@ import java.util.Set;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.api.annotation.Resource;
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.Contract;
-import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.implementation.java.impl.JavaElementImpl;
@@ -55,6 +52,9 @@ import org.apache.tuscany.interfacedef.java.JavaInterface;
 import org.apache.tuscany.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.util.JavaXMLMapper;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Property;
@@ -87,7 +87,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     }
 
     public <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
-        List<org.apache.tuscany.assembly.Service> services = type.getServices();
+        List<org.apache.tuscany.sca.assembly.Service> services = type.getServices();
         if (services.isEmpty()) {
             // heuristically determine the service
             // TODO finish algorithm
@@ -118,7 +118,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
 
     private void addService(JavaImplementation type, Class<?> clazz) throws IntrospectionException {
         try {
-            org.apache.tuscany.assembly.Service service = createService(clazz);
+            org.apache.tuscany.sca.assembly.Service service = createService(clazz);
             type.getServices().add(service);
         } catch (InvalidInterfaceException e) {
             throw new IntrospectionException(e);
@@ -138,7 +138,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     }
 
     private <T> void calcPropRefs(Set<Method> methods,
-                                  List<org.apache.tuscany.assembly.Service> services,
+                                  List<org.apache.tuscany.sca.assembly.Service> services,
                                   JavaImplementation type,
                                   Class<T> clazz) throws IntrospectionException {
         // heuristically determine the properties references
@@ -452,8 +452,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      * Returns true if the given operation is defined in the collection of
      * service interfaces
      */
-    private boolean isInServiceInterface(Method operation, List<org.apache.tuscany.assembly.Service> services) {
-        for (org.apache.tuscany.assembly.Service service : services) {
+    private boolean isInServiceInterface(Method operation, List<org.apache.tuscany.sca.assembly.Service> services) {
+        for (org.apache.tuscany.sca.assembly.Service service : services) {
             Interface interface1 = service.getInterfaceContract().getInterface();
             if (interface1 instanceof JavaInterface) {
                 Class<?> clazz = ((JavaInterface)interface1).getJavaClass();
@@ -493,8 +493,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      * @param member the injection site the reference maps to
      * @param paramType the property type
      */
-    private org.apache.tuscany.assembly.Property createProperty(String name, Class<?> paramType) {
-        org.apache.tuscany.assembly.Property property = assemblyFactory.createProperty();
+    private org.apache.tuscany.sca.assembly.Property createProperty(String name, Class<?> paramType) {
+        org.apache.tuscany.sca.assembly.Property property = assemblyFactory.createProperty();
         property.setName(name);
         property.setXSDType(JavaXMLMapper.getXMLType(paramType));
         return property;
@@ -531,7 +531,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
         for (Class interfaze : interfaces) {
             if (analyzeInterface(interfaze, nonPropRefMethods)) {
-                org.apache.tuscany.assembly.Service service;
+                org.apache.tuscany.sca.assembly.Service service;
                 try {
                     service = createService(interfaze);
                 } catch (InvalidInterfaceException e) {
@@ -585,9 +585,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         return true;
     }
 
-    public org.apache.tuscany.assembly.Reference createReference(String name, Class<?> paramType)
+    public org.apache.tuscany.sca.assembly.Reference createReference(String name, Class<?> paramType)
         throws IntrospectionException {
-        org.apache.tuscany.assembly.Reference reference = assemblyFactory.createReference();
+        org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
         reference.setName(name);
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
@@ -610,8 +610,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         return reference;
     }
 
-    public org.apache.tuscany.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {
-        org.apache.tuscany.assembly.Service service = assemblyFactory.createService();
+    public org.apache.tuscany.sca.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {
+        org.apache.tuscany.sca.assembly.Service service = assemblyFactory.createService();
         service.setName(interfaze.getSimpleName());
 
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();

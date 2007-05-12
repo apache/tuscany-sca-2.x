@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.assembly.dsl.impl;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ComponentService;
-import org.apache.tuscany.assembly.CompositeReference;
 import org.apache.tuscany.assembly.dsl.ComponentReferenceBuilder;
 import org.apache.tuscany.assembly.dsl.ComponentServiceBuilder;
-import org.apache.tuscany.assembly.impl.ComponentReferenceImpl;
-import org.apache.tuscany.assembly.impl.ComponentServiceImpl;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
+import org.apache.tuscany.sca.assembly.impl.ComponentServiceImpl;
 
 public class ComponentReferenceBuilderImpl extends ComponentReferenceImpl implements ComponentReferenceBuilder {
 	

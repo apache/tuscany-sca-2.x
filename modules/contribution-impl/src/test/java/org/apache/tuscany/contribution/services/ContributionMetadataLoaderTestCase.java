@@ -26,13 +26,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionFactory;
 import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.contribution.service.impl.ContributionMetadataLoaderImpl;
 import org.apache.tuscany.contribution.service.impl.InvalidValueException;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 
 /**
  * @version $Rev$ $Date$

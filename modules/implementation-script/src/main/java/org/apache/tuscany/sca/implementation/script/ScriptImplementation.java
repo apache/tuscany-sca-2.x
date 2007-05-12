@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
-import org.apache.tuscany.assembly.Implementation;
 import org.apache.tuscany.implementation.spi.AbstractImplementation;
+import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
  * Represents a Script implementation.

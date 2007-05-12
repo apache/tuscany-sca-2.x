@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
@@ -35,6 +34,7 @@ import org.apache.tuscany.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
 
@@ -55,7 +55,7 @@ public class ServiceCallbackTestCase extends TestCase {
     public void testMethodCallbackInterface() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooImpl.class, type);
-        org.apache.tuscany.assembly.Service service = getService(type, Foo.class.getSimpleName());
+        org.apache.tuscany.sca.assembly.Service service = getService(type, Foo.class.getSimpleName());
         assertNotNull(service);
         Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
         processor.visitMethod(method, type);
@@ -65,7 +65,7 @@ public class ServiceCallbackTestCase extends TestCase {
     public void testFieldCallbackInterface() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooImpl.class, type);
-        org.apache.tuscany.assembly.Service service = getService(type, Foo.class.getSimpleName());
+        org.apache.tuscany.sca.assembly.Service service = getService(type, Foo.class.getSimpleName());
         assertNotNull(service);
         Field field = FooImpl.class.getDeclaredField("callback");
         processor.visitField(field, type);

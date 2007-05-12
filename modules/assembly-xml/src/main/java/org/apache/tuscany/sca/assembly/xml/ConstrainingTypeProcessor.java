@@ -27,12 +27,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.assembly.AbstractContract;
-import org.apache.tuscany.assembly.AbstractProperty;
-import org.apache.tuscany.assembly.AbstractReference;
-import org.apache.tuscany.assembly.AbstractService;
-import org.apache.tuscany.assembly.AssemblyFactory;
-import org.apache.tuscany.assembly.ConstrainingType;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.service.ContributionReadException;
@@ -41,6 +35,12 @@ import org.apache.tuscany.contribution.service.ContributionWriteException;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.Operation;
 import org.apache.tuscany.policy.PolicyFactory;
+import org.apache.tuscany.sca.assembly.AbstractContract;
+import org.apache.tuscany.sca.assembly.AbstractProperty;
+import org.apache.tuscany.sca.assembly.AbstractReference;
+import org.apache.tuscany.sca.assembly.AbstractService;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ConstrainingType;
 
 /**
  * A contrainingType content handler.

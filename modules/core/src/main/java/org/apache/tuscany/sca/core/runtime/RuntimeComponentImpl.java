@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.core.runtime;
 
 import java.util.List;
 
-import org.apache.tuscany.assembly.ComponentReference;
-import org.apache.tuscany.assembly.Property;
-import org.apache.tuscany.assembly.impl.ComponentImpl;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.impl.ComponentImpl;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeWire;

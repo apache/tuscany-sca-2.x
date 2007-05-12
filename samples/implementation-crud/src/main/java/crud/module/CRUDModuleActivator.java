@@ -21,8 +21,8 @@ package crud.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.assembly.AssemblyFactory;
 import org.apache.tuscany.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.interfacedef.InterfaceContractMapper;

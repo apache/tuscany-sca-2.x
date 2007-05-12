@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 
 /**

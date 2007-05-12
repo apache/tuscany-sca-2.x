@@ -20,8 +20,8 @@ package org.apache.tuscany.implementation.java.introspect.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.implementation.java.introspect.impl.ConversationProcessor;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 
 /**
  * @version $Rev$ $Date$

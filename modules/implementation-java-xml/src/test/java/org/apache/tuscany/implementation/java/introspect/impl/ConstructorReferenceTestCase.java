@@ -23,10 +23,10 @@ import static org.apache.tuscany.implementation.java.introspect.impl.ModelHelper
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.assembly.Multiplicity;
 import org.apache.tuscany.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.implementation.java.JavaImplementation;
 import org.apache.tuscany.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -40,7 +40,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
-        org.apache.tuscany.assembly.Reference reference = getReference(type, "myRef");
+        org.apache.tuscany.sca.assembly.Reference reference = getReference(type, "myRef");
         assertEquals(Multiplicity.ONE_ONE, reference.getMultiplicity());
         assertEquals("myRef", reference.getName());
     }

@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.sca.binding.rmi;
 
-import org.apache.tuscany.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
  * Represents a binding to an RMI service.
