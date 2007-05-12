@@ -62,6 +62,7 @@ public class WSDLOperationTestCase extends TestCase {
         wsdlFactory = new DefaultWSDLFactory();
     }
 
+    @SuppressWarnings("unchecked")
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         WSDLDefinition definition = processor.read(null, new URI("stockquote.wsdl"), url);
