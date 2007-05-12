@@ -24,7 +24,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.client.async.AsyncResult;
 import org.apache.axis2.client.async.Callback;
 import org.apache.axis2.context.MessageContext;
-import org.apache.tuscany.sca.invocation.ConversationSequence;
 
 public class Axis2ReferenceCallback extends Callback {
 

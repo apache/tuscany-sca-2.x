@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.LinkedList;
 
 import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.invocation.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;

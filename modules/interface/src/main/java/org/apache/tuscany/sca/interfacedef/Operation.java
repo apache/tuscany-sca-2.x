@@ -26,10 +26,6 @@ import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
  * Represents an operation on a service interface.
  */
 public interface Operation {
-    enum ConversationSequence {
-        NO_CONVERSATION, CONVERSATION_CONTINUE, CONVERSATION_END
-    };
-
     /**
      * Returns the name of the operation.
      * 

@@ -34,33 +34,15 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 public interface RuntimeWire {
 
     /**
-     * The source metadata for a runtime wire
+     * Get the source of the wire
+     * @return
      */
-    public interface Source {
-        RuntimeComponent getComponent();
-
-        RuntimeComponentReference getComponentReference();
-
-        Binding getBinding();
-
-        InterfaceContract getInterfaceContract();
-    }
-
-    /**
-     * The target metadata for a runtime wire
-     */
-    public interface Target {
-        RuntimeComponent getComponent();
-
-        RuntimeComponentService getComponentService();
-
-        Binding getBinding();
-
-        InterfaceContract getInterfaceContract();
-    }
-
     Source getSource();
 
+    /**
+     * Get the target of the wire
+     * @return
+     */
     Target getTarget();
 
     /**
@@ -80,5 +62,63 @@ public interface RuntimeWire {
      *         with the wire
      */
     List<InvocationChain> getCallbackInvocationChains();
+    
+    /**
+     * The source of a runtime wire
+     */
+    public interface Source {
+        /**
+         * Get the source component
+         * @return The source component, null of the source is external
+         */
+        RuntimeComponent getComponent();
+
+        /**
+         * Get the source component reference
+         * @return The source component reference, null if the source is external
+         */
+        RuntimeComponentReference getComponentReference();
+
+        /**
+         * Get the source binding
+         * @return The source binding
+         */
+        Binding getBinding();
+
+        /**
+         * Get the source interface contract
+         * @return The source interface contract
+         */
+        InterfaceContract getInterfaceContract();
+    }
+    
+    /**
+     * The target of a runtime wire
+     */
+    public interface Target {
+        /**
+         * Get the target component
+         * @return The target component, null if the target is an external service
+         */
+        RuntimeComponent getComponent();
+
+        /**
+         * Get the target component service
+         * @return The target component service, null if the target is an external service
+         */
+        RuntimeComponentService getComponentService();
+
+        /**
+         * Get the target binding
+         * @return The target binding
+         */
+        Binding getBinding();
+
+        /**
+         * Get the target interface contract
+         * @return The target interface contract
+         */
+        InterfaceContract getInterfaceContract();
+    }    
 
 }

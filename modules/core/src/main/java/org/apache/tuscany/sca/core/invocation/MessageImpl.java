@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.invocation.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**

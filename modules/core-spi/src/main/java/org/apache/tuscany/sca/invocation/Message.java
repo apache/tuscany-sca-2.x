@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.invocation;
 
 import org.apache.tuscany.sca.core.RuntimeWire;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 
 /**
  * Represents a request, response, or exception flowing through a wire

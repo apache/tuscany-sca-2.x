@@ -32,6 +32,7 @@ import javax.wsdl.Part;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -202,7 +203,7 @@ public class WSDLOperation {
             operationModel.setName(operation.getName());
             operationModel.setFaultTypes(getFaultTypes());
             operationModel.setNonBlocking(oneway);
-            operationModel.setConversationSequence(Operation.ConversationSequence.NO_CONVERSATION);
+            operationModel.setConversationSequence(ConversationSequence.CONVERSATION_NONE);
             operationModel.setInputType(getInputType());
             operationModel.setOutputType(getOutputType());
 

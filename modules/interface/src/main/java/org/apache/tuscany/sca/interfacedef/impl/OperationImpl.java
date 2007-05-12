@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -39,7 +40,7 @@ public class OperationImpl implements Operation {
     private DataType<List<DataType>> inputType;
     private List<DataType> faultTypes;
     private Interface interfaze;
-    private ConversationSequence conversationSequence = ConversationSequence.NO_CONVERSATION;
+    private ConversationSequence conversationSequence = ConversationSequence.CONVERSATION_NONE;
     private boolean nonBlocking;
     private boolean wrapperStyle;
     private WrapperInfo wrapper;

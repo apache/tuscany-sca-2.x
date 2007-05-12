@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -102,16 +103,16 @@ public class ExtensibleJavaInterfaceIntrospector implements JavaInterfaceIntrosp
             Class[] paramTypes = method.getParameterTypes();
             Class[] faultTypes = method.getExceptionTypes();
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
-            Operation.ConversationSequence conversationSequence = Operation.ConversationSequence.NO_CONVERSATION;
+            ConversationSequence conversationSequence = ConversationSequence.CONVERSATION_NONE;
             if (method.isAnnotationPresent(EndsConversation.class)) {
                 if (!conversational) {
                     throw new InvalidOperationException(
                                                         "Method is marked as end conversation but contract is not conversational",
                                                         method);
                 }
-                conversationSequence = Operation.ConversationSequence.CONVERSATION_END;
+                conversationSequence = ConversationSequence.CONVERSATION_END;
             } else if (conversational) {
-                conversationSequence = Operation.ConversationSequence.CONVERSATION_CONTINUE;
+                conversationSequence = ConversationSequence.CONVERSATION_CONTINUE;
             }
 
             // Set outputType to null for void
