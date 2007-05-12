@@ -16,23 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspect;
+package org.apache.tuscany.sca.implementation.java.introspect;
 
-import java.lang.reflect.Member;
+import org.apache.tuscany.implementation.java.JavaImplementation;
 
 /**
- * Denotes an illegal property definition in a component type
+ * Implementations are responsible for walking a component implementation class,
+ * adding additional component type information as appropriate
  * 
  * @version $Rev$ $Date$
  */
-public class IllegalPropertyException extends IntrospectionException {
-    private static final long serialVersionUID = -2836849110706758494L;
+public interface JavaClassIntrospector {
 
-    public IllegalPropertyException(String message) {
-        super(message);
-    }
-    
-    public IllegalPropertyException(String message, Member member) {
-        super(message, member);
-    }    
+    /**
+     * Walks the given component implementation class
+     * 
+     * @param clazz the component implementation class
+     * @param type the component type associated with the implementation class
+     * @return the updated component type
+     * @throws IntrospectionException if an error is encountered evaluating the
+     *             implementation class
+     */
+    JavaImplementation introspect(Class<?> clazz, JavaImplementation type) throws IntrospectionException;
+
 }

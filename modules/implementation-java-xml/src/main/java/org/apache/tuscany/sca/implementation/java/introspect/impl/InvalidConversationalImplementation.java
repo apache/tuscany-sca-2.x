@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 
 /**
  * Raised when an implementation specifies improper conversational metadata

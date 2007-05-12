@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import org.apache.tuscany.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 
 /**
  * Denotes an invalid constructor definition, e.g. when the number of injection names specified in {@link

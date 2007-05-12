@@ -16,33 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspect;
+package org.apache.tuscany.sca.implementation.java.introspect;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Member;
 
 /**
- * Default implementation of the <code>IntrospectionRegistry</code>
+ * Denotes a problem processing annotations on a POJO implementation
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultJavaClassIntrospectorExtensionPoint implements JavaClassIntrospectorExtensionPoint {
+public class IntrospectionException extends Exception {
+    private static final long serialVersionUID = -361025119035104470L;
+    private Member member;
 
-    private List<JavaClassVisitor> visitors = new ArrayList<JavaClassVisitor>();
-
-    public DefaultJavaClassIntrospectorExtensionPoint() {
+    public IntrospectionException() {
     }
 
-    public void addClassVisitor(JavaClassVisitor visitor) {
-        visitors.add(visitor);
+    public IntrospectionException(String message) {
+        super(message);
     }
 
-    public void removeClassVisitor(JavaClassVisitor visitor) {
-        visitors.remove(visitor);
+    public IntrospectionException(String message, Member member) {
+        super(message);
+        this.member = member;
     }
-    
-    public List<JavaClassVisitor> getClassVisitors() {
-        return visitors;
+
+    public IntrospectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public IntrospectionException(Throwable cause) {
+        super(cause);
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
 }
