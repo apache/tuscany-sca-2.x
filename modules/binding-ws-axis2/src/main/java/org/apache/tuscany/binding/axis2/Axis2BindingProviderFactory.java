@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.http.ServletHost;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.ws.impl;
+package org.apache.tuscany.sca.binding.ws.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +27,13 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.binding.ws.WebServiceBinding;
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
 import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 
 /**
  * Represents a WebService binding.
