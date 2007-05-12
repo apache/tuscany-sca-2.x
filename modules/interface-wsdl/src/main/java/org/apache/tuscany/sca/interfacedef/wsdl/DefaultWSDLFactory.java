@@ -16,27 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.interfacedef.wsdl.impl;
+package org.apache.tuscany.sca.interfacedef.wsdl;
 
-import org.apache.tuscany.interfacedef.impl.InterfaceContractImpl;
-import org.apache.tuscany.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLFactoryImpl;
 
 /**
- * Represents a WSDL interface contract.
+ * A factory for the WSDL model.
  * 
  * @version $Rev$ $Date$
  */
-public class WSDLInterfaceContractImpl extends InterfaceContractImpl implements WSDLInterfaceContract {
-    private String location;
-    
-    protected WSDLInterfaceContractImpl() {
-    }
-    
-    public String getLocation() {
-        return location;
-    }
-    
-    public void setLocation(String location) {
-        this.location = location;
-    }
+public class DefaultWSDLFactory extends WSDLFactoryImpl implements WSDLFactory {
+
 }

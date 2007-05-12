@@ -17,38 +17,31 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.impl;
+package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
-import javax.wsdl.Definition;
-
-import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.ws.commons.schema.XmlSchema;
 
 /**
- * Represents a WSDL definition.
+ * Represents a XML schema definition.
  *
  * @version $Rev$ $Date$
  */
-public class WSDLDefinitionImpl implements WSDLDefinition {
+public class XSDefinitionImpl implements XSDefinition {
     
-    private Definition definition;
+    private XmlSchema definition;
     private String namespace;
-    private XmlSchemaCollection inlineSchemas = new XmlSchemaCollection();
     private boolean unresolved;
     
-    protected WSDLDefinitionImpl() {
+    protected XSDefinitionImpl() {
     }
 
-    public Definition getDefinition() {
+    public XmlSchema getSchema() {
         return definition;
     }
 
-    public void setDefinition(Definition definition) {
+    public void setSchema(XmlSchema definition) {
         this.definition = definition;
-    }
-    
-    public XmlSchemaCollection getInlinedSchemas() {
-        return inlineSchemas;
     }
 
     public boolean isUnresolved() {
@@ -86,11 +79,11 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj instanceof WSDLDefinition) {
+        } else if (obj instanceof XSDefinition) {
             if (getNamespace() != null) {
-                return getNamespace().equals(((WSDLDefinition)obj).getNamespace());
+                return getNamespace().equals(((XSDefinition)obj).getNamespace());
             } else {
-                return ((WSDLDefinition)obj).getNamespace() == null;
+                return ((XSDefinition)obj).getNamespace() == null;
             }
         } else {
             return false;

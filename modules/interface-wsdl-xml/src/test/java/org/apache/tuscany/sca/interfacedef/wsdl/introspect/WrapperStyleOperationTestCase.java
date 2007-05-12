@@ -31,11 +31,11 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.resolver.ModelResolver;
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
-import org.apache.tuscany.interfacedef.wsdl.DefaultWSDLFactory;
-import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 

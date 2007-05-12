@@ -17,31 +17,38 @@
  * under the License.    
  */
 
-package org.apache.tuscany.interfacedef.wsdl.impl;
+package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
-import org.apache.tuscany.interfacedef.wsdl.XSDefinition;
-import org.apache.ws.commons.schema.XmlSchema;
+import javax.wsdl.Definition;
+
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
- * Represents a XML schema definition.
+ * Represents a WSDL definition.
  *
  * @version $Rev$ $Date$
  */
-public class XSDefinitionImpl implements XSDefinition {
+public class WSDLDefinitionImpl implements WSDLDefinition {
     
-    private XmlSchema definition;
+    private Definition definition;
     private String namespace;
+    private XmlSchemaCollection inlineSchemas = new XmlSchemaCollection();
     private boolean unresolved;
     
-    protected XSDefinitionImpl() {
+    protected WSDLDefinitionImpl() {
     }
 
-    public XmlSchema getSchema() {
+    public Definition getDefinition() {
         return definition;
     }
 
-    public void setSchema(XmlSchema definition) {
+    public void setDefinition(Definition definition) {
         this.definition = definition;
+    }
+    
+    public XmlSchemaCollection getInlinedSchemas() {
+        return inlineSchemas;
     }
 
     public boolean isUnresolved() {
@@ -79,11 +86,11 @@ public class XSDefinitionImpl implements XSDefinition {
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj instanceof XSDefinition) {
+        } else if (obj instanceof WSDLDefinition) {
             if (getNamespace() != null) {
-                return getNamespace().equals(((XSDefinition)obj).getNamespace());
+                return getNamespace().equals(((WSDLDefinition)obj).getNamespace());
             } else {
-                return ((XSDefinition)obj).getNamespace() == null;
+                return ((WSDLDefinition)obj).getNamespace() == null;
             }
         } else {
             return false;

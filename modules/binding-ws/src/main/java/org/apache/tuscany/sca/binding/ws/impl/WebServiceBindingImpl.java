@@ -29,11 +29,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.interfacedef.Interface;
 import org.apache.tuscany.interfacedef.InterfaceContract;
-import org.apache.tuscany.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.policy.Intent;
 import org.apache.tuscany.policy.PolicySet;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 
 /**
  * Represents a WebService binding.
