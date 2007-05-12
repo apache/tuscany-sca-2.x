@@ -28,7 +28,7 @@ import org.apache.tuscany.host.embedded.SCADomain;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        SCADomain domain = SCADomain.newInstance("http://calc", ".", "Calculator.composite");
+        SCADomain domain = SCADomain.newInstance("Calculator.composite");
         
         CalculatorService calculatorService = 
             domain.getService(CalculatorService.class, "CalculatorServiceComponent");
