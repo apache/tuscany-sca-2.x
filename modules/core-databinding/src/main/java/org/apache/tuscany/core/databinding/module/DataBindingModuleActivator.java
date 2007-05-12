@@ -59,10 +59,10 @@ import org.apache.tuscany.databinding.xml.XMLStreamReader2Node;
 import org.apache.tuscany.databinding.xml.XMLStreamReader2SAX;
 import org.apache.tuscany.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.databinding.xml.XMLStringDataBinding;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.RuntimeWireProcessorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * @version $Rev$ $Date$

@@ -29,9 +29,9 @@ import org.apache.tuscany.databinding.jaxb.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.databinding.jaxb.Node2JAXB;
 import org.apache.tuscany.databinding.jaxb.Reader2JAXB;
 import org.apache.tuscany.databinding.jaxb.XMLStreamReader2JAXB;
-import org.apache.tuscany.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * Module activator for JAXB databinding

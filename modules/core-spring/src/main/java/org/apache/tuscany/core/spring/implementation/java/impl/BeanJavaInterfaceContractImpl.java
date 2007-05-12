@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.core.spring.implementation.java.impl;
 
-import org.apache.tuscany.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceContractImpl;
 
 /**
  * An implementation of a Java interface contract. 
