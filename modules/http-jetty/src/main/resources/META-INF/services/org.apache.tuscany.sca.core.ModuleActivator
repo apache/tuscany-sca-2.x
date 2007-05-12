@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 # Implementation class for the ModuleActivator
-org.apache.tuscany.http.jetty.module.JettyRuntimeModuleActivator
+org.apache.tuscany.sca.http.jetty.module.JettyRuntimeModuleActivator

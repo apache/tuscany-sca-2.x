@@ -17,14 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.http.jetty.module;
+package org.apache.tuscany.sca.http.jetty.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.http.jetty.JettyServer;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.http.jetty.JettyServer;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
