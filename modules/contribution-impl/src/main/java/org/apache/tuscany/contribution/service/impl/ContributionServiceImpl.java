@@ -43,9 +43,9 @@ import org.apache.tuscany.contribution.service.ContributionException;
 import org.apache.tuscany.contribution.service.ContributionMetadataLoaderException;
 import org.apache.tuscany.contribution.service.ContributionRepository;
 import org.apache.tuscany.contribution.service.ContributionService;
-import org.apache.tuscany.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 /**
  * @version $Rev$ $Date$

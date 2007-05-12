@@ -26,7 +26,7 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.service.impl.ContributionRepositoryImpl;
-import org.apache.tuscany.contribution.service.util.FileHelper;
+import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
 public class ContributionRepositoryTestCase extends TestCase {
     private ContributionRepositoryImpl repository;

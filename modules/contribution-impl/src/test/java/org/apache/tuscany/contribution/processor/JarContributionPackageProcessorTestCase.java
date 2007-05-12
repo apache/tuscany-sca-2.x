@@ -26,7 +26,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.contribution.service.util.IOHelper;
+import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 public class JarContributionPackageProcessorTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
