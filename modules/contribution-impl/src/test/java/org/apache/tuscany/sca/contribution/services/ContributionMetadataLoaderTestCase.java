@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.services;
+package org.apache.tuscany.sca.contribution.services;
 
 import java.io.StringReader;
 
@@ -28,9 +28,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.Contribution;
 import org.apache.tuscany.contribution.ContributionFactory;
-import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataLoaderImpl;
 import org.apache.tuscany.sca.contribution.service.impl.InvalidValueException;
 

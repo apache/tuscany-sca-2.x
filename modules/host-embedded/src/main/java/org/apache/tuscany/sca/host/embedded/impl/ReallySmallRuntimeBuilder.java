@@ -34,7 +34,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.contribution.ContributionFactory;
-import org.apache.tuscany.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.contribution.processor.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
@@ -54,6 +53,7 @@ import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;

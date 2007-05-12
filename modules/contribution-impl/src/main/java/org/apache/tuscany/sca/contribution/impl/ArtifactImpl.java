@@ -17,27 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.contribution.impl;
+package org.apache.tuscany.sca.contribution.impl;
 
-import org.apache.tuscany.contribution.DeployedArtifact;
+import org.apache.tuscany.contribution.Artifact;
 
-/**
- * Representation of a deployed artifact
- *
- * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
- */
-public class DeployedArtifactImpl extends ArtifactImpl implements DeployedArtifact {
-    private Object modelObject;
+public abstract class ArtifactImpl implements Artifact {
+    private String uri;
+    private String location;
 
-    protected DeployedArtifactImpl() {
-        super();
+    protected ArtifactImpl() {
     }
     
-    public Object getModel() {
-        return modelObject;
+    public String getLocation() {
+        return this.location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
     
-    public void setModel(Object modelObject) {
-        this.modelObject = modelObject;
+    public String getURI() {
+        return this.uri;
+    }
+    
+    public void setURI(String uri) {
+        this.uri = uri;
     }
 }

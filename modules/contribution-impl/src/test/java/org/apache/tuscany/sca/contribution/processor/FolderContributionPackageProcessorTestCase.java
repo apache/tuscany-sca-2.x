@@ -16,31 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.contribution.processor;
 
-package org.apache.tuscany.contribution.impl;
+import java.io.File;
+import java.net.URI;
+import java.util.List;
 
-import org.apache.tuscany.contribution.Artifact;
+import junit.framework.TestCase;
 
-public abstract class ArtifactImpl implements Artifact {
-    private String uri;
-    private String location;
+import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 
-    protected ArtifactImpl() {
+public class FolderContributionPackageProcessorTestCase extends TestCase {
+    private static final String FOLDER_CONTRIBUTION = ".";
+    
+    private File contributionRoot;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.contributionRoot = new File(FOLDER_CONTRIBUTION);
     }
     
-    public String getLocation() {
-        return this.location;
-    }
+    public final void testProcessPackageArtifacts() throws Exception {
+        FolderContributionProcessor folderProcessor = new FolderContributionProcessor();
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-    
-    public String getURI() {
-        return this.uri;
-    }
-    
-    public void setURI(String uri) {
-        this.uri = uri;
+        List<URI> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
+        assertNotNull(artifacts);
     }
 }
