@@ -19,7 +19,6 @@
 package org.apache.tuscany.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper.getAllInterfaces;
-import static org.apache.tuscany.implementation.java.introspect.impl.JavaIntrospectionHelper.toPropertyName;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -106,7 +105,6 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (method.getParameterTypes().length != 1) {
             throw new IllegalCallbackReferenceException("Setter must have one parameter", method);
         }
-        String name = toPropertyName(method.getName());
         Service callbackService = null;
         Class<?> callbackClass = method.getParameterTypes()[0];
         for (Service service : type.getServices()) {
@@ -127,7 +125,6 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (annotation == null) {
             return;
         }
-        String name = field.getName();
         Service callbackService = null;
         Class<?> callbackClass = field.getType();
         for (Service service : type.getServices()) {
