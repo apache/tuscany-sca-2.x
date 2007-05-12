@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.invocation;
+package org.apache.tuscany.sca.core.invocation;
 
 import org.apache.tuscany.sca.spi.CoreRuntimeException;
 
