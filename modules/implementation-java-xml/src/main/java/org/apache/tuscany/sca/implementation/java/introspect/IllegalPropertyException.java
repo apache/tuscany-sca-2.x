@@ -16,17 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspect;
+package org.apache.tuscany.sca.implementation.java.introspect;
+
+import java.lang.reflect.Member;
 
 /**
- * Thrown when an implementation has more than one property injection site with the same name
- *
+ * Denotes an illegal property definition in a component type
+ * 
  * @version $Rev$ $Date$
  */
-public class DuplicatePropertyException extends IntrospectionException {
-    private static final long serialVersionUID = 5536415875694904037L;
+public class IllegalPropertyException extends IntrospectionException {
+    private static final long serialVersionUID = -2836849110706758494L;
 
-    public DuplicatePropertyException(String message) {
+    public IllegalPropertyException(String message) {
         super(message);
     }
+    
+    public IllegalPropertyException(String message, Member member) {
+        super(message, member);
+    }    
 }

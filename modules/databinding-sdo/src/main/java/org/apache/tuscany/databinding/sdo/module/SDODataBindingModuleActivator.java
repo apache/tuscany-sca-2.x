@@ -36,11 +36,11 @@ import org.apache.tuscany.databinding.sdo.XMLDocument2String;
 import org.apache.tuscany.databinding.sdo.XMLDocument2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2DataObject;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument;
-import org.apache.tuscany.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 
 /**
  * @version $Rev$ $Date$

@@ -16,27 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.implementation.java.introspect;
+package org.apache.tuscany.sca.implementation.java.introspect;
 
-import org.apache.tuscany.implementation.java.JavaImplementation;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Implementations are responsible for walking a component implementation class,
- * adding additional component type information as appropriate
+ * Default implementation of the <code>IntrospectionRegistry</code>
  * 
  * @version $Rev$ $Date$
  */
-public interface JavaClassIntrospector {
+public class DefaultJavaClassIntrospectorExtensionPoint implements JavaClassIntrospectorExtensionPoint {
 
-    /**
-     * Walks the given component implementation class
-     * 
-     * @param clazz the component implementation class
-     * @param type the component type associated with the implementation class
-     * @return the updated component type
-     * @throws IntrospectionException if an error is encountered evaluating the
-     *             implementation class
-     */
-    JavaImplementation introspect(Class<?> clazz, JavaImplementation type) throws IntrospectionException;
+    private List<JavaClassVisitor> visitors = new ArrayList<JavaClassVisitor>();
+
+    public DefaultJavaClassIntrospectorExtensionPoint() {
+    }
+
+    public void addClassVisitor(JavaClassVisitor visitor) {
+        visitors.add(visitor);
+    }
+
+    public void removeClassVisitor(JavaClassVisitor visitor) {
+        visitors.remove(visitor);
+    }
+    
+    public List<JavaClassVisitor> getClassVisitors() {
+        return visitors;
+    }
 
 }
