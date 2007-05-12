@@ -23,7 +23,7 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.contribution.ContentType;
-import org.apache.tuscany.contribution.service.impl.PackageTypeDescriberImpl;
+import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 
 public class PackageTypeDescriberImplTestCase extends TestCase {
     private PackageTypeDescriberImpl packageTypeDescriber;
