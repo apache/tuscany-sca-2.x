@@ -16,28 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.spring.implementation.java.impl;
 
-import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+package org.apache.tuscany.sca.core.spring.implementation.java.impl;
+
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceContractImpl;
 
 /**
- * An alternate implementation of the SCA Java assembly model factory that creates SCA
- * Java assembly model objects backed by Spring bean definitions.
+ * An implementation of a Java interface contract. 
  *
- *  @version $Rev$ $Date$
+ * @version $Rev$ $Date$
  */
-public class BeanJavaImplementationFactory implements JavaImplementationFactory {
-	
-	private BeanDefinitionRegistry beanRegistry;
-	
-	public BeanJavaImplementationFactory(BeanDefinitionRegistry beanRegistry) {
-		this.beanRegistry = beanRegistry;
-	}
-
-	public JavaImplementation createJavaImplementation() {
-		return new BeanJavaImplementationImpl(beanRegistry);
-	}
+public class BeanJavaInterfaceContractImpl extends JavaInterfaceContractImpl {
+    
+    protected BeanJavaInterfaceContractImpl() {
+    }
 
 }

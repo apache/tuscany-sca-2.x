@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.spring;
+package org.apache.tuscany.sca.core.spring;
 
-import org.apache.tuscany.core.spring.runtime.ComponentContext;
+import org.apache.tuscany.sca.core.spring.context.ComponentContext;
 
 import junit.framework.TestCase;
 import calculator.CalculatorService;
@@ -26,18 +26,15 @@ import calculator.CalculatorService;
 /**
  * This shows how to test the Calculator service component.
  */
-public class NestedCalculatorTestCase extends TestCase {
+public class CalculatorTestCase extends TestCase {
 
     private ComponentContext context;
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        context = new ComponentContext(
-                          "org/apache/tuscany/core/spring/OuterCalculator.composite",
-                          "org/apache/tuscany/core/spring/InnerCalculator.composite",
-                          "org/apache/tuscany/core/spring/InnerOperations.composite");
+        context = new ComponentContext("org/apache/tuscany/core/spring/Calculator.composite");
 
-        calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent/InnerCalculatorServiceComponent");
+        calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     protected void tearDown() throws Exception {

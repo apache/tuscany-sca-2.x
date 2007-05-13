@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.spring.implementation.java.impl;
+package org.apache.tuscany.sca.core.spring.implementation.java.impl;
 
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**
  * An alternate implementation of the SCA Java assembly model factory that creates SCA
@@ -28,17 +28,16 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  *
  *  @version $Rev$ $Date$
  */
-public class BeanJavaInterfaceFactory implements JavaInterfaceFactory {
+public class BeanJavaImplementationFactory implements JavaImplementationFactory {
 	
-	public BeanJavaInterfaceFactory() {
+	private BeanDefinitionRegistry beanRegistry;
+	
+	public BeanJavaImplementationFactory(BeanDefinitionRegistry beanRegistry) {
+		this.beanRegistry = beanRegistry;
 	}
 
-	public JavaInterface createJavaInterface() {
-		return new BeanJavaInterfaceImpl();
+	public JavaImplementation createJavaImplementation() {
+		return new BeanJavaImplementationImpl(beanRegistry);
 	}
-        
-        public JavaInterfaceContract createJavaInterfaceContract() {
-            return new BeanJavaInterfaceContractImpl();
-        }
 
 }

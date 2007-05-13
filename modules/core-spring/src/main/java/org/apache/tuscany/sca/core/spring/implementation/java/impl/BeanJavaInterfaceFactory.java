@@ -16,19 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.core.spring.implementation.java.impl;
 
-package org.apache.tuscany.core.spring.implementation.java.impl;
-
-import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceContractImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
- * An implementation of a Java interface contract. 
+ * An alternate implementation of the SCA Java assembly model factory that creates SCA
+ * Java assembly model objects backed by Spring bean definitions.
  *
- * @version $Rev$ $Date$
+ *  @version $Rev$ $Date$
  */
-public class BeanJavaInterfaceContractImpl extends JavaInterfaceContractImpl {
-    
-    protected BeanJavaInterfaceContractImpl() {
-    }
+public class BeanJavaInterfaceFactory implements JavaInterfaceFactory {
+	
+	public BeanJavaInterfaceFactory() {
+	}
+
+	public JavaInterface createJavaInterface() {
+		return new BeanJavaInterfaceImpl();
+	}
+        
+        public JavaInterfaceContract createJavaInterfaceContract() {
+            return new BeanJavaInterfaceContractImpl();
+        }
 
 }
