@@ -113,14 +113,6 @@ public class JavaComponentInfo implements ComponentContextProvider {
         }
     }
 
-    public Object getTargetInstance() throws TargetResolutionException {
-        InstanceWrapper wrapper = component.getScopeContainer().getWrapper(groupId);
-        if (!wrapper.isStarted()) {
-            wrapper.start();
-        }
-        return wrapper.getInstance();
-    }
-
     public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
         return configuration.createFactory().newInstance();
     }

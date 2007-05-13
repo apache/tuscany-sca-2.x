@@ -33,11 +33,6 @@ public interface InstanceWrapper<T> {
     T getInstance();
 
     /**
-     * @return
-     */
-    boolean isStarted();
-
-    /**
      * @throws TargetInitializationException
      */
     void start() throws TargetInitializationException;
