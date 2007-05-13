@@ -18,7 +18,7 @@
  */
 package calculator;
 
-import org.apache.tuscany.core.spring.runtime.ComponentContext;
+import org.apache.tuscany.sca.core.spring.context.ComponentContext;
 
 /**
  * This client program shows how to create an SCA runtime, start it, locate the

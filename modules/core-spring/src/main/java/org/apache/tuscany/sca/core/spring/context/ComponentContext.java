@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.spring.runtime;
+package org.apache.tuscany.sca.core.spring.context;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,8 +25,6 @@ import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import org.apache.tuscany.core.spring.assembly.impl.BeanAssemblyFactory;
-import org.apache.tuscany.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -41,6 +39,8 @@ import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcesso
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.core.spring.assembly.impl.BeanAssemblyFactory;
+import org.apache.tuscany.sca.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;

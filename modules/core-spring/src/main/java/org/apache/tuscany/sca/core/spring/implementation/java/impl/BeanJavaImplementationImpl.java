@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.spring.implementation.java.impl;
+package org.apache.tuscany.sca.core.spring.implementation.java.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
