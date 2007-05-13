@@ -116,6 +116,8 @@ public class JavaTargetInvoker implements TargetInvoker {
                 scopeContainer.remove();
             }
             return ret;
+        } catch (InvocationTargetException e) {
+            throw e;
         } catch (Exception e) {
             throw new InvocationTargetException(e);
         }
