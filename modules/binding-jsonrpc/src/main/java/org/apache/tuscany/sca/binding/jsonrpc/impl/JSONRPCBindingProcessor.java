@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.jsonrpc.impl;
+package org.apache.tuscany.sca.binding.jsonrpc.impl;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
@@ -25,14 +25,14 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-import org.apache.tuscany.binding.jsonrpc.JSONRPCBinding;
-import org.apache.tuscany.binding.jsonrpc.JSONRPCBindingFactory;
 
 /**
  * A processor for <binding.jsonrpc> elements.

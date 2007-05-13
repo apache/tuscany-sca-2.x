@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.jsonrpc.server;
+package org.apache.tuscany.sca.binding.jsonrpc.server;
 
 import java.io.IOException;
 import java.io.InputStream;

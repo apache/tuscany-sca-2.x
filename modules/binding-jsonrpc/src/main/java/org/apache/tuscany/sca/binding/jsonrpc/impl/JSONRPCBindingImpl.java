@@ -17,15 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.jsonrpc.impl;
+package org.apache.tuscany.sca.binding.jsonrpc.impl;
 
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
-import org.apache.tuscany.binding.jsonrpc.JSONRPCBinding;
 
 /**
  * Implementation of the JSONRPC binding model.
