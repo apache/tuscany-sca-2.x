@@ -18,34 +18,37 @@
  */
 package org.apache.tuscany.sca.implementation.java.context;
 
-import org.apache.tuscany.sca.core.scope.BaseInstanceWrapper;
 import org.apache.tuscany.sca.implementation.java.injection.EventInvoker;
+import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInitializationException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ReflectiveInstanceWrapper<T> extends BaseInstanceWrapper<T> {
+public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
+    private final T instance;
 
     public ReflectiveInstanceWrapper(T instance, EventInvoker<T> initInvoker, EventInvoker<T> destroyInvoker) {
-        super(instance);
+        this.instance = instance;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
+    }
+    
+    public T getInstance() {
+        return instance;
     }
 
     public void start() throws TargetInitializationException {
         if (initInvoker != null) {
             initInvoker.invokeEvent(instance);
         }
-        super.start();
     }
 
 
     public void stop() throws TargetDestructionException {
-        super.stop();
         if (destroyInvoker != null) {
             destroyInvoker.invokeEvent(instance);
         }
