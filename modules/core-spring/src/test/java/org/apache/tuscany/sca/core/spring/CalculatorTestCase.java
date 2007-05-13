@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.core.spring;
 
-import org.apache.tuscany.sca.core.spring.context.ComponentContext;
+import org.apache.tuscany.sca.core.spring.context.SCADomainContext;
 
 import junit.framework.TestCase;
 import calculator.CalculatorService;
@@ -28,11 +28,11 @@ import calculator.CalculatorService;
  */
 public class CalculatorTestCase extends TestCase {
 
-    private ComponentContext context;
+    private SCADomainContext context;
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        context = new ComponentContext("org/apache/tuscany/core/spring/Calculator.composite");
+        context = new SCADomainContext("org/apache/tuscany/sca/core/spring/Calculator.composite");
 
         calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
