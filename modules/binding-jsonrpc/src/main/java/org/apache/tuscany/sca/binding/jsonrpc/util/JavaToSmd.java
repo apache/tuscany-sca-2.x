@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
- package org.apache.tuscany.binding.jsonrpc.util;
+ package org.apache.tuscany.sca.binding.jsonrpc.util;
 
 import java.lang.reflect.Method;
 

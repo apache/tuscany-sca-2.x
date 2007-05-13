@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.jsonrpc.provider;
+package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import org.apache.tuscany.binding.jsonrpc.JSONRPCBinding;
-import org.apache.tuscany.binding.jsonrpc.server.JSONRPCEntryPointServlet;
-import org.apache.tuscany.binding.jsonrpc.server.JSONRPCScriptServlet;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.binding.jsonrpc.server.JSONRPCEntryPointServlet;
+import org.apache.tuscany.sca.binding.jsonrpc.server.JSONRPCScriptServlet;
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.http.ServletHost;

@@ -17,19 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.jsonrpc;
+package org.apache.tuscany.sca.binding.jsonrpc;
 
-import org.apache.tuscany.binding.jsonrpc.impl.JSONRPCBindingImpl;
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
- * A factory for the JSONRPC binding model.
+ * A model for the sample JSONRPC binding.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultJSONRPCBindingFactory implements JSONRPCBindingFactory {
-
-    public JSONRPCBinding createJSONRPCBinding() {
-        return new JSONRPCBindingImpl();
-    }
-
+public interface JSONRPCBinding extends Binding {
 }

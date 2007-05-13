@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.jsonrpc.provider;
+package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.lang.reflect.InvocationTargetException;
 

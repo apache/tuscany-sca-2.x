@@ -23,12 +23,12 @@
 	name="JSONRPCBinding">
 
     <service name="EchoService" promote="EchoComponent">
-        <interface.java interface="org.apache.tuscany.binding.jsonrpc.Echo"/>
+        <interface.java interface="org.apache.tuscany.sca.binding.jsonrpc.Echo"/>
         <binding.jsonrpc />
     </service>
 
     <component name="EchoComponent">
-        <implementation.java class="org.apache.tuscany.binding.jsonrpc.EchoComponentImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.jsonrpc.EchoComponentImpl"/>
     </component>
     
 </composite>

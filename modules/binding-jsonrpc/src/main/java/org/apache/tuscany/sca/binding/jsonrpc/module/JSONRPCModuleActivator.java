@@ -17,14 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.binding.jsonrpc.module;
+package org.apache.tuscany.sca.binding.jsonrpc.module;
 
 import java.util.Map;
 
-import org.apache.tuscany.binding.jsonrpc.DefaultJSONRPCBindingFactory;
-import org.apache.tuscany.binding.jsonrpc.JSONRPCBindingFactory;
-import org.apache.tuscany.binding.jsonrpc.impl.JSONRPCBindingProcessor;
-import org.apache.tuscany.binding.jsonrpc.provider.JSONRPCBindingProviderFactory;
+import org.apache.tuscany.sca.binding.jsonrpc.DefaultJSONRPCBindingFactory;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBindingFactory;
+import org.apache.tuscany.sca.binding.jsonrpc.impl.JSONRPCBindingProcessor;
+import org.apache.tuscany.sca.binding.jsonrpc.provider.JSONRPCBindingProviderFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
