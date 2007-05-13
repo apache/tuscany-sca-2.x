@@ -82,11 +82,11 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentContext {
+public class SCADomainContext {
 
     private DefaultListableBeanFactory beanFactory;
     
-    public ComponentContext(String... compositeFiles) {
+    public SCADomainContext(String... compositeFiles) {
 
         // Create Spring bean factory
         beanFactory = new DefaultListableBeanFactory();

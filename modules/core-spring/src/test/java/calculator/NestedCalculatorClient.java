@@ -18,7 +18,7 @@
  */
 package calculator;
 
-import org.apache.tuscany.sca.core.spring.context.ComponentContext;
+import org.apache.tuscany.sca.core.spring.context.SCADomainContext;
 
 /**
  * This client program shows how to create an SCA runtime, start it, locate the
@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.core.spring.context.ComponentContext;
 public class NestedCalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        ComponentContext context = new ComponentContext(
+        SCADomainContext context = new SCADomainContext(
                                             "org/apache/tuscany/core/spring/OuterCalculator.composite",
                                             "org/apache/tuscany/core/spring/InnerCalculator.composite",
                                             "org/apache/tuscany/core/spring/InnerOperations.composite");
