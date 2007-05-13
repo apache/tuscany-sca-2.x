@@ -20,7 +20,7 @@ package loanapplication;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public class LoanApplicationTestCase extends TestCase {
 
