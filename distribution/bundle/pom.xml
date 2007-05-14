@@ -282,7 +282,7 @@
 
                                         <transformers>
                                            <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
-                                              <resource>META-INF/services/org.apache.tuscany.core.ModuleActivator</resource>
+                                              <resource>META-INF/services/org.apache.tuscany.sca.core.ModuleActivator</resource>
                                            </transformer>
                                         </transformers>
 
