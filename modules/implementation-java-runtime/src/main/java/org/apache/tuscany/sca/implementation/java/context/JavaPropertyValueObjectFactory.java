@@ -23,16 +23,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.DefaultMediator;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
-import org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;
-import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
