@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.axis2;
 
 import java.net.URI;
+import java.util.HashMap;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -29,6 +30,7 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.HandlerDescription;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.RequestURIBasedDispatcher;
+import org.apache.axis2.util.JavaUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -60,7 +62,8 @@ public class TuscanyDispatcher extends RequestURIBasedDispatcher {
             ConfigurationContext configurationContext = messageContext.getConfigurationContext();
             AxisConfiguration registry = configurationContext.getAxisConfiguration();
 
-            return registry.getService(path);
+            String serviceName = findAxisServiceName(registry, path);
+            return registry.getService(serviceName);
 
         } else {
             if(isDebugEnabled){
@@ -73,4 +76,26 @@ public class TuscanyDispatcher extends RequestURIBasedDispatcher {
     public void initDispatcher() {
         init(new HandlerDescription(NAME));
     }
+
+    protected String findAxisServiceName(AxisConfiguration registry, String path) {
+        HashMap services = registry.getServices();
+        if (services == null) {
+            return null;
+        }
+        String[] parts = JavaUtils.split(path, '/');
+        String serviceName = "";
+        for (int i=parts.length-1; i>=0; i--) {
+            serviceName = parts[i] + serviceName;
+            if (services.containsKey(serviceName)) {
+                return serviceName;
+            }
+            serviceName = "/" + serviceName;
+            if (services.containsKey(serviceName)) {
+                return serviceName;
+            }
+        }
+
+        return null;
+    }
+
 }

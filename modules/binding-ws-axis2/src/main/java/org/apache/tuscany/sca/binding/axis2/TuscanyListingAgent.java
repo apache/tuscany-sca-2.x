@@ -46,6 +46,7 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.PolicyInclude;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.util.ExternalPolicySerializer;
+import org.apache.axis2.util.JavaUtils;
 import org.apache.neethi.Policy;
 import org.apache.neethi.PolicyRegistry;
 import org.apache.ws.commons.schema.XmlSchema;
@@ -64,6 +65,27 @@ public class TuscanyListingAgent extends ListingAgent {
         super(aConfigContext);
     }
 
+    protected String findAxisServiceName(String path) {
+        HashMap services = configContext.getAxisConfiguration().getServices();
+        if (services == null) {
+            return null;
+        }
+        String[] parts = JavaUtils.split(path, '/');
+        String serviceName = "";
+        for (int i=parts.length-1; i>=0; i--) {
+            serviceName = parts[i] + serviceName;
+            if (services.containsKey(serviceName)) {
+                return serviceName;
+            }
+            serviceName = "/" + serviceName;
+            if (services.containsKey(serviceName)) {
+                return serviceName;
+            }
+        }
+
+        return null;
+    }
+    
     @Override
     public void processListService(HttpServletRequest req,
                                    HttpServletResponse res)
@@ -75,15 +97,16 @@ public class TuscanyListingAgent extends ListingAgent {
 //                                                filePart.length());
 // Change the Axis2 code so as to use the complete ServletPath as the service name
 // this line is the only change to to Axis2 code
-        String serviceName = req.getServletPath();
 
-        HashMap services = configContext.getAxisConfiguration().getServices();
+        String serviceName = findAxisServiceName(filePart);
+
         String query = req.getQueryString();
         int wsdl2 = query.indexOf("wsdl2");
         int wsdl = query.indexOf("wsdl");
         int xsd = query.indexOf("xsd");
         int policy = query.indexOf("policy");
 
+        HashMap services = configContext.getAxisConfiguration().getServices();
         if ((services != null) && !services.isEmpty()) {
             Object serviceObj = services.get(serviceName);
             if (serviceObj != null) {
