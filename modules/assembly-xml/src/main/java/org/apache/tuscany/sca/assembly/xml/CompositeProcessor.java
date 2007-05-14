@@ -64,8 +64,6 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
     
-    private InterfaceContractMapper interfaceContractMapper;
-
     /**
      * Construct a new composite processor
      * @param assemblyFactory
@@ -76,7 +74,6 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                               InterfaceContractMapper interfaceContractMapper,
                               StAXArtifactProcessor extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
-        this.interfaceContractMapper = interfaceContractMapper;
     }
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException {
