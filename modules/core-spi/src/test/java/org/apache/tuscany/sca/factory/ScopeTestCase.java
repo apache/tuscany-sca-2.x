@@ -50,7 +50,7 @@ public class ScopeTestCase extends TestCase {
     }
 
     public class Bar {
-        private String scope;
+        String scope;
 
         public Bar(String scope) {
             this.scope = scope;
