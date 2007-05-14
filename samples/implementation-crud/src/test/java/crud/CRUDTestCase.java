@@ -28,15 +28,15 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class CRUDTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
     private CRUD crudService;
     
     /**
      * @throws java.lang.Exception
      */
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("crud.composite");
-        crudService = domain.getService(CRUD.class, "CRUDServiceComponent");
+        scaDomain = SCADomain.newInstance("crud.composite");
+        crudService = scaDomain.getService(CRUD.class, "CRUDServiceComponent");
 
     }
 
@@ -44,7 +44,7 @@ public class CRUDTestCase extends TestCase {
      * @throws java.lang.Exception
      */
     protected void tearDown() throws Exception {
-        domain.close();
+        scaDomain.close();
     }
 
     

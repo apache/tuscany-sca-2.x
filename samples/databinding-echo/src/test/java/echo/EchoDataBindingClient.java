@@ -28,9 +28,9 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class EchoDataBindingClient {
     public static void main(String[] args) throws Exception {
 
-        SCADomain domain  = SCADomain.newInstance("EchoDataBinding.composite");
+        SCADomain scaDomain  = SCADomain.newInstance("EchoDataBinding.composite");
         
-        Interface1 componentA = domain.getService(Interface1.class, "ComponentA");
+        Interface1 componentA = scaDomain.getService(Interface1.class, "ComponentA");
         String response = componentA.call("<message><foo>123</foo></message>");
         String response1= componentA.call1("<message><foo>123</foo></message>");
         
@@ -38,7 +38,7 @@ public class EchoDataBindingClient {
         System.out.println("call  response = " + response );
         System.out.println("call1 response = " + response1 );
        
-        domain.close();
+        scaDomain.close();
 
     }
 

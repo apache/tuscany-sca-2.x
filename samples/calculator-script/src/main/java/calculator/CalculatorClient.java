@@ -28,16 +28,16 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        SCADomain domain = SCADomain.newInstance("Calculator.composite");
+        SCADomain scaDomain = SCADomain.newInstance("Calculator.composite");
         CalculatorService calculatorService = 
-            domain.getService(CalculatorService.class, "CalculatorServiceComponent");
+            scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
 
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
 
-        domain.close();
+        scaDomain.close();
     }
 
 }

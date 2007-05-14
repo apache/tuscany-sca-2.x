@@ -28,16 +28,16 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class SupplyChainClientTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
     private Customer customer;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("supplychain.composite");
-        customer = domain.getService(Customer.class, "CustomerComponent");
+        scaDomain = SCADomain.newInstance("supplychain.composite");
+        customer = scaDomain.getService(Customer.class, "CustomerComponent");
     }
 
     protected void tearDown() throws Exception {
-    	domain.close();
+        scaDomain.close();
     }
 
     public void test() throws Exception {

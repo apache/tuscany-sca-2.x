@@ -33,15 +33,15 @@ import org.junit.Test;
 public class HelloWorldClientTestCase {
 
     private HelloWorldService helloWorldService;
-    private SCADomain domain;
+    private SCADomain scaDomain;
     
     private SCATestCaseRunner server;
 
     @Before
     public void startClient() throws Exception {
         try {
-            domain = SCADomain.newInstance("helloworldwsclient.composite");
-            helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
+            scaDomain = SCADomain.newInstance("helloworldwsclient.composite");
+            helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
     
             server =  new SCATestCaseRunner(HelloWorldServerTest.class);
             server.before();
@@ -60,7 +60,7 @@ public class HelloWorldClientTestCase {
     @After
     public void stopClient() throws Exception {
     	server.after();
-    	domain.close();
+        scaDomain.close();
     }
 
 }

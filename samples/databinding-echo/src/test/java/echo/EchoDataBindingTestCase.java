@@ -27,22 +27,22 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class EchoDataBindingTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("EchoDataBinding.composite");
+        scaDomain = SCADomain.newInstance("EchoDataBinding.composite");
     }
 
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        scaDomain.close();
     }
 
     protected Interface1 componentA;
 
     public void testTransform() {
-        componentA = domain.getService(Interface1.class, "ComponentA");
+        componentA = scaDomain.getService(Interface1.class, "ComponentA");
         componentA.call("<message><foo>123</foo></message>");
         componentA.call1("<message><foo>123</foo></message>");
     }

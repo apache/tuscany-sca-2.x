@@ -27,12 +27,12 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class HelloWorldClient {
 
     public  final static void main(String[] args) throws Exception {
-        SCADomain domain = SCADomain.newInstance("helloworldwsclient.composite");
-        HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
+        SCADomain scaDomain = SCADomain.newInstance("helloworldwsclient.composite");
+        HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
 
         String value = helloWorldService.getGreetings("World");
         System.out.println(value);
 
-        domain.close();
+        scaDomain.close();
     }
 }

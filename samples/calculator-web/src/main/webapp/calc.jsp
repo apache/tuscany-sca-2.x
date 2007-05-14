@@ -22,8 +22,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-   SCADomain domain = (SCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
-   CalculatorService calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
+   SCADomain scaDomain = (SCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
+   CalculatorService calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
 %>
 <html>
 <head><title>Calculator sample</title></head>

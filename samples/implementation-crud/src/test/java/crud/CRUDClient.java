@@ -28,8 +28,8 @@ public class CRUDClient {
 
     public static void main(String[] args) throws Exception {
 
-        SCADomain domain = SCADomain.newInstance("crud.composite");
-        CRUD crudService = domain.getService(CRUD.class, "CRUDServiceComponent");
+        SCADomain scaDomain = SCADomain.newInstance("crud.composite");
+        CRUD crudService = scaDomain.getService(CRUD.class, "CRUDServiceComponent");
         
         String id = crudService.create("ABC");
         Object result = crudService.retrieve(id);
@@ -45,7 +45,7 @@ public class CRUDClient {
             System.out.println("Result from delete: should be null but was " + result);
         }
         
-        domain.close();
+        scaDomain.close();
 
     }
 

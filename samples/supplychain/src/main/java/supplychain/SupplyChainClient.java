@@ -27,14 +27,14 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class SupplyChainClient {
 
     public static final void main(String[] args) throws Exception {
-        SCADomain domain = SCADomain.newInstance("supplychain.composite");
-        Customer customer = domain.getService(Customer.class, "CustomerComponent");
+        SCADomain scaDomain = SCADomain.newInstance("supplychain.composite");
+        Customer customer = scaDomain.getService(Customer.class, "CustomerComponent");
 
         System.out.println("Main thread " + Thread.currentThread());
         customer.purchaseGoods();
         System.out.println("Main thread sleeping ...");
         Thread.sleep(1000);
 
-        domain.close();
+        scaDomain.close();
     }
 }

@@ -29,14 +29,14 @@ import echo.server.EchoServer;
  */
 public class EchoServiceTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("EchoBinding.composite");
+        scaDomain = SCADomain.newInstance("EchoBinding.composite");
     }
     
     protected void tearDown() throws Exception {
-    	domain.close();
+        scaDomain.close();
     }
 
     public void testEchoBinding() throws Exception {

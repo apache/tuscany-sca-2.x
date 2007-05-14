@@ -27,16 +27,16 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class SimpleCallbackTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
     private MyClient myClient;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("simplecallback.composite");
-        myClient = domain.getService(MyClient.class, "MyClientComponent");
+        scaDomain = SCADomain.newInstance("simplecallback.composite");
+        myClient = scaDomain.getService(MyClient.class, "MyClientComponent");
     }
     
     protected void tearDown() throws Exception {
-        domain.close();
+        scaDomain.close();
     }
 
     public void test() throws Exception {
