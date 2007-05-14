@@ -22,11 +22,11 @@ package org.apache.tuscany.sca.databinding.extension;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import junit.framework.TestCase;
 
 /**
  * 

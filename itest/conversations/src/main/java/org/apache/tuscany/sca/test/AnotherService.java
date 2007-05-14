@@ -19,9 +19,8 @@
 
 package org.apache.tuscany.sca.test;
 
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 

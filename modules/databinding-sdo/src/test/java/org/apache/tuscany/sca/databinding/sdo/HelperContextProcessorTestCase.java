@@ -29,9 +29,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.databinding.sdo.HelperContextProcessor;
-import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistry;
-import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistryImpl;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;

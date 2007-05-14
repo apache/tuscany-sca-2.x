@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.test.opoverload;
 
-import org.osoa.sca.annotations.AllowsPassByReference;
 
 /**
  * 

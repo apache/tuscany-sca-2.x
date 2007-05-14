@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.factory;
 
-import org.apache.tuscany.sca.scope.Scope;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.scope.Scope;
 
 /**
  * @version $Rev$ $Date$

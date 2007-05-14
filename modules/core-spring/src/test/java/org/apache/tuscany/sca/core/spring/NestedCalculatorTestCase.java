@@ -18,9 +18,10 @@
  */
 package org.apache.tuscany.sca.core.spring;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.core.spring.context.SCADomainContext;
 
-import junit.framework.TestCase;
 import calculator.CalculatorService;
 
 /**

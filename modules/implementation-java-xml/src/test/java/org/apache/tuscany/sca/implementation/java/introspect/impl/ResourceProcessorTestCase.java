@@ -28,9 +28,6 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateResourceException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.IllegalResourceException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;
 
 /**
  * @version $Rev$ $Date$

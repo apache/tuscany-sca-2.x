@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.RuntimeComponent;
-import org.apache.tuscany.sca.core.store.MemoryStore;
 import org.apache.tuscany.sca.event.RuntimeEventListener;
 import org.apache.tuscany.sca.store.DuplicateRecordException;
 import org.apache.tuscany.sca.store.Store;

@@ -23,7 +23,6 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.impl.DirectedGraph;
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph.Edge;
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph.Vertex;
 

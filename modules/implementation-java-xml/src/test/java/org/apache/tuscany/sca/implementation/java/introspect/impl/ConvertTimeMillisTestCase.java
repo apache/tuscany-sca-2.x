@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationProcessor;
 
 /**
  * @version $Rev$ $Date$

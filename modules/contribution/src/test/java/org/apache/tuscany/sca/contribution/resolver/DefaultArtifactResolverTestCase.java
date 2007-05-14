@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
-import org.apache.tuscany.sca.contribution.resolver.ClassReference;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-
 import junit.framework.TestCase;
 
 /**

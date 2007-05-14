@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.implementation.java.monitor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.tuscany.sca.implementation.java.monitor.DefaultExceptionFormatter;
-
 import junit.framework.TestCase;
 
 /**

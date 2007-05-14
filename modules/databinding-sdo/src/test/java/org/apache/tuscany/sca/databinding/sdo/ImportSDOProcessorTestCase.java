@@ -28,9 +28,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
-import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistryImpl;
-import org.apache.tuscany.sca.databinding.sdo.ImportSDO;
-import org.apache.tuscany.sca.databinding.sdo.ImportSDOProcessor;
 
 import com.example.ipo.sdo.SdoFactory;
 

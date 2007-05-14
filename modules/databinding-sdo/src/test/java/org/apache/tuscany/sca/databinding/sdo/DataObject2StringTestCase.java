@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.databinding.sdo;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.databinding.sdo.DataObject2String;
-import org.apache.tuscany.sca.databinding.sdo.String2DataObject;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;

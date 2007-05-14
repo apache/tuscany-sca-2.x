@@ -18,10 +18,9 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import org.osoa.sca.ComponentContext;
-
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$

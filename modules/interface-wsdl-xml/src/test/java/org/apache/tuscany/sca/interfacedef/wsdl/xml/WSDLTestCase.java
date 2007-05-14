@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessor
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 
 /**
  * Test reading WSDL interfaces.

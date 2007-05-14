@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 

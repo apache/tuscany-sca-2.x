@@ -23,9 +23,9 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.tuscany.sca.databinding.jaxb.JAXBWrapperHandler;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.databinding.jaxb.JAXBWrapperHandler;
 
 import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;

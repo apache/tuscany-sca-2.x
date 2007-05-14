@@ -27,8 +27,6 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DuplicatePropertyException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidConstructorException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidPropertyException;
 import org.osoa.sca.annotations.Property;
 
 /**

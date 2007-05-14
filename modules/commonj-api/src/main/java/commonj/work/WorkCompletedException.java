@@ -28,9 +28,9 @@
 
 package commonj.work;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @version $Rev$ $Date$

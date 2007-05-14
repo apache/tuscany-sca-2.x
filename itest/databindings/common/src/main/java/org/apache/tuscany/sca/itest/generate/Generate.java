@@ -20,25 +20,18 @@ package org.apache.tuscany.sca.itest.generate;
 
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.tuscany.generate.GenerateFactory;
 import org.apache.tuscany.generate.GenerateType;
-import org.apache.tuscany.generate.InputFileType;
 import org.apache.tuscany.generate.TemplateType;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XMLHelper;
-import commonj.sdo.helper.XSDHelper;
 
 /**
  * Generates test files based on the information in a configuration files (generate.xml)

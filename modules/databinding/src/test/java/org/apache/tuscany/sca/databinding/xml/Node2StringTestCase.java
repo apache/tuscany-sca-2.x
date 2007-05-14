@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.databinding.xml;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
-import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

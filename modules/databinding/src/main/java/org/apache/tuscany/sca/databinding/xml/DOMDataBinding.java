@@ -19,10 +19,9 @@
 package org.apache.tuscany.sca.databinding.xml;
 
 
-import org.w3c.dom.Node;
-
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.w3c.dom.Node;
 
 /**
  * DOM DataBinding

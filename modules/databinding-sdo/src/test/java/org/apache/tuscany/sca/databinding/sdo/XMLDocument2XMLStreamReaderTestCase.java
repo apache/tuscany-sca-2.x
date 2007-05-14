@@ -24,8 +24,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.databinding.sdo.XMLDocument2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.sdo.XMLStreamReader2XMLDocument;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;

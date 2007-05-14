@@ -20,9 +20,6 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
-import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
 import org.easymock.EasyMock;
 
 /**

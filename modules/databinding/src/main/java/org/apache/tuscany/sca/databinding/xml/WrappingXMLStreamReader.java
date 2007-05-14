@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.namespace.QName;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 public class WrappingXMLStreamReader implements XMLFragmentStreamReader {
 

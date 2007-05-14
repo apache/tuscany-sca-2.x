@@ -23,9 +23,9 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter;
 
 /**
  * 
