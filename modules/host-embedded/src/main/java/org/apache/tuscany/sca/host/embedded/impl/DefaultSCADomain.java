@@ -131,6 +131,7 @@ public class DefaultSCADomain extends SCADomain {
         // Activate and start the SCA domain composite
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
         try {
+            compositeActivator.activate(domainComposite);
             compositeActivator.start(domainComposite);
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);

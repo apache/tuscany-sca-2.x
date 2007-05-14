@@ -27,6 +27,19 @@ import org.apache.tuscany.sca.assembly.Composite;
  * @version $Rev$ $Date$
  */
 public interface CompositeActivator {
+
+    /**
+     * Activate a composite
+     * @param composite
+     */
+    void activate(Composite composite) throws ActivationException;
+
+    /**
+     * Stop a composite
+     * @param composite
+     */
+    void deactivate(Composite composite) throws ActivationException;
+
     /**
      * Start a composite
      * @param composite
