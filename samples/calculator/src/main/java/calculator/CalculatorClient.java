@@ -39,9 +39,7 @@ public class CalculatorClient {
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
 
-        Thread.currentThread().sleep(50000);
         domain.close();
-
     }
 
 }

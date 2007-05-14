@@ -38,7 +38,6 @@ public class CalculatorServiceImpl implements CalculatorService {
 
     @Init
     public void init() {
-        int i =0 ;
     }
     
     @Reference
