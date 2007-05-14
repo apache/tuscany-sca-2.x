@@ -26,10 +26,12 @@ import org.osoa.sca.annotations.Reference;
 /**
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("unused")
 public class ComponentAImpl implements Interface1 {
 
     private Interface1 componentBReference;
     
+    @SuppressWarnings("unused")
     private String prefix;
     
     private String prefix1;
