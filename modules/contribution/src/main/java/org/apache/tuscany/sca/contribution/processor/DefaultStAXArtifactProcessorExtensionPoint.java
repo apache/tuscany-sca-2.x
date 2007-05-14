@@ -26,7 +26,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * @version $Rev$ $Date$
  */
 public class DefaultStAXArtifactProcessorExtensionPoint
-    extends DefaultArtifactProcessorExtensionPoint
+    extends DefaultArtifactProcessorExtensionPoint<StAXArtifactProcessor>
     implements StAXArtifactProcessorExtensionPoint {
 
     /**

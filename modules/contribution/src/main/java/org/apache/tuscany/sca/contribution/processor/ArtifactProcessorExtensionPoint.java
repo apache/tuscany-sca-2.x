@@ -23,7 +23,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * 
  * @version $Rev$ $Date$
  */
-public interface ArtifactProcessorExtensionPoint<P> {
+public interface ArtifactProcessorExtensionPoint<P extends ArtifactProcessor> {
 
     /**
      * Add an artifact processor.
@@ -44,13 +44,13 @@ public interface ArtifactProcessorExtensionPoint<P> {
      * @param artifactType an artifact type
      * @return the processor associated with the given artifact type
      */
-    ArtifactProcessor getProcessor(Object artifactType);
+    P getProcessor(Object artifactType);
     
     /**
      * Returns the processor associated with the given model type.
      * @param modelType a model type
      * @return the processor associated with the given model type
      */
-    ArtifactProcessor getProcessor(Class<?> modelType);
+    P getProcessor(Class<?> modelType);
     
 }

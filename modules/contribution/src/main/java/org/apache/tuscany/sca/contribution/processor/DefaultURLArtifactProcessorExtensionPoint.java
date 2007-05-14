@@ -26,7 +26,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * @version $Rev$ $Date$
  */
 public class DefaultURLArtifactProcessorExtensionPoint
-    extends DefaultArtifactProcessorExtensionPoint
+    extends DefaultArtifactProcessorExtensionPoint<URLArtifactProcessor>
     implements URLArtifactProcessorExtensionPoint {
 
     /**

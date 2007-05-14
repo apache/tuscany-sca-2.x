@@ -81,8 +81,7 @@ public class ExtensibleStAXArtifactProcessor
         
         // Delegate to the processor associated with the model type
         if (model != null) {
-            StAXArtifactProcessor<Object> processor = 
-                (StAXArtifactProcessor<Object>)processors.getProcessor((Class<Object>)model.getClass());
+            StAXArtifactProcessor processor = processors.getProcessor(model.getClass());
             if (processor != null) {
                 try {
                     processor.write(model, outputSource);
@@ -98,8 +97,7 @@ public class ExtensibleStAXArtifactProcessor
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            StAXArtifactProcessor<Object> processor = 
-                (StAXArtifactProcessor<Object>)processors.getProcessor((Class<Object>)model.getClass());
+            StAXArtifactProcessor processor = processors.getProcessor(model.getClass());
             if (processor != null) {
                 processor.resolve(model, resolver);
             }
