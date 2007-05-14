@@ -46,6 +46,7 @@ public class TuscanyServlet extends HttpServlet {
 
         // TODO: must be a better way to get this than using a static
         servletHost = WebAppServletHost.getInstance();
+        servletHost.init(config);
     }
 
     @Override
