@@ -188,9 +188,6 @@ public class DefaultCompositeActivator implements CompositeActivator {
         }
     }
 
-    /**
-     * Stop a composite
-     */
     public void stop(Composite composite) {
         for (Component component : composite.getComponents()) {
             
@@ -557,17 +554,21 @@ public class DefaultCompositeActivator implements CompositeActivator {
         // }
     }
 
-    /**
-     * Activate a composite
-     * 
-     * @param composite
-     * @throws IncompatibleInterfaceContractException
-     */
-    public void start(Composite composite) throws ActivationException {
+    public void activate(Composite composite) throws ActivationException {
         try {
             buildComposite(composite, assemblyFactory, interfaceContractMapper);
             configureComposite(composite);
             createRuntimeWires(composite);
+        } catch (Exception e) {
+            throw new ActivationException(e);
+        }
+    }
+    
+    public void deactivate(Composite composite) throws ActivationException {
+    }
+
+    public void start(Composite composite) throws ActivationException {
+        try {
             startComposite(composite);
         } catch (Exception e) {
             throw new ActivationException(e);
