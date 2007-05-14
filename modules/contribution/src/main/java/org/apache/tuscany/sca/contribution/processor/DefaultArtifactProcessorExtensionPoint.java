@@ -21,18 +21,14 @@ package org.apache.tuscany.sca.contribution.processor;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 /**
  * The default implementation of an artifact processor registry.
  * 
  * @version $Rev$ $Date$
  */
-abstract class DefaultArtifactProcessorExtensionPoint {
-    protected final Map<Object, ArtifactProcessor> processorsByArtifactType = 
-        new HashMap<Object, ArtifactProcessor>();
-    protected final Map<Class<?>, ArtifactProcessor> processorsByModelType = 
-        new HashMap<Class<?>, ArtifactProcessor>();
+abstract class DefaultArtifactProcessorExtensionPoint<P> {
+    protected final Map<Object, P> processorsByArtifactType = new HashMap<Object, P>();
+    protected final Map<Class<?>, P> processorsByModelType = new HashMap<Class<?>, P>();
 
     /**
      * Constructs a new loader registry.
@@ -45,7 +41,7 @@ abstract class DefaultArtifactProcessorExtensionPoint {
      * @param artifactType an artifact type
      * @return the processor associated with the given artifact type
      */
-    public ArtifactProcessor getProcessor(Object artifactType) {
+    public P getProcessor(Object artifactType) {
         return processorsByArtifactType.get(artifactType);
     }
 
@@ -54,10 +50,10 @@ abstract class DefaultArtifactProcessorExtensionPoint {
      * @param modelType a model type
      * @return the processor associated with the given model type
      */
-    public ArtifactProcessor getProcessor(Class<?> modelType) {
+    public P getProcessor(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
         for (Class<?> c : classes) {
-            ArtifactProcessor processor = processorsByModelType.get(c);
+            P processor = processorsByModelType.get(c);
             if (processor != null) {
                 return processor;
             }

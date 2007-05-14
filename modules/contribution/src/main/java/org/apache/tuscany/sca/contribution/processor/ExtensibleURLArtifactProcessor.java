@@ -68,8 +68,7 @@ public class ExtensibleURLArtifactProcessor
 
         // Delegate to the processor associated with the model type
         if (model != null) {
-            URLArtifactProcessor<Object> processor = 
-                (URLArtifactProcessor<Object>)processors.getProcessor((Class<Object>)model.getClass());
+            URLArtifactProcessor processor = processors.getProcessor(model.getClass());
             if (processor != null) {
                 processor.resolve(model, resolver);
             }

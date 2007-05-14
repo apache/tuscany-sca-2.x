@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  * 
  * @version $Rev$ $Date$
  */
-public interface ArtifactProcessor <M> {
+public interface ArtifactProcessor<M> {
     
     /**
      * Resolve references from this model to other models. For example references
