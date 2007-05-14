@@ -22,12 +22,12 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.osoa.sca.Constants.SCA_PREFIX;
+
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
-
-import static org.osoa.sca.Constants.SCA_PREFIX;
 
 /**
  * Annotation denoting the intent that service operations require integrity.

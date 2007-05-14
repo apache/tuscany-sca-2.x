@@ -20,12 +20,10 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.lang.reflect.Method;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.MethodInjector;
-import org.apache.tuscany.sca.implementation.java.injection.SingletonObjectFactory;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$

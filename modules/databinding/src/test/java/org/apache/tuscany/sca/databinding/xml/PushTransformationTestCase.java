@@ -24,10 +24,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
-import org.apache.tuscany.sca.databinding.xml.Node2String;
-import org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;
-import org.apache.tuscany.sca.databinding.xml.String2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2SAX;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 

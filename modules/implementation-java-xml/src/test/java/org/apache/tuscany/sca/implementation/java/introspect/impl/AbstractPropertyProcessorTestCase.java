@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.DuplicatePropertyException;
 import org.apache.tuscany.sca.implementation.java.introspect.IllegalPropertyException;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.AbstractPropertyProcessor;
 
 
 /**

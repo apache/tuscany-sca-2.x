@@ -35,11 +35,6 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateConstructorException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidConstructorException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.PropertyProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;

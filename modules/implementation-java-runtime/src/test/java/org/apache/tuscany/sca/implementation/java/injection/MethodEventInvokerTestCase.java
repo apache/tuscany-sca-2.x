@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.implementation.java.injection.MethodEventInvoker;
-
 import junit.framework.TestCase;
 
 /**

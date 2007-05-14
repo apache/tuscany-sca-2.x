@@ -22,13 +22,6 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.core.event.ComponentStart;
-import org.apache.tuscany.sca.core.event.ComponentStop;
-import org.apache.tuscany.sca.core.event.HttpSessionEnd;
-import org.apache.tuscany.sca.core.event.HttpSessionStart;
-import org.apache.tuscany.sca.core.event.RequestEnd;
-import org.apache.tuscany.sca.core.event.RequestStart;
-
 /**
  * @version $Rev$ $Date$
  */

@@ -67,7 +67,6 @@ import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
-import org.apache.tuscany.sca.scope.TargetResolutionException;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;

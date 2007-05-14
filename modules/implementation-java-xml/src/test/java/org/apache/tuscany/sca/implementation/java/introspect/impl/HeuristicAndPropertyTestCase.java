@@ -28,8 +28,6 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.HeuristicPojoProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.PropertyProcessor;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;

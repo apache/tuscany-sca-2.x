@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.test.opoverload.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
 import org.osoa.sca.annotations.Reference;

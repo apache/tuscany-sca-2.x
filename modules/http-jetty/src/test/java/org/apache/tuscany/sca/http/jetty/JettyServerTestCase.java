@@ -30,11 +30,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tuscany.sca.http.jetty.JettyServer;
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$

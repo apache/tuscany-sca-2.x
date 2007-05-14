@@ -20,27 +20,6 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.AbstractProperty;
-import org.apache.tuscany.sca.assembly.AbstractReference;
-import org.apache.tuscany.sca.assembly.AbstractService;
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.CompositeReference;
-import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.Wire;
-
 import junit.framework.TestCase;
 
 

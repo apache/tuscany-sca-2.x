@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.core;
 
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-
 import junit.framework.TestCase;
 
 public class DefaultExtensionPointRegistryTestCase extends TestCase {

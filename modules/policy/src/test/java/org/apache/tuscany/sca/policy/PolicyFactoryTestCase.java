@@ -22,11 +22,6 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.PolicySet;
-
 /**
  * Test building of policy model instances using the policy factory.
  * 

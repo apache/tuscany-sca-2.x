@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import org.apache.tuscany.sca.implementation.java.injection.SingletonObjectFactory;
-
 import junit.framework.TestCase;
 
 /**

@@ -25,9 +25,6 @@ import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateResourceException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidConstructorException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidResourceException;
 
 /**
  * @version $Rev$ $Date$

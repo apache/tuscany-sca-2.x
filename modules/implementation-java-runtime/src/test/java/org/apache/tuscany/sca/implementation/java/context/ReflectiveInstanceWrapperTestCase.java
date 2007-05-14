@@ -18,14 +18,13 @@
  */
 package org.apache.tuscany.sca.implementation.java.context;
 
-import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
-import org.easymock.EasyMock;
+import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.implementation.java.context.ReflectiveInstanceWrapper;
 import org.apache.tuscany.sca.implementation.java.injection.EventInvoker;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInitializationException;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$

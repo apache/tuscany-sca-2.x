@@ -20,10 +20,10 @@ package org.apache.tuscany.sca.databinding.impl;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.databinding.annotation.DataBinding;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 
 public class DataBindingTestCase extends TestCase {
     @SuppressWarnings("unused")

@@ -29,8 +29,6 @@ import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.DefaultMediator;
-import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.apache.tuscany.sca.databinding.xml.Node2Writer;
 import org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;

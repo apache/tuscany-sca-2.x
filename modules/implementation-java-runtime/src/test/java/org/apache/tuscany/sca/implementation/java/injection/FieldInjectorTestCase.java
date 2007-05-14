@@ -20,9 +20,6 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.lang.reflect.Field;
 
-import org.apache.tuscany.sca.implementation.java.injection.FieldInjector;
-import org.apache.tuscany.sca.implementation.java.injection.SingletonObjectFactory;
-
 import junit.framework.TestCase;
 
 /**

@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.sca.core.component;
 
-import org.osoa.sca.ServiceReference;
-
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.osoa.sca.ServiceReference;
 
 /**
  * Default implementation of a ServiceReference.

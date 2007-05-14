@@ -23,7 +23,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 
 public class JavaBean2XMLStreamReaderTestCase extends TestCase {
     /**

@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.http.tomcat.TomcatServer;
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 

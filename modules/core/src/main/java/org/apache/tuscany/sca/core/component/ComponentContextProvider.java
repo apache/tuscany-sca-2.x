@@ -20,9 +20,9 @@ package org.apache.tuscany.sca.core.component;
 
 import java.net.URI;
 
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
-import org.osoa.sca.CallableReference;
 
 /**
  * Interface implemented by Component's that want to expose a ComponentContext.

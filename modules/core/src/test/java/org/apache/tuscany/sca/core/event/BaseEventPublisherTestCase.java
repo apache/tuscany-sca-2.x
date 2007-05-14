@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.core.event;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.core.event.BaseEventPublisher;
 import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.event.EventFilter;
 import org.apache.tuscany.sca.event.EventPublisher;

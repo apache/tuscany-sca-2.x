@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.assembly.dsl;
 
-import org.apache.tuscany.sca.assembly.dsl.CompositeBuilder;
-
 import junit.framework.TestCase;
 
 public class BigBankBuilderTestCase extends TestCase {

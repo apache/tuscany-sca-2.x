@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.implementation.java.mock;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.EagerInit;
 
 @Scope("COMPOSITE")
 @EagerInit

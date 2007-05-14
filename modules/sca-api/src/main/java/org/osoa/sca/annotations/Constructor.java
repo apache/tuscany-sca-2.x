@@ -19,8 +19,9 @@
 package org.osoa.sca.annotations;
 
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**

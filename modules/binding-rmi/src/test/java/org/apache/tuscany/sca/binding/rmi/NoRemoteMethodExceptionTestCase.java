@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.rmi;
 
-import org.apache.tuscany.sca.binding.rmi.NoRemoteMethodException;
-
 import junit.framework.TestCase;
 
 public class NoRemoteMethodExceptionTestCase extends TestCase {

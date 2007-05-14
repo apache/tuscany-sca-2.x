@@ -22,11 +22,9 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.factory.ObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.PojoObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.SingletonObjectFactory;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.factory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$

@@ -26,9 +26,6 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.DuplicateInitException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.IllegalInitException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InitProcessor;
 import org.osoa.sca.annotations.Init;
 
 /**

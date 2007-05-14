@@ -18,10 +18,6 @@ package org.apache.tuscany.sca.rmi;
 
 import java.rmi.Remote;
 
-import org.apache.tuscany.sca.rmi.DefaultRMIHost;
-import org.apache.tuscany.sca.rmi.RMIHostException;
-import org.apache.tuscany.sca.rmi.RMIHostRuntimeException;
-
 import junit.framework.TestCase;
 
 public class RMIHostImplTestCase extends TestCase {

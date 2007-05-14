@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.test;
 
-import org.osoa.sca.annotations.Remotable; 
 
 /**
  * @author lamodeo
