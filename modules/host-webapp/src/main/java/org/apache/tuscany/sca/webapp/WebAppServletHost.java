@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.http.ServletMappingException;
@@ -59,11 +61,28 @@ public class WebAppServletHost implements ServletHost {
     }
 
     public Servlet getServlet(String path) {
-        return servlets.get(path);
+        Servlet servlet = servlets.get(path);
+        if (servlet != null) {
+            return servlet;
+        }
+        for (String servletPath : servlets.keySet()) {
+            if (servletPath.endsWith("*")) {
+                if (path.startsWith(servletPath.substring(0, servletPath.length()-1))) { 
+                    return servlets.get(servletPath);
+                }
+            }
+        }
+        return null;
     }
 
     public static WebAppServletHost getInstance() {
         return instance;
+    }
+    
+    public void init(ServletConfig config) throws ServletException {
+        for (Servlet servlet : servlets.values()) {
+            servlet.init(config);
+        }
     }
 
 }
