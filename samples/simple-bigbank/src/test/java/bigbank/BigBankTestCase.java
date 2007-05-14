@@ -26,16 +26,16 @@ import bigbank.account.AccountService;
 
 public class BigBankTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
     AccountService accountService;
 
     protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("BigBank.composite");
-        accountService = domain.getService(AccountService.class, "AccountServiceComponent");
+        scaDomain = SCADomain.newInstance("BigBank.composite");
+        accountService = scaDomain.getService(AccountService.class, "AccountServiceComponent");
     }
     
     protected void tearDown() throws Exception {
-    	domain.close();
+        scaDomain.close();
     }
 
     public void test() throws Exception {

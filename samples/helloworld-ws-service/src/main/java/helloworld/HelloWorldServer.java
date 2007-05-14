@@ -30,7 +30,7 @@ public class HelloWorldServer {
 
     public static void main(String[] args) {
 
-        SCADomain domain = SCADomain.newInstance("helloworldws.composite");
+        SCADomain scaDomain = SCADomain.newInstance("helloworldws.composite");
 
         try {
             System.out.println("HelloWorld server started");
@@ -39,7 +39,7 @@ public class HelloWorldServer {
             e.printStackTrace();
         }
 
-        domain.close();
+        scaDomain.close();
         System.out.println("HelloWorld server stopped");
     }
 

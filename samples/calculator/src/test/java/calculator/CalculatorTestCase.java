@@ -28,15 +28,15 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class CalculatorTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCADomain domain;
+    private SCADomain scaDomain;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("http://calc/domain", ".", "Calculator.composite");
-        calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
+        scaDomain = SCADomain.newInstance("http://calc/domain", ".", "Calculator.composite");
+        calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     protected void tearDown() throws Exception {
-        domain.close();
+        scaDomain.close();
     }
 
     public void testCalculator() throws Exception {

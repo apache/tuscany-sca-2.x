@@ -27,16 +27,16 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class EchoReferenceTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
     private Echo service;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("EchoBinding.composite");
-        service = domain.getService(Echo.class, "EchoComponent");
+        scaDomain = SCADomain.newInstance("EchoBinding.composite");
+        service = scaDomain.getService(Echo.class, "EchoComponent");
     }
     
     protected void tearDown() throws Exception {
-        domain.close();
+        scaDomain.close();
     }
 
     public void testEchoBinding() {

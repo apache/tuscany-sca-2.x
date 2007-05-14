@@ -26,13 +26,13 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class SimpleCallbackClient {
 
     public static void main(String[] args) throws Exception {
-        SCADomain domain = SCADomain.newInstance("simplecallback.composite");
-        MyClient myClient = domain.getService(MyClient.class, "MyClientComponent");
+        SCADomain scaDomain = SCADomain.newInstance("simplecallback.composite");
+        MyClient myClient = scaDomain.getService(MyClient.class, "MyClientComponent");
         
         System.out.println("Main thread " + Thread.currentThread());
         myClient.aClientMethod();
         Thread.sleep(500);
         
-        domain.close();
+        scaDomain.close();
     }
 }

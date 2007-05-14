@@ -24,16 +24,16 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public class CompositeTestCase extends TestCase {
 
-    private SCADomain domain;
+    private SCADomain scaDomain;
     private Source source;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("http://test", ".", "OuterComposite.composite");
-        source = domain.getService(Source.class, "SourceComponent");
+        scaDomain = SCADomain.newInstance("http://test", ".", "OuterComposite.composite");
+        source = scaDomain.getService(Source.class, "SourceComponent");
     }
     
     protected void tearDown() throws Exception {
-    	domain.close();
+        scaDomain.close();
     }
 
     public void test() throws Exception {

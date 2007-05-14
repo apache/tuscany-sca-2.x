@@ -30,12 +30,12 @@ import echo.server.EchoServer;
 public class EchoBindingClient {
     public static void main(String[] args) throws Exception {
 
-        SCADomain domain  = SCADomain.newInstance("EchoBinding.composite");
+        SCADomain scaDomain  = SCADomain.newInstance("EchoBinding.composite");
         
         
         // Call the echo service component which will, in turn, call its 
         // reference which will echo the string back
-        Echo service = domain.getService(Echo.class, "EchoComponent");
+        Echo service = scaDomain.getService(Echo.class, "EchoComponent");
         String echoString = service.echo("foo");
         System.out.println("Echo reference = " + echoString );
 
@@ -43,7 +43,7 @@ public class EchoBindingClient {
         // away
         echoString = EchoServer.getServer().sendReceive("EchoComponent/EchoService", "baa");
         System.out.println("Echo service = " + echoString );
-        domain.close();
+        scaDomain.close();
 
     }
 

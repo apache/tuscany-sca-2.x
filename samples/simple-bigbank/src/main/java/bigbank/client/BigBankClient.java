@@ -30,14 +30,14 @@ import bigbank.account.AccountService;
 public class BigBankClient {
     public static void main(String[] args) throws Exception {
 
-        SCADomain domain = SCADomain.newInstance("BigBank.composite");
+        SCADomain scaDomain = SCADomain.newInstance("BigBank.composite");
         
-        AccountService accountService = domain.getService(AccountService.class,
+        AccountService accountService = scaDomain.getService(AccountService.class,
                                                           "AccountServiceComponent");
 
         System.out.println("Account summary: " + accountService.getAccountReport("Foo") );
 
-        domain.close();
+        scaDomain.close();
     }  
 
 }

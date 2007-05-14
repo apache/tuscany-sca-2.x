@@ -28,11 +28,11 @@ import org.junit.Test;
 
 public class HelloWorldServerTestCase {
 	
-    private SCADomain domain;
+    private SCADomain scaDomain;
 
         @Before
 	public void startServer() throws Exception {
-		domain = SCADomain.newInstance("helloworldws.composite");
+            scaDomain = SCADomain.newInstance("helloworldws.composite");
 	}
 	
 	@Test
@@ -42,7 +42,7 @@ public class HelloWorldServerTestCase {
 	
 	@After
 	public void stopServer() throws Exception {
-		domain.close();
+            scaDomain.close();
 	}
 
 }
