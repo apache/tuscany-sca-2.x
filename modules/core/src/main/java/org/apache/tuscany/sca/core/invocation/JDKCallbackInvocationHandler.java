@@ -21,13 +21,13 @@ package org.apache.tuscany.sca.core.invocation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.core.EndpointReference;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
@@ -43,29 +43,21 @@ import org.osoa.sca.NoRegisteredCallbackException;
  */
 public class JDKCallbackInvocationHandler extends AbstractInvocationHandler implements InvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
-    private transient Map<URI, RuntimeWire> wires;
-    private List<String> sourceWireNames;
+    private transient Map<String, RuntimeWire> wires;
 
     /**
      * Constructor used for deserialization only
      */
     public JDKCallbackInvocationHandler(MessageFactory messageFactory) {
         super(messageFactory, false);
-        sourceWireNames = new ArrayList<String>();
-        wires = new HashMap<URI, RuntimeWire>();
+        wires = new HashMap<String, RuntimeWire>();
     }
 
     public JDKCallbackInvocationHandler(MessageFactory messageFactory, List<RuntimeWire> wireList) {
         super(messageFactory, false);
-        this.wires = new HashMap<URI, RuntimeWire>();
+        this.wires = new HashMap<String, RuntimeWire>();
         for (RuntimeWire wire : wireList) {
-            URI uri = URI.create(wire.getSource().getComponent().getURI() + "#"
-                                 + wire.getSource().getComponentReference().getName());
-            wires.put(uri, wire);
-        }
-        sourceWireNames = new ArrayList<String>();
-        for (URI uri : wires.keySet()) {
-            sourceWireNames.add(uri.getFragment());
+            wires.put(wire.getSource().getURI(), wire);
         }
     }
 
@@ -80,7 +72,8 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
             return hashCode();
             // TODO beter hash algorithm
         }
-        RuntimeWire wire = ThreadMessageContext.getMessageContext().getWire();
+        EndpointReference<RuntimeComponentReference> from = ThreadMessageContext.getMessageContext().getFrom();
+        RuntimeWire wire = wires.get(from.getURI());
         assert wire != null;
         List<InvocationChain> chains = wire.getCallbackInvocationChains();
         IdentityHashMap<Operation, InvocationChain> map = new IdentityHashMap<Operation, InvocationChain>();

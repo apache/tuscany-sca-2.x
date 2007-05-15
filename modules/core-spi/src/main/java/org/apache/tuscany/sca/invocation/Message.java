@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.invocation;
 
+import org.apache.tuscany.sca.core.EndpointReference;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 
@@ -54,24 +57,24 @@ public interface Message {
      * Get the URI of the source reference
      * @return
      */
-    String getFrom();
+    EndpointReference<RuntimeComponentReference> getFrom();
 
     /**
      * 
      * @param from
      */
-    void setFrom(String from);
+    void setFrom(EndpointReference<RuntimeComponentReference> from);
 
     /**
      * Get the URI of target service
      * @return
      */
-    String getTo();
+    EndpointReference<RuntimeComponentService> getTo();
 
     /**
      * @param to
      */
-    void setTo(String to);
+    void setTo(EndpointReference<RuntimeComponentService> to);
 
     /**
      * Returns the id of the message
@@ -121,9 +124,5 @@ public interface Message {
      * @param sequence the conversational sequence
      */
     void setConversationSequence(ConversationSequence sequence);
-    
-    // FIXME: Remove the runtime wire once we can resolve the addresses for To and From
-    RuntimeWire getWire();
 
-    void setWire(RuntimeWire wire);
 }

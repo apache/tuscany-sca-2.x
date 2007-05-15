@@ -19,48 +19,56 @@
 
 package org.apache.tuscany.sca.core;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**
- * The runtime wire that connects a component reference to a component service
- * (or an external service) over the selected binding
+ * The endpoint reference for a component service or reference
  * 
  * @version $Rev$ $Date$
  */
-public interface RuntimeWire {
+public interface EndpointReference<C extends Contract> {
+    /**
+     * Get the component for the endpoint
+     * @return The component, null of the EPR is for a non-SCA service
+     */
+    RuntimeComponent getComponent();
 
     /**
-     * Get the source of the wire
+     * Get the component service or reference for the endpoint
+     * @return The component service or reference, null if the EPR is for a non-SCA service
+     */
+    C getContract();
+
+    /**
+     * Get the binding for the endpoint
+     * @return The binding
+     */
+    Binding getBinding();
+
+    /**
+     * Get the interface contract for the endpoint
+     * @return The interface contract
+     */
+    InterfaceContract getInterfaceContract();
+    
+    /**
+     * Get the URI for this endpoint
      * @return
      */
-    EndpointReference<RuntimeComponentReference> getSource();
-
+    String getURI();
+    
     /**
-     * Get the target of the wire
+     * Test if the EPR is resolved
      * @return
      */
-    EndpointReference<RuntimeComponentService> getTarget();
-
+    boolean isUnresolved();
+    
     /**
-     * Returns the invocation chains for service operations associated with the
-     * wire
-     * 
-     * @return the invocation chains for service operations associated with the
-     *         wire
+     * Set the unresolved flag for the EPR
+     * @param unresolved
      */
-    List<InvocationChain> getInvocationChains();
-
-    /**
-     * Returns the invocation chains for callback service operations associated
-     * with the wire
-     * 
-     * @return the invocation chains for callback service operations associated
-     *         with the wire
-     */
-    List<InvocationChain> getCallbackInvocationChains();
-   
+    void setUnresolved(boolean unresolved);
+    
 }

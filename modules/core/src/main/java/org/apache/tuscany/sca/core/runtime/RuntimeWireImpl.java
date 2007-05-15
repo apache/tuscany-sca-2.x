@@ -22,20 +22,18 @@ package org.apache.tuscany.sca.core.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.core.EndpointReference;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RuntimeWireImpl implements RuntimeWire {
-    private Source wireSource;
-    private Target wireTarget;
+    private EndpointReference<RuntimeComponentReference> wireSource;
+    private EndpointReference<RuntimeComponentService> wireTarget;
 
     private final List<InvocationChain> chains = new ArrayList<InvocationChain>();
     private final List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
@@ -44,7 +42,8 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param source
      * @param target
      */
-    public RuntimeWireImpl(Source source, Target target) {
+    public RuntimeWireImpl(EndpointReference<RuntimeComponentReference> source,
+                           EndpointReference<RuntimeComponentService> target) {
         super();
         this.wireSource = source;
         this.wireTarget = target;
@@ -58,91 +57,11 @@ public class RuntimeWireImpl implements RuntimeWire {
         return chains;
     }
 
-    public static class SourceImpl implements RuntimeWire.Source {
-        private RuntimeComponent component;
-        private RuntimeComponentReference componentReference;
-        private Binding binding;
-        private InterfaceContract interfaceContract;
-
-        /**
-         * @param component
-         * @param componentReference
-         * @param binding
-         * @param interfaceContract
-         */
-        public SourceImpl(RuntimeComponent component,
-                          RuntimeComponentReference componentReference,
-                          Binding binding,
-                          InterfaceContract interfaceContract) {
-            super();
-            this.component = component;
-            this.componentReference = componentReference;
-            this.binding = binding;
-            this.interfaceContract = interfaceContract;
-        }
-
-        public Binding getBinding() {
-            return binding;
-        }
-
-        public RuntimeComponent getComponent() {
-            return component;
-        }
-
-        public RuntimeComponentReference getComponentReference() {
-            return componentReference;
-        }
-
-        public InterfaceContract getInterfaceContract() {
-            return interfaceContract;
-        }
-    }
-
-    public static class TargetImpl implements RuntimeWire.Target {
-        private RuntimeComponent component;
-        private RuntimeComponentService componentService;
-        private Binding binding;
-        private InterfaceContract interfaceContract;
-
-        /**
-         * @param component
-         * @param componentService
-         * @param binding
-         * @param interfaceContract
-         */
-        public TargetImpl(RuntimeComponent component,
-                          RuntimeComponentService componentService,
-                          Binding binding,
-                          InterfaceContract interfaceContract) {
-            super();
-            this.component = component;
-            this.componentService = componentService;
-            this.binding = binding;
-            this.interfaceContract = interfaceContract;
-        }
-
-        public Binding getBinding() {
-            return binding;
-        }
-
-        public RuntimeComponent getComponent() {
-            return component;
-        }
-
-        public RuntimeComponentService getComponentService() {
-            return componentService;
-        }
-
-        public InterfaceContract getInterfaceContract() {
-            return interfaceContract;
-        }
-    }
-
-    public Source getSource() {
+    public EndpointReference<RuntimeComponentReference> getSource() {
         return wireSource;
     }
 
-    public Target getTarget() {
+    public EndpointReference<RuntimeComponentService>  getTarget() {
         return wireTarget;
     }
 
