@@ -77,6 +77,8 @@
 				<exclude>helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
 				<exclude>helloworld-ws-reference/work</exclude>
 				<exclude>helloworld-ws-reference/work/**/*</exclude>
+				<exclude>helloworld-ws-service/work</exclude>
+				<exclude>helloworld-ws-service/work/**/*</exclude>
 				<exclude>calculator-web/target/sample-calculator-web</exclude>
 				<exclude>calculator-web/target/sample-calculator-web/**/*</exclude>
 				<exclude>helloworld-jsonrpc/target/sample-helloworldjsonrpc</exclude>
