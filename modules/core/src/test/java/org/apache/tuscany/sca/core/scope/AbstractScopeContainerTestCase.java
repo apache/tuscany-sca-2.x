@@ -24,9 +24,9 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.RuntimeComponent;
-import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 

@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
@@ -39,7 +40,7 @@ import org.osoa.sca.ServiceReference;
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeComponentImpl extends ComponentImpl implements RuntimeComponent {
+public class RuntimeComponentImpl extends ComponentImpl implements RuntimeComponent, ScopedRuntimeComponent {
     public static final String SELF_REFERENCE_PREFIX = "$self$.";
     protected ImplementationProvider implementationProvider;
     protected ProxyFactory proxyService;

@@ -17,26 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core;
+package org.apache.tuscany.sca.scope;
 
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.provider.ImplementationProvider;
-import org.osoa.sca.ComponentContext;
+import org.apache.tuscany.sca.core.RuntimeComponent;
 
 /**
- * The runtime component
+ * Scoped runtime component
+ * 
  * @version $Rev$ $Date$
  */
-public interface RuntimeComponent extends Component, ComponentContext {
+public interface ScopedRuntimeComponent extends RuntimeComponent {
     /**
-     * Set the implementation-specific configuration for this component
-     * @param implementationProvider
+     * Set the associated scope container
+     * @param scopeContainer
      */
-    void setImplementationProvider(ImplementationProvider implementationProvider);
-    
+    void setScopeContainer(ScopeContainer scopeContainer);
     /**
-     * Get the implementation-specific configuation for this component
+     * Get the assoicated scope container
      * @return
      */
-    ImplementationProvider getImplementationProvider();
+    ScopeContainer getScopeContainer();
 }

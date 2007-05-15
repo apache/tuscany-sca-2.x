@@ -17,10 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.provider;
+package org.apache.tuscany.sca.scope;
 
-import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
 
 /**
  * A component implementation can implement this interface to provide scope

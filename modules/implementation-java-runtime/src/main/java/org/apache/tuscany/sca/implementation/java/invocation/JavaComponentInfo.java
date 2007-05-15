@@ -65,6 +65,7 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
 import org.osoa.sca.CallableReference;
@@ -373,7 +374,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
     }
 
     public void removeInstance() throws PersistenceException {
-        component.getScopeContainer().remove();
+        ((ScopedRuntimeComponent) component).getScopeContainer().remove();
     }
 
     public URI getUri() {

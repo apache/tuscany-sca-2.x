@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
+import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.scope.TargetResolutionException;
 
 /**
@@ -52,7 +53,7 @@ public class JavaTargetInvoker implements TargetInvoker {
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
-        this.scopeContainer = component.getScopeContainer();
+        this.scopeContainer = ((ScopedRuntimeComponent) component).getScopeContainer();
         stateless = Scope.STATELESS == this.scopeContainer.getScope();
     }
 
