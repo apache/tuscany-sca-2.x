@@ -58,27 +58,27 @@
 	     <includes>
 	         <include>**/*</include>
            </includes>
-           <excludes>
-		 <exclude>contrib</exclude>
-		 <exclude>contrib/**/*</exclude>
-		 <exclude>doc</exclude>
-		 <exclude>doc/**/*</exclude>
-             <exclude>**/target</exclude>
-		 <exclude>**/target/**/*</exclude>
-		 <exclude>**/build</exclude>
-		 <exclude>**/build/**/*</exclude>
-		 <exclude>**/.settings</exclude>
-		 <exclude>**/.classpath</exclude>
-		 <exclude>**/.project</exclude>
-		 <exclude>**/.wtpmodules</exclude>
-		 <exclude>**/surefire*</exclude>
-		 <exclude>**/cobertura.ser</exclude>
-		 <exclude>bin</exclude>
-		 <exclude>bin/*</exclude>
-		 <exclude>**/var/journal</exclude>
-		 <exclude>**/build.out*</exclude>
-		 <exclude>velocity.log</exclude>
-		 <exclude>itest/velocity.log</exclude>
+         <excludes>
+    		 <exclude>contrib</exclude>
+    		 <exclude>contrib/**/*</exclude>
+    		 <exclude>doc</exclude>
+    		 <exclude>doc/**/*</exclude>
+                 <exclude>**/target</exclude>
+    		 <exclude>**/target/**/*</exclude>
+    		 <exclude>**/build</exclude>
+    		 <exclude>**/build/**/*</exclude>
+    		 <exclude>**/.settings</exclude>
+    		 <exclude>**/.classpath</exclude>
+    		 <exclude>**/.project</exclude>
+    		 <exclude>**/.wtpmodules</exclude>
+    		 <exclude>**/surefire*</exclude>
+    		 <exclude>**/cobertura.ser</exclude>
+    		 <exclude>bin</exclude>
+    		 <exclude>bin/*</exclude>
+    		 <exclude>**/var/journal</exclude>
+    		 <exclude>**/build.out*</exclude>
+    		 <exclude>velocity.log</exclude>
+    		 <exclude>itest/velocity.log</exclude>
              <exclude>modules/http-tomcat/work</exclude>
              <exclude>modules/http-tomcat/work/**/*</exclude>
              <exclude>modules/implementation-spring</exclude>
@@ -91,7 +91,9 @@
              <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-ws-reference/work</exclude>
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
-          </excludes>
+             <exclude>samples/bigbank</exclude>
+             <exclude>samples/bigbank/**/*</exclude>
+         </excludes>
 	 </fileSet>
      </fileSets>
 </assembly>
