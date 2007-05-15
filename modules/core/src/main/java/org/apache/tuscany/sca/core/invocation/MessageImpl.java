@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.core.invocation;
 import org.apache.tuscany.sca.core.EndpointReference;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
-import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -37,7 +36,6 @@ public class MessageImpl implements Message {
     private boolean isFault;
     private ConversationSequence conversationSequence;
     private String conversationId;
-    private RuntimeWire wire;
     
     private EndpointReference<RuntimeComponentReference> from;
     private EndpointReference<RuntimeComponentService> to;
