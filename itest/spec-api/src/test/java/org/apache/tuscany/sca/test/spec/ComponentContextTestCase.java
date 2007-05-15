@@ -19,37 +19,35 @@
 package org.apache.tuscany.sca.test.spec;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ComponentContextTestCase {
-    
-    static SCADomain domain;
+
+    private SCADomain domain;
 
     @Test
-    public void getServiceReference() {
-        
-        //FIXME this does not test ComponentContext, we'll need a component impl
-        // to test it
-        MyService myService = domain.getService(MyService.class, "MyService");
-
-        assertNotNull(myService);
-        assertEquals("RTP", myService.getLocation());
-        assertEquals("2006", myService.getYear());
-
+    public void simpleLocate() {
+        BasicService service = domain.getService(BasicService.class, "BasicServiceComponent");
+        assertEquals(-99, service.negate(99));
     }
 
-    @BeforeClass
-    public static void init() throws Exception {
-        domain = SCADomain.newInstance("CompositeTest.composite");
+    @Test
+    public void delegateViaDefinedReference() {
+        BasicService service = domain.getService(BasicService.class, "BasicServiceComponent");
+        assertEquals(-99, service.delegateNegate(99));
     }
 
-    @AfterClass
-    public static void destroy() throws Exception {
+    @Before
+    public void init() throws Exception {
+        domain = SCADomain.newInstance("sca://local", ".", "BasicService.composite", "MathService.composite");
+    }
+
+    @After
+    public void destroy() throws Exception {
         domain.close();
     }
 }
