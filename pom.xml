@@ -55,6 +55,22 @@
     <build>
         <defaultGoal>install</defaultGoal>
 
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${notice.dir}</directory>
+                <targetPath>META-INF</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>DISCLAIMER</include>
+                    <include>LICENSE</include>
+                    <include>NOTICE</include>
+                </includes>
+            </resource>
+        </resources>
+
         <pluginManagement>
             <plugins>
 
