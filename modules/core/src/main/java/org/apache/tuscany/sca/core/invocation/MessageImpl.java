@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
+import org.apache.tuscany.sca.core.EndpointReference;
+import org.apache.tuscany.sca.core.RuntimeComponentReference;
+import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
@@ -36,8 +39,8 @@ public class MessageImpl implements Message {
     private String conversationId;
     private RuntimeWire wire;
     
-    private String from;
-    private String to;
+    private EndpointReference<RuntimeComponentReference> from;
+    private EndpointReference<RuntimeComponentService> to;
 
     public MessageImpl(String conversationId, ConversationSequence conversationSequence, Object body) {
         this.conversationId = conversationId;
@@ -99,27 +102,19 @@ public class MessageImpl implements Message {
         this.body = fault;
     }
 
-    public RuntimeWire getWire() {
-        return wire;
-    }
-
-    public void setWire(RuntimeWire wire) {
-        this.wire = wire;
-    }
-
-    public String getFrom() {
+    public EndpointReference<RuntimeComponentReference> getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(EndpointReference<RuntimeComponentReference> from) {
         this.from = from;
     }
 
-    public String getTo() {
+    public EndpointReference<RuntimeComponentService> getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(EndpointReference<RuntimeComponentService> to) {
         this.to = to;
     }
 

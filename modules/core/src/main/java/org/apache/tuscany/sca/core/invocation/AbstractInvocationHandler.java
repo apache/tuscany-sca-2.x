@@ -76,7 +76,8 @@ public abstract class AbstractInvocationHandler {
             }
         }
         msg.setBody(args);
-        msg.setWire(wire);
+        msg.setFrom(wire.getSource());
+        msg.setTo(wire.getTarget());
         ThreadMessageContext.setMessageContext(msg);
         try {
             // dispatch the wire down the chain and get the response
