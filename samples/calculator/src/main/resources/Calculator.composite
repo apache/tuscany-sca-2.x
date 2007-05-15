@@ -20,10 +20,6 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="Calculator">
 
-    <service name="CalculatorService" promote="CalculatorServiceComponent">
-        <interface.java interface="calculator.CalculatorService"/>
-    </service>
-
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" target="AddServiceComponent" />

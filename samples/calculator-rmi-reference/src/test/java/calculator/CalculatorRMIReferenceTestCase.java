@@ -35,7 +35,7 @@ public class CalculatorRMIReferenceTestCase extends TestCase {
     private CalculatorService calculatorService;
 
     protected void setUp() throws Exception {
-        CalculatorServiceRmiImpl rmiCalculatorImpl = new CalculatorServiceRmiImpl();
+        CalculatorRMIServiceImpl rmiCalculatorImpl = new CalculatorRMIServiceImpl();
         Registry rmiRegistry = LocateRegistry.createRegistry(8099);
         rmiRegistry.bind("CalculatorRMIService", rmiCalculatorImpl);
         

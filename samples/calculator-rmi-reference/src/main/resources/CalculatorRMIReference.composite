@@ -22,25 +22,18 @@
 
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-		<reference name="addService" />
-        <reference name="subtractService" />
-        <reference name="multiplyService" />
-        <reference name="divideService" />
+		<reference name="addService">
+	    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+		</reference>
+        <reference name="subtractService">
+    		<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+        </reference>
+        <reference name="multiplyService">
+    		<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+        </reference>
+        <reference name="divideService">
+    		<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+        </reference>
     </component>
     
-    <reference name="AddReference" promote="CalculatorServiceComponent/addService">
-    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
-   	</reference> 
-   	
-   	<reference name="SubtractReference" promote="CalculatorServiceComponent/subtractService">
-    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
-   	</reference> 
-    
-    <reference name="MultiplyReference" promote="CalculatorServiceComponent/multiplyService">
-    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
-   	</reference> 
-    
-    <reference name="DivideReference" promote="CalculatorServiceComponent/divideService">
-    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
-   	</reference> 
 </composite>
