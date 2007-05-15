@@ -85,6 +85,27 @@
                     </configuration>
                 </plugin>
 
+                <!-- jar plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Extension-Name>${project.artifactId}</Extension-Name>
+                                <Specification-Title>${name}</Specification-Title>
+                                <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
+                                <Specification-Version>${version}</Specification-Version>
+                                <Implementation-Title>${name}</Implementation-Title>
+                                <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+                                <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+                                <Implementation-Version>${version}</Implementation-Version>
+                            </manifestEntries>
+                         </archive>
+                    </configuration>
+                    <version>2.1</version>
+                </plugin>
+
                 <!-- source code style check plugin configuration -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
