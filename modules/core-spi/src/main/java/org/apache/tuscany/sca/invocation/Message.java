@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.invocation;
 import org.apache.tuscany.sca.core.EndpointReference;
 import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeComponentService;
-import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 
 /**
