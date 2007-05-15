@@ -80,6 +80,8 @@
 				<exclude>bigbank/**/*</exclude>
 				<exclude>das-service</exclude>
 				<exclude>das-service/**/*</exclude>
+				<exclude>das-service-web</exclude>
+				<exclude>das-service-web/**/*</exclude>
 				<exclude>helloworld-jsonrpc/src/main/webapp/dojo</exclude>
 				<exclude>helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
 				<exclude>calculator-web/target/sample-calculator-web</exclude>
