@@ -21,11 +21,8 @@ package org.apache.tuscany.sca.databinding.sdo;
 import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.factory.ObjectCreationException;
-import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
@@ -95,6 +92,7 @@ public class HelperContextProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    /*
     private class HelperContextFactory implements ObjectFactory<HelperContext> {
         private URI id;
 
@@ -108,4 +106,5 @@ public class HelperContextProcessor extends BaseJavaClassVisitor {
         }
 
     }
+    */
 }

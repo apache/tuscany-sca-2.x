@@ -35,9 +35,9 @@ import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
 import org.osoa.sca.ComponentContext;
 

@@ -23,11 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
-import org.apache.tuscany.sca.provider.ScopedImplementationProvider;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
+import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
+import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 
 /**
  * The default implementation of a scope registry
@@ -41,7 +42,11 @@ public class ScopeRegistryImpl implements ScopeRegistry {
         scopeCache.put(factory.getScope(), factory);
     }
 
-    public ScopeContainer getScopeContainer(RuntimeComponent component) {
+    public ScopeContainer getScopeContainer(RuntimeComponent runtimeComponent) {
+        if (!(runtimeComponent instanceof ScopedRuntimeComponent)) {
+            return null;
+        }
+        ScopedRuntimeComponent component = (ScopedRuntimeComponent)runtimeComponent;
         if (component.getScopeContainer() != null) {
             return component.getScopeContainer();
         }

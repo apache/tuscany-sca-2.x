@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
+import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
@@ -178,8 +179,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
             }
 
-            if (component instanceof RuntimeComponent) {
-                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+            if (component instanceof ScopedRuntimeComponent) {
+                ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
                 if (runtimeComponent.getScopeContainer() != null) {
                     runtimeComponent.getScopeContainer().start();
                 }
@@ -217,8 +218,8 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
             }
 
-            if (component instanceof RuntimeComponent) {
-                RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+            if (component instanceof ScopedRuntimeComponent) {
+                ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
                 if (runtimeComponent.getScopeContainer() != null) {
                     runtimeComponent.getScopeContainer().stop();
                 }
@@ -522,10 +523,10 @@ public class DefaultCompositeActivator implements CompositeActivator {
     }
 
     private void setScopeContainer(Component component) {
-        if (!(component instanceof RuntimeComponent)) {
+        if (!(component instanceof ScopedRuntimeComponent)) {
             return;
         }
-        RuntimeComponent runtimeComponent = (RuntimeComponent)component;
+        ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
         runtimeComponent.setScopeContainer(scopeRegistry.getScopeContainer(runtimeComponent));
     }    
     
