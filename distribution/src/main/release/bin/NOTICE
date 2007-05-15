@@ -10,12 +10,26 @@ Copyright 2007 The Apache Software Foundation
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
 
+"This product includes software developed by the Spring Framework
+ Project (http://www.springframework.org)."
+
+This product includes/uses the Jetty Servlet Engine (http://jetty.mortbay.org),
+developed by Mort Bay Consulting  (http://www.mortbay.com)
+
+This product includes/uses the Groovy Script Engine (http://groovy.codehaus.org/),
+Copyright 2003 (C) James Strachan and Bob Mcwhirter. All Rights Reserved.
+
+This product includes/uses the Jaxen XPATH engine (http://jaxen.org/)
+ Copyright 2003-2006 The Werken Company. All Rights Reserved.
+
+This product includes/uses JSON-RPC-Java (http://oss.metaparadigm.com/jsonrpc/)
+
 This product also includes software developed by:
 - the Eclipse Modeling Framework project (http://www.eclipse.org/emf/)
-- the Celtix project (http://celtix.objectweb.org/)
 - the Mozilla Rhino project (http://www.mozilla.org/rhino/)
 - the GlassFish JAX-WS project (https://jax-ws.dev.java.net/)
 
-Please read the LICENSE file present in the root directory of this
+Please see the LICENSE file present in the root directory of this
 distribution.
+
 

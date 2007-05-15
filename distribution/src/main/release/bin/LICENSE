@@ -202,16 +202,56 @@
    limitations under the License.
 
 
+===============================================================================
+
 APACHE TUSCANY SUBCOMPONENTS: 
 
-The Apache Tuscany distribution includes a number of subcomponents with
-separate copyright notices and license terms. Your use of the source
+The Apache Tuscany binary distribution includes a number of subcomponents
+with separate copyright notices and license terms. Your use of the
 code for the these subcomponents is subject to the terms and
 conditions of the following licenses. 
 
 ===============================================================================
 
-For the Eclipse Modeling Framework component and the Celtix binding:
+jaxen-1.1-beta-9.jar:
+
+ Copyright 2003-2006 The Werken Company. All Rights Reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+  * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  * Neither the name of the Jaxen Project nor the names of its
+    contributors may be used to endorse or promote products derived 
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+===============================================================================
+
+The EMF jars; 
+   common-2.2.2.jar
+   ecore-2.2.2.jar
+   ecore-change-2.2.2.jar
+   ecore-xmi-2.2.2.jar
+   xsd-2.2.2.jar
 
 Eclipse Public License - v 1.0
 
@@ -443,107 +483,226 @@ its rights to a jury trial in any resulting litigation.
 
 ===============================================================================
 
-For the Rhino JavaScript container component:
+wsdl4j
 
-Netscape Public License V1.1
+Common Public License Version 1.0
 
-     AMENDMENTS
+THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS COMMON PUBLIC
+LICENSE ("AGREEMENT"). ANY USE, REPRODUCTION OR DISTRIBUTION OF THE PROGRAM
+CONSTITUTES RECIPIENT'S ACCEPTANCE OF THIS AGREEMENT.
 
-     The Netscape Public License Version 1.1 ("NPL") consists of the
-     Mozilla Public License Version 1.1 with the following Amendments,
-     including Exhibit A-Netscape Public License.  Files identified with
-     "Exhibit A-Netscape Public License" are governed by the Netscape
-     Public License Version 1.1.
+1. DEFINITIONS
 
-     Additional Terms applicable to the Netscape Public License.
-          I. Effect.
-          These additional terms described in this Netscape Public
-          License -- Amendments shall apply to the Mozilla Communicator
-          client code and to all Covered Code under this License.
+"Contribution" means:
 
-          II. "Netscape's Branded Code" means Covered Code that Netscape
-          distributes and/or permits others to distribute under one or more
-          trademark(s) which are controlled by Netscape but which are not
-          licensed for use under this License.
+    a) in the case of the initial Contributor, the initial code and
+documentation distributed under this Agreement, and
 
-          III. Netscape and logo.
-          This License does not grant any rights to use the trademarks
-          "Netscape", the "Netscape N and horizon" logo or the "Netscape
-          lighthouse" logo, "Netcenter", "Gecko", "Java" or "JavaScript",
-          "Smart Browsing" even if such marks are included in the Original
-          Code or Modifications.
+    b) in the case of each subsequent Contributor:
 
-          IV. Inability to Comply Due to Contractual Obligation.
-          Prior to licensing the Original Code under this License, Netscape
-          has licensed third party code for use in Netscape's Branded Code.
-          To the extent that Netscape is limited contractually from making
-          such third party code available under this License, Netscape may
-          choose to reintegrate such code into Covered Code without being
-          required to distribute such code in Source Code form, even if
-          such code would otherwise be considered "Modifications" under
-          this License.
+    i) changes to the Program, and
 
-          V. Use of Modifications and Covered Code by Initial Developer.
-               V.1. In General.
-               The obligations of Section 3 apply to Netscape, except to
-               the extent specified in this Amendment, Section V.2 and V.3.
+    ii) additions to the Program;
 
-               V.2. Other Products.
-               Netscape may include Covered Code in products other than the
-               Netscape's Branded Code which are released by Netscape
-               during the two (2) years following the release date of the
-               Original Code, without such additional products becoming
-               subject to the terms of this License, and may license such
-               additional products on different terms from those contained
-               in this License.
+    where such changes and/or additions to the Program originate from and are
+distributed by that particular Contributor. A Contribution 'originates' from a
+Contributor if it was added to the Program by such Contributor itself or anyone
+acting on such Contributor's behalf. Contributions do not include additions to
+the Program which: (i) are separate modules of software distributed in
+conjunction with the Program under their own license agreement, and (ii) are not
+derivative works of the Program.
 
-               V.3. Alternative Licensing.
-               Netscape may license the Source Code of Netscape's Branded
-               Code, including Modifications incorporated therein, without
-               such Netscape Branded Code becoming subject to the terms of
-               this License, and may license such Netscape Branded Code on
-               different terms from those contained in this License.
+"Contributor" means any person or entity that distributes the Program.
 
-          VI. Litigation.
-          Notwithstanding the limitations of Section 11 above, the
-          provisions regarding litigation in Section 11(a), (b) and (c) of
-          the License shall apply to all disputes relating to this License.
+"Licensed Patents " mean patent claims licensable by a Contributor which are
+necessarily infringed by the use or sale of its Contribution alone or when
+combined with the Program.
 
-     EXHIBIT A-Netscape Public License.
+"Program" means the Contributions distributed in accordance with this Agreement.
 
-          "The contents of this file are subject to the Netscape Public
-          License Version 1.1 (the "License"); you may not use this file
-          except in compliance with the License. You may obtain a copy of
-          the License at http://www.mozilla.org/NPL/
+"Recipient" means anyone who receives the Program under this Agreement,
+including all Contributors.
 
-          Software distributed under the License is distributed on an "AS
-          IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
-          implied. See the License for the specific language governing
-          rights and limitations under the License.
+2. GRANT OF RIGHTS
 
-          The Original Code is Mozilla Communicator client code, released
-          March 31, 1998.
+    a) Subject to the terms of this Agreement, each Contributor hereby grants
+Recipient a non-exclusive, worldwide, royalty-free copyright license to
+reproduce, prepare derivative works of, publicly display, publicly perform,
+distribute and sublicense the Contribution of such Contributor, if any, and such
+derivative works, in source code and object code form.
 
-          The Initial Developer of the Original Code is Netscape
-          Communications Corporation. Portions created by Netscape are
-          Copyright (C) 1998-1999 Netscape Communications Corporation. All
-          Rights Reserved.
+    b) Subject to the terms of this Agreement, each Contributor hereby grants
+Recipient a non-exclusive, worldwide, royalty-free patent license under Licensed
+Patents to make, use, sell, offer to sell, import and otherwise transfer the
+Contribution of such Contributor, if any, in source code and object code form.
+This patent license shall apply to the combination of the Contribution and the
+Program if, at the time the Contribution is added by the Contributor, such
+addition of the Contribution causes such combination to be covered by the
+Licensed Patents. The patent license shall not apply to any other combinations
+which include the Contribution. No hardware per se is licensed hereunder.
 
-          Contributor(s): ______________________________________.
+    c) Recipient understands that although each Contributor grants the licenses
+to its Contributions set forth herein, no assurances are provided by any
+Contributor that the Program does not infringe the patent or other intellectual
+property rights of any other entity. Each Contributor disclaims any liability to
+Recipient for claims brought by any other entity based on infringement of
+intellectual property rights or otherwise. As a condition to exercising the
+rights and licenses granted hereunder, each Recipient hereby assumes sole
+responsibility to secure any other intellectual property rights needed, if any.
+For example, if a third party patent license is required to allow Recipient to
+distribute the Program, it is Recipient's responsibility to acquire that license
+before distributing the Program.
 
-          Alternatively, the contents of this file may be used under the
-          terms of the _____ license (the "[___] License"), in which case
-          the provisions of [______] License are applicable  instead of
-          those above.  If you wish to allow use of your version of this
-          file only under the terms of the [____] License and not to allow
-          others to use your version of this file under the NPL, indicate
-          your decision by deleting  the provisions above and replace  them
-          with the notice and other provisions required by the [___]
-          License.  If you do not delete the provisions above, a recipient
-          may use your version of this file under either the NPL or the
-          [___] License."
+    d) Each Contributor represents that to its knowledge it has sufficient
+copyright rights in its Contribution, if any, to grant the copyright license set
+forth in this Agreement.
 
-     ----------------------------------------------------------------------
+3. REQUIREMENTS
+
+A Contributor may choose to distribute the Program in object code form under its
+own license agreement, provided that:
+
+    a) it complies with the terms and conditions of this Agreement; and
+
+    b) its license agreement:
+
+    i) effectively disclaims on behalf of all Contributors all warranties and
+conditions, express and implied, including warranties or conditions of title and
+non-infringement, and implied warranties or conditions of merchantability and
+fitness for a particular purpose;
+
+    ii) effectively excludes on behalf of all Contributors all liability for
+damages, including direct, indirect, special, incidental and consequential
+damages, such as lost profits;
+
+    iii) states that any provisions which differ from this Agreement are offered
+by that Contributor alone and not by any other party; and
+
+    iv) states that source code for the Program is available from such
+Contributor, and informs licensees how to obtain it in a reasonable manner on or
+through a medium customarily used for software exchange. 
+
+When the Program is made available in source code form:
+
+    a) it must be made available under this Agreement; and
+
+    b) a copy of this Agreement must be included with each copy of the Program. 
+
+Contributors may not remove or alter any copyright notices contained within the
+Program.
+
+Each Contributor must identify itself as the originator of its Contribution, if
+any, in a manner that reasonably allows subsequent Recipients to identify the
+originator of the Contribution.
+
+4. COMMERCIAL DISTRIBUTION
+
+Commercial distributors of software may accept certain responsibilities with
+respect to end users, business partners and the like. While this license is
+intended to facilitate the commercial use of the Program, the Contributor who
+includes the Program in a commercial product offering should do so in a manner
+which does not create potential liability for other Contributors. Therefore, if
+a Contributor includes the Program in a commercial product offering, such
+Contributor ("Commercial Contributor") hereby agrees to defend and indemnify
+every other Contributor ("Indemnified Contributor") against any losses, damages
+and costs (collectively "Losses") arising from claims, lawsuits and other legal
+actions brought by a third party against the Indemnified Contributor to the
+extent caused by the acts or omissions of such Commercial Contributor in
+connection with its distribution of the Program in a commercial product
+offering. The obligations in this section do not apply to any claims or Losses
+relating to any actual or alleged intellectual property infringement. In order
+to qualify, an Indemnified Contributor must: a) promptly notify the Commercial
+Contributor in writing of such claim, and b) allow the Commercial Contributor to
+control, and cooperate with the Commercial Contributor in, the defense and any
+related settlement negotiations. The Indemnified Contributor may participate in
+any such claim at its own expense.
+
+For example, a Contributor might include the Program in a commercial product
+offering, Product X. That Contributor is then a Commercial Contributor. If that
+Commercial Contributor then makes performance claims, or offers warranties
+related to Product X, those performance claims and warranties are such
+Commercial Contributor's responsibility alone. Under this section, the
+Commercial Contributor would have to defend claims against the other
+Contributors related to those performance claims and warranties, and if a court
+requires any other Contributor to pay any damages as a result, the Commercial
+Contributor must pay those damages.
+
+5. NO WARRANTY
+
+EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
+NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Each
+Recipient is solely responsible for determining the appropriateness of using and
+distributing the Program and assumes all risks associated with its exercise of
+rights under this Agreement, including but not limited to the risks and costs of
+program errors, compliance with applicable laws, damage to or loss of data,
+programs or equipment, and unavailability or interruption of operations.
+
+6. DISCLAIMER OF LIABILITY
+
+EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, NEITHER RECIPIENT NOR ANY
+CONTRIBUTORS SHALL HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING WITHOUT LIMITATION LOST
+PROFITS), HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OR DISTRIBUTION OF THE PROGRAM OR THE EXERCISE OF ANY RIGHTS
+GRANTED HEREUNDER, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+7. GENERAL
+
+If any provision of this Agreement is invalid or unenforceable under applicable
+law, it shall not affect the validity or enforceability of the remainder of the
+terms of this Agreement, and without further action by the parties hereto, such
+provision shall be reformed to the minimum extent necessary to make such
+provision valid and enforceable.
+
+If Recipient institutes patent litigation against a Contributor with respect to
+a patent applicable to software (including a cross-claim or counterclaim in a
+lawsuit), then any patent licenses granted by that Contributor to such Recipient
+under this Agreement shall terminate as of the date such litigation is filed. In
+addition, if Recipient institutes patent litigation against any entity
+(including a cross-claim or counterclaim in a lawsuit) alleging that the Program
+itself (excluding combinations of the Program with other software or hardware)
+infringes such Recipient's patent(s), then such Recipient's rights granted under
+Section 2(b) shall terminate as of the date such litigation is filed.
+
+All Recipient's rights under this Agreement shall terminate if it fails to
+comply with any of the material terms or conditions of this Agreement and does
+not cure such failure in a reasonable period of time after becoming aware of
+such noncompliance. If all Recipient's rights under this Agreement terminate,
+Recipient agrees to cease use and distribution of the Program as soon as
+reasonably practicable. However, Recipient's obligations under this Agreement
+and any licenses granted by Recipient relating to the Program shall continue and
+survive.
+
+Everyone is permitted to copy and distribute copies of this Agreement, but in
+order to avoid inconsistency the Agreement is copyrighted and may only be
+modified in the following manner. The Agreement Steward reserves the right to
+publish new versions (including revisions) of this Agreement from time to time.
+No one other than the Agreement Steward has the right to modify this Agreement.
+IBM is the initial Agreement Steward. IBM may assign the responsibility to serve
+as the Agreement Steward to a suitable separate entity. Each new version of the
+Agreement will be given a distinguishing version number. The Program (including
+Contributions) may always be distributed subject to the version of the Agreement
+under which it was received. In addition, after a new version of the Agreement
+is published, Contributor may elect to distribute the Program (including its
+Contributions) under the new version. Except as expressly stated in Sections
+2(a) and 2(b) above, Recipient receives no rights or licenses to the
+intellectual property of any Contributor under this Agreement, whether
+expressly, by implication, estoppel or otherwise. All rights in the Program not
+expressly granted under this Agreement are reserved.
+
+This Agreement is governed by the laws of the State of New York and the
+intellectual property laws of the United States of America. No party to this
+Agreement will bring a legal action under this Agreement more than one year
+after the cause of action arose. Each party waives its rights to a jury trial in
+any resulting litigation.
+
+
+===============================================================================
+
+For the Rhino JavaScript engine js.jar:
 
                           MOZILLA PUBLIC LICENSE
                                 Version 1.1
@@ -1017,8 +1176,202 @@ EXHIBIT A -Mozilla Public License.
 
 
 ===============================================================================
+Groovy:
 
-For the JAX-WS Reference Implementation component:
+/*
+ $Id: LICENSE.txt 156 2003-09-26 17:36:37Z jstrachan $
+
+ Copyright 2003 (C) James Strachan and Bob Mcwhirter. All Rights Reserved.
+
+ Redistribution and use of this software and associated documentation
+ ("Software"), with or without modification, are permitted provided
+ that the following conditions are met:
+
+ 1. Redistributions of source code must retain copyright
+    statements and notices.  Redistributions must also contain a
+    copy of this document.
+
+ 2. Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.
+
+ 3. The name "groovy" must not be used to endorse or promote
+    products derived from this Software without prior written
+    permission of The Codehaus.  For written permission,
+    please contact info@codehaus.org.
+
+ 4. Products derived from this Software may not be called "groovy"
+    nor may "groovy" appear in their names without prior written
+    permission of The Codehaus. "groovy" is a registered
+    trademark of The Codehaus.
+
+ 5. Due credit should be given to The Codehaus -
+    http://groovy.codehaus.org/
+
+ THIS SOFTWARE IS PROVIDED BY THE CODEHAUS AND CONTRIBUTORS
+ ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT
+ NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+ THE CODEHAUS OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ */
+
+===============================================================================
+
+Jython:
+
+A. HISTORY OF THE SOFTWARE
+=======================
+
+JPython was created in late 1997 by Jim Hugunin. Jim was also the
+primary developer while he was at CNRI. In February 1999 Barry Warsaw
+took over as primary developer and released JPython version 1.1.
+
+In October 2000 Barry helped move the software to SourceForge
+where it was renamed to Jython.  Jython 2.0 and on are licensed under
+the Jython specific license below. 
+
+The standard library is covered by the Python Software Foundation
+license. See the LICENSE_CPython.txt file for details.
+
+The zxJDBC package was written by Brian Zimmer and originally licensed
+under the GNU Public License.  The package is now covered by the Jython
+Software License.
+
+The command line interpreter is covered by the Apache Software
+License.  See the LICENSE_Apache.txt file for details.
+ 
+B. TERMS AND CONDITIONS FOR ACCESSING OR OTHERWISE USING JYTHON
+================================
+
+Copyright (c) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Jython Developers
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+ - Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+ - Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the distribution.
+
+ - Neither the name of the Jython Developers nor the names of
+   its contributors may be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
+JPython 1.1.x Software License.
+=========================
+
+______________________________________________________________________
+
+IMPORTANT: PLEASE READ THE FOLLOWING AGREEMENT CAREFULLY.
+
+BY CLICKING ON THE "ACCEPT" BUTTON WHERE INDICATED, OR BY INSTALLING,
+COPYING OR OTHERWISE USING THE SOFTWARE, YOU ARE DEEMED TO HAVE AGREED TO
+THE TERMS AND CONDITIONS OF THIS AGREEMENT.
+
+______________________________________________________________________
+
+JPython version 1.1.x
+
+  1. This LICENSE AGREEMENT is between the Corporation for National Research
+     Initiatives, having an office at 1895 Preston White Drive, Reston, VA
+     20191 ("CNRI"), and the Individual or Organization ("Licensee")
+     accessing and using JPython version 1.1.x in source or binary form and
+     its associated documentation as provided herein ("Software").
+
+  2. Subject to the terms and conditions of this License Agreement, CNRI
+     hereby grants Licensee a non-exclusive, non-transferable, royalty-free,
+     world-wide license to reproduce, analyze, test, perform and/or display
+     publicly, prepare derivative works, distribute, and otherwise use the
+     Software alone or in any derivative version, provided, however, that
+     CNRI's License Agreement and CNRI's notice of copyright, i.e.,
+     "Copyright ©1996-1999 Corporation for National Research Initiatives;
+     All Rights Reserved" are both retained in the Software, alone or in any
+     derivative version prepared by Licensee.
+
+     Alternatively, in lieu of CNRI's License Agreement, Licensee may
+     substitute the following text (omitting the quotes), provided, however,
+     that such text is displayed prominently in the Software alone or in any
+     derivative version prepared by Licensee: "JPython (Version 1.1.x) is
+     made available subject to the terms and conditions in CNRI's License
+     Agreement. This Agreement may be located on the Internet using the
+     following unique, persistent identifier (known as a handle):
+     1895.22/1006. The License may also be obtained from a proxy server on
+     the Web using the following URL: http://hdl.handle.net/1895.22/1006."
+
+  3. In the event Licensee prepares a derivative work that is based on or
+     incorporates the Software or any part thereof, and wants to make the
+     derivative work available to the public as provided herein, then
+     Licensee hereby agrees to indicate in any such work, in a prominently
+     visible way, the nature of the modifications made to CNRI's Software.
+
+  4. Licensee may not use CNRI trademarks or trade name, including JPython
+     or CNRI, in a trademark sense to endorse or promote products or
+     services of Licensee, or any third party. Licensee may use the mark
+     JPython in connection with Licensee's derivative versions that are
+     based on or incorporate the Software, but only in the form
+     "JPython-based ___________________," or equivalent.
+
+  5. CNRI is making the Software available to Licensee on an "AS IS" basis.
+     CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY
+     OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND DISCLAIMS ANY
+     REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY
+     PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT INFRINGE
+     ANY THIRD PARTY RIGHTS.
+
+  6. CNRI SHALL NOT BE LIABLE TO LICENSEE OR OTHER USERS OF THE SOFTWARE FOR
+     ANY INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF
+     USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY DERIVATIVE
+     THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF. SOME STATES DO NOT
+     ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY SO THE ABOVE DISCLAIMER
+     MAY NOT APPLY TO LICENSEE.
+
+  7. This License Agreement may be terminated by CNRI (i) immediately upon
+     written notice from CNRI of any material breach by the Licensee, if the
+     nature of the breach is such that it cannot be promptly remedied; or
+     (ii) sixty (60) days following notice from CNRI to Licensee of a
+     material remediable breach, if Licensee has not remedied such breach
+     within that sixty-day period.
+
+  8. This License Agreement shall be governed by and interpreted in all
+     respects by the law of the State of Virginia, excluding conflict of law
+     provisions. Nothing in this Agreement shall be deemed to create any
+     relationship of agency, partnership, or joint venture between CNRI and
+     Licensee.
+
+  9. By clicking on the "ACCEPT" button where indicated, or by installing,
+     copying or otherwise using the Software, Licensee agrees to be bound by
+     the terms and conditions of this License Agreement.
+
+
+===============================================================================
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
 
