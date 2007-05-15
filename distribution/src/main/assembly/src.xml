@@ -78,8 +78,19 @@
 		 <exclude>**/var/journal</exclude>
 		 <exclude>**/build.out*</exclude>
 		 <exclude>velocity.log</exclude>
+		 <exclude>itest/velocity.log</exclude>
+             <exclude>modules/http-tomcat/work</exclude>
+             <exclude>modules/http-tomcat/work/**/*</exclude>
+             <exclude>modules/implementation-spring</exclude>
+             <exclude>modules/implementation-spring/**/*</exclude>
+             <exclude>samples/das-service</exclude>
+             <exclude>samples/das-service/**/*</exclude>
+             <exclude>samples/das-service-web</exclude>
+             <exclude>samples/das-service-web/**/*</exclude>
              <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo</exclude>
              <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
+             <exclude>samples/helloworld-ws-reference/work</exclude>
+             <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
           </excludes>
 	 </fileSet>
      </fileSets>
