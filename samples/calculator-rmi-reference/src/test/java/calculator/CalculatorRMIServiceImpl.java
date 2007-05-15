@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,18 +15,38 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="BigBank">
+ */
+package calculator;
 
-    <component name="AccountServiceComponent">
-        <implementation.java class="bigbank.account.AccountServiceImpl"/>
-        <reference name="accountDataService" target="AccountDataServiceComponent"/>
-        <property name="currency">USD</property>
-    </component>
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
-    <component name="AccountDataServiceComponent">
-        <implementation.java class="bigbank.accountdata.AccountDataServiceImpl"/>
-    </component>
 
-</composite>
+
+/**
+ * An implementation of the Calculator service.
+ */
+public class CalculatorRMIServiceImpl extends UnicastRemoteObject implements CalculatorService {
+
+    private static final long serialVersionUID = -1543948944662001428L;
+    
+    public CalculatorRMIServiceImpl() throws RemoteException {
+        super();       
+    }
+
+    public double add(double n1, double n2) throws RemoteException {
+        return n1 + n2;
+    }
+
+    public double subtract(double n1, double n2) {
+        return n1 - n2;
+    }
+
+    public double multiply(double n1, double n2) {
+        return n1 * n2;
+    }
+
+    public double divide(double n1, double n2) {
+        return n1 / n2;
+    }
+}

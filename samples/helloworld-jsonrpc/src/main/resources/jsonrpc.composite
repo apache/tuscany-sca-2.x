@@ -20,12 +20,11 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="helloworldjsonrpc">
 
-    <service name="HelloWorldJSONService" promote="HelloWorldJSONServiceComponent">
-        <interface.java interface="helloworldjsonrpc.HelloWorldService"/>
-        <binding.jsonrpc/>
-    </service>
-
     <component name="HelloWorldJSONServiceComponent">
+	    <service name="HelloWorldService">
+	        <interface.java interface="helloworldjsonrpc.HelloWorldService"/>
+	        <binding.jsonrpc/>
+	    </service>
         <implementation.java class="helloworldjsonrpc.HelloWorldServiceImpl"/>
     </component>
 
