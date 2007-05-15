@@ -202,4 +202,84 @@
    limitations under the License.
 
 
+===============================================================================================================
 
+Apache Tuscany SCA for Java Subcomponents
+=========================================: 
+
+The Tuscany SCA for Java release includes a number of subcomponents with
+separate copyright notices and license terms. Your use of the source
+code for the these subcomponents is subject to the terms and
+conditions of the following licenses.
+
+===============================================================================================================
+
+The module itest/databindings/common includes the test schema; datagraph.xsd, sdoJava.xsd, and sdoModel.xsd
+under the following license:
+
+License for the Service Data Objects JavaDoc and Interface Definition files. (sdo-api-r2.0.1-1.0-incubator-M2.jar)
+
+Permission to copy, make derivative works of, and distribute the Service Data Objects 
+JavaDoc and Interface Definition Files files in any medium without fee or royalty as part 
+of a compliant implementation of the Service Data Objects Specification is hereby granted.  
+The Service Data Objects Specification may be found at any of the following locations:
+
+http://dev2dev.bea.com/technologies/commonj/index.jsp
+http://www.ibm.com/developerworks/library/specification/ws-sdo/
+http://oracle.com/technology/webservices/sca
+https://www.sdn.sap.com/
+http://www.xcalia/xdn/specs/sdo
+
+THE SERVICE DATA OBJECTS SPECIFICATION AND THE JAVADOC AND INTERFACE DEFINITION FILES 
+ARE PROVIDED "AS IS," AND THE AUTHORS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, REGARDING THIS 
+SPECIFICATION OR THE JAVADOC AND INTERFACE DEFINITION FILES AND THE IMPLEMENTATION OF THEIR CONTENTS, 
+INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+NON-INFRINGEMENT OR TITLE.  THE AUTHORS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, 
+INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR DISTRIBUTION OF THE 
+SERVICE DATA OBJECTS SPECIFICATION OR THE JAVADOC OR INTERFACE DEFINTION FILES.
+
+The name and trademarks of the Authors may NOT be used in any manner, including advertising or 
+publicity pertaining to the Service Component Architecture Specification or its contents without specific, 
+written prior permission. Title to copyright in the Service Data Objects Specification and the 
+JavaDoc and Interface Definition Files will at all times remain with the Authors.
+
+No other rights are granted by implication, estoppel or otherwise.
+
+=================================================================================================================
+
+The module implementation-script temporarily includes one file under the following BSD license:
+
+ Copyright (c) 2006, Sun Microsystems, Inc.
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without 
+ modification, are permitted provided that the following conditions are met:
+ 
+  - Redistributions of source code must retain the above copyright notice, this 
+    list of conditions and the following disclaimer.
+ 
+  - Redistributions in binary form must reproduce the above copyright notice, 
+    this list of conditions and the following disclaimer in the documentation 
+    and/or other materials provided with the distribution.
+ 
+  - Neither the name of the Sun Microsystems, Inc. nor the names of 
+    contributors may be used to endorse or promote products derived from this 
+    software without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+ CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
+ WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+ COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY 
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF 
+ USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH 
+ DAMAGE. 
+
+=================================================================================================================
