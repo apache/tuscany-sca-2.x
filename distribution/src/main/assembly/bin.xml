@@ -49,19 +49,10 @@
 			</includes>
 		</fileSet>
 
-            <!-- Add SCA API javadoc to the doc directory -->
+            <!-- Add javadoc to the doc directory -->
 		<fileSet>
 			<directory>target/javadoc</directory>
-			<outputDirectory>tuscany-sca-${tuscany.version}/docs/sca-api</outputDirectory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-		</fileSet>
-
-            <!-- Add Tuscany SCA SPI javadoc to the doc directory -->
-		<fileSet>
-			<directory>target/javadoc</directory>
-			<outputDirectory>tuscany-sca-${tuscany.version}/docs/tuscany-sca-spi</outputDirectory>
+			<outputDirectory>tuscany-sca-${tuscany.version}/docs/javadoc</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
