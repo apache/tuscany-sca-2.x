@@ -37,6 +37,7 @@
             </activation>
             <modules>
                 <module>binding-echo</module>
+                <module>binding-echo-appl</module>
                 <module>calculator</module>
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>

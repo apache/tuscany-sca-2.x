@@ -18,21 +18,21 @@ and the extensions that come packaged with it. Hence samples generally
 describe SCA component implementations and the clients required to drive the
 resulting applications. 
 
-As is always the case there are exceptions to this. There are three samples
+As is always the case there are exceptions to this. There are two samples
 that demonstrate how to build extensions for the Tuscany SCA runtime.
 
 binding-echo        - shows how to build a binding extension
-databinding-echo    - shows how to build a databinding extension
 implementation-crud - shows how to build an implemenation extension
 
 In these samples the provided code is concerned with building the extension
 and now with building an application that uses it. The application
 that shows how the new extension can be used is provided in an associated
-client sample. 
+sample. 
 
-binding-echo-client
-databinding-echo-client
-implementation-crud-client
+binding-echo-appl           - application and client code to drive the 
+                              new echo binding
+implementation-crud-client  - client code to drive the new crud 
+                              implementation
 
 Sample Layout
 -------------
@@ -90,8 +90,8 @@ cd <sampledir>
 ant run
 
 Check each <sampledir>/README file as some samples require that two progams are
-run to get the desired result, for example, the three samples that show how
-to build extensions a run from their associated client samples. 
+run to get the desired result, for example, the two samples that show how
+to build extensions are run from their associated application samples. 
 
 If you want to rebuild a sample, for example, if you have changed it, do the
 following:
@@ -114,7 +114,7 @@ on Windows
 
 java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
 
-on *nux 
+on *nix 
 
 java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
 
@@ -129,7 +129,7 @@ on Windows
 
 java -cp ..\..\lib\tuscany-sca-manifest.jar;target\classes calculator.CalculatorClient
 
-on *nux 
+on *nix 
 
 java -cp ../../lib/tuscany-sca-manifest.jar:target/classes calculator.CalculatorClient
 
@@ -188,8 +188,6 @@ new project from existing source" you can specify an SCA module directory,
 which includes the generated project files, and Eclipse will treat it like any
 other Java project. 
 
-TODO 
-  running inside an IDE
 
 
 
