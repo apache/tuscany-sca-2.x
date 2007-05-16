@@ -21,8 +21,6 @@ package crud;
 
 /**
  * A factory for the sample CRUD implementation model.
- *
- * @version $Rev$ $Date$
  */
 public interface CRUDImplementationFactory {
     

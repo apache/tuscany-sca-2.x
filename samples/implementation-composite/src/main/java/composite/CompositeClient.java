@@ -23,8 +23,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Simple client program that invokes the components that we wired together.
- *
- * @version $Rev$ $Date$
  */
 public class CompositeClient {
 

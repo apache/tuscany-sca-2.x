@@ -30,8 +30,6 @@ import echo.EchoBinding;
 
 /**
  * Implementation of the Echo binding provider.
- * 
- * @version $Rev$ $Date$
  */
 public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
 

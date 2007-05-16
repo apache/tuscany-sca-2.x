@@ -19,7 +19,7 @@
 package helloworld;
 
 /**
- * The HelloWorld component implementation
+ * The HelloWorld service implementation
  */
 public class HelloWorldServiceComponent implements HelloWorldService {
    

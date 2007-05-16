@@ -21,8 +21,6 @@ package echo;
 
 /**
  * A factory for the sample Echo binding model.
- *
- * @version $Rev$ $Date$
  */
 public interface EchoBindingFactory {
     

@@ -27,8 +27,6 @@ import crud.CRUD;
 /**
  * A fake resource manager implementation used as a backend by the sample
  * CRUD component implementation.
- *  
- * @version $Rev$ $Date$
  */
 public class ResourceManager implements CRUD {
     private static int counter;

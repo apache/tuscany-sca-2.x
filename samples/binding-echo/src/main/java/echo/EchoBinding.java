@@ -23,8 +23,6 @@ import org.apache.tuscany.sca.assembly.Binding;
 
 /**
  * A model for the sample Echo binding.
- *
- * @version $Rev$ $Date$
  */
 public interface EchoBinding extends Binding {
 }

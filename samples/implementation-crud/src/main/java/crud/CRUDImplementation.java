@@ -28,9 +28,6 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * interfaces) - a directory attribute used to specify where a CRUD component is
  * going to persist resources - no references or properties - no policy intents
  * or policy sets
- * 
- * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
- *          2007) $$
  */
 public interface CRUDImplementation extends Implementation {
 

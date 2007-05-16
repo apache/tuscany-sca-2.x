@@ -34,8 +34,6 @@ import crud.backend.ResourceManager;
  * component implementation logic. In this example we are simply delegating the
  * CRUD operation invocations to the corresponding methods on our fake
  * resource manager.
- * 
- * @version $Rev$ $Date$
  */
 public class CRUDInvoker implements Invoker {
     private Operation operation;

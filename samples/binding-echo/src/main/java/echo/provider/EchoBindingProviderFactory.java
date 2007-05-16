@@ -32,8 +32,6 @@ import echo.EchoBinding;
 
 /**
  * Implementation of the Echo binding model.
- *
- * @version $Rev$ $Date$
  */
 public class EchoBindingProviderFactory implements BindingProviderFactory<EchoBinding> {
     

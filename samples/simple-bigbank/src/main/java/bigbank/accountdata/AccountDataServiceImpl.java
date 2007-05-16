@@ -21,9 +21,8 @@ package bigbank.accountdata;
 import org.osoa.sca.annotations.Service;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Account data service implementation
  */
-
 @Service(AccountDataService.class)
 public class AccountDataServiceImpl implements AccountDataService {
 

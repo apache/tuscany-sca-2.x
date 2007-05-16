@@ -18,6 +18,9 @@
  */
 package calculator;
 
+/**
+ * The interface for the subtract service
+ */
 public interface SubtractService {
 
     double subtract(double n1, double n2);

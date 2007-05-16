@@ -19,9 +19,8 @@
 package bigbank.accountdata;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * An account service implementation for a stock account
  */
-
 public class StockAccount implements Account {
     private String accountNumber;
     private String symbol;

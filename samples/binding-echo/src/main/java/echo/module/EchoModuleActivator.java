@@ -19,14 +19,11 @@
 
 package echo.module;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 import echo.DefaultEchoBindingFactory;
@@ -37,8 +34,6 @@ import echo.server.EchoServer;
 
 /**
  * A module activator for the sample Echo binding extension.
- *
- * @version $Rev$ $Date$
  */
 public class EchoModuleActivator implements ModuleActivator {
     

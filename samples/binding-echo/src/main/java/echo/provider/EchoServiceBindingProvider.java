@@ -33,8 +33,6 @@ import echo.server.EchoService;
 
 /**
  * Implementation of the Echo binding provider.
- * 
- * @version $Rev$ $Date$
  */
 public class EchoServiceBindingProvider implements ServiceBindingProvider {
     

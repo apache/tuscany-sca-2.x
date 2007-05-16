@@ -20,8 +20,6 @@ package crud;
 
 /**
  * The service interface of the single CRUD service provided by CRUD components.
- * 
- * @version $Rev$ $Date$
  */
 public interface CRUD {
 
