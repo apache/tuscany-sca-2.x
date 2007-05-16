@@ -64,7 +64,7 @@ run:
      [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
 om.util.StAXUtils).
      [java] log4j:WARN Please initialize the log4j system properly.
-     [java] HelloWorld server started
+     [java] HelloWorld server started (press enter to shutdown)
      
 As this point the SCA service is exposed as a web service by a web server 
 started automatically by the SCA runtime. To stop the server just press 

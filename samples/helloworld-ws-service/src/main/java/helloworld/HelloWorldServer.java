@@ -33,7 +33,7 @@ public class HelloWorldServer {
         SCADomain scaDomain = SCADomain.newInstance("helloworldws.composite");
 
         try {
-            System.out.println("HelloWorld server started");
+            System.out.println("HelloWorld server started (press enter to shutdown)");
             System.in.read();
         } catch (IOException e) {
             e.printStackTrace();
