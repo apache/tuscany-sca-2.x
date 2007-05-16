@@ -50,8 +50,6 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
@@ -93,10 +91,10 @@ public class ContributionServiceTestCase extends TestCase {
 
         // Add artifact processor extension points
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        extensionRegistry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
+        extensionRegistry.addExtensionPoint(staxProcessors);
         ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
-        extensionRegistry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
+        extensionRegistry.addExtensionPoint(documentProcessors);
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
         // Register base artifact processors
@@ -115,7 +113,7 @@ public class ContributionServiceTestCase extends TestCase {
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
-        extensionRegistry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
+        extensionRegistry.addExtensionPoint(packageProcessors);
 
         // Register base package processors
         packageProcessors.addPackageProcessor(new JarContributionProcessor());

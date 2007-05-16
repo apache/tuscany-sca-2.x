@@ -19,13 +19,14 @@
 
 package echo.module;
 
-import java.util.Map;
-
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 import echo.DefaultEchoBindingFactory;
@@ -41,12 +42,15 @@ import echo.server.EchoServer;
  */
 public class EchoModuleActivator implements ModuleActivator {
     
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         // No extensionPoints being contributed here
         return null;
     }
 
     public void start(ExtensionPointRegistry registry) {
+        
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
         
         // Create the Echo model factory
         EchoBindingFactory echoFactory = new DefaultEchoBindingFactory();
@@ -57,7 +61,6 @@ public class EchoModuleActivator implements ModuleActivator {
         processors.addArtifactProcessor(echoBindingProcessor);
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        MessageFactory messageFactory = new MessageFactoryImpl();
         providerFactories.addProviderFactory(new EchoBindingProviderFactory(messageFactory));
        
         // Start the Echo server

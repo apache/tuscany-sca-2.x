@@ -19,13 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.java.module;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -62,7 +59,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
@@ -71,26 +67,25 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
  */
 public class JavaRuntimeModuleActivator implements ModuleActivator {
     
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    private PolicyFactory policyFactory;
     private JavaClassIntrospectorExtensionPoint classVisitors;
     
     public JavaRuntimeModuleActivator() {
-        assemblyFactory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaInterfaceFactory();
-        policyFactory = new DefaultPolicyFactory();
-        classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
     }
      
 
-    public Map<Class, Object> getExtensionPoints() {
-        Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(JavaClassIntrospectorExtensionPoint.class, classVisitors);
-        return map;
+    public Object[] getExtensionPoints() {
+        classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
+        return new Object[] { classVisitors };
     }
 
     public void start(ExtensionPointRegistry registry) {
+
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
+        
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        
         JDKProxyService proxyFactory = (JDKProxyService) registry.getExtensionPoint(ProxyFactory.class);
         
         JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);

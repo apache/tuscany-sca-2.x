@@ -20,13 +20,15 @@
 package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
@@ -34,6 +36,7 @@ import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
@@ -65,13 +68,23 @@ public class ReallySmallRuntime {
         // Create an interface contract mapper
         InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
 
+        // Create factory extension point
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        registry.addExtensionPoint(factories);
+        
+        // Create Message factory
+        MessageFactory messageFactory = new MessageFactoryImpl();
+        factories.addFactory(messageFactory);
+
         // Create a proxy factory
-        ProxyFactory proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, mapper);
+        ProxyFactory proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, mapper, messageFactory);
 
         // Create model factories
         assemblyFactory = new RuntimeAssemblyFactory(mapper, proxyFactory);
+        factories.addFactory(assemblyFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-
+        factories.addFactory(policyFactory);
+        
         // Create a contribution service
         contributionService = ReallySmallRuntimeBuilder.createContributionService(registry,
                                                                                   assemblyFactory,
@@ -122,10 +135,10 @@ public class ReallySmallRuntime {
         // Load and instantiate the modules found on the classpath
         List<ModuleActivator> modules = ReallySmallRuntimeBuilder.getServices(classLoader, ModuleActivator.class);
         for (ModuleActivator module : modules) {
-            Map<Class, Object> extensionPoints = module.getExtensionPoints();
+            Object[] extensionPoints = module.getExtensionPoints();
             if (extensionPoints != null) {
-                for (Map.Entry<Class, Object> e : extensionPoints.entrySet()) {
-                    registry.addExtensionPoint(e.getKey(), e.getValue());
+                for (Object e : extensionPoints) {
+                    registry.addExtensionPoint(e);
                 }
             }
         }

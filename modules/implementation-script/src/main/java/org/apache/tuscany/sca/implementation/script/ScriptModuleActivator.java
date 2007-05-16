@@ -19,13 +19,12 @@
 
 package org.apache.tuscany.sca.implementation.script;
 
-import java.util.Map;
-
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
@@ -36,8 +35,11 @@ public class ScriptModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        StAXArtifactProcessor scriptArtifactProcessor = new ScriptArtifactProcessor(new DefaultAssemblyFactory());
+        StAXArtifactProcessor scriptArtifactProcessor = new ScriptArtifactProcessor(assemblyFactory);
         staxProcessors.addArtifactProcessor(scriptArtifactProcessor);
         
         // TODO: could the runtime have a default PropertyValueObjectFactory in the registry
@@ -53,7 +55,7 @@ public class ScriptModuleActivator implements ModuleActivator {
     public void stop(ExtensionPointRegistry registry) {
     }
 
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 

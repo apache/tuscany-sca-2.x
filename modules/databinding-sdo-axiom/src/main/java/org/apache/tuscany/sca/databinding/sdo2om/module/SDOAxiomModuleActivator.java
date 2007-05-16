@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.sdo2om.module;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
@@ -34,7 +32,7 @@ import org.apache.tuscany.sca.databinding.sdo2om.XMLDocument2OMElement;
  */
 public class SDOAxiomModuleActivator implements ModuleActivator {
 
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 

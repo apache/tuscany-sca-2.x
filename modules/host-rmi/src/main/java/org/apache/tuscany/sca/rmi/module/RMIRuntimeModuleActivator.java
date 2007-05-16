@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.rmi.module;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.rmi.DefaultRMIHost;
@@ -32,10 +29,9 @@ import org.apache.tuscany.sca.rmi.RMIHost;
  */
 public class RMIRuntimeModuleActivator implements ModuleActivator {
 
-    public Map<Class, Object> getExtensionPoints() {
-        Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(RMIHost.class, new DefaultRMIHost());
-        return map;
+    public Object[] getExtensionPoints() {
+        RMIHost host = new DefaultRMIHost();
+        return new Object[]{ host };
     }
 
     public void start(ExtensionPointRegistry extensionPointRegistry) {

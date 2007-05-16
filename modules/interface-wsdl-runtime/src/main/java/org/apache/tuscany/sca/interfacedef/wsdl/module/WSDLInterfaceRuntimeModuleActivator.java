@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.module;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -37,7 +35,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
  */
 public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
     
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 

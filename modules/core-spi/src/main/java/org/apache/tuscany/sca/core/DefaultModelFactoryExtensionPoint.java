@@ -20,33 +20,33 @@
 package org.apache.tuscany.sca.core;
 
 import java.util.HashMap;
-import java.util.Map;
-
 
 /**
- * Default implementation of a registry to hold all the Tuscany core extension points
- * 
+ * Default implementation of a model factory extension point.
+ *
  * @version $Rev$ $Date$
  */
-public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
-    private Map<Class<?>, Object> extensionPoints = new HashMap<Class<?>, Object>();
+public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionPoint {
+    
+    private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
 
-    public void addExtensionPoint(Object extensionPoint) {
-        Class[] interfaces = extensionPoint.getClass().getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-            extensionPoints.put(interfaces[i], extensionPoint);
+    public void addFactory(Object factory) {
+        Class[] interfaces = factory.getClass().getInterfaces();
+        for (int i = 0; i<interfaces.length; i++) {
+            factories.put(interfaces[i], factory);
         }
     }
 
-    public <T> T getExtensionPoint(Class<T> extensionPointType) {
-        return extensionPointType.cast(extensionPoints.get(extensionPointType));
-    }
-
-    public void removeExtensionPoint(Object extensionPoint) {
-        Class[] interfaces = extensionPoint.getClass().getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-            extensionPoints.remove(interfaces[i]);
+    public void removeFactory(Object factory) {
+        Class[] interfaces = factory.getClass().getInterfaces();
+        for (int i = 0; i<interfaces.length; i++) {
+            factories.remove(interfaces[i]);
         }
+    }
+    
+    public <T> T getFactory(Class<T> factoryInterface) {
+        Object factory = factories.get(factoryInterface);
+        return factoryInterface.cast(factory);
     }
 
 }

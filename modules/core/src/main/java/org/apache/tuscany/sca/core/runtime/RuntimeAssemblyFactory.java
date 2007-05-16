@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -30,7 +31,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeAssemblyFactory extends DefaultAssemblyFactory {
+public class RuntimeAssemblyFactory extends DefaultAssemblyFactory implements AssemblyFactory {
     private final ProxyFactory proxyFactory;
     private final InterfaceContractMapper interfaceContractMapper;
     

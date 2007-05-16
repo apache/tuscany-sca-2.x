@@ -50,8 +50,6 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
@@ -63,7 +61,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
@@ -90,15 +87,14 @@ import commonj.work.WorkManager;
 
 public class ReallySmallRuntimeBuilder {
 
-    public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry, InterfaceContractMapper mapper) {
+    public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry, InterfaceContractMapper mapper, MessageFactory messageFactory) {
 
         // Create a proxy factory
-        MessageFactory messageFactory = new MessageFactoryImpl();
         ProxyFactory proxyFactory = new JDKProxyService(messageFactory, mapper);
 
         // FIXME remove this
-        registry.addExtensionPoint(ProxyFactory.class, proxyFactory);
-        registry.addExtensionPoint(InterfaceContractMapper.class, mapper);
+        registry.addExtensionPoint(proxyFactory);
+        registry.addExtensionPoint(mapper);
 
         return proxyFactory;
     }
@@ -111,16 +107,16 @@ public class ReallySmallRuntimeBuilder {
 
         // Create a work scheduler
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
-        registry.addExtensionPoint(WorkScheduler.class, workScheduler);
+        registry.addExtensionPoint(workScheduler);
 
         // Create a wire post processor extension point
         RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
-        registry.addExtensionPoint(RuntimeWireProcessorExtensionPoint.class, wireProcessors);
+        registry.addExtensionPoint(wireProcessors);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
 
         // Create a provider factory extension point
         ProviderFactoryExtensionPoint providerFactories = new DefaultProviderFactoryExtensionPoint();
-        registry.addExtensionPoint(ProviderFactoryExtensionPoint.class, providerFactories);
+        registry.addExtensionPoint(providerFactories);
         providerFactories.addProviderFactory(new RuntimeSCABindingProviderFactory());
 
         // Create the composite activator
@@ -146,7 +142,7 @@ public class ReallySmallRuntimeBuilder {
 
         // Create STAX artifact processor extension point
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        registry.addExtensionPoint(StAXArtifactProcessorExtensionPoint.class, staxProcessors);
+        registry.addExtensionPoint(staxProcessors);
 
         // Create and register STAX processors for SCA assembly XML
         ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory,
@@ -161,7 +157,7 @@ public class ReallySmallRuntimeBuilder {
         // Create URL artifact processor extension point
         // FIXME use the interface instead of the class
         DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
-        registry.addExtensionPoint(URLArtifactProcessorExtensionPoint.class, documentProcessors);
+        registry.addExtensionPoint(documentProcessors);
 
         // Create and register document processors for SCA assembly XML
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -173,7 +169,7 @@ public class ReallySmallRuntimeBuilder {
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
-        registry.addExtensionPoint(PackageProcessorExtensionPoint.class, packageProcessors);
+        registry.addExtensionPoint(packageProcessors);
 
         // Register base package processors
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
@@ -207,7 +203,7 @@ public class ReallySmallRuntimeBuilder {
             scopeRegistry.register(f);
         }
 
-        registry.addExtensionPoint(ScopeRegistry.class, scopeRegistry);
+        registry.addExtensionPoint(scopeRegistry);
 
         return scopeRegistry;
     }

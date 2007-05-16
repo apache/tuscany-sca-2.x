@@ -31,9 +31,9 @@ public class DefaultExtensionPointRegistryTestCase extends TestCase {
 
     public void testRegistry() {
         MyRegistry service = new MyREgistryImpl();
-        registry.addExtensionPoint(MyRegistry.class, service);
+        registry.addExtensionPoint(service);
         assertSame(service, registry.getExtensionPoint(MyRegistry.class));
-        registry.removeExtensionPoint(MyRegistry.class);
+        registry.removeExtensionPoint(service);
         assertNull(registry.getExtensionPoint(MyRegistry.class));
     }
 
