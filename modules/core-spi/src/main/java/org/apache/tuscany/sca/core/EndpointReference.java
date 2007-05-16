@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface EndpointReference<C extends Contract> {
+public interface EndpointReference {
     /**
      * Get the component for the endpoint
      * @return The component, null of the EPR is for a non-SCA service
@@ -39,7 +39,7 @@ public interface EndpointReference<C extends Contract> {
      * Get the component service or reference for the endpoint
      * @return The component service or reference, null if the EPR is for a non-SCA service
      */
-    C getContract();
+    Contract getContract();
 
     /**
      * Get the binding for the endpoint

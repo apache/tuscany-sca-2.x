@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.invocation;
 
 import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeComponentReference;
-import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 
 /**
@@ -56,24 +54,24 @@ public interface Message {
      * Get the URI of the source reference
      * @return
      */
-    EndpointReference<RuntimeComponentReference> getFrom();
+    EndpointReference getFrom();
 
     /**
      * 
      * @param from
      */
-    void setFrom(EndpointReference<RuntimeComponentReference> from);
+    void setFrom(EndpointReference from);
 
     /**
      * Get the URI of target service
      * @return
      */
-    EndpointReference<RuntimeComponentService> getTo();
+    EndpointReference getTo();
 
     /**
      * @param to
      */
-    void setTo(EndpointReference<RuntimeComponentService> to);
+    void setTo(EndpointReference to);
 
     /**
      * Returns the id of the message

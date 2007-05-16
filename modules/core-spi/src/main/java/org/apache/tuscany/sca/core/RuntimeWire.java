@@ -35,13 +35,13 @@ public interface RuntimeWire {
      * Get the source of the wire
      * @return
      */
-    EndpointReference<RuntimeComponentReference> getSource();
+    EndpointReference getSource();
 
     /**
      * Get the target of the wire
      * @return
      */
-    EndpointReference<RuntimeComponentService> getTarget();
+    EndpointReference getTarget();
 
     /**
      * Returns the invocation chains for service operations associated with the

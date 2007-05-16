@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeComponentReference;
-import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
@@ -32,8 +30,8 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
  * @version $Rev$ $Date$
  */
 public class RuntimeWireImpl implements RuntimeWire {
-    private EndpointReference<RuntimeComponentReference> wireSource;
-    private EndpointReference<RuntimeComponentService> wireTarget;
+    private EndpointReference wireSource;
+    private EndpointReference wireTarget;
 
     private final List<InvocationChain> chains = new ArrayList<InvocationChain>();
     private final List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
@@ -42,8 +40,8 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param source
      * @param target
      */
-    public RuntimeWireImpl(EndpointReference<RuntimeComponentReference> source,
-                           EndpointReference<RuntimeComponentService> target) {
+    public RuntimeWireImpl(EndpointReference source,
+                           EndpointReference target) {
         super();
         this.wireSource = source;
         this.wireTarget = target;
@@ -57,11 +55,11 @@ public class RuntimeWireImpl implements RuntimeWire {
         return chains;
     }
 
-    public EndpointReference<RuntimeComponentReference> getSource() {
+    public EndpointReference getSource() {
         return wireSource;
     }
 
-    public EndpointReference<RuntimeComponentService>  getTarget() {
+    public EndpointReference  getTarget() {
         return wireTarget;
     }
 

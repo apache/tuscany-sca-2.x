@@ -312,17 +312,11 @@ public class DefaultCompositeActivator implements CompositeActivator {
             InterfaceContract sourceContract = reference.getInterfaceContract();
 
             // Component Reference --> External Service
-            EndpointReference<RuntimeComponentReference> wireSource = new EndpointReferenceImpl<RuntimeComponentReference>(
-                                                                                                                           (RuntimeComponent)component,
-                                                                                                                           (RuntimeComponentReference)reference,
-                                                                                                                           binding,
-                                                                                                                           sourceContract);
+            EndpointReference wireSource = new EndpointReferenceImpl((RuntimeComponent)component,
+                                                                     (RuntimeComponentReference)reference, binding,
+                                                                     sourceContract);
 
-            EndpointReference<RuntimeComponentService> wireTarget = new EndpointReferenceImpl<RuntimeComponentService>(
-                                                                                                                       null,
-                                                                                                                       null,
-                                                                                                                       binding,
-                                                                                                                       bindingContract);
+            EndpointReference wireTarget = new EndpointReferenceImpl(null, null, binding, bindingContract);
             RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
 
             for (Operation operation : sourceContract.getInterface().getOperations()) {
@@ -364,17 +358,13 @@ public class DefaultCompositeActivator implements CompositeActivator {
             // FIXME: [rfeng] We might need a better way to get the impl interface contract
             InterfaceContract targetContract = service.getService().getInterfaceContract();
 
-            EndpointReference<RuntimeComponentReference> wireSource = new EndpointReferenceImpl<RuntimeComponentReference>(
-                                                                                                                           (RuntimeComponent)component,
-                                                                                                                           (RuntimeComponentReference)reference,
-                                                                                                                           binding,
-                                                                                                                           bindingContract);
+            EndpointReference wireSource = new EndpointReferenceImpl((RuntimeComponent)component,
+                                                                     (RuntimeComponentReference)reference, binding,
+                                                                     bindingContract);
 
-            EndpointReference<RuntimeComponentService> wireTarget = new EndpointReferenceImpl<RuntimeComponentService>(
-                                                                                                                       (RuntimeComponent)target,
-                                                                                                                       (RuntimeComponentService)service,
-                                                                                                                       binding,
-                                                                                                                       targetContract);
+            EndpointReference wireTarget = new EndpointReferenceImpl((RuntimeComponent)target,
+                                                                     (RuntimeComponentService)service, binding,
+                                                                     targetContract);
 
             RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
 
@@ -411,7 +401,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             runtimeRef.addRuntimeWire(wire);
             if (!wire.getCallbackInvocationChains().isEmpty()) {
                 if (wire.getTarget().getContract() != null) {
-                    wire.getTarget().getContract().addCallbackWire(wire);
+                    ((RuntimeComponentService) wire.getTarget().getContract()).addCallbackWire(wire);
                 }
             }
             wireProcessor.process(wire);
@@ -456,17 +446,11 @@ public class DefaultCompositeActivator implements CompositeActivator {
 
         InterfaceContract sourceContract = getInterfaceContract(service, binding);
 
-        EndpointReference<RuntimeComponentReference> wireSource = new EndpointReferenceImpl<RuntimeComponentReference>(
-                                                                                                                       null,
-                                                                                                                       null,
-                                                                                                                       binding,
-                                                                                                                       sourceContract);
+        EndpointReference wireSource = new EndpointReferenceImpl(null, null, binding, sourceContract);
 
-        EndpointReference<RuntimeComponentService> wireTarget = new EndpointReferenceImpl<RuntimeComponentService>(
-                                                                                                                   (RuntimeComponent)component,
-                                                                                                                   (RuntimeComponentService)service,
-                                                                                                                   binding,
-                                                                                                                   targetContract);
+        EndpointReference wireTarget = new EndpointReferenceImpl((RuntimeComponent)component,
+                                                                 (RuntimeComponentService)service, binding,
+                                                                 targetContract);
 
         RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
 
