@@ -26,9 +26,6 @@ import crud.CRUDImplementation;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
- * 
- * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
- *          2007) $$
  */
 public class CRUDImplementationProviderFactory implements ImplementationProviderFactory<CRUDImplementation> {
 

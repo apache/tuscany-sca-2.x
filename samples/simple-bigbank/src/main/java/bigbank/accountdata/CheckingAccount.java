@@ -19,9 +19,8 @@
 package bigbank.accountdata;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * An account service implementation for a checking account
  */
-
 public class CheckingAccount implements Account {
     private String accountNumber;
     private double balance;

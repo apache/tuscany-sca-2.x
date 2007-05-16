@@ -25,8 +25,6 @@ import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * Interceptor for the sample echo binding.
- * 
- * @version $Rev$ $Date$
  */
 public class EchoBindingInvoker implements Invoker {
 

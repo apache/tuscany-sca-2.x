@@ -19,9 +19,8 @@
 package bigbank.accountdata;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Interface for a account data service
  */
-
 public interface AccountDataService {
     public CheckingAccount getCheckingAccount(String customerID);
     public SavingsAccount getSavingsAccount(String customerID);

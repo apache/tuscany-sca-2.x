@@ -27,8 +27,6 @@ import crud.impl.CRUDImplementationImpl;
 
 /**
  * A default factory for the CRUD implementation model.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultCRUDImplementationFactory implements CRUDImplementationFactory {
     

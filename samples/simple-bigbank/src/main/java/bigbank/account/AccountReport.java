@@ -21,9 +21,7 @@ package bigbank.account;
 import java.util.List;
 
 /**
- * @version $$Rev$$ $$Date$$
  */
-
 public class AccountReport {
     private List<String> summaries;
     private String currency;

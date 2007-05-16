@@ -20,7 +20,6 @@ package calculator;
 
 import org.osoa.sca.annotations.Reference;
 
-
 /**
  * An implementation of the Calculator service.
  */

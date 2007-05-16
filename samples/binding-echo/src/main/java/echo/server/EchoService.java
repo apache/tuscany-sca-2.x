@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 
 /**
- * @version $Rev$ $Date$
+ * The EchoService
  */
 public class EchoService {
     private Invoker invoker;

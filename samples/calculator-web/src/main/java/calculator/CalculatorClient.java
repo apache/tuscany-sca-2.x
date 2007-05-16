@@ -22,7 +22,10 @@ package calculator;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * @version $Rev: 529177 $ $Date: 2007-04-16 02:04:39 -0700 (Mon, 16 Apr 2007) $
+ * This client program shows how to create an SCA runtime, start it,
+ * and locate and invoke a SCA component
+ * 
+ * (not really necessary as this sample runs in a webapp)
  */
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {

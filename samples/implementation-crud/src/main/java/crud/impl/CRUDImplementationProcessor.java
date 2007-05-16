@@ -41,8 +41,6 @@ import crud.CRUDImplementationFactory;
  * elements in SCA assembly XML composite files and populating the CRUD
  * implementation model, resolving its references to other artifacts in the SCA
  * contribution, and optionally write the model back to SCA assembly XML. 
- *
- * @version $Rev$ $Date$
  */
 public class CRUDImplementationProcessor implements StAXArtifactProcessor<CRUDImplementation> {
     private static final QName IMPLEMENTATION_CRUD = new QName("http://crud", "implementation.crud");

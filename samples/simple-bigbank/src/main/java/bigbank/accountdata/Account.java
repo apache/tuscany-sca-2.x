@@ -19,9 +19,8 @@
 package bigbank.accountdata;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Interface for a account service
  */
-
 public interface Account {
     String getSummary();
 }

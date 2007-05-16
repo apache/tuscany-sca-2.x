@@ -36,8 +36,6 @@ import echo.EchoBindingFactory;
 
 /**
  * A processor for <binding.echo> elements.
- * 
- * @version $Rev$ $Date$
  */
 public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> {
 

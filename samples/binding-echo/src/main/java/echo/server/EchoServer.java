@@ -25,8 +25,6 @@ import java.util.Map;
 
 /**
  * A sample Echo server, showing how to integrate service bindings. 
- * 
- * @version $Rev$ $Date$
  */
 public class EchoServer {
 

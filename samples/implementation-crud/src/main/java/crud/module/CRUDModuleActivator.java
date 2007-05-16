@@ -24,9 +24,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
@@ -44,8 +41,6 @@ import crud.provider.CRUDImplementationProviderFactory;
  * The module activator is responsible for contributing the CRUD implementation
  * extensions and plugging them in the extension points defined by the Tuscany
  * runtime.
- * 
- * @version $Rev$ $Date$
  */
 public class CRUDModuleActivator implements ModuleActivator {
 

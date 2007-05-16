@@ -26,6 +26,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests that the helloworld server is available
+ */
 public class HelloWorldServerTestCase {
 	
     private SCADomain scaDomain;

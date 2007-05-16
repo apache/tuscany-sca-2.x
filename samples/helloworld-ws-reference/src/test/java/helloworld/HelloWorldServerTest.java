@@ -26,6 +26,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Starts up the SCA runtime which starts listening for service requests
+ */
 public class HelloWorldServerTest {
 	
     private SCADomain scaDomain;

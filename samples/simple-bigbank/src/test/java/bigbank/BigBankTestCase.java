@@ -24,6 +24,10 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 import bigbank.account.AccountService;
 
+/**
+ * Tests out the big bank service
+ *
+ */
 public class BigBankTestCase extends TestCase {
 
     private SCADomain scaDomain;

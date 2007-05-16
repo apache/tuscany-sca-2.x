@@ -21,6 +21,9 @@ package helloworld;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+/**
+ * The interface for the helloworld service
+ */
 @Remotable
 @Service
 public interface HelloWorldService {

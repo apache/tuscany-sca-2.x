@@ -19,9 +19,8 @@
 package bigbank.account;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Interface for a account service
  */
-
 public interface AccountService {
-	public AccountReport getAccountReport(String customerID);
+    public AccountReport getAccountReport(String customerID);
 }

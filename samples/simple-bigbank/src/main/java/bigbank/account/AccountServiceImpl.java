@@ -31,9 +31,8 @@ import bigbank.accountdata.SavingsAccount;
 import bigbank.accountdata.StockAccount;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Account service implementation
  */
-
 @Service(AccountService.class)
 public class AccountServiceImpl implements AccountService {
 

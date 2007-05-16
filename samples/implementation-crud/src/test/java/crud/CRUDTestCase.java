@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * @version $Rev$ $Date$
+ * Tests the CRUD service
  */
 public class CRUDTestCase extends TestCase {
 
