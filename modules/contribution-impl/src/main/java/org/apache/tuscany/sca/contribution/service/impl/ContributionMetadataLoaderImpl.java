@@ -42,7 +42,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderExc
 public class ContributionMetadataLoaderImpl implements ContributionMetadataLoader {
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     private static final String TARGET_NAMESPACE = "targetNamespace";
-    //private static final String NAME = "composite";
     
     private static final QName CONTRIBUTION = new QName(SCA10_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA10_NS, "deployable");
@@ -63,32 +62,35 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
     }
 
     public void load(Contribution contribution, XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException {
+        String targetNameSpaceURI = null;
 
         while (true) {
             int event = reader.next();
             switch (event) {
                 case START_ELEMENT:
                     QName element = reader.getName();
-                    if (DEPLOYABLE.equals(element)) {
+                    if (CONTRIBUTION.equals(element)) {
+                        targetNameSpaceURI = reader.getAttributeValue(null, TARGET_NAMESPACE);    
+                    } else if (DEPLOYABLE.equals(element)) {
                         String name = reader.getAttributeValue(null, "composite");
                         if (name == null) {
                             throw new InvalidValueException("Attribute 'composite' is missing");
                         }
                         QName compositeName = null;
+
                         int index = name.indexOf(':');
                         if (index != -1) {
                             String prefix = name.substring(0, index);
-                            String localPart = name.substring(index);
+                            String localPart = name.substring(index + 1);
                             String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
                             if (ns == null) {
                                 throw new InvalidValueException("Invalid prefix: " + prefix);
                             }
-                            compositeName = new QName(getString(reader, TARGET_NAMESPACE), localPart, prefix);
+                            compositeName = new QName(targetNameSpaceURI, localPart, prefix);
                         } else {
                             String prefix = "";
-                            //String ns = reader.getNamespaceURI();
                             String localPart = name;
-                            compositeName = new QName(getString(reader, TARGET_NAMESPACE), localPart, prefix);
+                            compositeName = new QName(targetNameSpaceURI, localPart, prefix);
                         }
 
                         Composite composite = assemblyFactory.createComposite();
@@ -127,48 +129,4 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
             }
         }
     }
-    
-    /**
-     * Returns the string value of an attribute.
-     * @param reader
-     * @param name
-     * @return
-     */
-    protected String getString(XMLStreamReader reader, String name) {
-        return reader.getAttributeValue(null, name);
-    }
-
-    /**
-     * Returns the qname value of an attribute.
-     * @param reader
-     * @param name
-     * @return
-     */
-    protected QName getQName(XMLStreamReader reader, String name) {
-        String qname = reader.getAttributeValue(null, name);
-        return getQNameValue(reader, qname);
-    }
-    
-
-    /**
-     * Returns a qname from a string.  
-     * @param reader
-     * @param value
-     * @return
-     */
-    protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
-    }
-
 }
