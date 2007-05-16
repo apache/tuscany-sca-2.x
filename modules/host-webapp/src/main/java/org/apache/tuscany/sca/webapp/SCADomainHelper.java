@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.webapp;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import javax.servlet.ServletContext;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
@@ -33,7 +29,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class SCADomainHelper {
 
     public static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
-    public static final String DEFAULT_COMPOSITES_DIR = "/WEB-INF/classes";
 
     /**
      * Initializes the SCADomian associated with a webapp context. If a SCADomain
@@ -42,30 +37,9 @@ public class SCADomainHelper {
     public static SCADomain initSCADomain(ServletContext servletContext) {
         SCADomain scaDomain = (SCADomain)servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE);
         if (scaDomain == null) {
-
-            String[] compositeNames = getDeployableComposites(servletContext);
-            String domainURI = "http://localhost/" + servletContext.getServletContextName().replace(' ', '.');
-            scaDomain = SCADomain.newInstance(domainURI, ".", compositeNames);
-
+            scaDomain = SCADomain.newInstance();
             servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
         }
         return scaDomain;
-    }
-
-    /**
-     * Gets all the composites in the DEFAULT_COMPOSITES_DIR directory.
-     */
-    protected static String[] getDeployableComposites(ServletContext servletContext) {
-        List<String> compositeNames = new ArrayList<String>();
-        Set resources = servletContext.getResourcePaths(DEFAULT_COMPOSITES_DIR);
-        for (Object o : resources) {
-            String resource = o.toString();
-            if (resource.endsWith(".composite")) {
-                String compositeName = resource.substring(resource.lastIndexOf('/')+1);
-                compositeNames.add(compositeName);
-            }
-        }
-
-        return compositeNames.toArray(new String[compositeNames.size()]);
     }
 }

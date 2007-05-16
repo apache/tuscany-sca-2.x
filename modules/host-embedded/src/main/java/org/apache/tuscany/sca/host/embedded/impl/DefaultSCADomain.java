@@ -100,7 +100,8 @@ public class DefaultSCADomain extends SCADomain {
 
         try {
             DefaultModelResolver modelResolver = new DefaultModelResolver(applicationClassLoader);
-            contribution = contributionService.contribute(location, contributionURL, modelResolver, false);
+            String contributionURI = FileHelper.getName(contributionURL.getPath());
+            contribution = contributionService.contribute(contributionURI, contributionURL, modelResolver, false);
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         } catch (IOException e) {
@@ -113,20 +114,30 @@ public class DefaultSCADomain extends SCADomain {
         domainComposite.setName(new QName(Constants.SCA_NS, "domain"));
         domainComposite.setURI(domainURI);
 
-        // Include all specified deployable composites in the SCA domain
-        Map<String, Composite> compositeArtifacts = new HashMap<String, Composite>();
-        for (DeployedArtifact artifact : contribution.getArtifacts()) {
-            if (artifact.getModel() instanceof Composite) {
-                compositeArtifacts.put(artifact.getURI(), (Composite)artifact.getModel());
+        //when the deployable composites were specified when initializing the runtime
+        if (composites != null && composites.length > 0 && composites[0].length() > 0) {
+            // Include all specified deployable composites in the SCA domain
+            Map<String, Composite> compositeArtifacts = new HashMap<String, Composite>();
+            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    compositeArtifacts.put(artifact.getURI(), (Composite)artifact.getModel());
+                }
             }
-        }
-        for (String compositePath : composites) {
-            Composite composite = compositeArtifacts.get(compositePath);
-            if (composite == null) {
-                throw new ServiceRuntimeException("Composite not found: " + compositePath);
+            for (String compositePath : composites) {
+                Composite composite = compositeArtifacts.get(compositePath);
+                if (composite == null) {
+                    throw new ServiceRuntimeException("Composite not found: " + compositePath);
+                }
+                domainComposite.getIncludes().add(composite);
+            }            
+        } else {
+            // in this case, a sca-contribution.xml should have been specified
+            for(Composite composite : contribution.getDeployables()) {
+                domainComposite.getIncludes().add(composite);
             }
-            domainComposite.getIncludes().add(composite);
+            
         }
+
 
         // Activate and start the SCA domain composite
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
@@ -151,7 +162,7 @@ public class DefaultSCADomain extends SCADomain {
         // Remove the contribution from the in-memory repository
         ContributionService contributionService = runtime.getContributionService();
         try {
-            contributionService.remove(location);
+            contributionService.remove(contribution.getURI());
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -185,26 +196,46 @@ public class DefaultSCADomain extends SCADomain {
      */
     private URL getContributionLocation(String contributionPath, String[] composites, ClassLoader classLoader)
         throws MalformedURLException {
-        URI contributionURI = URI.create(contributionPath);
-        if (contributionURI.isAbsolute() || composites.length == 0) {
-            return new URL(contributionPath);
+        if (contributionPath != null && contributionPath.length() > 0) {
+            URI contributionURI = URI.create(contributionPath);
+            if (contributionURI.isAbsolute() || composites.length == 0) {
+                return new URL(contributionPath);
+            }
         }
 
-        String compositePath = composites[0];
-        URL compositeURL = classLoader.getResource(compositePath);
-        if (compositeURL == null) {
-            throw new IllegalArgumentException("Composite not found: " + compositePath);
+        String contributionArtifactPath = null;
+        URL contributionArtifactURL = null;
+        if (composites != null && composites.length > 0 && composites[0].length() > 0) {
+            //here the scaDomain was started with a reference to a composite file
+            contributionArtifactPath = composites[0];
+            contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
+            if (contributionArtifactURL == null) {
+                throw new IllegalArgumentException("Composite not found: " + contributionArtifactPath);
+            }
+        }else {
+            //here the scaDomain was started without any reference to a composite file
+            //we are going to look for a sca-contribution.xml or sca-contribution-generated.xml
+            contributionArtifactPath = Contribution.SCA_CONTRIBUTION_META;
+            contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
+            if( contributionArtifactURL == null ) {
+                contributionArtifactPath = Contribution.SCA_CONTRIBUTION_GENERATED_META;
+                contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
+            }
+        }
+
+        if (contributionArtifactURL == null) {
+            throw new IllegalArgumentException("Can't determine contribution deployables. Either specify a composite file, or use a sca-contribution.xml file to specify the deployables.");
         }
 
         URL contributionURL = null;
         // "jar:file://....../something.jar!/a/b/c/app.composite"
         try {
-            String scdlUrl = compositeURL.toExternalForm();
-            String protocol = compositeURL.getProtocol();
+            String scdlUrl = contributionArtifactURL.toExternalForm();
+            String protocol = contributionArtifactURL.getProtocol();
             if ("file".equals(protocol)) {
                 // directory contribution
-                if (scdlUrl.endsWith(compositePath)) {
-                    String location = scdlUrl.substring(0, scdlUrl.lastIndexOf(compositePath));
+                if (scdlUrl.endsWith(contributionArtifactPath)) {
+                    String location = scdlUrl.substring(0, scdlUrl.lastIndexOf(contributionArtifactPath));
                     // workaround from evil url/uri form maven
                     contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
                 }
