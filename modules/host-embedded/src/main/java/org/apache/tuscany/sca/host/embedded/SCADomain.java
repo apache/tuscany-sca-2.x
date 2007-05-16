@@ -45,6 +45,29 @@ public abstract class SCADomain {
     // TODO: Temporary support for SCADomain.connect() API
     private static SCADomain theDomain;
 
+    
+    /**
+     * Returns a new instance of a local SCA domain. The specified deployable
+     * composite defined in sca-contribution.xml will be included in the SCA domain.
+     * 
+     * @param composite the deployable composite to include in the SCA domain.
+     * @return
+     */
+    public static SCADomain newInstance() {
+        return createNewInstance("http://localhost", null);
+    }
+    
+    /**
+     * Returns a new instance of a local SCA domain. The specified deployable
+     * composite will be included in the SCA domain.
+     * 
+     * @param composite the deployable composite to include in the SCA domain.
+     * @return
+     */
+    public static SCADomain newInstance(String composite) {
+        return createNewInstance("http://localhost", ".", composite);
+    }
+    
     /**
      * Returns a new instance of a local SCA domain. The specified deployable
      * composites will be included in the SCA domain.
@@ -77,17 +100,6 @@ public abstract class SCADomain {
     // TODO : this is a temporary implementation to get the capability working
     public static SCADomain connect(String domainURI) {
         return theDomain;
-    }
-
-    /**
-     * Returns a new instance of a local SCA domain. The specified deployable
-     * composite will be included in the SCA domain.
-     * 
-     * @param composite the deployable composite to include in the SCA domain.
-     * @return
-     */
-    public static SCADomain newInstance(String composite) {
-        return createNewInstance("http://localhost", ".", composite);
     }
 
     /**
