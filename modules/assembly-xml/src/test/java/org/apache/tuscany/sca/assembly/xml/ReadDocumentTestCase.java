@@ -35,9 +35,8 @@ import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessor
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -49,12 +48,12 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class ReadDocumentTestCase extends TestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
-    private DefaultModelResolver resolver; 
+    private TestModelResolver resolver; 
 
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
@@ -72,7 +71,7 @@ public class ReadDocumentTestCase extends TestCase {
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
-        resolver = new DefaultModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {

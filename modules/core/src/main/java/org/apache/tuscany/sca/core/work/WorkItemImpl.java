@@ -27,7 +27,7 @@ import commonj.work.WorkItem;
  * interface.
  *
  */
-class DefaultWorkItem implements WorkItem {
+class WorkItemImpl implements WorkItem {
     
     // Id scoped for the VM
     private String id;
@@ -49,7 +49,7 @@ class DefaultWorkItem implements WorkItem {
      *
      * @param id of this work event.
      */
-    protected DefaultWorkItem(final String id, final Work orginalWork) {
+    protected WorkItemImpl(final String id, final Work orginalWork) {
         this.id = id;
         this.originalWork = orginalWork;
     }
@@ -143,7 +143,7 @@ class DefaultWorkItem implements WorkItem {
      *         otherwise..
      */
     public boolean equals(final Object obj) {
-        return (obj != null) && (obj.getClass() == DefaultWorkItem.class) && ((DefaultWorkItem) obj).id.equals(id);
+        return (obj != null) && (obj.getClass() == WorkItemImpl.class) && ((WorkItemImpl) obj).id.equals(id);
     }
 
     /**
@@ -157,10 +157,10 @@ class DefaultWorkItem implements WorkItem {
      * @throws ClassCastException needs better documentation.
      */
     public int compareTo(final Object o) {
-        if (o.getClass() != DefaultWorkItem.class) {
+        if (o.getClass() != WorkItemImpl.class) {
             throw new ClassCastException(o.getClass().getName());
         } else {
-            return ((DefaultWorkItem) o).getId().compareTo(getId());
+            return ((WorkItemImpl) o).getId().compareTo(getId());
         }
     }
 }

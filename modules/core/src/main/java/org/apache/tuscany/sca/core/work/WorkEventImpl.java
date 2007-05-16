@@ -26,7 +26,7 @@ import commonj.work.WorkItem;
 /**
  * Default immutable implementation of the <code>WorkEvent</code> class.
  */
-class DefaultWorkEvent implements WorkEvent {
+class WorkEventImpl implements WorkEvent {
     
     // Work item for this event
     private WorkItem workItem;
@@ -39,7 +39,7 @@ class DefaultWorkEvent implements WorkEvent {
      *
      * @param workItem Work item for this event.
      */
-    public DefaultWorkEvent(final DefaultWorkItem workItem) {
+    public WorkEventImpl(final WorkItemImpl workItem) {
         this.workItem = workItem;
         this.exception = workItem.getException();
     }

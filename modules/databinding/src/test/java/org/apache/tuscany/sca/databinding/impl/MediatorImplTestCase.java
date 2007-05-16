@@ -73,7 +73,7 @@ public class MediatorImplTestCase extends TestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
-    private DefaultMediator mediator;
+    private MediatorImpl mediator;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -86,7 +86,7 @@ public class MediatorImplTestCase extends TestCase {
         registry.addTransformer(new Node2String());
         registry.addTransformer(new Node2Writer());
 
-        mediator = new DefaultMediator(dataBindingRegistry, registry);
+        mediator = new MediatorImpl(dataBindingRegistry, registry);
     }
 
     private TransformationContext createTransformationContext(Class sourceType, Class targetType) {

@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.DefaultMediator;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;
@@ -76,7 +76,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
+        MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
 

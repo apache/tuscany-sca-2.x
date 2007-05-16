@@ -30,7 +30,6 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -56,7 +55,7 @@ public class WSDLOperationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         processor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
-        resolver = new DefaultModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver(getClass().getClassLoader());
         wsdlFactory = new DefaultWSDLFactory();
     }
 

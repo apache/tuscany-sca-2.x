@@ -35,7 +35,7 @@ import org.apache.tuscany.api.annotation.LogLevel;
  *
  * @version $Rev$ $Date$
  */
-public class JavaLoggingTestCaseFIXME extends TestCase {
+public class JavaLoggingTestCase extends TestCase {
     private static final Logger LOGGER = Logger.getLogger(Monitor.class.getName());
     private static final MockHandler HANDLER = new MockHandler();
 

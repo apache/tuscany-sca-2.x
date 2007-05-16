@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -66,7 +66,7 @@ public class ReallySmallRuntime {
         workManager = new ThreadPoolWorkManager(10);
 
         // Create an interface contract mapper
-        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
 
         // Create factory extension point
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();

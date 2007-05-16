@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  */
 public class ContractCompatibilityTestCase extends TestCase {
 
-    private InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+    private InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
 
     public void testNoOperation() throws Exception {
         InterfaceContract source = new MockContract("FooContract");

@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.DefaultMediator;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 public class ScriptModuleActivator implements ModuleActivator {
@@ -45,7 +45,7 @@ public class ScriptModuleActivator implements ModuleActivator {
         // TODO: could the runtime have a default PropertyValueObjectFactory in the registry
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
-        DefaultMediator mediator = new DefaultMediator(dataBindings, transformers);
+        MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         PropertyValueObjectFactory propertyFactory = new PropertyValueObjectFactory(mediator);
 
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);

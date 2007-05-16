@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataLoaderImpl;
 import org.apache.tuscany.sca.contribution.service.impl.InvalidValueException;
 
@@ -71,7 +71,7 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
         ContributionMetadataLoaderImpl loader = 
             new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), factory);
         Contribution contribution = factory.createContribution();
-        contribution.setModelResolver(new DefaultModelResolver(getClass().getClassLoader()));
+        contribution.setModelResolver(new ModelResolverImpl(getClass().getClassLoader()));
         loader.load(contribution, reader);
         assertNotNull(contribution);
         assertEquals(1, contribution.getImports().size());
@@ -85,7 +85,7 @@ public class ContributionMetadataLoaderTestCase extends TestCase {
         ContributionMetadataLoaderImpl loader = 
             new ContributionMetadataLoaderImpl(new DefaultAssemblyFactory(), factory);
         Contribution contribution = factory.createContribution();
-        contribution.setModelResolver(new DefaultModelResolver(getClass().getClassLoader()));
+        contribution.setModelResolver(new ModelResolverImpl(getClass().getClassLoader()));
         try {
             loader.load(contribution, reader);
             fail("InvalidException should have been thrown");

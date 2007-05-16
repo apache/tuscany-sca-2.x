@@ -26,8 +26,8 @@ import junit.framework.TestCase;
 /**
  * @version $Rev$ $Date$
  */
-public class DefaultExceptionFormatterTestCase extends TestCase {
-    private DefaultExceptionFormatter formatter = new DefaultExceptionFormatter();
+public class ExceptionFormatterTestCase extends TestCase {
+    private ExceptionFormatterImpl formatter = new ExceptionFormatterImpl();
 
     public void testTuscanyExceptionFormat() throws Exception {
         StringWriter writer = new StringWriter();

@@ -58,13 +58,12 @@ import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryIm
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.invocation.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
-import org.apache.tuscany.sca.core.runtime.DefaultCompositeActivator;
+import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.runtime.RuntimeSCABindingProviderFactory;
 import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
@@ -77,6 +76,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.DefaultProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.scope.ScopeContainerFactory;
@@ -120,7 +120,7 @@ public class ReallySmallRuntimeBuilder {
         providerFactories.addProviderFactory(new RuntimeSCABindingProviderFactory());
 
         // Create the composite activator
-        CompositeActivator compositeActivator = new DefaultCompositeActivator(assemblyFactory, mapper, scopeRegistry,
+        CompositeActivator compositeActivator = new CompositeActivatorImpl(assemblyFactory, mapper, scopeRegistry,
                                                                               workScheduler, wireProcessor,
                                                                               providerFactories);
 

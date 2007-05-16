@@ -48,7 +48,7 @@ import commonj.work.WorkRejectedException;
 public class ThreadPoolWorkManager implements WorkManager {
 
     // Map of work items currently handled by the work manager
-    private Map<DefaultWorkItem, WorkListener> workItems = new ConcurrentHashMap<DefaultWorkItem, WorkListener>();
+    private Map<WorkItemImpl, WorkListener> workItems = new ConcurrentHashMap<WorkItemImpl, WorkListener>();
 
     // Thread-pool
     private ExecutorService executor;
@@ -81,7 +81,7 @@ public class ThreadPoolWorkManager implements WorkManager {
      */
     public WorkItem schedule(Work work, WorkListener workListener) throws WorkRejectedException {
 
-        DefaultWorkItem workItem = new DefaultWorkItem(new UID().toString(), work);
+        WorkItemImpl workItem = new WorkItemImpl(new UID().toString(), work);
         if (workListener != null) {
             workItems.put(workItem, workListener);
         }
@@ -91,7 +91,7 @@ public class ThreadPoolWorkManager implements WorkManager {
         } else {
             workItem.setStatus(WorkEvent.WORK_REJECTED);
             if (workListener != null) {
-                workListener.workRejected(new DefaultWorkEvent(workItem));
+                workListener.workRejected(new WorkEventImpl(workItem));
             }
             throw new WorkRejectedException("Unable to schedule work");
         }
@@ -123,11 +123,11 @@ public class ThreadPoolWorkManager implements WorkManager {
      * @param workItem Work item representing the work that was accepted.
      * @param work     Work that was accepted.
      */
-    private void workAccepted(final DefaultWorkItem workItem, final Work work) {
+    private void workAccepted(final WorkItemImpl workItem, final Work work) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_ACCEPTED);
-            WorkEvent event = new DefaultWorkEvent(workItem);
+            WorkEvent event = new WorkEventImpl(workItem);
             listener.workAccepted(event);
         }
     }
@@ -135,11 +135,11 @@ public class ThreadPoolWorkManager implements WorkManager {
     /*
      * Method to indicate a work start.
      */
-    private void workStarted(final DefaultWorkItem workItem, final Work work) {
+    private void workStarted(final WorkItemImpl workItem, final Work work) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_STARTED);
-            WorkEvent event = new DefaultWorkEvent(workItem);
+            WorkEvent event = new WorkEventImpl(workItem);
             listener.workStarted(event);
         }
     }
@@ -147,20 +147,20 @@ public class ThreadPoolWorkManager implements WorkManager {
     /*
      * Method to indicate a work completion.
      */
-    private void workCompleted(final DefaultWorkItem workItem, final Work work) {
+    private void workCompleted(final WorkItemImpl workItem, final Work work) {
         workCompleted(workItem, work, null);
     }
 
     /*
      * Method to indicate a work completion.
      */
-    private void workCompleted(final DefaultWorkItem workItem, final Work work, final WorkException exception) {
+    private void workCompleted(final WorkItemImpl workItem, final Work work, final WorkException exception) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_COMPLETED);
             workItem.setResult(work);
             workItem.setException(exception);
-            WorkEvent event = new DefaultWorkEvent(workItem);
+            WorkEvent event = new WorkEventImpl(workItem);
             listener.workCompleted(event);
             workItems.remove(workItem);
         }
@@ -169,7 +169,7 @@ public class ThreadPoolWorkManager implements WorkManager {
     /*
      * Schedules the work using the threadpool.
      */
-    private boolean scheduleWork(final Work work, final DefaultWorkItem workItem) {
+    private boolean scheduleWork(final Work work, final WorkItemImpl workItem) {
         try {
             executor.execute(new DecoratingWork(workItem, work));
             return true;
@@ -184,7 +184,7 @@ public class ThreadPoolWorkManager implements WorkManager {
     private final class DecoratingWork implements Runnable {
 
         // Work item for this work.
-        private DefaultWorkItem workItem;
+        private WorkItemImpl workItem;
 
         // The original work.
         private Work decoratedWork;
@@ -192,7 +192,7 @@ public class ThreadPoolWorkManager implements WorkManager {
         /*
          * Initializes the work item and underlying work.
          */
-        private DecoratingWork(final DefaultWorkItem workItem, final Work decoratedWork) {
+        private DecoratingWork(final WorkItemImpl workItem, final Work decoratedWork) {
             this.workItem = workItem;
             this.decoratedWork = decoratedWork;
         }

@@ -16,28 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.java.monitor;
+package org.apache.tuscany.sca.runtime;
 
-import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
- * Performs basics formatting of exceptions for JDK logging
+ * The default implementation of a <code>WireProcessorExtensionPoint</code>
  *
  * @version $Rev$ $Date$
  */
-public class DefaultExceptionFormatter implements ExceptionFormatter {
+public class DefaultWireProcessorExtensionPoint implements RuntimeWireProcessorExtensionPoint {
 
-    public DefaultExceptionFormatter() {
+    private final List<RuntimeWireProcessor> processors = new ArrayList<RuntimeWireProcessor>();
+
+    public void addWireProcessor(RuntimeWireProcessor processor) {
+        processors.add(processor);
     }
 
-    public boolean canFormat(Class<?> type) {
-        return Throwable.class.isAssignableFrom(type);
+    public void removeWireProcessor(RuntimeWireProcessor processor) {
+        processors.remove(processor);
     }
-
-    public PrintWriter write(PrintWriter writer, Throwable exception) {
-        writer.append(exception.getMessage());
-        writer.append("\n");
-        return writer;
+    
+    public List<RuntimeWireProcessor> getWireProcessors() {
+        return processors;
     }
-
 }

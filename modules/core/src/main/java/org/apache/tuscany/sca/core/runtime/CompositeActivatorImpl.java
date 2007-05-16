@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
@@ -58,7 +58,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 /**
  * @version $Rev$ $Date$
  */
-public class DefaultCompositeActivator implements CompositeActivator {
+public class CompositeActivatorImpl implements CompositeActivator {
 
     private final AssemblyFactory assemblyFactory;
     private final InterfaceContractMapper interfaceContractMapper;
@@ -74,7 +74,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
      * @param workScheduler
      * @param wirePostProcessorRegistry
      */
-    public DefaultCompositeActivator(AssemblyFactory assemblyFactory,
+    public CompositeActivatorImpl(AssemblyFactory assemblyFactory,
                                      InterfaceContractMapper interfaceContractMapper,
                                      ScopeRegistry scopeRegistry,
                                      WorkScheduler workScheduler,
@@ -561,7 +561,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
             }
         };
 
-        DefaultCompositeBuilder builder = new DefaultCompositeBuilder(assemblyFactory, interfaceContractMapper, monitor);
+        CompositeBuilderImpl builder = new CompositeBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
 
         builder.build(composite);
 

@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 /**
  * @version $Rev$ $Date$
  */
-public class DefaultInterfaceContractMapper implements InterfaceContractMapper {
+public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
     public boolean isCompatible(DataType source, DataType target, boolean remotable) {
         if (source == target) {
