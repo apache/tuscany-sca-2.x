@@ -667,7 +667,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
                     // Point to the resolved component service
                     compositeService.setPromotedService(promotedService);
-                    promotedService.promotedAs().add(compositeService);
 
                     // Use the interface contract from the component service if
                     // none is specified on the composite service
@@ -722,7 +721,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
                         // Point to the resolved component reference
                         promotedReferences.set(i, componentReference);
-                        componentReference.promotedAs().add(compositeReference);
 
                         // Use the interface contract from the component
                         // reference if none
@@ -1201,7 +1199,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // to their multiplicity
         for (ComponentReference componentReference : componentReferences.values()) {
             if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
-                .getTargets(), componentReference.promotedAs())) {
+                .getTargets(), componentReference.getBindings())) {
                 if (componentReference.getTargets().isEmpty()) {
                     warning("No targets for reference: " + componentReference.getName(), composite);
                 } else {

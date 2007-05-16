@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
 
 /**
  * An instance of a reference associated with a particular component.
@@ -56,14 +55,6 @@ public interface ComponentReference extends Reference {
     void setAutowire(boolean autowire);
 
 
-    /**
-     * Derived relationship. Returns the list of composite references that
-     * promote this reference.
-     *  
-     * @return
-     */
-    List<CompositeReference> promotedAs();
-    
     /**
      * Clone the component reference.
      * 
