@@ -19,7 +19,7 @@ and on *nix do
 
 java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-service.jar helloworld.HelloWorldServer
 
-Now the server is started you can use the helloworld-ws-reference test to 
+Now the server is started you can use the helloworld-ws-reference sample to 
 exercise it. 
 
 Sample Overview
@@ -70,7 +70,7 @@ As this point the SCA service is exposed as a web service by a web server
 started automatically by the SCA runtime. To stop the server just press 
 enter.
 
-To exercise the service run up the helloworld-ws-referemce test. Take a look at 
+To exercise the service run up the helloworld-ws-reference sample. Take a look at 
 the README in that sample and you will see you need the following commands
 
 cd helloworld-ws-reference
