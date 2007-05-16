@@ -22,9 +22,9 @@ package org.apache.tuscany.sca.core.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * @version $Rev$ $Date$

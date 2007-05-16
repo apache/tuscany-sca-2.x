@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.core.runtime;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * @version $Rev$ $Date$
@@ -34,7 +34,6 @@ public class EndpointReferenceImpl implements EndpointReference {
     private Binding binding;
     private InterfaceContract interfaceContract;
     private String uri;
-    private boolean unresolved;
 
     /**
      * @param component
@@ -60,7 +59,6 @@ public class EndpointReferenceImpl implements EndpointReference {
     public EndpointReferenceImpl(String uri) {
         super();
         this.uri = uri;
-        this.unresolved = true;
     }
 
     public Binding getBinding() {
@@ -93,14 +91,6 @@ public class EndpointReferenceImpl implements EndpointReference {
 
     public void setInterfaceContract(InterfaceContract interfaceContract) {
         this.interfaceContract = interfaceContract;
-    }
-
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        this.unresolved = unresolved;
     }
 
     public String getURI() {

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.scope;
 
-import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.event.RuntimeEventListener;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 
 /**

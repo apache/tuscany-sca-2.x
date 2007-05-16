@@ -29,7 +29,6 @@ import org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer
 import org.apache.tuscany.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.core.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
@@ -63,6 +62,7 @@ import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2SAX;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
 /**
  * @version $Rev$ $Date$

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.core.scope;
 
-import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.scope.ScopeContainerFactory;

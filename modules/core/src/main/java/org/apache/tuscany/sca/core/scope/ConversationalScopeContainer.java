@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.sca.core.scope;
 
-import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.event.RuntimeEventListener;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;

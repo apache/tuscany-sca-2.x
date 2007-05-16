@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.implementation.script;
 
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
-import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Represents a Script implementation.

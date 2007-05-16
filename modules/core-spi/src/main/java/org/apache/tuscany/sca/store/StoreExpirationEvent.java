@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.store;
 
-import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.event.Event;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Fired when a store implementation expires a resource

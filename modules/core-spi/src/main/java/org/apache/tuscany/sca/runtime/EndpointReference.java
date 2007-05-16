@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core;
+package org.apache.tuscany.sca.runtime;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Contract;
@@ -47,6 +47,8 @@ public interface EndpointReference {
      */
     Binding getBinding();
 
+    //FIXME Why do we need this? isn't the interface contract already on the Contract?
+    
     /**
      * Get the interface contract for the endpoint
      * @return The interface contract
@@ -58,17 +60,5 @@ public interface EndpointReference {
      * @return
      */
     String getURI();
-    
-    /**
-     * Test if the EPR is resolved
-     * @return
-     */
-    boolean isUnresolved();
-    
-    /**
-     * Set the unresolved flag for the EPR
-     * @param unresolved
-     */
-    void setUnresolved(boolean unresolved);
     
 }

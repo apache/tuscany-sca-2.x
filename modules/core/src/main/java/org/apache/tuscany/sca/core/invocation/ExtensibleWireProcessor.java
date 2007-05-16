@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.core.RuntimeWireProcessor;
-import org.apache.tuscany.sca.core.RuntimeWireProcessorExtensionPoint;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
 /**
  * The default implementation of an extensible <code>WireProcessor</code>

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.core;
+package org.apache.tuscany.sca.runtime;
 
 /**
  * Implementations are called after wires are decorated with policy and before they are connected.

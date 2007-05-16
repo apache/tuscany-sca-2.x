@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.provider;
 
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * @version $Rev$ $Date$

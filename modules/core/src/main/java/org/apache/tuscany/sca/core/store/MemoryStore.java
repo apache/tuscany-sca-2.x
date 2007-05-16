@@ -24,8 +24,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tuscany.sca.core.RuntimeComponent;
 import org.apache.tuscany.sca.core.event.BaseEventPublisher;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.store.DuplicateRecordException;
 import org.apache.tuscany.sca.store.RecoveryListener;
 import org.apache.tuscany.sca.store.Store;

@@ -17,71 +17,54 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core;
+package org.apache.tuscany.sca.runtime;
 
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface RuntimeComponentService extends ComponentService {
-    /**
-     * Add a runtime wire to the service
-     * 
-     * @param wire
-     */
-    void addRuntimeWire(RuntimeWire wire);
+public interface RuntimeComponentReference extends ComponentReference {
 
     /**
-     * Get a list of runtime wires to the service
+     * Get a list of runtime wires to the reference
      * 
      * @return
      */
     List<RuntimeWire> getRuntimeWires();
+    
     /**
      * Get the runtime wire for the given binding
      * @param binding
      * @return
      */
     RuntimeWire getRuntimeWire(Binding binding);
-    
-    /**
-     * Add a callback wire if the service has a callabck interface
-     * 
-     * @param wire
-     */
-    void addCallbackWire(RuntimeWire wire);
 
     /**
-     * Get the callback wires assoicated with this service
-     * 
-     * @return
-     */
-    List<RuntimeWire> getCallbackWires();
-
-    /**
-     * Returns the service binding provider associated with this
-     * component service and the given binding.
+     * Returns the reference binding provider associated with this
+     * component reference and the given binding.
      * 
      * @param binding
      * @return
      */
-    ServiceBindingProvider getBindingProvider(Binding binding);
+    ReferenceBindingProvider getBindingProvider(Binding binding);
     
     /**
-     * Sets the service binding provider associated with this
-     * component service and the given binding.
-     *
+     * Sets the reference binding provider associated with this
+     * component reference and the given binding.
+     * 
      * @param binding
      * @param bindingProvider
+     * @return
      */
-    void setBindingProvider(Binding binding, ServiceBindingProvider bindingProvider);
+    void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider);
+    
     
     /**
      * Get the invoker for the given binding and operation
@@ -89,13 +72,6 @@ public interface RuntimeComponentService extends ComponentService {
      * @param operation
      * @return
      */
-    Invoker getInvoker(Binding binding, Operation operation);    
+    Invoker getInvoker(Binding binding, Operation operation);
     
-    /**
-     * Get the callback invoker for the given binding and operation
-     * @param binding
-     * @param operation
-     * @return
-     */
-    Invoker getCallbackInvoker(Binding binding, Operation operation);    
 }
