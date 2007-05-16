@@ -1,7 +1,19 @@
-Apache Tuscany README
-=====================
+Apache Tuscany SCA 0.90 (May 2007) README
+=========================================
 
-TODO: Do we need a README? What goes in here thats not in the RELEASE_NOTES, BUILDING or INSTALL files?
+Welcome to the Tuscany SCA 0.90 release. 
+
+See the RELEASE_NOTES file for information specific to this release.
+
+In the binary release see the INSTALL file for information on how to 
+install the release.
+
+In the source distribution see the BUILDING file for information on
+building the source code.
+
+
+
+
 
 
 
