@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.invocation;
 
-import org.apache.tuscany.sca.core.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 
 /**
  * Represents a request, response, or exception flowing through a wire

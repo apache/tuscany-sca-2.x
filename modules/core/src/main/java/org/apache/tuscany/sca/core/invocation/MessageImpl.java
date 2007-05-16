@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.core.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation

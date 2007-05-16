@@ -60,8 +60,6 @@ import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryIm
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.RuntimeWireProcessor;
-import org.apache.tuscany.sca.core.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
@@ -82,6 +80,8 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.DefaultProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
 import org.apache.tuscany.sca.work.WorkScheduler;

@@ -25,9 +25,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.easymock.EasyMock;
 
 /**

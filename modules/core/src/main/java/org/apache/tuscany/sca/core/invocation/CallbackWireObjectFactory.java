@@ -20,9 +20,9 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * Returns proxy instance for a wire callback

@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * Uses a wire to return an object instance

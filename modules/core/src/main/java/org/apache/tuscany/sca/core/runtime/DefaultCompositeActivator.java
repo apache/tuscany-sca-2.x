@@ -31,12 +31,6 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
-import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeComponent;
-import org.apache.tuscany.sca.core.RuntimeComponentReference;
-import org.apache.tuscany.sca.core.RuntimeComponentService;
-import org.apache.tuscany.sca.core.RuntimeWire;
-import org.apache.tuscany.sca.core.RuntimeWireProcessor;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
@@ -51,6 +45,12 @@ import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
 import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -340,7 +340,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
                     wire.getCallbackInvocationChains().add(chain);
                 }
             }
-            runtimeRef.addRuntimeWire(wire);
+            runtimeRef.getRuntimeWires().add(wire);
             wireProcessor.process(wire);
         }
         for (ComponentService service : reference.getTargets()) {
@@ -398,10 +398,10 @@ public class DefaultCompositeActivator implements CompositeActivator {
                 }
             }
 
-            runtimeRef.addRuntimeWire(wire);
+            runtimeRef.getRuntimeWires().add(wire);
             if (!wire.getCallbackInvocationChains().isEmpty()) {
                 if (wire.getTarget().getContract() != null) {
-                    ((RuntimeComponentService) wire.getTarget().getContract()).addCallbackWire(wire);
+                    ((RuntimeComponentService) wire.getTarget().getContract()).getCallbackWires().add(wire);
                 }
             }
             wireProcessor.process(wire);
@@ -483,7 +483,7 @@ public class DefaultCompositeActivator implements CompositeActivator {
         // }
         // }
 
-        runtimeService.addRuntimeWire(wire);
+        runtimeService.getRuntimeWires().add(wire);
         wireProcessor.process(wire);
     }
 

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.management;
 
-import org.apache.tuscany.sca.core.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Interface for the management service abstraction. The implementaion
