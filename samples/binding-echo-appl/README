@@ -14,7 +14,7 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;..\binding-echo\target\sample-binding-echo.jar;target\sample-binding-echo-appl.jar echo.client.EchoBindingClien
+java -cp ..\..\lib\tuscany-sca-manifest.jar;..\binding-echo\target\sample-binding-echo.jar;target\sample-binding-echo-appl.jar echo.client.EchoBindingClient
 
 and on *nix do
 
