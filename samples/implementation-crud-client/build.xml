@@ -42,7 +42,7 @@
         </jar>      
     </target>	
 	
-    <target name="run-classes" depends="compile">
+    <target name="run-classes">
         <java classname="${test.class}"
               fork="true">
             <classpath>
@@ -53,7 +53,7 @@
         </java>
     </target>
 	
-    <target name="run" depends="compile">
+    <target name="run">
         <java classname="${test.class}"
               fork="true">
             <classpath>

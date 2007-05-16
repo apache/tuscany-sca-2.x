@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="simple-bigbank" default="run">
+<project name="simple-bigbank" default="compile">
     <property name="test.class" value="bigbank.client.BigBankClient" />
 	<property name="test.jar"   value="sample-simple-bigbank.jar" />
 	

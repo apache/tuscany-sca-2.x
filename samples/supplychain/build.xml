@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="sample-supplychain" default="run">
+<project name="sample-supplychain" default="compile">
     <property name="test.class" value="supplychain.SupplyChainClient" />
 	<property name="test.jar"   value="sample-supplychain.jar" />
 	

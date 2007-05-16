@@ -9,7 +9,7 @@ first.
 If you just want to run it to see what happens open a command prompt, navigate
 to this sample directory and do:
 
-ant 
+ant run
 
 OR if you don't have ant, on Windows do
 
@@ -56,7 +56,7 @@ following commands
 
 cd helloworld-ws-service
 ant compile
-ant
+ant run
 
 You should see the following output from the run target.
 
@@ -74,7 +74,7 @@ To exercise the service run up the helloworld-ws-reference sample. Take a look a
 the README in that sample and you will see you need the following commands
 
 cd helloworld-ws-reference
-ant
+ant run
 
 Building And Running The Sample Using Maven 
 -------------------------------------------

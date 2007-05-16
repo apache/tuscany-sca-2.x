@@ -10,16 +10,23 @@ first.
 If you just want to run it to see what happens, open a command prompt,
 navigate to this sample directory, and do
 
-ant 
+ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-implementation-crud-client.jar crud.CRUDClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;..\implementation-crud\target\sample-implementation-crud.jar;target\sample-implementation-crud-client.jar crud.CRUDClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-implementation-crud-client.jar crud.CRUDClient
+java -cp ../../lib/tuscany-sca-manifest.jar:../implementation-crud/target/sample-implementation-crud.jar:target/sample-implementation-crud-client.jar crud.CRUDClient
 
+This looks like a long command. The three things we add to the classpath are
+
+tuscany-sca-manifest.jar              - all of the standard Tuscany SCA 
+                                        runtime and extension classes
+sample-implementation-crud.jar        - the new crud implementation extension 
+sample-implementation-crud-client.jar - the application that uses the crud
+                                        implementation  
 
 Sample Overview
 ---------------
@@ -53,7 +60,7 @@ With the binary distribution the sample can be built and run using Ant as
 follows
 
 cd implementation-crud-client
-ant
+ant compile
 ant run
 
 You should see the following output from the run target.
