@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultCompositeBuilder implements CompositeBuilder {
+public class CompositeBuilderImpl implements CompositeBuilder {
 
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
@@ -64,7 +64,7 @@ public class DefaultCompositeBuilder implements CompositeBuilder {
      * @param assemblyFactory
      * @param interfaceContractMapper
      */
-    public DefaultCompositeBuilder(AssemblyFactory assemblyFactory,
+    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                    InterfaceContractMapper interfaceContractMapper,
                                    CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;

@@ -52,8 +52,8 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
@@ -64,7 +64,7 @@ import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -84,7 +84,7 @@ public class ContributionServiceTestCase extends TestCase {
         // Create default factories
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
 
         // Create an extension point registry
         ExtensionPointRegistry extensionRegistry = new DefaultExtensionPointRegistry();
@@ -132,7 +132,7 @@ public class ContributionServiceTestCase extends TestCase {
     public void testContributeJAR() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
-        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        ModelResolver resolver = new ModelResolverImpl(getClass().getClassLoader());
         contributionService.contribute(contributionId, contributionLocation, resolver, false);
         assertNotNull(contributionService.getContribution(contributionId));
     }
@@ -140,7 +140,7 @@ public class ContributionServiceTestCase extends TestCase {
     public void testStoreContributionPackageInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
-        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        ModelResolver resolver = new ModelResolverImpl(getClass().getClassLoader());
         contributionService.contribute(contributionId, contributionLocation, resolver, true);
 
         assertTrue(FileHelper.toFile(new URL(contributionService.getContribution(contributionId).getLocation()))
@@ -160,7 +160,7 @@ public class ContributionServiceTestCase extends TestCase {
 
         InputStream contributionStream = contributionLocation.openStream();
         try {
-            ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+            ModelResolver resolver = new ModelResolverImpl(getClass().getClassLoader());
             contributionService.contribute(contributionId, contributionLocation, contributionStream, resolver);
         } finally {
             IOHelper.closeQuietly(contributionStream);
@@ -180,11 +180,11 @@ public class ContributionServiceTestCase extends TestCase {
     public void testStoreDuplicatedContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId1 = CONTRIBUTION_001_ID;
-        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        ModelResolver resolver = new ModelResolverImpl(getClass().getClassLoader());
         contributionService.contribute(contributionId1, contributionLocation, resolver, true);
         assertNotNull(contributionService.getContribution(contributionId1));
         String contributionId2 = CONTRIBUTION_002_ID;
-        ModelResolver resolver2 = new DefaultModelResolver(getClass().getClassLoader());
+        ModelResolver resolver2 = new ModelResolverImpl(getClass().getClassLoader());
         contributionService.contribute(contributionId2, contributionLocation, resolver2, true);
         assertNotNull(contributionService.getContribution(contributionId2));
     }
@@ -199,7 +199,7 @@ public class ContributionServiceTestCase extends TestCase {
          //    FileHelper.forceMkdir(metadataDirectory); 
          //}
          //FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory); 
-         ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+         ModelResolver resolver = new ModelResolverImpl(getClass().getClassLoader());
          contributionService.contribute(contributionId, rootContributionFolder.toURL(), resolver, false);
          assertNotNull(contributionService.getContribution(contributionId));
     }
@@ -207,7 +207,7 @@ public class ContributionServiceTestCase extends TestCase {
     public void testAddDeploymentComposites() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
-        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        ModelResolver resolver = new ModelResolverImpl(getClass().getClassLoader());
         Contribution contribution = contributionService.contribute(contributionId, contributionLocation, resolver, false);
         assertNotNull(contributionService.getContribution(contributionId));
 

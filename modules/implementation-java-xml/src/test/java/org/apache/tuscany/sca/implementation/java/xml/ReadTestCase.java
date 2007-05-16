@@ -30,11 +30,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
@@ -42,7 +41,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassInt
 import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -63,7 +62,7 @@ public class ReadTestCase extends TestCase {
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
-        mapper = new DefaultInterfaceContractMapper();
+        mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
@@ -93,7 +92,7 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(factory, mapper, null);
         compositeUtil.build(composite);
 
     }
@@ -105,10 +104,10 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
         
-        ModelResolver resolver = new DefaultModelResolver(getClass().getClassLoader());
+        ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
         staxProcessor.resolve(composite, resolver);
 
-        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(factory, mapper, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(factory, mapper, null);
         compositeUtil.build(composite);
 
         //new PrintUtil(System.out).print(composite);

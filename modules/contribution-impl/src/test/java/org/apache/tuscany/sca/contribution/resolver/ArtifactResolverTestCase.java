@@ -21,17 +21,19 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
+
 /**
  * Test DefaultArtifactResolver.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultArtifactResolverTestCase extends TestCase {
+public class ArtifactResolverTestCase extends TestCase {
     
     private ModelResolver resolver;
     
     protected void setUp() throws Exception {
-        resolver = new DefaultModelResolver(getClass().getClassLoader());
+        resolver = new ModelResolverImpl(getClass().getClassLoader());
     }
     
     protected void tearDown() throws Exception {

@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcesso
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.w3c.dom.Document;
@@ -58,7 +58,7 @@ public class ReadAllTestCase extends TestCase {
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        InterfaceContractMapper mapper = new DefaultInterfaceContractMapper();
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());

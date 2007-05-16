@@ -36,12 +36,12 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 /**
  * Default Mediator implementation
  */
-public class DefaultMediator implements Mediator {
+public class MediatorImpl implements Mediator {
 
     private DataBindingExtensionPoint dataBindings;
     private TransformerExtensionPoint transformers;
 
-    public DefaultMediator(DataBindingExtensionPoint dataBindings,
+    public MediatorImpl(DataBindingExtensionPoint dataBindings,
                         TransformerExtensionPoint transformers) {
         this.dataBindings = dataBindings;
         this.transformers = transformers;

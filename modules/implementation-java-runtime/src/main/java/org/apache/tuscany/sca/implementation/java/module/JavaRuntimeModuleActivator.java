@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.core.invocation.JDKProxyService;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.DefaultMediator;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
@@ -113,7 +113,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        DefaultMediator mediator =new DefaultMediator(dataBindings, transformers);
+        MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
 
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);

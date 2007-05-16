@@ -43,7 +43,7 @@ import org.apache.tuscany.api.annotation.LogLevel;
 public abstract class ProxyMonitorFactory implements MonitorFactory, FormatterRegistry {
     protected String bundleName;
     protected final List<ExceptionFormatter> formatters = new ArrayList<ExceptionFormatter>();
-    protected final ExceptionFormatter defaultFormatter = new DefaultExceptionFormatter();
+    protected final ExceptionFormatter defaultFormatter = new ExceptionFormatterImpl();
     protected Level defaultLevel;
     protected Map<String, Level> levels;
     private final Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();

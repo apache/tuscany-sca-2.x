@@ -31,13 +31,12 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.impl.DefaultCompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.sca.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
@@ -64,7 +63,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
@@ -94,7 +93,7 @@ public class SCADomainContext {
         // Create SCA assembly and SCA Java factories
         AssemblyFactory assemblyFactory = new BeanAssemblyFactory(new DefaultAssemblyFactory(), beanFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        InterfaceContractMapper interfaceContractMapper = new DefaultInterfaceContractMapper();
+        InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
@@ -136,7 +135,7 @@ public class SCADomainContext {
         
         // Create a resolver
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        DefaultModelResolver resolver = new DefaultModelResolver(classLoader);
+        ModelResolverImpl resolver = new ModelResolverImpl(classLoader);
 
         try {
             
@@ -179,7 +178,7 @@ public class SCADomainContext {
         };
 
         // Configure and wire the composite
-        DefaultCompositeBuilder compositeUtil = new DefaultCompositeBuilder(assemblyFactory, interfaceContractMapper, monitor);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
         compositeUtil.build(composite);
 
     }

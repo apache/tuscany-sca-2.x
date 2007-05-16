@@ -33,9 +33,8 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -49,7 +48,7 @@ public class ResolveTestCase extends TestCase {
     private XMLInputFactory inputFactory;
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     private ExtensibleStAXArtifactProcessor staxProcessor;
-    private DefaultModelResolver resolver; 
+    private TestModelResolver resolver; 
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
@@ -57,11 +56,11 @@ public class ResolveTestCase extends TestCase {
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
-        mapper = new DefaultInterfaceContractMapper();
+        mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        resolver = new DefaultModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver(getClass().getClassLoader());
     }
 
     public void tearDown() throws Exception {

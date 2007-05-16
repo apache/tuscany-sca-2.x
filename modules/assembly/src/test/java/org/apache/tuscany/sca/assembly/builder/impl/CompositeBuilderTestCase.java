@@ -29,17 +29,17 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.interfacedef.impl.DefaultInterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 
 public class CompositeBuilderTestCase extends TestCase {
     
-    private DefaultCompositeBuilder compositeUtil;
+    private CompositeBuilderImpl compositeUtil;
     private AssemblyFactory factory;
     
     protected void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
         
-        compositeUtil = new DefaultCompositeBuilder(factory, new DefaultInterfaceContractMapper(), null);
+        compositeUtil = new CompositeBuilderImpl(factory, new InterfaceContractMapperImpl(), null);
     }
     
     protected void tearDown() throws Exception {

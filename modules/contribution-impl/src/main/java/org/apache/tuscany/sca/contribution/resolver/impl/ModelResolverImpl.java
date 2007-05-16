@@ -17,11 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.resolver;
+package org.apache.tuscany.sca.contribution.resolver.impl;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 
 /**
@@ -29,14 +32,14 @@ import java.util.Map;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultModelResolver implements ModelResolver {
+public class ModelResolverImpl implements ModelResolver {
     private static final long serialVersionUID = -7826976465762296634L;
     
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
     private WeakReference<ClassLoader> classLoader;
     
-    public DefaultModelResolver(ClassLoader classLoader) {
+    public ModelResolverImpl(ClassLoader classLoader) {
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
     }
 
