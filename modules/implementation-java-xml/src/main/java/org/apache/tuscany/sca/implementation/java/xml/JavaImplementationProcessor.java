@@ -21,13 +21,15 @@ package org.apache.tuscany.sca.implementation.java.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.util.List;
+import java.util.StringTokenizer;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
@@ -39,19 +41,25 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
-public class JavaImplementationProcessor extends BaseArtifactProcessor implements
+public class JavaImplementationProcessor implements
     StAXArtifactProcessor<JavaImplementation>, JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
     private JavaClassIntrospector introspector;
+    private AssemblyFactory assemblyFactory;
+    private PolicyFactory policyFactory;
 
     public JavaImplementationProcessor(AssemblyFactory assemblyFactory,
                                        PolicyFactory policyFactory,
                                        JavaImplementationFactory javaFactory,
                                        JavaClassIntrospector introspector) {
-        super(assemblyFactory, policyFactory, null);
+        this.assemblyFactory = assemblyFactory;
+        this.policyFactory = policyFactory;
         this.javaFactory = javaFactory;
         this.introspector = introspector;
     }
@@ -128,9 +136,53 @@ public class JavaImplementationProcessor extends BaseArtifactProcessor implement
     }
 
     /**
-     * @param javaFactory the javaFactory to set
+     * Reads policy intents and policy sets.
+     * @param attachPoint
+     * @param reader
      */
-    public void setJavaFactory(JavaImplementationFactory javaFactory) {
-        this.javaFactory = javaFactory;
+    private void readPolicies(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
+        String value = reader.getAttributeValue(null, Constants.REQUIRES);
+        if (value != null) {
+            List<Intent> requiredIntents = attachPoint.getRequiredIntents();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQNameValue(reader, tokens.nextToken());
+                Intent intent = policyFactory.createIntent();
+                intent.setName(qname);
+                requiredIntents.add(intent);
+            }
+        }
+
+        value = reader.getAttributeValue(null, Constants.POLICY_SETS);
+        if (value != null) {
+            List<PolicySet> policySets = attachPoint.getPolicySets();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQNameValue(reader, tokens.nextToken());
+                PolicySet policySet = policyFactory.createPolicySet();
+                policySet.setName(qname);
+                policySets.add(policySet);
+            }
+        }
     }
+    
+    /**
+     * Returns a qname from a string.  
+     * @param reader
+     * @param value
+     * @return
+     */
+    private QName getQNameValue(XMLStreamReader reader, String value) {
+        if (value != null) {
+            int index = value.indexOf(':');
+            String prefix = index == -1 ? "" : value.substring(0, index);
+            String localName = index == -1 ? value : value.substring(index + 1);
+            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
+            if (ns == null) {
+                ns = "";
+            }
+            return new QName(ns, localName, prefix);
+        } else {
+            return null;
+        }
+    }
+
 }

@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.binding.ws.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
@@ -33,7 +35,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.BaseArtifactProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
@@ -48,21 +49,25 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
-public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
+public class WebServiceBindingProcessor implements
     StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
     private WSDLFactory wsdlFactory;
     private WSDLInterfaceIntrospector introspector;
     private WebServiceBindingFactory wsFactory;
+    private PolicyFactory policyFactory;
 
     public WebServiceBindingProcessor(AssemblyFactory assemblyFactory,
                                       PolicyFactory policyFactory,
                                       WebServiceBindingFactory wsFactory,
                                       WSDLFactory wsdlFactory,
                                       WSDLInterfaceIntrospector introspector) {
-        super(assemblyFactory, policyFactory, null);
+        this.policyFactory = policyFactory;
         this.wsFactory = wsFactory;
         this.introspector = introspector;
         this.wsdlFactory = wsdlFactory;
@@ -275,4 +280,55 @@ public class WebServiceBindingProcessor extends BaseArtifactProcessor implements
     public Class<WebServiceBinding> getModelType() {
         return WebServiceBinding.class;
     }
+
+    /**
+     * Reads policy intents and policy sets.
+     * @param attachPoint
+     * @param reader
+     */
+    private void readPolicies(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
+        String value = reader.getAttributeValue(null, Constants.REQUIRES);
+        if (value != null) {
+            List<Intent> requiredIntents = attachPoint.getRequiredIntents();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQNameValue(reader, tokens.nextToken());
+                Intent intent = policyFactory.createIntent();
+                intent.setName(qname);
+                requiredIntents.add(intent);
+            }
+        }
+
+        value = reader.getAttributeValue(null, Constants.POLICY_SETS);
+        if (value != null) {
+            List<PolicySet> policySets = attachPoint.getPolicySets();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQNameValue(reader, tokens.nextToken());
+                PolicySet policySet = policyFactory.createPolicySet();
+                policySet.setName(qname);
+                policySets.add(policySet);
+            }
+        }
+    }
+    
+    /**
+     * Returns a qname from a string.  
+     * @param reader
+     * @param value
+     * @return
+     */
+    private QName getQNameValue(XMLStreamReader reader, String value) {
+        if (value != null) {
+            int index = value.indexOf(':');
+            String prefix = index == -1 ? "" : value.substring(0, index);
+            String localName = index == -1 ? value : value.substring(index + 1);
+            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
+            if (ns == null) {
+                ns = "";
+            }
+            return new QName(ns, localName, prefix);
+        } else {
+            return null;
+        }
+    }
+
 }
