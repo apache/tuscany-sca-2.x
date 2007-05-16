@@ -72,7 +72,7 @@ import org.w3c.dom.Node;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class BaseArtifactProcessor implements Constants {
+abstract class BaseArtifactProcessor implements Constants {
 
     protected AssemblyFactory assemblyFactory;
     protected PolicyFactory policyFactory;
@@ -81,12 +81,6 @@ public abstract class BaseArtifactProcessor implements Constants {
     private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     static {
         domFactory.setNamespaceAware(true);
-    }
-
-    /**
-     * Constructs a new BaseArtifactProcessor.
-     */
-    public BaseArtifactProcessor() {
     }
 
     /**
