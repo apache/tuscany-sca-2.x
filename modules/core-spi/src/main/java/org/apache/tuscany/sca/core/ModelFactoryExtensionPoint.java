@@ -17,30 +17,34 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.webapp;
-
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
+package org.apache.tuscany.sca.core;
 
 /**
- * Activates the webapp host by registering the webapp ServletHost impl
+ * An extension point for model factories.
+ *
+ * @version $Rev$ $Date$
  */
-public class WebAppModuleActivator implements ModuleActivator {
-
-    public void start(ExtensionPointRegistry extensionPointRegistry) {
-
-        ServletHostExtensionPoint servletHosts =
-            extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-
-        servletHosts.addServletHost(WebAppServletHost.getInstance());
-    }
-
-    public void stop(ExtensionPointRegistry registry) {
-    }
-
-    public Object[] getExtensionPoints() {
-        return null;
-    }
+public interface ModelFactoryExtensionPoint {
+    
+    /**
+     * Add a model factory extension.
+     * 
+     * @param factory the factory to add
+     */
+    void addFactory(Object factory);
+    
+    /**
+     * Remove a model factory extension.
+     *  
+     * @param factory
+     */
+    void removeFactory(Object factory); 
+    
+    /**
+     * Get a factory implementing the given interface.
+     * @param factoryInterface the factory interface
+     * @return
+     */
+    <T> T getFactory(Class<T> factoryInterface);
 
 }

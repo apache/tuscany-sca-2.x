@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.module;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.binding.jsonrpc.DefaultJSONRPCBindingFactory;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBindingFactory;
 import org.apache.tuscany.sca.binding.jsonrpc.impl.JSONRPCBindingProcessor;
@@ -38,7 +36,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
  */
 public class JSONRPCModuleActivator implements ModuleActivator {
     
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         // No extensionPoints being contributed here
         return null;
     }

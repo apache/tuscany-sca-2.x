@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.core.databinding.module;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTransformer;
 import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
@@ -72,13 +69,10 @@ public class DataBindingModuleActivator implements ModuleActivator {
     private DataBindingExtensionPoint dataBindings;
     private TransformerExtensionPoint transformers;
 
-    public Map<Class, Object> getExtensionPoints() {
-        Map<Class, Object> map = new HashMap<Class, Object>();
+    public Object[] getExtensionPoints() {
         dataBindings = new DefaultDataBindingExtensionPoint();
-        map.put(DataBindingExtensionPoint.class, dataBindings);
         transformers = new DefaultTransformerExtensionPoint(dataBindings);
-        map.put(TransformerExtensionPoint.class, transformers);
-        return map;
+        return new Object[] { dataBindings, transformers };
     }
 
     public void start(ExtensionPointRegistry registry) {

@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.axiom.module;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -40,7 +38,7 @@ import org.apache.tuscany.sca.databinding.axiom.XMLStreamReader2OMElement;
  */
 public class AxiomDataBindingModuleActivator implements ModuleActivator {
 
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 

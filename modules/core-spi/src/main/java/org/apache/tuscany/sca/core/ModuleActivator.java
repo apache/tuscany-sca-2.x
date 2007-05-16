@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.core;
 
-import java.util.Map;
 
 /**
  * ModuleActivator represents a module that plugs into the Tuscany system. Each module should
@@ -39,7 +38,7 @@ public interface ModuleActivator {
      * 
      * @return All the extension points defined by this module
      */
-    Map<Class, Object> getExtensionPoints();
+    Object[] getExtensionPoints();
 
     /**
      * This method is invoked when the module is started by the Tuscany system.

@@ -29,11 +29,9 @@ public interface ExtensionPointRegistry {
     
     /**
      * Add an extension point to the registry
-     * @param <T>
-     * @param extensionPointType The interface of the extension point
      * @param extensionPoint The instance of the extension point
      */
-    <T> void addExtensionPoint(Class<T> extensionPointType, T extensionPoint);
+    void addExtensionPoint(Object extensionPoint);
     
     /**
      * Get the extension point by the interface
@@ -47,5 +45,5 @@ public interface ExtensionPointRegistry {
      * Remove an extension point
      * @param extensionPoint
      */
-    void removeExtensionPoint(Class extensionPoint);
+    void removeExtensionPoint(Object extensionPoint);
 }

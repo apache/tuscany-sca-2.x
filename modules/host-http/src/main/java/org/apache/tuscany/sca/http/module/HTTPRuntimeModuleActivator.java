@@ -19,14 +19,10 @@
 
 package org.apache.tuscany.sca.http.module;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.http.DefaultServletHostExtensionPoint;
 import org.apache.tuscany.sca.http.ExtensibleServletHost;
-import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 
 /**
@@ -34,15 +30,11 @@ import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
  */
 public class HTTPRuntimeModuleActivator implements ModuleActivator {
 
-    public Map<Class, Object> getExtensionPoints() {
-
+    public Object[] getExtensionPoints() {
         // Declare Servlet host extension point
-        Map<Class, Object> map = new HashMap<Class, Object>();
         ServletHostExtensionPoint hostExtensions = new DefaultServletHostExtensionPoint();
         ExtensibleServletHost host = new ExtensibleServletHost(hostExtensions);
-        map.put(ServletHostExtensionPoint.class, hostExtensions);
-        map.put(ServletHost.class, host);
-        return map;
+        return new Object[] { hostExtensions, host };
     }
 
     public void start(ExtensionPointRegistry extensionPointRegistry) {

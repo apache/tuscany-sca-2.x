@@ -19,11 +19,10 @@
 
 package crud.module;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
@@ -50,19 +49,16 @@ import crud.provider.CRUDImplementationProviderFactory;
  */
 public class CRUDModuleActivator implements ModuleActivator {
 
-    public Map<Class, Object> getExtensionPoints() {
-        // This module extension does not contribute any new
-        // extension point
+    public Object[] getExtensionPoints() {
+        // This module extension does not contribute any new extension point
         return null;
     }
 
     public void start(ExtensionPointRegistry registry) {
 
-        ProxyFactory proxyFactory = registry.getExtensionPoint(ProxyFactory.class);
-        InterfaceContractMapper mapper = registry.getExtensionPoint(InterfaceContractMapper.class);
         // Create the CRUD implementation factory
-        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(mapper, proxyFactory);
-
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);

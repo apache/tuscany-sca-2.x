@@ -19,12 +19,10 @@
 
 package org.apache.tuscany.sca.databinding.sdo.module;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
@@ -47,11 +45,14 @@ import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospect
  */
 public class SDODataBindingModuleActivator implements ModuleActivator {
 
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 
     public void start(ExtensionPointRegistry registry) {
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         dataBindings.addDataBinding(new SDODataBinding());
 
@@ -69,7 +70,6 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(new XMLStreamReader2XMLDocument());
         
         JavaClassIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         introspectors.addClassVisitor(new HelperContextProcessor(assemblyFactory, contextRegistry));
 
     }

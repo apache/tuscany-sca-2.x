@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.http.tomcat.module;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
@@ -34,7 +32,7 @@ public class TomcatRuntimeModuleActivator implements ModuleActivator {
 
     private TomcatServer server;
 
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 

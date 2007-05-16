@@ -19,17 +19,13 @@
 
 package org.apache.tuscany.sca.binding.rmi;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.binding.rmi.xml.RMIBindingProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.rmi.RMIHost;
@@ -38,24 +34,26 @@ public class RMIModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
+        MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
+        
         StAXArtifactProcessorExtensionPoint processors = 
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
         
         RMIHost rmiHost = registry.getExtensionPoint(RMIHost.class);
         RMIBindingFactory rmiFactory = new DefaultRMIBindingFactory();
         processors.addArtifactProcessor(new RMIBindingProcessor(assemblyFactory, policyFactory, rmiFactory));
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        MessageFactory messageFactory = new MessageFactoryImpl();
         providerFactories.addProviderFactory(new RMIBindingProviderFactory(messageFactory, rmiHost));
     }
 
     public void stop(ExtensionPointRegistry registry) {
     }
 
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 

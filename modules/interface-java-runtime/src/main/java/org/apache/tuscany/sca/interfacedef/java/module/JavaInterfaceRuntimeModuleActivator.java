@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.interfacedef.java.module;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -46,10 +43,8 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
         visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
     }
 
-    public Map<Class, Object> getExtensionPoints() {
-        Map<Class, Object> map = new HashMap<Class, Object>();
-        map.put(JavaInterfaceIntrospectorExtensionPoint.class, visitors);
-        return map;
+    public Object[] getExtensionPoints() {
+        return new Object[]{ visitors };
     }
 
     public void start(ExtensionPointRegistry registry) {

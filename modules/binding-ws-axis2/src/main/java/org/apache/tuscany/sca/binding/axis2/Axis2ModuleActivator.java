@@ -19,24 +19,20 @@
 
 package org.apache.tuscany.sca.binding.axis2;
 
-import java.util.Map;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.xml.WebServiceBindingProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
@@ -44,11 +40,13 @@ public class Axis2ModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
+        MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
+        
         WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
-        MessageFactory messageFactory = new MessageFactoryImpl();
         
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
@@ -65,7 +63,7 @@ public class Axis2ModuleActivator implements ModuleActivator {
     public void stop(ExtensionPointRegistry registry) {
     }
 
-    public Map<Class, Object> getExtensionPoints() {
+    public Object[] getExtensionPoints() {
         return null;
     }
 
