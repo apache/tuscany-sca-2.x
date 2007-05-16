@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.LinkedList;
 
 import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeComponentReference;
-import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -155,19 +153,19 @@ public class NonBlockingInterceptor implements Interceptor {
             return null;
         }
 
-        public EndpointReference<RuntimeComponentReference> getFrom() {
+        public EndpointReference getFrom() {
             return null;
         }
 
-        public EndpointReference<RuntimeComponentService> getTo() {
+        public EndpointReference getTo() {
             return null;
         }
 
-        public void setFrom(EndpointReference<RuntimeComponentReference> from) {
+        public void setFrom(EndpointReference from) {
             throw new UnsupportedOperationException();
         }
 
-        public void setTo(EndpointReference<RuntimeComponentService> to) {
+        public void setTo(EndpointReference to) {
             throw new UnsupportedOperationException();
         }
 

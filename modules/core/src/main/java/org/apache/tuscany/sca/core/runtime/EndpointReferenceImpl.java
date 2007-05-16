@@ -28,9 +28,9 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 /**
  * @version $Rev$ $Date$
  */
-public class EndpointReferenceImpl<C extends Contract> implements EndpointReference<C> {
+public class EndpointReferenceImpl implements EndpointReference {
     private RuntimeComponent component;
-    private C contract;
+    private Contract contract;
     private Binding binding;
     private InterfaceContract interfaceContract;
     private String uri;
@@ -43,7 +43,7 @@ public class EndpointReferenceImpl<C extends Contract> implements EndpointRefere
      * @param interfaceContract
      */
     public EndpointReferenceImpl(RuntimeComponent component,
-                                 C contract,
+                                 Contract contract,
                                  Binding binding,
                                  InterfaceContract interfaceContract) {
         super();
@@ -79,11 +79,11 @@ public class EndpointReferenceImpl<C extends Contract> implements EndpointRefere
         this.component = component;
     }
 
-    public C getContract() {
+    public Contract getContract() {
         return contract;
     }
 
-    public void setContract(C contract) {
+    public void setContract(Contract contract) {
         this.contract = contract;
     }
 

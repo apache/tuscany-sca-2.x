@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeComponentReference;
 import org.apache.tuscany.sca.core.RuntimeWire;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
@@ -72,7 +71,7 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
             return hashCode();
             // TODO beter hash algorithm
         }
-        EndpointReference<RuntimeComponentReference> from = ThreadMessageContext.getMessageContext().getFrom();
+        EndpointReference from = ThreadMessageContext.getMessageContext().getFrom();
         RuntimeWire wire = wires.get(from.getURI());
         assert wire != null;
         List<InvocationChain> chains = wire.getCallbackInvocationChains();

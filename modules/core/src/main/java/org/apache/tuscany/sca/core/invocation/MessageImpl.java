@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import org.apache.tuscany.sca.core.EndpointReference;
-import org.apache.tuscany.sca.core.RuntimeComponentReference;
-import org.apache.tuscany.sca.core.RuntimeComponentService;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -37,8 +35,8 @@ public class MessageImpl implements Message {
     private ConversationSequence conversationSequence;
     private String conversationId;
     
-    private EndpointReference<RuntimeComponentReference> from;
-    private EndpointReference<RuntimeComponentService> to;
+    private EndpointReference from;
+    private EndpointReference to;
 
     public MessageImpl(String conversationId, ConversationSequence conversationSequence, Object body) {
         this.conversationId = conversationId;
@@ -100,19 +98,19 @@ public class MessageImpl implements Message {
         this.body = fault;
     }
 
-    public EndpointReference<RuntimeComponentReference> getFrom() {
+    public EndpointReference getFrom() {
         return from;
     }
 
-    public void setFrom(EndpointReference<RuntimeComponentReference> from) {
+    public void setFrom(EndpointReference from) {
         this.from = from;
     }
 
-    public EndpointReference<RuntimeComponentService> getTo() {
+    public EndpointReference getTo() {
         return to;
     }
 
-    public void setTo(EndpointReference<RuntimeComponentService> to) {
+    public void setTo(EndpointReference to) {
         this.to = to;
     }
 
