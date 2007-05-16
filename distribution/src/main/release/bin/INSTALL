@@ -1,5 +1,5 @@
-Installing Apache Tuscany 0.90 (May 2007) Release
-=================================================
+Installing the Apache Tuscany SCA 0.90 (May 2007) Release binary distribution
+=============================================================================
 
 Unzip Tuscany binary distribution archive and you get the following:
 
@@ -11,7 +11,7 @@ tuscany-sca-0.90-incubating
 
    /doc       - Javadoc for the SCA APIs and the Tuscany SPIs
 
-   /lib       - all the Tuscany jars and their and dependencies
+   /lib       - The Tuscany all and manifest jars and all their dependencies
 
    /modules   - all of the individual Tuscany jars
 

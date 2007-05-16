@@ -1,9 +1,55 @@
-Apache Tuscany 1.0 Beta1 (incubating) Release Notes
+Apache Tuscany SCA 0.90 (May 2007) Release Notes
+================================================
 
-1. Overview
+TODO: content just to prompt you. please review/rewrite/comment.
+
+Overview
+--------
+
+This 0.90 release of Apache Tuscany SCA represents a significant
+milestone on the road to 1.0.
+
+Learning from the previous milestone releases, this release represents
+a substantial redesign and rewrite of parts of the Tuscany SCA runtime.
+
+- Now based on the final OSOA (http://www.osoa.org) 1.0 specifications.
+
+- Clear, simple and stable SPI's to aid embedding and extending the runtime.
+
+- Lightweight and modular, enabling pick-and-choosing Tuscany modules
+  as required for the environment.
+
+The result of this is that the Tuscany SCA runtime can now easily be used
+in any environment - standalone, within webapps, running inside and IDE,
+or embedded in a application server.
+ 
+No special tools, packaging, or plugins are required to create SCA
+applications using Tuscany SCA. The standard Ant or Maven build tools,
+or even the JDK command line tools are all that is needed.
+
+A complete working runtime for SCA assembly can now be put together
+with less than 1MB of Tuscany SCA modules.
 
 
+Support
+-------
 
-2. Installation Prerequisites 
+For more information on Apache Tuscany visit the website at:
 
+    http://incubator.apache.org/tuscany/
+ 
+Any issues with this release can be reported to Apache Tuscany
+using the mailing lists or in the JIRA issue tracker.
 
+    Mailing lists:
+
+       http://mail-archives.apache.org/mod_mbox/ws-tuscany-user/
+       http://mail-archives.apache.org/mod_mbox/ws-tuscany-dev/
+
+    Jira:
+
+       http://issues.apache.org/jira/browse/TUSCANY
+
+Thank you for using Apache Tuscany!
+
+The Tuscany Team.
