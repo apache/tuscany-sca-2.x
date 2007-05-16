@@ -27,8 +27,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.xml.TestModelResolver;
-
 import com.example.ipo.sdo.SdoFactory;
 
 /**
