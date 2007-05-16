@@ -7,19 +7,9 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens open a command prompt, navigate
-to this sample directory and do:
-
-ant 
-
-OR if you don't have ant, on Windows do
-
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-implementation-crud.jar crud.CRUDClient
-
-and on *nix do
-
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-implementation-crud.jar crud.CRUDClient
-
+If you want to try out the crud implementation type that this sample provides
+please see the implementation-crud-client sample that provides the necessary
+client code to bring up an application that uses this implementation-crud
 
 Sample Overview
 ---------------
@@ -40,51 +30,29 @@ implementation-crud/
                                  with the SCA runtime
         crud.provider/         - runtime implementation
       resources/
-        crud.composite         - the SCA assembly for this sample
-    test/
-      java/
-        crud/ 
-          CRUDClient.java      - used when Ant is running the sample
-  implementation-crud.png      - a pictorial representation of the sample 
-                                 .composite file
+        crud.composite         - the SCA assembly used during unit testing
+
   build.xml                    - the Ant build file
   pom.xml                      - the Maven build file
   
-TBD - more detail required on how this sample adds a new implementation to SCA
-
-Building And Running The Sample Using Ant
+Building The Sample Extension Using Ant
 -----------------------------------------
-With the binary distribution the sample can be built and run using Ant as 
+With the binary distribution the sample extension can be built using Ant as 
 follows
 
 cd implementation-crud
 ant compile
-ant
 
-You should see the following output from the run target.
-
-run:
-     [java] Starting CRUDServiceComponent
-     [java] create(ABC) in tmp
-     [java] retrieve(0)
-     [java] Result from create: ABC
-     [java] update(0)
-     [java] retrieve(0)
-     [java] Result from update: EFG
-     [java] delete(0)
-     [java] retrieve(0)
-     [java] Result from delete: null
-     [java] Stopping CRUDServiceComponent
-
-Building And Running The Sample Using Maven 
+Building The Sample Using Maven 
 -------------------------------------------
-With either the binary or source distributions the sample can be built and run 
+With either the binary or source distributions the sample can be built 
 using Maven as follows. 
 
 cd implementation-crud
 mvn
 
-You should see the following output from the test phase.
+Maven will also test that the sample extension built properly. You should see 
+the following output from the test phase.
 
 -------------------------------------------------------
  T E S T S
