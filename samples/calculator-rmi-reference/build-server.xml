@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="calculator-rmi-reference-server" default="run">
+<project name="calculator-rmi-reference-server" default="compile">
     <property name="test.class" value="calculator.CalculatorServer" />
 	<property name="test.jar"   value="sample-calculator-rmi-reference.jar" />
 	

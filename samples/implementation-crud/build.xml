@@ -17,7 +17,6 @@
  * under the License.    
 -->
 <project name="implementation-crud" default="compile">
-    <property name="test.class" value="crud.CRUDClient" />
 	<property name="test.jar"   value="sample-implementation-crud.jar" />
 	
     <target name="init">
@@ -33,16 +32,6 @@
             <classpath>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
-        </javac> 
-        <javac srcdir="src/test/java"
-               destdir="target/classes"
-               debug="on"
-               source="1.5"
-               target="1.5">
-            <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-            <exclude name="crud/CRUDTestCase.java"/>    	
         </javac> 
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>

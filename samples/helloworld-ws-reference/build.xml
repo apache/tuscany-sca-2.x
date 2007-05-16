@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="helloworld-ws-reference" default="run">
+<project name="helloworld-ws-reference" default="compile">
     <property name="test.class" value="helloworld.HelloWorldClient" />
 	<property name="test.jar"   value="sample-helloworld-ws-reference.jar" />
 	

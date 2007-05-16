@@ -43,6 +43,9 @@ follows
 cd implementation-crud
 ant compile
 
+See the sample implementation-crud-client to run a sample that uses this 
+binding. 
+
 Building The Sample Using Maven 
 -------------------------------------------
 With either the binary or source distributions the sample can be built 

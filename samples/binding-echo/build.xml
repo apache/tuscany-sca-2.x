@@ -17,7 +17,6 @@
  * under the License.    
 -->
 <project name="bining-echo" default="compile">
-    <property name="test.class" value="echo.EchoBindingClient" />
 	<property name="test.jar"   value="sample-binding-echo.jar" />
 	
     <target name="init">

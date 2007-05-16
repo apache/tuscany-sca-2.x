@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="simple-callback" default="run">
+<project name="simple-callback" default="compile">
     <property name="test.class" value="simplecallback.SimpleCallbackClient" />
 	<property name="test.jar"   value="sample-simple-callback.jar" />
 	

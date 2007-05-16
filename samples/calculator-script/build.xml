@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="calculator-script" default="run">
+<project name="calculator-script" default="compile">
     <property name="test.class" value="calculator.CalculatorClient" />
 	<property name="test.jar"   value="sample-calculator-script.jar" />
 	

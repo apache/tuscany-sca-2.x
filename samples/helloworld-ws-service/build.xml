@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="helloworld-ws-service" default="run">
+<project name="helloworld-ws-service" default="compile">
     <property name="test.class" value="helloworld.HelloWorldServer" />
 	<property name="test.jar"   value="sample-helloworld-ws-service.jar" />
 	

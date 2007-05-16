@@ -55,7 +55,7 @@ With the binary distribution the sample can be built using Ant as
 follows
 
 cd calculator-web
-ant 
+ant package
 
 This should result in a war file (sample-calculator-web.war) in the target 
 directory. Copy this war file to your web app deployment directory in you

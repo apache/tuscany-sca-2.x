@@ -11,7 +11,7 @@ first.
 If you just want to run it to see what happens open a command prompt, navigate
 to this sample directory and do:
 
-ant -f build-server.xml
+ant -f build-server.xml run
 
 OR if you don't have ant, on Windows do
 
@@ -24,7 +24,7 @@ java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-referen
 Now you have the server running you need to open another command prompt, navigate
 to this sample directory and do:
 
-ant -f build-client.xml
+ant -f build-client.xml run
 
 OR if you don't have ant, on Windows do
 
@@ -86,7 +86,7 @@ bindings. Start a new console and use the following commands.
 
 cd calculator-rmi-reference
 ant -f build-server.xml compile
-ant -f build-server.xml
+ant -f build-server.xml run
 
 This will run up the server and display the following.
 
@@ -101,7 +101,7 @@ a new console and use the following commands.
 
 cd calculator-rmi-reference
 ant -f build-client.xml compile
-ant -f build-client.xml
+ant -f build-client.xml run
 
 You should see the following output from the run target.
 

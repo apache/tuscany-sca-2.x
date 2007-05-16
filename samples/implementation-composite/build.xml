@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="implementation-composite" default="run">
+<project name="implementation-composite" default="compile">
     <property name="test.class" value="composite.CompositeClient" />
 	<property name="test.jar"   value="sample-implementation-composite.jar" />
 	

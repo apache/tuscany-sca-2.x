@@ -9,7 +9,7 @@ first.
 If you just want to run it to see what happens open a command prompt, navigate
 to this sample directory and do:
 
-ant 
+ant run
 
 OR if you don't have ant, on Windows do
 
@@ -56,7 +56,8 @@ With the binary distribution the sample can be built and run using Ant as
 follows
 
 cd simple-callback
-ant 
+ant compile
+ant run
 
 You should see the following output from the run target.
 

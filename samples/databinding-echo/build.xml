@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="databinding-echo" default="run">
+<project name="databinding-echo" default="compile">
     <property name="test.class" value="echo.EchoDataBindingClient" />
 	<property name="test.jar"   value="sample-databinding-echo.jar" />
 	
