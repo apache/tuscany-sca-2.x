@@ -19,7 +19,7 @@
 package calculator;
 
 /**
- * The diveide service interface
+ * The divide service interface
  */
 public interface DivideService {
 
