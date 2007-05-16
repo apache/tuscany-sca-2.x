@@ -2,13 +2,37 @@ The Apache Tuscany SCA Samples
 ==============================
 
 The Apache Tuscany SCA samples are built as part of the main Maven build and 
-run, using the provided JUnit tests cases, as extra tests in the Maven build. 
+run, using the provided JUnit tests cases, as tests in the Maven build.
+
 In the binary distribution of Apache Tuscany the samples can also 
 be run using the provided Ant build.xml file. This shows the samples running 
 from a simple main() method without the need for a JUnit test case. 
 
 In these notes text that appears in angled brackets like this <example> means 
 that you need to make a choice and provide you own text at that point. 
+
+Sample Overview
+---------------
+The samples generally show off different features of the SCA runtime
+and the extensions that come packaged with it. Hence samples generally
+describe SCA component implementations and the clients required to drive the
+resulting applications. 
+
+As is always the case there are exceptions to this. There are three samples
+that demonstrate how to build extensions for the Tuscany SCA runtime.
+
+binding-echo        - shows how to build a binding extension
+databinding-echo    - shows how to build a databinding extension
+implementation-crud - shows how to build an implemenation extension
+
+In these samples the provided code is concerned with building the extension
+and now with building an application that uses it. The application
+that shows how the new extension can be used is provided in an associated
+client sample. 
+
+binding-echo-client
+databinding-echo-client
+implementation-crud-client
 
 Sample Layout
 -------------
@@ -63,10 +87,11 @@ If you look in the target directory of each sample you will see this jar file. T
 run a sample based on all of the precompiled artifacts all you have to do is:
 
 cd <sampledir>
-ant
+ant run
 
 Check each <sampledir>/README file as some samples require that two progams are
-run to get the desired result. 
+run to get the desired result, for example, the three samples that show how
+to build extensions a run from their associated client samples. 
 
 If you want to rebuild a sample, for example, if you have changed it, do the
 following:
@@ -80,7 +105,7 @@ way best suits you. Two alternatives are provided in the ant build files.
 The compile target builds the class files and then builds the jar so you can use 
 the same command as before:
 
-ant
+ant run
 
 This will use the generated jar to run the samples. The command line version of
 this is:
