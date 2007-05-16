@@ -7,18 +7,10 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens open a command prompt, navigate
-to this sample directory and do:
-
-ant 
-
-OR if you don't have ant, on Windows do
-
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-binding-echo.jar echo.EchoBindingClient
-
-and on *nix do
-
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-binding-echo.jar echo.EchoBindingClient
+If you want to try out the echo binding that this sample provides
+please see the binding-echo-appl sample that provides the necessary
+client and application code to bring up an application that uses this 
+binding
 
 Sample Overview
 ---------------
@@ -36,34 +28,19 @@ binding-echo/
           provider/              - The bindings runtime classes
           server/                - A dummy server that the binding is plugged into
       resources/
-        EchoBinding.composite    - the SCA assembly for this sample
-    test/
-      java/ 
-        echo/
-          EchoBindingClient.java - used when Ant is running the sample
-  binding-echo.png               - a pictorial representation of the sample 
-                                   .composite file
+        EchoBinding.composite    - the SCA assembly used by the unit test
   build.xml                      - the Ant build file
   pom.xml                        - the Maven build file
   
-TBD - more detail required on how this sample adds a new binding to SCA
-
-Building And Running The Sample Using Ant
------------------------------------------
-With the binary distribution the sample can be built and run using Ant as 
+Building The Sample Using Ant
+-----------------------------
+With the binary distribution the sample can be built using Ant as 
 follows
 
 cd binding-echo
 ant compile
-ant
 
-You should see the following output from the run target.
-
-run:
-     [java] Returned message: foo
-     [java] Echo reference = foo
-     [java] Returned message: baa
-     [java] Echo service = baa
+See the sample binding-echo-appl to run a sample that uses this binding. 
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
@@ -73,7 +50,8 @@ using Maven as follows.
 cd binding-echo
 mvn
 
-You should see the following output from the test phase.
+Maven will also test that the sample extension built properly. You should see 
+the following output from the test phase.
 
 -------------------------------------------------------
  T E S T S

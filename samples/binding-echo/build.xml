@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="bining-echo" default="run">
+<project name="bining-echo" default="compile">
     <property name="test.class" value="echo.EchoBindingClient" />
 	<property name="test.jar"   value="sample-binding-echo.jar" />
 	
@@ -43,26 +43,6 @@
             </manifest>
         </jar>     	
     </target>	
-	
-    <target name="run-classes">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/classes"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>
-    </target>
-	
-    <target name="run">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>    	
-    </target>
 	
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">
