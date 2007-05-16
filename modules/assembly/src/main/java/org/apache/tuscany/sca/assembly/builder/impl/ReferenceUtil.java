@@ -20,7 +20,9 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.SCABinding;
 
 /**
  * This class encapsulates utility methods to deal with reference definitions
@@ -43,21 +45,13 @@ class ReferenceUtil {
     }
     
     static boolean validateMultiplicityAndTargets(Multiplicity multiplicity,
-                                                         List<?> targets, List<?> promotedAs) {
+                                                         List<?> targets, List<Binding> bindings) {
         
         // Count targets
         int count = targets.size();
-        if (!promotedAs.isEmpty()) {
-            if (count == 0) {
-                count = promotedAs.size();
-            } else {
-                // A reference cannot be promoted and wired at the same time
-                return false;
-            }
-        }
         
         //FIXME workaround, this validation is sometimes invoked too early
-        // because we get a chance to init the multiplicity attribute
+        // before we get a chance to init the multiplicity attribute
         if (multiplicity == null) {
             return true;
         }
@@ -72,11 +66,25 @@ class ReferenceUtil {
                 break;
             case ONE_ONE:
                 if (count != 1) {
+                    if (count == 0) {
+                        for (Binding binding: bindings) {
+                            if (!(binding instanceof SCABinding)) {
+                                return true;
+                            }
+                        }
+                    }
                     return false;
                 }
                 break;
             case ONE_N:
                 if (count < 1) {
+                    if (count == 0) {
+                        for (Binding binding: bindings) {
+                            if (!(binding instanceof SCABinding)) {
+                                return true;
+                            }
+                        }
+                    }
                     return false;
                 }
                 break;
