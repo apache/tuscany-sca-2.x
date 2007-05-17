@@ -253,7 +253,7 @@ public class ContributionServiceImpl implements ContributionService {
         
         // Add all composites under META-INF/sca-deployables to the
         // list of deployables
-        String prefix = Contribution.SCA_CONTRIBUTION_DEPLOYABLES + '/';
+        String prefix = Contribution.SCA_CONTRIBUTION_DEPLOYABLES;
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
             if (artifact.getModel() instanceof Composite) {
                 if (artifact.getURI().startsWith(prefix)) {
