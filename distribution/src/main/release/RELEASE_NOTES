@@ -30,6 +30,35 @@ or even the JDK command line tools are all that is needed.
 A complete working runtime for SCA assembly can now be put together
 with less than 1MB of Tuscany SCA modules.
 
+SPI packages
+------------
+
+SCA assembly model
+org.apache.tuscany.sca.assembly
+org.apache.tuscany.sca.interfacedef
+org.apache.tuscany.sca.interfacedef.java
+org.apache.tuscany.sca.interfacedef.wsdl
+org.apache.tuscany.sca.policy
+
+SCA contribution model
+org.apache.tuscany.sca.contribution
+
+Runtime extensions
+org.apache.tuscany.sca.core
+org.apache.tuscany.sca.invocation
+org.apache.tuscany.sca.provider
+org.apache.tuscany.sca.runtime
+org.apache.tuscany.sca.work
+
+Data binding support
+org.apache.tuscany.sca.databinding
+
+Embedding Tuscany
+org.apache.tuscany.sca.host.embedded
+
+Servlet container integration
+org.apache.tuscany.sca.http
+
 
 Support
 -------
