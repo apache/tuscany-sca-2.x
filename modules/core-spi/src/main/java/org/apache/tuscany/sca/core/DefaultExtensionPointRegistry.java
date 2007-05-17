@@ -24,13 +24,21 @@ import java.util.Map;
 
 
 /**
- * Default implementation of a registry to hold all the Tuscany core extension points
+ * Default implementation of a registry to hold all the Tuscany core extension 
+ * points. As the point of contact for all extension artifacts this registry 
+ * allows loaded extensions to find all other parts of the system and 
+ * register themselves appropriately. 
  * 
  * @version $Rev$ $Date$
  */
 public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     private Map<Class<?>, Object> extensionPoints = new HashMap<Class<?>, Object>();
 
+    /**
+     * Add an extension point to the registry. This default implementation
+     * stores extensions against the interfaces that they implement.
+     * @param extensionPoint The instance of the extension point
+     */    
     public void addExtensionPoint(Object extensionPoint) {
         Class[] interfaces = extensionPoint.getClass().getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
@@ -38,10 +46,20 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         }
     }
 
+    /**
+     * Get the extension point by the interface that it implements
+     * @param <T>
+     * @param extensionPointType
+     * @return
+     */
     public <T> T getExtensionPoint(Class<T> extensionPointType) {
         return extensionPointType.cast(extensionPoints.get(extensionPointType));
     }
 
+    /**
+     * Remove an extension point based on the interface that it implements
+     * @param extensionPoint
+     */
     public void removeExtensionPoint(Object extensionPoint) {
         Class[] interfaces = extensionPoint.getClass().getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
