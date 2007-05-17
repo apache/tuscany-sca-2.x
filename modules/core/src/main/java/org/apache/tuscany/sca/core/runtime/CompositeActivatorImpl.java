@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
@@ -61,6 +62,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 public class CompositeActivatorImpl implements CompositeActivator {
 
     private final AssemblyFactory assemblyFactory;
+    private final SCABindingFactory scaBindingFactory;
     private final InterfaceContractMapper interfaceContractMapper;
     private final ScopeRegistry scopeRegistry;
     private final WorkScheduler workScheduler;
@@ -75,6 +77,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param wirePostProcessorRegistry
      */
     public CompositeActivatorImpl(AssemblyFactory assemblyFactory,
+                                     SCABindingFactory scaBindingFactory,
                                      InterfaceContractMapper interfaceContractMapper,
                                      ScopeRegistry scopeRegistry,
                                      WorkScheduler workScheduler,
@@ -82,6 +85,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                      ProviderFactoryExtensionPoint providerFactories) {
         super();
         this.assemblyFactory = assemblyFactory;
+        this.scaBindingFactory = scaBindingFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.scopeRegistry = scopeRegistry;
         this.workScheduler = workScheduler;
@@ -546,9 +550,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         runtimeComponent.setScopeContainer(scopeRegistry.getScopeContainer(runtimeComponent));
     }
 
-    protected void buildComposite(Composite composite,
-                                  AssemblyFactory assemblyFactory,
-                                  InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
+    protected void buildComposite(Composite composite) throws CompositeBuilderException {
 
         CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
 
@@ -561,7 +563,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         };
 
-        CompositeBuilderImpl builder = new CompositeBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
+        CompositeBuilderImpl builder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
 
         builder.build(composite);
 
@@ -573,7 +575,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     public void activate(Composite composite) throws ActivationException {
         try {
-            buildComposite(composite, assemblyFactory, interfaceContractMapper);
+            buildComposite(composite);
             configureComposite(composite);
             createRuntimeWires(composite);
         } catch (Exception e) {

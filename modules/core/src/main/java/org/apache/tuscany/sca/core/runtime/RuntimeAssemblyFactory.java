@@ -24,7 +24,6 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
@@ -52,11 +51,6 @@ public class RuntimeAssemblyFactory extends DefaultAssemblyFactory implements As
     @Override
     public ComponentReference createComponentReference() {
         return new RuntimeComponentReferenceImpl(interfaceContractMapper);
-    }
-
-    @Override
-    public SCABinding createSCABinding() {
-        return new RuntimeSCABindingImpl();
     }
 
     @Override

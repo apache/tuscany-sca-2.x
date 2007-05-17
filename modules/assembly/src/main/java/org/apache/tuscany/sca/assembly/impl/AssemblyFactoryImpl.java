@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -114,10 +113,6 @@ public abstract class AssemblyFactoryImpl implements AssemblyFactory {
 
     public Wire createWire() {
         return new WireImpl();
-    }
-
-    public SCABinding createSCABinding() {
-        return new SCABindingImpl();
     }
 
     public Operation createOperation() {

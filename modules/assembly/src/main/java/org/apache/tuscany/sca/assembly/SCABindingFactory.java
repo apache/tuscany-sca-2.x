@@ -16,28 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.assembly;
 
-package org.apache.tuscany.sca.core.runtime;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.impl.SCABindingImpl;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
+ * A factory for the SCA binding model
+ * 
  * @version $Rev$ $Date$
  */
-public class RuntimeSCABindingImpl extends SCABindingImpl implements SCABinding {
-    private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
-    
-    public void addWire(RuntimeWire wire) {
-        wires.add(wire);
-    }
+public interface SCABindingFactory {
 
-    public List<RuntimeWire> getWires() {
-        return wires;
-    }
+    /**
+     * Create a new SCA binding.
+     * 
+     * @return a new SCA binding
+     */
+    SCABinding createSCABinding();
 
 }

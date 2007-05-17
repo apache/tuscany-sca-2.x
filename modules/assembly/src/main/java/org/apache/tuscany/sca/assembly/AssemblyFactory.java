@@ -147,13 +147,6 @@ public interface AssemblyFactory {
     Wire createWire();
 
     /**
-     * Create a new SCA binding.
-     * 
-     * @return a new SCA binding
-     */
-    SCABinding createSCABinding();
-
-    /**
      * Create a new operation.
      * 
      * @return a new operation

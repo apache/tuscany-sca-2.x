@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
@@ -57,7 +59,8 @@ public class ReadTestCase extends TestCase {
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     ExtensibleStAXArtifactProcessor staxProcessor;
-    private AssemblyFactory factory;
+    private AssemblyFactory assemblyFactory;
+    private SCABindingFactory scaBindingFactory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
     private WebServiceBindingFactory wsFactory;
@@ -65,7 +68,8 @@ public class ReadTestCase extends TestCase {
     private WSDLFactory wsdlFactory;
 
     public void setUp() throws Exception {
-        factory = new DefaultAssemblyFactory();
+        assemblyFactory = new DefaultAssemblyFactory();
+        scaBindingFactory = new DefaultSCABindingFactory();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
@@ -77,7 +81,7 @@ public class ReadTestCase extends TestCase {
         introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
 
         WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor(
-                                                                                  factory, policyFactory, wsFactory,
+                                                                                  assemblyFactory, policyFactory, wsFactory,
                                                                                   wsdlFactory, introspector);
         staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
@@ -87,12 +91,12 @@ public class ReadTestCase extends TestCase {
         staxProcessors = null;
         staxProcessor = null;
         policyFactory = null;
-        factory = null;
+        assemblyFactory = null;
         mapper = null;
     }
 
     public void testReadComponentType() throws Exception {
-        ComponentTypeProcessor componentTypeProcessor = new ComponentTypeProcessor(factory, policyFactory, staxProcessor);
+        ComponentTypeProcessor componentTypeProcessor = new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = componentTypeProcessor.read(reader);
@@ -102,13 +106,13 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(factory, mapper, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null);
         compositeUtil.build(composite);
 
         //new PrintUtil(System.out).print(composite);
