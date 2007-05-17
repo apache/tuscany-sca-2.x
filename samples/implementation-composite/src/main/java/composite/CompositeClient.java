@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class CompositeClient {
 
     public static void main(String[] args) throws Exception {
-    	SCADomain scaDomain = SCADomain.newInstance("http://localhost", ".", "OuterComposite.composite");
+    	SCADomain scaDomain = SCADomain.newInstance();
     	
         Source source = scaDomain.getService(Source.class, "SourceComponent");
         
