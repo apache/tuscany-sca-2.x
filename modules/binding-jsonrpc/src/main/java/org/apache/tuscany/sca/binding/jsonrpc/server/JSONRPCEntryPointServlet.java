@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.ParseException;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,7 +61,15 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
         this.serviceInterface = serviceInterface;
         this.serviceInstance = serviceInstance;
     }
-    
+
+    /**
+     * Override to do nothing as the JSONRPCServlet is setup by the
+     * service method in this class.
+     */
+    @Override
+    public void init(ServletConfig config) {
+    }
+
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) 
         throws IOException, ClassCastException {
