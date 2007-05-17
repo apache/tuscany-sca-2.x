@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -55,6 +56,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 public class CompositeBuilderImpl implements CompositeBuilder {
 
     private AssemblyFactory assemblyFactory;
+    private SCABindingFactory scaBindingFactory;
     private InterfaceContractMapper interfaceContractMapper;
     private CompositeBuilderMonitor monitor;
 
@@ -65,9 +67,11 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      * @param interfaceContractMapper
      */
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
+                                   SCABindingFactory scaBindingFactory,
                                    InterfaceContractMapper interfaceContractMapper,
                                    CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
+        this.scaBindingFactory = scaBindingFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         
         if (monitor != null) {
@@ -605,7 +609,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 // Create and configure an SCA binding for the service
                 SCABinding scaBinding = componentService.getBinding(SCABinding.class);
                 if (scaBinding == null) {
-                    scaBinding = assemblyFactory.createSCABinding();
+                    scaBinding = scaBindingFactory.createSCABinding();
                     scaBinding.setName(componentService.getName());
                     componentService.getBindings().add(scaBinding);
                 }
@@ -619,7 +623,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 // Create and configure an SCA binding for the reference
                 SCABinding scaBinding = componentReference.getBinding(SCABinding.class);
                 if (scaBinding == null) {
-                    scaBinding = assemblyFactory.createSCABinding();
+                    scaBinding = scaBindingFactory.createSCABinding();
                     scaBinding.setName(componentReference.getName());
                     componentReference.getBindings().add(scaBinding);
                 }

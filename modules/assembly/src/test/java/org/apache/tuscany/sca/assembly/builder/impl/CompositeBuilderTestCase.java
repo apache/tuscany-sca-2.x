@@ -29,45 +29,49 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 
 public class CompositeBuilderTestCase extends TestCase {
     
     private CompositeBuilderImpl compositeUtil;
-    private AssemblyFactory factory;
+    private AssemblyFactory assemblyFactory;
+    private SCABindingFactory scaBindingFactory;
     
     protected void setUp() throws Exception {
-        factory = new DefaultAssemblyFactory();
+        assemblyFactory = new DefaultAssemblyFactory();
+        scaBindingFactory = new DefaultSCABindingFactory();
         
-        compositeUtil = new CompositeBuilderImpl(factory, new InterfaceContractMapperImpl(), null);
+        compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new InterfaceContractMapperImpl(), null);
     }
     
     protected void tearDown() throws Exception {
         compositeUtil = null;
-        factory = null;
+        assemblyFactory = null;
     }
     
     public void testFuseIncludes() {
-        Composite c1 = factory.createComposite();
+        Composite c1 = assemblyFactory.createComposite();
         c1.setName(new QName("http://foo", "C1"));
-        Component a = factory.createComponent();
+        Component a = assemblyFactory.createComponent();
         a.setName("a");
         c1.getComponents().add(a);
-        CompositeService s = factory.createCompositeService();
+        CompositeService s = assemblyFactory.createCompositeService();
         s.setName("s");
         c1.getServices().add(s);
-        CompositeReference r = factory.createCompositeReference();
+        CompositeReference r = assemblyFactory.createCompositeReference();
         r.setName("r");
         c1.getReferences().add(r);
 
-        Composite c2 = factory.createComposite();
+        Composite c2 = assemblyFactory.createComposite();
         c2.setName(new QName("http://foo", "C2"));
         c1.getIncludes().add(c2);
-        Component b = factory.createComponent();
+        Component b = assemblyFactory.createComponent();
         b.setName("b");
         c2.getComponents().add(b);
         
-        Composite c = factory.createComposite();
+        Composite c = assemblyFactory.createComposite();
         c.setName(new QName("http://foo", "C"));
         c.getIncludes().add(c1);
         
@@ -80,35 +84,35 @@ public class CompositeBuilderTestCase extends TestCase {
     }
     
     public void testExpandComposites() {
-        Composite c1 = factory.createComposite();
+        Composite c1 = assemblyFactory.createComposite();
         c1.setName(new QName("http://foo", "C1"));
-        Component a = factory.createComponent();
+        Component a = assemblyFactory.createComponent();
         a.setName("a");
         c1.getComponents().add(a);
-        CompositeService s = factory.createCompositeService();
+        CompositeService s = assemblyFactory.createCompositeService();
         s.setName("s");
         c1.getServices().add(s);
-        CompositeReference r = factory.createCompositeReference();
+        CompositeReference r = assemblyFactory.createCompositeReference();
         r.setName("r");
         c1.getReferences().add(r);
 
-        Composite c2 = factory.createComposite();
+        Composite c2 = assemblyFactory.createComposite();
         c2.setName(new QName("http://foo", "C2"));
-        Component b = factory.createComponent();
+        Component b = assemblyFactory.createComponent();
         b.setName("b");
         c2.getComponents().add(b);
         
-        Composite c = factory.createComposite();
+        Composite c = assemblyFactory.createComposite();
         c.setName(new QName("http://foo", "C"));
-        Component x = factory.createComponent();
+        Component x = assemblyFactory.createComponent();
         x.setName("x");
         x.setImplementation(c1);
         c.getComponents().add(x);
-        Component y = factory.createComponent();
+        Component y = assemblyFactory.createComponent();
         y.setName("y");
         y.setImplementation(c2);
         c.getComponents().add(y);
-        Component z = factory.createComponent();
+        Component z = assemblyFactory.createComponent();
         z.setName("z");
         z.setImplementation(c1);
         c.getComponents().add(z);

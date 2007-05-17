@@ -28,6 +28,8 @@ import javax.xml.stream.XMLOutputFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
@@ -92,6 +94,7 @@ public class SCADomainContext {
 
         // Create SCA assembly and SCA Java factories
         AssemblyFactory assemblyFactory = new BeanAssemblyFactory(new DefaultAssemblyFactory(), beanFactory);
+        SCABindingFactory scaBindingFactory = new DefaultSCABindingFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
@@ -155,7 +158,7 @@ public class SCADomainContext {
             }
             
             // Wire the top level component's composite
-            buildComposite(composites.get(0), assemblyFactory, interfaceContractMapper);
+            buildComposite(composites.get(0), assemblyFactory, scaBindingFactory, interfaceContractMapper);
             
         } catch (ContributionException e) {
             throw new RuntimeException(e);
@@ -164,7 +167,8 @@ public class SCADomainContext {
         }
     }
     
-    private void buildComposite(Composite composite, AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
+    private void buildComposite(Composite composite, AssemblyFactory assemblyFactory,
+                                SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
 
         CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
 
@@ -178,7 +182,7 @@ public class SCADomainContext {
         };
 
         // Configure and wire the composite
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
         compositeUtil.build(composite);
 
     }

@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -50,7 +52,8 @@ public class WireTestCase extends TestCase {
     private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     private ExtensibleStAXArtifactProcessor staxProcessor; 
     private TestModelResolver resolver; 
-    private AssemblyFactory factory;
+    private AssemblyFactory assemblyFactory;
+    private SCABindingFactory scaBindingFactory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
 
@@ -59,7 +62,8 @@ public class WireTestCase extends TestCase {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         resolver = new TestModelResolver(getClass().getClassLoader());
-        factory = new DefaultAssemblyFactory();
+        assemblyFactory = new DefaultAssemblyFactory();
+        scaBindingFactory = new DefaultSCABindingFactory();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
     }
@@ -69,13 +73,13 @@ public class WireTestCase extends TestCase {
         staxProcessors = null;
         resolver = null;
         policyFactory = null;
-        factory = null;
+        assemblyFactory = null;
         mapper = null;
     }
 
     public void testResolveConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor);
+        ConstrainingTypeProcessor constrainingTypeReader = new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ConstrainingType constrainingType = constrainingTypeReader.read(reader);
         is.close();
@@ -83,14 +87,14 @@ public class WireTestCase extends TestCase {
         resolver.addModel(constrainingType);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeReader = new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
         is.close();
         assertNotNull(composite);
         
         compositeReader.resolve(composite, resolver);
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(factory, mapper, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null);
         compositeUtil.build(composite);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
@@ -99,7 +103,7 @@ public class WireTestCase extends TestCase {
 
     public void testResolveComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeReader = new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite nestedComposite = compositeReader.read(reader);
         is.close();
@@ -107,13 +111,13 @@ public class WireTestCase extends TestCase {
         resolver.addModel(nestedComposite);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        compositeReader = new CompositeProcessor(factory, policyFactory, mapper, staxProcessor);
+        compositeReader = new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor);
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
         is.close();
         
         compositeReader.resolve(composite, resolver);
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(factory, mapper, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null);
         compositeUtil.build(composite);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);

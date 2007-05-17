@@ -34,6 +34,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
@@ -69,7 +70,6 @@ import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
-import org.apache.tuscany.sca.core.util.IOHelper;
 import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -101,6 +101,7 @@ public class ReallySmallRuntimeBuilder {
 
     public static CompositeActivator createCompositeActivator(ExtensionPointRegistry registry,
                                                               AssemblyFactory assemblyFactory,
+                                                              SCABindingFactory scaBindingFactory,
                                                               InterfaceContractMapper mapper,
                                                               ScopeRegistry scopeRegistry,
                                                               WorkManager workManager) {
@@ -120,9 +121,11 @@ public class ReallySmallRuntimeBuilder {
         providerFactories.addProviderFactory(new RuntimeSCABindingProviderFactory());
 
         // Create the composite activator
-        CompositeActivator compositeActivator = new CompositeActivatorImpl(assemblyFactory, mapper, scopeRegistry,
-                                                                              workScheduler, wireProcessor,
-                                                                              providerFactories);
+        CompositeActivator compositeActivator = new CompositeActivatorImpl(
+                                                                           assemblyFactory, scaBindingFactory,
+                                                                           mapper, scopeRegistry,
+                                                                           workScheduler, wireProcessor,
+                                                                           providerFactories);
 
         return compositeActivator;
     }

@@ -129,10 +129,6 @@ public class BeanAssemblyFactory implements AssemblyFactory {
 		return defaultFactory.createWire();
 	}
 
-	public SCABinding createSCABinding() {
-		return defaultFactory.createSCABinding();
-	}
-	
 	public Operation createOperation() {
 		return defaultFactory.createOperation();
 	}
