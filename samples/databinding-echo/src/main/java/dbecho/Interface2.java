@@ -16,17 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
+package dbecho;
+
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.osoa.sca.annotations.Remotable;
+import org.w3c.dom.Node;
 
 /**
  * @version $Rev$ $Date$
  */
-// @DataType(name="org.apache.axiom.om.OMElement")
 @DataBinding("org.w3c.dom.Node")
 @Remotable
-public interface Echo {
-    Object echo(Object msg);
+public interface Interface2 {
+    Node call(Node msg);
+    @DataBinding("javax.xml.stream.XMLStreamReader")
+    XMLStreamReader call1(XMLStreamReader msg);
 }

@@ -16,17 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
+package dbecho;
 
-import org.apache.tuscany.sca.databinding.annotation.DataBinding;
-import org.osoa.sca.annotations.Remotable;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * @version $Rev$ $Date$
  */
-@DataBinding("java.lang.String")
-@Remotable
-public interface Interface1 {
-    String call(String msg);
-    String call1(String msg);
+public class EchoDataBindingTestCase extends TestCase {
+
+    private SCADomain scaDomain;
+
+    @Override
+    protected void setUp() throws Exception {
+        scaDomain = SCADomain.newInstance("EchoDataBinding.composite");
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        scaDomain.close();
+    }
+
+    protected Interface1 componentA;
+
+    public void testTransform() {
+        componentA = scaDomain.getService(Interface1.class, "ComponentA");
+        componentA.call("<message><foo>123</foo></message>");
+        componentA.call1("<message><foo>123</foo></message>");
+    }
 }

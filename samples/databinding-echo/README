@@ -1,32 +1,33 @@
 DataBinding Echo Sample
 =======================
 
-This sample demonstrates how databindings are used to convert data 
-formats as the data flows between components. 
+This sample demonstrates how databindings are used to convert data formats as 
+the data flows between components. 
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens open a command prompt, navigate
-to this sample directory and do:
+If you just want to run it to see what happens, open a command prompt, navigate
+to this sample directory, and do
 
-ant run
+ant run 
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-databinding-echo.jar echo.EchoDataBindingClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;..\binding-echo\target\sample-binding-echo.jar;target\sample-databinding-echo.jar dbecho.EchoDataBindingClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-databinding-echo.jar echo.EchoDataBindingClient
+java -cp ../../lib/tuscany-sca-manifest.jar:../binding-echo/target/sample-binding-echo.jar:target/sample-databinding-echo.jar dbecho.EchoDataBindingClient
+
 
 Sample Overview
 ---------------
 If reference and service interfaces are the same in all but the formats of 
-data being passed to and returned from the operations of the interfaces then SCA
-will try to apply appropriate transformations to the data formats to allow 
-messages to pass. 
+data being passed to and returned from the operations of the interfaces,
+then SCA will try to apply appropriate transformations to the data formats
+to allow messages to pass. 
 
 This sample shows this happening. ComponentA implements Interface1 which
 defines;
@@ -49,24 +50,33 @@ databinding-echo/
   src/
     main/
       java/
-        echo/          - The implementation files from the binding-echo test
-          ...
+        dbecho/
+          ComponentAImpl.java          - component implementation 
+          ComponentBImpl.java          - component implementation
+          Echo.java                    - service interface with data binding
+          EchoDataBindingClient.java   - sample client code
+          Interface1.java              - service interface with data binding
+          Interface2.java              - service interface with data bindings
+      resources/
+        EchoDataBinding.composite      - composite definition
+        wsdl/
+          echo.wsdl                    - WSDL deinitions
     test/
       java/ 
-        echo/          - The classes and interfaces implementing the test 
-                         components
-  databinding-echo.png - a pictorial representation of the sample .composite 
-                         file
+        dbecho/
+          EchoDataBindingTestCase.java - junit test case
+  databinding-echo.png - pictorial representation of the sample .composite file
   build.xml            - the Ant build file
   pom.xml              - the Maven build file
   
 TODO - Needs more description of what else is going on in this test
        properties, wsdl?
+
   
 Building And Running The Sample Using Ant
 -----------------------------------------
 With the binary distribution the sample can be built and run using Ant as 
-follows
+follows.
 
 cd databinding-echo
 ant compile
@@ -75,34 +85,22 @@ ant run
 You should see the following output from the run target.
 
 run:
-     [java] Composite assembly problem: No type specified on component property:
- ComponentA/omProperty
      [java] [Property] prefix: ABC
      [java] [Property] prefix1: ABC
      [java] [Property] bar: BAR
-     [java] ComponentA --> Received message: <message><foo>123</foo></message> [
-java.lang.String]
-     [java] ComponentB --> Received message: [#document: null] [org.apache.xerce
-s.dom.DeferredDocumentImpl]
-     [java] ComponentB --> Returned message: [#document: null] [org.apache.xerce
-s.dom.DeferredDocumentImpl]
-     [java] ComponentA --> Returned message: <?xml version="1.0" encoding="UTF-8
-"?><message><foo>123</foo></message> [java.lang.String]
+     [java] ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.String]
+     [java] ComponentB --> Received message: [#document: null] [org.apache.xerces.dom.DeferredDocumentImpl]
+     [java] ComponentB --> Returned message: [#document: null] [org.apache.xerces.dom.DeferredDocumentImpl]
+     [java] ComponentA --> Returned message: <?xml version="1.0" encoding="UTF-8"?><message><foo>123</foo></message> [java.lang.String]
      [java] [Property] prefix: ABC
      [java] [Property] prefix1: ABC
      [java] [Property] bar: BAR
-     [java] ComponentA --> Received message: <message><foo>123</foo></message> [
-java.lang.String]
-     [java] ComponentB --> Received message: com.ctc.wstx.sr.ValidatingStreamRea
-der@4c444c44 [com.ctc.wstx.sr.ValidatingStreamReader]
-     [java] ComponentB --> Returned message: com.ctc.wstx.sr.ValidatingStreamRea
-der@4c444c44 [com.ctc.wstx.sr.ValidatingStreamReader]
-     [java] ComponentA --> Returned message: <?xml version='1.0' encoding='UTF-8
-'?><message><foo>123</foo></message> [java.lang.String]
-     [java] call  response = <?xml version="1.0" encoding="UTF-8"?><message><foo
->123</foo></message>
-     [java] call1 response = <?xml version='1.0' encoding='UTF-8'?><message><foo
->123</foo></message>
+     [java] ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.String]
+     [java] ComponentB --> Received message: com.ctc.wstx.sr.ValidatingStreamReader@4c444c44 [com.ctc.wstx.sr.ValidatingStreamReader]
+     [java] ComponentB --> Returned message: com.ctc.wstx.sr.ValidatingStreamReader@4c444c44 [com.ctc.wstx.sr.ValidatingStreamReader]
+     [java] ComponentA --> Returned message: <?xml version='1.0' encoding='UTF-8'?><message><foo>123</foo></message> [java.lang.String]
+     [java] call  response = <?xml version="1.0" encoding="UTF-8"?><message><foo>123</foo></message>
+     [java] call1 response = <?xml version='1.0' encoding='UTF-8'?><message><foo>123</foo></message>
 
 
 Building And Running The Sample Using Maven 
@@ -119,30 +117,20 @@ You should see the following output from the test phase.
  T E S T S
 -------------------------------------------------------
 Running echo.EchoDataBindingTestCase
-Composite assembly problem: No type specified on component property: ComponentA/
-omProperty
 [Property] prefix: ABC
 [Property] prefix1: ABC
 [Property] bar: BAR
-ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.St
-ring]
-ComponentB --> Received message: [#document: null] [org.apache.xerces.dom.Deferr
-edDocumentImpl]
-ComponentB --> Returned message: [#document: null] [org.apache.xerces.dom.Deferr
-edDocumentImpl]
-ComponentA --> Returned message: <?xml version="1.0" encoding="UTF-8"?><message>
-<foo>123</foo></message> [java.lang.String]
+ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.String]
+ComponentB --> Received message: [#document: null] [org.apache.xerces.dom.DeferredDocumentImpl]
+ComponentB --> Returned message: [#document: null] [org.apache.xerces.dom.DeferredDocumentImpl]
+ComponentA --> Returned message: <?xml version="1.0" encoding="UTF-8"?><message><foo>123</foo></message> [java.lang.String]
 [Property] prefix: ABC
 [Property] prefix1: ABC
 [Property] bar: BAR
-ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.St
-ring]
-ComponentB --> Received message: com.ctc.wstx.sr.ValidatingStreamReader@74e274e2
- [com.ctc.wstx.sr.ValidatingStreamReader]
-ComponentB --> Returned message: com.ctc.wstx.sr.ValidatingStreamReader@74e274e2
- [com.ctc.wstx.sr.ValidatingStreamReader]
-ComponentA --> Returned message: <?xml version='1.0' encoding='UTF-8'?><message>
-<foo>123</foo></message> [java.lang.String]
+ComponentA --> Received message: <message><foo>123</foo></message> [java.lang.String]
+ComponentB --> Received message: com.ctc.wstx.sr.ValidatingStreamReader@74e274e2 [com.ctc.wstx.sr.ValidatingStreamReader]
+ComponentB --> Returned message: com.ctc.wstx.sr.ValidatingStreamReader@74e274e2 [com.ctc.wstx.sr.ValidatingStreamReader]
+ComponentA --> Returned message: <?xml version='1.0' encoding='UTF-8'?><message><foo>123</foo></message> [java.lang.String]
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.653 sec
 
 Results :

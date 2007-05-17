@@ -167,29 +167,6 @@
        style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.00000024px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 477.44718,289.31918 L 522.26576,289.31918 L 530.41458,302.45116 L 520.90763,314.573 L 477.44718,314.573 L 487.63323,302.45116 L 477.44718,289.31918 z "
        id="path3019" />
-    <path
-       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 223.87327,403.61047 L 278.96654,403.61047 L 288.98348,429.37101 L 277.29705,453.15 L 223.87327,453.15 L 236.39448,429.37101 L 223.87327,403.61047 z "
-       id="path1899" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot1909"
-       transform="translate(-43.30511,198.0126)"><flowRegion
-         id="flowRegion1911"><rect
-           id="rect1913"
-           width="170"
-           height="61.42857"
-           x="281.42856"
-           y="212.66591" /></flowRegion><flowPara
-         id="flowPara1915"
-         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans">Echo</flowPara><flowPara
-         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
-         id="flowPara1919">Service</flowPara><flowPara
-         style="font-size:8;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;font-family:Bitstream Vera Sans"
-         id="flowPara1923">binding.echo</flowPara></flowRoot>    <path
-       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 285.71428,429.80877 C 370.71428,429.80877 370.71428,429.80877 370.71428,429.80877"
-       id="path1927" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot1929"
@@ -209,10 +186,10 @@
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
          id="flowPara1948">bar</flowPara><flowPara
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
-         id="flowPara1950">omProperty</flowPara></flowRoot>    <flowRoot
+         id="flowPara1950" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1952"
-       transform="translate(200.0234,78.74869)"
+       transform="translate(206.8091,83.74868)"
        style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
          id="flowRegion1954"><rect
            id="rect1956"
@@ -222,7 +199,7 @@
            y="212.66591"
            style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
-         id="flowPara1964">interface1</flowPara></flowRoot>    <flowRoot
+         id="flowPara1964">Interface1</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1975"
        transform="translate(90.30101,207.3812)"
@@ -235,7 +212,7 @@
            y="212.66591"
            style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
-         id="flowPara1981">interface2</flowPara></flowRoot>    <flowRoot
+         id="flowPara1981">Interface2</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1989"
        transform="translate(366.1555,195.5999)"><flowRegion
@@ -302,10 +279,6 @@
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 447.85714,241.95163 C 563.57143,215.52305 563.57143,215.52305 563.57143,215.52305"
        id="path2055" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 466.42857,263.3802 C 562.85714,261.95163 562.85714,261.95163 562.85714,261.95163"
-       id="path2057" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot2061"
@@ -378,5 +351,58 @@
            y="212.66591"
            style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
-         id="flowPara3892">interface1</flowPara></flowRoot>  </g>
+         id="flowPara3892">Interface1</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 445.71429,250.52305 C 563.57143,262.66591 563.57143,262.66591 563.57143,262.66591"
+       id="path1956" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1958"
+       transform="translate(205.618,209.9526)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1960"><rect
+           id="rect1962"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+         id="flowPara1965">Echo</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1967"
+       transform="translate(259.7734,259.463)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1969"><rect
+           id="rect1971"
+           width="286.42859"
+           height="42.85714"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+         id="flowPara1973">@DataBinding(&quot;org.w3c.dom.Node&quot;)</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:3,1;stroke-dashoffset:0"
+       d="M 540.71429,471.23734 C 510,433.3802 511.42857,434.80877 511.42857,434.80877"
+       id="path1975" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2867"
+       transform="translate(-47.64121,63.74863)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion2869"><rect
+           id="rect2871"
+           width="217.85715"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+         id="flowPara2873">@DataBinding(&quot;java.lang.String&quot;)</flowPara><flowPara
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"
+         id="flowPara2875" /></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:3,1;stroke-dashoffset:0"
+       d="M 337.14286,286.23734 C 372.85714,294.80877 372.85714,294.80877 372.85714,294.80877"
+       id="path2877" />
+  </g>
 </svg>

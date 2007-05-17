@@ -16,20 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package dbecho;
 
-package echo;
-
-import echo.impl.EchoBindingImpl;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * A factory for the sample Echo binding model.
- *
+ * This client program shows how to create an SCA runtime, start it,
+ * and locate and invoke a SCA component
  * @version $Rev$ $Date$
  */
-public class DefaultEchoBindingFactory implements EchoBindingFactory {
+public class EchoDataBindingClient {
+    public static void main(String[] args) throws Exception {
 
-    public EchoBinding createEchoBinding() {
-        return new EchoBindingImpl();
+        SCADomain scaDomain  = SCADomain.newInstance("EchoDataBinding.composite");
+        
+        Interface1 componentA = scaDomain.getService(Interface1.class, "ComponentA");
+        String response = componentA.call("<message><foo>123</foo></message>");
+        String response1= componentA.call1("<message><foo>123</foo></message>");
+        
+        
+        System.out.println("call  response = " + response );
+        System.out.println("call1 response = " + response1 );
+       
+        scaDomain.close();
+
     }
 
 }
