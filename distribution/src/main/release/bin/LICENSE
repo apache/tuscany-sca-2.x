@@ -1373,7 +1373,7 @@ JPython version 1.1.x
 
 ===============================================================================
 
-The jars; activation, jaxb-api, jaxb-impl, jsr173_api-1.0.jar, jaxws-api,
+The jars; activation, jaxb-api, jaxb-impl, jsr173_api-1.0.jar, jsr250, jaxws-api,
 mail, saaj-api, servlet-api-2.5.jar:
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
@@ -1851,6 +1851,57 @@ All Recipient's rights under this Agreement shall terminate if it fails to compl
 Everyone is permitted to copy and distribute copies of this Agreement, but in order to avoid inconsistency the Agreement is copyrighted and may only be modified in the following manner. The Agreement Steward reserves the right to publish new versions (including revisions) of this Agreement from time to time. No one other than the Agreement Steward has the right to modify this Agreement. IBM is the initial Agreement Steward. IBM may assign the responsibility to serve as the Agreement Steward to a suitable separate entity. Each new version of the Agreement will be given a distinguishing version number. The Program (including Contributions) may always be distributed subject to the version of the Agreement under which it was received. In addition, after a new version of the Agreement is published, Contributor may elect to distribute the Program (including its Contributions) under the new version. Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives no rights or licenses to the intellectual property of any Contributor under this Agreement, whether expressly, by implication, estoppel or otherwise. All rights in the Program not expressly granted under this Agreement are reserved.
 
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation. 
+
+===============================================================================
+
+backport-util-concurrent:
+
+The software comprising backport-util-concurrent is based in large
+part on the code from JSR166, and the package dl.util.concurrent.
+The software has been released to the public domain, as explained at:
+http://creativecommons.org/licenses/publicdomain, excepting portions
+of the class
+edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList,
+which were adapted from class java.util.ArrayList, written by Sun
+Microsystems, Inc, which are used with kind permission, and subject
+to the following:
+
+Copyright 2002-2004 Sun Microsystems, Inc. All rights reserved. Use is
+subject to the following license terms.
+
+  "Sun hereby grants you a non-exclusive, worldwide, non-transferrable
+  license to use and distribute the Java Software technologies as part
+  of a larger work in source and binary forms, with or without
+  modification, provided that the following conditions are met:
+
+   -Neither the name of or trademarks of Sun may be used to endorse or
+    promote products derived from the Java Software technology without
+    specific prior written permission.
+
+   -Redistributions of source or binary code must be accompanied by the
+    following notice and disclaimers:
+
+    Portions copyright Sun Microsystems, Inc. Used with kind permission.
+
+    This software is provided AS IS, without a warranty of any kind.  ALL
+    EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND
+    WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PUPOSE OR
+    NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
+    MICROSYSTEMS, INC. AND ITS LICENSORS SHALL NOT BE LIABLE
+    FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF
+    USING, MODIFYING OR DISTRIBUTING THE SOFTWARE OR ITS
+    DERIVATIVES. IN NO EVENT WILL SUN MICROSYSTEMS, INC. OR
+    ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR
+    DATA, OR FOR DIRECT, INDIRECT,CONSQUENTIAL, INCIDENTAL
+    OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF
+    THE THEORY OR LIABILITY, ARISING OUT OF THE USE OF OR
+    INABILITY TO USE SOFTWARE, EVEN IF SUN MICROSYSTEMS, INC.
+    HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+    You acknowledge that Software is not designed, licensed or intended for
+    use in the design, construction, operation or maintenance of any nuclear
+    facility."
 
 ===============================================================================
 
