@@ -245,8 +245,25 @@ public class ContributionServiceImpl implements ContributionService {
             contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
         }
 
+        // Read all artifacts in the contribution
         processReadPhase(contribution, contributionArtifacts);
+        
+        // Resolve them
         processResolvePhase(contribution);
+        
+        // Add all composites under META-INF/sca-deployables to the
+        // list of deployables
+        String prefix = Contribution.SCA_CONTRIBUTION_DEPLOYABLES + '/';
+        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            if (artifact.getModel() instanceof Composite) {
+                if (artifact.getURI().startsWith(prefix)) {
+                    Composite composite = (Composite)artifact.getModel();
+                    if (!contribution.getDeployables().contains(composite)) {
+                        contribution.getDeployables().add(composite);
+                    }
+                }
+            }
+        }
         
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getURI(), contribution);
