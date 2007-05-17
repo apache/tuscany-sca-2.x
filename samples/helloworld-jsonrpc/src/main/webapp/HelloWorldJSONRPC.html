@@ -32,7 +32,7 @@
     
        function getGreeting() {
           var name = document.getElementById("name").value;
-          var result = SCA.HelloWorldJSONService.getGreetings(name);
+          var result = SCA.HelloWorldService.getGreetings(name);
           document.getElementById('greeting').innerHTML=result;
        }
     </script>
@@ -62,7 +62,7 @@
            This example uses the JavaScript served from 
            <a href="services/SCA/scripts">services/SCA/scripts</a> 
            to make JSON-RPC requests to the service located at 
-           <a href="services/HelloWorldJSONService">services/HelloWorldJSONService</a>
+           <a href="services/HelloWorldService">services/HelloWorldService</a>
       </tr>
       <tr>
         <td>Request</td>
@@ -93,9 +93,9 @@
         <td colspan="2">
            <p>This example uses the <a href="http://dojotoolkit.org/">Dojo Toolkit</a>
            to create a JavaScript object <code>helloWorldService</code> for the service at
-           <a href="services/HelloWorldJSONService">services/HelloWorldJSONService</a>
+           <a href="services/HelloWorldService">services/HelloWorldService</a>
            using <a href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's RPC classes</a>
-           and providing them with <a href="services/HelloWorldJSONService?smd">services/HelloWorldJSONService?smd</a>
+           and providing them with <a href="services/HelloWorldService?smd">services/HelloWorldService?smd</a>
            for <a href="http://dojo.jot.com/SMD">Simple Method Description (SMD)</a> input.</p>
            <p>It then creates a Dojo button that will envoke the <code>getGreetings</code> method of the <code>helloWorldService</code> object.</p>
       </tr>
@@ -128,7 +128,7 @@
     		handlerNode.innerHTML = "<p>" + result + "</p>" ;
     	}
     
-    	var helloWorldService = new dojo.rpc.JsonService("services/HelloWorldJSONService?smd");
+    	var helloWorldService = new dojo.rpc.JsonService("services/HelloWorldService?smd");
     
     </script>
        
