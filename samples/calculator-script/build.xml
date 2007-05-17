@@ -37,6 +37,11 @@
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
+        <jar destfile="target/${test.jar}" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
+        </jar>    	
     </target>	
 	
     <target name="run-classes">
