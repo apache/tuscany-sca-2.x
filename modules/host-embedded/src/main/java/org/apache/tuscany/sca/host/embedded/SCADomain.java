@@ -49,10 +49,8 @@ public abstract class SCADomain {
 
     
     /**
-     * Returns a new instance of a local SCA domain. The specified deployable
-     * composite defined in sca-contribution.xml will be included in the SCA domain.
-     * 
-     * @param composite the deployable composite to include in the SCA domain.
+     * Returns a new instance of a local SCA domain.
+     *  
      * @return
      */
     public static SCADomain newInstance() {
