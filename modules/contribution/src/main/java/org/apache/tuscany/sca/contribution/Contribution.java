@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 public interface Contribution extends Artifact {
     String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
     String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
+    String SCA_CONTRIBUTION_DEPLOYABLES = "META-INF/sca-deployables";
 
     
     /**

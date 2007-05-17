@@ -28,7 +28,7 @@ public class RecursiveCompositeTest extends TestCase {
     private Service1 tracker, tracker2;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("sca//default", ".", "Composite1.composite", "Composite2.composite");
+        domain = SCADomain.newInstance("http://localhost", "/", "Composite1.composite", "Composite2.composite");
         tracker = domain.getService(Service1.class, "ComponentC");
         tracker2 = domain.getService(Service1.class, "ComponentB");
 

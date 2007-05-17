@@ -26,8 +26,8 @@ public class SCADomainBean extends SCADomain {
     
     private SCADomain instance;
     
-    private String uri = "http://localhost";
-    private String location = ".";
+    private String uri = LOCAL_DOMAIN_URI;
+    private String location = "/";
     private String[] composites;
 
     /**

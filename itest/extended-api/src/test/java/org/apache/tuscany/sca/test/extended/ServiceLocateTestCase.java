@@ -49,7 +49,7 @@ public class ServiceLocateTestCase {
 
     @Before
     public void init() throws Exception {
-        domain = SCADomain.newInstance("sca://local", ".", "BasicService.composite", "MathService.composite");
+        domain = SCADomain.newInstance("http://localhost", "/", "BasicService.composite", "MathService.composite");
     }
 
     @After

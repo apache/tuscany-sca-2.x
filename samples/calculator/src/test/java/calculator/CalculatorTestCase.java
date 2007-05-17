@@ -31,7 +31,7 @@ public class CalculatorTestCase extends TestCase {
     private SCADomain scaDomain;
 
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("http://calc/domain", ".", "Calculator.composite");
+        scaDomain = SCADomain.newInstance("Calculator.composite");
         calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 

@@ -46,7 +46,7 @@ public class BindingTestCase {
     
     @BeforeClass
     public static void init() throws Exception {
-        domain = SCADomain.newInstance("http://rmi.hello", ".", "META-INF/sca/RMIBindingTest.composite");
+        domain = SCADomain.newInstance("RMIBindingTest.composite");
         helloWorldRmiService = 
             domain.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
   }
