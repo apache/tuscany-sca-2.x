@@ -217,19 +217,22 @@ public class DefaultSCADomain extends SCADomain {
             
             // Here the SCADomain was started without any reference to a composite file
             // We are going to look for an sca-contribution.xml or sca-contribution-generated.xml
+            
+            // Look for META-INF/sca-contribution.xml
             contributionArtifactPath = Contribution.SCA_CONTRIBUTION_META;
             contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
             
+            // Look for META-INF/sca-contribution-generated.xml
             if( contributionArtifactURL == null ) {
                 contributionArtifactPath = Contribution.SCA_CONTRIBUTION_GENERATED_META;
                 contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
             }
             
-            // Look for META-INF/sca-deployables
-            if (contributionArtifactURL == null) {
-                contributionArtifactPath = Contribution.SCA_CONTRIBUTION_DEPLOYABLES;
-                contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
-            }
+                // Look for META-INF/sca-deployables directory
+                if (contributionArtifactURL == null) {
+                    contributionArtifactPath = Contribution.SCA_CONTRIBUTION_DEPLOYABLES;
+                    contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
+                }
         }
         
         if (contributionArtifactURL == null) {
