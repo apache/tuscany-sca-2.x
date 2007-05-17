@@ -20,7 +20,11 @@
 package org.apache.tuscany.sca.core;
 
 /**
- * An extension point for model factories.
+ * An extension point for model factories. Model factories are provided to 
+ * abstract the classes that represent artifacts in the assembly model away
+ * from their creation mechanism. When the runtime needs to extend the model
+ * as it reads in contributed artifacts it looks up the factory for the 
+ * artifact required in this registry
  *
  * @version $Rev$ $Date$
  */

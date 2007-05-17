@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.core;
 
 
 /**
- * The registry for the Tuscany core extension points.
+ * The registry for the Tuscany core extension points. As the point of contact 
+ * for all extension artifacts this registry allows loaded extensions to find 
+ * all other parts of the system and register themselves appropriately.
  * 
  * @version $Rev$ $Date$
  */
