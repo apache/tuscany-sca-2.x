@@ -232,7 +232,7 @@ public class ReallySmallRuntimeBuilder {
 
     private static Set<String> getServiceClassNames(URL url) throws IOException {
         Set<String> names = new HashSet<String>();
-        InputStream is = IOHelper.getInputStream(url);
+        InputStream is = url.openStream();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(is));
@@ -249,6 +249,14 @@ public class ReallySmallRuntimeBuilder {
         } finally {
             if (reader != null) {
                 reader.close();
+            }
+            
+            if (is != null){
+                try {
+                    is.close();
+                } catch( IOException ioe) {
+                    //ignore
+                }
             }
         }
         return names;
