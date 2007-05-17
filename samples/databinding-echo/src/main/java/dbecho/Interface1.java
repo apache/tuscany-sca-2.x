@@ -16,35 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo.provider;
+package dbecho;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.databinding.annotation.DataBinding;
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * Interceptor for the sample echo binding.
- * 
  * @version $Rev$ $Date$
  */
-public class EchoBindingInvoker implements Invoker {
-
-    private Object echo(Object[] args) throws InvocationTargetException {
-        // echo back the result, a real binding would invoke some API for flowing the request
-        return args[0];
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object resp = echo((Object[])msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setFaultBody(e.getCause());
-        } catch (Throwable e) {
-            msg.setFaultBody(e);
-        }
-        return msg;
-    }  
-
+@DataBinding("java.lang.String")
+@Remotable
+public interface Interface1 {
+    String call(String msg);
+    String call1(String msg);
 }

@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="databinding-echo" default="compile">
-    <property name="test.class" value="echo.EchoDataBindingClient" />
+    <property name="test.class" value="dbecho.EchoDataBindingClient" />
 	<property name="test.jar"   value="sample-databinding-echo.jar" />
 	
     <target name="init">
@@ -32,24 +32,12 @@
                target="1.5">
             <classpath>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
             </classpath>
         </javac> 
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>    	
-        <javac srcdir="src/test/java"
-               destdir="target/classes"
-               debug="on"
-               source="1.5"
-               target="1.5">
-            <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-            <exclude name="echo/EchoDataBindingTestCase.java"/>        	
-        </javac> 
-        <copy todir="target/classes">
-            <fileset dir="src/test/resources"/>
-        </copy>
         <jar destfile="target/${test.jar}" basedir="target/classes">
             <manifest>
                 <attribute name="Main-Class" value="${test.class}" /> 
@@ -63,6 +51,7 @@
             <classpath>
                 <pathelement path="target/classes"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
             </classpath>
         </java>
     </target>
@@ -73,6 +62,7 @@
             <classpath>
                 <pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
             </classpath>
         </java>    	
     </target>	

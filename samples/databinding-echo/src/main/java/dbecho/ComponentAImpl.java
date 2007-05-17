@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo;
+package dbecho;
 
-import org.apache.axiom.om.OMElement;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -38,8 +37,6 @@ public class ComponentAImpl implements Interface1 {
     
     private String bar;
     
-    private OMElement omProperty;
-
     @Constructor
     public ComponentAImpl(@Reference(name = "componentBReference", required = true)
     Interface1 componentBReference) {
@@ -83,14 +80,6 @@ public class ComponentAImpl implements Interface1 {
     public void setBar(String bar) {
         System.out.println("[Property] bar: " + bar);
         this.bar = bar;
-    }
-
-    /**
-     * @param omProperty the omProperty to set
-     */
-    @Property(name="omProperty")
-    public void setOmProperty(OMElement omProperty) {
-        this.omProperty = omProperty;
     }
 
 }
