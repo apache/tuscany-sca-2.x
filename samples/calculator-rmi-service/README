@@ -30,11 +30,11 @@ ant -f build-client.xml run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-rmi-service.jar calculator.CalculatorClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-rmi-reference.jar calculator.CalculatorClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-service.jar calculator.CalculatorClient
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-reference.jar calculator.CalculatorClient
 
 
 Sample Overview
