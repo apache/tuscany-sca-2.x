@@ -27,10 +27,12 @@ License: Public Domain
 
 This product includes/uses JSON-RPC-Java (http://oss.metaparadigm.com/jsonrpc/)
 
+This product includes software from the GlassFish project (https://glassfish.dev.java.net/)
+    Copyright (c) 2006, Sun Microsystems, Inc.
+
 This product also includes software developed by:
 - the Eclipse Modeling Framework project (http://www.eclipse.org/emf/)
 - the Mozilla Rhino project (http://www.mozilla.org/rhino/)
-- the GlassFish JAX-WS project (https://jax-ws.dev.java.net/)
 
 Please see the LICENSE file present in the root directory of this
 distribution.
