@@ -1,6 +1,5 @@
 The Apache Tuscany SCA Samples
 ==============================
-
 The Apache Tuscany SCA samples are built as part of the main Maven build and 
 run, using the provided JUnit tests cases, as tests in the Maven build.
 
@@ -14,25 +13,50 @@ that you need to make a choice and provide you own text at that point.
 Sample Overview
 ---------------
 The samples generally show off different features of the SCA runtime
-and the extensions that come packaged with it. Hence samples generally
-describe SCA component implementations and the clients required to drive the
-resulting applications. 
+and the extensions that come packaged with it. This list is ordered in a rough
+order of increasing complexity. 
 
-As is always the case there are exceptions to this. There are two samples
-that demonstrate how to build extensions for the Tuscany SCA runtime.
+calculator               - A calculator built with java components and local 
+                           wires
+simple-bigbank           - A banking application built with java components 
+                           and local wires
+calculator-script        - The calculator but this time built using various 
+                           script languages
+calculator-web           - The calculator again but this time running inside a 
+                           web app
+helloworld-ws-reference  - The client side of a hello world sample that uses a 
+                           web service binding
+helloworld-ws-service    - The server side of a hello world sample that uses a 
+                           web service binding
+calculator-rmi-reference - The calculator configured to talk RMI to the 
+                           calculator-rmi-service samples
+calculator-rmi-service   - The calculator configured to accept RMI requests 
+                           from calculator-rmi-reference
+helloworld-jsonrpc       - An SCA application that exposes service using 
+                           JSONRPC
+implementation-composite - An SCA application that shows how composites are used to 
+                           implement components
+simple-callback          - An SCA application with two components demonstrating
+                           the callback interface
+supplychain              - A more complicated sample showing how asynchronous 
+                           callbacks can be used
+databinding-echo         - An SCA application that shows how databindings 
+                           transform data
 
-binding-echo        - shows how to build a binding extension
-implementation-crud - shows how to build an implemenation extension
-
-In these samples the provided code is concerned with building the extension
+There are two samples that demonstrate how to build extensions for the 
+Tuscany SCA runtime. These samples are slightly different from the samples
+above in that the provided code is concerned with building the extension
 and now with building an application that uses it. The application
 that shows how the new extension can be used is provided in an associated
 sample. 
 
-binding-echo-appl           - application and client code to drive the 
-                              new echo binding
-implementation-crud-client  - client code to drive the new crud 
-                              implementation
+implementation-crud        - Shows how to build new implementation type 
+                             extensions
+implementation-crud-client - A sample application that exercises the new 
+                             implementation extensions
+binding-echo               - Shows how to build new binding extensions
+binding-echo-appl          - A sample application that exercises the new 
+                             binding extension
 
 Sample Layout
 -------------
