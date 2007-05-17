@@ -17,15 +17,20 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
+
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+      targetNamespace="http://sample"
+      xmlns:sample="http://sample"
            name="helloworldjsonrpc">
+           
+	<service name="HelloWorldService" promote="HelloWorldJSONServiceComponent/HelloWorldService">
+         <interface.java interface="helloworldjsonrpc.HelloWorldService"/>
+         <binding.jsonrpc/>
+     </service>           
 
     <component name="HelloWorldJSONServiceComponent">
-	    <service name="HelloWorldService">
-	        <interface.java interface="helloworldjsonrpc.HelloWorldService"/>
-	        <binding.jsonrpc/>
-	    </service>
         <implementation.java class="helloworldjsonrpc.HelloWorldServiceImpl"/>
     </component>
 
 </composite>
+
