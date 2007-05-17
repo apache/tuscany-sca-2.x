@@ -93,7 +93,7 @@ public class DefaultSCADomain extends SCADomain {
         ContributionService contributionService = runtime.getContributionService();
         URL contributionURL;
         try {
-            contributionURL = getContributionLocation(location, this.composites, applicationClassLoader);
+            contributionURL = getContributionLocation(applicationClassLoader, location, this.composites);
         } catch (MalformedURLException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -194,7 +194,7 @@ public class DefaultSCADomain extends SCADomain {
      * @return
      * @throws MalformedURLException
      */
-    private URL getContributionLocation(String contributionPath, String[] composites, ClassLoader classLoader)
+    private URL getContributionLocation(ClassLoader classLoader, String contributionPath, String[] composites)
         throws MalformedURLException {
         if (contributionPath != null && contributionPath.length() > 0) {
             URI contributionURI = URI.create(contributionPath);
@@ -206,44 +206,53 @@ public class DefaultSCADomain extends SCADomain {
         String contributionArtifactPath = null;
         URL contributionArtifactURL = null;
         if (composites != null && composites.length > 0 && composites[0].length() > 0) {
-            //here the scaDomain was started with a reference to a composite file
+
+            // Here the SCADomain was started with a reference to a composite file
             contributionArtifactPath = composites[0];
             contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
             if (contributionArtifactURL == null) {
                 throw new IllegalArgumentException("Composite not found: " + contributionArtifactPath);
             }
-        }else {
-            //here the scaDomain was started without any reference to a composite file
-            //we are going to look for a sca-contribution.xml or sca-contribution-generated.xml
+        } else {
+            
+            // Here the SCADomain was started without any reference to a composite file
+            // We are going to look for an sca-contribution.xml or sca-contribution-generated.xml
             contributionArtifactPath = Contribution.SCA_CONTRIBUTION_META;
             contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
+            
             if( contributionArtifactURL == null ) {
                 contributionArtifactPath = Contribution.SCA_CONTRIBUTION_GENERATED_META;
                 contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
             }
+            
+            // Look for META-INF/sca-deployables
+            if (contributionArtifactURL == null) {
+                contributionArtifactPath = Contribution.SCA_CONTRIBUTION_DEPLOYABLES;
+                contributionArtifactURL = classLoader.getResource(contributionArtifactPath);
+            }
         }
-
+        
         if (contributionArtifactURL == null) {
-            throw new IllegalArgumentException("Can't determine contribution deployables. Either specify a composite file, or use a sca-contribution.xml file to specify the deployables.");
+            throw new IllegalArgumentException("Can't determine contribution deployables. Either specify a composite file, or use an sca-contribution.xml file to specify the deployables.");
         }
 
         URL contributionURL = null;
         // "jar:file://....../something.jar!/a/b/c/app.composite"
         try {
-            String scdlUrl = contributionArtifactURL.toExternalForm();
+            String url = contributionArtifactURL.toExternalForm();
             String protocol = contributionArtifactURL.getProtocol();
             if ("file".equals(protocol)) {
                 // directory contribution
-                if (scdlUrl.endsWith(contributionArtifactPath)) {
-                    String location = scdlUrl.substring(0, scdlUrl.lastIndexOf(contributionArtifactPath));
+                if (url.endsWith(contributionArtifactPath)) {
+                    String location = url.substring(0, url.lastIndexOf(contributionArtifactPath));
                     // workaround from evil url/uri form maven
                     contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
                 }
 
             } else if ("jar".equals(protocol)) {
                 // jar contribution
-                String location = scdlUrl.substring(4, scdlUrl.lastIndexOf("!/"));
-                // workaround from evil url/uri form maven
+                String location = url.substring(4, url.lastIndexOf("!/"));
+                // workaround for evil url/uri from maven
                 contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
             }
         } catch (MalformedURLException mfe) {

@@ -28,7 +28,7 @@ public class CompositeTestCase extends TestCase {
     private Source source;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("http://test", ".", "OuterComposite.composite");
+        domain = SCADomain.newInstance("OuterComposite.composite");
         source = domain.getService(Source.class, "SourceComponent");
     }
     
