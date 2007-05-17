@@ -82,7 +82,7 @@
                             </goals>
                             <configuration>
                                 <tasks>
-                                    <ant target="install-dojo">
+                                    <ant antfile="./build-dojo.xml" target="install-dojo">
                                         <property name="localRepository" value="${settings.localRepository}"/>
                                     </ant>
                                 </tasks>
@@ -96,7 +96,7 @@
                             </goals>
                             <configuration>
                                 <tasks>
-                                    <ant target="unpack-dojo-files">
+                                    <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
                                         <property name="localRepository" value="${settings.localRepository}"/>
                                         <property name="artifactId" value="${artifactId}"/>
                                     </ant>
@@ -111,7 +111,7 @@
                             </goals>
                             <configuration>
                                 <tasks>
-                                    <ant target="clean-dojo-files">
+                                    <ant antfile="./build-dojo.xml" target="clean-dojo-files">
                                         <property name="localRepository" value="${settings.localRepository}"/>
                                         <property name="artifactId" value="${artifactId}"/>
                                     </ant>
