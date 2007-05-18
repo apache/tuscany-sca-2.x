@@ -118,7 +118,15 @@ public class ReallySmallRuntime {
 
         // Stop and destroy the work manager
         workManager.destroy();
-        
+
+        // Cleanup
+        modules = null;
+        registry = null;
+        assemblyFactory = null;
+        contributionService = null;
+        compositeActivator = null;
+        workManager = null;
+        scopeRegistry = null;
     }
 
     public ContributionService getContributionService() {
