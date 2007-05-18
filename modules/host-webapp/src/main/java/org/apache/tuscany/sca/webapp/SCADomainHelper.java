@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.webapp;
 
+import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.servlet.ServletContext;
 
@@ -43,7 +45,15 @@ public class SCADomainHelper {
         String contributionRoot = null;
         
         try {
-            contributionRoot  = servletContext.getResource("/").toString();;
+            URL rootURL = servletContext.getResource("/");
+            if (rootURL.getProtocol().equals("jndi")) {
+                //this is tomcat case, we should use getRealPath
+                File warRootFile = new File(servletContext.getRealPath("/"));
+                contributionRoot = warRootFile.toURL().toString();
+            } else {
+                //this is jetty case
+                contributionRoot  = rootURL.toString();
+            }
         } catch(MalformedURLException mf) {
             //ignore, pass null
         }
