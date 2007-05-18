@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Tuscany AJAX Chat Sample</TITLE>
+
+    <script type="text/javascript" src="SCA/SCADomain/scaDomain.js"></script>
+
+    <script language="JavaScript">
+
+       ChatReference.chat = function(msg) {
+          var chatLog = document.getElementById('chatLog');
+          chatLog.innerHTML = msg + '<br>' + chatLog.innerHTML;
+       }
+
+       function sendChat() {
+          var chatText = document.getElementById("chatText");
+          var nickName = document.getElementById("nickName").value;
+          var msg = nickName + ": " + chatText.value
+          chatText.value = "";
+          chatText.focus();
+          ChatService.chat(msg);
+       }
+    </script>
+
+  </head>
+  <body onLoad="scaDomain.open()">
+
+    <h2>Tuscany AJAX Chat Sample</h2>
+     
+      A simple client to chat between multiple web browsers:<br><br>
+     
+      Nickname: <input type="text" id="nickName" size="10"/>
+      <br><br>
+
+      Enter text: <input type="text" id="chatText" size="80" onEnter="sendChat()"/>
+      <input type="button" value="Send" onclick="sendChat()" />
+
+      <br><br>
+      <div id="chatLog" style="overflow:auto; height:400px; border:1px solid"></div>
+
+  </body>
+</html>
