@@ -107,38 +107,41 @@ public class EmbeddedSCADomain extends SCADomain {
 
     /**
      * Constructs a new domain facade.
-     * 
+     *
+     * @param runtimeClassLoader
      * @param domainURI
-     * @param contributionLocation
-     * @param composites
      */
     public EmbeddedSCADomain(ClassLoader runtimeClassLoader,
                             String domainURI) {
         this.uri = domainURI;
+        
+        // Create a runtime
+        runtime = new ReallySmallRuntime(runtimeClassLoader);
+    }
+    
+    public void start() throws ActivationException {
 
+        // Start the runtime
+        runtime.start();
+        
         // Create an in-memory domain level composite
         AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
         domainComposite = assemblyFactory.createComposite();
         domainComposite.setName(new QName(Constants.SCA_NS, "domain"));
-        domainComposite.setURI(domainURI);
-        
+        domainComposite.setURI(uri);
+
+        // Create a domain composite helper
         domainCompositeHelper = new DomainCompositeHelper();
-
-        // Create the runtime
-        runtime = new ReallySmallRuntime(runtimeClassLoader);
-
-        // Index the top level components
-        for (Component component : domainComposite.getComponents()) {
-            components.put(component.getName(), component);
-        }
-    }
-    
-    public void start() throws ActivationException {
-        runtime.start();
     }
 
     public void stop() throws ActivationException {
+        
+        // Stop the runtime
         runtime.stop();
+        
+        // Cleanup
+        domainComposite = null;
+        domainCompositeHelper = null;
     }
 
     public ContributionService getContributionService() {
