@@ -29,16 +29,34 @@ import java.util.List;
  */
 public class DefaultWireProcessorExtensionPoint implements RuntimeWireProcessorExtensionPoint {
 
+	/**
+	 * The list of WireProcessors available to the runtime
+	 */
     private final List<RuntimeWireProcessor> processors = new ArrayList<RuntimeWireProcessor>();
 
+    /**
+    * Registers a wire-processor in the runtime
+    * 
+    * @param processor The processor to register
+    */
     public void addWireProcessor(RuntimeWireProcessor processor) {
         processors.add(processor);
     }
 
+    /**
+     * De-registers a wire-processor in the runtime
+     * 
+     * @param processor The processor to de-register
+     */
     public void removeWireProcessor(RuntimeWireProcessor processor) {
         processors.remove(processor);
     }
     
+    /**
+     * Returns a list of registered wire-processors.
+     * 
+     * @return The list of wire processors
+     */    
     public List<RuntimeWireProcessor> getWireProcessors() {
         return processors;
     }

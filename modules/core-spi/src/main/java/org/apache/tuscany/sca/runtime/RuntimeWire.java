@@ -24,8 +24,8 @@ import java.util.List;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**
- * The runtime wire that connects a component reference to a component service
- * (or an external service) over the selected binding
+ * The runtime wire interface that connects a component reference to a 
+ *  component service (or an external service) over the selected binding
  * 
  * @version $Rev$ $Date$
  */
@@ -33,13 +33,15 @@ public interface RuntimeWire {
 
     /**
      * Get the source of the wire
-     * @return
+     * 
+     * @return The end point reference of the source
      */
     EndpointReference getSource();
 
     /**
      * Get the target of the wire
-     * @return
+     * 
+     * @return The end point reference of the target
      */
     EndpointReference getTarget();
 

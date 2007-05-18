@@ -29,7 +29,7 @@ public interface MessageFactory {
     /**
      * Creates a new message.
      * 
-     * @return
+     * @return The new message
      */
     Message createMessage();
     

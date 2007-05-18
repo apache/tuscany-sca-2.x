@@ -28,6 +28,10 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 /**
+ * The runtime component service. Provides the bridge between the 
+ * assembly model representation of a component service and its runtime 
+ * realization
+ * 
  * @version $Rev$ $Date$
  */
 public interface RuntimeComponentService extends ComponentService {
@@ -35,20 +39,20 @@ public interface RuntimeComponentService extends ComponentService {
     /**
      * Get a list of runtime wires to the service
      * 
-     * @return
+     * @return The list of wires
      */
     List<RuntimeWire> getRuntimeWires();
     /**
      * Get the runtime wire for the given binding
-     * @param binding
-     * @return
+     * @param binding The assembly model binding 
+     * @return The runtime wire
      */
     RuntimeWire getRuntimeWire(Binding binding);
     
     /**
      * Get the callback wires assoicated with this service
      * 
-     * @return
+     * @return The list of runtime callback wires
      */
     List<RuntimeWire> getCallbackWires();
 
@@ -56,8 +60,8 @@ public interface RuntimeComponentService extends ComponentService {
      * Returns the service binding provider associated with this
      * component service and the given binding.
      * 
-     * @param binding
-     * @return
+     * @param binding The assembly model binding 
+     * @return The runtime service binding provider
      */
     ServiceBindingProvider getBindingProvider(Binding binding);
     
@@ -65,24 +69,24 @@ public interface RuntimeComponentService extends ComponentService {
      * Sets the service binding provider associated with this
      * component service and the given binding.
      *
-     * @param binding
-     * @param bindingProvider
+     * @param binding The assembly model binding 
+     * @param bindingProvider The runtime service binding provider
      */
     void setBindingProvider(Binding binding, ServiceBindingProvider bindingProvider);
     
     /**
      * Get the invoker for the given binding and operation
-     * @param binding
-     * @param operation
-     * @return
+     * @param binding The assembly model binding 
+     * @param operation The assembly model operation
+     * @return The runtime invoker
      */
     Invoker getInvoker(Binding binding, Operation operation);    
     
     /**
      * Get the callback invoker for the given binding and operation
-     * @param binding
-     * @param operation
-     * @return
+     * @param binding The assembly model binding 
+     * @param operation The assembly model operation
+     * @return The runtime callback invoker
      */
     Invoker getCallbackInvoker(Binding binding, Operation operation);    
 }

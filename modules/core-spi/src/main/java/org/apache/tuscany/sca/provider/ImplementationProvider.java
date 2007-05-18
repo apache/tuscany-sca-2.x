@@ -24,8 +24,8 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
- * A component implementation can implement this interface to provide additional logic 
- * to the Tuscany runtime 
+ * A component implementation can implement this interface in order to tie 
+ * into the Tuscany runtime 
  * 
  * @version $Rev$ $Date$
  */
@@ -57,7 +57,6 @@ public interface ImplementationProvider {
 
     /**
      * Create an invoker to call back to the given component
-     * @param component The component that receives the callback
      * @param operation The operation
      * @return An invoker that handles the invocation logic, null should be
      *         returned if no invoker is required

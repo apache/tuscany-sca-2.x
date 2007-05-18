@@ -27,5 +27,9 @@ import java.util.EventListener;
  */
 public interface RuntimeEventListener extends EventListener {
 
+    /**
+     * Accepts and event and acts on it
+     * @param event The event to act on
+     */
     void onEvent(Event event);
 }

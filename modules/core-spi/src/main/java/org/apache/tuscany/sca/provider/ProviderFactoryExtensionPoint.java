@@ -21,7 +21,10 @@ package org.apache.tuscany.sca.provider;
 
 
 /**
- * An extension point for provider factories.
+ * An extension point for provider factories. Holds all of the provider
+ * factories from loaded extension points. Allows a provider factory
+ * to be located based on a given model type. Hence the runtime can 
+ * generate runtime artifacts from the in memory assembly model. 
  *
  * @version $Rev$ $Date$
  */
@@ -31,21 +34,21 @@ public interface ProviderFactoryExtensionPoint {
     /**
      * Add a provider factory.
      * 
-     * @param providerFactory the provider factory
+     * @param providerFactory The provider factory
      */
     void addProviderFactory(ProviderFactory providerFactory);
 
     /**
      * Remove a provider factory.
      * 
-     * @param providerFactory the provider factory
+     * @param providerFactory The provider factory
      */
     void removeProviderFactory(ProviderFactory providerFactory);
 
     /**
      * Returns the provider factory associated with the given model type.
-     * @param modelType a model type
-     * @return the provider factory associated with the given model type
+     * @param modelType A model type
+     * @return The provider factory associated with the given model type
      */
     ProviderFactory getProviderFactory(Class<?> modelType);
     

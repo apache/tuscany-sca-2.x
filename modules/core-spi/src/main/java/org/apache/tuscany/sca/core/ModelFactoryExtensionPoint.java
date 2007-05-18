@@ -33,21 +33,21 @@ public interface ModelFactoryExtensionPoint {
     /**
      * Add a model factory extension.
      * 
-     * @param factory the factory to add
+     * @param factory The factory to add
      */
     void addFactory(Object factory);
     
     /**
      * Remove a model factory extension.
      *  
-     * @param factory
+     * @param factory The factory to remove
      */
     void removeFactory(Object factory); 
     
     /**
      * Get a factory implementing the given interface.
-     * @param factoryInterface the factory interface
-     * @return
+     * @param factoryInterface the lookup key (factory interface)
+     * @return The factory
      */
     <T> T getFactory(Class<T> factoryInterface);
 

@@ -30,6 +30,11 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
     
     private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
 
+    /**
+     * Add a model factory extension.
+     * 
+     * @param factory The factory to add
+     */
     public void addFactory(Object factory) {
         Class[] interfaces = factory.getClass().getInterfaces();
         for (int i = 0; i<interfaces.length; i++) {
@@ -37,6 +42,11 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
         }
     }
 
+    /**
+     * Remove a model factory extension.
+     *  
+     * @param factory The factory to remove
+     */
     public void removeFactory(Object factory) {
         Class[] interfaces = factory.getClass().getInterfaces();
         for (int i = 0; i<interfaces.length; i++) {
@@ -44,6 +54,11 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
         }
     }
     
+    /**
+     * Get a factory implementing the given interface.
+     * @param factoryInterface The lookup key (factory interface)
+     * @return The factory
+     */    
     public <T> T getFactory(Class<T> factoryInterface) {
         Object factory = factories.get(factoryInterface);
         return factoryInterface.cast(factory);

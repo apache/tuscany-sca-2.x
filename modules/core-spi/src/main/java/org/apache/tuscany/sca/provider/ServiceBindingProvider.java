@@ -22,7 +22,8 @@ package org.apache.tuscany.sca.provider;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 /**
- * A service binding can optionally implement this interface
+ * A service binding can optionally implement this interface to tie
+ * into the Tuscany SCA runtime
  * 
  * @version $Rev$ $Date$
  */
@@ -44,7 +45,6 @@ public interface ServiceBindingProvider {
      * it will be interface contract introspected from the WSDL portType used by
      * the endpoint for a WebService binding.
      * 
-     * @param service The component service that owns the service binding
      * @return The effective interface contract, if null is returned, the
      *         interface contract for the component service will be used
      */

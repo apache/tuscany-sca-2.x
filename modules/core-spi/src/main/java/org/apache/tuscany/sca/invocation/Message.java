@@ -30,74 +30,81 @@ public interface Message {
 
     /**
      * Returns the body of the message, which will be the payload or parameters associated with the wire
+     * @return The body of the message
      */
     <T> T getBody();
 
     /**
      * Sets the body of the message.
+     * @param body The body of the message
      */
     <T> void setBody(T body);
 
     /**
      * Get the conversation id
-     * @return
+     * @return The conversation ID
      */
     String getConversationID();
 
     /**
      * Set the conversation id
-     * @param conversationId
+     * @param conversationId The conversation ID
      */
     void setConversationID(String conversationId);
 
     /**
-     * Get the URI of the source reference
-     * @return
+     * Get the end point reference of the source reference
+     * @return The end point reference of the reference originating the message
      */
     EndpointReference getFrom();
 
     /**
-     * 
-     * @param from
+     * Set the end point reference of the reference originating the message
+     * @param from The end point reference of the reference originating the message
      */
     void setFrom(EndpointReference from);
 
     /**
-     * Get the URI of target service
-     * @return
+     * Get the end point reference of target service
+     * @return The end point reference of the service that the message targets
      */
     EndpointReference getTo();
 
     /**
-     * @param to
+     * Set the end point reference of target service
+     * @param to The end point reference of the service that the message targets
      */
     void setTo(EndpointReference to);
 
     /**
      * Returns the id of the message
+     * @return The message Id
      */
     Object getMessageID();
 
     /**
      * Sets the id of the message
+     * @param messageId The message ID
      */
     void setMessageID(Object messageId);
 
     /**
      * Returns the correlation id of the message or null if one is not available. Correlation ids are used by transports
      * for message routing.
+     * @return The correlation Id
      */
     Object getCorrelationID();
 
     /**
      * Sets the correlation id of the message. Correlation ids are used by transports for message routing.
+     * @param correlationId The correlation Id
      */
     void setCorrelationID(Object correlationId);
 
     /**
      * Determines if the message represents a fault/exception
      *
-     * @return true if the message body is a fault object, false if the body is a normal payload
+     * @return true If the message body is a fault object, false if the body is a normal payload
      */
     boolean isFault();
 
@@ -111,14 +118,14 @@ public interface Message {
     /**
      * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on TargetInvoker}
      *
-     * @return the conversational sequence the message is associated with
+     * @return The conversational sequence the message is associated with
      */
     ConversationSequence getConversationSequence();
 
     /**
      * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END
      *
-     * @param sequence the conversational sequence
+     * @param sequence The conversational sequence
      */
     void setConversationSequence(ConversationSequence sequence);
 

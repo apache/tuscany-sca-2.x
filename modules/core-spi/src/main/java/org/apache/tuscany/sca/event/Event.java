@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.event;
 
 /**
- * Represents an event that is propagated in the runtime
+ * The base interface for events that are propagated in the runtime
  *
  * @version $$Rev$$ $$Date$$
  */

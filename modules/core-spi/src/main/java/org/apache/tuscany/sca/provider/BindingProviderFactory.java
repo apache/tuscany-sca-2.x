@@ -25,6 +25,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
+ * A factory for creating the runtime artifacts that represent bindings.
+ * 
  * @version $Rev$ $Date$
  */
 public interface BindingProviderFactory<M extends Binding> extends ProviderFactory<M> {
@@ -33,10 +35,10 @@ public interface BindingProviderFactory<M extends Binding> extends ProviderFacto
      * Creates a new reference binding provider for the given component and
      * reference.
      * 
-     * @param component
-     * @param reference
-     * @param binding
-     * @return
+     * @param component The runtime component
+     * @param reference The reference on the runtime component
+     * @param binding The binding assembly model object
+     * @return The binding provider
      */
     ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                             RuntimeComponentReference reference,
@@ -46,10 +48,10 @@ public interface BindingProviderFactory<M extends Binding> extends ProviderFacto
      * Creates a new service binding provider for the given component and
      * service.
      * 
-     * @param component
-     * @param service
-     * @param binding
-     * @return
+     * @param component The runtime component
+     * @param service The service on the runtime component
+     * @param binding The binding assembly model object
+     * @return The binding provider
      */
     ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                         RuntimeComponentService service,
