@@ -1205,7 +1205,19 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
                 .getTargets(), componentReference.getBindings())) {
                 if (componentReference.getTargets().isEmpty()) {
-                    warning("No targets for reference: " + componentReference.getName(), composite);
+                    
+                    // No warning if the reference is promoted out of the current composite
+                    boolean promoted = false;
+                    for (Reference reference: composite.getReferences()) {
+                        CompositeReference compositeReference = (CompositeReference)reference;
+                        if (compositeReference.getPromotedReferences().contains(componentReference)) {
+                            promoted = true;
+                            break;
+                        }
+                    }
+                    if (!promoted) {
+                        warning("No targets for reference: " + componentReference.getName(), composite);
+                    }
                 } else {
                     warning("Too many targets on reference: " + componentReference.getName(), composite);
                 }
