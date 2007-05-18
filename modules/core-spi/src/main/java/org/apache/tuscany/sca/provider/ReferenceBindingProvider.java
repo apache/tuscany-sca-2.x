@@ -24,6 +24,9 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 
 /**
+ * A reference binding implementation can options implement this
+ * interface to tie into the Tuscany SCA runtime
+ * 
  * @version $Rev$ $Date$
  */
 public interface ReferenceBindingProvider {

@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.invocation;
 
 /**
- * Synchronous, around-style mediation associated with a client- or target- side wire.
+ * Synchronous mediation associated with a client- or target- side wire.
  *
  * @version $Rev$ $Date$
  */
@@ -27,11 +27,13 @@ public interface Interceptor extends Invoker {
 
     /**
      * Sets the next invoker
+     * @param next The next invoker
      */
     void setNext(Invoker next);
 
     /**
      * Returns the next invoker or null
+     * @return The next Invoker
      */
     Invoker getNext();
 

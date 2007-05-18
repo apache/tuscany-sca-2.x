@@ -37,15 +37,14 @@ public interface ExtensionPointRegistry {
     
     /**
      * Get the extension point by the interface
-     * @param <T>
-     * @param extensionPointType
-     * @return
+     * @param extensionPointType The lookup key (extension point interface)
+     * @return The instance of the extension point
      */
     <T> T getExtensionPoint(Class<T> extensionPointType);
     
     /**
      * Remove an extension point
-     * @param extensionPoint
+     * @param extensionPoint The extension point to remove
      */
     void removeExtensionPoint(Object extensionPoint);
 }

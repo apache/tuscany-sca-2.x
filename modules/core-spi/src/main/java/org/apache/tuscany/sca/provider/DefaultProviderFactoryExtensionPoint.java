@@ -32,17 +32,36 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
     protected final Map<Class<?>, ProviderFactory> providerFactories = 
         new HashMap<Class<?>, ProviderFactory>();
 
+    /**
+     * The default constructor. Does nothing.
+     *
+     */
     public DefaultProviderFactoryExtensionPoint() {
     }
 
+    /**
+     * Add a provider factory.
+     * 
+     * @param providerFactory The provider factory
+     */
     public void addProviderFactory(ProviderFactory providerFactory) {
         providerFactories.put(providerFactory.getModelType(), providerFactory);
     }
     
+    /**
+     * Remove a provider factory.
+     * 
+     * @param providerFactory The provider factory
+     */
     public void removeProviderFactory(ProviderFactory providerFactory) {
         providerFactories.remove(providerFactory.getModelType());
     }
     
+    /**
+     * Returns the provider factory associated with the given model type.
+     * @param modelType A model type
+     * @return The provider factory associated with the given model type
+     */
     public ProviderFactory getProviderFactory(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
         for (Class<?> c : classes) {

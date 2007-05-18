@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.invocation;
 
 /**
- * Synchronous, around-style mediation associated with a client- or target- side wire.
+ * Synchronous mediation associated with a client- or target- side wire.
  *
  * @version $Rev$ $Date$
  */
@@ -28,8 +28,8 @@ public interface Invoker {
     /**
      * Process a synchronous wire
      *
-     * @param msg the request Message for the wire
-     * @return the response Message from the wire
+     * @param msg The request Message for the wire
+     * @return The response Message from the wire
      */
     Message invoke(Message msg);
 

@@ -48,9 +48,8 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
 
     /**
      * Get the extension point by the interface that it implements
-     * @param <T>
-     * @param extensionPointType
-     * @return
+     * @param extensionPointType The lookup key (extension point interface)
+     * @return The instance of the extension point
      */
     public <T> T getExtensionPoint(Class<T> extensionPointType) {
         return extensionPointType.cast(extensionPoints.get(extensionPointType));
@@ -58,7 +57,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
 
     /**
      * Remove an extension point based on the interface that it implements
-     * @param extensionPoint
+     * @param extensionPoint The extension point to remove
      */
     public void removeExtensionPoint(Object extensionPoint) {
         Class[] interfaces = extensionPoint.getClass().getInterfaces();

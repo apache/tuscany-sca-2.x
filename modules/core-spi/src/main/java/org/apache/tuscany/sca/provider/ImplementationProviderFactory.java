@@ -23,6 +23,8 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
+ * An interface for factories that create implementation providers.  
+ * 
  * @version $Rev$ $Date$
  */
 public interface ImplementationProviderFactory<M extends Implementation> extends ProviderFactory<M> {
@@ -31,9 +33,9 @@ public interface ImplementationProviderFactory<M extends Implementation> extends
      * Creates a new implementation provider for the given
      * component.
      * 
-     * @param component
-     * @param implementation
-     * @return
+     * @param component The runtime component
+     * @param Implementation The implementation type
+     * @return The implementation provider
      */
     ImplementationProvider createImplementationProvider(RuntimeComponent component, M Implementation);
     

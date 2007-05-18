@@ -25,6 +25,12 @@ package org.apache.tuscany.sca.event;
  */
 public class TrueFilter implements EventFilter {
 
+    /**
+     * Performs the actual evaluation on an event. Always returns true
+     * in this case
+     * @param event The incoming event which is ignored
+     * @return true
+     */
     public boolean match(Event event) {
         return true;
     }

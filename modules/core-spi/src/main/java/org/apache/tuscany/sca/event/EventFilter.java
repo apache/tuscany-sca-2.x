@@ -27,6 +27,8 @@ public interface EventFilter {
 
     /**
      * Performs the actual evaluation on an event
+     * @param event Returns true if the event matches implemented criteria
+     * @return Match result
      */
     boolean match(Event event);
 

@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Acts as a delegating <code>WireProcessorExtensionPoint</code>, delegating
- * processing of wires after policies have been applied and source an targets
+ * processing of wires after policies have been applied and source and targets
  * have been connected.
  * 
  * @version $Rev$ $Date$
@@ -32,21 +32,21 @@ public interface RuntimeWireProcessorExtensionPoint {
     /**
      * Registers a wire-processor in the runtime
      * 
-     * @param processor the processor to register
+     * @param processor The processor to register
      */
     void addWireProcessor(RuntimeWireProcessor processor);
 
     /**
      * De-registers a wire-processor in the runtime
      * 
-     * @param processor the processor to de-register
+     * @param processor The processor to de-register
      */
     void removeWireProcessor(RuntimeWireProcessor processor);
 
     /**
      * Returns a list of registered wire-processors.
      * 
-     * @return
+     * @return The list of wire processors
      */
     List<RuntimeWireProcessor> getWireProcessors();
     

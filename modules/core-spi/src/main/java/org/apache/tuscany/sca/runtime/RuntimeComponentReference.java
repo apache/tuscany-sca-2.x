@@ -28,6 +28,10 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 /**
+ * The runtime component reference. Provides the bridge between the 
+ * assembly model representation of a component reference and its runtime 
+ * realization
+ * 
  * @version $Rev$ $Date$
  */
 public interface RuntimeComponentReference extends ComponentReference {
@@ -35,14 +39,14 @@ public interface RuntimeComponentReference extends ComponentReference {
     /**
      * Get a list of runtime wires to the reference
      * 
-     * @return
+     * @return The list of wires
      */
     List<RuntimeWire> getRuntimeWires();
     
     /**
      * Get the runtime wire for the given binding
-     * @param binding
-     * @return
+     * @param binding The assembly model binding 
+     * @return The runtime wire
      */
     RuntimeWire getRuntimeWire(Binding binding);
 
@@ -50,8 +54,8 @@ public interface RuntimeComponentReference extends ComponentReference {
      * Returns the reference binding provider associated with this
      * component reference and the given binding.
      * 
-     * @param binding
-     * @return
+     * @param binding The assembly model binding 
+     * @return The runtime reference binding provider
      */
     ReferenceBindingProvider getBindingProvider(Binding binding);
     
@@ -59,18 +63,17 @@ public interface RuntimeComponentReference extends ComponentReference {
      * Sets the reference binding provider associated with this
      * component reference and the given binding.
      * 
-     * @param binding
-     * @param bindingProvider
-     * @return
+     * @param binding The assembly model binding 
+     * @param bindingProvider The runtime reference binding provider
      */
     void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider);
     
     
     /**
      * Get the invoker for the given binding and operation
-     * @param binding
-     * @param operation
-     * @return
+     * @param binding The assembly model binding
+     * @param operation The assembly model operation
+     * @return The runtime Invoker
      */
     Invoker getInvoker(Binding binding, Operation operation);
     

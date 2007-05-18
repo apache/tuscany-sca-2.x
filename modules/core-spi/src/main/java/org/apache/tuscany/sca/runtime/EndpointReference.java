@@ -57,7 +57,7 @@ public interface EndpointReference {
     
     /**
      * Get the URI for this endpoint
-     * @return
+     * @return The URI of the endpoint
      */
     String getURI();
     
