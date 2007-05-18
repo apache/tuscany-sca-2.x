@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.webapp;
 
-import java.io.File;
 import java.net.MalformedURLException;
 
 import javax.servlet.ServletContext;
@@ -41,15 +40,14 @@ public class SCADomainHelper {
         SCADomain scaDomain = (SCADomain)servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE);
         
         String domainURI = "http://localhost/" + servletContext.getServletContextName().replace(' ', '.');
-        File warRootFile = new File(servletContext.getRealPath("/"));
         String contributionRoot = null;
         
         try {
-            contributionRoot = warRootFile.toURL().toString();
-        } catch (MalformedURLException e) {
-            //ignore, we will pass null
+            contributionRoot  = servletContext.getResource("/").toString();;
+        } catch(MalformedURLException mf) {
+            //ignore, pass null
         }
-        
+                
         
         if (scaDomain == null) {
             scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
