@@ -26,7 +26,6 @@ import java.util.Map;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
-
 /**
  * A default implementation of an artifact resolver, based on a map.
  *

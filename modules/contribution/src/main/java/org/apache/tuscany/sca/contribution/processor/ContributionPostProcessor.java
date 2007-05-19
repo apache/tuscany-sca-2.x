@@ -27,5 +27,11 @@ import org.apache.tuscany.sca.contribution.Contribution;
  * @version $Rev$ $Date$
  */
 public interface ContributionPostProcessor {
+    
+    /**
+     * Visitor pattern to post process the contribution
+     * 
+     * @param contribution The contribution to be post processed
+     */
     void visit(Contribution contribution);
 }

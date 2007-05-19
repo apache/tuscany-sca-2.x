@@ -24,12 +24,17 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 
+/**
+ * Loader responsible to process the contribution metadata loader 
+ * 
+ * @version $Rev$ $Date$
+ */
 public interface ContributionMetadataLoader {
     /**
      * Create the model object for Contribution Service metadata information
-     * @param contribution the contribution to load
-     * @param reader    the XML stream reader positioned on the applicable START_ELEMENT
-     * @return
+     * 
+     * @param contribution The contribution to populate with the proper values from the side file
+     * @param reader The XML stream reader positioned on the applicable START_ELEMENT
      * @throws XMLStreamException
      * @throws ContributionMetadataReadException
      */

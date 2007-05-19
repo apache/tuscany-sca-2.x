@@ -30,33 +30,45 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  * @version $Rev$ $Date$
  */
 public interface Contribution extends Artifact {
+    /**
+     * Default location of contribution metadata in a contribution package
+     */
     String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
+    /**
+     * default location of a generated contribution metadata in a contribution package
+     */
     String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
+    /**
+     * Default location of deployables in a contribution
+     */
     String SCA_CONTRIBUTION_DEPLOYABLES = "META-INF/sca-deployables/";
 
     
     /**
      * Get a list of exports based on the Contribution metadata sidefile
-     * @return
+     * 
+     * @return The list of exported artifacts from this contribution
      */
     List<ContributionExport> getExports();
 
     /**
      * Get a list of imports based on the Contribution metadata sidefile
-     * @return
+     * 
+     * @return The list of imported artifacts on this contribution
      */
     List<ContributionImport> getImports();
     
     /**
-     * Get a list of deployables for the contribution
-     * This is based on the contribution medatata sidefile, or all Composites available on the contribution
-     * @return
+     * Get a list of deployables for the contribution based on the contribution metadata sidefile 
+     * 
+     * @return The list of deployable composites
      */
     List<Composite> getDeployables();
 
     /**
      * Get a list of artifacts from the contribution
-     * @return
+     * 
+     * @return The list of deployed artifacts for the contribution
      */
     List<DeployedArtifact> getArtifacts();
 
@@ -64,7 +76,7 @@ public interface Contribution extends Artifact {
      * Returns the model resolver for the models representing the artifacts
      * visible in the scope of this contribution.
      * 
-     * @return
+     * @return The model resolver
      */
     ModelResolver getModelResolver();
     
@@ -72,7 +84,7 @@ public interface Contribution extends Artifact {
      * Sets the model resolver for the models representing the artifacts
      * visible in the scope of this contribution.
      * 
-     * @param modelResolver
+     * @param modelResolver The model resolver
      */
     void setModelResolver(ModelResolver modelResolver);
     

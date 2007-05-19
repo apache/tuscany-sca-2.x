@@ -48,6 +48,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 /**
+ * Service interface that manages artifacts contributed to a Tuscany runtime.
+ * 
  * @version $Rev$ $Date$
  */
 public class ContributionServiceImpl implements ContributionService {

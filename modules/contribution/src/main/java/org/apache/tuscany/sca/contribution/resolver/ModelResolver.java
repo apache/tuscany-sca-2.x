@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
-
-
 /**
  * SCA Assemblies reference many artifacts of a wide variety of types. These
  * include:
@@ -43,6 +41,7 @@ public interface ModelResolver {
 
     /**
      * Resolve the model representing an artifact.
+     * 
      * @param modelClass the type of artifact
      * @param unresolved the unresolved model
      * @return the resolved model
@@ -51,14 +50,16 @@ public interface ModelResolver {
     
     /**
      * Add a resolved model.
-     * @param resolved
+     * 
+     * @param resolved The model
      */
     void addModel(Object resolved);
     
     /**
      * Remove a resolved model.
+     * 
      * @param resolved
-     * @return the removed model, or null if the model was not removed
+     * @return The removed model, or null if the model was not removed
      */
     Object removeModel(Object resolved);
     

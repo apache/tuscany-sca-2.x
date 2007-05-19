@@ -30,25 +30,30 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 public interface ContributionImport {
 
     /**
+     * Get the location used to resolve the definitions for this import
      * 
-     * @return
+     * @return The import location
      */
     String getLocation();
 
     /**
-     * @param location
+     * Set the location used to resolve the definitions for this import
+     * 
+     * @param location The import location
      */
     void setLocation(String location);
 
     /**
      * Get Namespace that identifies the import
-     * @return
+     * 
+     * @return The namespace
      */
     String getNamespace();
 
     /**
      * Set Namespace that identifies the import
-     * @param namespace
+     * 
+     * @param namespace The namespace
      */
     void setNamespace(String namespace);
     
@@ -56,7 +61,7 @@ public interface ContributionImport {
      * Returns the model resolver for the models representing artifacts
      * made available by this import.
      * 
-     * @return
+     * @return The model resolver
      */
     ModelResolver getModelResolver();
 
@@ -64,8 +69,7 @@ public interface ContributionImport {
      * Sets the model resolver for the models representing artifacts
      * made available by this import.
      * 
-     * @param modelResolver
+     * @param modelResolver The model resolver
      */
-    void setModelResolver(ModelResolver modelResolver);
-    
+    void setModelResolver(ModelResolver modelResolver);   
 }

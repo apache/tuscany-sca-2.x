@@ -21,6 +21,12 @@ package org.apache.tuscany.sca.contribution.impl;
 
 import org.apache.tuscany.sca.contribution.Artifact;
 
+
+/**
+ * Base Artifact interface to accomodate common properties between Contribution and Deployed Artifact
+ * 
+ * @version $Rev$ $Date$
+ */
 public abstract class ArtifactImpl implements Artifact {
     private String uri;
     private String location;

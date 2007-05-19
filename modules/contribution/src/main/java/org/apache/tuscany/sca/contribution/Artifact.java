@@ -23,30 +23,34 @@ package org.apache.tuscany.sca.contribution;
 /**
  * Base Artifact interface to accomodate common properties between Contribution and Deployed Artifact
  * 
- * @version $Rev: $Date:
+ * @version $Rev$ $Date$
  */
 public interface Artifact {
     /**
      * Get the URI that unique identifies the artifact
-     * @return
+     * 
+     * @return The artifact uri
      */
     String getURI();
     
     /**
      * Set the URI that unique identifies the artifact
-     * @param uri
+     * 
+     * @param uri The artifact uri
      */
     void setURI(String uri);
 
     /**
      * Get the URL location for the artifact
-     * @return
+     * 
+     * @return The artifact location
      */
     String getLocation();
     
     /**
      * Set the URL location for the artifact
-     * @param location
+     * 
+     * @param location The artifact location
      */
     void setLocation(String location);
 

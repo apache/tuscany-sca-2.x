@@ -21,7 +21,11 @@ package org.apache.tuscany.sca.contribution.service.impl;
 
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 
-
+/**
+ * Denotate invalid value found during parsing of the contribution metadata sidefile 
+ * 
+ * @version $Rev$ $Date$
+ */
 public class InvalidValueException extends ContributionMetadataLoaderException {
     /**
      * 

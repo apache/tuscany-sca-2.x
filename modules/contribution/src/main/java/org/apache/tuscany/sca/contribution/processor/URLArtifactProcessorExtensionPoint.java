@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.processor;
 
-
-
 /**
  * A registry for Stream artifact processors.
  * 

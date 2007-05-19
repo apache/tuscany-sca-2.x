@@ -25,6 +25,12 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 
+
+/**
+ * Contribution model object factory
+ * 
+ * @version $Rev$ $Date$
+ */
 public class ContributionFactoryImpl implements ContributionFactory {
     
     public Contribution createContribution() {

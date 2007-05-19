@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.service;
 
-
 /**
  * Denotes an exception while reading artifacts inside an SCA contribution.
  *

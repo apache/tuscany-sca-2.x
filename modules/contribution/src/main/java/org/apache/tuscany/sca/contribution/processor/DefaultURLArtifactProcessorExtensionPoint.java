@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.processor;
 
-
-
 /**
  * The default implementation of a StAX artifact processor registry.
  * 

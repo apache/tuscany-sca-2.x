@@ -37,23 +37,27 @@ public interface StAXArtifactProcessor<M> extends ArtifactProcessor<M> {
     /**
      * Reads a model from an input source. Examples of input sources are: a URI, a
      * DOM node, an XML reader.
-     * @param source
-     * @return a model representation of the input.
+     * 
+     * @param inputSource The input source
+     * @return A model representation of the input.
      */
     M read(XMLStreamReader inputSource) throws ContributionReadException, XMLStreamException;
     
     /**
      * Writes a model to an ouput source. Examples of output sources are: a URI, a
      * DOM node, an XML writer.
-     * @param source
-     * @return a model representation of the source.
+     * 
+     * @param model A model representing the source
+     * @param outputSource The output source
+     * @throws ContributionWriteException
+     * @throws XMLStreamException
      */
     void write(M model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException;
     
     /**
-     * Returns the type of artifact handled by this artifact processor. 
-     * @return the type of artifact handled by this artifact processor
+     * Returns the type of artifact handled by this artifact processor.
+     *  
+     * @return The type of artifact handled by this artifact processor
      */
     QName getArtifactType();
-
 }

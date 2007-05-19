@@ -33,6 +33,11 @@ import org.apache.tuscany.sca.contribution.ContentType;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 
+/**
+ * Jar Contribution package processor
+ * 
+ * @version $Rev$ $Date$
+ */
 public class JarContributionProcessor implements PackageProcessor {
     /**
      * Package-type that this package processor can handle

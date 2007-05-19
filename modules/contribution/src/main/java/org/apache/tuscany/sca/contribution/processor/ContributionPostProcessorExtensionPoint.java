@@ -28,13 +28,15 @@ public interface ContributionPostProcessorExtensionPoint {
     
     /**
      * Add a ContributionPostProcessor
-     * @param processor
+     * 
+     * @param processor The post processor
      */
     void addPostProcessor(ContributionPostProcessor processor);
     
     /**
      * Remove a ContributionPostProcessor
-     * @param processor
+     * 
+     * @param processor The post processor
      */
     void removePostProcessor(ContributionPostProcessor processor);
 }

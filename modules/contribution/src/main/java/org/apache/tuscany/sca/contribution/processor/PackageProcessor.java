@@ -28,14 +28,15 @@ import java.util.List;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 
 /**
- * Interface for services that can process contributions.
+ * Contribution package processors
+ * These processors understand the internal format of the contribution and how to process the artifacts
  * 
  * @version $Rev$ $Date$
  */
 public interface PackageProcessor {
     
     /**
-     * Returns the type of package processed by this package processor.
+     * Returns the type of package supported by this package processor.
      * 
      * @return the package type
      */
@@ -44,20 +45,22 @@ public interface PackageProcessor {
     /**
      * Retrieve a list of artifacts for the specific package type
      * 
-     * @param packageSourceURL location of the artifact
-     * @param inputStream optional content of the package
-     * @return
+     * @param packageSourceURL Contribution package location URL
+     * @param inputStream Optional content of the package
+     * @return List of artifact URIs
      * @throws ContributionException
      * @throws IOException
      */
     List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException, IOException;
 
     /**
-     * Return the URL for an artifact in the package
+     * Return the URL for an artifact in the package.
+     * This is needed in the case of special archives such as jar files that have special 
+     * URL structure for internal artifacts
      * 
-     * @param packageSourceURL The package URL
+     * @param packageSourceURL Contribution package location URL
      * @param artifact The relative URI for the artifact
-     * @return
+     * @return The artifact URL
      */
     URL getArtifactURL(URL packageSourceURL, URI artifact) throws MalformedURLException;
 

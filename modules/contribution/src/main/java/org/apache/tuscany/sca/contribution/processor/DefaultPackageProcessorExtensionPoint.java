@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.contribution.processor;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Default implementation of ContributionProcessorRegistry
  * 

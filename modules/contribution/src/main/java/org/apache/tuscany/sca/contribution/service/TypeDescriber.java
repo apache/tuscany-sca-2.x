@@ -28,9 +28,11 @@ import java.net.URL;
  */
 public interface TypeDescriber {
     /**
-     * @param resourceURL the resource url
-     * @param defaultType the default content type
-     * @return the content type
+     * Get the content type for the specified resource
+     * 
+     * @param resourceURL The resource url
+     * @param defaultType The default content type
+     * @return The content type
      */
     String getType(URL resourceURL, String defaultType);
 }

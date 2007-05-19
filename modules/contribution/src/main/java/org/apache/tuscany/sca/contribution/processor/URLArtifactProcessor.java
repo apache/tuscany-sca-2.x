@@ -34,16 +34,18 @@ public interface URLArtifactProcessor<M> extends ArtifactProcessor<M> {
     /**
      * Reads a model from an input source. Examples of input 
      * sources are: a URI, a DOM node, an XML reader.
-     * @param contributionURL
-     * @param artifactURI
-     * @param artifactURL
-     * @return a model representation of the input.
+     * 
+     * @param contributionURL Contribution location URL
+     * @param artifactURI Artifact URI
+     * @param artifactURL Artifact location URL 
+     * @return A model representation of the input.
      */
     M read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException;
     
     /**
-     * Returns the type of artifact handled by this artifact processor. 
-     * @return the type of artifact handled by this artifact processor
+     * Returns the type of artifact handled by this artifact processor.
+     *  
+     * @return The type of artifact handled by this artifact processor
      */
     String getArtifactType();
 

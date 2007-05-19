@@ -19,34 +19,37 @@
 
 package org.apache.tuscany.sca.contribution;
 
-
 /**
+ * Contribution model object factory
  * 
+ * @version $Rev$ $Date$
  */
 public interface ContributionFactory {
-    
+    /**
+     * Create a contribution model object
+     * 
+     * @return The new contribution model object
+     */
+    Contribution createContribution();
+        
     /**
      * Create a deployedArtifact model object
-     * @return
+     * 
+     * @return The new deployedArtifact model object
      */
     DeployedArtifact createDeployedArtifact();
     
     /**
-     * Create a contribution model object
-     * @return
-     */
-    Contribution createContribution();
-    
-    /**
      * Create a contribution import model
-     * @return
+     * 
+     * @return The new ContributionImport model object
      */
     ContributionImport createContributionImport();
     
     /**
      * Create a contribution import model
-     * @return
+     * 
+     * @return The new ContributoinExport object
      */
     ContributionExport createContributionExport();
-    
 }
