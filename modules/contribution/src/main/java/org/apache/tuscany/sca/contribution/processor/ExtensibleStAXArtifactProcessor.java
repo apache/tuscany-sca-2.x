@@ -106,9 +106,9 @@ public class ExtensibleStAXArtifactProcessor
     
     /**
      * Read a model from an input stream.
-     * @param is
-     * @param type
-     * @return
+     * @param is The artifact inputstream
+     * @param type Model type
+     * @return The model
      * @throws ContributionReadException
      */
     public <MO> MO read(InputStream is, Class<MO> type) throws ContributionReadException {

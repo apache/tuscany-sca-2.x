@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.service;
 
-
 /**
  * Denotes a problem while resolving models inside an SCA contribution.
  *

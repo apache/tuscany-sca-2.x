@@ -19,24 +19,38 @@
 
 package org.apache.tuscany.sca.contribution;
 
+/**
+ * Identifies internal content types for contribution package and artifacts
+ * 
+ * @version $Rev$ $Date$
+ */
 public interface ContentType {
     /**
-     * Archive specific content types
+     * Java compressed contribution package
      */
     String JAR = "application/x-compressed";
-    String FOLDER = "application/vnd.tuscany.folder";
-
     /**
-     * Artifact/File specific content types
+     * Filesystem folder contribution package
+     */
+    String FOLDER = "application/vnd.tuscany.folder";
+    /**
+     * Contribution metadata file
      */
     String CONTRIBUTION_METADATA = "application/vnd.tuscany.contribution.metadata";
+    /**
+     * SCA Composite description file
+     */
     String COMPOSITE = "application/vnd.tuscany.composite";
+    /**
+     * WSDL file
+     */
     String WSDL = "application/vnd.tuscany.wsdl";
+    /**
+     * Java source/binary file
+     */
     String JAVA = "application/java-vm";
-    
     /**
      * Unkown contentType
      */
-    String UNKNOWN = "content/unknown";
- 
+    String UNKNOWN = "content/unknown"; 
 }

@@ -28,28 +28,30 @@ public interface ArtifactProcessorExtensionPoint<P extends ArtifactProcessor> {
     /**
      * Add an artifact processor.
      * 
-     * @param artifactProcessor the artifact processor to add
+     * @param artifactProcessor The artifact processor to add
      */
     void addArtifactProcessor(P artifactProcessor);
 
     /**
      * Remove an artifact processor.
      * 
-     * @param artifactProcessor the artifact processor to remove
+     * @param artifactProcessor The artifact processor to remove
      */
     void removeArtifactProcessor(P artifactProcessor);
 
     /**
      * Returns the processor associated with the given artifact type.
-     * @param artifactType an artifact type
-     * @return the processor associated with the given artifact type
+     * 
+     * @param artifactType An artifact type
+     * @return The processor associated with the given artifact type
      */
     P getProcessor(Object artifactType);
     
     /**
      * Returns the processor associated with the given model type.
-     * @param modelType a model type
-     * @return the processor associated with the given model type
+     * 
+     * @param modelType A model type
+     * @return The processor associated with the given model type
      */
     P getProcessor(Class<?> modelType);
     

@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.contribution.processor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
-
-
 /**
  * Interface for extensions that can process contributions.
  * 
@@ -34,14 +32,16 @@ public interface ArtifactProcessor<M> {
      * Resolve references from this model to other models. For example references
      * from a composite to another one, or references from a composite to a WSDL
      * model.
-     * @param model the model to resolve
-     * @param the resolver to use to resolve referenced models
+     * 
+     * @param model The model to resolve
+     * @param resolver The resolver to use to resolve referenced models
      */
     void resolve(M model, ModelResolver resolver) throws ContributionResolveException;
     
     /**
      * Returns the type of model handled by this artifact processor.
-     * @return the type of model handled by this artifact processor
+     * 
+     * @return The type of model handled by this artifact processor
      */
     Class<M> getModelType(); 
     

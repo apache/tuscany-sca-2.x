@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.contribution.service.impl;
 
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 
-
 /**
  * Exception that indicates that the supplied contribution URI is invalid or inexistent.
  *

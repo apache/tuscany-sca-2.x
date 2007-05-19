@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.service;
 
-
 /**
  * Base class for runtime exceptions raised by contribution services.
  *

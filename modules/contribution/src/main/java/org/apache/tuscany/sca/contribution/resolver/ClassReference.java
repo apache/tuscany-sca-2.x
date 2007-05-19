@@ -35,7 +35,7 @@ public class ClassReference {
     /**
      * Constructs a new ClassReference.
      * 
-     * @param clazz
+     * @param clazz The class reference
      */
     public ClassReference(Class clazz) {
         this.clazz = new WeakReference<Class>(clazz);
@@ -45,7 +45,7 @@ public class ClassReference {
     /**
      * Constructs a new ClassReference.
      * 
-     * @param className
+     * @param className The class name
      */
     public ClassReference(String className) {
         this.className = className;
@@ -53,7 +53,8 @@ public class ClassReference {
     
     /**
      * Get the referenced class.
-     * @return
+     * 
+     * @return The referenced class
      */
     public Class getJavaClass() {
         if (clazz != null) {
@@ -65,7 +66,8 @@ public class ClassReference {
     
     /**
      * Get the referenced class name.
-     * @return
+     * 
+     * @return The class name
      */
     public String getClassName() {
         return className;
@@ -74,7 +76,7 @@ public class ClassReference {
     /**
      * Returns true if the class reference is unresolved.
      * 
-     * @return
+     * @return Wether or not the class has been resolved
      */
     boolean isUnresolved() {
         return clazz == null;

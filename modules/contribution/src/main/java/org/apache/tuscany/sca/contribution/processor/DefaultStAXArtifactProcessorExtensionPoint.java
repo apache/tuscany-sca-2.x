@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.processor;
 
-
-
 /**
  * The default implementation of an extension point for StAX artifact processors.
  * 

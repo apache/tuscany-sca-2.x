@@ -34,6 +34,11 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
+/**
+ * Folder contribution package processor
+ * 
+ * @version $Rev$ $Date$
+ */
 public class FolderContributionProcessor implements PackageProcessor {
     /**
      * Package-type that this package processor can handle
@@ -72,9 +77,9 @@ public class FolderContributionProcessor implements PackageProcessor {
     }
 
     /**
-     * Get a list of files from the directory
+     * Get a list of artifact URI from the folder
      * 
-     * @return
+     * @return The list of artifact URI for the folder
      * @throws IOException
      */
     public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException,

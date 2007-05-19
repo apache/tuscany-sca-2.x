@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.contribution;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
-
 /**
  * The representation of an export for the contribution
  * 
@@ -30,14 +29,16 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 public interface ContributionExport {
 
     /**
-     * Get Namespace that identifies the import
-     * @return
+     * Get Namespace that identifies the export
+     * 
+     * @return The exported namespace
      */
     String getNamespace();
 
     /**
-     * Set Namespace that identifies the import
-     * @param namespace
+     * Set Namespace that identifies the export
+     * 
+     * @param namespace The exported namespace
      */
     void setNamespace(String namespace);
     
@@ -45,7 +46,7 @@ public interface ContributionExport {
      * Returns the model resolver for the models representing artifacts
      * made available by this export.
      * 
-     * @return
+     * @return The model resolver
      */
     ModelResolver getModelResolver();
     

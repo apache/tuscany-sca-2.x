@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.contribution.service;
 
+/**
+ * Denotes an exception while processing the contribution metadata
+ * 
+ * @version $Rev$ $Date$
+ */
 public class ContributionMetadataLoaderException extends ContributionException {
     private static final long serialVersionUID = 2442537028550702609L;
 

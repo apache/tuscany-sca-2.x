@@ -19,27 +19,31 @@
 package org.apache.tuscany.sca.contribution.processor;
 
 /**
+ * An extension point for package processors
+ * 
  * @version $Rev$ $Date$
  */
 public interface PackageProcessorExtensionPoint {
     
     /**
      * Register a PackageProcessor using the package type as the key
-     * @param processor
+     * 
+     * @param processor The package processor
      */
     void addPackageProcessor(PackageProcessor processor);
     
     /**
      * Unregister a PackageProcessor
-     * @param processor
+     * 
+     * @param processor The package processor
      */
     void removePackageProcessor(PackageProcessor processor);
     
     /**
      * Returns the PackageProcessor for the given package type.
      * 
-     * @param packageType
-     * @return
+     * @param packageType The package type
+     * @return The package processor
      */
     PackageProcessor getPackageProcessor(String packageType);
     

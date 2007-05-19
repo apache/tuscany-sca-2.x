@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.contribution;
 
-
 /**
  * Representation of a deployed artifact
  *
@@ -28,14 +27,16 @@ package org.apache.tuscany.sca.contribution;
 public interface DeployedArtifact extends Artifact {
     
     /**
-     * Get the model associated with this artifact
-     * @return
+     * Get the assembly model associated with this artifact
+     * 
+     * @return The assembly model
      */
     Object getModel();
     
     /**
-     * Set the model associated with this artifact
-     * @param modelObject
+     * Set the assembly model associated with this artifact
+     * 
+     * @param modelObject The assembly model
      */
     void setModel(Object modelObject);
     
