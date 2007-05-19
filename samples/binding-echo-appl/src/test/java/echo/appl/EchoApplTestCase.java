@@ -19,12 +19,38 @@
 
 package echo.appl;
 
-import echo.client.EchoBindingClient;
 import junit.framework.TestCase;
 
-public class EchoApplTestCase extends TestCase {
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-    public void test() throws Exception {
-        EchoBindingClient.main(null);
+import echo.server.EchoServer;
+
+public class EchoApplTestCase extends TestCase {
+    
+    private SCADomain scaDomain;
+    
+    @Override
+    protected void setUp() throws Exception {
+        scaDomain  = SCADomain.newInstance("EchoBinding.composite");
+    }
+    
+    @Override
+    protected void tearDown() throws Exception {
+        scaDomain.close();
+    }
+
+    public void testReference() throws Exception {
+        // Call the echo service component which will, in turn, call a reference
+        // with an echo binding. The echo binding will echo the given string.
+        Echo service = scaDomain.getService(Echo.class, "EchoComponent");
+        String echoString = service.echo("foo");
+        assertEquals(echoString, "foo");
+    }
+    
+    public void testService() throws Exception {
+        // Call the echo server. This will dispatch the call to a service with an 
+        // echo binding. The echo binding will pass the call to the echo component.
+        String echoString = EchoServer.getServer().sendReceive("EchoComponent/EchoService", "bar");
+        assertEquals(echoString, "bar");
     }
 }

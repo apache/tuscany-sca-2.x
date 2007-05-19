@@ -17,37 +17,41 @@
  * under the License.    
  */
 
-package crud;
+package crud.client;
 
-import crud.CRUD;
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-/**
- * @version $Rev$ $Date$
- */
-public class CRUDClient {
+import crud.CRUD;
 
-    public static void main(String[] args) throws Exception {
+public class CRUDTestCase extends TestCase {
+    
+    private SCADomain scaDomain;
+    
+    @Override
+    protected void setUp() throws Exception {
+        scaDomain = SCADomain.newInstance("crud.composite");
+    }
+    
+    @Override
+    protected void tearDown() throws Exception {
+        scaDomain.close();
+    }
 
-        SCADomain scaDomain = SCADomain.newInstance("crudclient.composite");
+    public void test() throws Exception {
         CRUD crudService = scaDomain.getService(CRUD.class, "CRUDServiceComponent");
         
         String id = crudService.create("ABC");
         Object result = crudService.retrieve(id);
-        System.out.println("Result from create: " + result);
+        assertEquals(result, "ABC");
+
         crudService.update(id, "EFG");
         result = crudService.retrieve(id);
-        System.out.println("Result from update: " + result);
+        assertEquals(result, "EFG");
+        
         crudService.delete(id);
         result = crudService.retrieve(id);
-        if (result == null) {
-            System.out.println("Result from delete: null");
-        } else {
-            System.out.println("Result from delete: should be null but was " + result);
-        }
-        
-        scaDomain.close();
-
+        assertNull(result);
     }
-
 }
