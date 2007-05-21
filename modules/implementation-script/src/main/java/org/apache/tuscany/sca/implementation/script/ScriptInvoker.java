@@ -24,6 +24,8 @@ import java.lang.reflect.InvocationTargetException;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -33,22 +35,35 @@ import org.apache.tuscany.sca.invocation.Message;
 public class ScriptInvoker implements Invoker {
 
     protected ScriptImplementationProvider provider;
-    protected String operationName;
+    protected Operation operation;
 
     /**
      * TODO: passing in the impl is a bit of a hack to get at scriptEngine as thats all this uses
      * but its not created till the start method which is called after the invokers are created 
      */
-    public ScriptInvoker(ScriptImplementationProvider provider, String operationName) {
+    public ScriptInvoker(ScriptImplementationProvider provider, Operation operation) {
         this.provider = provider;
-        this.operationName = operationName;
+        
+        // Use the Operation instead of the Operation name as it may be a dynamic
+        // operation so the name may change at runtime
+        this.operation = operation;
     }
 
     private Object doInvoke(Object[] objects) throws InvocationTargetException {
         try {
 
-            return ((Invocable)provider.scriptEngine).invokeFunction(operationName, objects);
+            if (provider.xmlHelper != null) {
+                objects[0] = provider.xmlHelper.toScriptXML((OMElement)objects[0]);
+            }
+            
+            Object response = ((Invocable)provider.scriptEngine).invokeFunction(operation.getName(), objects);
+            
+            if (provider.xmlHelper != null) {
+                response = provider.xmlHelper.toOMElement(response);
+            }
 
+            return response;
+            
         } catch (ScriptException e) {
             throw new InvocationTargetException(e);
         }

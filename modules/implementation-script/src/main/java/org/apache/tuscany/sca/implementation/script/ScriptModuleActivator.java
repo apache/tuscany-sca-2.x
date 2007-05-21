@@ -29,7 +29,10 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 public class ScriptModuleActivator implements ModuleActivator {
 
@@ -46,10 +49,18 @@ public class ScriptModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
-        PropertyValueObjectFactory propertyFactory = new PropertyValueObjectFactory(mediator);
+
+        final PropertyValueObjectFactory propertyFactory = new PropertyValueObjectFactory(mediator);
 
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        providerFactories.addProviderFactory(new ScriptImplementationProviderFactory(propertyFactory));
+
+        providerFactories.addProviderFactory(new ImplementationProviderFactory<ScriptImplementation>() {
+            public ImplementationProvider createImplementationProvider(RuntimeComponent rc, ScriptImplementation impl) {
+                return new ScriptImplementationProvider(rc, impl, propertyFactory);
+            }
+            public Class<ScriptImplementation> getModelType() {
+                return ScriptImplementation.class;
+            }});
     }
 
     public void stop(ExtensionPointRegistry registry) {

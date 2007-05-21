@@ -45,6 +45,7 @@ public class OperationImpl implements Operation {
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
     private String dataBinding;
+    private boolean dynamic;
 
     /**
      * @param name
@@ -280,6 +281,14 @@ public class OperationImpl implements Operation {
 
     public void setDataBinding(String dataBinding) {
         this.dataBinding = dataBinding;
+    }
+
+    public boolean isDynamic() {
+        return dynamic;
+    }
+
+    public void setDynamic(boolean b) {
+        this.dynamic = b;
     }
 
 }

@@ -115,4 +115,8 @@ public class BeanJavaInterfaceImpl implements JavaInterface {
 
     public void setDefaultDataBinding(String dataBinding) {
     }
+
+    public boolean isDynamic() {
+        return false;
+    }
 }

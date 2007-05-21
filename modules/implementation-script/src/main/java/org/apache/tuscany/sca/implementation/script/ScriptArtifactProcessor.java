@@ -54,26 +54,40 @@ public class ScriptArtifactProcessor extends AbstractStAXArtifactProcessor<Scrip
     }
 
     public ScriptImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        String scriptName = reader.getAttributeValue(null, "script");
 
+        String scriptName = reader.getAttributeValue(null, "script");
         String scriptLanguage = reader.getAttributeValue(null, "language");
+
+        String scriptSrc;
+        if (scriptName == null) {
+            scriptSrc = reader.getElementText();
+        } else {
+            scriptSrc = ResourceHelper.readResource(scriptName);
+        }
+
+        if (scriptLanguage == null && scriptName == null) {
+            throw new IllegalArgumentException("must specify language attribute for inline scripst");
+        }
+
         if (scriptLanguage == null || scriptLanguage.length() < 1) {
             int i = scriptName.lastIndexOf('.');
             scriptLanguage = scriptName.substring(i+1);
         }
 
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && IMPLEMENTATION_SCRIPT_QNAME.equals(reader.getName())) {
+            int x = reader.next();
+            if (x == END_ELEMENT && IMPLEMENTATION_SCRIPT_QNAME.equals(reader.getName())) {
                 break;
             }
         }
 
-        String scriptSrc = ResourceHelper.readResource(scriptName);
         ScriptImplementation scriptImpl = new ScriptImplementation(scriptName, scriptLanguage, scriptSrc);
 
-        // TODO: How to get the script URI? Should use the contrabution service
+        // TODO: How to get the script URI? Should use the contribution service
         //   the uri is used in the resolve method (perhaps incorrectly?) to get the .componentType sidefile
-        scriptImpl.setURI(Thread.currentThread().getContextClassLoader().getResource(scriptName).toString());
+        if (scriptName != null) {
+            scriptImpl.setURI(Thread.currentThread().getContextClassLoader().getResource(scriptName).toString());
+        }
 
         return scriptImpl;
     }

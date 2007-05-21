@@ -102,7 +102,10 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
     private InvocationChain getInvocationChain(Method method) {
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation operation = chain.getSourceOperation();
-            if (match(operation, method)) {
+            if (operation.isDynamic()) {
+            	operation.setName(method.getName());
+            	return chain;
+            } else if (match(operation, method)) {
                 return chain;
             }
         }

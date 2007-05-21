@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
@@ -554,6 +555,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 component.setAutowire(true);
             }
 
+            if (component.getImplementation() instanceof ComponentPreProcessor) {
+                ((ComponentPreProcessor)component.getImplementation()).preProcess(component);   
+            }
             
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();

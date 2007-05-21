@@ -83,4 +83,11 @@ public interface Interface {
      */
     void setDefaultDataBinding(String dataBinding);
 
+    /**
+     * Returns true if the Interaface is dynamic.
+     * 
+     * @return true if the Interface is dynamic.
+     */
+    boolean isDynamic();
+
 }

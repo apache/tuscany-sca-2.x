@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
-import org.apache.tuscany.implementation.spi.AbstractImplementation;
-import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.implementation.spi.DynamicImplementation;
 
 /**
  * Represents a Script implementation.
  */
-public class ScriptImplementation extends AbstractImplementation implements Implementation {
+public class ScriptImplementation extends DynamicImplementation {
 
     protected String scriptName;
     protected String scriptSrc;
