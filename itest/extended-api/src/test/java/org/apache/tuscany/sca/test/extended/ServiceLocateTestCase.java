@@ -30,21 +30,33 @@ public class ServiceLocateTestCase {
 
     private SCADomain domain;
 
+    /**
+     * Test description: Locate a service using Domain.getService() from an
+     * unmanaged client and invoke a method on that service
+     */
     @Test
     public void unmanagedLocateService() {
         BasicService service = domain.getService(BasicService.class, "BasicServiceComponent");
         assertEquals(-99, service.negate(99));
     }
 
+    /**
+     * Test description: Locate a service using Domain.getService() from an
+     * managed client.  A service is located from this unmanaged test client and a method
+     * is invoked.  The method implementation of the service will also use Domain.getService
+     */
     @Test
     public void managedLocateService() {
         BasicService service = domain.getService(BasicService.class, "BasicServiceComponent");
         assertEquals(-99, service.delegateNegate(99));
     }
 
+    /**
+     * Test description: Attempt to locate a service with an invalid name.
+     */
     @Test(expected = ServiceRuntimeException.class)
     public void badComponentName() {
-        domain.getService(BasicService.class, "IvalidComponentName");
+        domain.getService(BasicService.class, "IvalidServiceName");
     }
 
     @Before
