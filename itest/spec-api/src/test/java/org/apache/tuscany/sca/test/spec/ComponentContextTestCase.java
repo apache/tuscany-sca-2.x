@@ -29,12 +29,20 @@ public class ComponentContextTestCase {
 
     private SCADomain domain;
 
+    /**
+     * Test description: Locate a service and invoke a method.
+     */
     @Test
     public void simpleLocate() {
         BasicService service = domain.getService(BasicService.class, "BasicServiceComponent");
         assertEquals(-99, service.negate(99));
     }
 
+    /**
+     * Test description: Locate a service that will then locate another service
+     * via a defined reference by means of: 
+     * ComponentContext.getService(Class<B>businessInterface, String referenceName);
+     */
     @Test
     public void delegateViaDefinedReference() {
         BasicService service = domain.getService(BasicService.class, "BasicServiceComponent");
