@@ -107,7 +107,7 @@
                             <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.osoa</groupId>
+                                    <groupId>org.apache.tuscany.sca</groupId>
                                     <artifactId>sca-api</artifactId>
                                     <classifier>javadoc</classifier>
                                     <version>${pom.version}</version>
