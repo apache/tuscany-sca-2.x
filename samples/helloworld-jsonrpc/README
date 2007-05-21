@@ -55,7 +55,7 @@ follows
 cd helloworld-jsonrpc
 ant package
 
-This should result in a war file (sample-calculator-web.war) in the target 
+This should result in a war file (sample-helloworldjsonrpc.war) in the target 
 directory. Copy this war file to your web app deployment directory in you
 web app container. 
 
