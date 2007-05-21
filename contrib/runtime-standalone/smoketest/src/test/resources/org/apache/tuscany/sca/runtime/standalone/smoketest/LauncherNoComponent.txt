@@ -1,1 +1,0 @@
-No component found with id "http://no.such.component"
