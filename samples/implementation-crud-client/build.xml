@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="implementation-crud-client" default="compile">
-    <property name="test.class" value="crud.CRUDClient" />
+    <property name="test.class" value="crud.client.CRUDClient" />
 	<property name="test.jar"   value="sample-implementation-crud-client.jar" />
 	
     <target name="init">
