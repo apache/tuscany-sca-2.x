@@ -45,7 +45,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.osoa</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>sca-api</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>compile</scope>
