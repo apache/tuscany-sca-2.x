@@ -6,6 +6,17 @@
 
     <script language="JavaScript">
 
+       function clickButton(e, buttonid){
+          var evt = e ? e : window.event;
+          var bt = document.getElementById(buttonid);
+          if (bt){
+              if (evt.keyCode == 13){
+                  bt.click();
+                  return false;
+              }
+          }
+       } 
+       
        ChatReference.chat = function(msg) {
           var chatLog = document.getElementById('chatLog');
           chatLog.innerHTML = msg + '<br>' + chatLog.innerHTML;
@@ -31,8 +42,8 @@
       Nickname: <input type="text" id="nickName" size="10"/>
       <br><br>
 
-      Enter text: <input type="text" id="chatText" size="80" onEnter="sendChat()"/>
-      <input type="button" value="Send" onclick="sendChat()" />
+      Enter text: <input type="text" id="chatText" size="80" onkeypress="return clickButton(event,'Send')"/>
+      <input type="button" name="Send" value="Send" id="Send" onclick="sendChat()" />
 
       <br><br>
       <div id="chatLog" style="overflow:auto; height:400px; border:1px solid"></div>
