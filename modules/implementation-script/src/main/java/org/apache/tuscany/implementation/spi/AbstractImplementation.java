@@ -98,4 +98,22 @@ public abstract class AbstractImplementation implements Implementation {
         this.unresolved = unresolved;
     }
 
+    public Service getService(String name) {
+        for (Service service : getServices()) {
+            if (service.getName().equals(name)) {
+                return service;
+            }
+        }
+        return null;
+    }
+
+    public Reference getReference(String name) {
+        for (Reference reference : getReferences()) {
+            if (reference.getName().equals(name)) {
+                return reference;
+            }
+        }
+        return null;
+    }
+
 }

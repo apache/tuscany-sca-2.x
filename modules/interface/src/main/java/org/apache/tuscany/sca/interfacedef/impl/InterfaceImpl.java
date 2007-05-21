@@ -157,4 +157,8 @@ public class InterfaceImpl implements Interface {
         }
     }
 
+    public boolean isDynamic() {
+        return false;
+    }
+
 }

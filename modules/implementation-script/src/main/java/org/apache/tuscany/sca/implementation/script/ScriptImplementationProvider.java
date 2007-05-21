@@ -25,15 +25,20 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.bsf.xml.XMLHelper;
 import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -48,6 +53,7 @@ public class ScriptImplementationProvider implements ImplementationProvider {
     protected ScriptImplementation implementation;
     protected ScriptEngine scriptEngine;
     protected PropertyValueObjectFactory propertyFactory;
+    protected XMLHelper xmlHelper;
 
     public ScriptImplementationProvider(RuntimeComponent component, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
         this.component = component;
@@ -56,11 +62,11 @@ public class ScriptImplementationProvider implements ImplementationProvider {
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        return new ScriptInvoker(this, operation.getName());
+        return new ScriptInvoker(this, operation);
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
-        return new ScriptInvoker(this, operation.getName());
+        return new ScriptInvoker(this, operation);
     }
     
     public void start() {
@@ -88,6 +94,16 @@ public class ScriptImplementationProvider implements ImplementationProvider {
 
         } catch (ScriptException e) {
             throw new ObjectCreationException(e);
+        }
+
+        // set the databinding and xmlhelper for wsdl interfaces
+        for (Service service : component.getServices()) {
+            InterfaceContract ic = service.getInterfaceContract();
+            if (ic instanceof WSDLInterfaceContract) {
+                // Set to use the Axiom data binding
+                ic.getInterface().setDefaultDataBinding(OMElement.class.getName());
+                this.xmlHelper = XMLHelper.getArgHelper(scriptEngine);
+            }
         }
     }
     

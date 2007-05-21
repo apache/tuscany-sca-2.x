@@ -129,6 +129,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             // Shortcut for performance
             return true;
         }
+
+        if (source.getInterface().isDynamic() || target.getInterface().isDynamic()) {
+            return true;
+        }
+        
         if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
             if (!silent) {
                 throw new IncompatibleInterfaceContractException("Remotable settings do not match", source, target);
@@ -211,6 +216,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source == null || target == null) {
             return false;
         }
+        
+        if (source.isDynamic() || target.isDynamic()) {
+            return true;
+        }
+        
         if (source.isRemotable() != target.isRemotable()) {
             return false;
         }
@@ -243,7 +253,9 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      *      org.apache.tuscany.sca.interfacedef.Operation)
      */
     public Operation map(Interface target, Operation source) {
-        if (target.isRemotable()) {
+        if (target.isDynamic()) {
+            return source;
+        } else if (target.isRemotable()) {
             for (Operation op : target.getOperations()) {
                 if (op.getName().equals(source.getName())) {
                     return op;

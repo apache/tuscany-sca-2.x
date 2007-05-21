@@ -157,4 +157,17 @@ public interface Operation {
      * @param dataBinding
      */
     void setDataBinding(String dataBinding);
+    
+    /**
+     * Returns true if the operation is dynamic.
+     * 
+     * @return true if the operation is dynamic otherwise false
+     */
+    boolean isDynamic();
+
+    /**
+     * Set if the operation is dynamic
+     * @param b
+     */
+    void setDynamic(boolean b);
 }
