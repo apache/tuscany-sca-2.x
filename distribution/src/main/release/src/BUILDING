@@ -22,7 +22,7 @@ Building
 1) Change to the top level directory of Apache Tuscany source distribution.
 2) Run
 
-	$> mvn.
+	$> mvn
 
    This will compile Apache Tuscany and run all of the tests in the source
    distribution. 
@@ -33,4 +33,16 @@ Building
    maven to download required dependencies in the first build. Once all the 
    dependencies have been downloaded you may use the -o option to run maven
    in offline mode, for example, 'mvn clean install -o'.
+
+
+Building the distributions
+--------------------------
+
+1) Change to the distributions folder
+2) Run
+
+	$> mvn
+
+   This will build the binary and source distribution with .zip and .gz 
+   formats in the distribution/target directory.
 
