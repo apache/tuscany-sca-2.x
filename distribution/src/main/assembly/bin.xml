@@ -83,6 +83,8 @@
 				<exclude>calculator-web/target/sample-calculator-web/**/*</exclude>
 				<exclude>helloworld-jsonrpc/target/sample-helloworldjsonrpc</exclude>
 				<exclude>helloworld-jsonrpc/target/sample-helloworldjsonrpc/**/*</exclude>
+                        <exclude>helloworld-jsonrpc/target/dojo-download</exclude>
+                        <exclude>helloworld-jsonrpc/target/dojo-download/**/*</exclude>
 				<exclude>loanapplication</exclude>
 				<exclude>loanapplication/**/*</exclude>
 				<exclude>*/.classpath</exclude>
