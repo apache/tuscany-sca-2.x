@@ -1,9 +1,0 @@
-<binding xmlns="http://www.castor.org/SourceGenerator/Binding" 
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-            defaultBinding="type">
-
-   <elementBinding name="complexType:PurchaseOrderType/items">
-      <java-class name="ItemsElement"/>
-   </elementBinding>	
-
-</binding>
