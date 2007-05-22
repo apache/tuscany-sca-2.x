@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.ajax;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -38,12 +37,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * ajax service and reference providers with the Tuscany runtime.
  */
 public class AjaxModuleActivator implements ModuleActivator {
+    AjaxBindingSCDLProcessor ajaxBindingProcessor;
 
     public void start(ExtensionPointRegistry registry) {
-
+        ajaxBindingProcessor =  new AjaxBindingSCDLProcessor(); 
+        
         // Add the ajax binding SCDL processor to the runtime
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessors.addArtifactProcessor(new AjaxBindingSCDLProcessor());
+        staxProcessors.addArtifactProcessor(ajaxBindingProcessor);
 
         final ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
         
@@ -65,7 +66,9 @@ public class AjaxModuleActivator implements ModuleActivator {
     public void stop(ExtensionPointRegistry registry) {
         // Remove the ajax binding SCDL processor from the runtime
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessors.removeArtifactProcessor((StAXArtifactProcessor)staxProcessors.getProcessor(AjaxBindingSCDLProcessor.class));
+        if ( staxProcessors != null) {
+            staxProcessors.removeArtifactProcessor(ajaxBindingProcessor);
+        }
 
         // Remove the ajax provider factory from the runtime
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
