@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.script;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
@@ -49,31 +47,25 @@ public class ScriptInvoker implements Invoker {
         this.operation = operation;
     }
 
-    private Object doInvoke(Object[] objects) throws InvocationTargetException {
-        try {
-
-            if (provider.xmlHelper != null) {
-                objects[0] = provider.xmlHelper.toScriptXML((OMElement)objects[0]);
-            }
-            
-            Object response = ((Invocable)provider.scriptEngine).invokeFunction(operation.getName(), objects);
-            
-            if (provider.xmlHelper != null) {
-                response = provider.xmlHelper.toOMElement(response);
-            }
-
-            return response;
-            
-        } catch (ScriptException e) {
-            throw new InvocationTargetException(e);
+    private Object doInvoke(Object[] objects) throws ScriptException {
+        if (provider.xmlHelper != null) {
+            objects[0] = provider.xmlHelper.toScriptXML((OMElement)objects[0]);
         }
+        
+        Object response = ((Invocable)provider.scriptEngine).invokeFunction(operation.getName(), objects);
+        
+        if (provider.xmlHelper != null) {
+            response = provider.xmlHelper.toOMElement(response);
+        }
+
+        return response;
     }
 
     public Message invoke(Message msg) {
         try {
             Object resp = doInvoke((Object[])msg.getBody());
             msg.setBody(resp);
-        } catch (InvocationTargetException e) {
+        } catch (ScriptException e) {
             msg.setFaultBody(e.getCause());
         }
         return msg;

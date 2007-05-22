@@ -47,8 +47,4 @@ public class ScriptImplementation extends DynamicImplementation {
         return scriptSrc;
     }
 
-    public void setScriptSrc(String scriptSrc) {
-        this.scriptSrc = scriptSrc;
-    }
-
 }
