@@ -13,7 +13,7 @@ first.
 If you just want to run it to see what happens open a command prompt, navigate
 to this sample directory and do:
 
-ant -f build-server.xml run
+ant run
 
 OR if you don't have ant, on Windows do
 
@@ -24,9 +24,9 @@ and on *nix do
 java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-service.jar calculator.CalculatorServer
 
 Now you have the server running you need to open another command prompt, navigate
-to this sample directory and do:
+to the calculator-rmi-reference sample directory and do:
 
-ant -f build-client.xml run
+ant run
 
 OR if you don't have ant, on Windows do
 
@@ -68,8 +68,7 @@ calculator-rmi-service/
         CalculatorRMIServer.composite - the SCA assembly for this sample
   calculator-rmi-service.png     - a pictorial representation of the 
                                     .composite file
-  build-server.xml                - the Ant build file for the server
-  build-client.xml                - the Ant build file for the client
+  build.xml                       - the Ant build file for the server
   pom.xml                         - the Maven build file   
   
 Note. As this test creates and uses local network connections you may need to 
@@ -86,8 +85,8 @@ which exposes an RMI service. Start a new console and use the following
 commands.
 
 cd calculator-rmi-service
-ant -f build-server.xml compile
-ant -f build-server.xml run
+ant compile
+ant run
 
 This will run up the server and display the following.
 
@@ -100,9 +99,9 @@ The client is very similar to the calculator sample
 It locates the RMI service that the SCA runtime is exposing and calls each of 
 the calculator operations. Start a new console and use the following commands. 
 
-cd calculator-rmi-service
-ant -f build-client.xml compile
-ant -f build-client.xml
+cd calculator-rmi-reference
+ant compile
+ant run
 
 You should see the following output from the run target.
 

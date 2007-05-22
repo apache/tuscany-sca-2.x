@@ -8,23 +8,23 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens open a command prompt, navigate
-to this sample directory and do:
+If you just want to run it to see what happens open a command prompt, first 
+navigate to the calculator-rmi-service sample and do:
 
-ant -f build-server.xml run
+ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-rmi-reference.jar calculator.CalculatorServer
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-rmi-service.jar calculator.CalculatorServer
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-reference.jar calculator.CalculatorServer
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-rmi-service.jar calculator.CalculatorServer
 
 Now you have the server running you need to open another command prompt, navigate
 to this sample directory and do:
 
-ant -f build-client.xml run
+ant run
 
 OR if you don't have ant, on Windows do
 
@@ -68,8 +68,7 @@ calculator-rmi-reference/
         CalculatorRMIReference.composite - the SCA assembly for this sample
   calculator-rmi-reference.png    - a pictorial representation of the 
                                     .composite file
-  build-server.xml                - the Ant build file for the server
-  build-client.xml                - the Ant build file for the client
+  build.xml                       - the Ant build file for the client
   pom.xml                         - the Maven build file   
   
 Note. As this test creates and uses local network connections you may need to 
@@ -84,9 +83,9 @@ build files are used to support client and server functions.
 The server provides an RMI server that the acts as a target for the SCA RMI 
 bindings. Start a new console and use the following commands.
 
-cd calculator-rmi-reference
-ant -f build-server.xml compile
-ant -f build-server.xml run
+cd calculator-rmi-service
+ant compile
+ant run
 
 This will run up the server and display the following.
 
@@ -100,8 +99,8 @@ make calls out the the RMI server you started in the previous step. Start
 a new console and use the following commands. 
 
 cd calculator-rmi-reference
-ant -f build-client.xml compile
-ant -f build-client.xml run
+ant compile
+ant run
 
 You should see the following output from the run target.
 
@@ -135,4 +134,5 @@ Results :
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 This shows that the Junit test cases have run successfully.
+
 
