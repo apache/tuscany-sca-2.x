@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<wsdl:definitions targetNamespace="http://stockquote" xmlns:tns="http://stockquote" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="stockquote">
+
+    <wsdl:types>
+        <schema elementFormDefault="qualified" targetNamespace="http://stockquote" xmlns="http://www.w3.org/2001/XMLSchema">
+
+            <element name="getQuote">
+                <complexType>
+                    <sequence>
+                        <element name="name" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="getQuoteResponse">
+                <complexType>
+                    <sequence>
+                        <element name="getQuoteReturn" type="xsd:double"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="getQuoteRequest">
+        <wsdl:part element="tns:getQuote" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="getQuoteResponse">
+        <wsdl:part element="tns:getQuoteResponse" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:portType name="StockQuote">
+        <wsdl:operation name="getQuote">
+            <wsdl:input message="tns:getQuoteRequest" name="getQuoteRequest"/>
+            <wsdl:output message="tns:getQuoteResponse" name="getQuoteResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="StockQuoteSoapBinding" type="tns:StockQuote">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getQuote">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="getQuoteRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getQuoteResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="StockQuoteService">
+        <wsdl:port binding="tns:StockQuoteSoapBinding" name="StockQuoteSoapPort">
+            <wsdlsoap:address location="http://localhost:8081/services/StockQuoteWebService"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

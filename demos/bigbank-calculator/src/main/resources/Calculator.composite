@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://calc"
+	xmlns:c="http://calc"
+	name="Calculator">
+
+    <service name="CalculatorService" promote="CalculatorServiceComponent">
+        <interface.java interface="calculator.CalculatorService"/>
+        <binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+    </service>
+
+    <component name="CalculatorServiceComponent">
+		<implementation.java class="calculator.CalculatorServiceImpl"/>
+        <reference name="addService" target="AddServiceComponent" />
+        <reference name="subtractService" target="SubtractServiceComponent" />
+        <reference name="multiplyService" target="MultiplyServiceComponent" />
+        <reference name="divideService" target="DivideServiceComponent" />
+    </component>
+
+    <component name="AddServiceComponent">
+        <implementation.script script="calculator/AddServiceImpl.js"/>
+    </component>
+
+    <component name="SubtractServiceComponent">
+        <implementation.script script="calculator/SubtractServiceImpl.rb"/>
+    </component>
+
+    <component name="MultiplyServiceComponent">
+        <implementation.script script="calculator/MultiplyServiceImpl.py"/>
+    </component>
+
+    <component name="DivideServiceComponent">
+        <implementation.script script="calculator/DivideServiceImpl.groovy"/>
+    </component>
+
+</composite>
