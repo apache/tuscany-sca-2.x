@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-chat-webapp</artifactId>
+    <artifactId>sample-chat-web</artifactId>
     <packaging>war</packaging>
     <name>Apache Tuscany Chat Sample WebApp</name>
 
