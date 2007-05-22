@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package bigbank;
+package bigbank.client;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
