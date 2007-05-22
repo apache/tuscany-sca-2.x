@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://bigbank"
+	xmlns:bb="http://bigbank"
+	name="BigBank">
+
+    <service name="AccountWebService" promote="AccountServiceComponent">
+        <interface.java interface="bigbank.account.AccountService"/>
+		<binding.ws wsdlElement="http://bigbank#wsdl.port(AccountService/AccountServiceSoap)"/>
+    </service>
+
+    <service name="AccountJSONService" promote="AccountServiceComponent">
+        <interface.java interface="bigbank.account.AccountService"/>
+        <binding.jsonrpc/>
+    </service>
+
+    <component name="AccountServiceComponent">
+        <implementation.java class="bigbank.account.AccountServiceImpl"/>
+        <reference name="accountDataService" target="AccountDataServiceComponent"/>
+        <property name="currency">EURO</property>
+    </component>
+
+    <component name="AccountDataServiceComponent">
+        <implementation.composite name="bb:AccountData"/>
+    </component>
+
+    <reference name="CalculatorReference" promote="AccountServiceComponent/calculatorService">
+    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+   	</reference> 
+   	
+    <reference name="StockQuoteReference" promote="AccountServiceComponent/stockQuoteService">
+        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
+    </reference>
+
+</composite>

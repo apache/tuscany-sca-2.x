@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://stockquote"
+	xmlns:hw="http://stockquote"
+    name="StockQuote">
+
+    <service name="StockQuoteWebService" promote="StockQuoteServiceComponent">
+        <interface.java interface="stockquote.StockQuoteService" />
+        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
+    </service>
+
+    <component name="StockQuoteServiceComponent">
+        <implementation.java class="stockquote.StockQuoteImpl" />
+    </component>
+
+</composite>

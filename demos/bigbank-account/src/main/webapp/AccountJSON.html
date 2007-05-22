@@ -1,0 +1,102 @@
+<html>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+  <head>
+    <title>Tuscany JSON-RPC BigBank Client</TITLE>
+    
+    <script type="text/javascript">
+        var djConfig = {isDebug: true,debugContainerId: "dojoDebug" };
+        //djConfig.debugAtAllCosts = true;
+    </script>
+
+    <script type="text/javascript" src="services/SCA/scripts"></script>
+
+    <script language="JavaScript">
+       SCA = new JSONRpcClient("services/AccountJSONService");
+    
+       function getAccountReport() {
+          var name = document.getElementById("name").value;
+          var result = SCA.AccountJSONService.getAccountReport(name);
+          document.getElementById('balance').innerHTML=result;
+       }
+    </script>
+    
+    <script type="text/javascript" src="dojo/dojo.js"> 
+    </script>
+
+    <script type="text/javascript">
+    	dojo.require("dojo.widget.*");
+    	dojo.require("dojo.widget.Button");
+    	dojo.require("dojo.rpc.JsonService");    	
+    </script>
+    
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+
+    <table>
+      <tr>
+        <th colspan="2">Tuscany JSON-RPC BigBank Client</th>
+      </tr>
+      <tr>
+        <td colspan="2">
+           <p>This example uses the <a href="http://dojotoolkit.org/">Dojo Toolkit</a>
+           to create a JavaScript object <code>accountService</code> for the service at
+           <b>services/AccountJSONService</b>
+           using <a href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's RPC classes</a>
+           and providing them with <a href="services/AccountJSONService?smd">services/AccountJSONService?smd</a>
+           for <a href="http://dojo.jot.com/SMD">Simple Method Description (SMD)</a> input.</p>
+           <p>It then creates a Dojo button that will envoke the <code>getAccountReport</code> method of the <code>accountService</code> object.</p>
+      </tr>
+      <tr>
+        <td>Request</td>
+        <td>Response</td>
+      </tr>
+      <tr>
+        <td>
+            <br><div id="myaccount" dojoType="Button" onClick='accountService.getAccountReport("Dojo").addCallback(contentCallBack);'>accountService.getAccountReport("Dojo").addCallback(contentCallBack);</div><br>
+        </td>
+        <td>           
+            <div id="ReturnedContent">None Yet.</div>
+        </td>
+      </tr>      
+      <tr>
+        <td colspan="2">
+           <div id="dojoDebug">Dojo Debug:</div>
+        </td>
+      </tr>
+    </table>    
+    
+    
+   
+    
+    <script type="text/javascript">
+    
+    	function contentCallBack(result) {
+    		var handlerNode = document.getElementById("ReturnedContent");
+    		handlerNode.innerHTML = "<p>" + result + "</p>" ;
+    	}
+    
+    	var accountService = new dojo.rpc.JsonService("services/AccountJSONService?smd");
+    
+    </script>
+       
+  </body>
+</html>

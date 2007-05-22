@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://bigbank"
+	xmlns:bb="http://bigbank"
+	name="AccountData">
+
+    <service name="AccountDataService" promote="AccountDataServiceComponent">
+        <interface.java interface="bigbank.accountdata.AccountDataService"/>
+    </service>
+
+    <component name="AccountDataServiceComponent">
+        <implementation.java class="bigbank.accountdata.AccountDataServiceImpl"/>
+    </component>
+
+</composite>
