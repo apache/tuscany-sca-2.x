@@ -23,7 +23,7 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
 
-  <display-name>Tuscany BigBank Account Sample</display-name>
+  <display-name>Tuscany BigBank Account Demo</display-name>
 
     <welcome-file-list id="WelcomeFileList">
         <welcome-file>AccountJSON.html</welcome-file>
