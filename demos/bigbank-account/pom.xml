@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-samples</artifactId>
+        <artifactId>tuscany-demos</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
@@ -87,7 +87,7 @@
     </dependencies>
     
     <build>
-            <finalName>sample-bigbank-account</finalName>
+            <finalName>demo-bigbank-account</finalName>
             <plugins>
             <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
