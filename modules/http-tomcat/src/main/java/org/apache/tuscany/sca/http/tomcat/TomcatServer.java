@@ -167,9 +167,10 @@ public class TomcatServer implements ServletHost {
 
     public void addServletMapping(String uri, Servlet servlet) {
         
-        // TODO: use the port from the uri, but thats a bit harder to do 
-        int port = DEFAULT_PORT;
-        
+        int port = URI.create(uri).getPort();
+        if (port == -1) {
+            port = DEFAULT_PORT;
+        }        
         // Install a default HTTP connector
         if (connector == null) {
             //TODO support multiple connectors on different ports
