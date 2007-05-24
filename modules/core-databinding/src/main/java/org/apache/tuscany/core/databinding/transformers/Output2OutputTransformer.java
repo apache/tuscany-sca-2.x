@@ -157,7 +157,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                 }
                 targetWrapperHandler = getWrapperHandler(getDataBinding(targetOp), false);
                 if (targetWrapperHandler != null) {
-                    ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
+                    ElementInfo wrapperElement = sourceOp.getWrapper().getOutputWrapperElement();
                     // Object targetWrapper =
                     // targetWrapperHandler.create(wrapperElement, context);
                     DataType<XMLType> targetWrapperType = new DataTypeImpl<XMLType>(targetType.getLogical()
