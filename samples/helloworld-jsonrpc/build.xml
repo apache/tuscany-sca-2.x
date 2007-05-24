@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="calculator-web" default="package">
+<project name="helloworld-jsonrpc" default="package">
     <property name="settings.localRepository" value="./repo" />
     <property name="artifactId" value="sample-helloworld-jsonrpc" />
 	
@@ -58,6 +58,7 @@
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>
             <zipfileset dir="../../modules" prefix="WEB-INF/lib">
+                <include name="sca-api-0.90-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-assembly-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-assembly-xml-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-binding-jsonrpc-1.0-incubating-SNAPSHOT.jar"/>
@@ -85,7 +86,6 @@
             <lib dir="../../lib">
                 <include name="commonj-api-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="json-rpc-1.0.jar"/>
-                <include name="sca-api-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="stax-api-1.0.1.jar"/>
                 <include name="wsdl4j-1.6.2.jar"/>
                 <include name="wstx-asl-3.2.0.jar"/>
