@@ -49,7 +49,7 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         SAMPLE_VALUES.put("duration", new String[] {"P8M3DT7H33M2S", "P5Y2M10DT15H"});
         SAMPLE_VALUES.put("float", new String[] {"3.1415292", "INF", "NaN"});
         SAMPLE_VALUES.put("gDay", "---11");
-        SAMPLE_VALUES.put("gMonth", "--02--");
+        SAMPLE_VALUES.put("gMonth", "--02");
         SAMPLE_VALUES.put("gMonthDay", "--02-14");
         SAMPLE_VALUES.put("gYear", "1999");
         SAMPLE_VALUES.put("gYearMonth", "1972-08");

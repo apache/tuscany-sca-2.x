@@ -179,8 +179,8 @@ public class JavaComponentInfo implements ComponentContextProvider {
                 }
                 if (ref.getMultiplicity() == Multiplicity.ONE_N || ref.getMultiplicity() == Multiplicity.ZERO_N) {
                     List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
+                    Class<?> baseType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
                     for (int i = 0; i < wireList.size(); i++) {
-                        Class<?> baseType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
                         ObjectFactory<?> factory = createWireFactory(baseType, wireList.get(i));
                         factories.add(factory);
                     }

@@ -346,6 +346,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
             runtimeRef.getRuntimeWires().add(wire);
             wireProcessor.process(wire);
+            // TODO: For non-SCA binding, how do we deal with targets? For now, assuming targets only apply to SCABinding
+            return;
         }
         for (ComponentService service : reference.getTargets()) {
             Component target = null;

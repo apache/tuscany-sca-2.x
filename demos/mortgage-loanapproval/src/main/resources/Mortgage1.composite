@@ -22,9 +22,7 @@
     <component name="LoanApprovalComponent">
         <implementation.java class="mortgage.LoanApprovalImpl" />
         <property name="minimumCreditScore">600</property>
-        <!-- 
         <reference name="creditCheck" target="CreditCheckComponent" />
-         -->
         <reference name="interestRateQuote" target="InterestRateQuoteComponent" />
         <reference name="riskAssessment" target="RiskAssessmentComponent" />
         <reference name="mortgageCalculator" target="MortgageCalculatorJSComponent" />
