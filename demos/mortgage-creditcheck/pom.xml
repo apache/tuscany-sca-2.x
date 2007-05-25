@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>demo-credit-check</artifactId>
+    <artifactId>demo-mortgage-creditcheck</artifactId>
     <packaging>war</packaging>
     <name>Tuscany credit Web Service Sample</name>
     <description>A sample credit Web Service.</description>
