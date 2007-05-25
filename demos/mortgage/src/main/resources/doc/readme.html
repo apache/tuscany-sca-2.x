@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta http-equiv="Content-Style-Type" content="text/css">
+
+<title>Mortgage Sample</title>
+</head>
+
+<body>
+<h3>Mortgage Sample</h3>
+
+<h4>Overview</h4>
+
+<p>The Tuscany Web services client Helloworld sample shows how to
+call a remote Web service by wiring an SCA component to a reference
+which uses a Web service binding.</p>
+
+<h4>Prerequisites</h4>
+
+<p>Obtain the following prerequisites and install according to their
+documentation.</p>
+
+<ul>
+	<li><a href="http://java.sun.com/javase/downloads/index.jsp"
+		target="_blank">JDK 5.0</a></li>
+
+	<li><a href="http://maven.apache.org/download.html"
+		target="_blank">Maven 2.0.4</a></li>
+</ul>
+
+<h4>The business scenario</h4>
+The "loan approval" application accepts a mortgage request including the
+customer's details and the requested loan amount. It first checks the
+credit of the customer to make sure the credit score meets the minimum
+requirement. The interest rate is determined based on the principal
+requested, the term for the loan and the customers home state. It then
+uses a mortgage calculator to calculate the ratio by dividing potential
+monthly payment by the customer's income. The ratio and credit score are
+passed to perform the risk assessment which makes the final decision.
+<p><img src="mortgage_scenario.png" />
+<h4>Packaging structure</h4>
+<img src="mortgage_package2.png" />
+
+<h4>Building</h4>
+
+<p>To build the sample&nbsp; issue :</p>
+<pre>
+<code>mvn<br></code>
+</pre>
+
+<p>The result after executing is in the <span
+	style="font-weight: bold;">target</span> subdirectory the <span
+	style="font-weight: bold;">sample-mortgage.jar</span></p>
+
+<h4>Setup</h4>
+
+<p>Set up the Tuscany standalone runtime environment using the
+following command:</p>
+<pre>
+<code>mvn dependency:unpack <br></code>
+</pre>
+
+<p>After completion there should be a <span
+	style="font-weight: bold;">target\distribution</span> subdirectory
+created that has the Tuscany standalone runtime.</p>
+
+<p>The Tuscany Web servivces binding requires the Axis2 and SDO
+databinding extensions so copy these to the standalone launcher
+extensions directory:</p>
+<pre>
+<code>copy target\distribution\contrib\axis2-1.0-incubator-M2.jar target\distribution\extensions<br></code>
+<code>copy target\distribution\contrib\databinding-sdo-1.0-incubator-M2.jar target\distribution\extensions<br></code>
+</pre>
+
+<h4>Running</h4>
+
+<p>Execute the following command: (<span style="font-style: italic;">cut
+and paste to command line</span>)</p>
+<pre>
+<code>java -jar target/distribution/bin/launcher.jar target/sample-mortgage.jar</code>
+</pre>
+
+<h4>Results</h4>
+
+<p>The sample when run should simply display to the standard output:<br>
+<samp> <br>
+Approved: John Smith[111-22-3333] </samp></p>
+
+We have two versions of the CreditCheck web service implementation in this sample application: 
+<ul>
+<li>a web service developed with Apache axis2 1.1 release. It's packaged as an Axis2 aar.
+<li>a SCA component exposed as a web service. It's packaged as a WAR.
+</ul>
+
+<h4>Deploy the Axis2 CreditCheck web service to Tomcat</h4>
+<ol>
+	<li>Download the WAR (Web Archive) ditribution from <a
+		href="http://ws.apache.org/axis2/download/1_1/download.cgi">Apache
+	Axis2 1.1 release download site</a>.
+	<li>Copy axis2.war to &lt;tomcat_home&gt;\webapps.
+	<li>Start Tomcat so that axis2.war get deployed to
+	&lt;tomcat_home&gt;\webapps\axis2.
+	<li>Copy creditws-axis2\build\lib\CreditCheckService.aar to
+	&lt;tomcat_home&gt;\webapps\axis2\WEB-INF\services.
+</ol>
+
+<h4>Deploy the CreditComposite to Tomcat</h4>
+<ol>
+	<li>Copy credit.war to &lt;tomcat_home&gt;\webapps.
+	<li>Start Tomcat so that credit.war get deployed to
+	&lt;tomcat_home&gt;\webapps\credit. The CreditCheck web serivice will
+	be up and running.
+</ol>
+
+</body>
+</html>

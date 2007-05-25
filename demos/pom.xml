@@ -39,6 +39,8 @@
                 <module>bigbank-account</module>
                 <module>bigbank-calculator</module>
                 <module>bigbank-stockquote</module>
+                <module>mortgage</module>
+                <module>creditws</module>
             </modules>
         </profile>
 
