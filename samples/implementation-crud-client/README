@@ -14,11 +14,11 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;..\implementation-crud\target\sample-implementation-crud.jar;target\sample-implementation-crud-client.jar crud.CRUDClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;..\implementation-crud\target\sample-implementation-crud.jar;target\sample-implementation-crud-client.jar crud.client.CRUDClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:../implementation-crud/target/sample-implementation-crud.jar:target/sample-implementation-crud-client.jar crud.CRUDClient
+java -cp ../../lib/tuscany-sca-manifest.jar:../implementation-crud/target/sample-implementation-crud.jar:target/sample-implementation-crud-client.jar crud.client.CRUDClient
 
 This looks like a long command. The three things we add to the classpath are
 
