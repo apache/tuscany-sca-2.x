@@ -63,7 +63,7 @@ public class LoanApprovalImpl implements LoanApproval {
     public boolean approve(Customer customer, double loanAmount, int years) {
         int score = 0;
         for (int i = 0; i < creditCheck.length; i++) {
-            score += creditCheck[0].getCreditScore(customer.getSsn());
+            score += creditCheck[i].getCreditScore(customer.getSsn());
         }
         if (score != 0) {
             score = score / creditCheck.length;
