@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="helloworld-jsonrpc" default="package">
-    <property name="settings.localRepository" value="./repo" />
+    <property name="settings.localRepository" value="./target/repo" />
     <property name="artifactId" value="sample-helloworld-jsonrpc" />
 	
     <target name="init">
@@ -40,51 +40,46 @@
     </target>	
 	
     <target name="package" depends="compile">
-        <ant antfile="./build.xml" target="install-dojo">
+        <ant antfile="./build-dojo.xml" target="install-dojo-nomaven">
           <property name="localRepository" value="${settings.localRepository}"/>
         </ant>
         
-        <ant antfile="./build.xml" target="unpack-dojo-files">
+        <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
           <property name="localRepository" value="${settings.localRepository}"/>
           <property name="artifactId" value="${artifactId}"/>
         </ant>   
 
-        <ant antfile="./build.xml" target="clean-dojo-files">
-          <property name="localRepository" value="/repo"/>
-          <property name="artifactId" value="${artifactId}"/>
-        </ant>  
-
-        <war destfile="target/sample-calculator-web.war" 
+        <war destfile="target/sample-helloworldjsonrpc.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>
             <zipfileset dir="../../modules" prefix="WEB-INF/lib">
                 <include name="sca-api-0.90-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-assembly-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-assembly-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-binding-jsonrpc-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-contribution-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-contribution-impl-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-core-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-core-databinding-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-core-spi-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-databinding-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-host-embedded-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-host-http-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-host-webapp-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-implementation-java-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-implementation-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-implementation-java-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-runtime-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-policy-1.0-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-assembly-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-assembly-xml-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-binding-jsonrpc-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-contribution-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-contribution-impl-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-core-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-core-databinding-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-core-spi-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-databinding-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-host-embedded-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-host-http-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-host-webapp-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-implementation-java-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-implementation-java-runtime-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-implementation-java-xml-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-java-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-java-runtime-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-java-xml-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-wsdl-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-wsdl-runtime-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-wsdl-xml-0.90-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-policy-0.90-incubating-SNAPSHOT.jar"/>
             </zipfileset>
             <lib dir="../../lib">
-                <include name="commonj-api-1.0-incubating-SNAPSHOT.jar"/>
+                <include name="commonj-api-0.90-incubating-SNAPSHOT.jar"/>
                 <include name="json-rpc-1.0.jar"/>
                 <include name="stax-api-1.0.1.jar"/>
                 <include name="wsdl4j-1.6.2.jar"/>
@@ -94,7 +89,14 @@
             </lib>
             <classes dir="target/classes"/>
         </war>
+
+        <ant antfile="./build-dojo.xml" target="clean-dojo-files">
+          <property name="localRepository" value="${settings.localRepository}"/>
+          <property name="artifactId" value="${artifactId}"/>
+        </ant> 
      </target>
+
+
 		
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">
