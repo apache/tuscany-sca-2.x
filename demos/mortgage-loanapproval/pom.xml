@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>demo-mortgage</artifactId>
+    <artifactId>demo-mortgage-loanapproval</artifactId>
     <packaging>jar</packaging>
     <name>Tuscany Mortgage Sample</name>
     <description>A sample Mortgage application made of several SCA components wired together.</description>
