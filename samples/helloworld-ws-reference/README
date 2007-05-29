@@ -39,7 +39,7 @@ Sample Overview
 ---------------
 The sample provides a single component that is wired to a reference with a 
 web service binding. The binding refers to WSDL that identifies the service
-exposed by the helloworld-ws-service test. 
+exposed by the helloworld-ws-service sample. 
 
 helloworld-ws-reference/
   src/
@@ -58,6 +58,12 @@ helloworld-ws-reference/
           helloworld.wsdl                 - the service description that the 
                                             SCA reference uses to bind to 
         helloworldwsclient.composite      - the SCA assembly for this sample
+        logging.properties                - log4j configuration file
+    test/
+      java/
+        helloworld/
+          HelloWorldClientTestCase.java   - JUnit test case
+          HelloWorldServerTest.java       - starts the Web service
   helloworld-ws-reference.png             - a pictorial representation of the 
                                             sample .composite file
   build.xml                               - the Ant build file
@@ -85,7 +91,7 @@ run:
      [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
 om.util.StAXUtils).
      [java] log4j:WARN Please initialize the log4j system properly.
-     [java] Injected hellowWorldService
+     [java] Injected helloWorldService
      [java] Called getGreetings
      [java] Hello World
 
@@ -135,7 +141,7 @@ _1_1.xsd
 INFO: Initializing Coyote HTTP/1.1 on http-8080
 10-May-2007 13:40:35 org.apache.coyote.http11.Http11Protocol start
 INFO: Starting Coyote HTTP/1.1 on http-8080
-Injected hellowWorldService
+Injected helloWorldService
 Called getGreetings
 10-May-2007 13:40:36 org.apache.coyote.http11.Http11Protocol destroy
 INFO: Stopping Coyote HTTP/1.1 on http-8080

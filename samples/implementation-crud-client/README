@@ -1,7 +1,7 @@
 Implementation CRUD Sample Client
 =================================
 This sample demonstrates how to use the new implementation extension, 
-implementation-crud
+implementation-crud.
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -39,16 +39,18 @@ implementation-crud-client/
     main/
       java/
         crud/
-          CRUDClient.java      - sample client
+          client/
+            CRUDClient.java    - sample client
       resources/
-        crudclient.composite   - the SCA assembly used by this sample
+        crud.composite         - the SCA assembly used by this sample
           
     test/
       java/
-        crud/ 
-          CRUDTestCase.java    - sample JUnit test case for the sample client
+        crud/
+          client/
+            CRUDTestCase.java  - sample JUnit test case for the sample client
           
-  implementation-crudclient.png- a pictorial representation of the sample 
+  implementation-crud.png      - a pictorial representation of the sample 
                                  .composite file          
   build.xml                    - the Ant build file
   pom.xml                      - the Maven build file

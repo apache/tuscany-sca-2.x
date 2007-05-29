@@ -1,14 +1,14 @@
 The Apache Tuscany SCA Samples
 ==============================
 The Apache Tuscany SCA samples are built as part of the main Maven build and 
-run, using the provided JUnit tests cases, as tests in the Maven build.
+run, using the provided JUnit test cases, as tests in the Maven build.
 
 In the binary distribution of Apache Tuscany the samples can also 
-be run using the provided Ant build.xml file. This shows the samples running 
+be run using the provided Ant build.xml files. These show the samples running 
 from a simple main() method without the need for a JUnit test case. 
 
 In these notes text that appears in angled brackets like this <example> means 
-that you need to make a choice and provide you own text at that point. 
+that you need to make a choice and provide your own text at that point. 
 
 Sample Overview
 ---------------
@@ -29,15 +29,15 @@ helloworld-ws-reference  - The client side of a hello world sample that uses a
 helloworld-ws-service    - The server side of a hello world sample that uses a 
                            web service binding
 calculator-rmi-reference - The calculator configured to talk RMI to the 
-                           calculator-rmi-service samples
+                           calculator-rmi-service sample
 calculator-rmi-service   - The calculator configured to accept RMI requests 
                            from calculator-rmi-reference
-helloworld-jsonrpc       - An SCA application that exposes service using 
+helloworld-jsonrpc       - An SCA application that exposes a service using 
                            JSONRPC
-implementation-composite - An SCA application that shows how composites are used to 
-                           implement components
 simple-callback          - An SCA application with two components demonstrating
                            the callback interface
+implementation-composite - An SCA application that shows how composites are used to 
+                           implement components
 supplychain              - A more complicated sample showing how asynchronous 
                            callbacks can be used
 databinding-echo         - An SCA application that shows how databindings 
@@ -46,7 +46,7 @@ databinding-echo         - An SCA application that shows how databindings
 There are two samples that demonstrate how to build extensions for the 
 Tuscany SCA runtime. These samples are slightly different from the samples
 above in that the provided code is concerned with building the extension
-and now with building an application that uses it. The application
+and not with building an application that uses it. The application
 that shows how the new extension can be used is provided in an associated
 sample. 
 
@@ -73,6 +73,7 @@ calculator/
       java          - Java test sources files. Usually JUnit test cases
   target/           - Holds the files generated when the sample is built
     classes/        - For example, Java class files
+    test-classes/   - classes from src/test and other test files
 
 Getting Ready To Build
 ----------------------
@@ -211,6 +212,7 @@ in Eclipse, if you create a new Java project and use the option to "create a
 new project from existing source" you can specify an SCA module directory, 
 which includes the generated project files, and Eclipse will treat it like any
 other Java project. 
+
 
 
 

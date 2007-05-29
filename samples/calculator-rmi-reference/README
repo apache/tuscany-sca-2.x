@@ -38,8 +38,8 @@ Sample Overview
 ---------------
 This sample extends the calculator sample by replacing the local wired 
 connections with RMI bindings. Instead of local add, subtract, multiply and 
-divide components a CalculatorServiceRmiImpl.java object now provides the
-add, subtract, multiple and divide interface and is hosted as an RMI server. 
+divide components, an RMI service implementation now provides the
+add, subtract, multiply and divide interfaces and is hosted as an RMI server. 
 References specified in the .composite file include an RMI binding which targets
 this RMI server.
 
@@ -56,29 +56,28 @@ calculator-rmi-reference/
           MultipleService.java    - as calculator sample
           DivideService.java      - as calculator sample
           CalculatorClient.java   - as calculator sample
-          CalculatorServiceRmiImpl- implements the RMI server interface
+          CalculatorServiceImpl.java - calls the RMI service
                                     that provides the target for the 
                                     RMI bindings in the composite 
-          CalculatorServer.java   - starts the Calculator Application 
-                                    as a Java RMI Server. Running this class 
-                                    keeps the Java RMI Server up an running 
-                                    until the 'Enter Key' is pressed on the 
-                                    console.
       resources/
         CalculatorRMIReference.composite - the SCA assembly for this sample
+    test/
+      java/
+        calculator/
+          CalculatorRMIReferenceTestCase.java - JUnit test case
+          CalculatorRMIServiceImpl.java - test RMI service to call
   calculator-rmi-reference.png    - a pictorial representation of the 
                                     .composite file
   build.xml                       - the Ant build file for the client
   pom.xml                         - the Maven build file   
   
 Note. As this test creates and uses local network connections you may need to 
-configure you firewall, if you are running one, to allow the test to run
+configure your firewall, if you are running one, to allow the test to run
 successfully.         
 
 Building And Running The Sample Using Ant
 -----------------------------------------
-With the binary distribution the sample can be built and run using Ant. Two 
-build files are used to support client and server functions. 
+With the binary distribution the sample can be built and run using Ant. 
 
 The server provides an RMI server that the acts as a target for the SCA RMI 
 bindings. Start a new console and use the following commands.
@@ -95,7 +94,7 @@ run:
      
 The client is very similar to the calculator sample. It starts the SCA runtime
 and calls each of the calculator operations. In doing this the RMI bindings
-make calls out the the RMI server you started in the previous step. Start
+make calls out to the RMI server you started in the previous step. Start
 a new console and use the following commands. 
 
 cd calculator-rmi-reference
@@ -134,5 +133,6 @@ Results :
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 This shows that the Junit test cases have run successfully.
+
 
 

@@ -1,7 +1,7 @@
 SupplyChain Sample
 ==================
 
-This sample demonstrates using the SCA components using the asynchronous API.
+This sample demonstrates SCA components using the asynchronous API.
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -29,7 +29,7 @@ and a notifyShipment operation annotated with the SCA @OneWay annotation.
 The SupplyChainClient exercises this interface by calling the
 purchaseGoods operation. This results in messages passing to 
 the Retailer, Warehouse, and Shipper components and the result returned
-to the Customer service on a seperate callback thread.
+to the Customer service on a separate callback thread.
 
 calculator/
   src/
@@ -52,6 +52,10 @@ calculator/
                                        
       resources/                        
         supplychain.composite          - the SCA assembly for this sample
+    test/
+      java/
+        supplychain/
+          SupplyChainClientTestCase.java - JUnit test case
   build.xml                            - the Ant build file
   pom.xml                              - the Maven build file        
 

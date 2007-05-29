@@ -1,9 +1,9 @@
 Calculator RMI Service Sample
-===============================
+=============================
 
 This sample illustrates the use of Tuscany RMI Binding to expose component 
 services as Java RMI Services. It also demonstrates how a simple Java RMI 
-Client application invoke the SCA Application's services exposed as RMI 
+Client application invokes the SCA Application's services exposed as RMI 
 Services.
 
 The README in the samples directory (the directory above this) provides 
@@ -51,28 +51,38 @@ calculator-rmi-service/
       java/
         calculator/
           CalculatorService.java  - as calculator sample
+          CalculatorServiceImpl.java
           AddService.java         - as calculator sample
+          AddServiceImpl.java
           SubtractService.java    - as calculator sample
-          MultipleService.java    - as calculator sample
+          SubtractServiceImpl.java
+          MultiplyService.java    - as calculator sample
+          MultiplyServiceImpl.java
           DivideService.java      - as calculator sample
-          CalculatorClient.java   - Uses the java naming service to
+          DivideServiceImpl.java
+          CalculatorClient.java   - (Not currently used) Uses the
+                                    java naming service to
                                     look up the Calculator RMI service.
                                     It then calls add, subtract, multiple
                                     and divide methods on the service
-          CalculatorServer.java   - starts the SCA Runtime and 
-                                    deploys the Calculator.composite. 
+          CalculatorServer.java   - starts the SCA Runtime and deploys 
+                                    the CalculatorRMIServer.composite. 
                                     In doing this the SCA RMI binding
                                     acts to expose the CalculatorService
                                     over RMI.
       resources/
         CalculatorRMIServer.composite - the SCA assembly for this sample
+    test/
+      java/
+        calculator/
+          CalculatorRMIServerTestCase.java - JUnit test case
   calculator-rmi-service.png     - a pictorial representation of the 
                                     .composite file
   build.xml                       - the Ant build file for the server
   pom.xml                         - the Maven build file   
   
 Note. As this test creates and uses local network connections you may need to 
-configure you firewall, if you are running one, to allow the test to run
+configure your firewall, if you are running one, to allow the test to run
 successfully.         
 
 Building And Running The Sample Using Ant

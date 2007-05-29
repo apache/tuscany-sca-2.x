@@ -31,19 +31,30 @@ calculator-web/
       java/
         calculator/
           CalculatorService.java  - As calculator sample
+          CalculatorServiceImpl.java
           AddService.java         - As calculator sample
+          AddServiceImpl.java
           SubtractService.java    - As calculator sample
-          MultipleService.java    - As calculator sample
+          SubtractServiceImpl.java
+          MultiplyService.java    - As calculator sample
+          MultiplyServiceImpl.java
           DivideService.java      - As calculator sample
-          CalculatorClient.java   - As calculator sample 
+          DivideServiceImpl.java
+          CalculatorClient.java   - As calculator sample
       resources/
         Calculator.composite      - As calculator sample
       webapp
+        META-INF/
+          sca-contribution.xml    - specifies the composite to be deployed
         WEB-INF/
           web.xml                 - defines the listener that starts up the 
                                     Tuscany SCA runtime
         calc.jsp                  - the web application that makes use of the
                                     SCA application 
+    test/
+      java/
+        calculator/
+          CalculatorTestCase.java - JUnit test case 
            
   calculator.png - a pictorial representation of the sample .composite file
   build.xml      - the Ant build file
@@ -90,4 +101,5 @@ mvn
 Again this should result in a war file (sample-calculator-web.war) in the target 
 directory. Follow the steps described in the previous section for running the web 
 app and for the expected results.
+
 
