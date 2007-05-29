@@ -49,7 +49,13 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         SAMPLE_VALUES.put("duration", new String[] {"P8M3DT7H33M2S", "P5Y2M10DT15H"});
         SAMPLE_VALUES.put("float", new String[] {"3.1415292", "INF", "NaN"});
         SAMPLE_VALUES.put("gDay", "---11");
-        SAMPLE_VALUES.put("gMonth", "--02");
+        if (System.getProperty("java.vendor").toUpperCase().contains("SUN") && System.getProperty("java.version")
+                .contains("1.5.0")) {
+            // Work around a bug in SUN JDK
+            SAMPLE_VALUES.put("gMonth", "--02--");
+        } else {
+            SAMPLE_VALUES.put("gMonth", "--02");
+        }
         SAMPLE_VALUES.put("gMonthDay", "--02-14");
         SAMPLE_VALUES.put("gYear", "1999");
         SAMPLE_VALUES.put("gYearMonth", "1972-08");
@@ -87,8 +93,7 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         EasyMock.replay(context);
 
         NamespaceContext namespaceContext = EasyMock.createMock(NamespaceContext.class);
-        EasyMock.expect(namespaceContext.getNamespaceURI(EasyMock.eq("f"))).andReturn("http://foo")
-            .anyTimes();
+        EasyMock.expect(namespaceContext.getNamespaceURI(EasyMock.eq("f"))).andReturn("http://foo").anyTimes();
         EasyMock.expect(namespaceContext.getPrefix(EasyMock.eq("http://foo"))).andReturn("f").anyTimes();
         EasyMock.replay(namespaceContext);
         context.getMetadata().put(NamespaceContext.class.getName(), namespaceContext);
