@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.binding.jms.JMSBindingDefinition;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -303,9 +302,9 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         String type = reader.getAttributeValue(null, "type");
         if (type != null && type.length() > 0) {
             if ("queue".equalsIgnoreCase(type)) {
-                jmsBinding.setDestinationType(JMSBindingDefinition.DESTINATION_TYPE_QUEUE);
+                jmsBinding.setDestinationType(JMSBindingConstants.DESTINATION_TYPE_QUEUE);
             } else if ("topic".equalsIgnoreCase("type")) {
-                jmsBinding.setDestinationType(JMSBindingDefinition.DESTINATION_TYPE_TOPIC);
+                jmsBinding.setDestinationType(JMSBindingConstants.DESTINATION_TYPE_TOPIC);
             } else {
                 throw new RuntimeException("invalid destination type: " + type);
             }
