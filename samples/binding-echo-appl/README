@@ -1,7 +1,7 @@
 Binding Echo Sample Application
 ===============================
 This sample demonstrates how to use the new binding extension 
-binding-echo
+binding-echo.
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -46,14 +46,14 @@ binding-echo-appl/
           client/
             EchoBindingClient.java - sample client
       resources/
-        EchoBindingApplication.composite  - the SCA assembly for this sample
+        EchoBinding.composite      - the SCA assembly for this sample
     test/
       java/ 
         echo
           appl/
             EchoApplTestCase.java  - sample JUnit test case for the sample 
                                      client
-  binding-echo-appl.png            - pictorial representation of the sample 
+  binding-echo.png                 - pictorial representation of the sample 
                                      .composite file
   build.xml                        - the Ant build file
   pom.xml                          - the Maven build file
@@ -73,8 +73,8 @@ You should see the following output from the run target.
 run:
      [java] Returned message: foo
      [java] Echo reference = foo
-     [java] Returned message: baa
-     [java] Echo service = baa
+     [java] Returned message: bar
+     [java] Echo service = bar
 
 
 Building And Running The Sample Using Maven 
@@ -92,9 +92,7 @@ You should see the following output from the test phase.
 -------------------------------------------------------
 Running echoAppl.EchoApplTestCase
 Returned message: foo
-Echo reference = foo
-Returned message: baa
-Echo service = baa
+Returned message: bar
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.111 sec
 
 Results :

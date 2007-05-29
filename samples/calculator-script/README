@@ -35,9 +35,10 @@ calculator-script/
         calculator/
           CalculatorService.java  - the first component calls +-/* as 
                                     appropriate
+          CalculatorServiceImpl.java
           AddService.java         - adds two numbers
           SubtractService.java    - subtracts one number from another
-          MultipleService.java    - multiplies two numbers
+          MultiplyService.java    - multiplies two numbers
           DivideService.java      - divides one number by another
           CalculatorClient.java   - starts the SCA Runtime and 
                                     deploys the Calculator.composite. 
@@ -55,6 +56,10 @@ calculator-script/
                                     Divide component
         Calculator.composite      - the SCA assembly for this sample
         
+    test/
+      java/
+        calculator/
+          CalculatorTestCase.java - JUnit test case 
   calculator-script.png           - a pictorial representation of the 
                                     sample .composite file
   build.xml                       - the Ant build file

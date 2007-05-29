@@ -24,11 +24,20 @@ implementation-crud/
     main/
       java/
         crud/                  - implementation model interfaces
-        crud.backend/          - fake component implementation
-        crud.impl/             - implementations of the model interfaces
-        crud.module/           - gets the implementation-crud module registered
+          backend/             - fake component implementation
+          impl/                - implementations of the model interfaces
+          module/              - gets the implementation-crud module registered
                                  with the SCA runtime
-        crud.provider/         - runtime implementation
+          provider/            - runtime implementation
+      resources/
+        META-INF/
+          services/
+            org.apache.sca.tuscany.sca.core.ModuleActivator - specifies the
+                                 module activation class to call
+    test/
+      java/
+        crud/
+          CRUDTestCase.java    - JUnit test case
       resources/
         crud.composite         - the SCA assembly used during unit testing
 

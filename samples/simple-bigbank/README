@@ -25,21 +25,25 @@ Sample Overview
 ---------------
 The sample provides a composite with two java components wired together 
 with a default binding. A request to the AccountComponent results in a 
-requrest to the AccountDataComponent to get account data. The data retuns 
+request to the AccountDataComponent to get account data. The data returns 
 back via the AccountComponent to the client.
 
 calculator/
   src/
     main/
       java/
-        simple-bigbank/
-          bigbank.account         - AccountComponent implementation
-          bigbank.accountdata     - AccountDataComponent implementation
-          bigbank.client          - starts the SCA Runtime and 
+        bigbank/
+          account/                - AccountComponent implementation
+          accountdata/            - AccountDataComponent implementation
+          client/                 - starts the SCA Runtime and 
                                     deploys the BigBank.composite. 
                                     It then calls the deployed AccountService 
       resources/
         BigBank.composite         - the SCA assembly for this sample
+    test/
+      java/
+        bigbank/
+          BigBankTestCase.java    - JUnit test case 
   simple-bigbank.png              - a pictorial representation of the sample 
                                     .composite file
   build.xml                       - the Ant build file

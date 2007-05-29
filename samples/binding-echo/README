@@ -28,6 +28,14 @@ binding-echo/
           provider/              - The bindings runtime classes
           server/                - A dummy server that the binding is plugged into
       resources/
+        META-INF/
+          services/
+            org.apache.sca.tuscany.sca.core.ModuleActivator - specifies the
+                                 module activation class to call
+    test/
+      java/
+        echo/                    - test code
+      resources/
         EchoBinding.composite    - the SCA assembly used by the unit test
   build.xml                      - the Ant build file
   pom.xml                        - the Maven build file

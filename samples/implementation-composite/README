@@ -1,7 +1,7 @@
-Calculator Sample
-=================
+Composite Implementation Sample
+===============================
 
-This sample shows how composite can be used to implement components. 
+This sample shows how composites can be used to implement components. 
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -36,17 +36,24 @@ implementation-composite/
       java/
         composite/
           Source.java             - interface for the source component
-          SourceCallback.java     - souce component callback interface
-          Target.java             - interfact for the target component
-          etc.
+          SourceImpl.java         - implementation for the source component
+          SourceCallback.java     - source component callback interface
+          Target.java             - interface for the target component
+          TargetImpl.java         - implementation for the target component
           CompositeClient.java    - starts the SCA Runtime and 
                                     deploys the OuterComposite.composite. 
                                     This in turn pulls in the two inner
                                     composites
       resources/
+        META-INF/
+          sca-contribution.xml    - specifies the composite to be deployed
         OuterComposite.composite  - the top level SCA assembly for this sample
         InnerComposite.composite  - included by OuterComposite.composite
         InnerComposite2.composite - included by OuterComposite.composite
+    test/
+      java/
+        composite/
+          CompositeTestCase.java  - JUnit test case
   implementation-composite.png    - a pictorial representation of the sample 
                                     .composite file
   build.xml                       - the Ant build file

@@ -1,6 +1,6 @@
 Hello World Web Service Service Sample
 ======================================
-This sample  demonstrates an SCA service that uses a web service binding. 
+This sample demonstrates an SCA service that uses a web service binding. 
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -44,6 +44,10 @@ helloworld-ws-service/
           helloworld.wsdl                 - the service description that describes
                                             the exposed service
         helloworldws.composite            - the SCA assembly for this sample
+    test/
+      java/
+        helloworld/
+          HelloWorldServerTestCase.java   - JUnit test case 
   helloworld-ws-service.png               - a pictorial representation of the 
                                             sample .composite file
   build.xml                               - the Ant build file

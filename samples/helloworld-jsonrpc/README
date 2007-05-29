@@ -31,15 +31,19 @@ helloworl-jsonrpc/
       java/
         helloworldjsonrpc/
           HelloWorldService.java      - service interface
-          HelloWorlsServiceImple.java - service implementation
+          HelloWorldServiceImpl.java  - service implementation
       resources/
         jsonrpc.composite             - the SCA assembly for this sample
       webapp
+        dojo/                         - the Dojo toolkit
+        META-INF/
+          sca-contribution.xml        - specifies the composite to be deployed
         WEB-INF/
           web.xml                     - defines the listener that starts up the 
                                         Tuscany SCA runtime
         HelloWorldJSONRPC.html        - the web application that calls the 
                                         SCA service via JSONRPC
+        style.css                     - style sheet     
            
   helloworld-jsonrpc.png              - a pictorial representation of the 
                                         sample .composite file
@@ -56,7 +60,7 @@ cd helloworld-jsonrpc
 ant package
 
 This should result in a war file (sample-helloworldjsonrpc.war) in the target 
-directory. Copy this war file to your web app deployment directory in you
+directory. Copy this war file to your web app deployment directory in your
 web app container. 
 
 The process for getting the web app running will depend on which web app container
@@ -83,4 +87,5 @@ mvn
 Again this should result in a war file (sample-calculator-web.war) in the target 
 directory. Follow the steps described in the previous section for running the web 
 app and for the expected results.
+
 
