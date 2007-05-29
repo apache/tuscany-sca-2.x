@@ -31,6 +31,12 @@
     <url>http://incubator.apache.org/tuscany/</url>
     <version>1.0-incubating-SNAPSHOT</version>
 
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/tuscany/java/sca</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/tuscany/java/sca</developerConnection>
+        <url>http://svn.apache.org/repos/asf/incubator/tuscany/java/sca</url>
+    </scm>
+
     <repositories>
        <repository>
           <id>apache.incubator</id>
