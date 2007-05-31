@@ -22,8 +22,10 @@ simple-bigbank           - A banking application built with java components
                            and local wires
 calculator-script        - The calculator but this time built using various 
                            script languages
-calculator-web           - The calculator again but this time running inside a 
+calculator-webapp        - The calculator again but this time running inside a 
                            web app
+chat-webapp              - A simple chat style web app demonsrating how to use
+                           the AJAX binding
 helloworld-ws-reference  - The client side of a hello world sample that uses a 
                            web service binding
 helloworld-ws-service    - The server side of a hello world sample that uses a 

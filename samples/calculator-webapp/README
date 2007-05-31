@@ -9,12 +9,12 @@ first.
 
 As this sample provides a web app there is a manual step where the WAR file
 that contains the sample is copied to your web app container. If you just want 
-to give this sample a go deploy the WAR file (target/sample-calculator-web.war)
+to give this sample a go deploy the WAR file (target/sample-calculator-webapp.war)
 to you web application server. 
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-calculator-web/calc.jsp
+http://localhost:8080/sample-calculator-webapp/calc.jsp
 
 The port and hostname will of course vary depending on your local installation. 
 
@@ -25,7 +25,7 @@ binding. The CalculatorClient exercises this interface by calling add,
 subtract, multiply and divide operations. This results in messages passing to 
 the appropriate components in the composite across the local wires.
 
-calculator-web/
+calculator-webapp/
   src/
     main/
       java/
@@ -68,7 +68,7 @@ follows
 cd calculator-web
 ant package
 
-This should result in a war file (sample-calculator-web.war) in the target 
+This should result in a war file (sample-calculator-webapp.war) in the target 
 directory. Copy this war file to your web app deployment directory in you
 web app container. 
 
@@ -78,7 +78,7 @@ of copying the WAR file to the webapps directory.
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-calculator-web/calc.jsp
+http://localhost:8080/sample-calculator-webapp/calc.jsp
 
 The port and hostname will of course vary depending on your local installation. 
 
@@ -98,7 +98,7 @@ using Maven as follows.
 cd calculator-web 
 mvn
 
-Again this should result in a war file (sample-calculator-web.war) in the target 
+Again this should result in a war file (sample-calculator-webapp.war) in the target 
 directory. Follow the steps described in the previous section for running the web 
 app and for the expected results.
 
