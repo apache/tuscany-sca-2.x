@@ -25,9 +25,9 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-chat-web</artifactId>
+    <artifactId>sample-calculator-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany Chat Sample WebApp</name>
+    <name>Apache Tuscany Calculator Sample WebApp</name>
 
     <repositories>
        <repository>
@@ -37,18 +37,10 @@
     </repositories>
 
     <dependencies>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-webapp</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ajax</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -58,10 +50,16 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
        <finalName>${artifactId}</finalName>
     </build>
-
 </project>

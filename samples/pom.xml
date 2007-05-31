@@ -42,7 +42,8 @@
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
-                <module>calculator-web</module>
+                <module>calculator-webapp</module>
+                <module>chat-webapp</module>
                 <module>databinding-echo</module>
                 <module>helloworld-jsonrpc</module>
                 <module>helloworld-ws-service</module>
