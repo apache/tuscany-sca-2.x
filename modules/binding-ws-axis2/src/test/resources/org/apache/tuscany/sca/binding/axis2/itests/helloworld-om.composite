@@ -38,8 +38,7 @@
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://localhost:8080/HelloWorldService/helloWorld" />
-        <!-- binding.ws uri="http://localhost:8080/HelloWorldService/helloWorld" / -->
+                    uri="http://localhost:8085/HelloWorldService/helloWorld" />
     </reference>
 
 </composite>

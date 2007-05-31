@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.http.jetty;
 
@@ -49,20 +49,20 @@ public class JettyServerTestCase extends TestCase {
     private static final String REQUEST1 =
         REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
-    private static final int HTTP_PORT = 8080;
+    private static final int HTTP_PORT = 8085;
 
     private WorkScheduler workScheduler = new WorkScheduler() {
-        
+
         public <T extends Runnable> void scheduleWork(T work) {
             Thread thread = new Thread(work);
             thread.start();
         }
-        
+
         public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
             scheduleWork(work);
         }
     };
-    
+
     /**
      * Verifies requests are properly routed according to the servlet mapping
      */

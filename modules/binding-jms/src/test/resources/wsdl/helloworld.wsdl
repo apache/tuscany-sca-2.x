@@ -123,7 +123,7 @@
 
     <wsdl:service name="HelloWorldService">
         <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorldSoapPort">
-            <wsdlsoap:address location="http://localhost:8080/sample-helloworldws-async-1.0-incubator-SNAPSHOT/services/HelloWorldWebService"/>
+            <wsdlsoap:address location="http://localhost:8085/sample-helloworldws-async-1.0-incubator-SNAPSHOT/services/HelloWorldWebService"/>
         </wsdl:port>
     </wsdl:service>
 

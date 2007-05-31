@@ -132,7 +132,7 @@
 
     <wsdl:service name="StockExceptionTestService">
         <wsdl:port binding="tns:StockExceptionTestServiceSoapBinding" name="StockExceptionTestServiceSoapPort">
-            <wsdlsoap:address location="http://localhost:8080/StockExceptionTestService/services/StockExceptionTestService" />
+            <wsdlsoap:address location="http://localhost:8085/StockExceptionTestService/services/StockExceptionTestService" />
 
         </wsdl:port>
 

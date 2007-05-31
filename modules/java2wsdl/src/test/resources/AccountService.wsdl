@@ -236,7 +236,7 @@
     <wsdl:service name="AccountService">
         <wsdl:port binding="tns:AccountServiceSOAP"
                    name="AccountServiceSOAP">
-            <soap:address location="http://localhost:8080/sample-account/services/AccountService"/>
+            <soap:address location="http://localhost:8085/sample-account/services/AccountService"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

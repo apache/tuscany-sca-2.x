@@ -23,7 +23,7 @@
            
     <!-- 
     exposing a component with a WS binding using a WSDL port with an explicit URL
-    so for this composite the service is: http://localhost:8080/myExplicitURI 
+    so for this composite the service is: http://localhost:8085/myExplicitURI 
     -->      
 
     <service name="helloWorld" promote="HelloWorldService">
@@ -43,7 +43,7 @@
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.binding(HelloWorldSoapBinding)"
-                    uri="http://localhost:8080/myExplicitURI"/>
+                    uri="http://localhost:8085/myExplicitURI"/>
     </reference>
 
 </composite>
