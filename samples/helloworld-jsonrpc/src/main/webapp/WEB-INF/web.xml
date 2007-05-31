@@ -35,7 +35,7 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
  
     <servlet-mapping>
         <servlet-name>TuscanyServlet</servlet-name>
-        <url-pattern>/services/*</url-pattern>
+        <url-pattern>/SCA/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list id="WelcomeFileList">

@@ -25,14 +25,16 @@
         //djConfig.debugAtAllCosts = true;
     </script>
 
-    <script type="text/javascript" src="services/SCA/scripts"></script>
+    <script type="text/javascript" src="SCA/SCADomain/scaDomain.js"></script>
 
     <script language="JavaScript">
-       SCA = new JSONRpcClient("services/HelloWorldService");
-    
+
        function getGreeting() {
           var name = document.getElementById("name").value;
-          var result = SCA.HelloWorldService.getGreetings(name);
+          HelloWorldService.getGreetings(name, handleResponse);
+       }
+       
+       function handleResponse(result) {
           document.getElementById('greeting').innerHTML=result;
        }
     </script>
@@ -60,9 +62,9 @@
       <tr>
         <td colspan="2">
            This example uses the JavaScript served from 
-           <a href="services/SCA/scripts">services/SCA/scripts</a> 
+           <a href="SCA/SCADomain/scaDomain.js">SCA/SCADomain/scaDomain.js</a> 
            to make JSON-RPC requests to the service located at 
-           <a href="services/HelloWorldService">services/HelloWorldService</a>
+           <a href="/HelloWorldService">/HelloWorldService</a>
       </tr>
       <tr>
         <td>Request</td>
@@ -93,9 +95,9 @@
         <td colspan="2">
            <p>This example uses the <a href="http://dojotoolkit.org/">Dojo Toolkit</a>
            to create a JavaScript object <code>helloWorldService</code> for the service at
-           <a href="services/HelloWorldService">services/HelloWorldService</a>
+           <a href="/HelloWorldService">/HelloWorldService</a>
            using <a href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's RPC classes</a>
-           and providing them with <a href="services/HelloWorldService?smd">services/HelloWorldService?smd</a>
+           and providing them with <a href="SCA/SCADomain/HelloWorldService?smd">SCA/SCADomain/HelloWorldService?smd</a>
            for <a href="http://dojo.jot.com/SMD">Simple Method Description (SMD)</a> input.</p>
            <p>It then creates a Dojo button that will envoke the <code>getGreetings</code> method of the <code>helloWorldService</code> object.</p>
       </tr>
@@ -128,7 +130,7 @@
     		handlerNode.innerHTML = "<p>" + result + "</p>" ;
     	}
     
-    	var helloWorldService = new dojo.rpc.JsonService("services/HelloWorldService?smd");
+    	var helloWorldService = new dojo.rpc.JsonService("SCA/SCADomain/HelloWorldService?smd");
     
     </script>
        
