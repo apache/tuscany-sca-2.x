@@ -29,6 +29,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import commonj.sdo.DataObject;
+
 public class PropertyTestCase {
     private static SCADomain domain;
     private static ABComponent abService;
@@ -168,10 +170,30 @@ public class PropertyTestCase {
         assertEquals(222.222, ((ComplexPropertyBean)propBeanCollection[1]).getDoubleNumber());
         assertEquals(33, ((ComplexPropertyBean)propBeanCollection[2]).getNumberSet().getIntegerNumber());
     }
+    
+    @Test
+    public void testSDOProperty1() {
+        DataObject dataObject = propertyService.getSdoProperty();
+        assertNotNull(dataObject);
+        assertEquals("Firstly Name", dataObject.get("firstName"));
+        assertEquals("Middler Name", dataObject.getString("middleName"));
+        assertEquals("Lasting Name", dataObject.getString("lastName"));
+    }
+    
+    /*@Test
+    public void testSDOProperty2() {
+        DataObject dataObject = propertyService.getCustomerSdo();
+        assertNotNull(dataObject);
+        assertEquals("Customer Firstly Name", dataObject.get("firstName"));
+        assertEquals("Customer Middler Name", dataObject.getString("middleName"));
+        assertEquals("Customer Lasting Name", dataObject.getString("lastName"));
+    }*/
 
     @BeforeClass
     public static void init() throws Exception {
+        try {
         domain = SCADomain.newInstance("PropertyTest.composite");
+        } catch ( Exception e ) { e.printStackTrace(); }
         abService = domain.getService(ABComponent.class, "ABComponent");
         cdService = domain.getService(CDComponent.class, "CDComponent");
         abcdService = domain.getService(ABCDComponent.class, "ABCDComponent");
