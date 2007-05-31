@@ -23,7 +23,17 @@ import java.util.Collection;
 
 import org.osoa.sca.annotations.Property;
 
+import com.example.customer.impl.CustomerImpl;
+import commonj.sdo.DataObject;
+
 public class PropertyComponentImpl implements PropertyComponent {
+    
+    @Property
+    protected CustomerImpl customerSdo;
+    
+    @Property
+    protected DataObject sdoProperty;
+    
     @Property
     protected ComplexPropertyBean complexPropertyOne;
     
@@ -68,5 +78,22 @@ public class PropertyComponentImpl implements PropertyComponent {
     public Collection<ComplexPropertyBean> getComplexPropertyFour() {
         //System.out.println(complexPropertyThree);
         return complexPropertyFour;
+    }
+
+    public DataObject getSdoProperty() {
+        return sdoProperty;
+    }
+
+    public void setSdoProperty(DataObject sdoProperty) {
+        System.out.println("Reached here da machi");
+        this.sdoProperty = sdoProperty;
+    }
+
+    public CustomerImpl getCustomerSdo() {
+        return customerSdo;
+    }
+
+    public void setCustomerSdo(CustomerImpl customerSdo) {
+        this.customerSdo = customerSdo;
     }
 }

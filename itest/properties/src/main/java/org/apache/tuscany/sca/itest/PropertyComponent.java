@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.Collection;
 
+import commonj.sdo.DataObject;
+
 
 public interface PropertyComponent {
     public String getLocation();
@@ -29,4 +31,6 @@ public interface PropertyComponent {
     public ComplexPropertyBean getComplexPropertyTwo();
     public ComplexPropertyBean getComplexPropertyThree();
     public Collection<ComplexPropertyBean> getComplexPropertyFour();
+    public DataObject getSdoProperty();
+    public DataObject getCustomerSdo();
 }
