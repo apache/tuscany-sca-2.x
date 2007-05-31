@@ -16,11 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
- package org.apache.tuscany.sca.binding.jsonrpc.util;
+ package org.apache.tuscany.sca.binding.jsonrpc;
 
 import java.lang.reflect.Method;
 
-
+/**
+ * Utility class to create a Simple Method Description (SMD) descriptor
+ * from a Java class. See http://dojo.jot.com/SMD.
+ * 
+ * TODO: Change to work from the Tuscany Interface instead of a Java class
+ */
 public class JavaToSmd {
     
     public static String interfaceToSmd(Class klazz, String serviceUrl) {

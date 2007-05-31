@@ -22,6 +22,10 @@
  *
  */
 
+/*
+ * Modifications for Apache Tuscany:
+ * - JSONRpcClient_createMethod changed so callback is last arg
+ */
 
 /* escape a character */
 
@@ -177,7 +181,12 @@ function JSONRpcClient_createMethod(methodName)
 	var args = [];
 	var callback = null;
 	for(var i=0;i<arguments.length;i++) args.push(arguments[i]);
+
+/*	TUSCANY change callback to be last arg instead of first to match binding.ajax
 	if(typeof args[0] == "function") callback = args.shift();
+*/
+	if(typeof args[arguments.length-1] == "function") callback = args.pop();
+
 	var req = fn.client._makeRequest.call(fn.client, fn.methodName,
 					      args, callback);
 	if(callback == null) {

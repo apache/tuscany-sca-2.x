@@ -17,16 +17,17 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jsonrpc.impl;
+package org.apache.tuscany.sca.binding.jsonrpc;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static org.osoa.sca.Constants.SCA_NS;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
-import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBindingFactory;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -35,41 +36,39 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 
 /**
- * A processor for <binding.jsonrpc> elements.
- * 
- * @version $Rev$ $Date$
+ * A processor for <binding.jsonrpc> SCDL elements.
  */
-public class JSONRPCBindingProcessor implements StAXArtifactProcessor<JSONRPCBinding> {
+public class JSONRPCSCDLProcessor implements StAXArtifactProcessor<JSONRPCBinding> {
 
-    private QName BINDING_JSONRPC = new QName(SCA_NS, "binding.jsonrpc");
+    public static final QName JSONRPC_BINDING_QN = new QName(SCA_NS, "binding.jsonrpc");
     
-    private final JSONRPCBindingFactory factory;
-
-    public JSONRPCBindingProcessor(JSONRPCBindingFactory factory) {
-        this.factory = factory;
-    }
-
     public QName getArtifactType() {
-        return BINDING_JSONRPC;
+        return JSONRPC_BINDING_QN;
     }
 
     public Class<JSONRPCBinding> getModelType() {
         return JSONRPCBinding.class;
     }
 
-    public JSONRPCBinding read(XMLStreamReader reader) throws ContributionReadException {
-        String uri = reader.getAttributeValue(null, "uri");
-        JSONRPCBinding JSONRPCBinding = factory.createJSONRPCBinding();
-        if (uri != null) {
-            JSONRPCBinding.setURI(uri.trim());
+    public JSONRPCBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        JSONRPCBinding JSONRPCBinding = new JSONRPCBinding();
+
+        // Skip to end element
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && JSONRPC_BINDING_QN.equals(reader.getName())) {
+                break;
+            }
         }
+
         return JSONRPCBinding;
     }
 
-    public void write(JSONRPCBinding JSONRPCBinding, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(JSONRPCBinding model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        writer.writeStartElement(Constants.SCA10_NS, JSONRPC_BINDING_QN.getLocalPart());
+        writer.writeEndElement();
     }
 
-    public void resolve(JSONRPCBinding JSONRPCBinding, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(JSONRPCBinding model, ModelResolver resolver) throws ContributionResolveException {
     }
 
 }

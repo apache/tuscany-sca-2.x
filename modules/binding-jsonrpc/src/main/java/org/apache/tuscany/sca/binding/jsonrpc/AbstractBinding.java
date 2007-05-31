@@ -17,25 +17,27 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jsonrpc.impl;
+package org.apache.tuscany.sca.binding.jsonrpc;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
-
 /**
- * Implementation of the JSONRPC binding model.
- *
- * @version $Rev$ $Date$
+ * Helper for implementing Bindings, implements all the
+ * standard getters and setters on the binding interface.
+ * TODO: I'd really like this to be provided by Tuscany somewhere
  */
-public class JSONRPCBindingImpl implements JSONRPCBinding {
-    
+public class AbstractBinding implements Binding {
+
     private String name;
     private String uri;
+    private List<Object> extensions;
+    private boolean unresolved;
+    private List<Intent> requiredIntents;
+    private List<PolicySet> policySets;
 
     public String getName() {
         return name;
@@ -53,27 +55,24 @@ public class JSONRPCBindingImpl implements JSONRPCBinding {
         this.uri = uri;
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The sample binding does not support policies
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample binding does not support policies
-        return Collections.emptyList();
-    }
-    
     public List<Object> getExtensions() {
-        // The sample binding does not support extensions
-        return Collections.emptyList();
+        return extensions;
     }
 
     public boolean isUnresolved() {
-        return false;
+        return unresolved;
     }
 
     public void setUnresolved(boolean unresolved) {
-        // The sample binding is always resolved
+        this.unresolved = unresolved;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
     }
 
 }
