@@ -36,7 +36,7 @@ import com.meterware.httpunit.WebResponse;
 public class JSONRPCServiceTestCase extends TestCase {
 
     private static final String SERVICE_PATH = "/EchoService";
-    private static final String SERVICE_URL = "http://localhost:8080/" + SERVICE_PATH;
+    private static final String SERVICE_URL = "http://localhost:8080/SCADomain" + SERVICE_PATH;
     private SCADomain domain;
 
     protected void setUp() throws Exception {

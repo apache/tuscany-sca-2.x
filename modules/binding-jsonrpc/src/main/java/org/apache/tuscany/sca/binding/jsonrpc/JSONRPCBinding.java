@@ -19,12 +19,11 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
-import org.apache.tuscany.sca.assembly.Binding;
-
 /**
- * A model for the sample JSONRPC binding.
- *
- * @version $Rev$ $Date$
+ * A model for the JSONRPC binding.
  */
-public interface JSONRPCBinding extends Binding {
+public class JSONRPCBinding extends AbstractBinding {
+    
+    // empty as right now the json-rpc binding has no attributes
+    
 }
