@@ -263,7 +263,7 @@
 
     <wsdl:service name="SCATestToolService">
         <wsdl:port binding="tns:SCATestToolServiceSoapBinding" name="SCATestToolServiceSoapPort">
-            <wsdlsoap:address location="http://localhost:8080/services/SCATestToolWSService" />
+            <wsdlsoap:address location="http://localhost:8085/services/SCATestToolWSService" />
 
         </wsdl:port>
 

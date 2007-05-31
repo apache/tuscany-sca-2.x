@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.http.jetty;
 
@@ -44,7 +44,7 @@ import org.mortbay.thread.ThreadPool;
 
 /**
  * Implements an HTTP transport service using Jetty.
- * 
+ *
  * @version $$Rev$$ $$Date: 2007-02-21 13:28:30 +0000 (Wed, 21 Feb
  *          2007) $$
  */
@@ -57,7 +57,7 @@ public class JettyServer implements ServletHost {
     private static final int STARTED = 2;
     private static final int STOPPING = 3;
     private static final int STOPPED = 4;
-    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 8085;
 
     private final Object joinLock = new Object();
     private int state = UNINITIALIZED;
@@ -143,7 +143,7 @@ public class JettyServer implements ServletHost {
             if (port == -1) {
                 port = DEFAULT_PORT;
             }
-            
+
             try {
                 server = new Server();
                 server.setThreadPool(new WorkSchedulerThreadPool());

@@ -65,7 +65,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     private MessageFactory messageFactory;
 
     // TODO: what to do about the base URI?
-    private static final String BASE_URI = "http://localhost:8080/";
+    private static final String BASE_URI = "http://localhost:8085/";
 
     public Axis2ServiceBindingProvider(RuntimeComponent component,
                                        RuntimeComponentService service,
@@ -142,7 +142,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
      * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec
      * If the <binding.ws> has no wsdlElement but does have a uri attribute then
      * the uri takes precidence over any implicitly used WSDL.
-     * 
+     *
      * @param parent
      */
     protected URI computeActualURI(String baseURI, RuntimeComponent component, RuntimeComponentService service) {
@@ -370,7 +370,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         requestMsg.setBody(args);
 
         Message workContext = ThreadMessageContext.getMessageContext();
-        
+
         ThreadMessageContext.setMessageContext(requestMsg);
         try {
             if (isConversational() && conversationID != null) {

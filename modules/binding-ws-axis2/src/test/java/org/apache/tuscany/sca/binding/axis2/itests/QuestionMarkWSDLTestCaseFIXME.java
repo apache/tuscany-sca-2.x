@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.axis2.itests;
@@ -35,30 +35,30 @@ import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * TODO: This doesn't work right now as it seems to cause hangs when running 
+ * TODO: This doesn't work right now as it seems to cause hangs when running
  * from mvn. Also running in eclipse mostly only works if you comment out
- * one of the test methods.  
+ * one of the test methods.
  */
 public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
 
     private SCADomain domain;
-    
+
     /**
-     * Tests ?wsdl works and returns the correct port endpoint from the WSDL 
+     * Tests ?wsdl works and returns the correct port endpoint from the WSDL
      */
     public void testWSDLPortEndpoint() throws Exception {
         WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();
         wsdlReader.setFeature("javax.wsdl.verbose",false);
         wsdlReader.setFeature("javax.wsdl.importDocuments",true);
 
-        Definition definition = wsdlReader.readWSDL("http://localhost:8080/services/HelloWorldWebService?wsdl");
+        Definition definition = wsdlReader.readWSDL("http://localhost:8085/services/HelloWorldWebService?wsdl");
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://helloworld-om", "HelloWorldService"));
         Port port = service.getPort("HelloWorldSoapPort");
 
         String endpoint = getEndpoint(port);
         String ip = HttpUtils.getIpAddress();
-        assertEquals("http://" + ip + ":8080/services/HelloWorldWebService", endpoint);
+        assertEquals("http://" + ip + ":8085/services/HelloWorldWebService", endpoint);
     }
 
     /**
@@ -69,14 +69,14 @@ public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
         wsdlReader.setFeature("javax.wsdl.verbose",false);
         wsdlReader.setFeature("javax.wsdl.importDocuments",true);
 
-        Definition definition = wsdlReader.readWSDL("http://localhost:8080/HelloWorldService/foo/bar?wsdl");
+        Definition definition = wsdlReader.readWSDL("http://localhost:8085/HelloWorldService/foo/bar?wsdl");
         assertNotNull(definition);
         Service service = definition.getService(new QName("http://helloworld-om", "HelloWorldService"));
         Port port = service.getPort("HelloWorldSoapPort");
 
         String endpoint = getEndpoint(port);
         String ip = HttpUtils.getIpAddress();
-        assertEquals("http://" + ip + ":8080/HelloWorldService/foo/bar", endpoint);
+        assertEquals("http://" + ip + ":8085/HelloWorldService/foo/bar", endpoint);
     }
 
     protected String getEndpoint(Port port) {
@@ -92,7 +92,7 @@ public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/questionmark-wsdl.composite");
     }
-    
+
     protected void tearDown() throws Exception {
         domain.close();
     }

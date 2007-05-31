@@ -461,7 +461,7 @@
 		<wsdl:port binding="account:AccountServiceSOAP"
 			name="AccountServiceSOAP">
 			<soap:address
-				location="http://localhost:8080/sample-bigbank-account/services/AccountService" />
+				location="http://localhost:8085/sample-bigbank-account/services/AccountService" />
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>

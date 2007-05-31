@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.http.tomcat;
 
@@ -41,18 +41,18 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
  * A Tomcat based implementation of ServletHost.
- * 
+ *
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("deprecation")
 public class TomcatServer implements ServletHost {
 
-    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 8085;
     private StandardEngine engine;
     private StandardHost host;
     private Connector connector;
     private WorkScheduler workScheduler;
-    
+
     /**
      * A custom connector that uses our WorkScheduler to schedule
      * worker threads.
@@ -82,7 +82,7 @@ public class TomcatServer implements ServletHost {
                         super();
                     }
                 }
-                
+
                 public void start() throws Exception {
                     if (!initialized)
                         init();
@@ -95,7 +95,7 @@ public class TomcatServer implements ServletHost {
                         acceptorThread.start();
                     }
                 }
-                
+
                 public void stop() {
                     super.stop();
                     try {
@@ -104,18 +104,18 @@ public class TomcatServer implements ServletHost {
                         throw new RuntimeException(e);
                     }
                 }
-                
+
                 public int getCurrentThreadsBusy() {
                     return 0;
                 }
             }
-            
+
             CustomHttpProtocolHandler() {
                 endpoint = new CustomEndpoint();
                 endpoint.setExecutor(new WorkSchedulerExecutor());
             }
         }
-        
+
         CustomConnector() throws Exception {
             protocolHandler = new CustomHttpProtocolHandler();
         }
@@ -123,13 +123,13 @@ public class TomcatServer implements ServletHost {
 
     /**
      * Constructs a new embedded Tomcat server.
-     * 
+     *
      * @param workScheduler the WorkScheduler to use to process requests.
      */
     public TomcatServer(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
     }
-    
+
     public void init() throws ServletMappingException {
 
         // Create an engine
@@ -166,11 +166,11 @@ public class TomcatServer implements ServletHost {
     }
 
     public void addServletMapping(String uri, Servlet servlet) {
-        
+
         int port = URI.create(uri).getPort();
         if (port == -1) {
             port = DEFAULT_PORT;
-        }        
+        }
         // Install a default HTTP connector
         if (connector == null) {
             //TODO support multiple connectors on different ports

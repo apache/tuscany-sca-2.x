@@ -30,7 +30,7 @@
 
     <component name="httpserver">
         <t:implementation.system class="org.apache.tuscany.service.jetty.JettyServiceImpl" />
-        <property name="httpPort">8080</property>
+        <property name="httpPort">8085</property>
     </component>
 
 </composite>

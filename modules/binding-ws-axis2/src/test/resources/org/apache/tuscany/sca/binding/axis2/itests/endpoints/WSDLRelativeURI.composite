@@ -23,7 +23,7 @@
            
     <!-- 
     exposing a component with a WS binding using a WSDL port with a relative URL
-    so for this composite the service is: http://localhost:8080/HelloWorldService/myRelativeURI 
+    so for this composite the service is: http://localhost:8085/HelloWorldService/myRelativeURI 
     -->      
 
     <service name="helloWorld" promote="HelloWorldService">
@@ -43,7 +43,7 @@
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld-om-relative-uri#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om-relative-uri#wsdl.binding(HelloWorldSoapBinding)"
-                    uri="http://localhost:8080/HelloWorldService/helloWorld/myRelativeURI"/>
+                    uri="http://localhost:8085/HelloWorldService/helloWorld/myRelativeURI"/>
     </reference>
 
 </composite>
