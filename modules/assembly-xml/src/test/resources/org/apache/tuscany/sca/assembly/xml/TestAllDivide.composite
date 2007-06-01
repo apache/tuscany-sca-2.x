@@ -29,7 +29,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0 ">
 	
-  <include>tns:CompleteDivide</include>
+  <include name="tns:CompleteDivide"/>
   
   <service name="DivideService" policySets="" promote="CalculatorDivideComponent/DivideService" requires="">
     <interface.java interface="calculator.DivideService" callbackInterface="calculator.DivideCallback"/>

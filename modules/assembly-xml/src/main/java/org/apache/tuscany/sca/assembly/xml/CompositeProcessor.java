@@ -114,6 +114,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
                             // Read an <include>
                             include = assemblyFactory.createComposite();
+                            include.setName(getQName(reader, "name"));
                             include.setUnresolved(true);
                             composite.getIncludes().add(include);
     
@@ -267,12 +268,6 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                         break;
     
                     case XMLStreamConstants.CHARACTERS:
-    
-                        // Read an <include>qname</include>
-                        if (include != null && INCLUDE_QNAME.equals(name)) {
-                            include.setName(getQNameValue(reader, reader.getText().trim()));
-                        }
-    
                         break;
     
                     case END_ELEMENT:

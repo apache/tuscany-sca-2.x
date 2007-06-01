@@ -25,7 +25,7 @@
     xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0 "
     xmlns:cns="http://test/confidentiality" xmlns:sns="http://test/secure">
 
-    <include>tns:TestAllDivide</include>
+    <include name="tns:TestAllDivide"/>
 
     <service name="CalculatorService" promote="CalculatorServiceComponent/CalculatorService" requires="cns:confidentiality"
         policySets="sns:secure">
