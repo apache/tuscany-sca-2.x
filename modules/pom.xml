@@ -43,6 +43,7 @@
                 <module>binding-jms</module>
 		-->
                 <module>binding-ajax</module>
+                <module>binding-feed</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-rmi</module>
                 <module>binding-ws</module>
