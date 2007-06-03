@@ -27,8 +27,8 @@
     </parent>
     <artifactId>demo-mortgage-creditcheck</artifactId>
     <packaging>war</packaging>
-    <name>Tuscany credit Web Service Sample</name>
-    <description>A sample credit Web Service.</description>
+    <name>Tuscany Mortgage Credit Check Demo</name>
+    <description>A sample Mortgage application made of several SCA components wired together.</description>
 
     <dependencies>
         <dependency>

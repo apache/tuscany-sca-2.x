@@ -27,7 +27,7 @@
     </parent>
     <artifactId>demo-mortgage-loanapproval</artifactId>
     <packaging>jar</packaging>
-    <name>Tuscany Mortgage Sample</name>
+    <name>Tuscany Mortgage Loan Approval Demo</name>
     <description>A sample Mortgage application made of several SCA components wired together.</description>
 
     <properties>
