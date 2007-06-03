@@ -22,6 +22,6 @@
 	   targetNamespace = "http://foo"
            name="ExceptionTest">
    
-    <include>foo:intracomposite</include>
+    <include name="foo:intracomposite"/>
      
 </composite>
