@@ -63,6 +63,7 @@
                 <!--
                 <module>discovery-jms</module>
                 -->
+                <module>extension-helper</module>
                 <module>host-embedded</module>
                 <module>host-http</module>
                 <module>host-webapp</module>
