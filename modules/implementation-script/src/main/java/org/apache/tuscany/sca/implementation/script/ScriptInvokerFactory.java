@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.implementation.script;
 
 import java.io.StringReader;
@@ -27,7 +28,6 @@ import javax.script.ScriptException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.bsf.xml.XMLHelper;
-import org.apache.tuscany.implementation.spi.PropertyValueObjectFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -40,36 +40,24 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.spi.InvokerFactory;
+import org.apache.tuscany.sca.spi.utils.PropertyValueObjectFactory;
 
-/**
- * Represents a Script implementation.
- */
-public class ScriptImplementationProvider implements ImplementationProvider {
+public class ScriptInvokerFactory implements InvokerFactory {
 
-    protected RuntimeComponent component;
-    protected ScriptImplementation implementation;
     protected ScriptEngine scriptEngine;
-    protected PropertyValueObjectFactory propertyFactory;
     protected XMLHelper xmlHelper;
 
-    public ScriptImplementationProvider(RuntimeComponent component, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
-        this.component = component;
-        this.implementation = implementation;
-        this.propertyFactory = propertyFactory;
-    }
-
-    public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        return new ScriptInvoker(this, operation);
-    }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        return new ScriptInvoker(this, operation);
+    public ScriptInvokerFactory(RuntimeComponent rc, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
+        init(rc, implementation, propertyFactory);
     }
     
-    public void start() {
+    public Invoker createInvoker(Operation operation) {
+        return new ScriptInvoker(scriptEngine, xmlHelper, operation);
+    }
+    
+    protected void init(RuntimeComponent rc, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
         try {
             scriptEngine = getScriptEngineByExtension(implementation.getScriptLanguage());
             if (scriptEngine == null) {
@@ -80,7 +68,7 @@ public class ScriptImplementationProvider implements ImplementationProvider {
             }
             
             for (Reference reference : implementation.getReferences()) {
-                scriptEngine.put(reference.getName(), createReferenceProxy(reference.getName(), component));
+                scriptEngine.put(reference.getName(), createReferenceProxy(reference.getName(), rc));
             }
 
             for (Property property : implementation.getProperties()) {
@@ -97,19 +85,19 @@ public class ScriptImplementationProvider implements ImplementationProvider {
         }
 
         // set the databinding and xmlhelper for wsdl interfaces
-        for (Service service : component.getServices()) {
+        for (Service service : rc.getServices()) {
             InterfaceContract ic = service.getInterfaceContract();
             if (ic instanceof WSDLInterfaceContract) {
                 // Set to use the Axiom data binding
                 ic.getInterface().setDefaultDataBinding(OMElement.class.getName());
-                this.xmlHelper = XMLHelper.getArgHelper(scriptEngine);
+                xmlHelper = XMLHelper.getArgHelper(scriptEngine);
             }
         }
     }
-    
-    public void stop() {
-    }
 
+    /**
+     * TODO: RuntimeComponent should provide a method like this
+     */
     @SuppressWarnings("unchecked")
     protected Object createReferenceProxy(String name, RuntimeComponent component) {
         for (ComponentReference reference : component.getReferences()) {
@@ -124,7 +112,7 @@ public class ScriptImplementationProvider implements ImplementationProvider {
     /**
      * Hack for now to work around a problem with the JRuby script engine
      */
-    private ScriptEngine getScriptEngineByExtension(String scriptExtn) {
+    protected ScriptEngine getScriptEngineByExtension(String scriptExtn) {
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
         if ("rb".equals(scriptExtn)) {
             return new TuscanyJRubyScriptEngine();

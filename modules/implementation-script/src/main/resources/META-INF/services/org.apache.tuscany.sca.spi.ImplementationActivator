@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.sca.implementation.script.ScriptModuleActivator
+org.apache.tuscany.sca.implementation.script.ScriptImplementationActivator
