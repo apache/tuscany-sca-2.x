@@ -61,11 +61,19 @@ public class FeedServiceBindingProvider implements ServiceBindingProvider {
         FeedBindingListener servlet =
             new FeedBindingListener(binding.getName(), aClass, instance, binding.getFeedType());
 
-        servletHost.addServletMapping(SERVICE_MAPPING_PREFIX + binding.getName(), servlet);
+        String uri = binding.getURI();
+        if (uri == null) {
+            uri = SERVICE_MAPPING_PREFIX + binding.getName();
+        }
+        servletHost.addServletMapping(uri, servlet);
     }
 
     public void stop() {
-        servletHost.removeServletMapping(SERVICE_MAPPING_PREFIX + binding.getName());
+        String uri = binding.getURI();
+        if (uri == null) {
+            uri = SERVICE_MAPPING_PREFIX + binding.getName();
+        }
+        servletHost.removeServletMapping(uri);
     }
 
     private Class<?> getTargetJavaClass(Interface targetInterface) {
