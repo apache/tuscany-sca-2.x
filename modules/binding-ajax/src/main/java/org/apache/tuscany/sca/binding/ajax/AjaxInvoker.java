@@ -30,11 +30,11 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.dwr.Util;
 
-public class AjaxReferenceInvoker implements Invoker {
+public class AjaxInvoker implements Invoker {
 
     protected String referenceFunction;
     
-    AjaxReferenceInvoker(String referenceName, Operation operation) {
+    public AjaxInvoker(String referenceName, Operation operation) {
         this.referenceFunction = referenceName + "." + operation.getName();
     }
 

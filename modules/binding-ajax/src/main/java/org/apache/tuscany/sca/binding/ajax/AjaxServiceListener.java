@@ -19,37 +19,31 @@
 
 package org.apache.tuscany.sca.binding.ajax;
 
-import static org.apache.tuscany.sca.binding.ajax.AjaxServiceBindingProvider.SERVLET_PATH;
-
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.spi.ServiceListener;
 
-public class AjaxReferenceBindingProvider implements ReferenceBindingProvider {
+public class AjaxServiceListener implements ServiceListener {
 
-    protected RuntimeComponent runtimeComponent;
-    protected RuntimeComponentReference runtimeComponentReference;
-    protected Binding binding; 
+    RuntimeComponent rc;
+    RuntimeComponentService rcs;
+    Binding binding;
     protected ServletHost servletHost;
     
-    public AjaxReferenceBindingProvider(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, ServletHost servletHost) {
-        this.runtimeComponent = rc;
-        this.runtimeComponentReference = rcr;
-        this.binding = b;
+    public static final String SERVLET_PATH = AjaxServlet.AJAX_SERVLET_PATH + "/*";
+
+    public AjaxServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding, ServletHost servletHost) {
+        this.rc = rc;
+        this.rcs = rcs;
+        this.binding = binding;
         this.servletHost = servletHost;
     }
 
-    public Invoker createInvoker(Operation operation, boolean arg1) {
-        return new AjaxReferenceInvoker(binding.getName(), operation);
-    }
-
     public void start() {
-
+        
         // there is no "getServlet" method on ServletHost so this has to use remove/add
 
         AjaxServlet servlet = (AjaxServlet) servletHost.removeServletMapping(SERVLET_PATH);
@@ -57,17 +51,16 @@ public class AjaxReferenceBindingProvider implements ReferenceBindingProvider {
             servlet = new AjaxServlet();
         }
         
-        servlet.addReference(binding.getName());
+        Class<?> type = ((JavaInterface)rcs.getInterfaceContract().getInterface()).getJavaClass();
+        Object instance = rc.createSelfReference(type).getService();
+
+        servlet.addService(binding.getName(), type, instance);
 
         servletHost.addServletMapping(SERVLET_PATH, servlet);
     }
 
     public void stop() {
         servletHost.removeServletMapping(SERVLET_PATH);
-    }
-
-    public InterfaceContract getBindingInterfaceContract() {
-        return runtimeComponentReference.getInterfaceContract();
     }
 
 }
