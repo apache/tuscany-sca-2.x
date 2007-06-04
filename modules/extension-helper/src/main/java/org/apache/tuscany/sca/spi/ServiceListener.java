@@ -19,21 +19,10 @@
 
 package org.apache.tuscany.sca.spi;
 
-import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-
-public interface BindingActivator<B extends Binding> {
-
-    QName getSCDLQName();
+public interface ServiceListener {
     
-    Class<B> getBindingClass();
+    void start();
+    void stop();
 
-    ReferenceInvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, B binding);
-    
-    ServiceListener createServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, B binding);
-    
 }
