@@ -31,7 +31,7 @@ public class BigBankClient {
 
     public static void main(String[] args) throws Exception {
 
-        SCADomain domain = SCADomain.newInstance("http://localhost:8085", "/", "BigBank.composite");
+        SCADomain domain = SCADomain.newInstance("BigBank.composite");
 
         AccountService accountService = domain.getService(AccountService.class, "AccountServiceComponent");
 

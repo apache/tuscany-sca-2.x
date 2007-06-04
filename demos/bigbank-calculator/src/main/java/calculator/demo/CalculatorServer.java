@@ -30,7 +30,7 @@ public class CalculatorServer {
 
         System.out.println("Starting the Sample SCA Calculator...");
 
-        SCADomain domain = SCADomain.newInstance("http://localhost:8085", "/", "Calculator.composite");
+        SCADomain domain = SCADomain.newInstance("Calculator.composite");
 
         System.out.println("Press Enter to Exit...");
         System.in.read();
