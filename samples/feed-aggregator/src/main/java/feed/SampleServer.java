@@ -31,10 +31,10 @@ public class SampleServer {
             System.out.println("Sample Feed server started (press enter to shutdown)");
             System.out.println();
             System.out.println("To read the aggregated feeds, point your Web browser to the following addresses:");
-            System.out.println("http://localhost:8080/atomSample");
-            System.out.println("http://localhost:8080/rssSample");
-            System.out.println("http://localhost:8080/atomSample?feedType=rss_2.0");
-            System.out.println("http://localhost:8080/rssSample?feedType=atom_1.0");
+            System.out.println("http://localhost:8083/atomAggregator");
+            System.out.println("http://localhost:8083/rssAggregator");
+            System.out.println("http://localhost:8083/atomAggregator?feedType=rss_2.0");
+            System.out.println("http://localhost:8083/rssAggregator?feedType=atom_1.0");
             System.out.println();
             System.in.read();
         } catch (IOException e) {

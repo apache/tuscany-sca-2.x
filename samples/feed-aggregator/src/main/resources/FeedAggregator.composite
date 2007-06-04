@@ -22,10 +22,10 @@
     name="FeedAggregator">
 
 	<service name="rssSample" promote="RssAggregator">
-		<binding.rss/>
+		<binding.rss uri="http://localhost:8083/rssAggregator"/>
 	</service>
 	<service name="atomSample" promote="AtomAggregator">
-		<binding.atom/>
+		<binding.atom  uri="http://localhost:8083/atomAggregator"/>
 	</service>	
 
     <component name="RssAggregator">
