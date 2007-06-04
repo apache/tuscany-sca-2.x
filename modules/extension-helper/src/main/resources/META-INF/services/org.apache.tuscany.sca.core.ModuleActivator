@@ -17,3 +17,4 @@
 
 # Implementation class for the ExtensionActivator
 org.apache.tuscany.sca.spi.impl.ImplementationsActivator
+org.apache.tuscany.sca.spi.impl.BindingsActivator
