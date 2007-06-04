@@ -31,7 +31,7 @@ public class BigBankServer {
 
         System.out.println("Starting the Sample SCA BigBank server...");
 
-        SCADomain domain = SCADomain.newInstance("http://localhost:8085", "/", "BigBank.composite");
+        SCADomain domain = SCADomain.newInstance("http://localhost:8082", "/", "BigBank.composite");
 
         System.out.println("Press Enter to Exit...");
         System.in.read();
