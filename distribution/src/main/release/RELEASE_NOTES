@@ -1,7 +1,5 @@
-Apache Tuscany SCA 0.90 (May 2007) Release Notes
-================================================
-
-TODO: content just to prompt you. please review/rewrite/comment.
+Apache Tuscany SCA 0.90 (incubating) June 2007 Release Notes
+============================================================
 
 Overview
 --------
@@ -9,56 +7,32 @@ Overview
 This 0.90 release of Apache Tuscany SCA represents a significant
 milestone on the road to 1.0.
 
-Learning from the previous milestone releases, this release represents
-a substantial redesign and rewrite of parts of the Tuscany SCA runtime.
+This release includes a substantial redesign and rewrite of parts
+of the Tuscany SCA runtime which has significantly improved usability
+compared with previous releases. 
 
-- Now based on the final OSOA (http://www.osoa.org) 1.0 specifications.
+Key features include:
 
-- Clear, simple and stable SPI's to aid embedding and extending the runtime.
+- now based on the final OSOA (http://www.osoa.org) 1.0 specifications;
 
-- Lightweight and modular, enabling pick-and-choosing Tuscany modules
-  as required for the environment.
+- clear, simple and stable SPI's to aid embedding and extending the runtime;
 
-The result of this is that the Tuscany SCA runtime can now easily be used
-in any environment - standalone, within webapps, running inside and IDE,
-or embedded in a application server.
+- lightweight and modular, allowing users to pick and choose Tuscany modules
+  as required for their particular environments.
+
+The result of these improvements is that the Tuscany SCA runtime can now be
+used easily in any environment - standalone, within webapps, embedded in any
+application server, or even running inside an IDE.
  
 No special tools, packaging, or plugins are required to create SCA
 applications using Tuscany SCA. The standard Ant or Maven build tools,
-or even the JDK command line tools are all that is needed.
+or the simple JDK command line tools, are all that is required to
+develop and use Tuscany SCA applications.
 
-A complete working runtime for SCA assembly can now be put together
-with less than 1MB of Tuscany SCA modules.
+The modular nature of Tuscany now enables a complete runtime for SCA assembly 
+to be put together with less than 1MB of Tuscany code.
 
-SPI packages
-------------
-
-SCA assembly model
-org.apache.tuscany.sca.assembly
-org.apache.tuscany.sca.interfacedef
-org.apache.tuscany.sca.interfacedef.java
-org.apache.tuscany.sca.interfacedef.wsdl
-org.apache.tuscany.sca.policy
-
-SCA contribution model
-org.apache.tuscany.sca.contribution
-
-Runtime extensions
-org.apache.tuscany.sca.core
-org.apache.tuscany.sca.invocation
-org.apache.tuscany.sca.provider
-org.apache.tuscany.sca.runtime
-org.apache.tuscany.sca.work
-
-Data binding support
-org.apache.tuscany.sca.databinding
-
-Embedding Tuscany
-org.apache.tuscany.sca.host.embedded
-
-Servlet container integration
-org.apache.tuscany.sca.http
-
+See the CHANGES file for a detailed list of the features in this release.
 
 Support
 -------

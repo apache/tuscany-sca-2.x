@@ -223,7 +223,7 @@
             <version>${pom.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>sca-api</artifactId>
             <version>${pom.version}</version>
         </dependency>

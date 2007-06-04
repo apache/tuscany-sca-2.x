@@ -190,7 +190,7 @@ sometimes not see any test output. You will always see an indication of test
 success or failure. 
 
 Using The Samples In An IDE
----------------------------
+---------------------------------------------
 The easiest way to use the samples in an IDE is to use Maven to generate all 
 of the IDE project files for you automatically. This works best if you 
 generate IDE projects for all of the Apache Tuscany modules. You can then 
@@ -215,8 +215,30 @@ new project from existing source" you can specify an SCA module directory,
 which includes the generated project files, and Eclipse will treat it like any
 other Java project. 
 
+Using The Samples In An IDE Without Maven
+-----------------------------------------
+We don't provide any IDE project files with our distributions so you will have to 
+import the sample files into your IDE manually. Here's an example of how it can be 
+done using Eclipse.
+ 
+In a new or existing workspace
+    Create a new java project to represent the sample you want to work on, e.g.
+        calculator
+    Import all of the sample code and resources into this project, e.g.
+        File, Import and then select tuscany-sca-0.90-incubating\samples\calculator from the filesystem
+    Configure the source path to include
+        src/main/java
+        src/main/resources
+    Configure the output folder to be
+        calculator/target
+    Configure the build path to include all of the jars provided in
+        lib
+     If you select calculator.CalculatorClient.java and run as "Java Application" you should see
+        3 + 2=5.0
+        3 - 2=1.0
+        3 * 2=6.0
+        3 / 2=1.5
 
-
-
-
+The details of how to do this for other development environments will
+vary but the process will be similar. 
 
