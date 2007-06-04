@@ -30,7 +30,7 @@ public class StockQuoteServer {
 
         System.out.println("Starting the Sample SCA StockQuote Service...");
 
-        SCADomain domain = SCADomain.newInstance("http://localhost:8081", "/", "StockQuote.composite");
+        SCADomain domain = SCADomain.newInstance("StockQuote.composite");
 
         System.out.println("Press Enter to Exit...");
         System.in.read();
