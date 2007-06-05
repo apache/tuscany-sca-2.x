@@ -30,10 +30,8 @@ public class HelloWorldClient {
         SCADomain scaDomain = SCADomain.newInstance("helloworldwsclient.composite");
         HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
 
-//        String value = helloWorldService.getGreetings("World");
-//        System.out.println(value);
-        
-        Thread.sleep(900000);
+        String value = helloWorldService.getGreetings("World");
+        System.out.println(value);
 
         scaDomain.close();
     }
