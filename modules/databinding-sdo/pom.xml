@@ -44,7 +44,12 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>            
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-lib</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>                    
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>

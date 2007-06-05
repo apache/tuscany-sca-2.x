@@ -22,7 +22,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
