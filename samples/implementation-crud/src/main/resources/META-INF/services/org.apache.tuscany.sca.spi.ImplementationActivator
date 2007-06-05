@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 # Implementation class for the ExtensionActivator
-crud.module.CRUDModuleActivator
+crud.CRUDImplementationActivator

@@ -21,10 +21,13 @@ package org.apache.tuscany.sca.spi.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,6 +40,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.spi.utils.AbstractStAXArtifactProcessor;
 import org.apache.tuscany.sca.spi.utils.DynamicImplementation;
 
@@ -48,14 +53,18 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
 
     protected QName scdlQName;
     protected Class<Implementation> implementationClass;
+    protected ExtensionPointRegistry registry;
+    protected ModelFactoryExtensionPoint factories;
 
     protected Map<String, Method> attributeSetters;
     protected Method elementTextSetter;
 
-    public SCDLProcessor(AssemblyFactory assemblyFactory, QName scdlQName, Class<Implementation> implementationClass) {
+    public SCDLProcessor(AssemblyFactory assemblyFactory, QName scdlQName, Class<Implementation> implementationClass, ExtensionPointRegistry registry, ModelFactoryExtensionPoint factories) {
         super(assemblyFactory);
         this.scdlQName = scdlQName;
         this.implementationClass = implementationClass;
+        this.registry = registry;
+        this.factories = factories;
         initAttributes();
     }
 
@@ -72,6 +81,23 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
         }
     }
 
+    private Object[] getImplConstrArgs() {
+        Constructor[] cs = implementationClass.getConstructors();
+        if (cs.length != 1) {
+            throw new IllegalArgumentException("Implementation class must have a single constructor: "+ implementationClass.getName());
+        }
+        List args = new ArrayList();
+        for (Class c : cs[0].getParameterTypes()) {
+            Object o = factories.getFactory(c);
+            if (o == null) {
+                o = registry.getExtensionPoint(c);
+            }
+            args.add(o);
+        }
+        return args.toArray();
+    }
+
+    
     public QName getArtifactType() {
         return scdlQName;
     }
@@ -83,7 +109,7 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
     public Implementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         Implementation impl;
         try {
-            impl = implementationClass.newInstance();
+            impl = (Implementation)implementationClass.getConstructors()[0].newInstance(getImplConstrArgs());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

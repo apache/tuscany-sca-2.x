@@ -18,31 +18,62 @@
  */
 package crud;
 
-import org.apache.tuscany.sca.assembly.Implementation;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.spi.utils.AbstractImplementation;
+
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
- * The sample CRUD implementation is not a full blown implementation, it only
- * supports a subset of what a component implementation can support: - a single
- * fixed service (as opposed to a list of services typed by different
- * interfaces) - a directory attribute used to specify where a CRUD component is
- * going to persist resources - no references or properties - no policy intents
- * or policy sets
  */
-public interface CRUDImplementation extends Implementation {
+public class CRUDImplementation extends AbstractImplementation {
 
-    /**
-     * Returns the directory used by CRUD implementations to persist resources.
-     * 
-     * @return the directory used to persist resources
-     */
-    public String getDirectory();
+    private Service crudService;
+    private String directory;
 
-    /**
-     * Sets the directory used by CRUD implementations to persist resources.
-     * 
-     * @param directory the directory used to persist resources
-     */
-    public void setDirectory(String directory);
+    public CRUDImplementation(AssemblyFactory assemblyFactory,
+                              JavaInterfaceIntrospectorExtensionPoint visitors) {
 
+            // CRUD implementation always provide a single service exposing
+            // the CRUD interface, and have no references and properties
+            crudService = assemblyFactory.createService();
+            crudService.setName("CRUD");
+
+            JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+            JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
+
+            JavaInterface javaInterface;
+            try {
+                javaInterface = introspector.introspect(CRUD.class);
+            } catch (InvalidInterfaceException e) {
+                throw new IllegalArgumentException(e);
+            }
+            JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+            interfaceContract.setInterface(javaInterface);
+            crudService.setInterfaceContract(interfaceContract);
+    }
+    
+    public String getDirectory() {
+        return directory;
+    }
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+
+    public List<Service> getServices() {
+        // The sample CRUD implementation provides a single fixed CRUD service
+        return Collections.singletonList(crudService);
+    }
 }
