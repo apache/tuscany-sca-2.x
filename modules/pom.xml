@@ -61,6 +61,7 @@
                 <module>databinding-jaxb</module>
                 <module>databinding-sdo</module>
                 <module>databinding-sdo-axiom</module>
+                <module>databinding-json</module>
                 <!--
                 <module>discovery-jms</module>
                 -->
