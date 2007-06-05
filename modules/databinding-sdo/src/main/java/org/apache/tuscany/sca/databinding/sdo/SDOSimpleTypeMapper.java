@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;

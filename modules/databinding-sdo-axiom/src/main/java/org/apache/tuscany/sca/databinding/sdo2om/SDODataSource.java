@@ -32,8 +32,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.impl.serialize.StreamingOMSerializer;
-import org.apache.tuscany.sdo.helper.XMLStreamHelper;
-import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.sdo.api.XMLStreamHelper;
+import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
