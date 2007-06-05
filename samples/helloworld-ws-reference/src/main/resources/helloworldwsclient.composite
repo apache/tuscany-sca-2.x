@@ -22,13 +22,18 @@
 	xmlns:hw="http://helloworld"
 	name="helloworldwsclient">
     
+    <service name="HelloWorldService" promote="HelloWorldServiceComponent">
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.console/>
+    </service>
+
     <component name="HelloWorldServiceComponent">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
     </component>
 
     <reference name="HelloWorldService" promote="HelloWorldServiceComponent/helloWorldService">
         <interface.java interface="helloworld.HelloWorldService" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+        <binding.console/>
     </reference>
 
 </composite>

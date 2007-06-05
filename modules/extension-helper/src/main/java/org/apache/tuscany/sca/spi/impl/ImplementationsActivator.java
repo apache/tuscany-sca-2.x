@@ -68,7 +68,7 @@ public class ImplementationsActivator implements ModuleActivator {
 
             Class<Implementation> implClass = implementationActivator.getImplementationClass();
             QName scdlQName = implementationActivator.getSCDLQName();
-            staxProcessors.addArtifactProcessor(new SCDLProcessor(assemblyFactory, scdlQName, implClass));
+            staxProcessors.addArtifactProcessor(new SCDLProcessor(assemblyFactory, scdlQName, implClass, registry, factories));
 
             if (implementationActivator.getImplementationClass() != null && providerFactories != null) {
                 addImplementationProvider(implementationActivator, providerFactories);

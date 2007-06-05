@@ -22,11 +22,12 @@
 	xmlns:hw="http://helloworld"
     name="helloworldws">
 
-    <component name="HelloWorldServiceComponent">
-	    <service name="HelloWorldService">
+	    <service name="HelloWorldService" promote="HelloWorldServiceComponent">
 	        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
 	        <binding.ws />
 	    </service>
+
+    <component name="HelloWorldServiceComponent">
         <implementation.java class="helloworld.HelloWorldImpl" />
     </component>
 
