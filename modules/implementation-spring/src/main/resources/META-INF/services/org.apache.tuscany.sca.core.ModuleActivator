@@ -1,0 +1,2 @@
+# Implementation class for the ExtensionActivator for Spring module
+org.apache.tuscany.implementation.spring.SpringModuleActivator
