@@ -4,9 +4,9 @@
     <xsd:element name="customer" type="Customer"/>
     <xsd:complexType name="Customer">
         <xsd:sequence>
-            <xsd:element name="firstName" type="xsd:string"/>
+            <xsd:element name="firstName"  type="xsd:string"/>
             <xsd:element name="middleName" type="xsd:string"/>
-            <xsd:element ref="lastName" type="xsd:string"/>
+            <xsd:element name="lastName"   type="xsd:string"/>
         </xsd:sequence>
     </xsd:complexType>
  </xsd:schema>

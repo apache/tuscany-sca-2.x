@@ -28,7 +28,7 @@
     </service>           
            
     <dbsdo:import.sdo location="customer.xsd" />
-    <!-- dbsdo:import.sdo factory="com.example.customer.SdoFactory" /-->
+    <dbsdo:import.sdo factory="com.example.customer.sdo.SdoFactory" />
                
     <property name="number" type="xsd:int">1</property>
     <property name="complex" type="foo:MyComplexType" >
@@ -200,13 +200,13 @@
         		<cust:lastName>Lasting Name</cust:lastName>
        		</cust:customer>
         </property>
-        <!-- property name="customerSdo" type="cust:Customer">	
-        	<cust:Customer>
+        <property name="customerSdo" type="cust:Customer">	
+        	<cust:customer>
         		<cust:firstName>Sdo Firstly Name</cust:firstName>
         		<cust:middleName>Sdo Middler Name</cust:middleName>
         		<cust:lastName>Sdo Lasting Name</cust:lastName>
-       		</cust:Customer>
-        </property-->
+       		</cust:customer>
+        </property>
     </component>
 </composite>
 

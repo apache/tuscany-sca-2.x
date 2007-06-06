@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import org.osoa.sca.annotations.Property;
 
-import com.example.customer.impl.CustomerImpl;
+import com.example.customer.sdo.impl.CustomerImpl;
 import commonj.sdo.DataObject;
 
 public class PropertyComponentImpl implements PropertyComponent {

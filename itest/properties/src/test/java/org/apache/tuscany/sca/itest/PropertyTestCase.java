@@ -180,14 +180,14 @@ public class PropertyTestCase {
         assertEquals("Lasting Name", dataObject.getString("lastName"));
     }
     
-    /*@Test
+    @Test
     public void testSDOProperty2() {
         DataObject dataObject = propertyService.getCustomerSdo();
         assertNotNull(dataObject);
-        assertEquals("Customer Firstly Name", dataObject.get("firstName"));
-        assertEquals("Customer Middler Name", dataObject.getString("middleName"));
-        assertEquals("Customer Lasting Name", dataObject.getString("lastName"));
-    }*/
+        assertEquals("Sdo Firstly Name", dataObject.get("firstName"));
+        assertEquals("Sdo Middler Name", dataObject.getString("middleName"));
+        assertEquals("Sdo Lasting Name", dataObject.getString("lastName"));
+    }
 
     @BeforeClass
     public static void init() throws Exception {
