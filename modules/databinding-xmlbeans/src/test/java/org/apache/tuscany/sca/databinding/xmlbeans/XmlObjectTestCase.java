@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.xmlbeans;
+package org.apache.tuscany.sca.databinding.xmlbeans;
 
 import java.io.StringReader;
 import java.net.URL;
@@ -26,6 +26,10 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.xmlbeans.Node2XmlObject;
+import org.apache.tuscany.sca.databinding.xmlbeans.XMLStreamReader2XmlObject;
+import org.apache.tuscany.sca.databinding.xmlbeans.XmlObject2Node;
+import org.apache.tuscany.sca.databinding.xmlbeans.XmlObject2XMLStreamReader;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
