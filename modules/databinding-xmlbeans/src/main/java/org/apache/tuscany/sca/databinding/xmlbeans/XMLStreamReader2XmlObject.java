@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.xmlbeans;
+package org.apache.tuscany.sca.databinding.xmlbeans;
+
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -24,13 +26,11 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
-import org.w3c.dom.Node;
 
-public class Node2XmlObject extends BaseTransformer<Node, XmlObject> implements
-    PullTransformer<Node, XmlObject> {
+public class XMLStreamReader2XmlObject extends BaseTransformer<XMLStreamReader, XmlObject> implements PullTransformer<XMLStreamReader, XmlObject> {
     // private XmlOptions options;
 
-    public XmlObject transform(Node source, TransformationContext context) {
+    public XmlObject transform(XMLStreamReader source, TransformationContext context) {
         try {
             return XmlObject.Factory.parse(source);
         } catch (XmlException e) {
@@ -43,11 +43,11 @@ public class Node2XmlObject extends BaseTransformer<Node, XmlObject> implements
     }
 
     public Class getSourceType() {
-        return Node.class;
+        return XMLStreamReader.class;
     }
 
     public int getWeight() {
-        return 30;
+        return 10;
     }
 
 }

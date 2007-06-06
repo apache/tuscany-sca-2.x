@@ -16,32 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.xmlbeans;
 
-import javax.xml.stream.XMLStreamReader;
+package org.apache.tuscany.sca.databinding.xmlbeans;
 
-import org.apache.tuscany.sca.databinding.PullTransformer;
-import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.xmlbeans.XmlObject;
 
-public class XmlObject2XMLStreamReader extends BaseTransformer<XmlObject, XMLStreamReader> implements PullTransformer<XmlObject, XMLStreamReader> {
-    // private XmlOptions options;
+/**
+ * XMLBeans DataBinding
+ */
+public class XMLBeansDataBinding extends BaseDataBinding {
+    public static final String NAME = XmlObject.class.getName();
     
-    public XMLStreamReader transform(XmlObject source, TransformationContext context) {
-        return source.newXMLStreamReader();
-    }
-
-    public Class getSourceType() {
-        return XmlObject.class;
-    }
-
-    public Class getTargetType() {
-        return XMLStreamReader.class;
-    }
-
-    public int getWeight() {
-        return 10;
+    public XMLBeansDataBinding() {
+        super(NAME, XmlObject.class);
     }
 
 }
