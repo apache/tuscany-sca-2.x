@@ -32,4 +32,9 @@ public class XMLBeansDataBinding extends BaseDataBinding {
         super(NAME, XmlObject.class);
     }
 
+    @Override
+    public Object copy(Object object) {
+        return ((XmlObject) object).copy();
+    }
+
 }
