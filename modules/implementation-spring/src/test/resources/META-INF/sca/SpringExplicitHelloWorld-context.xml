@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Application context for the SpringExplicitHelloWorld testcase 
+In this case, the service offered by the Spring application is specified
+explicitly using an sca:service element                                  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sca="http://www.springframework.org/schema/sca"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
+
+    <sca:service name="fooService" 
+                 type="org.apache.tuscany.implementation.spring.itests.helloworld.HelloWorld" 
+                 target="testBean"/>
+
+    <bean id="testBean" 
+          class="org.apache.tuscany.implementation.spring.itests.mock.TestHelloWorldBean" 
+          lazy-init="true">
+    </bean>
+
+</beans>
