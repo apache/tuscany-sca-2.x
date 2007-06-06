@@ -149,6 +149,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
             // sourceOp.getWrapper().getInputChildElements();
             Object[] target = null;
 
+            targetDataBinding = getDataBinding(targetOp);
             targetWrapperHandler = getWrapperHandler(targetDataBinding, false);
             if (targetWrapperHandler != null) {
                 ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
