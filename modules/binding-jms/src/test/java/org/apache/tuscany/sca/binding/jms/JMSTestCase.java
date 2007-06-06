@@ -22,15 +22,26 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+import org.apache.activemq.broker.BrokerService;
+
 /**
- * This shows how to test the Calculator service component.
+ * This shows how to test the JMS binding using a simple HelloWorld application.
  */
 public class JMSTestCase extends TestCase {
 
     private HelloWorldService helloWorldService;
-    private SCADomain scaDomain;
+    private SCADomain         scaDomain;
+    private BrokerService     broker = null;
 
     protected void setUp() throws Exception {
+        // start the activemq broker
+        if (broker == null){
+            BrokerService broker = new BrokerService();
+            broker.addConnector("tcp://localhost:61616");
+            broker.start();
+        }
+        
+        // that the sca runtime
         scaDomain = SCADomain.newInstance("JMSBindingTest.composite");
         helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldClientComponent");
     }

@@ -29,6 +29,11 @@ public class JMSBindingFactoryImpl implements JMSBindingFactory {
     public JMSBindingFactoryImpl() {
     }
     
+    /**
+     * Creates a new JMS binding.
+     * 
+     * @return a new JMS binding
+     */    
     public JMSBinding createJMSBinding() {
         return new JMSBindingImpl();
     }

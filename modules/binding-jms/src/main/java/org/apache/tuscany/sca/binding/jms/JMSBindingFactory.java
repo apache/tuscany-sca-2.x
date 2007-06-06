@@ -20,16 +20,16 @@
 package org.apache.tuscany.sca.binding.jms;
 
 /**
- * A factory for the JSONRPC binding model.
+ * A factory for the JMS binding model.
  *
  * @version $Rev$ $Date$
  */
 public interface JMSBindingFactory {
     
     /**
-     * Creates a new JSONRPC binding.
+     * Creates a new JMS binding.
      * 
-     * @return a new JSONRPC binding
+     * @return a new JMS binding
      */
     JMSBinding createJMSBinding();
 }
