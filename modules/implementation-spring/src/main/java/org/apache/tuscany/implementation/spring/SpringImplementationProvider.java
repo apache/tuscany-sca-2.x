@@ -56,7 +56,7 @@ public class SpringImplementationProvider implements ImplementationProvider {
      */
     public void start() {
         springContext.start();
-        System.out.println("SpringImplementationProvider: Spring context started");
+        //System.out.println("SpringImplementationProvider: Spring context started");
     } // end method start()
 
     /**
@@ -65,7 +65,7 @@ public class SpringImplementationProvider implements ImplementationProvider {
     public void stop() {
         // TODO - complete 
     	springContext.stop();
-    	System.out.println("SpringImplementationProvider: Spring context stopped");
+    	//System.out.println("SpringImplementationProvider: Spring context stopped");
     } // end method stop
 
 } // end class SpringImplementationProvider

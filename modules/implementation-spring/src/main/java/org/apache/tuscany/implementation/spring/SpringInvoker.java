@@ -55,7 +55,7 @@ public class SpringInvoker implements Invoker {
         	bean = springContext.getBean( beanElement.getId() );
             Class<?> beanClass = bean.getClass();
             theMethod = JavaInterfaceUtil.findMethod( beanClass, operation );
-            System.out.println("SpringInvoker - found method " + theMethod.getName() );
+            //System.out.println("SpringInvoker - found method " + theMethod.getName() );
         } catch ( BeansException e ) {
         	badInvoker = true;
         } catch ( NoSuchMethodException e ) {
@@ -93,7 +93,7 @@ public class SpringInvoker implements Invoker {
         } catch (SpringInvocationException e) {
             msg.setFaultBody(e.getCause());
         }
-        System.out.println("Spring Invoker - invoke called");
+        //System.out.println("Spring Invoker - invoke called");
         return msg;
     } // end method invoke
 

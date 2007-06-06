@@ -106,7 +106,7 @@ public class SpringXMLComponentTypeLoader {
      * 
      */
     public void load( SpringImplementation implementation ) throws ContributionReadException {
-    	System.out.println("Spring TypeLoader - load method start");
+    	//System.out.println("Spring TypeLoader - load method start");
     	ComponentType componentType = implementation.getComponentType();
     	/* Check that there is a component type object already set	*/
         if ( componentType == null) {
@@ -117,7 +117,7 @@ public class SpringXMLComponentTypeLoader {
 	        loadFromXML( implementation );
 	        if( !componentType.isUnresolved() ) implementation.setUnresolved( false );
     	} // end if
-    	System.out.println("Spring TypeLoader - load method complete");
+    	//System.out.println("Spring TypeLoader - load method complete");
     } // end method load
 
     /**
