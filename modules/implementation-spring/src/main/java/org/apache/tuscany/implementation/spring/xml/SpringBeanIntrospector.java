@@ -141,7 +141,7 @@ public class SpringBeanIntrospector {
         List<Service> services = javaImplementation.getServices();
         for ( Service service : services ) {
         	String name = service.getName();
-        	System.out.println("Spring Bean: found service with name: " + name);
+        	//System.out.println("Spring Bean: found service with name: " + name);
         } // end for
 
     } // end method introspectBean
