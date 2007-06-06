@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 
 /**
- * Implementation of the JSONRPC binding model.
+ * A factory from creating the JMS binding provider.
  *
  * @version $Rev$ $Date$
  */

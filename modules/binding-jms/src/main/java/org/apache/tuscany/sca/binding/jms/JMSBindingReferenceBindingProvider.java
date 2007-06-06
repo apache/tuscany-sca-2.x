@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 
 /**
- * Implementation of the JSONRPC binding provider.
+ * Implementation of the JMS reference binding provider.
  * 
  * @version $Rev$ $Date$
  */

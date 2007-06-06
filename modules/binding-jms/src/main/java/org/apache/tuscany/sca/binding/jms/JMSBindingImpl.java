@@ -368,7 +368,7 @@ public class JMSBindingImpl implements JMSBinding {
         return responseMessageProcessorName;
     }    
     public JMSMessageProcessor getResponseMessageProcessor() {
-        return (JMSMessageProcessor)instantiate(null,requestMessageProcessorName);
+        return (JMSMessageProcessor)instantiate(null,responseMessageProcessorName);
     }    
     
     public String getOperationSelectorPropertyName() {
@@ -392,6 +392,15 @@ public class JMSBindingImpl implements JMSBinding {
         this.xmlFormat = b;
     }  
     
+    /**
+     * Used to create instances of the JMSResourceFactory
+     * and RequestMessageProcessor and ResponseMessageProcessor
+     * from sting based classname provided in the configuration
+     * 
+     * @param cl classloader 
+     * @param className the string based classname to load and instantiate
+     * @return the new object
+     */
     protected Object instantiate(ClassLoader cl, String className) {
         Object instance;
         if (cl == null) {
