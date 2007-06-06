@@ -56,4 +56,29 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+		    <plugin>
+                <groupId>org.apache.tuscany.sdo</groupId>
+                <artifactId>tuscany-sdo-plugin</artifactId>
+                <version>1.0-incubating-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-customer-sdo</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <schemaFile>${basedir}/src/main/resources/customer.xsd</schemaFile>
+                            <javaPackage>com.example.customer.sdo</javaPackage>
+                            <noNotification>true</noNotification>
+                            <noContainer>true</noContainer>
+                            <noUnsettable>true</noUnsettable>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+		</plugins>
+    </build>
 </project>
