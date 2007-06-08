@@ -62,11 +62,11 @@ public class EmbeddedSCADomain extends SCADomain {
          */
         public Composite addComposite(Composite composite) throws ActivationException {
             domainComposite.getIncludes().add(composite);
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.activate(composite);
-            for (Component component : composite.getComponents()) {
-                components.put(component.getName(), component);
-            }
+            //CompositeActivator compositeActivator = runtime.getCompositeActivator();
+            //compositeActivator.activate(composite);
+            //for (Component component : composite.getComponents()) {
+            //    components.put(component.getName(), component);
+            //}
             return composite;
         }
 
@@ -86,6 +86,7 @@ public class EmbeddedSCADomain extends SCADomain {
         
         /**
          * Start a composite
+         * @deprecated
          * @param composite
          * @throws ActivationException
          */
@@ -96,12 +97,55 @@ public class EmbeddedSCADomain extends SCADomain {
         
         /**
          * Stop a composite
+         * @deprecated
          * @param composite
          * @throws ActivationException
          */
         public void stopComposite(Composite composite) throws ActivationException {
             CompositeActivator compositeActivator = runtime.getCompositeActivator();
             compositeActivator.stop(composite);
+        }
+
+        /**
+         * Get a reference to a component by name
+         * @param componentName
+         * @return
+         */
+        public Component getComponent(String componentName){
+            return (Component) components.get(componentName);
+        }
+        
+        /**
+         * Start a component
+         * @param component
+         * @throws ActivationException
+         */
+        public void startComponent(Component component) throws ActivationException {
+            CompositeActivator compositeActivator = runtime.getCompositeActivator();
+            compositeActivator.start(component);
+        }
+        
+        /**
+         * Stop a component
+         * @param component
+         * @throws ActivationException
+         */
+        public void stopComponent(Component component) throws ActivationException {
+            CompositeActivator compositeActivator = runtime.getCompositeActivator();
+            compositeActivator.stop(component);
+        }        
+        
+        /**
+         * Activate SCA Domain
+         * @throws ActivationException
+         */
+        public void activateDomain() throws ActivationException {
+            CompositeActivator compositeActivator = runtime.getCompositeActivator();
+            compositeActivator.activate(domainComposite);
+            for (Component component : domainComposite.getComponents()) {
+                components.put(component.getName(), component);
+            }
+
         }
     }
 

@@ -47,7 +47,6 @@ public class EmbeddedSCADomainTestCase extends TestCase {
     }
 
     public void testDomain() throws Exception {
-        
         // Start the domain
         domain.start();
         
@@ -69,8 +68,11 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         EmbeddedSCADomain.DomainCompositeHelper domainHelper = domain.getDomainCompositeHelper();
         domainHelper.addComposite(myComposite);
 
+        // Activate the SCA Domain
+        domainHelper.activateDomain();
+
         // Start the components in my composite
-        domainHelper.startComposite(myComposite);
+        domainHelper.startComponent(domainHelper.getComponent("CRUDServiceComponent"));
         
         // At this point the domain contains my contribution, my composite and
         // it's started, my application code can start using it
