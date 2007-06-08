@@ -31,13 +31,52 @@
     <name>Apache Tuscany Implementation BPEL</name>
 
     <dependencies>
-
+<dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>  
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>                                      
             <artifactId>junit</artifactId>
