@@ -132,7 +132,7 @@ public class ContributionServiceImpl implements ContributionService {
         InputStream metadataStream = null;
 
         URL[] clUrls = {sourceURL};
-        URLClassLoader cl = new URLClassLoader(clUrls);
+        URLClassLoader cl = new URLClassLoader(clUrls, null);
 
         contributionMetadataURL = cl.getResource(Contribution.SCA_CONTRIBUTION_META);
         generatedContributionMetadataURL = cl.getResource(Contribution.SCA_CONTRIBUTION_GENERATED_META);
