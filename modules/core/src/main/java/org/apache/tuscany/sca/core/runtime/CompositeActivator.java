@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 
 /**
@@ -42,14 +43,28 @@ public interface CompositeActivator {
 
     /**
      * Start a composite
+     * @deprecated
      * @param composite
      */
     void start(Composite composite) throws ActivationException;
 
     /**
      * Stop a composite
+     * @deprecated
      * @param composite
      */
     void stop(Composite composite) throws ActivationException;
+
+    /**
+     * Start a component
+     * @param component
+     */
+    void start(Component component) throws ActivationException;
+
+    /**
+     * Stop a composite
+     * @param composite
+     */
+    void stop(Component component) throws ActivationException;
 
 }

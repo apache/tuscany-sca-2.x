@@ -166,90 +166,108 @@ public class CompositeActivatorImpl implements CompositeActivator {
      */
     protected void startComposite(Composite composite) {
         for (Component component : composite.getComponents()) {
-
-            for (ComponentService service : component.getServices()) {
-                for (Binding binding : service.getBindings()) {
-                    ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service)
-                        .getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.start();
-                    }
-                }
-            }
-            for (ComponentReference reference : component.getReferences()) {
-                for (Binding binding : reference.getBindings()) {
-                    ReferenceBindingProvider bindingProvider = ((RuntimeComponentReference)reference)
-                        .getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.start();
-                    }
-                }
-            }
-
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                startComposite((Composite)implementation);
-            } else {
-                ImplementationProvider implementationProvider = ((RuntimeComponent)component)
-                    .getImplementationProvider();
-                if (implementationProvider != null) {
-                    implementationProvider.start();
-                }
-            }
-
-            if (component instanceof ScopedRuntimeComponent) {
-                ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
-                if (runtimeComponent.getScopeContainer() != null) {
-                    runtimeComponent.getScopeContainer().start();
-                }
-            }
-
+            startComponent(component);
         }
     }
 
-    public void stop(Composite composite) {
+    /**
+     * Stop a composite
+     */
+    public void stopComposite(Composite composite) {
         for (Component component : composite.getComponents()) {
-
-            for (ComponentService service : component.getServices()) {
-                for (Binding binding : service.getBindings()) {
-                    ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service)
-                        .getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.stop();
-                    }
-                }
-            }
-            for (ComponentReference reference : component.getReferences()) {
-                for (Binding binding : reference.getBindings()) {
-                    ReferenceBindingProvider bindingProvider = ((RuntimeComponentReference)reference)
-                        .getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.stop();
-                    }
-                }
-            }
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                stop((Composite)implementation);
-            } else {
-                ImplementationProvider implementationProvider = ((RuntimeComponent)component)
-                    .getImplementationProvider();
-                if (implementationProvider != null) {
-                    implementationProvider.stop();
-                }
-            }
-
-            if (component instanceof ScopedRuntimeComponent) {
-                ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
-                if (runtimeComponent.getScopeContainer() != null) {
-                    runtimeComponent.getScopeContainer().stop();
-                }
-            }
+            stopComponent(component);
 
         }
 
     }
 
+    /**
+     * Start a component
+     */
+    public void startComponent(Component component) {
+
+        for (ComponentService service : component.getServices()) {
+            for (Binding binding : service.getBindings()) {
+                ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service)
+                    .getBindingProvider(binding);
+                if (bindingProvider != null) {
+                    bindingProvider.start();
+                }
+            }
+        }
+        for (ComponentReference reference : component.getReferences()) {
+            for (Binding binding : reference.getBindings()) {
+                ReferenceBindingProvider bindingProvider = ((RuntimeComponentReference)reference)
+                    .getBindingProvider(binding);
+                if (bindingProvider != null) {
+                    bindingProvider.start();
+                }
+            }
+        }
+
+        Implementation implementation = component.getImplementation();
+        if (implementation instanceof Composite) {
+            startComposite((Composite)implementation);
+        } else {
+            ImplementationProvider implementationProvider = ((RuntimeComponent)component)
+                .getImplementationProvider();
+            if (implementationProvider != null) {
+                implementationProvider.start();
+            }
+        }
+
+        if (component instanceof ScopedRuntimeComponent) {
+            ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
+            if (runtimeComponent.getScopeContainer() != null) {
+                runtimeComponent.getScopeContainer().start();
+            }
+        }
+
+    }
+
+    /**
+     * Stop a component
+     */
+    public void stopComponent(Component component) {
+        for (ComponentService service : component.getServices()) {
+            for (Binding binding : service.getBindings()) {
+                ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service)
+                    .getBindingProvider(binding);
+                if (bindingProvider != null) {
+                    bindingProvider.stop();
+                }
+            }
+        }
+        for (ComponentReference reference : component.getReferences()) {
+            for (Binding binding : reference.getBindings()) {
+                ReferenceBindingProvider bindingProvider = ((RuntimeComponentReference)reference)
+                    .getBindingProvider(binding);
+                if (bindingProvider != null) {
+                    bindingProvider.stop();
+                }
+            }
+        }
+        Implementation implementation = component.getImplementation();
+        if (implementation instanceof Composite) {
+            stopComposite((Composite)implementation);
+        } else {
+            ImplementationProvider implementationProvider = ((RuntimeComponent)component)
+                .getImplementationProvider();
+            if (implementationProvider != null) {
+                implementationProvider.stop();
+            }
+        }
+
+        if (component instanceof ScopedRuntimeComponent) {
+            ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
+            if (runtimeComponent.getScopeContainer() != null) {
+                runtimeComponent.getScopeContainer().stop();
+            }
+        }
+
+    }
+    
+    
     /**
      * Create runtime wires for the composite
      * 
@@ -596,4 +614,28 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
     }
 
+    public void stop(Composite composite) throws ActivationException {
+        try{
+            stopComposite(composite);
+        } catch(Exception e) {
+            throw new ActivationException(e);
+        }
+    }
+
+    public void start(Component component) throws ActivationException {
+        try {
+            startComponent(component);
+        } catch (Exception e) {
+            throw new ActivationException(e);
+        }
+        
+    }
+    
+    public void stop(Component component) throws ActivationException {
+        try{
+            stopComponent(component);
+        } catch(Exception e) {
+            throw new ActivationException(e);
+        }        
+    }
 }
