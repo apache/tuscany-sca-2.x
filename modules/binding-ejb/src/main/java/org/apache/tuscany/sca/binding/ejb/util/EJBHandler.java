@@ -64,6 +64,8 @@ public class EJBHandler {
             this.ejbStub = EJBStubHelper.lookup(namingEndpoint);
             this.interfaceInfo = ejbInterface;
         } catch (Exception e) {
+            Throwable b = e.getCause();
+            b.printStackTrace();
             throw new ServiceRuntimeException(e);
         }
     }
