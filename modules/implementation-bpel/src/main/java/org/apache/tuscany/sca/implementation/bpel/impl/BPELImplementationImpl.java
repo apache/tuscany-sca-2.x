@@ -45,7 +45,6 @@ public class BPELImplementationImpl implements BPELImplementation {
 
     private Service bpelService;
     private String process;
-    private String directory;
 
     /**
      * Constructs a new BPEL implementation.
@@ -73,18 +72,8 @@ public class BPELImplementationImpl implements BPELImplementation {
         return process;
     }
 
-
-
     public void setProcess(String process) {
         this.process = process;
-    }
-
-    public String getDirectory() {
-        return directory;
-    }
-
-    public void setDirectory(String directory) {
-        this.directory = directory;
     }
 
     public ConstrainingType getConstrainingType() {

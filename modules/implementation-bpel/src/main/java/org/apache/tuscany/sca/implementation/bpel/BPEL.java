@@ -26,31 +26,10 @@ package org.apache.tuscany.sca.implementation.bpel;
 public interface BPEL {
 
     /**
-     * Create a new resource.
-     * @param resource
-     * @return
+     * Invoke a bpel process
+     * @param object
+     * @return object
      */
-    String create(Object resource);
-
-    /**
-     * Retrieve a resource.
-     * @param id
-     * @return
-     */
-    Object retrieve(String id);
-
-    /**
-     * Update a resource.
-     * @param id
-     * @param resource
-     * @return
-     */
-    Object update(String id, Object resource);
-
-    /**
-     * Delete a resource.
-     * @param id
-     */
-    void delete(String id);
+    Object invokeProcess(Object object);
 
 }

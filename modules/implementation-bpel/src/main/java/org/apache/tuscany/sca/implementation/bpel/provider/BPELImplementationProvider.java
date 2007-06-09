@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.implementation.bpel.provider;
 
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
-import org.apache.tuscany.sca.implementation.bpel.backend.ResourceManager;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -49,12 +48,12 @@ public class BPELImplementationProvider implements ImplementationProvider {
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        BPELInvoker invoker = new BPELInvoker(operation, new ResourceManager(implementation.getDirectory()));
+        BPELInvoker invoker = new BPELInvoker(operation);
         return invoker;
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
-        BPELInvoker invoker = new BPELInvoker(operation, new ResourceManager(implementation.getDirectory()));
+        BPELInvoker invoker = new BPELInvoker(operation);
         return invoker;
     }
 

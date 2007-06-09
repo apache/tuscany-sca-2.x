@@ -40,19 +40,5 @@ public interface BPELImplementation extends Implementation {
      * @param BPEL process name
      */
     public void setProcess(String process);
-    
-    /**
-     * Returns the directory used by CRUD implementations to persist resources.
-     * 
-     * @return the directory used to persist resources
-     */
-    public String getDirectory();
-
-    /**
-     * Sets the directory used by CRUD implementations to persist resources.
-     * 
-     * @param directory the directory used to persist resources
-     */
-    public void setDirectory(String directory);
 
 }
