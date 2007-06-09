@@ -18,17 +18,12 @@
  */
 package org.apache.tuscany.binding.ejb;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.spi.model.BindingDefinition;
 
 /**
  * An implementation of EJBBinding.
  */
-public class EJBBindingDefinition extends BindingDefinition {
-    public static final QName BINDING_EJB = new QName(XML_NAMESPACE_1_0, "binding.ejb");
+public class EJBBinding {
+
     /**
      * corba location For exmaple,
      * "corbaname:iiop:localhost:2809/NameServiceServerRoot#ejb/MyEJBHome"

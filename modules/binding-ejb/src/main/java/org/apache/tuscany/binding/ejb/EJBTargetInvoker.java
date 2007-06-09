@@ -18,20 +18,18 @@
  */
 package org.apache.tuscany.binding.ejb;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.binding.ejb.util.EJBHandler;
 import org.apache.tuscany.binding.ejb.util.NamingEndpoint;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * EJBTargetInvoker
  */
-public class EJBTargetInvoker implements TargetInvoker {
+public class EJBTargetInvoker implements Invoker {
 
     private Operation operation;
     private String location;
@@ -42,7 +40,7 @@ public class EJBTargetInvoker implements TargetInvoker {
     // is this needed
     private Method method;
 
-    public EJBTargetInvoker(EJBBindingDefinition ejbBinding, Class serviceInterface, Operation operation) {
+    public EJBTargetInvoker(EJBBinding ejbBinding, Class serviceInterface, Operation operation) {
         this.serviceInterface = serviceInterface;
         this.location = ejbBinding.getURI();
         this.homeInterface = ejbBinding.getHomeInterface();
@@ -50,8 +48,15 @@ public class EJBTargetInvoker implements TargetInvoker {
         this.operation = operation;
     }
 
-    public EJBTargetInvoker(Method method) {
-        this.method = method;
+    public Message invoke(Message msg) {
+        try {
+            Object resp = doInvoke(msg.getBody());
+            msg.setBody(resp);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            msg.setBody(e);
+        }
+        return msg;
     }
 
     /**
@@ -59,9 +64,8 @@ public class EJBTargetInvoker implements TargetInvoker {
      * 
      * @param payload
      * @return
-     * @throws InvocationTargetException
      */
-    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
+    public Object doInvoke(final Object payload) {
 
         // construct NamingendPoint
         NamingEndpoint endpoint = getNamingEndpoint();
@@ -78,40 +82,11 @@ public class EJBTargetInvoker implements TargetInvoker {
     }
 
     protected NamingEndpoint getNamingEndpoint() {
-
         return new NamingEndpoint(location);
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            Object resp = invokeTarget(msg.getBody(), NONE);
-            msg.setBody(resp);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            msg.setBody(e);
-        }
-        return msg;
-    }
-
-    public EJBTargetInvoker clone() throws CloneNotSupportedException {
-        try {
-            return (EJBTargetInvoker)super.clone();
-        } catch (CloneNotSupportedException e) {
-            // will not happen
-            return null;
-        }
-    }
-
-    public boolean isCacheable() {
-        return true;
-    }
-
-    public void setCacheable(boolean cacheable) {
-
-    }
-
-    public boolean isOptimizable() {
-        return false;
+    public EJBTargetInvoker(Method method) {
+        this.method = method;
     }
 
 }
