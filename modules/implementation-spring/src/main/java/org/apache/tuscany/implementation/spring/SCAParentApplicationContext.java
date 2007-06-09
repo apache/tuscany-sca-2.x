@@ -1,8 +1,18 @@
 package org.apache.tuscany.implementation.spring;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -24,25 +34,64 @@ import org.springframework.core.io.Resource;
 class SCAParentApplicationContext implements ApplicationContext {
 	
 	// The Spring implementation for which this is the parent application context
-	private SpringImplementation implementation;
+	private SpringImplementation 	implementation;
+	private RuntimeComponent 		component;
+	private ProxyFactory 			proxyService;
 	
     private static final String[] EMPTY_ARRAY = new String[0];
 	
-	public SCAParentApplicationContext( SpringImplementation implementation ) {
+	public SCAParentApplicationContext( 	RuntimeComponent component, 
+											SpringImplementation implementation,
+											ProxyFactory proxyService ) {
 		this.implementation = implementation;
+		this.component		= component;
+		this.proxyService 	= proxyService;
 	} // end constructor
 
     public Object getBean(String name) throws BeansException {
         return getBean(name, null);
     }
-
-    @SuppressWarnings("unchecked")
+    
+    /**
+     * Get a Bean for a reference..
+     */
     public Object getBean(String name, Class requiredType) throws BeansException {
     	// TODO provide a real implementation of this
     	System.out.println("Spring parent context - getBean called for name: " + name );
-    	return null;
+    	// The expectation is that the requested Bean is a reference from the Spring context
+    	Reference theReference = null;
+    	for ( Reference reference : implementation.getReferences() ) {
+    		if( reference.getName().equals(name) ) { 
+    			theReference = reference;
+    			break;
+    		}
+    	} // end for
+    	if( theReference == null ) 
+    		throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name );
+    	// Extract the Java interface for the reference (it can't be any other interface type
+    	// for a Spring application context)
+    	if( requiredType == null ) {
+    		JavaInterface javaInterface = 
+    			(JavaInterface) theReference.getInterfaceContract().getInterface();
+    		requiredType = javaInterface.getJavaClass();
+    	}
+    	// Create and return eturn the proxy for the reference
+    	return getService( requiredType, theReference.getName() );
     } // end method getBean( String, Class )
-
+    
+   
+    private <B> B getService(Class<B> businessInterface, String referenceName) {
+        List<ComponentReference> refs = component.getReferences();
+        for (ComponentReference ref : refs) {
+            if (ref.getName().equals(referenceName)) {
+                RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
+                RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
+                return proxyService.createProxy(businessInterface, wire);
+            }
+        }
+        return null;
+    }
+    
     public boolean containsBean(String name) {
     	// TODO
     	System.out.println("Spring parent context - containsBean called for name: " + name );

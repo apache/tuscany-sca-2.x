@@ -36,7 +36,7 @@ public class SCAApplicationContext extends AbstractXmlApplicationContext {
     public SCAApplicationContext(ApplicationContext parent, Resource appXml) {
         super(parent);
         this.appXml = appXml;
-        refresh();
+        //refresh();
     }
 
     protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
