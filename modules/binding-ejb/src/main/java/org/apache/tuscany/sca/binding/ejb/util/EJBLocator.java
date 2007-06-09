@@ -478,7 +478,12 @@ public class EJBLocator {
         }
 
         public Object locate(String name) throws NamingException {
+            try {
             return context.lookup(name);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 
