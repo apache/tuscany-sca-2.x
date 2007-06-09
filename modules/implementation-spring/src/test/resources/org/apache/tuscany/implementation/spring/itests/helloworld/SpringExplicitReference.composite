@@ -18,15 +18,15 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="SpringExplicitHelloWorld">
+           name="SpringExplicitReference">
 
     <component name="ClientComponent">
-		<implementation.java class="org.apache.tuscany.implementation.spring.itests.helloworld.HelloWorldProxy"/>
-        <reference name="delegate" target="HelloWorldComponent"></reference>
+        <implementation.spring location="META-INF/sca/SpringExplicitReference-context.xml"/>
+        <reference name="testReference" target="ReferenceComponent"></reference>
     </component>
 
-    <component name="HelloWorldComponent">
-        <implementation.spring location="META-INF/sca/SpringExplicitHelloWorld-context.xml"/>
+    <component name="ReferenceComponent">
+		<implementation.java class="org.apache.tuscany.implementation.spring.itests.helloworld.HelloWorldImpl"/>
     </component>
 
 </composite>

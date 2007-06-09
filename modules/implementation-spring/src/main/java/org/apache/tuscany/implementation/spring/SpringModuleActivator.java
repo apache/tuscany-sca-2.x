@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.invocation.JDKProxyService;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
@@ -80,6 +82,8 @@ public class SpringModuleActivator implements ModuleActivator {
 
         DataBindingExtensionPoint dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
                 
+        JDKProxyService proxyFactory = (JDKProxyService) registry.getExtensionPoint(ProxyFactory.class);
+
         // TODO: could the runtime have a default PropertyValueObjectFactory in the registry
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
@@ -100,7 +104,7 @@ public class SpringModuleActivator implements ModuleActivator {
         
         // Create SpringImplementationFactory and add to provider factories 
         SpringImplementationProviderFactory springImplementationProviderFactory =
-            new SpringImplementationProviderFactory();
+            new SpringImplementationProviderFactory( proxyFactory );
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(springImplementationProviderFactory);

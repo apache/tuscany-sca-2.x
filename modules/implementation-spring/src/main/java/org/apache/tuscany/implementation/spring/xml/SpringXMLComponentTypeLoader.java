@@ -146,6 +146,8 @@ public class SpringXMLComponentTypeLoader {
 
             resource = getApplicationContextResource( location, cl );
             implementation.setResource( resource );
+            // The URI is used to uniquely identify the Implementation
+            implementation.setURI( resource.getURL().toString() );
         	// FIXME - need a better way to handle the XMLInputFactory than allocating a new one every time
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
             reader = xmlFactory.createXMLStreamReader(resource.getInputStream());
@@ -160,14 +162,14 @@ public class SpringXMLComponentTypeLoader {
                     //System.out.println("Spring TypeLoader - found element with name: " + qname.toString());
                     if (SERVICE_ELEMENT.equals(qname)) {
                         SpringSCAServiceElement service = new SpringSCAServiceElement(
-                        		reader.getAttributeValue(SCA_NS, "name"),
-                        		reader.getAttributeValue(SCA_NS, "type"),
-                        		reader.getAttributeValue(SCA_NS, "target") );
+                        		reader.getAttributeValue(null, "name"),
+                        		reader.getAttributeValue(null, "type"),
+                        		reader.getAttributeValue(null, "target") );
                         services.add( service );
                     } else if (REFERENCE_ELEMENT.equals(qname)) {
                         SpringSCAReferenceElement reference = new SpringSCAReferenceElement(
-                        		reader.getAttributeValue(SCA_NS, "name"),
-                        		reader.getAttributeValue(SCA_NS, "type") );
+                        		reader.getAttributeValue(null, "name"),
+                        		reader.getAttributeValue(null, "type") );
                         references.add( reference );
                     } else if (BEAN_ELEMENT.equals(qname)) {
                     	// TODO FIX THIS !!
@@ -178,8 +180,8 @@ public class SpringXMLComponentTypeLoader {
                     	beans.add( bean );
                     } else if (PROPERTY_ELEMENT.equals(qname)) {
                     	SpringPropertyElement property = new SpringPropertyElement(
-                    			reader.getAttributeValue(SPRING_NS, "name"),
-                    			reader.getAttributeValue(SPRING_NS, "ref"));
+                    			reader.getAttributeValue(null, "name"),
+                    			reader.getAttributeValue(null, "ref"));
                     	bean.addProperty( property );
                     } // end if
                     break;
@@ -237,7 +239,7 @@ public class SpringXMLComponentTypeLoader {
 	    		// Add this service to the Service / Bean map
 	    		String beanName = serviceElement.getTarget();
 	    		for( SpringBeanElement beanElement : beans ) {
-	    			if( beanName == beanElement.getId() ) {
+	    			if( beanName.equals( beanElement.getId() ) ) {
 	    				implementation.setBeanForService( theService, beanElement );
 	    			}
 	    		} // end for

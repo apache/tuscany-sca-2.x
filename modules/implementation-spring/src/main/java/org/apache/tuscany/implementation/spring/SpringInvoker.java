@@ -26,10 +26,13 @@ import org.springframework.beans.BeansException;
  */
 public class SpringInvoker implements Invoker {
 	
-	private Method					theMethod;
+	private Method					theMethod = null;
 	private Object					bean;
 	private SpringBeanElement		beanElement;
 	private boolean					badInvoker = false;
+	
+	private AbstractApplicationContext springContext;
+	private Operation operation;
 	
 	/**
 	 * SpringInvoker constructor
@@ -42,6 +45,9 @@ public class SpringInvoker implements Invoker {
     					  RuntimeComponentService service, 
     					  Operation operation) {
 
+    	this.springContext 	= springContext;
+    	this.operation 		= operation;
+    	
         // From the component and the service, identify the Spring Bean which is the target
         SpringImplementation theImplementation = (SpringImplementation) component.getImplementation();
         beanElement = theImplementation.getBeanFromService( service.getService() );
@@ -50,7 +56,11 @@ public class SpringInvoker implements Invoker {
         	badInvoker = true;
         	return;
         }
-        // Now load the class for the bean and get the method relating to the operation....
+
+    } // end constructor SpringInvoker
+    
+    // Lazy-load the method to avoid timing problems with the Spring Context
+    private void setupMethod() {
         try {
         	bean = springContext.getBean( beanElement.getId() );
             Class<?> beanClass = bean.getClass();
@@ -61,9 +71,11 @@ public class SpringInvoker implements Invoker {
         } catch ( NoSuchMethodException e ) {
         	badInvoker = true;
         }
-    } // end constructor SpringInvoker
+    }
 
     private Object doInvoke(Object payload) throws SpringInvocationException {
+    	if( theMethod == null ) setupMethod();
+    	
     	if( badInvoker ) throw new SpringInvocationException("Spring invoker incorrectly configured");
     	// Invoke the method on the Spring bean using the payload, returning the results
         try {

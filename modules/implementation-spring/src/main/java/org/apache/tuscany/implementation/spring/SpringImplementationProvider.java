@@ -23,6 +23,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 public class SpringImplementationProvider implements ImplementationProvider {
     private SpringImplementation 	implementation;
     private RuntimeComponent 		component;
+    private ProxyFactory 			proxyService;
     
     // A Spring application context object
     private AbstractApplicationContext springContext;
@@ -34,12 +35,14 @@ public class SpringImplementationProvider implements ImplementationProvider {
      * @param implementation - the implementation
      */
     public SpringImplementationProvider( RuntimeComponent component,
-                                         SpringImplementation implementation ) {
+                                         SpringImplementation implementation,
+                                         ProxyFactory proxyService ) {
         super();
         this.implementation = implementation;
         this.component 		= component;
+        this.proxyService	= proxyService;
         SCAParentApplicationContext scaParentContext = 
-            	new SCAParentApplicationContext( implementation );
+            	new SCAParentApplicationContext( component, implementation, proxyService );
         springContext = new SCAApplicationContext(scaParentContext, implementation.getResource() );
     } // end constructor
 
@@ -55,8 +58,11 @@ public class SpringImplementationProvider implements ImplementationProvider {
      * Start this Spring implementation instance
      */
     public void start() {
+    	// Do refresh here to ensure that Spring Beans are not touched before the SCA config process 
+    	// is complete...
+    	springContext.refresh();
         springContext.start();
-        //System.out.println("SpringImplementationProvider: Spring context started");
+        System.out.println("SpringImplementationProvider: Spring context started");
     } // end method start()
 
     /**
