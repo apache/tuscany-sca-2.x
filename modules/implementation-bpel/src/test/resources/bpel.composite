@@ -21,10 +21,10 @@
 	targetNamespace="http://bpel"
 	xmlns:sc="http://bpel"
 	xmlns:c="http://bpel"
-	name="crud">
+	name="bpel">
 
     <component name="BPELServiceComponent">
-        <c:implementation.bpel directory="tmp" />
+        <c:implementation.bpel process="bpel-process" />
     </component>
 
 </composite>
