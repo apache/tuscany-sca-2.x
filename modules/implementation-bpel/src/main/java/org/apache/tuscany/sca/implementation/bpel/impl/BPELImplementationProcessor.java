@@ -67,16 +67,12 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
         
         // Read an <implementation.bpel> element
         try {
+            // Read the process attribute. 
             String process = reader.getAttributeValue(null, "process");
             
-            // Read the directory attribute. This is where the sample
-            // CRUD implementation will persist resources.
-            String directory = reader.getAttributeValue(null, "directory");
-
             // Create an initialize the BPEL implementation model
             BPELImplementation implementation = bpelFactory.createBPELImplementation();
             implementation.setProcess(process);
-            implementation.setDirectory(directory);
             
             // Skip to end element
             while (reader.hasNext()) {

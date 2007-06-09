@@ -51,15 +51,8 @@ public class BPELTestCase extends TestCase {
 
     
     public void testCRUD() throws Exception {
-        String id = bpelService.create("ABC");
-        Object result = bpelService.retrieve(id);
-        assertEquals("ABC", result);
-        bpelService.update(id, "EFG");
-        result = bpelService.retrieve(id);
-        assertEquals("EFG", result);
-        bpelService.delete(id);
-        result = bpelService.retrieve(id);
-        assertNull(result);
+        Object result = bpelService.invokeProcess("something");
+        assertEquals("something", result);
     }
 
 
