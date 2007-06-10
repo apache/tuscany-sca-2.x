@@ -93,10 +93,20 @@ public class ImplementationsActivator implements ModuleActivator {
 
         providerFactories.addProviderFactory(new ImplementationProviderFactory() {
             public ImplementationProvider createImplementationProvider(final RuntimeComponent rc, final Implementation impl) {
-                return new ImplementationImplementationProvider(implementationActivator, rc, impl);
+                if (impl instanceof PojoImplementation) {
+                    return new ImplementationImplementationProvider(implementationActivator, rc, impl, ((PojoImplementation)impl).getUserImpl());
+                } else {
+                    return new ImplementationImplementationProvider(implementationActivator, rc, impl, impl);
+                }
             }
             public Class getModelType() {
-                return implementationActivator.getImplementationClass();
+                Class c = implementationActivator.getImplementationClass();
+
+                if (Implementation.class.isAssignableFrom(c)) {
+                    return c;
+                } else {
+                    return PojoImplementation.class;
+                }
             }
         });
     }

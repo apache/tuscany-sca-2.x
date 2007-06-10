@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.script;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.spi.ImplementationActivator;
@@ -46,7 +47,8 @@ public class ScriptImplementationActivator implements ImplementationActivator<Sc
         return ScriptImplementation.class;
     }
 
-    public InvokerFactory createInvokerFactory(RuntimeComponent runtimeComponent, ScriptImplementation implementation) {
-        return new ScriptInvokerFactory(runtimeComponent, implementation, propertyFactory);
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, ComponentType ct, ScriptImplementation implementation) {
+        return new ScriptInvokerFactory(rc, implementation, propertyFactory);
     }
+
 }

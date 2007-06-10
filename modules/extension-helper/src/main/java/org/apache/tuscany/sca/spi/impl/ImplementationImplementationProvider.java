@@ -44,13 +44,15 @@ public class ImplementationImplementationProvider implements ImplementationProvi
     ImplementationActivator implementationActivator;
     RuntimeComponent runtimeComponent;
     Implementation impl;
+    Object userImpl;
     
     List<InvokerProxy> invokers = new ArrayList<InvokerProxy>();
     
-    public ImplementationImplementationProvider(ImplementationActivator implementationActivator, RuntimeComponent rc, Implementation impl) {
+    public ImplementationImplementationProvider(ImplementationActivator implementationActivator, RuntimeComponent rc, Implementation impl, Object userImpl) {
         this.implementationActivator = implementationActivator;
         this.runtimeComponent = rc;
         this.impl = impl;
+        this.userImpl = userImpl;
     }
 
     public Invoker createInvoker(RuntimeComponentService arg0, final Operation op) {
@@ -64,7 +66,7 @@ public class ImplementationImplementationProvider implements ImplementationProvi
     }
 
     public void start() {
-        InvokerFactory factory = implementationActivator.createInvokerFactory(runtimeComponent, impl);
+        InvokerFactory factory = implementationActivator.createInvokerFactory(runtimeComponent, impl, userImpl);
         for (InvokerProxy invoker : invokers) {
             invoker.start(factory);
         }
