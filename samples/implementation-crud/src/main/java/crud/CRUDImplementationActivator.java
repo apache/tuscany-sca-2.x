@@ -21,6 +21,7 @@ package crud;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -33,7 +34,7 @@ public class CRUDImplementationActivator implements ImplementationActivator<CRUD
 
     private static final QName IMPLEMENTATION_CRUD = new QName("http://crud", "implementation.crud");
     
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, final CRUDImplementation implementation) {
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, ComponentType ct, final CRUDImplementation implementation) {
         return new InvokerFactory() {
             public Invoker createInvoker(Operation operation) {
                 return new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));

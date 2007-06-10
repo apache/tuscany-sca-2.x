@@ -76,7 +76,11 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
             if ("setElementText".equals(m.getName())) {
                 elementTextSetter = m;
             } else if ((m.getName().startsWith("set"))) {
-                attributeSetters.put(m.getName().substring(3).toLowerCase(), m);
+                String name = m.getName().substring(3).toLowerCase();
+                if (name.endsWith("_")) {
+                    name = name.substring(0,name.length()-1);
+                }
+                attributeSetters.put(name, m);
             }
         }
     }
@@ -103,13 +107,19 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
     }
 
     public Class<Implementation> getModelType() {
-        return implementationClass;
+        Class clazz;
+        if (Implementation.class.isAssignableFrom(implementationClass)) {
+            clazz = implementationClass;
+        } else {
+            clazz = PojoImplementation.class;
+        }
+        return clazz;
     }
 
     public Implementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        Implementation impl;
+        Object impl;
         try {
-            impl = (Implementation)implementationClass.getConstructors()[0].newInstance(getImplConstrArgs());
+            impl = implementationClass.getConstructors()[0].newInstance(getImplConstrArgs());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -139,8 +149,12 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
         while (!(reader.getEventType() == END_ELEMENT && scdlQName.equals(reader.getName())) && reader.hasNext()) {
             reader.next();
         }
+        
+        if (!(impl instanceof Implementation)) {
+            impl = new PojoImplementation(impl);
+        }
 
-        return impl;
+        return (Implementation)impl;
     }
 
     public void write(Implementation arg0, XMLStreamWriter arg1) throws ContributionWriteException, XMLStreamException {

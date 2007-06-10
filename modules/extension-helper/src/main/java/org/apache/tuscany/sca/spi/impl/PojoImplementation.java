@@ -17,18 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi;
+package org.apache.tuscany.sca.spi.impl;
 
-import javax.xml.namespace.QName;
+import org.apache.tuscany.sca.spi.utils.DynamicImplementation;
 
-import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-
-public interface ImplementationActivator<T> {
-
-    QName getSCDLQName();
+/**
+ * Enables Implementation extensions to use a simple POJO
+ * for the mplementation objcet instead of requiring
+ * implementing the Implementation interface. 
+ */
+public class PojoImplementation<Implementation> extends DynamicImplementation {
     
-    Class<T> getImplementationClass();
+    Object userImpl;
+    
+    public PojoImplementation(Object userImpl) {
+        this.userImpl = userImpl;
+    }
 
-    InvokerFactory createInvokerFactory(RuntimeComponent rc, ComponentType ct, T implementation);
+    public Object getUserImpl() {
+        return userImpl;
+    }
+    
+
 }
