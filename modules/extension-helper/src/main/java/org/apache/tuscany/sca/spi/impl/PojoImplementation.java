@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.spi.utils.DynamicImplementation;
 
 /**
  * Enables Implementation extensions to use a simple POJO
- * for the mplementation objcet instead of requiring
+ * for the implementation object instead of requiring
  * implementing the Implementation interface. 
  */
 public class PojoImplementation<Implementation> extends DynamicImplementation {
