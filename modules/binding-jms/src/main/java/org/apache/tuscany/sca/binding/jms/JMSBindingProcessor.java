@@ -140,6 +140,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
             String uri = reader.getAttributeValue(null, "uri");
             if (uri != null && uri.length() > 0) {
                 jmsBinding.setURI(uri);
+                System.err.println("JMS Binding doesn't process uri yet");
             }
 
             // Read correlation scheme
@@ -150,6 +151,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                 } else {
                     throw new JMSBindingException("invalid correlationScheme: " + correlationScheme);
                 }
+                System.err.println("JMS Binding doesn't process correlationScheme yet");
             }
 
             // Read initial context factory
@@ -172,7 +174,8 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
             // TODO
             
             // Read subelements of binding.jms
-            while (true) {
+            boolean endFound = false;
+            while (!endFound) {
                 switch (reader.next()) {
                     case START_ELEMENT:
                         String elementName = reader.getName().getLocalPart();
@@ -196,21 +199,16 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                     case END_ELEMENT:
                         QName x = reader.getName();
                         if (x.equals(JMSBindingConstants.BINDING_JMS_QNAME)) {
-                            return jmsBinding;
+                            endFound = true;
+                        } else {
+                            throw new RuntimeException("Incomplete binding.jms definition found unexpected element " + x.toString());
                         }
-                        throw new RuntimeException("Incomplete binding.jms definition found unexpected element " + x.toString());
                 }
             }
- /*           
-            // Skip to end element
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && 
-                    BINDING_JMS_QNAME.equals(reader.getName())) {
-                    break;
-                }
-            }
+            
+            jmsBinding.validate();           
+            
             return jmsBinding;
-*/
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
@@ -223,19 +221,9 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         try {
             // Write a <binding.ws>
             writer.writeStartElement(Constants.SCA10_NS, JMSBindingConstants.BINDING_JMS);
-/*            
-            if (rmiBinding.getRmiHostName() != null) {
-                writer.writeAttribute(RMIBindingConstants.RMI_HOST, rmiBinding.getRmiHostName());
-            }
+
+            // TODO 
             
-            if (rmiBinding.getRmiPort() != null) {
-                writer.writeAttribute(RMIBindingConstants.RMI_PORT, rmiBinding.getRmiPort());
-            }
-            
-            if (rmiBinding.getRmiServiceName() != null) {
-                writer.writeAttribute(RMIBindingConstants.RMI_SERVICE, rmiBinding.getRmiServiceName());
-            }
-*/            
             writer.writeEndElement();
 
         } catch (XMLStreamException e) {
@@ -259,6 +247,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                 intent.setName(qname);
                 requiredIntents.add(intent);
             }
+            System.err.println("JMS Binding doesn't process requires yet");            
         }
 
         value = reader.getAttributeValue(null, Constants.POLICY_SETS);
@@ -270,6 +259,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                 policySet.setName(qname);
                 policySets.add(policySet);
             }
+            System.err.println("JMS Binding doesn't process policySets yet");
         }
     }
     
@@ -299,16 +289,19 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
         }
+        
         String type = reader.getAttributeValue(null, "type");
         if (type != null && type.length() > 0) {
-            if ("queue".equalsIgnoreCase(type)) {
+            if (JMSBindingConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(type)) {
                 jmsBinding.setDestinationType(JMSBindingConstants.DESTINATION_TYPE_QUEUE);
-            } else if ("topic".equalsIgnoreCase("type")) {
+            } else if (JMSBindingConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(type)) {
                 jmsBinding.setDestinationType(JMSBindingConstants.DESTINATION_TYPE_TOPIC);
             } else {
                 throw new RuntimeException("invalid destination type: " + type);
             }
+            System.err.println("JMS Binding doesn't process destination type yet");
         }
+        
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
             jmsBinding.setDestinationCreate(create);
@@ -328,25 +321,93 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
             jmsBinding.setActivationSpecName(name);
+            System.err.println("JMS Binding doesn't process activationSpec yet");
         } else {
             throw new RuntimeException("missing ActivationSpec name");
         }
     }
 
-    protected void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding) {
-        // TODO 
+    protected void parseResponseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+        String name = reader.getAttributeValue(null, "name");
+        if (name != null && name.length() > 0) {
+            jmsBinding.setResponseDestinationName(name);
+        }      
+        
+        String type = reader.getAttributeValue(null, "type");
+        if (type != null && type.length() > 0) {
+            if (JMSBindingConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(type)) {
+                jmsBinding.setResponseDestinationType(JMSBindingConstants.DESTINATION_TYPE_QUEUE);
+            } else if (JMSBindingConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(type)) {
+                jmsBinding.setResponseDestinationType(JMSBindingConstants.DESTINATION_TYPE_TOPIC);
+            } else {
+                throw new RuntimeException("invalid response destination type: " + type);
+            }
+            System.err.println("JMS Binding doesn't process response destination type yet");
+        }
+        
+        String create = reader.getAttributeValue(null, "create");
+        if (create != null && create.length() > 0) {
+            jmsBinding.setResponseDestinationCreate(create);
+        }
+    } 
+    
+    protected void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding) {
+        String name = reader.getAttributeValue(null, "name");
+        if (name != null && name.length() > 0) {
+            jmsBinding.setResponseConnectionFactoryName(name);
+            System.err.println("JMS Binding doesn't process response connectionFactory yet");
+        } else {
+            throw new RuntimeException("missing response connectionFactory name");
+        }
+    }    
+
+    protected void parseResponseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding) {
+        String name = reader.getAttributeValue(null, "name");
+        if (name != null && name.length() > 0) {
+            jmsBinding.setResponseActivationSpecName(name);
+            System.err.println("JMS Binding doesn't process response activationSpec yet");
+        } else {
+            throw new RuntimeException("missing response ActivationSpec name");
+        }
+    }
+    
+    protected void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding)
+      throws XMLStreamException {
+        // Read subelements of response
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    String elementName = reader.getName().getLocalPart();
+                    if ("destination".equals(elementName)) {
+                        parseResponseDestination(reader, jmsBinding);
+                    } else if ("connectionFactory".equals(elementName)) {
+                        parseResponseConnectionFactory(reader, jmsBinding);
+                    } else if ("activationSpec".equals(elementName)) {
+                        parseResponseActivationSpec(reader, jmsBinding);
+                    } 
+                    reader.next();
+                    break;
+                case END_ELEMENT:
+                    QName x = reader.getName();
+                    if (x.getLocalPart().equals("response")) {
+                        return;
+                    } else {
+                        throw new RuntimeException("Incomplete binding.jms/response definition found unexpected element " + x.toString());
+                    }
+            }
+        }
     }
 
     protected void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        // TODO 
+        System.err.println("JMS Binding doesn't process resourceAdapter yet");
     }
     
     protected void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        // TODO 
+        System.err.println("JMS Binding doesn't process headers yet");
     }    
 
     protected void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        // TODO 
+        System.err.println("JMS Binding doesn't process operationProperties yet");
     }
 
 

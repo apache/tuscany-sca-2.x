@@ -30,14 +30,19 @@ import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
-public class JMSResourceFactorySimpleImpl implements JMSResourceFactory {
+/**
+ * Abstracts away any JMS provide specific feature from the JMS binding
+ *
+ * @version $Rev$ $Date$
+ */
+public class JMSResourceFactoryActiveMQImpl implements JMSResourceFactory {
 
     private JMSBinding jmsBinding;
     private Connection connection;
     private Context    context;
     private boolean    isConnectionStarted;
 
-    public JMSResourceFactorySimpleImpl(JMSBinding jmsBinding) {
+    public JMSResourceFactoryActiveMQImpl(JMSBinding jmsBinding) {
         this.jmsBinding = jmsBinding;
     }
 
@@ -122,4 +127,12 @@ public class JMSResourceFactorySimpleImpl implements JMSResourceFactory {
         return dest;
     }
 
+    /**
+     * You can create a destination in ActiveMQ (and have it appear in JNDI)
+     * by putting "dynamicQueues/" in front of the queue name being looked up
+     * 
+     */
+    public Destination createDestination(String jndiName) throws NamingException {
+        return lookupDestination("dynamicQueues/" + jndiName);   
+    }
 }

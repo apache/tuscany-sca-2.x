@@ -19,23 +19,92 @@
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="JMSBindingTestComposite">
-           
-    <component name="HelloWorldClientComponent">
+   <!--        
+    <component name="HelloWorldMinimalClientComponent">
+        <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldClientImpl"/> 
+    </component>        
+    
+  	<reference name="HelloWorldMinimalReferenceA" 
+  	           promote="HelloWorldMinimalClientComponent/serviceA"
+  	           target="HelloWorldMinimalServiceA">
+        <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
+        <binding.jms/>       
+    </reference>  
+    
+  	<reference name="HelloWorldMinimalReferenceB" 
+  	           promote="HelloWorldMinimalClientComponent/serviceB"
+  	           target="HelloWorldMinimalServiceB">
+        <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
+        <binding.jms/>       
+    </reference>    
+   -->       
+    
+    <component name="HelloWorldCreateClientComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldClientImpl"/>
     </component>        
            
-  	<reference name="HelloWorldReference" promote="HelloWorldClientComponent/extService">
+  	<reference name="HelloWorldCreateReferenceA" 
+  	           promote="HelloWorldCreateClientComponent/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
-        <binding.jms/>       
+        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+                     jndiURL="tcp://localhost:61616">
+          <destination name="DestQueueA" create="always"/>
+          <response>
+             <destination name="RespQueueA" create="always"/>
+          </response>
+        </binding.jms>  
     </reference>
     
-	<service name="HelloWorldService" promote="HelloWorldServiceComponent">
+  	<reference name="HelloWorldCreateReferenceB" 
+  	           promote="HelloWorldCreateClientComponent/serviceB">
+        <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
+        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+                     jndiURL="tcp://localhost:61616">
+          <destination name="DestQueueB" create="always"/>
+          <response>
+             <destination name="RespQueueB" create="always"/>
+          </response>
+        </binding.jms>  
+    </reference>    
+    
+    
+    
+	<service name="HelloWorldCreateServiceA" 
+	         promote="HelloWorldServiceAComponent">
+        <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
+        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+                     jndiURL="tcp://localhost:61616">
+          <destination name="DestQueueA" create="always"/>
+        </binding.jms>     
+     </service>    
+  <!--   
+	<service name="HelloWorldMinimalServiceA" 
+	         promote="HelloWorldServiceAComponent">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
         <binding.jms/>     
-     </service>
-      
-    <component name="HelloWorldServiceComponent">
+     </service>   
+  --> 
+    <component name="HelloWorldServiceAComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
-    </component>   
+    </component> 
+    
+    
+    
+	<service name="HelloWorldCreateServiceB" promote="HelloWorldServiceBComponent">
+        <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
+        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+                     jndiURL="tcp://localhost:61616">
+          <destination name="DestQueueB" create="always"/>
+        </binding.jms>     
+    </service>    
+ <!--   
+	<service name="HelloWorldMinimalServiceB" promote="HelloWorldServiceBComponent">
+        <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService"/>
+        <binding.jms/>     
+    </service> 
+ -->     
+    <component name="HelloWorldServiceBComponent">
+        <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
+    </component>       
 
 </composite>

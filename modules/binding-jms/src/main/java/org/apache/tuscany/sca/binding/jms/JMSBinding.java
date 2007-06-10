@@ -41,8 +41,8 @@ public interface JMSBinding extends Binding {
     public String getDestinationName();
     public void setDestinationName(String destinationName);
     
-    public int getDestinationType();
-    public void setDestinationType(int destinationType);    
+    public String getDestinationType();
+    public void setDestinationType(String destinationType);    
     
     public String getDestinationCreate();    
     public void setDestinationCreate(String create);
@@ -62,11 +62,23 @@ public interface JMSBinding extends Binding {
     public String getResponseDestinationName();   
     public void setResponseDestinationName(String name);    
     
-    public int getResponseDestinationType(); 
-    public void setResponseDestinationType(int type); 
+    public String getResponseDestinationType(); 
+    public void setResponseDestinationType(String type); 
     
-    public String getresponseDestinationCreate();   
-    public void setresponseDestinationCreate(String create);  
+    public String getResponseDestinationCreate();   
+    public void setResponseDestinationCreate(String create);  
+
+    public String getResponseConnectionFactoryName();
+    public void setResponseConnectionFactoryName(String connectionFactoryName);
+    
+    public String getResponseConnectionFactoryCreate();
+    public void setResponseConnectionFactoryCreate(String create);
+
+    public String getResponseActivationSpecName();
+    public void setResponseActivationSpecName(String activationSpecName);
+    
+    public String getResponseActivationSpecCreate();
+    public void setResponseActivationSpecCreate(String create);
     
     public int getDeliveryMode();
     public void setDeliveryMode(int deliveryMode);
@@ -97,5 +109,7 @@ public interface JMSBinding extends Binding {
     public void setOperationSelectorName(String operationSelectorName);
     
     public boolean getXMLFormat();
-    public void setXMLFormat(boolean b);     
+    public void setXMLFormat(boolean b);  
+    
+    public void validate() throws JMSBindingException;
 }

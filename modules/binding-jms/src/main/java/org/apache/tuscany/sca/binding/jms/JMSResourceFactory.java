@@ -40,4 +40,6 @@ public interface JMSResourceFactory {
     public abstract void closeConnection() throws JMSException, NamingException;
 
     public abstract Destination lookupDestination(String jndiName) throws NamingException;
+    
+    public abstract Destination createDestination(String jndiName) throws NamingException;
 }

@@ -53,7 +53,17 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         this.service       = service;
         this.jmsBinding    = binding;
         
-        jmsResourceFactory = jmsBinding.getJmsResourceFactory();        
+        jmsResourceFactory = jmsBinding.getJmsResourceFactory();   
+        
+        // if the default destination queue names is set
+        // set the destinate queue name to the reference name
+        // so that any wires can be assured a unique endpoint.
+        if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)){
+            //jmsBinding.setDestinationName(service.getName());
+            throw new JMSBindingException("No destination specified for service " +
+                                          service.getName());
+        }
+
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -81,8 +91,20 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private void registerListerner() throws NamingException, JMSException {
 
         Session session         = jmsResourceFactory.createSession();
-//        Destination destination = session.createQueue("SCAMessageQ");//jmsBinding.getDestinationName());
         Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
+        
+        if (destination == null){ 
+            if (jmsBinding.getDestinationCreate().equals(JMSBindingConstants.CREATE_ALLWAYS)) {
+                destination = jmsResourceFactory.createDestination(jmsBinding.getDestinationName());
+            } else {
+                throw new JMSBindingException("JMS Destination " + 
+                                              jmsBinding.getDestinationName() +
+                                              "not found while registering service " + 
+                                              service.getName() +
+                                              " listener");
+            }
+        }
+        
         consumer = session.createConsumer(destination);
         
         // TODO - We assume the target is a Java class here!!!
