@@ -37,7 +37,7 @@ public class JMSBindingImpl implements JMSBinding {
     
     // properties required to implement the Tuscany 
     // binding extension SPI
-    private String uri                   = null;
+    private String uri                   = null; 
     private String name                  = null;
     private boolean unresolved           = false;    
     private List<PolicySet> policySets   = new ArrayList<PolicySet>();
@@ -49,80 +49,105 @@ public class JMSBindingImpl implements JMSBinding {
     // Properties required to describe the JMS 
     // binding model
     
-    // <binding.jms correlationScheme="string"?
-    //              initialContextFactory="xs:anyURI"?
-    //              jndiURL="xs:anyURI"?
-    //              requestConnection="QName"?
-    //              responseConnection="QName"?
-    //              operationProperties="QName"?
+    // <binding.jms correlationScheme="string"?            Not yet implemented in binding     
+    //              initialContextFactory="xs:anyURI"?     
+    //              jndiURL="xs:anyURI"?                   
+    //              requestConnection="QName"?             Not yet implemented in binding
+    //              responseConnection="QName"?            Not yet implemented in binding
+    //              operationProperties="QName"?           Not yet implemented in binding
     //              ...>
     private String correlationScheme         = JMSBindingConstants.CORRELATE_MSG_ID;    
     private String initialContextFactoryName = JMSBindingConstants.DEFAULT_CONTEXT_FACTORY_NAME;
     private String jndiURL                   = JMSBindingConstants.DEFAULT_JNDI_URL;  
+    private String requestConnection         = null;
+    private String responseConnection        = null;
+    private String operationProperties       = null;
     // 
-    //     <destination name="xs:anyURI" type="string"? create="string"?>
-    //         <property name="NMTOKEN" type="NMTOKEN">*
+    //     <destination name="xs:anyURI"                   
+    //                  type="string"?                     Not yet implemented in binding
+    //                  create="string"?>                  Not yet implemented in binding
+    //         <property name="NMTOKEN"                    Not yet implemented in binding
+    //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </destination>?
     private String destinationName           = JMSBindingConstants.DEFAULT_DESTINATION_NAME; 
-    private int    destinationType           = JMSBindingConstants.DESTINATION_TYPE_QUEUE;    
-    private String destinationCreate         = JMSBindingConstants.CREATE_ALLWAYS; 
+    private String destinationType           = JMSBindingConstants.DESTINATION_TYPE_QUEUE;    
+    private String destinationCreate         = JMSBindingConstants.CREATE_NEVER; 
     // 
-    //     <connectionFactory name="xs:anyURI" create="string"?>
-    //         <property name="NMTOKEN" type="NMTOKEN">*
+    //     <connectionFactory name="xs:anyURI"             Not yet implemented in binding
+    //                        create="string"?>            Not yet implemented in binding
+    //         <property name="NMTOKEN"                    Not yet implemented in binding
+    //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </connectionFactory>?
     private String connectionFactoryName     = JMSBindingConstants.DEFAULT_CONNECTION_FACTORY_NAME;
-    private String connectionFactoryCreate   = JMSBindingConstants.CREATE_ALLWAYS;    
+    private String connectionFactoryCreate   = JMSBindingConstants.CREATE_NEVER;    
     // 
-    //     <activationSpec name="xs:anyURI" create="string"?>
-    //         <property name="NMTOKEN" type="NMTOKEN">*
+    //     <activationSpec name="xs:anyURI"                Not yet implemented in binding
+    //                     create="string"?>               Not yet implemented in binding
+    //         <property name="NMTOKEN"                    Not yet implemented in binding
+    //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </activationSpec>?
     private String activationSpecName        = null;
     private String activationSpecCreate      = null;
     // 
     //     <response>
-    //         <destination name="xs:anyURI" type="string"? create="string"?>
-    //             <property name="NMTOKEN" type="NMTOKEN">*
+    //         <destination name="xs:anyURI"               
+    //                      type="string"?                 Not yet implemented in binding
+    //                      create="string"?>              Not yet implemented in binding
+    //             <property name="NMTOKEN"                Not yet implemented in binding
+    //                       type="NMTOKEN">*              Not yet implemented in binding
     //         </destination>?
     private String responseDestinationName   = JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME; 
-    private int    responseDestinationType   = JMSBindingConstants.DESTINATION_TYPE_QUEUE;    
-    private String responseDestinationCreate = JMSBindingConstants.CREATE_ALLWAYS;    
+    private String responseDestinationType   = JMSBindingConstants.DESTINATION_TYPE_QUEUE;    
+    private String responseDestinationCreate = JMSBindingConstants.CREATE_NEVER;    
     // 
-    //         <connectionFactory name="xs:anyURI" create="string"?>
-    //             <property name="NMTOKEN" type="NMTOKEN">*
+    //         <connectionFactory name="xs:anyURI"         Not yet implemented in binding
+    //                            create="string"?>        Not yet implemented in binding
+    //             <property name="NMTOKEN"                Not yet implemented in binding
+    //                       type="NMTOKEN">*              Not yet implemented in binding
     //         </connectionFactory>?
     private String responseConnectionFactoryName     = JMSBindingConstants.DEFAULT_CONNECTION_FACTORY_NAME;
-    private String responseConnectionFactoryCreate   = JMSBindingConstants.CREATE_ALLWAYS;    
+    private String responseConnectionFactoryCreate   = JMSBindingConstants.CREATE_NEVER;    
     // 
-    //         <activationSpec name="xs:anyURI" create="string"?>
-    //             <property name="NMTOKEN" type="NMTOKEN">*
+    //         <activationSpec name="xs:anyURI"            Not yet implemented in binding
+    //                         create="string"?>           Not yet implemented in binding
+    //             <property name="NMTOKEN"                Not yet implemented in binding
+    //                       type="NMTOKEN">*              Not yet implemented in binding
     //         </activationSpec>?
     private String responseActivationSpecName        = null;
     private String responseActivationSpecCreate      = null;    
     //     </response>?
     // 
-    //     <resourceAdapter name="NMTOKEN">?
-    //         <property name="NMTOKEN" type="NMTOKEN">*
+    //     <resourceAdapter name="NMTOKEN">?               Not yet implemented in binding
+    //         <property name="NMTOKEN"                    Not yet implemented in binding
+    //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </resourceAdapter>?
+    private String resourceAdapterName       = null;
     // 
-    //     <headers JMSType="string"?
-    //              JMSCorrelationId="string"?
-    //              JMSDeliveryMode="string"?
-    //              JMSTimeToLive="int"?
-    //              JMSPriority="string"?>
-    //         <property name="NMTOKEN" type="NMTOKEN">*
+    //     <headers JMSType="string"?                      Not yet implemented in binding
+    //              JMSCorrelationId="string"?             Not yet implemented in binding
+    //              JMSDeliveryMode="string"?              Not yet implemented in binding
+    //              JMSTimeToLive="int"?                   Not yet implemented in binding
+    //              JMSPriority="string"?>                 Not yet implemented in binding
+    //         <property name="NMTOKEN"                    Not yet implemented in binding
+    //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </headers>?
-    private int deliveryMode                 = DeliveryMode.NON_PERSISTENT; // Maps to javax.jms.DeliveryMode
-    private int timeToLive                   = JMSBindingConstants.DEFAULT_TIME_TO_LIVE;
-    private int priority                     = JMSBindingConstants.DEFAULT_PRIORITY;    
+    private String jmsType                   = null;
+    private String jmsCorrelationId          = null;
+    private int    jmsDeliveryMode           = DeliveryMode.NON_PERSISTENT; // Maps to javax.jms.DeliveryMode
+    private int    jmsTimeToLive             = JMSBindingConstants.DEFAULT_TIME_TO_LIVE;
+    private int    jmsPriority               = JMSBindingConstants.DEFAULT_PRIORITY;    
     // 
-    //     <operationProperties name="string" nativeOperation="string"?>
-    //         <property name="NMTOKEN" type="NMTOKEN">*
-    //         <headers JMSType="string"?
-    //                  JMSCorrelationId="string"?
-    //                  JMSDeliveryMode="string"?
-    //                  JMSTimeToLive="int"?
-    //                  JMSPriority="string"?>
-    //             <property name="NMTOKEN" type="NMTOKEN">*
+    //     <operationProperties name="string"              Not yet implemented in binding
+    //                          nativeOperation="string"?> Not yet implemented in binding
+    //         <property name="NMTOKEN"                    Not yet implemented in binding
+    //                   type="NMTOKEN">*                  Not yet implemented in binding
+    //         <headers JMSType="string"?                  Not yet implemented in binding
+    //                  JMSCorrelationId="string"?         Not yet implemented in binding
+    //                  JMSDeliveryMode="string"?          Not yet implemented in binding
+    //                  JMSTimeToLive="int"?               Not yet implemented in binding
+    //                  JMSPriority="string"?>             Not yet implemented in binding
+    //             <property name="NMTOKEN"                Not yet implemented in binding
+    //                       type="NMTOKEN">*              Not yet implemented in binding
     //         </headers>?
     //     </operationProperties>*
     // </binding.jms>
@@ -254,10 +279,10 @@ public class JMSBindingImpl implements JMSBinding {
         this.destinationName = destinationName;
     }
     
-    public int getDestinationType() {
+    public String getDestinationType() {
         return destinationType;
     }
-    public void setDestinationType(int destinationType) {
+    public void setDestinationType(String destinationType) {
         this.destinationType = destinationType;
     }    
     
@@ -303,39 +328,67 @@ public class JMSBindingImpl implements JMSBinding {
         this.responseDestinationName = name;
     }     
     
-    public int getResponseDestinationType() {
+    public String getResponseDestinationType() {
         return this.responseDestinationType;
     }     
-    public void setResponseDestinationType(int type) {
+    public void setResponseDestinationType(String type) {
         this.responseDestinationType = type;
     }     
     
-    public String getresponseDestinationCreate() {
+    public String getResponseDestinationCreate() {
         return this.responseDestinationCreate;
     }     
-    public void setresponseDestinationCreate(String create) {
+    public void setResponseDestinationCreate(String create) {
         this.responseDestinationCreate = create;
-    }      
+    }    
+    
+    public String getResponseConnectionFactoryName() {
+        return responseConnectionFactoryName;
+    }
+    public void setResponseConnectionFactoryName(String connectionFactoryName) {
+        this.responseConnectionFactoryName = connectionFactoryName;
+    } 
+    
+    public String getResponseConnectionFactoryCreate() {
+        return this.responseConnectionFactoryCreate;
+    }     
+    public void setResponseConnectionFactoryCreate(String create) {
+        this.responseConnectionFactoryCreate = create;
+    }    
+    
+    public String getResponseActivationSpecName() {
+        return responseActivationSpecName;
+    }
+    public void setResponseActivationSpecName(String activationSpecName) {
+        this.responseActivationSpecName = activationSpecName;
+    }  
+    
+    public String getResponseActivationSpecCreate() {
+        return this.responseActivationSpecCreate;
+    }     
+    public void setResponseActivationSpecCreate(String create) {
+        this.responseActivationSpecCreate = create;
+    }     
     
     public int getDeliveryMode() {
-        return deliveryMode;
+        return jmsDeliveryMode;
     }
     public void setDeliveryMode(int deliveryMode) {
-        this.deliveryMode = deliveryMode;
+        this.jmsDeliveryMode = deliveryMode;
     } 
     
     public int getTimeToLive() {
-        return timeToLive;
+        return jmsTimeToLive;
     }
     public void setTimeToLive(int timeToLive) {
-        this.timeToLive = timeToLive;
+        this.jmsTimeToLive = timeToLive;
     } 
     
     public int getPriority() {
-        return priority;
+        return jmsPriority;
     }
     public void setPriority(int priority) {
-        this.priority = priority;
+        this.jmsPriority = priority;
     }    
     
     // operations to manage the other information required by the 
@@ -424,7 +477,45 @@ public class JMSBindingImpl implements JMSBinding {
         }
         
         return instance;
-    }    
+    }   
+    
+    /**
+     * The validation rules for the JMS model are relatively complicated to 
+     * they all live together here
+     */
+    public void validate() throws JMSBindingException {
+        /*
+         * first fix up anything now the model 
+         * has been read
+         */
+        
+        if (getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)){
+            /*
+             * No desitnation name has been set so make sure that
+             * the runtime is able to create one automatically
+             */
+            setDestinationCreate(JMSBindingConstants.CREATE_ALLWAYS);
+        }
+        
+        if (getResponseDestinationName().equals(JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME)){
+            /*
+             * No repsonse desitination name has been set so make sure that
+             * the runtime is able to create one automatically
+             */
+            setResponseDestinationCreate(JMSBindingConstants.CREATE_ALLWAYS);
+        }   
+        
+        
+        /*
+         * Now some cross field validation
+         */
+        
+        // connection factory doesn't contradict detsination type
+        
+        // connection factory and activation spec are mutually exclusive
+        
+        // TODO check spec for all validations
+    }
     
     
 // TODO...    

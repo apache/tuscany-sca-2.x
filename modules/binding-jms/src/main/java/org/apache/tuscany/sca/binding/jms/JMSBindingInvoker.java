@@ -61,7 +61,32 @@ public class JMSBindingInvoker implements Invoker {
         responseMessageProcessor = jmsBinding.getResponseMessageProcessor();
         try {
             requestDest          = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
-            replyDest            = jmsResourceFactory.lookupDestination(jmsBinding.getResponseDestinationName());          
+            
+            if (requestDest == null){ 
+                if (jmsBinding.getDestinationCreate().equals(JMSBindingConstants.CREATE_ALLWAYS)) {
+                    requestDest = jmsResourceFactory.createDestination(jmsBinding.getDestinationName());
+                } else {
+                    throw new JMSBindingException("JMS Destination " + 
+                                                   jmsBinding.getDestinationName() +
+                                                   " not found while registering binding " + 
+                                                   jmsBinding.getName() +
+                                                   " invoker");
+                }
+            }
+            
+            replyDest            = jmsResourceFactory.lookupDestination(jmsBinding.getResponseDestinationName());
+            
+            if (replyDest == null){ 
+                if (jmsBinding.getResponseDestinationCreate().equals(JMSBindingConstants.CREATE_ALLWAYS)) {
+                    replyDest = jmsResourceFactory.createDestination(jmsBinding.getResponseDestinationName());
+                } else {
+                    throw new JMSBindingException("JMS Response Destination " + 
+                                                  jmsBinding.getDestinationName() +
+                                                  " not found while registering binding " + 
+                                                  jmsBinding.getName() +
+                                                   " invoker");
+                }
+            }
         } catch (NamingException e) {
             throw new JMSBindingException(e);
         }            

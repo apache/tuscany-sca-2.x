@@ -26,19 +26,27 @@ import org.osoa.sca.annotations.Service;
  */
 @Service(HelloWorldService.class)
 public class HelloWorldClientImpl implements HelloWorldService {
-    private HelloWorldService extService;
-
-    public HelloWorldService getExtService() {
-        return extService;
-    }
+    private HelloWorldService serviceA;
 
     @Reference
-    public void setExtService(HelloWorldService extService) {
-        this.extService = extService;
+    public void setServiceA(HelloWorldService service) {
+        this.serviceA = service;
     }
+    
+    private HelloWorldService serviceB;
+
+    @Reference
+    public void setServiceB(HelloWorldService service) {
+        this.serviceB = service;
+    }    
 
     public String sayHello(String name) {
-        return extService.sayHello(name);
+        return "ServiceA says " +
+                serviceA.sayHello(name + "-A") + 
+                " ServiceB says " +
+                serviceB.sayHello(name + "-B");
     }
+    
+   
     
 }

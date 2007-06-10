@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.binding.jms;
 
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -44,10 +47,55 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
                                               JMSBinding binding) {
         this.component  = component;
         this.reference  = reference;
-        this.jmsBinding = binding;
+        this.jmsBinding = binding;         
+        
     }
 
     public Invoker createInvoker(Operation operation, boolean isCallback) {
+ 
+        if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)){
+            throw new JMSBindingException("No destination specified for reference " +
+                                          reference.getName());            
+        }
+        
+        if (jmsBinding.getResponseDestinationName().equals(JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME)){
+            throw new JMSBindingException("No response destination specified for reference " +
+                                          reference.getName());            
+        }        
+/* The following doesn't work as I can't get to the 
+ * target list on the composite reference
+        // if the default destination queue name is set
+        // set the destination queue name to the wired service name
+        // so that any wires can be assured a unique endpoint.
+        
+        if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)){
+            // get the name of the target service
+            List<ComponentService> targets = reference.getTargets();
+            
+            if (targets.size() < 1){
+                throw new JMSBindingException("No target specified for reference " +
+                                              reference.getName() +
+                                              " so destination queue name can't be determined");
+            }
+            
+            if (targets.size() > 1){
+                throw new JMSBindingException("More than one target specified for reference " +
+                                              reference.getName() +
+                                              " so destination queue name can't be determined");
+            }
+            
+            ComponentService service = targets.get(0);
+            jmsBinding.setDestinationName(service.getName());
+        }
+        
+        
+        // if the default response queue name is set 
+        // set the response queue to the names of this 
+        // reference
+        if (jmsBinding.getResponseDestinationName().equals(JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME)){
+            jmsBinding.setResponseDestinationName(reference.getName());
+        }    
+*/        
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {
