@@ -17,10 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.samples.aggregator;
+package org.apache.tuscany.sca.demos.aggregator;
 
-import org.apache.tuscany.sca.samples.aggregator.types.ConfigType;
-import org.apache.tuscany.sca.samples.aggregator.types.SourceType;
+import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
+import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
 
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;

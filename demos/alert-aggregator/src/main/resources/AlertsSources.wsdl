@@ -17,8 +17,8 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<wsdl:definitions targetNamespace="http://tuscany.apache.org/sca/samples/aggregator/sources"
-                  xmlns:tns="http://tuscany.apache.org/sca/samples/aggregator/sources" 
+<wsdl:definitions targetNamespace="http://tuscany.apache.org/sca/demos/aggregator/sources"
+                  xmlns:tns="http://tuscany.apache.org/sca/demos/aggregator/sources" 
                   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
                   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
@@ -26,11 +26,11 @@
 
     <wsdl:types>
         <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"   
-            targetNamespace="http://tuscany.apache.org/sca/samples/aggregator/sources" 
-            xmlns:alerter="http://tuscany.apache.org/sca/samples/aggregator/types"
+            targetNamespace="http://tuscany.apache.org/sca/demos/aggregator/sources" 
+            xmlns:alerter="http://tuscany.apache.org/sca/demos/aggregator/types"
             elementFormDefault="qualified">
 
-            <xsd:import namespace="http://tuscany.apache.org/sca/samples/aggregator/types" 
+            <xsd:import namespace="http://tuscany.apache.org/sca/demos/aggregator/types" 
                         schemaLocation="Alerts.xsd" />            
 
             <element name="getAlertSources">

@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package org.apache.tuscany.sca.samples.aggregator;
+package org.apache.tuscany.sca.demos.aggregator;
 
 import commonj.sdo.Type;
 
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tuscany.sca.samples.aggregator.types.AlertType;
-import org.apache.tuscany.sca.samples.aggregator.types.AlertsType;
-import org.apache.tuscany.sca.samples.aggregator.types.TypesFactory;
+import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
+import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
+import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
 
 import org.apache.tuscany.sdo.impl.DataObjectBase;
 

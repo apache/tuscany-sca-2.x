@@ -17,17 +17,17 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<ns0:Config xmlns:ns0="http://tuscany.apache.org/sca/samples/aggregator/types">
+<ns0:Config xmlns:ns0="http://tuscany.apache.org/sca/demos/aggregator/types">
 <ns0:Source Id="0" FeedType="rss">
   <ns0:Name>BBC News</ns0:Name>
   <ns0:Address>http://news.bbc.co.uk/</ns0:Address>
-  <ns0:LastChecked>01-Jun-2007 16:34:03</ns0:LastChecked>
+  <ns0:LastChecked>10-Jun-2007 16:34:03</ns0:LastChecked>
   <ns0:FeedAddress>http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml</ns0:FeedAddress>
 </ns0:Source>
 <ns0:Source Id="1" FeedType="rss">
   <ns0:Name>Engadget</ns0:Name>
   <ns0:Address>http://www.engadget.com</ns0:Address>
-  <ns0:LastChecked>01-Jun-2007 16:34:03</ns0:LastChecked>
+  <ns0:LastChecked>10-Jun-2007 16:34:03</ns0:LastChecked>
   <ns0:FeedAddress>http://www.engadget.com/rss.xml</ns0:FeedAddress>
 </ns0:Source>
 </ns0:Config>

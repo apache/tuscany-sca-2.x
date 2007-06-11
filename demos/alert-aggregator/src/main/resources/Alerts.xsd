@@ -17,9 +17,9 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<schema targetNamespace="http://tuscany.apache.org/sca/samples/aggregator/types" 
+<schema targetNamespace="http://tuscany.apache.org/sca/demos/aggregator/types" 
 		xmlns="http://www.w3.org/2001/XMLSchema" 
-		xmlns:ns="http://tuscany.apache.org/sca/samples/aggregator/types">
+		xmlns:ns="http://tuscany.apache.org/sca/demos/aggregator/types">
     <element name="Alerts" type="ns:AlertsType"/>
 
     <complexType name="AlertType">

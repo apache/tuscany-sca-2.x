@@ -24,8 +24,8 @@
     name="FeedAggregator">
     
     <!-- SDO factory classes -->    
-    <dbsdo:import.sdo factory="org.apache.tuscany.sca.samples.aggregator.service.ServiceFactory"/>        
-    <dbsdo:import.sdo factory="org.apache.tuscany.sca.samples.aggregator.types.TypesFactory"/> 
+    <dbsdo:import.sdo factory="org.apache.tuscany.sca.demos.aggregator.service.ServiceFactory"/>        
+    <dbsdo:import.sdo factory="org.apache.tuscany.sca.demos.aggregator.types.TypesFactory"/> 
 
     <!-- The alerts rss service -->
     <service name="AlertsFeedServiceRSS" promote="AlertsFeedServiceComponent/Feed">
@@ -38,48 +38,47 @@
     </service> 
     
     <component name="AlertsFeedServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.samples.aggregator.AlertsFeedServiceImpl" />
+        <implementation.java class="org.apache.tuscany.sca.demos.aggregator.AlertsFeedServiceImpl" />
         <reference name="alerts" target="AlertsServiceComponent"/>
     </component>    
         
     <!-- The alerts web service -->
     <service name="AlertsService" promote="AlertsServiceComponent">
-        <interface.wsdl interface="http://tuscany.apache.org/sca/samples/aggregator/service#wsdl.interface(AlertsPortType)"/>
-        <binding.ws wsdlElement="http://tuscany.apache.org/sca/samples/aggregator/service#wsdl.port(AlertsService/AlertsPort)"/>
+        <interface.wsdl interface="http://tuscany.apache.org/sca/demos/aggregator/service#wsdl.interface(AlertsPortType)"/>
+        <binding.ws wsdlElement="http://tuscany.apache.org/sca/demos/aggregator/service#wsdl.port(AlertsService/AlertsPort)"/>
     </service>
 
     <!-- The alerts jsonrpc service -->
     <service name="AlertsServiceJSONRPC" promote="AlertsServiceComponent/AlertsService">
-        <interface.java interface="org.apache.tuscany.sca.samples.aggregator.AlertsService" />
+        <interface.java interface="org.apache.tuscany.sca.demos.aggregator.AlertsService" />
         <binding.jsonrpc />
     </service>     
 
     <component name="AlertsServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.samples.aggregator.AlertsServiceImpl" />
+        <implementation.java class="org.apache.tuscany.sca.demos.aggregator.AlertsServiceImpl" />
         <reference name="rssChecker" target="RSSCheckerComponent"/>
         <reference name="alertsSources" target="AlertsSourcesServiceComponent"/>
     </component>
     
     <!-- The alerts sources web service -->
     <service name="AlertsSourcesService" promote="AlertsSourcesServiceComponent">
-        <interface.wsdl interface="http://tuscany.apache.org/sca/samples/aggregator/sources#wsdl.interface(AlertsSourcesPortType)"/>
-        <binding.ws wsdlElement="http://tuscany.apache.org/sca/samples/aggregator/sources#wsdl.port(AlertsSourcesService/AlertsSourcesPort)"/>
+        <interface.wsdl interface="http://tuscany.apache.org/sca/demos/aggregator/sources#wsdl.interface(AlertsSourcesPortType)"/>
+        <binding.ws wsdlElement="http://tuscany.apache.org/sca/demos/aggregator/sources#wsdl.port(AlertsSourcesService/AlertsSourcesPort)"/>
     </service>
     
     <!-- The alerts jsonrpc service -->
     <service name="AlertsSourcesServiceJSONRPC" promote="AlertsSourcesServiceComponent/AlertsSourcesService">
-        <interface.java interface="org.apache.tuscany.sca.samples.aggregator.AlertsSourcesService" />
+        <interface.java interface="org.apache.tuscany.sca.demos.aggregator.AlertsSourcesService" />
         <binding.jsonrpc />
     </service>    
         
     <component name="AlertsSourcesServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.samples.aggregator.AlertsSourcesServiceImpl" />
+        <implementation.java class="org.apache.tuscany.sca.demos.aggregator.AlertsSourcesServiceImpl" />
     </component>
     
     <!-- The RSS reader -->
     <component name="RSSCheckerComponent">
-        <!--implementation.script script="aggregator/RSSCheckerImpl.py"/-->
-        <implementation.java class="org.apache.tuscany.sca.samples.aggregator.RSSCheckerServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.demos.aggregator.RSSCheckerServiceImpl"/>
     </component>
 
 </composite>
