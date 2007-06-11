@@ -41,6 +41,7 @@
                 <module>assembly-xml</module>
                 <module>binding-jms</module>
                 <module>binding-ajax</module>
+                <module>binding-ejb</module>
                 <module>binding-feed</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-rmi</module>
