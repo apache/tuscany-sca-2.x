@@ -65,7 +65,7 @@
           this.feedAddress = feedAddress;
           this.feedType    = feedType;
           this.lastChecked = lastChecked;
-          this.javaClass   = "org.apache.tuscany.sca.samples.aggregator.types.impl.SourceTypeImpl";
+          this.javaClass   = "org.apache.tuscany.sca.demos.aggregator.types.impl.SourceTypeImpl";
 
         }
 
@@ -82,6 +82,7 @@
         { 
             response = alertSourcesService.getAlertSources("Dojo");
             response.addCallbacks(getAlertSourcesCallback, errorCallback);
+
             getAlerts();
         }
 
@@ -102,7 +103,7 @@
 
                     text = text + "<table>";
                     text = text + "<TR CLASS='source_" + source.id + "' >";
-                    text = text + "  <TD CLASS='clickable' ONCLICK=\"displayAlert('" + source.address + "')\">";
+                    text = text + "  <TD CLASS='source_name clickable' ONCLICK=\"displayAlert('" + source.address + "')\">";
                     text = text + "    <IMG SRC='rss.png'/>&nbsp;&nbsp;" + source.name;
                     text = text + "  </TD>";
                     text = text + "  <TD CLASS='clickable link' ONCLICK=\"showEditSource('" + source.id + "')\">Edit</TD>";
@@ -230,8 +231,10 @@
         {
             hideAddNewSource(sourceid);
             var source = getSource(sourceid);
-            alertSourcesService.addAlertSource(source);
-            getAlertSources();
+            alertSourcesService.addAlertSource(source); 
+
+            // wait a little before getting the list back from the server
+            setTimeout("getAlertSources()",1250);       
         }
 
         function getSource(sourceid)
@@ -311,7 +314,7 @@
     
     </script>
 
-    <h1 id="top">Apache Tuscany Feed Aggregator Sample</h1>
+    <h1 id="top">Apache Tuscany Alert Aggregator Demo</h1>
     <div id="errors"></div>
     <p>Alert Sources<span id="refreshSources"></span>:</p>
     <!--input type="button" value="getSources" onclick="getAlertSources()"/-->

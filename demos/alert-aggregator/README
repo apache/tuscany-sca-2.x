@@ -1,0 +1,82 @@
+Apache Tuscany Alert Aggregator Demo
+====================================
+
+The alert aggregator demo provides an application, implemented using SCA, that 
+aggregates feeds together and exposes them using the following bindings. 
+
+binding.ws
+binding.jsonrpc
+binding.feed
+
+The easiest way to get going is to build the demo
+
+cd alert-aggregator
+mvn
+
+This will build and test the source and generate a war file 
+
+demo-alert-aggregator.war
+
+This war can be deployed to you web application container and tested (the war
+has been tested with Tomcat 6.0.10). 
+
+The Web Application
+-------------------
+
+Once deployed point your browser at 
+
+http://localhost:8080/demo-alert-aggregator
+
+Taking care to ensure the host name and port number match you local 
+configuration. 
+
+This launches a Javascript application in the browser that uses JSONRPC
+to contact the server and retrived a list of alert sources and alerts that
+these sources are providing.
+
+There default sources that you see are stored in a file in the following
+file
+
+demo-alert-aggregator/WEB-INF/classes/sources.xml
+
+This files has the following contents
+
+<ns0:Config xmlns:ns0="http://tuscany.apache.org/sca/demos/aggregator/types">
+<ns0:Source Id="0" FeedType="rss">
+  <ns0:Name>BBC News</ns0:Name>
+  <ns0:Address>http://news.bbc.co.uk/</ns0:Address>
+  <ns0:LastChecked>10-Jun-2007 16:34:03</ns0:LastChecked>
+  <ns0:FeedAddress>http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml</ns0:FeedAddress>
+</ns0:Source>
+<ns0:Source Id="1" FeedType="rss">
+  <ns0:Name>Engadget</ns0:Name>
+  <ns0:Address>http://www.engadget.com</ns0:Address>
+  <ns0:LastChecked>10-Jun-2007 16:34:03</ns0:LastChecked>
+  <ns0:FeedAddress>http://www.engadget.com/rss.xml</ns0:FeedAddress>
+</ns0:Source>
+</ns0:Config>
+
+You may want to adjust the "LastChecked" values to change the number of
+alerts that are displayed in the first instance
+
+Using A Feed Reader
+-------------------
+
+As this SCA application also uses the binding.feed binding you can use your
+favourite feed reader to read the aggregated alerts. To do this point your
+feed reader at
+
+http://localhost:8080/demo-alert-aggregator/services/AlertsFeedServiceRSS
+
+Again taking care to ensure that the host name and port number match you 
+local configuration.
+
+Using Web Services
+------------------
+
+The SCA application also uses binding.ws to provide a SOAP/HTTP interface. 
+The demo client that uses this interface is not yet available. 
+
+
+
+

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.samples.aggregator;
+package org.apache.tuscany.sca.demos.aggregator;
 
 import java.net.URL;
 import java.util.Date;
@@ -25,9 +25,9 @@ import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.apache.tuscany.sca.samples.aggregator.types.AlertType;
-import org.apache.tuscany.sca.samples.aggregator.types.AlertsType;
-import org.apache.tuscany.sca.samples.aggregator.types.TypesFactory;
+import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
+import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
+import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;

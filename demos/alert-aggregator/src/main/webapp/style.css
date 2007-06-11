@@ -107,6 +107,11 @@ color: DimGrey;
 display: none;
 }
 
+.source_name
+{
+width: 600px;
+}
+
 .alert_text
 {
 width: 600px;

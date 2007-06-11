@@ -33,7 +33,7 @@
     <artifactId>alert-aggregator</artifactId>
     <packaging>war</packaging>
     <version>1.0-incubating-SNAPSHOT</version>
-    <name>Apache Tuscany BigBank Alert Aggregator Demo</name>
+    <name>Apache Tuscany Alert Aggregator Demo</name>
     <url>http://cwiki.apache.org/TUSCANY</url>  
 
     <dependencies>
@@ -133,7 +133,7 @@
     </dependencies>
     
     <build>
-        <finalName>sample-feed-aggregator</finalName>
+        <finalName>demo-alert-aggregator</finalName>
         <plugins>  
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -166,15 +166,15 @@
                             <schemaFiles>
                                 <configuration>
                                     <fileName>${project.build.directory}/classes/Alerts.wsdl</fileName>
-                                    <javaPackage>org.apache.tuscany.sca.samples.aggregator.service</javaPackage>
+                                    <javaPackage>org.apache.tuscany.sca.demos.aggregator.service</javaPackage>
                                 </configuration> 
                                 <configuration>
                                     <fileName>${project.build.directory}/classes/AlertsSources.wsdl</fileName>
-                                    <javaPackage>org.apache.tuscany.sca.samples.aggregator.sources</javaPackage>
+                                    <javaPackage>org.apache.tuscany.sca.demos.aggregator.sources</javaPackage>
                                 </configuration>                                 
                                 <configuration>
                                     <fileName>${project.build.directory}/classes/Alerts.xsd</fileName>
-                                    <javaPackage>org.apache.tuscany.sca.samples.aggregator.types</javaPackage>
+                                    <javaPackage>org.apache.tuscany.sca.demos.aggregator.types</javaPackage>
                                 </configuration>                                                           
                              </schemaFiles>
                             <noNotification>true</noNotification>

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.samples.aggregator;
+package org.apache.tuscany.sca.demos.aggregator;
 
-import org.apache.tuscany.sca.samples.aggregator.types.AlertsType;
+import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 
 /**
  * The interface for the rss checker service

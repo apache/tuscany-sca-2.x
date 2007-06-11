@@ -4,13 +4,13 @@
  *
  * $Id$
  */
-package org.apache.tuscany.sca.samples.aggregator;
+package org.apache.tuscany.sca.demos.aggregator;
 
 import commonj.sdo.Sequence;
 import commonj.sdo.Type;
 
-import org.apache.tuscany.sca.samples.aggregator.types.SourceType;
-import org.apache.tuscany.sca.samples.aggregator.types.TypesFactory;
+import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
+import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
 
 import org.apache.tuscany.sdo.impl.DataObjectBase;
 

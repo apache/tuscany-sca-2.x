@@ -22,7 +22,7 @@
 Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
-    <display-name>Tuscany Feed Aggregator Sample</display-name>
+    <display-name>Tuscany Alert Aggregator Demo</display-name>
     
     <listener>
         <listener-class>org.apache.tuscany.sca.webapp.TuscanyContextListener</listener-class>
@@ -39,7 +39,7 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     </servlet-mapping>
 
     <welcome-file-list id="WelcomeFileList">
-        <welcome-file>FeedAggregator.html</welcome-file>
+        <welcome-file>AlertAggregator.html</welcome-file>
     </welcome-file-list>  
 
 </web-app>
