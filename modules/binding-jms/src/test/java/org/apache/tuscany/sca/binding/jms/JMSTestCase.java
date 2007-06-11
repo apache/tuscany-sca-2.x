@@ -72,9 +72,12 @@ public class JMSTestCase {
         scaDomain.close();
         
         broker.stop();
-        broker.waitUntilStopped();
+        // only available in 4.2 snapshot
+        //broker.waitUntilStopped();
     }
-/*
+    
+/* At the moment I can't get at the target list in order to aut generate queue names
+ * so binding.jms with no configuration doesn't work
     @Test
     public void testHelloWorldMinimal() throws Exception {
         helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldMinimalClientComponent");
