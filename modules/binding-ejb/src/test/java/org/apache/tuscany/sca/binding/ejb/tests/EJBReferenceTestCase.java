@@ -34,8 +34,11 @@ public class EJBReferenceTestCase extends TestCase {
     protected void setUp() throws Exception {
         System.setProperty("managed", "false");
         System.setProperty("java.naming.factory.initial", "org.openejb.client.RemoteInitialContextFactory");
-        System.setProperty("java.naming.provider.url", "localhost:4201");
+        System.setProperty("java.naming.provider.url", "localhost:4321");
         scaDomain = SCADomain.newInstance("account/account.composite");
+        
+//        new Thread(new SocketTracer(4321, 4201)).start();
+        new Thread(new MockServer(4321)).start();
     }
 
     protected void tearDown() throws Exception {
