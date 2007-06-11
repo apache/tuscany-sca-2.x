@@ -277,23 +277,50 @@ public class SpringXMLComponentTypeLoader {
 	    			}
 	    		} // end while
 	    	} // end if
-	    	// Now check to see if there are any more references
+	    	// Now check to see if there are any more references from beans that are not satisfied
 	    	itb = beans.iterator();
 	    	while( itb.hasNext() ) {
 	    		SpringBeanElement beanElement = itb.next();
+	    		boolean unresolvedProperties = false;
 	    		if( !beanElement.getProperties().isEmpty() ) {
+	    			// Scan through the properties
 	    			Iterator<SpringPropertyElement> itp = beanElement.getProperties().iterator();
 	    			while( itp.hasNext() ) {
 	    				SpringPropertyElement propertyElement = itp.next();
 	    				if( propertyRefUnresolved( propertyElement.getRef(), beans, references ) ) {
 	    					// This means an unresolved reference from the spring bean...
-	    					// TODO
+	    					unresolvedProperties = true;
 	    				} // end if
 	    			} // end while 
+	    			// If there are unresolved properties, then find which ones are references
+	    			if( unresolvedProperties ) {
+		    			Class<?> beanClass = cl.loadClass( beanElement.getClassName() );
+		    			// Introspect the bean 
+		    			ComponentType beanComponentType = assemblyFactory.createComponentType();
+		    			beanIntrospector.introspectBean( beanClass, beanComponentType );
+		    			// Get the references by this Spring Bean and add the unresolved ones to
+		    			// the component type of the Spring Assembly
+		    			List<Reference> beanReferences = beanComponentType.getReferences();
+		    			itp = beanElement.getProperties().iterator();
+		    			while( itp.hasNext() ) {
+		    				SpringPropertyElement propertyElement = itp.next();
+		    				if( propertyRefUnresolved( propertyElement.getRef(), beans, references ) ) {
+		    					// This means an unresolved reference from the spring bean...add it to
+		    					// the references for the Spring application context
+		    					for ( Reference reference : beanReferences ) {
+		    						if( propertyElement.getName().equals(reference.getName()) ) {
+		    							// The name of the reference in this case is the string in
+		    							// the @ref attribute of the Spring property element, NOT the
+		    							// name of the field in the Spring bean....
+		    							reference.setName(propertyElement.getRef());
+		    							componentType.getReferences().add( reference );
+		    						} // end if
+		    					} // end for
+		    				} // end if
+		    			} // end while 
+	    			} // end if
 	    		} // end if
 	    		
-	    		//Reference theReference = createReference( interfaze, referenceElement.getName() );
-	    		//componentType.getReferences().add( theReference );
 	    	} // end while
 		
     	} catch ( ClassNotFoundException e ) {
@@ -335,7 +362,7 @@ public class SpringXMLComponentTypeLoader {
     				break;
     			} // end if
     		} // end while
-	    	// Scan over the references looking for a match
+	    	// Scan over the SCA reference elements looking for a match
     		if( unresolved ) {
     			Iterator<SpringSCAReferenceElement> itr = references.iterator();
     			while( itr.hasNext() ) {
@@ -346,6 +373,10 @@ public class SpringXMLComponentTypeLoader {
     				} // end if
     			} // end while
     		} // end if
+    	} else {
+    		// In the case where ref = null, the property is not going to be a reference of any
+    		// kind and can be ignored
+    		unresolved = false;
     	} // end if
     	
     	return unresolved;

@@ -21,8 +21,8 @@ package org.apache.tuscany.implementation.spring.itests.helloworld;
 
 /**
  * A test case designed to test the implementation of References from a Spring application
- * context, where the references are explicit, through the presence of an sca:reference
- * element within the Spring application context
+ * context, where the references are implicit, through the presence of Bean properties with a 
+ * ref attribute which is not satisfied by a Bean within the application context.
  * 
  * The artifacts involved in this test are:
  * 
@@ -30,10 +30,13 @@ package org.apache.tuscany.implementation.spring.itests.helloworld;
  * a reference to a second component
  * 2) The composite has a component with a Java POJO implementation which satisfies the reference
  * 3) The <implementation.spring.../> element references an application context that
- * uses an explicit sca:reference element to identify the reference made by the Spring application
+ * does not use an explicit sca:reference element to identify the reference made by the 
+ * Spring application, but relies on an unsatisfied Bean property with a ref attribute.
  * 
  * @author MikeEdwards
  */
-public class SpringExplicitReferenceTestCase extends AbstractHelloWorldTestCase {
+public class SpringImplicitReferenceTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
 }
+
+
