@@ -1,0 +1,171 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *   
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+p,table,li,h1,h2,h3
+{
+font-family: verdana, arial, 'sans serif'; 
+}
+
+p, h1, h2, h3, table, li, hr
+{
+margin-left: 10pt;
+}
+
+table
+{
+border-color: black;
+border-collapse: separate;
+border-spacing: 0px 1px;
+
+margin-right: 10pt;
+margin-left: 10pt;
+width: 800px;
+}
+
+.sourceDetailsTable
+{
+width: 600px;
+}
+
+tr, td
+{
+margin-left: 0pt;
+margin-right: 0pt;
+padding-left: 10pt;
+font-size: 90%;
+}
+
+p,li,th
+{
+font-size: 90%;
+margin-left: 10pt;
+}
+
+pre
+{
+margin-left: 10pt;
+}
+
+body
+{
+#ffffff;
+}
+
+h1,h2,h3,hr
+{
+color: firebrick;
+}
+
+a:link {COLOR: firebrick;}
+a:visited {COLOR: firebrick;}
+a:active {COLOR: navy;}
+
+.link
+{
+COLOR: firebrick;
+text-decoration: underline;
+}
+
+.clickable
+{
+cursor: pointer
+}
+
+.unread_title
+{
+font-weight: bold;
+}
+
+.read_title
+{
+font-weight: normal;
+}
+
+.summary
+{
+color: DimGrey;
+}
+
+.hidden
+{
+display: none;
+}
+
+.alert_text
+{
+width: 600px;
+}
+
+.alert_data
+{
+margin-left: 10px;
+width: 800px;
+height: 800px;
+}
+
+.source_0
+{
+background-color: LightGreen;
+}    
+
+.source_1
+{
+background-color: LightSkyBlue;
+}
+
+.source_2
+{
+background-color: Khaki;
+}
+
+.source_3
+{
+background-color: LightPink;
+}
+
+.source_4
+{
+background-color: Orange;
+}
+
+.source_5
+{
+background-color: LightCoral;
+}
+
+.source_6
+{
+background-color: Orchid;
+}
+
+.source_7
+{
+background-color: Peru;
+}
+
+.source_8
+{
+background-color: SpringGreen;
+}
+
+.source_9
+{
+background-color: LightGrey;
+}
+
