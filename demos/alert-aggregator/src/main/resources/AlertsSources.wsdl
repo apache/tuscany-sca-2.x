@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<wsdl:definitions targetNamespace="http://tuscany.apache.org/sca/samples/aggregator/sources"
+                  xmlns:tns="http://tuscany.apache.org/sca/samples/aggregator/sources" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                  name="Alerter">
+
+    <wsdl:types>
+        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"   
+            targetNamespace="http://tuscany.apache.org/sca/samples/aggregator/sources" 
+            xmlns:alerter="http://tuscany.apache.org/sca/samples/aggregator/types"
+            elementFormDefault="qualified">
+
+            <xsd:import namespace="http://tuscany.apache.org/sca/samples/aggregator/types" 
+                        schemaLocation="Alerts.xsd" />            
+
+            <element name="getAlertSources">
+                <xsd:complexType>
+                    <sequence>
+                        <element name="parm" type="string" />
+                    </sequence>                
+                </xsd:complexType>
+            </element>
+            
+            <element name="getAlertSourcesResponse">
+                <complexType>
+                    <sequence>
+                        <element name="parm" type="alerter:ConfigType" />
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <element name="addAlertSource">
+                <xsd:complexType>
+                    <sequence>
+                        <element name="parm" type="alerter:SourceType"/>                    
+                    </sequence>                
+                </xsd:complexType>
+            </element> 
+            
+            <element name="addAlertSourceResponse">
+                <complexType>
+                    <sequence>
+                        <element name="parm" type="string" />
+                    </sequence>
+                </complexType>
+            </element>                       
+
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="GetAlertSourcesRequest">
+        <wsdl:part element="tns:getAlertSources" name="parameters" />
+    </wsdl:message>
+    <wsdl:message name="GetAlertSourcesResponse">
+        <wsdl:part element="tns:getAlertSourcesResponse" name="parameters" />
+    </wsdl:message>
+    
+    <wsdl:message name="AddAlertSourceRequest">
+        <wsdl:part element="tns:addAlertSource" name="parameters" />
+    </wsdl:message>
+    <wsdl:message name="AddAlertSourceResponse">
+        <wsdl:part element="tns:addAlertSourceResponse" name="parameters" />
+    </wsdl:message>    
+
+    <wsdl:portType name="AlertsSourcesPortType">
+        <wsdl:operation name="getAlertSources">
+            <wsdl:input message="tns:GetAlertSourcesRequest" name="GetAlertSourcesRequestMsg" />
+            <wsdl:output message="tns:GetAlertSourcesResponse" name="GetAlertSourcesResponseMsg" />
+        </wsdl:operation>
+        <wsdl:operation name="addAlertSource">
+            <wsdl:input message="tns:AddAlertSourceRequest" name="AddAlertSourceRequestMsg" />
+            <wsdl:output message="tns:AddAlertSourceResponse" name="AddAlertSourceResponseMsg" />
+        </wsdl:operation>        
+   </wsdl:portType>
+
+    <wsdl:binding name="AlertsSourcesBinding" type="tns:AlertsSourcesPortType">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="getAlertSources">
+            <wsdlsoap:operation soapAction="" />
+            <wsdl:input name="GetAlertSourcesRequestMsg">
+                <wsdlsoap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="GetAlertSourcesResponseMsg">
+                <wsdlsoap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>  
+        <wsdl:operation name="addAlertSource">
+            <wsdlsoap:operation soapAction="" />
+            <wsdl:input name="AddAlertSourceRequestMsg">
+                <wsdlsoap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="AddAlertSourceResponseMsg">
+                <wsdlsoap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>                  
+    </wsdl:binding>
+
+    <wsdl:service name="AlertsSourcesService">
+        <wsdl:port name="AlertsSourcesPort" binding="tns:AlertsSourcesBinding">
+            <wsdlsoap:address location="http://localhost:8080/services/AlertsSourcesServiceWebServiceBinding" />
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

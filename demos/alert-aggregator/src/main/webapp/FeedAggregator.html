@@ -1,0 +1,329 @@
+<html>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+  <head>
+    <title>Apache Tuscany Alert Aggregator Sample</TITLE>
+    
+    <script type="text/javascript">
+        //var djConfig = {isDebug: true,debugContainerId: "dojoDebug" };
+        //djConfig.debugAtAllCosts = true;
+    </script>
+ 
+    <script type="text/javascript" src="dojo/dojo.js"> 
+    </script>
+
+    <script type="text/javascript">
+    	dojo.require("dojo.widget.*");
+    	dojo.require("dojo.widget.Button");
+    	dojo.require("dojo.rpc.JsonService");    	
+    </script>
+    
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body onload="getAlertSources()">
+
+    <script type="text/javascript">
+    
+        // The proxy for the alert and alertsources services running in Tuscany
+        var alertsService       = new dojo.rpc.JsonService("services/SCADomain/AlertsServiceJSONRPC?smd");
+        var alertSourcesService = new dojo.rpc.JsonService("services/SCADomain/AlertsSourcesServiceJSONRPC?smd");
+
+        // If you want to put an HTTP sniffer in the way to look at the JSONROPC packets you'll
+        // need to edit the target address of the service in the smd. The only way to do this easily
+        // is to read an smd from disc rather than generate one. There are two smds provided for this
+	//var alertsService       = new dojo.rpc.JsonService("service.smd");
+        //var alertSourcesService = new dojo.rpc.JsonService("sources.smd");
+
+        // The global list of alerts sources
+        var alertSourceList = null;
+
+        // The global list of alerts 
+        var alertList       = null;
+
+        // the constructor for entries on the alert source list
+        function alertSourceType(name,id,address,feedAddress,feedType,popUsername,popPassword,popServer,lastChecked,javaClass) {
+          this.name        = name;
+          this.id          = id;
+          this.address     = address;
+          this.feedAddress = feedAddress;
+          this.feedType    = feedType;
+          this.lastChecked = lastChecked;
+          this.javaClass   = "org.apache.tuscany.sca.samples.aggregator.types.impl.SourceTypeImpl";
+
+        }
+
+        function errorCallback(result, error, id) {
+            var resultsNode = document.getElementById("errors");
+            // There seems to be a problem somewhere as I should be able to get the error
+            // details but all I can actually get is the Id from the error message
+            // resultsNode.innerHTML = "there was an error! message id = "  + " error code = " + result.error.code + " error message = " + result.error.msg ;
+           resultsNode.innerHTML = "An error was returned by the server. Message id = " +  result.id;
+        }
+
+        // Generate the alert sources table
+        function getAlertSources()
+        { 
+            response = alertSourcesService.getAlertSources("Dojo");
+            response.addCallbacks(getAlertSourcesCallback, errorCallback);
+            getAlerts();
+        }
+
+        function getAlertSourcesCallback(result) {
+            dojo.debug("in getAlertsCallback");
+            var resultsNode = document.getElementById("alertSourcesTable");
+            if ( result.error != null ) {
+                resultsNode.innerHTML = result.error;
+            } else {
+                // stash away the source list for when we come to edit it
+                alertSourceList = result.source.list;
+
+                // put out the html
+                var text = ""
+                var nextSourceId = 0
+                for (var i in result.source.list){
+                    var source = result.source.list[i];
+
+                    text = text + "<table>";
+                    text = text + "<TR CLASS='source_" + source.id + "' >";
+                    text = text + "  <TD CLASS='clickable' ONCLICK=\"displayAlert('" + source.address + "')\">";
+                    text = text + "    <IMG SRC='rss.png'/>&nbsp;&nbsp;" + source.name;
+                    text = text + "  </TD>";
+                    text = text + "  <TD CLASS='clickable link' ONCLICK=\"showEditSource('" + source.id + "')\">Edit</TD>";
+                    text = text + "  <TD CLASS='clickable link' ONCLICK=\"deleteSource('" + source.id + "')\">Delete</TD>";
+                    text = text + "</TR>";
+                    text = text + "<TR ID='edit_source_" + source.id + "' CLASS='hidden source_" + source.id + "'>";
+                    text = text + "  <TD COLSPAN='3'>";
+                    text = text + "    <TABLE CLASS='sourceDetailsTable'>";
+                    text = text + "      <TR>";
+                    text = text + "        <TD>Source name:</TD>";
+                    text = text + "        <TD>";
+                    text = text + "          <INPUT ID='source_" + source.id + "_name' TYPE='TEXT' SIZE='50' VALUE='" + source.name + "'/>";
+                    text = text + "        </TD>";
+                    text = text + "      </TR>";
+                    text = text + "      <TR>";
+                    text = text + "       <TD>Source address:</TD>"
+                    text = text + "        <TD>";
+                    text = text + "          <INPUT ID='source_" + source.id + "_address' TYPE='TEXT' SIZE='50' VALUE='" + source.address + "'/>";
+                    text = text + "        </TD>";
+                    text = text + "      </TR>";
+                    text = text + "      <TR>";
+                    text = text + "        <TD>";
+                    text = text + "          <INPUT ID='source_" + source.id + "_type' TYPE='HIDDEN' VALUE='" + source.id + "'/>";
+                    text = text + "          <INPUT TYPE='BUTTON' VALUE='Update' ONCLICK=\"updateSource('" + source.id + "')\"/>";
+                    text = text + "          <INPUT TYPE='BUTTON' VALUE='Cancel' ONCLICK=\"hideEditSource('" + source.id + "')\"/>";
+                    text = text + "        </TD>";
+                    text = text + "      </TR>";
+                    text = text + "    </TABLE>";
+                    text = text + "  </TD>";
+                    text = text + "</TR>";
+               
+                    nextSourceId = eval(source.id);
+                }
+
+                nextSourceId = nextSourceId + 1;
+
+                text = text + "<TR CLASS='source_" + nextSourceId + "'>";
+                text = text + "  <TD COLSPAN='4' CLASS='clickable link' ONCLICK=\"showAddNewSource('" + nextSourceId + "')\">Add new Alert Source</TD>";
+                text = text + "</TR>";
+                text = text + "<TR ID='add_source_" + nextSourceId + "' CLASS='hidden source_" + nextSourceId + "'>";
+                text = text + "  <TD COLSPAN='4'>";
+                text = text + "    <TABLE CLASS='sourceDetailsTable'>";
+                text = text + "      <TR>";
+                text = text + "        <TD>Source name:</TD>";
+                text = text + "        <TD>";
+                text = text + "          <INPUT ID='source_" + nextSourceId + "_name' TYPE='TEXT' SIZE='50'>";
+                text = text + "        </TD>";
+                text = text + "      </TR>";
+                text = text + "      <TR>";
+                text = text + "        <TD>Source address:</TD>";
+                text = text + "        <TD>";
+                text = text + "          <INPUT ID='source_" + nextSourceId + "_address' TYPE='TEXT' SIZE='50'>";
+                text = text + "        </TD>";
+                text = text + "      </TR>";
+                text = text + "      <TR>";
+                text = text + "        <TD>Source type:</TD>";
+                text = text + "        <TD>";
+                text = text + "          <SELECT ID='source_" + nextSourceId + "_type' ONCHANGE=\"showSourceType('" + nextSourceId + "')\">";
+                text = text + "            <OPTION value='rss' selected='selected'>RSS/Atom feed</OPTION>";
+                text = text + "          </SELECT>";
+                text = text + "        </TD>";
+                text = text + "      </TR>";
+                text = text + "      <TR ID='add_rss_source'>";
+                text = text + "        <TD COLSPAN='2'>";
+                text = text + "          <TABLE CLASS='sourceDetailsTable'>";
+                text = text + "            <TR>";
+                text = text + "              <TD>Feed address:</TD>";
+                text = text + "              <TD>";
+                text = text + "                 <INPUT ID='source_" + nextSourceId + "_feedAddress' TYPE='TEXT' SIZE='50'/>";
+                text = text + "              </TD>";
+                text = text + "            </TR>";
+                text = text + "          </TABLE>";
+                text = text + "        </TD>";
+                text = text + "      </TR>";
+                text = text + "      <TR>";
+                text = text + "        <TD>";
+                text = text + "          <INPUT TYPE='BUTTON' VALUE='Add' ONCLICK=\"addSource('" + nextSourceId + "')\">";
+                text = text + "          <INPUT TYPE='BUTTON' VALUE='Cancel' ONCLICK=\"hideAddNewSource('" + nextSourceId + "')\">";
+                text = text + "        </TD>";
+                text = text + "      </TR>";
+                text = text + "    </TABLE>";
+                text = text + "  </TD>";
+                text = text + "</TR>";
+                text = text + "</table>";
+
+                resultsNode.innerHTML = text;  
+            }
+        }
+
+        function showEditSource(sourceid)
+        {
+            document.getElementById("edit_source_"+sourceid).className = "source_"+sourceid;
+        }
+
+        function hideEditSource(sourceid)
+        {
+             document.getElementById("edit_source_"+sourceid).className = "hidden source_"+sourceid;
+        }
+ 
+        function updateSource(sourceid)
+        {
+            hideEditSource(sourceid);
+            var source = getSource(sourceId);
+            alertSourcesService.updateAlertSource(source);
+            getAlertSources();
+        }
+ 
+        function deleteSource(sourceid)
+        {
+            alertSourcesService.removeAlertSource(sourceid);
+            getAlertSources();
+        }
+
+        function showAddNewSource(sourceid)
+        {
+            document.getElementById("add_source_"+sourceid).className = "source_"+sourceid;
+        }
+
+        function hideAddNewSource(sourceid)
+        {
+            document.getElementById("add_source_"+sourceid).className = "hidden source_"+sourceid;
+        }
+
+        function addSource(sourceid)
+        {
+            hideAddNewSource(sourceid);
+            var source = getSource(sourceid);
+            alertSourcesService.addAlertSource(source);
+            getAlertSources();
+        }
+
+        function getSource(sourceid)
+        {
+            var source = alertSourceList[sourceid];
+
+            if ( source == null ){
+                source = new alertSourceType("name","id","address","feedAddress","feedType","popUsername","popPassword","popServer","lastChecked","javaClass");
+                alertSourceList[sourceid] = source;
+            }
+            
+            source.name     = document.getElementById("source_"+sourceid+"_name").value;
+            source.id       = sourceid;
+            source.address  = document.getElementById("source_"+sourceid+"_address").value;
+            var typeElem    = document.getElementById("source_"+sourceid+"_type");
+            source.feedType = typeElem.options[typeElem.selectedIndex].value; 
+
+            if(source.feedType=="rss")
+            {
+                source.feedAddress = document.getElementById("source_"+sourceid+"_feedAddress").value;
+                
+            }
+            else if(source.feedType=="pop")
+            {
+                source.popServer   = document.getElementById("source_"+sourceid+"_popServer").value;
+                source.popUsername = document.getElementById("source_"+sourceid+"_popUsername").value;
+                source.popPassword = document.getElementById("source_"+sourceid+"_popPassword").value;
+            } 
+            return source;     
+        }
+
+        // Generate the alerts table
+        function getAlerts()
+        { 
+            response = alertsService.getAllNewAlerts("Dojo");
+            response.addCallbacks(getAlertsCallback, errorCallback);
+        }
+
+        function getAlertsCallback(result) {
+            dojo.debug("in getAlertsCallback");
+            var resultsNode = document.getElementById("alertsTable");
+            if ( result.error != null ) {
+                resultsNode.innerHTML = result.error;
+            } else {
+                alertList = result.alert.list;
+                var text = ""
+                for (var i in result.alert.list){
+                    var alert = result.alert.list[i];
+
+                    text = text + "<table>";
+                    text = text + "<TR class='source_" + alert.sourceId + " clickable' onclick=\"displayAlert('" + alert.address + "')\">";
+                    text = text + " <TD class='alert_text'>";
+                    text = text + "   <SPAN id='" + alert.id + "' class='unread_title'>" + alert.title + "</SPAN>";
+                    text = text + "   <SPAN class='summary'> - " + alert.summary.substring(0, 80)  + "...</SPAN>";
+                    text = text + " </TD>";
+                    text = text + " <TD>";
+                    text = text +     alert.date;
+                    text = text + "  </TD>"
+                    text = text + "</TR>"
+                    text = text + "</table>";
+                }
+
+                resultsNode.innerHTML = text;  
+            }
+        }
+
+
+
+        function displayAlert(url)
+        {
+            document.getElementById("alertData").innerHTML="<IFRAME CLASS='alert_data' SRC='"+url+"'/>";
+            window.location="#data";
+            return;    
+        }
+
+
+    
+    </script>
+
+    <h1 id="top">Apache Tuscany Feed Aggregator Sample</h1>
+    <div id="errors"></div>
+    <p>Alert Sources<span id="refreshSources"></span>:</p>
+    <!--input type="button" value="getSources" onclick="getAlertSources()"/-->
+    <div id="alertSourcesTable">Refreshing...</div>
+    <p/>
+    <input type="button" value="Refresh" onclick="getAlerts()"/>
+    <p/>
+    <div id="alertsTable">Refreshing...</div>
+    <p><a id="data" HREF="#top">Back to top</a></p>
+    <div id="alertData"></div>
+    <p/>
+    <div id="dojoDebug"></div>
+       
+  </body>
+</html>

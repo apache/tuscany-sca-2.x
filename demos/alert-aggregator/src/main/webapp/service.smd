@@ -1,0 +1,1 @@
+{"SMDVersion":".1","objectName":"AlertsService","serviceType":"JSON-RPC","serviceURL":"http://localhost:8080/sample-feed-aggregator/services/AlertsServiceJSONRPC","methods":[{"name":"getAllNewAlerts","parameters":[{"name":"param0","type":"STRING"}]}]}

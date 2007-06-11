@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-demos</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.apache.tuscany.sca</groupId>
+    <artifactId>alert-aggregator</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-incubating-SNAPSHOT</version>
+    <name>Apache Tuscany BigBank Alert Aggregator Demo</name>
+    <url>http://cwiki.apache.org/TUSCANY</url>  
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+	        <groupId>httpunit</groupId>
+	        <artifactId>httpunit</artifactId>
+	        <version>1.6.1</version>
+	        <scope>test</scope>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>${pom.version}</version>
+            <scope>runtime</scope>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-databinding</artifactId>
+            <version>${pom.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-jaxb</artifactId>
+            <version>${pom.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-sdo</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-axiom</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-runtime</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-http-jetty</artifactId>
+            <version>${pom.version}</version>
+            <scope>test</scope>
+        </dependency>   
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-webapp</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jsonrpc</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>    
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-feed</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>              
+		<dependency>
+		    <groupId>rome</groupId>
+		    <artifactId>rome</artifactId>
+		    <version>0.9</version>
+		</dependency>                       
+    </dependencies>
+    
+    <build>
+        <finalName>sample-feed-aggregator</finalName>
+        <plugins>  
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/sdo-source</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tuscany.sdo</groupId>
+                <artifactId>tuscany-sdo-plugin</artifactId>
+                <version>1.0-incubator-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-sdo</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <schemaFiles>
+                                <configuration>
+                                    <fileName>${project.build.directory}/classes/Alerts.wsdl</fileName>
+                                    <javaPackage>org.apache.tuscany.sca.samples.aggregator.service</javaPackage>
+                                </configuration> 
+                                <configuration>
+                                    <fileName>${project.build.directory}/classes/AlertsSources.wsdl</fileName>
+                                    <javaPackage>org.apache.tuscany.sca.samples.aggregator.sources</javaPackage>
+                                </configuration>                                 
+                                <configuration>
+                                    <fileName>${project.build.directory}/classes/Alerts.xsd</fileName>
+                                    <javaPackage>org.apache.tuscany.sca.samples.aggregator.types</javaPackage>
+                                </configuration>                                                           
+                             </schemaFiles>
+                            <noNotification>true</noNotification>
+                            <noContainment>true</noContainment>
+                            <noUnsettable>true</noUnsettable>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution> 
+                        <id>install-dojo</id>                       
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <ant antfile="./build-dojo.xml" target="install-dojo">
+                                    <property name="localRepository" value="${settings.localRepository}"/>
+                                </ant>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution> 
+                        <id>copy-dojo-files</id>                       
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
+                                    <property name="localRepository" value="${settings.localRepository}"/>
+                                    <property name="artifactId" value="${artifactId}"/>
+                                </ant>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution> 
+                        <id>clean-dojo-files</id>                       
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <ant antfile="./build-dojo.xml" target="clean-dojo-files">
+                                    <property name="localRepository" value="${settings.localRepository}"/>
+                                    <property name="artifactId" value="${artifactId}"/>
+                                </ant>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>                       
+     </plugins>
+    </build>
+    
+</project>

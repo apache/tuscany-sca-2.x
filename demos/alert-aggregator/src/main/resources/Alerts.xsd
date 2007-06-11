@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   
+     http://www.apache.org/licenses/LICENSE-2.0
+     
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+<schema targetNamespace="http://tuscany.apache.org/sca/samples/aggregator/types" 
+		xmlns="http://www.w3.org/2001/XMLSchema" 
+		xmlns:ns="http://tuscany.apache.org/sca/samples/aggregator/types">
+    <element name="Alerts" type="ns:AlertsType"/>
+
+    <complexType name="AlertType">
+    	<sequence>
+    		<element name="Title" type="string"/>
+    		<element name="Summary" type="string"/>
+    		<element name="Address" type="anyURI" maxOccurs="1" minOccurs="1"/>
+    		<element name="Date" type="string" maxOccurs="1" minOccurs="1"/>
+    	</sequence>
+        <attribute name="SourceId" type="string" use="optional"/>
+        <attribute name="Unread" type="boolean" use="optional"/>
+        <attribute name="Id" type="string" use="optional"/>
+    </complexType>
+
+    <complexType name="AlertsType">
+    	<sequence>
+    		<element name="Alert" type="ns:AlertType" maxOccurs="unbounded" minOccurs="0" />
+    	</sequence>        
+    </complexType>
+       
+    <complexType name="SourceType">
+    	<sequence>
+    		<element name="Name" type="string" maxOccurs="1" minOccurs="1"/>
+            <element name="Address" type="anyURI" maxOccurs="1" minOccurs="1"/>
+            <element name="LastChecked" type="string" maxOccurs="1" minOccurs="0"/>
+            <element name="FeedAddress" type="string" maxOccurs="1" minOccurs="0"/>
+            <element name="PopServer" type="string" maxOccurs="1" minOccurs="0"/>
+            <element name="PopUsername" type="string" maxOccurs="1" minOccurs="0"/>
+            <element name="PopPassword" type="string" maxOccurs="1" minOccurs="0"/>
+    		<any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</sequence>
+        <attribute name="Id" type="string" use="optional"/>
+    	<attribute name="FeedType" use="required">
+    		<simpleType>
+    			<restriction base="string">
+    				<enumeration value="rss"/>
+    				<enumeration value="pop"/>
+    				<enumeration value="nntp"/>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    </complexType>
+
+    <complexType name="ConfigType">
+    	<sequence>
+    		<element name="Source" type="ns:SourceType" maxOccurs="unbounded" minOccurs="0"/>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="SingleSourceType">
+    	<sequence>
+    		<element name="Source" type="ns:SourceType"/>
+    	</sequence>
+    </complexType>    
+    
+    <element name="Config" type="ns:ConfigType"/>
+    <element name="Source" type="ns:SourceType"/>
+</schema>
