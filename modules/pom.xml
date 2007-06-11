@@ -39,9 +39,7 @@
                 <module>assembly</module>
                 <module>assembly-java-dsl</module>
                 <module>assembly-xml</module>
-                <!--
                 <module>binding-jms</module>
-		-->
                 <module>binding-ajax</module>
                 <module>binding-feed</module>
                 <module>binding-jsonrpc</module>
