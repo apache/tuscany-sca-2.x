@@ -83,8 +83,8 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>apache-activemq</artifactId>
+            <version>4.1.1</version>
             <!--version>4.2-SNAPSHOT</version-->
-            <version>4.2-SNAPSHOT</version>
         </dependency>  
 
         <dependency>
