@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\sandbox\slaws\calculator-distributed"
+   sodipodi:docname="calculator-distributed.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\calculator\calculator.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="555.3085"
+     inkscape:cy="454.41561"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1171"
+     inkscape:window-height="871"
+     inkscape:window-x="18"
+     inkscape:window-y="27" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(1,0,0,1.144214,0,-27.53557)">
+      <rect
+         rx="15.307091"
+         ry="16.178549"
+         y="156.41957"
+         x="258.31146"
+         height="382.40201"
+         width="495.71429"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:1.86971927;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"
+         transform="translate(-3.571429,-41.82534)"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">Calculator</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:1.9999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.66247"
+       height="191.57716"
+       x="339.91632"
+       y="262.1673"
+       rx="6.9961648"
+       ry="15.892869" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(79.61125,62.65764)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2972">Calculator</flowPara><flowPara
+         id="flowPara1895">Service</flowPara><flowPara
+         id="flowPara1897">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 322.76581,342.58603 L 356.10085,342.58603 L 362.16176,355.71801 L 355.0907,367.83985 L 322.76581,367.83985 L 330.34196,355.71801 L 322.76581,342.58603 z "
+       id="path3017" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 431.01809,321.46204 L 471.00147,321.46204 L 478.27117,334.59402 L 469.78986,346.71586 L 431.01809,346.71586 L 440.10523,334.59402 L 431.01809,321.46204 z "
+       id="path3019" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.00000024px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 223.15923,328.61046 L 282.4833,328.61046 L 293.26948,355.48529 L 280.68561,380.29286 L 223.15923,380.29286 L 236.64198,355.48529 L 223.15923,328.61046 z "
+       id="path1883" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1885"
+       transform="translate(-46.16225,128.7269)"
+       style="font-family:Bitstream Vera Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:11;text-anchor:start;text-align:start;writing-mode:lr;line-height:125%"><flowRegion
+         id="flowRegion1887"><rect
+           id="rect1889"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-family:Bitstream Vera Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:11;text-anchor:start;text-align:start;writing-mode:lr;line-height:125%" /></flowRegion><flowPara
+         id="flowPara1891">Calculator</flowPara><flowPara
+         id="flowPara1893">Service</flowPara></flowRoot>    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.00000024;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1899"
+       width="115.66247"
+       height="70.148659"
+       x="594.75488"
+       y="167.73451"
+       rx="6.9961648"
+       ry="5.8193965" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1901"
+       transform="translate(334.4498,-31.77519)"><flowRegion
+         id="flowRegion1903"><rect
+           id="rect1905"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1907">Add</flowPara><flowPara
+         id="flowPara1909">Service</flowPara><flowPara
+         id="flowPara1911">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 573.31867,190.29606 L 606.65371,190.29606 L 612.71462,203.42804 L 605.64356,215.54988 L 573.31867,215.54988 L 580.89482,203.42804 L 573.31867,190.29606 z "
+       id="path1913" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.00000024;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1917"
+       width="115.66247"
+       height="70.148659"
+       x="594.06543"
+       y="280.59158"
+       rx="6.9961648"
+       ry="5.8193965" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1919"
+       transform="translate(333.7604,81.08188)"><flowRegion
+         id="flowRegion1921"><rect
+           id="rect1923"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1925">Subtract</flowPara><flowPara
+         id="flowPara1927">Service</flowPara><flowPara
+         id="flowPara1929">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 572.62924,303.15313 L 605.96428,303.15313 L 612.02519,316.28511 L 604.95413,328.40695 L 572.62924,328.40695 L 580.20539,316.28511 L 572.62924,303.15313 z "
+       id="path1931" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.00000024;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1933"
+       width="115.66247"
+       height="70.148659"
+       x="594.77979"
+       y="391.87729"
+       rx="6.9961648"
+       ry="5.8193965" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1935"
+       transform="translate(334.4747,192.3676)"><flowRegion
+         id="flowRegion1937"><rect
+           id="rect1939"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1941">Multiply</flowPara><flowPara
+         id="flowPara1943">Service</flowPara><flowPara
+         id="flowPara1945">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 573.34352,414.43884 L 606.67856,414.43884 L 612.73947,427.57082 L 605.66841,439.69266 L 573.34352,439.69266 L 580.91967,427.57082 L 573.34352,414.43884 z "
+       id="path1947" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.00000024;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1949"
+       width="115.66247"
+       height="70.148659"
+       x="596.20831"
+       y="502.59158"
+       rx="6.9961648"
+       ry="5.8193965" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1951"
+       transform="translate(335.9032,303.0819)"><flowRegion
+         id="flowRegion1953"><rect
+           id="rect1955"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1957">Divide</flowPara><flowPara
+         id="flowPara1959">Service</flowPara><flowPara
+         id="flowPara1961">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 574.77209,525.15313 L 608.10713,525.15313 L 614.16804,538.28511 L 607.09698,550.40695 L 574.77209,550.40695 L 582.34824,538.28511 L 574.77209,525.15313 z "
+       id="path1963" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1965"
+       transform="translate(161.0221,114.967)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1967"><rect
+           id="rect1969"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1973">add</flowPara><flowPara
+         id="flowPara1977">Service</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 430.65917,357.18186 L 470.64255,357.18186 L 477.91225,370.31384 L 469.43094,382.43568 L 430.65917,382.43568 L 439.74631,370.31384 L 430.65917,357.18186 z "
+       id="path1979" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1981"
+       transform="translate(160.6632,150.6868)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1983"><rect
+           id="rect1985"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1987">subtract</flowPara><flowPara
+         id="flowPara1989">Service</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 431.37346,390.75329 L 471.35684,390.75329 L 478.62654,403.88527 L 470.14523,416.00711 L 431.37346,416.00711 L 440.4606,403.88527 L 431.37346,390.75329 z "
+       id="path1991" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1993"
+       transform="translate(161.3775,184.2583)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1995"><rect
+           id="rect1997"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1999">multiply</flowPara><flowPara
+         id="flowPara2001">Service</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.99999982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 429.94489,422.18186 L 469.92827,422.18186 L 477.19797,435.31384 L 468.71666,447.43568 L 429.94489,447.43568 L 439.03203,435.31384 L 429.94489,422.18186 z "
+       id="path2003" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2005"
+       transform="translate(159.9489,215.6868)"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion2007"><rect
+           id="rect2009"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara2011">divide</flowPara><flowPara
+         id="flowPara2013">Service</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:0.99999988px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 477.85714,335.52287 L 511.42857,335.52287 L 510.71429,202.66577 L 579.28571,202.66577"
+       id="path2015" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1.00000012px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 477.85714,369.80878 L 528.57143,369.80878 L 528.57143,315.52306 L 580,315.52306"
+       id="path2017" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1.00000012px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 475.71429,435.52318 L 509.28571,435.52318 L 510,539.09463 L 582.14286,537.65613"
+       id="path2021" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 292.85714,355.52305 L 330,354.80877"
+       id="path2023" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 477.14286,404.09448 L 527.85714,404.09448 L 527.85714,427.66591 L 580,426.95163"
+       id="path1950" />
+    <rect
+       style="opacity:0.32777778;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999976;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999928, 1.99999976;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1954"
+       width="328.57144"
+       height="277.85715"
+       x="165.71428"
+       y="221.23734"
+       rx="6.9961648"
+       ry="5.8193965" />
+    <rect
+       style="opacity:0.32777776;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999869, 1.99999955;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2844"
+       width="328.57144"
+       height="117.85712"
+       x="532.85712"
+       y="140.8802"
+       rx="6.9961648"
+       ry="2.4683809" />
+    <rect
+       style="opacity:0.32777776;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999976;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999958, 1.99999985;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2846"
+       width="328.57144"
+       height="98.571434"
+       x="533.57147"
+       y="268.73746"
+       rx="6.9961648"
+       ry="2.0644646" />
+    <rect
+       style="opacity:0.32777776;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999988;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999975, 1.99999991;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2848"
+       width="328.57144"
+       height="95.714294"
+       x="534.28571"
+       y="380.16605"
+       rx="6.9961648"
+       ry="2.0046251" />
+    <rect
+       style="opacity:0.32777776;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999976;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999925, 1.99999974;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2850"
+       width="328.57144"
+       height="104.99999"
+       x="534.28571"
+       y="487.30896"
+       rx="6.9961648"
+       ry="2.1991034" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2852"><flowRegion
+         id="flowRegion2854"><rect
+           id="rect2856"
+           width="75"
+           height="32.857143"
+           x="173.57143"
+           y="231.95163" /></flowRegion><flowPara
+         id="flowPara2858">RuntimeA</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2860"
+       transform="translate(614.3034,-75.00004)"><flowRegion
+         id="flowRegion2862"><rect
+           id="rect2864"
+           width="75"
+           height="32.857143"
+           x="173.57143"
+           y="231.95163" /></flowRegion><flowPara
+         id="flowPara2866">RuntimeB</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2868"
+       transform="translate(616.0952,47.8571)"><flowRegion
+         id="flowRegion2870"><rect
+           id="rect2872"
+           width="75"
+           height="32.857143"
+           x="173.57143"
+           y="231.95163" /></flowRegion><flowPara
+         id="flowPara2874">RuntimeC</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2876"
+       transform="translate(617.5238,158.5714)"><flowRegion
+         id="flowRegion2878"><rect
+           id="rect2880"
+           width="75"
+           height="32.857143"
+           x="173.57143"
+           y="231.95163" /></flowRegion><flowPara
+         id="flowPara2882">RuntimeD</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2884"
+       transform="translate(621.0952,264.9999)"><flowRegion
+         id="flowRegion2886"><rect
+           id="rect2888"
+           width="75"
+           height="32.857143"
+           x="173.57143"
+           y="231.95163" /></flowRegion><flowPara
+         id="flowPara2890">RuntimeE</flowPara></flowRoot>  </g>
+</svg>
