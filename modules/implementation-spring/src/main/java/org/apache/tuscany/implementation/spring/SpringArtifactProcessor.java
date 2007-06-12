@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 
 
 /*
@@ -62,14 +63,14 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
     private JavaInterfaceIntrospector 	interfaceIntrospector;
     private PolicyFactory 			policyFactory;
     // TODO: runtime needs to provide a better way to get the PropertyValueObjectFactory
-    private SpringPropertyValueObjectFactory propertyFactory;
+    private JavaPropertyValueObjectFactory propertyFactory;
 
 
     public SpringArtifactProcessor( AssemblyFactory 			assemblyFactory,
     								JavaInterfaceFactory 		javaFactory,
     								JavaInterfaceIntrospector 	interfaceIntrospector,
     								PolicyFactory 				policyFactory,
-    		                        SpringPropertyValueObjectFactory 	propertyFactory ) {
+    		                        JavaPropertyValueObjectFactory 	propertyFactory ) {
         this.assemblyFactory 	= assemblyFactory;
         this.javaFactory 		= javaFactory;
         this.interfaceIntrospector = interfaceIntrospector;

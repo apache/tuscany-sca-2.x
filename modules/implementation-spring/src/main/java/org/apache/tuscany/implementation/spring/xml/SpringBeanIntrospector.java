@@ -21,6 +21,7 @@ package org.apache.tuscany.implementation.spring.xml;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -28,6 +29,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
@@ -112,11 +114,12 @@ public class SpringBeanIntrospector {
      * @param beanClass the Spring Bean class to introspect
      * @param componentType the componentType that is filled in through the introspection
      * process (assumed empty on invocation, filled on return
+     * @return a Map of property names to JavaElementImpl
      * @throws ContributionResolveException - if there was a problem resolving the
      * Spring Bean or its componentType
      *
      */
-    public void introspectBean( Class<?> beanClass, ComponentType componentType ) 
+    public Map<String, JavaElementImpl> introspectBean( Class<?> beanClass, ComponentType componentType ) 
     	throws ContributionResolveException {
     	
     	if( componentType == null ) throw new ContributionResolveException( 
@@ -143,6 +146,8 @@ public class SpringBeanIntrospector {
         	String name = service.getName();
         	//System.out.println("Spring Bean: found service with name: " + name);
         } // end for
+        
+        return javaImplementation.getPropertyMembers();
 
     } // end method introspectBean
     

@@ -1,6 +1,7 @@
 package org.apache.tuscany.implementation.spring;
 
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -13,14 +14,17 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class SpringImplementationProviderFactory implements ImplementationProviderFactory<SpringImplementation> {
 
 	private ProxyFactory proxyService;
+	private JavaPropertyValueObjectFactory propertyFactory;
 	
 	/**
 	 * Simple constructor
 	 *
 	 */
-    public SpringImplementationProviderFactory( ProxyFactory proxyService ) {
+    public SpringImplementationProviderFactory( ProxyFactory proxyService,
+    		JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
-        this.proxyService = proxyService;
+        this.proxyService 		= proxyService;
+        this.propertyFactory 	= propertyValueObjectFactory;
     } 
 
     /**
@@ -32,7 +36,8 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        return new SpringImplementationProvider( component, implementation, proxyService );
+        return new SpringImplementationProvider( component, implementation, 
+        										 proxyService, propertyFactory );
     }
 
     /**
