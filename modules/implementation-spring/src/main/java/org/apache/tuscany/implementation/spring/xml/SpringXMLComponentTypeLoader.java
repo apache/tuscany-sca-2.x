@@ -31,6 +31,7 @@ import java.util.jar.Manifest;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -43,6 +44,7 @@ import org.apache.tuscany.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 
@@ -55,8 +57,10 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 
 /**
  * Introspects a Spring XML application-context configuration file to create <implementation-spring../>
@@ -70,6 +74,7 @@ public class SpringXMLComponentTypeLoader {
     private static final String SPRING_NS = "http://www.springframework.org/schema/beans";
     private static final QName SERVICE_ELEMENT = new QName(SCA_NS, "service");
     private static final QName REFERENCE_ELEMENT = new QName(SCA_NS, "reference");
+    private static final QName SCAPROPERTY_ELEMENT = new QName(SCA_NS, "property");
     private static final QName BEANS_ELEMENT = new QName(SPRING_NS, "beans");
     private static final QName BEAN_ELEMENT = new QName(SPRING_NS, "bean");
     private static final QName PROPERTY_ELEMENT = new QName(SPRING_NS, "property");
@@ -134,6 +139,7 @@ public class SpringXMLComponentTypeLoader {
         List<SpringBeanElement> beans = new ArrayList<SpringBeanElement>();
         List<SpringSCAServiceElement> services = new ArrayList<SpringSCAServiceElement>();
         List<SpringSCAReferenceElement> references = new ArrayList<SpringSCAReferenceElement>();
+        List<SpringSCAPropertyElement> scaproperties = new ArrayList<SpringSCAPropertyElement>();
         SpringBeanElement bean = null;
         
         Resource resource;
@@ -171,6 +177,11 @@ public class SpringXMLComponentTypeLoader {
                         		reader.getAttributeValue(null, "name"),
                         		reader.getAttributeValue(null, "type") );
                         references.add( reference );
+                    } else if (SCAPROPERTY_ELEMENT.equals(qname)) {
+                    	SpringSCAPropertyElement scaproperty = new SpringSCAPropertyElement(
+                    			reader.getAttributeValue(null, "name"),
+                    			reader.getAttributeValue(null, "type"));
+                    	scaproperties.add( scaproperty );
                     } else if (BEAN_ELEMENT.equals(qname)) {
                     	// TODO FIX THIS !!
                     	int count=reader.getAttributeCount();
@@ -203,27 +214,30 @@ public class SpringXMLComponentTypeLoader {
         /* At this point, the complete application-context.xml file has been read and its contents  */
         /* stored in the lists of beans, services, references.  These are now used to generate      */
         /* the implied componentType for the application context								    */
-        generateComponentType( implementation, beans, services, references );
+        generateComponentType( implementation, beans, services, references, scaproperties );
         
         return;
     } // end method loadFromXML
     
     /**
      * Generates the Spring implementation component type from the configuration contained in the
-     * lists of beans, services and references derived from the application context
+     * lists of beans, services, references and scaproperties derived from the application context
      */
     private void generateComponentType( SpringImplementation implementation,
     		                                     List<SpringBeanElement> beans,
     		                                     List<SpringSCAServiceElement> services,
-    		                                     List<SpringSCAReferenceElement> references )
+    		                                     List<SpringSCAReferenceElement> references,
+    		                                     List<SpringSCAPropertyElement> scaproperties )
     	throws ContributionReadException {
     	/*
-    	 * Each service becomes a service in the component type
-    	 * Each reference becomes a reference in the component type
-    	 * Each bean becomes a service, unless it is the target of a service element or unless it
-    	 * is the target of a bean reference property
-    	 * Each bean property which is a reference not pointing at another bean in the 
-    	 * application context becomes a reference unless it is pointing at one of the references
+    	 * 1. Each service becomes a service in the component type
+    	 * 2. Each reference becomes a reference in the component type
+    	 * 3. IF there are no explicit service elements, each bean becomes a service
+    	 * 4. Each bean property which is a reference not pointing at another bean in the 
+    	 *    application context becomes a reference unless it is pointing at one of the references
+    	 * 5. Each scaproperty becomes a property in the component type
+    	 * 6. Each bean property which is not a reference and which is not pointing 
+    	 *    at another bean in the application context becomes a property in the component type
     	 */
     	
     	ComponentType componentType = implementation.getComponentType();
@@ -287,7 +301,8 @@ public class SpringXMLComponentTypeLoader {
 	    			Iterator<SpringPropertyElement> itp = beanElement.getProperties().iterator();
 	    			while( itp.hasNext() ) {
 	    				SpringPropertyElement propertyElement = itp.next();
-	    				if( propertyRefUnresolved( propertyElement.getRef(), beans, references ) ) {
+	    				if( propertyRefUnresolved( propertyElement.getRef(), beans, 
+	    						references, scaproperties ) ) {
 	    					// This means an unresolved reference from the spring bean...
 	    					unresolvedProperties = true;
 	    				} // end if
@@ -297,14 +312,18 @@ public class SpringXMLComponentTypeLoader {
 		    			Class<?> beanClass = cl.loadClass( beanElement.getClassName() );
 		    			// Introspect the bean 
 		    			ComponentType beanComponentType = assemblyFactory.createComponentType();
-		    			beanIntrospector.introspectBean( beanClass, beanComponentType );
+		    			Map<String, JavaElementImpl> propertyMap = 
+		    				beanIntrospector.introspectBean( beanClass, beanComponentType );
 		    			// Get the references by this Spring Bean and add the unresolved ones to
 		    			// the component type of the Spring Assembly
 		    			List<Reference> beanReferences = beanComponentType.getReferences();
+		    			List<Property> beanProperties = beanComponentType.getProperties();
 		    			itp = beanElement.getProperties().iterator();
 		    			while( itp.hasNext() ) {
 		    				SpringPropertyElement propertyElement = itp.next();
-		    				if( propertyRefUnresolved( propertyElement.getRef(), beans, references ) ) {
+		    				if( propertyRefUnresolved( propertyElement.getRef(), beans, 
+		    						references, scaproperties ) ) {
+		    					boolean resolved = false;
 		    					// This means an unresolved reference from the spring bean...add it to
 		    					// the references for the Spring application context
 		    					for ( Reference reference : beanReferences ) {
@@ -314,17 +333,52 @@ public class SpringXMLComponentTypeLoader {
 		    							// name of the field in the Spring bean....
 		    							reference.setName(propertyElement.getRef());
 		    							componentType.getReferences().add( reference );
+		    							resolved = true;
 		    						} // end if
 		    					} // end for
+		    					if( !resolved ) {
+		    						// If the bean property is not already resolved as a reference
+		    						// then it must be an SCA property...
+		    						for ( Property scaproperty : beanProperties ) {
+		    							if( propertyElement.getName().equals(scaproperty.getName()) ) {
+			    							// The name of the reference in this case is the string in
+			    							// the @ref attribute of the Spring property element, NOT the
+			    							// name of the field in the Spring bean....
+			    							scaproperty.setName(propertyElement.getRef());
+			    							componentType.getProperties().add( scaproperty );
+			    							// Fetch and store the type of the property
+			    							implementation.setPropertyClass( scaproperty.getName(),
+			    									propertyMap.get(scaproperty.getName()).getType() );
+			    							resolved = true;
+			    						} // end if
+		    						} // end for
+		    					} // end if
 		    				} // end if
 		    			} // end while 
 	    			} // end if
 	    		} // end if
 	    		
 	    	} // end while
+	    	
+	    	Iterator<SpringSCAPropertyElement> itsp = scaproperties.iterator(); 
+	    	while( itsp.hasNext() ) {
+	    		SpringSCAPropertyElement scaproperty = itsp.next();
+	    		// Create a component type property if the SCA property element has a name
+	    		// and a type declared...
+	    		if( scaproperty.getType() != null && scaproperty.getName() != null ) {
+	    			Property theProperty = assemblyFactory.createProperty();
+	    			theProperty.setName( scaproperty.getName() );
+	    			// Get the Java class and then an XSD element type for the property
+	    			Class<?> propType = Class.forName( scaproperty.getType() );
+	    			theProperty.setXSDType( JavaXMLMapper.getXMLType(propType) );
+	    			componentType.getProperties().add( theProperty );
+	    			// Remember the Java Class (ie the type) for this property
+	    			implementation.setPropertyClass( theProperty.getName(), propType );
+	    		} // end if 
+	    	} // end while
 		
     	} catch ( ClassNotFoundException e ) {
-    		// Means that either an interface class or a bean was not found
+    		// Means that either an interface class, property class or a bean was not found
     		throw new ContributionReadException( e );
     	} catch ( InvalidInterfaceException e ) {
     		throw new ContributionReadException( e );
@@ -340,7 +394,8 @@ public class SpringXMLComponentTypeLoader {
     
     /*
      * Determines whether a reference attribute of a Spring property element is resolved either
-     * by a bean in the application context or by an SCA reference element
+     * by a bean in the application context or by an SCA reference element or by an SCA property
+     * element
      * @param ref - a String containing the name of the reference - may be null
      * @param beans - a List of SpringBean elements
      * @param references - a List of SCA reference elements
@@ -348,7 +403,8 @@ public class SpringXMLComponentTypeLoader {
      */
     private boolean propertyRefUnresolved( String ref, 
     									   List<SpringBeanElement> beans, 
-    									   List<SpringSCAReferenceElement> references ) {
+    									   List<SpringSCAReferenceElement> references,
+    									   List<SpringSCAPropertyElement> scaproperties ) {
     	boolean unresolved = true;
     	
     	if( ref != null ) {
@@ -368,6 +424,17 @@ public class SpringXMLComponentTypeLoader {
     			while( itr.hasNext() ) {
     				SpringSCAReferenceElement referenceElement = itr.next();
     				if( ref.equals(referenceElement.getName()) ) {
+    					unresolved = false;
+    					break;
+    				} // end if
+    			} // end while
+    		} // end if
+	    	// Scan over the SCA property elements looking for a match
+    		if( unresolved ) {
+    			Iterator<SpringSCAPropertyElement> itsp = scaproperties.iterator();
+    			while( itsp.hasNext() ) {
+    				SpringSCAPropertyElement propertyElement = itsp.next();
+    				if( ref.equals(propertyElement.getName()) ) {
     					unresolved = false;
     					break;
     				} // end if

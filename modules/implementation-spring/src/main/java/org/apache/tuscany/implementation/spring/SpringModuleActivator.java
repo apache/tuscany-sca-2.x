@@ -88,8 +88,8 @@ public class SpringModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
-        SpringPropertyValueObjectFactory propertyFactory = new SpringPropertyValueObjectFactory(mediator);
-        
+        JavaPropertyValueObjectFactory propertyFactory = new JavaPropertyValueObjectFactory(mediator);
+               
         // Tools for Java interface handling
         JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = 
         	registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
@@ -104,7 +104,7 @@ public class SpringModuleActivator implements ModuleActivator {
         
         // Create SpringImplementationFactory and add to provider factories 
         SpringImplementationProviderFactory springImplementationProviderFactory =
-            new SpringImplementationProviderFactory( proxyFactory );
+            new SpringImplementationProviderFactory( proxyFactory, propertyFactory );
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(springImplementationProviderFactory);

@@ -7,6 +7,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -36,13 +37,15 @@ public class SpringImplementationProvider implements ImplementationProvider {
      */
     public SpringImplementationProvider( RuntimeComponent component,
                                          SpringImplementation implementation,
-                                         ProxyFactory proxyService ) {
+                                         ProxyFactory proxyService,
+                                         JavaPropertyValueObjectFactory propertyValueObjectFactory ) {
         super();
         this.implementation = implementation;
         this.component 		= component;
         this.proxyService	= proxyService;
         SCAParentApplicationContext scaParentContext = 
-            	new SCAParentApplicationContext( component, implementation, proxyService );
+            	new SCAParentApplicationContext( component, implementation, 
+            			                         proxyService, propertyValueObjectFactory );
         springContext = new SCAApplicationContext(scaParentContext, implementation.getResource() );
     } // end constructor
 

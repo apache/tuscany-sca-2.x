@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 
 import org.springframework.core.io.Resource;
@@ -34,7 +35,7 @@ import org.apache.tuscany.implementation.spring.xml.SpringBeanElement;
 /**
  * Represents a Spring implementation.
  * 
- * TBD: Incomplete and needs substantial work...   MJE, 4th May 2007
+ * 
  */
 public class SpringImplementation  extends ComponentTypeImpl implements Implementation {
 
@@ -45,13 +46,16 @@ public class SpringImplementation  extends ComponentTypeImpl implements Implemen
     private ComponentType componentType;
     // Mapping of Services to Beans
     private Hashtable<String,SpringBeanElement> serviceMap;
+    // Mapping of property names to Java class
+    private Hashtable<String, Class> propertyMap;
 
     protected SpringImplementation() {
         this.springLocation = null;
         this.resource = null;
         setUnresolved(true);
         serviceMap = new Hashtable<String,SpringBeanElement>();
-    }
+        propertyMap = new Hashtable<String, Class>();
+    } // end method SpringImplementation
 
     /* Returns the location attribute for this Spring implementation */
     public String getSpringLocation() {
@@ -97,6 +101,10 @@ public class SpringImplementation  extends ComponentTypeImpl implements Implemen
         return componentType.getReferences();
     }
     
+    public List<Property> getProperties() {
+    	return componentType.getProperties();
+    }
+    
     /**
      * Returns the Spring Bean which implements a particular service
      * @param service the service
@@ -115,4 +123,24 @@ public class SpringImplementation  extends ComponentTypeImpl implements Implemen
     public void setBeanForService( Service service, SpringBeanElement theBean ) {
     	serviceMap.put( service.getName(), theBean );
     }
+    
+    /**
+     * Add a mapping from a SCA property name to a Java class for the property
+     * @param propertyName
+     * @param propertyClass
+     */
+    public void setPropertyClass( String propertyName, Class propertyClass ){
+    	if( propertyName == null || propertyClass == null ) return;
+    	propertyMap.put( propertyName, propertyClass );
+    	return;
+    } // end method setPropertyClass
+    
+    /**
+     * Gets the Java Class for an SCA property 
+     * @param propertyName - the property name
+     * @return - a Class object for the type of the property
+     */
+    public Class getPropertyClass( String propertyName ) {
+    	return propertyMap.get( propertyName );
+    } // end method getPropertyClass
 }
