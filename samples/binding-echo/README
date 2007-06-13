@@ -14,11 +14,11 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;..\binding-echo-extension\target\sample-binding-echo-extension.jar;target\sample-binding-echo.jar echo.client.EchoBindingClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;..\binding-echo-extension\target\sample-binding-echo-extension.jar;target\sample-binding-echo.jar echo.EchoBindingClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:../binding-echo-extension/target/sample-binding-echo-extension.jar:target/sample-binding-echo.jar echo.client.EchoBindingClient
+java -cp ../../lib/tuscany-sca-manifest.jar:../binding-echo-extension/target/sample-binding-echo-extension.jar:target/sample-binding-echo.jar echo.EchoBindingClient
 
 This looks like a long command. The three things we add to the classpath are
 
@@ -38,25 +38,22 @@ binding-echo/
     main/
       java/
         echo/
-          appl/
-            Echo.java              - interface definition for the sample  
-                                     reference and service
-            EchoComponentImpl.java - sample component implementation with 
-                                     echo binding reference
-          client/
-            EchoBindingClient.java - sample client
+          Echo.java              - interface definition for the sample  
+                                   reference and service
+          EchoComponentImpl.java - sample component implementation with 
+                                   echo binding reference
+          EchoBindingClient.java - sample client
       resources/
-        EchoBinding.composite      - the SCA assembly for this sample
+        EchoBinding.composite    - the SCA assembly for this sample
     test/
       java/ 
         echo
-          appl/
-            EchoApplTestCase.java  - sample JUnit test case for the sample 
-                                     client
-  binding-echo.png                 - pictorial representation of the sample 
-                                     .composite file
-  build.xml                        - the Ant build file
-  pom.xml                          - the Maven build file
+          EchoTestCase.java      - sample JUnit test case for the sample 
+                                   client
+  binding-echo.png               - pictorial representation of the sample 
+                                   .composite file
+  build.xml                      - the Ant build file
+  pom.xml                        - the Maven build file
   
 
 Building And Running The Sample Using Ant

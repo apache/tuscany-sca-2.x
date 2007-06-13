@@ -17,15 +17,16 @@
  * under the License.    
  */
 
-package echo.appl;
+package echo;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+import echo.Echo;
 import echo.server.EchoServer;
 
-public class EchoApplTestCase extends TestCase {
+public class EchoBindingTestCase extends TestCase {
     
     private SCADomain scaDomain;
     

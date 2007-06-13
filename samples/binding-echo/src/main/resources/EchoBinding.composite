@@ -23,16 +23,16 @@
 	name="EchoBinding">
 
     <service name="EchoService" promote="EchoComponent">
-        <interface.java interface="echo.appl.Echo"/>
+        <interface.java interface="echo.Echo"/>
         <binding.echo uri="http://tempuri.org" />
     </service>
 
     <component name="EchoComponent">
-        <implementation.java class="echo.appl.EchoComponentImpl"/>
+        <implementation.java class="echo.EchoComponentImpl"/>
     </component>
     
     <reference name="EchoReference" promote="EchoComponent/echoReference">
-        <interface.java interface="echo.appl.Echo"/>
+        <interface.java interface="echo.Echo"/>
         <binding.echo uri="http://tempuri.org" />
     </reference>
     
