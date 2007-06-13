@@ -1,0 +1,19 @@
+<projectDescription>
+  <name>tuscany-topology</name>
+  <comment>Parent POM defining settings that can be used across Tuscany</comment>
+  <projects>
+    <project>tuscany-interface</project>
+    <project>tuscany-contribution</project>
+    <project>tuscany-assembly</project>
+    <project>tuscany-policy</project>
+    <project>tuscany-assembly-xml</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
