@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="bining-echo" default="compile">
-	<property name="test.jar"   value="sample-binding-echo.jar" />
+	<property name="test.jar"   value="sample-binding-echo-extension.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
