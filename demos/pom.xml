@@ -36,6 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>alert-aggregator</module>
                 <module>bigbank-account</module>
                 <module>bigbank-calculator</module>
                 <module>bigbank-stockquote</module>
