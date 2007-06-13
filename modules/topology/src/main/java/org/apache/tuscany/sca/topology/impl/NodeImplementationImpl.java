@@ -29,14 +29,14 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.topology.ProcessorImplementation;
+import org.apache.tuscany.sca.topology.NodeImplementation;
 
 /**
- * Represents an SCA processor component implementation.
+ * Represents an SCA node implementation.
  *
  * @version $Rev$ $Date$
  */
-public class ProcessorImplementationImpl implements ProcessorImplementation {
+public class NodeImplementationImpl implements NodeImplementation {
     
     private List<Component> components = new ArrayList<Component>();
     private List<Property> properties = new ArrayList<Property>();
@@ -50,9 +50,9 @@ public class ProcessorImplementationImpl implements ProcessorImplementation {
     private String uri;
 
     /**
-     * Constructs a new processor implementation.
+     * Constructs a new node implementation.
      */
-    protected ProcessorImplementationImpl() {
+    protected NodeImplementationImpl() {
     }
     
     public List<Component> getComponents() {

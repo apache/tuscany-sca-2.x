@@ -27,9 +27,9 @@ package org.apache.tuscany.sca.topology;
 public interface TopologyFactory {
 
     /**
-     * Creates a new processor implementation.
+     * Creates a new node implementation.
      * @return
      */
-    ProcessorImplementation createProcessorImplementation();
+    NodeImplementation createNodeImplementation();
     
 }

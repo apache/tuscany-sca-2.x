@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.topology.impl;
 
-import org.apache.tuscany.sca.topology.ProcessorImplementation;
+import org.apache.tuscany.sca.topology.NodeImplementation;
 import org.apache.tuscany.sca.topology.TopologyFactory;
 
 /**
@@ -29,8 +29,8 @@ import org.apache.tuscany.sca.topology.TopologyFactory;
  */
 public class TopologyFactoryImpl implements TopologyFactory {
 
-    public ProcessorImplementation createProcessorImplementation() {
-        return new ProcessorImplementationImpl();
+    public NodeImplementation createNodeImplementation() {
+        return new NodeImplementationImpl();
     }
 
 }

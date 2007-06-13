@@ -19,23 +19,13 @@
 
 package org.apache.tuscany.sca.topology;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
- * Represents an SCA processor implementation.
+ * Represents an SCA node implementation.
  *
  * @version $Rev$ $Date$
  */
-public interface ProcessorImplementation extends Implementation {
+public interface NodeImplementation extends Implementation {
 
-    /**
-     * A list containing the SCA components allocated to this processor.
-     * @return a list of SCA components allocated to this processor
-     */
-    
-    List<Component> getComponents();
-    
 }
