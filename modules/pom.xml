@@ -91,6 +91,8 @@
                 <module>policy</module>
 		<module>host-rmi</module>
                 <module>sca-api</module>
+                <module>topology</module>
+                <module>topology-xml</module>
                 <module>wsdl2java</module>
             </modules>
         </profile>
