@@ -44,10 +44,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-	        <groupId>httpunit</groupId>
-	        <artifactId>httpunit</artifactId>
-	        <version>1.6.1</version>
-	        <scope>test</scope>
+	    <groupId>httpunit</groupId>
+	    <artifactId>httpunit</artifactId>
+	    <version>1.6.1</version>
+	    <scope>test</scope>
         </dependency>        
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
@@ -123,13 +123,13 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-feed</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>              
-		<dependency>
-		    <groupId>rome</groupId>
-		    <artifactId>rome</artifactId>
-		    <version>0.9</version>
-		</dependency>                       
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>rome</artifactId>
+            <version>0.9</version>
+        </dependency>                       
     </dependencies>
     
     <build>
