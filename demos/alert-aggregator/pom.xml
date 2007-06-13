@@ -30,7 +30,7 @@
     </parent>
 
     <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>alert-aggregator</artifactId>
+    <artifactId>demo-alert-aggregator</artifactId>
     <packaging>war</packaging>
     <version>1.0-incubating-SNAPSHOT</version>
     <name>Apache Tuscany Alert Aggregator Demo</name>
