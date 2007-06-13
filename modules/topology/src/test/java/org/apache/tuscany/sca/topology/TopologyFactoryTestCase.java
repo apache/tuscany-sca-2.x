@@ -38,29 +38,14 @@ public class TopologyFactoryTestCase extends TestCase {
     TopologyFactory factory;
     AssemblyFactory assemblyFactory;
     
-    Component calculatorServiceComponent;
-    Component addServiceComponent;
-    Component subtractServiceComponent;
-
     public void setUp() throws Exception {
         factory = new DefaultTopologyFactory();
         assemblyFactory = new DefaultAssemblyFactory();
-
-        // Create test components, they would normally be given from an SCA domain 
-        calculatorServiceComponent = assemblyFactory.createComponent();
-        calculatorServiceComponent.setName("CalculatorServiceComponent");
-        addServiceComponent = assemblyFactory.createComponent();
-        addServiceComponent.setName("AddServiceComponent");
-        subtractServiceComponent = assemblyFactory.createComponent();
-        subtractServiceComponent.setName("SubtractServiceComponent");
     }
 
     public void tearDown() throws Exception {
         factory = null;
         assemblyFactory = null;
-        calculatorServiceComponent = null;
-        addServiceComponent = null;
-        subtractServiceComponent = null;
     }
 
     public void testCreateTopology() {
@@ -69,34 +54,19 @@ public class TopologyFactoryTestCase extends TestCase {
         Composite topology = assemblyFactory.createComposite();
         topology.setName(new QName("http://my.network", "MyTopology"));
         
-        // Create SCA processor A implementation
-        // Configure it to run CalculatorServiceComponent
-        ProcessorImplementation implA = factory.createProcessorImplementation();
-        implA.getComponents().add(calculatorServiceComponent);
+        // Create SCA node A
+        Component nodeA = assemblyFactory.createComponent();
+        nodeA.setName("NodeA");
+        NodeImplementation implA = factory.createNodeImplementation();
+        nodeA.setImplementation(implA);
+        topology.getComponents().add(nodeA);
         
-        // Create SCA processor B implementation
-        // Configure it to run Add and SubtractServiceComponent
-        ProcessorImplementation implB = factory.createProcessorImplementation();
-        implB.getComponents().add(addServiceComponent);
-        implB.getComponents().add(subtractServiceComponent);
-
-        // Create SCA processor A
-        Component processorA = assemblyFactory.createComponent();
-        processorA.setName("ProcessorA");
-        processorA.setImplementation(implA);
-        topology.getComponents().add(processorA);
-        
-//        // Create SCA processor APrime
-//        Component processorAPrime = assemblyFactory.createComponent();
-//        processorAPrime.setName("ProcessorAPrime");
-//        processorAPrime.setImplementation(implA);
-//        topology.getComponents().add(processorAPrime);
-        
-        // Create SCA processor B
-        Component processorB = assemblyFactory.createComponent();
-        processorB.setName("ProcessorB");
-        processorB.setImplementation(implB);
-        topology.getComponents().add(processorB);
+        // Create SCA node B
+        Component nodeB = assemblyFactory.createComponent();
+        nodeB.setName("NodeB");
+        NodeImplementation implB = factory.createNodeImplementation();
+        nodeB.setImplementation(implB);
+        topology.getComponents().add(nodeB);
     }
 
 }
