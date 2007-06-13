@@ -16,29 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo.appl;
-
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
-
+package echo;
 
 /**
- * A simple client component that uses a reference with an Echo binding.
+ * Interface of our sample Echo service.
  * 
  * @version $Rev$ $Date$
  */
-public class EchoComponentImpl implements Echo {
-
-    private Echo echoReference;
-
-    @Constructor
-    public EchoComponentImpl(@Reference(name = "echoReference", required = true) Echo echoReference) {
-        this.echoReference = echoReference;
-    }
-
-    public String echo(String msg) {
-        String result = echoReference.echo(msg);
-        System.out.println("Returned message: "+ result);
-        return result;
-    }
+public interface Echo {
+    
+    String echo(String msg);
 }

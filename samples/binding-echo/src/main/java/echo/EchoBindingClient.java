@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo.client;
+package echo;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-import echo.appl.Echo;
 import echo.server.EchoServer;
 
 /**
