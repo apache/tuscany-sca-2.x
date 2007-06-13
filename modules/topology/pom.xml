@@ -40,5 +40,11 @@
             <artifactId>tuscany-assembly-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
