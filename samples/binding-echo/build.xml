@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="binding-echo-appl" default="compile">
+<project name="binding-echo" default="compile">
     <property name="test.class" value="echo.client.EchoBindingClient" />
-	<property name="test.jar"   value="sample-binding-echo-appl.jar" />
+	<property name="test.jar"   value="sample-binding-echo.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -31,7 +31,7 @@
                source="1.5"
                target="1.5">
             <classpath>
-                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
+                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar"/>
                 <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </javac> 
@@ -50,7 +50,7 @@
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
-                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
+                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </java>
@@ -61,7 +61,7 @@
               fork="true">
             <classpath>
                 <pathelement location="target/${test.jar}"/>
-                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
+                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar"/>
                 <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </java>    	

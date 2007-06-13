@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-binding-echo-appl</artifactId>
+    <artifactId>sample-binding-echo</artifactId>
     <name>Apache Tuscany Echo Binding Sample Application</name>
 
     <repositories>
@@ -44,7 +44,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sample-binding-echo</artifactId>
+            <artifactId>sample-binding-echo-extension</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>        
 

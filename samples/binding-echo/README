@@ -1,7 +1,7 @@
 Binding Echo Sample Application
 ===============================
 This sample demonstrates how to use the new binding extension 
-binding-echo.
+binding-echo-extension.
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -14,18 +14,18 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;..\binding-echo\target\sample-binding-echo.jar;target\sample-binding-echo-appl.jar echo.client.EchoBindingClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;..\binding-echo-extension\target\sample-binding-echo-extension.jar;target\sample-binding-echo.jar echo.client.EchoBindingClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:../binding-echo/target/sample-binding-echo.jar:target/sample-binding-echo-appl.jar echo.client.EchoBindingClient
+java -cp ../../lib/tuscany-sca-manifest.jar:../binding-echo-extension/target/sample-binding-echo-extension.jar:target/sample-binding-echo.jar echo.client.EchoBindingClient
 
 This looks like a long command. The three things we add to the classpath are
 
 tuscany-sca-manifest.jar - all of the standard Tuscany SCA runtime and 
                            extension classes
-sample-binding-echo.jar  - the new echo binding extension implementation
-sample-binding-echo-appl - the application that uses the echo binding                         
+sample-binding-echo-extension.jar  - the new echo binding extension implementation
+sample-binding-echo - the application that uses the echo binding                         
 
 
 Sample Overview
@@ -33,7 +33,7 @@ Sample Overview
 This sample contains an application (client and server code) that uses
 an SCA binding that simply echoes back any messages that are sent to it. 
 
-binding-echo-appl/
+binding-echo/
   src/
     main/
       java/
@@ -64,7 +64,7 @@ Building And Running The Sample Using Ant
 With the binary distribution the sample can be built and run using Ant as 
 follows.
 
-cd binding-echo-appl
+cd binding-echo
 ant compile
 ant run
 
@@ -82,7 +82,7 @@ Building And Running The Sample Using Maven
 With either the binary or source distributions the sample can be built and
 run using Maven as follows. 
 
-cd binding-echo-appl
+cd binding-echo
 mvn
 
 You should see the following output from the test phase.
