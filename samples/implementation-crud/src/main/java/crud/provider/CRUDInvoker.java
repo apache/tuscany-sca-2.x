@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package crud;
+package crud.provider;
 
 import java.lang.reflect.InvocationTargetException;
 
