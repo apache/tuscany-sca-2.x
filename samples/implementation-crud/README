@@ -1,7 +1,7 @@
 Implementation CRUD Sample Client
 =================================
 This sample demonstrates how to use the new implementation extension, 
-implementation-crud.
+implementation-crud-extension.
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -14,27 +14,28 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;..\implementation-crud\target\sample-implementation-crud.jar;target\sample-implementation-crud-client.jar crud.client.CRUDClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;..\implementation-crud-extension\target\sample-implementation-crud-extension.jar;target\sample-implementation-crud.jar crud.client.CRUDClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:../implementation-crud/target/sample-implementation-crud.jar:target/sample-implementation-crud-client.jar crud.client.CRUDClient
+java -cp ../../lib/tuscany-sca-manifest.jar:../implementation-crud-extension/target/sample-implementation-crud-extension.jar:target/sample-implementation-crud.jar crud.client.CRUDClient
 
 This looks like a long command. The three things we add to the classpath are
 
-tuscany-sca-manifest.jar              - all of the standard Tuscany SCA 
-                                        runtime and extension classes
-sample-implementation-crud.jar        - the new crud implementation extension 
-sample-implementation-crud-client.jar - the application that uses the crud
-                                        implementation  
+tuscany-sca-manifest.jar                 - all of the standard Tuscany SCA 
+                                           runtime and extension classes
+sample-implementation-crud-extension.jar - the new crud implementation
+                                           extension 
+sample-implementation-crud.jar           - the application that uses the crud
+                                           implementation  
 
 Sample Overview
 ---------------
 This sample contains a client application for a CRUD implementation type that
 shows how to create new implementation types. See the README for the
-mplementation-crud sample for details of this implementation type.
+mplementation-crud-extension sample for details of this implementation type.
 
-implementation-crud-client/
+implementation-crud/
   src/
     main/
       java/
@@ -61,7 +62,7 @@ Building And Running The Sample Using Ant
 With the binary distribution the sample can be built and run using Ant as 
 follows
 
-cd implementation-crud-client
+cd implementation-crud
 ant compile
 ant run
 
@@ -86,7 +87,7 @@ Building And Running The Sample Using Maven
 With either the binary or source distributions the sample can be built and
 run using Maven as follows. 
 
-cd implementation-crud-client
+cd implementation-crud
 mvn
 
 You should see the following output from the test phase.
