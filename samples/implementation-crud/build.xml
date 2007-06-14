@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="implementation-crud-client" default="compile">
+<project name="implementation-crud" default="compile">
     <property name="test.class" value="crud.client.CRUDClient" />
-	<property name="test.jar"   value="sample-implementation-crud-client.jar" />
+	<property name="test.jar"   value="sample-implementation-crud.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -31,7 +31,7 @@
                source="1.5"
                target="1.5">
             <classpath>
-                <pathelement location="../implementation-crud/target/sample-implementation-crud.jar"/>
+                <pathelement location="../implementation-crud-extension/target/sample-implementation-crud-extension.jar"/>
                 <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </javac> 
@@ -50,7 +50,7 @@
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
-                <pathelement location="../implementation-crud/target/sample-implementation-crud.jar"/>
+                <pathelement location="../implementation-crud-extension/target/sample-implementation-crud-extension.jar"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </java>
@@ -61,7 +61,7 @@
               fork="true">
             <classpath>
                 <pathelement location="target/${test.jar}"/>
-                <pathelement location="../implementation-crud/target/sample-implementation-crud.jar"/>
+                <pathelement location="../implementation-crud-extension/target/sample-implementation-crud-extension.jar"/>
                 <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </java>    	
