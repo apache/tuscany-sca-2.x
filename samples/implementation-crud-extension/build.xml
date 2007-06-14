@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="implementation-crud" default="compile">
-	<property name="test.jar"   value="sample-implementation-crud.jar" />
+<project name="implementation-crud-extension" default="compile">
+	<property name="test.jar"   value="sample-implementation-crud-extension.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>

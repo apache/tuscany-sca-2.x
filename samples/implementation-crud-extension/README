@@ -7,9 +7,9 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you want to try out the crud implementation type that this sample provides
-please see the implementation-crud-client sample that provides the necessary
-client code to bring up an application that uses this implementation-crud
+If you want to try out the CRUD implementation type that this sample provides
+please see the implementation-crud sample that provides the necessary client
+code to bring up an application that uses this implementation extension.
 
 Sample Overview
 ---------------
@@ -19,7 +19,7 @@ expose the same Create, Retrieve, Update and Delete interface. This sample
 uses a singleton ResourceManager to perform the CRUD operations but of course
 a real component would provide a real implementation. 
 
-implementation-crud/
+implementation-crud-extension/
   src/
     main/
       java/
@@ -49,18 +49,18 @@ Building The Sample Extension Using Ant
 With the binary distribution the sample extension can be built using Ant as 
 follows
 
-cd implementation-crud
+cd implementation-crud-extension
 ant compile
 
-See the sample implementation-crud-client to run a sample that uses this 
-binding. 
+See the implementation-crud sample to run a sample that uses this
+implementation extension.
 
 Building The Sample Using Maven 
 -------------------------------------------
 With either the binary or source distributions the sample can be built 
 using Maven as follows. 
 
-cd implementation-crud
+cd implementation-crud-extension
 mvn
 
 Maven will also test that the sample extension built properly. You should see 
