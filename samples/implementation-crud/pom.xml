@@ -36,10 +36,15 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>        
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-extension-helper</artifactId>
+            <artifactId>tuscany-host-embedded</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -47,7 +52,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
+        </dependency>        
 
         <dependency>
             <groupId>junit</groupId>
