@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-implementation-crud</artifactId>
+    <artifactId>sample-implementation-crud-extension</artifactId>
     <name>Apache Tuscany CRUD Implementation Extension Sample</name>
 
     <repositories>

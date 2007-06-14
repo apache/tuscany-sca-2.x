@@ -51,7 +51,7 @@
                 <module>helloworld-ws-reference</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
-                <module>implementation-crud-client</module>
+                <module>implementation-crud-extension</module>
                 <!--
                 <module>loanapplication</module>
                 -->
