@@ -40,14 +40,6 @@
     </target>	
 	
     <target name="package" depends="compile">
-        <ant antfile="./build-dojo.xml" target="install-dojo-nomaven">
-          <property name="localRepository" value="${settings.localRepository}"/>
-        </ant>
-        
-        <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
-          <property name="localRepository" value="${settings.localRepository}"/>
-          <property name="artifactId" value="${artifactId}"/>
-        </ant>   
 
         <war destfile="target/sample-helloworldjsonrpc.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
@@ -90,10 +82,6 @@
             <classes dir="target/classes"/>
         </war>
 
-        <ant antfile="./build-dojo.xml" target="clean-dojo-files">
-          <property name="localRepository" value="${settings.localRepository}"/>
-          <property name="artifactId" value="${artifactId}"/>
-        </ant> 
      </target>
 
 
