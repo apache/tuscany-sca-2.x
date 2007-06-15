@@ -22,5 +22,6 @@ package org.apache.tuscany.sca.implementation.script.itests.dynamic;
 public interface HelloWorld {
     
     public String sayHello(String s);
+    public String sayHelloFrom(String s);
 
 }

@@ -22,4 +22,9 @@ package org.apache.tuscany.sca.implementation.script.itests.dynamic;
 
 public class JavaScriptHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
+    
+    public void testHelloFrom() throws Exception {
+        System.out.println(service.sayHelloFrom("Venkat"));
+        assertEquals("Hello petra from Tuscany", service.sayHelloFrom("petra"));
+    }
 }

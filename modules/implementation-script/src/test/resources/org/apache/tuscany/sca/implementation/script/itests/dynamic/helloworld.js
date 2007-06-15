@@ -20,3 +20,7 @@
 function sayHello(s) {
    return "Hello " + s;
 }
+
+function sayHelloFrom(s) {
+   return "Hello " + s + " from " + greeter;
+}

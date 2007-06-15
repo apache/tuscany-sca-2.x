@@ -18,10 +18,12 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
            name="JavaScriptHelloWorld">
 
     <component name="ClientComponent">
         <implementation.script script="org/apache/tuscany/sca/implementation/script/itests/dynamic/helloworld.js"/>
+        <property name="greeter" type="xsd:string">Tuscany</property>
     </component>
 
 </composite>
