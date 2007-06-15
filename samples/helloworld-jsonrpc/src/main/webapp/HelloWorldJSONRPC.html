@@ -1,0 +1,75 @@
+<html>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+  <head>
+    <title>Tuscany JSON-RPC HelloWorld Example</TITLE>
+    
+    <script type="text/javascript" src="SCA/SCADomain/scaDomain.js"></script>
+
+    <script language="JavaScript">
+
+       function getGreeting() {
+          var name = document.getElementById("name").value;
+          HelloWorldService.getGreetings(name, handleResponse);
+       }
+       
+       function handleResponse(result) {
+          document.getElementById('greeting').innerHTML=result;
+       }
+
+    </script>
+    
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+
+    <h2>Tuscany JSON-RPC HelloWorld Sample</h2>
+     
+    <table>
+      <tr>
+        <th colspan="2">Non-Dojo Example</th>
+      </tr>
+      <tr>
+        <td colspan="2">
+           This example uses the JavaScript served from 
+           <a href="SCA/SCADomain/scaDomain.js">SCA/SCADomain/scaDomain.js</a> 
+           to make JSON-RPC requests to the SCA service 'HelloWorldService'
+      </tr>
+      <tr>
+        <td>Request</td>
+        <td>Response</td>
+      </tr>
+      <tr>
+        <td>
+            <p>
+              Name please: &nbsp;&nbsp;&nbsp;
+              <input type="text" id="name" size="30" value="World" />               
+              <input type="button" value="Submit" onclick="getGreeting()" />
+            </p>
+            
+        </td>
+        <td>           
+            <div id='greeting'>None Yet.</div>
+        </td>
+      </tr>
+    </table>
+           
+  </body>
+</html>
