@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.ReferenceInvokerFactory;
-import org.apache.tuscany.sca.spi.ServiceListener;
+import org.apache.tuscany.sca.spi.InvokerFactory;
+import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
 public class AjaxBindingActivator implements BindingActivator<AjaxBinding>{
 
@@ -48,12 +48,12 @@ public class AjaxBindingActivator implements BindingActivator<AjaxBinding>{
         return AJAX_BINDING_QNAME;
     }
 
-    public ReferenceInvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, AjaxBinding binding) {
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, AjaxBinding binding) {
         return new AjaxInvokerFactory(rc, rcr, binding, servletHost);
     }
 
-    public ServiceListener createServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, AjaxBinding binding) {
-        return new AjaxServiceListener(rc, rcs, binding, servletHost);
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, AjaxBinding binding) {
+        return new AjaxService(rc, rcs, binding, servletHost);
     }
 
 }

@@ -24,9 +24,9 @@ import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.spi.ServiceListener;
+import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
-public class AjaxServiceListener implements ServiceListener {
+public class AjaxService implements ComponentLifecycle {
 
     RuntimeComponent rc;
     RuntimeComponentService rcs;
@@ -35,7 +35,7 @@ public class AjaxServiceListener implements ServiceListener {
     
     public static final String SERVLET_PATH = AjaxServlet.AJAX_SERVLET_PATH + "/*";
 
-    public AjaxServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding, ServletHost servletHost) {
+    public AjaxService(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding, ServletHost servletHost) {
         this.rc = rc;
         this.rcs = rcs;
         this.binding = binding;

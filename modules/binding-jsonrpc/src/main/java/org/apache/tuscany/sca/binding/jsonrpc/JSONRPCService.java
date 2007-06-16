@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.spi.ServiceListener;
+import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
 /**
  * Implementation of the JSONRPC binding provider.
@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.spi.ServiceListener;
  * One servlet to handle requests for the scaDomain script and seperate
  * servlets for each SCA <service> which uses <binding.jsonrpc>. 
  */
-public class JSONRPCServiceListener implements ServiceListener {
+public class JSONRPCService implements ComponentLifecycle {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
@@ -48,7 +48,7 @@ public class JSONRPCServiceListener implements ServiceListener {
     public static final String SCA_DOMAIN_SCRIPT = SERVICE_PREFIX + "scaDomain.js";
 
 
-    public JSONRPCServiceListener(RuntimeComponent component,
+    public JSONRPCService(RuntimeComponent component,
                                          RuntimeComponentService service,
                                          JSONRPCBinding binding,
                                          ServletHost servletHost) {

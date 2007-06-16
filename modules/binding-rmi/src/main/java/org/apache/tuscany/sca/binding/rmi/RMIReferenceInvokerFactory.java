@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.rmi.RMIHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.spi.ReferenceInvokerFactory;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
-public class RMIReferenceInvokerFactory implements ReferenceInvokerFactory {
+public class RMIReferenceInvokerFactory implements InvokerFactory {
 
     RuntimeComponentReference reference;
     RMIHost rmiHost;
@@ -49,17 +49,11 @@ public class RMIReferenceInvokerFactory implements ReferenceInvokerFactory {
             Class<?> iface = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
             Method remoteMethod = JavaInterfaceUtil.findMethod(iface, operation);
 
-            return new RMIBindingInvoker(rmiHost, binding.getHost(), binding.getPort(), binding.getServiceName(), remoteMethod);
+            return new RMIReferenceInvoker(rmiHost, binding.getHost(), binding.getPort(), binding.getServiceName(), remoteMethod);
 
         } catch (NoSuchMethodException e) {
             throw new ServiceRuntimeException(operation.toString(), e);
         }
-    }
-
-    public void start() {
-    }
-
-    public void stop() {
     }
 
 }

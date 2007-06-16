@@ -42,8 +42,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.ReferenceInvokerFactory;
-import org.apache.tuscany.sca.spi.ServiceListener;
+import org.apache.tuscany.sca.spi.InvokerFactory;
+import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
 public class BindingsActivator implements ModuleActivator {
 
@@ -74,7 +74,7 @@ public class BindingsActivator implements ModuleActivator {
                                                                                    final Binding b) {
                         return new ReferenceBindingProvider() {
                             List<InvokerProxy> invokers = new ArrayList<InvokerProxy>();
-                            private ReferenceInvokerFactory factory;
+                            private InvokerFactory factory;
                             public Invoker createInvoker(Operation operation, boolean isCallback) {
                                 InvokerProxy invoker = new InvokerProxy(operation);
                                 invokers.add(invoker);    
@@ -85,14 +85,17 @@ public class BindingsActivator implements ModuleActivator {
                             }
                             public void start() {
                                 factory = bindingActivator.createInvokerFactory(rc, rcr, b);
-                                factory.start();
-                                
+                                if (factory instanceof ComponentLifecycle) {
+                                    ((ComponentLifecycle)factory).start();
+                                }
                                 for (InvokerProxy invoker : invokers) {
                                     invoker.start(factory);
                                 }
                             }
                             public void stop() {
-                                factory.stop();
+                                if (factory instanceof ComponentLifecycle) {
+                                    ((ComponentLifecycle)factory).stop();
+                                }
                             }};
                     }
 
@@ -100,7 +103,7 @@ public class BindingsActivator implements ModuleActivator {
                                                                                final RuntimeComponentService rcs,
                                                                                final Binding b) {
                         return new ServiceBindingProvider(){
-                            ServiceListener listener = bindingActivator.createServiceListener(rc, rcs, b);
+                            ComponentLifecycle listener = bindingActivator.createService(rc, rcs, b);
                             public InterfaceContract getBindingInterfaceContract() {
                                 return null;
                             }
@@ -158,7 +161,7 @@ class InvokerProxy implements Invoker {
     public Message invoke(Message arg0) {
         return invoker.invoke(arg0);
     }
-    public void start(ReferenceInvokerFactory factory) {
+    public void start(InvokerFactory factory) {
         invoker = factory.createInvoker(op);
     }
  }

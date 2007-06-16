@@ -42,17 +42,17 @@ import org.apache.tuscany.sca.rmi.RMIHost;
 import org.apache.tuscany.sca.rmi.RMIHostException;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.spi.ServiceListener;
+import org.apache.tuscany.sca.spi.ComponentLifecycle;
 import org.osoa.sca.ServiceRuntimeException;
 
-public class RMIServiceListener implements ServiceListener {
+public class RMIService implements ComponentLifecycle {
 
     RuntimeComponent component;
     RuntimeComponentService service;
     private RMIBinding binding;
     RMIHost rmiHost;
 
-    public RMIServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
+    public RMIService(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
         this.component = rc;
         this.service = rcs;
         this.binding = binding;
