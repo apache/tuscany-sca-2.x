@@ -76,13 +76,23 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
             if ("setElementText".equals(m.getName())) {
                 elementTextSetter = m;
             } else if ((m.getName().startsWith("set"))) {
-                String name = m.getName().substring(3).toLowerCase();
-                if (name.endsWith("_")) {
-                    name = name.substring(0,name.length()-1);
-                }
-                attributeSetters.put(name, m);
+                attributeSetters.put(getFieldName(m), m);
             }
         }
+    }
+
+    /**
+     * Remove get/set from method name, set 1st char to lowercase and
+     * remove any trailing underscore character
+     */
+    protected String getFieldName(Method m) {
+        StringBuilder sb = new StringBuilder(m.getName().substring(3));
+        sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+        String name = sb.toString();
+        if (name.endsWith("_")) {
+            name = name.substring(0,name.length()-1);
+        }
+        return name;
     }
 
     private Object[] getImplConstrArgs() {
