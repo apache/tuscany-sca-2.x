@@ -19,31 +19,21 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
-import static org.osoa.sca.Constants.SCA_NS;
-
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class JSONRPCBindingActivator implements BindingActivator<JSONRPCBinding> {
 
     protected ServletHost servletHost;
 
-    protected static final QName JSONRPC_BINDING_QN = new QName(SCA_NS, "binding.jsonrpc");
-
     public JSONRPCBindingActivator(ServletHost servletHost) {
         this.servletHost = servletHost;
-    }
-
-    public QName getSCDLQName() {
-        return JSONRPC_BINDING_QN;
     }
 
     public Class<JSONRPCBinding> getBindingClass() {

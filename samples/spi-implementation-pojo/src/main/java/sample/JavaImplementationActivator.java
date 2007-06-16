@@ -19,21 +19,12 @@
 
 package sample;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.spi.ImplementationActivator;
 import org.apache.tuscany.sca.spi.InvokerFactory;
-import org.osoa.sca.Constants;
 
 public class JavaImplementationActivator implements ImplementationActivator<JavaImplementation> {
-
-    private static final QName IMPLEMENTATION_JAVA = new QName(Constants.SCA_NS, "implementation.java");
-    
-    public QName getSCDLQName() {
-        return IMPLEMENTATION_JAVA;
-    }
 
     public Class<JavaImplementation> getImplementationClass() {
         return JavaImplementation.class;

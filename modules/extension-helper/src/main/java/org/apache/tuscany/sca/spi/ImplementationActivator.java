@@ -19,15 +19,11 @@
 
 package org.apache.tuscany.sca.spi;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 public interface ImplementationActivator<T> {
 
-    QName getSCDLQName();
-    
     Class<T> getImplementationClass();
 
     InvokerFactory createInvokerFactory(RuntimeComponent rc, ComponentType ct, T implementation);

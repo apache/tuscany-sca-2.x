@@ -19,33 +19,24 @@
 
 package org.apache.tuscany.sca.binding.ajax;
 
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 
 public class AjaxBindingActivator implements BindingActivator<AjaxBinding>{
 
     private ServletHost servletHost;
     
-    public static QName AJAX_BINDING_QNAME = new QName(Constants.SCA10_NS, "binding.ajax");
-
     public AjaxBindingActivator(ServletHost servletHost) {
         this.servletHost = servletHost;
     }
 
     public Class<AjaxBinding> getBindingClass() {
         return AjaxBinding.class;
-    }
-
-    public QName getSCDLQName() {
-        return AJAX_BINDING_QNAME;
     }
 
     public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, AjaxBinding binding) {
