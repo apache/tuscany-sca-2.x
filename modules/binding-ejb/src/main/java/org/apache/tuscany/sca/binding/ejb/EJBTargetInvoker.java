@@ -35,7 +35,7 @@ public class EJBTargetInvoker implements Invoker {
 
     public EJBTargetInvoker(EJBBinding ejbBinding, Class serviceInterface, Operation operation) {
         this.serviceInterface = serviceInterface;
-        this.location = ejbBinding.getURI();
+        this.location = ejbBinding.getUri();
         this.operation = operation;
     }
 

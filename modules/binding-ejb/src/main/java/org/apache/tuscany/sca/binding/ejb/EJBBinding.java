@@ -81,12 +81,14 @@ public class EJBBinding extends AbstractBinding {
         this.ejbLinkName = ejbLinkName;
     }
 
+    // TODO: uri needs to be part of runtime extension helper
+    
     /**
      * Sets binding URI.
      * 
      * @param value the binding uri
      */
-    public void setURI(String value) {
+    public void setUri(String value) {
         this.uri = value;
     }
 
@@ -95,7 +97,7 @@ public class EJBBinding extends AbstractBinding {
      * 
      * @return value the binding uri
      */
-    public String getURI() {
+    public String getUri() {
         return uri;
     }
 }
