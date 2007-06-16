@@ -46,9 +46,13 @@ public class BindingTestCase {
     
     @BeforeClass
     public static void init() throws Exception {
+try {
         domain = SCADomain.newInstance("RMIBindingTest.composite");
         helloWorldRmiService = 
             domain.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
+} catch (Exception e) {
+    e.printStackTrace();
+}
   }
     
     @AfterClass

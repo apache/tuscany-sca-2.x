@@ -18,7 +18,6 @@
  * under the License.    
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:rmi="http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT"
            name="HelloWorldRmiComposite">
 
 	<service name="HelloWorldRmiService" promote="HelloWorldServiceComponent">

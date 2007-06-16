@@ -16,40 +16,58 @@
  */
 package org.apache.tuscany.sca.binding.rmi;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.spi.utils.AbstractBinding;
 
 /**
  * Represents a binding to an RMI service.
  */
-public interface RMIBinding extends Binding {
+public class RMIBinding extends AbstractBinding {
+
+    private String host;
+    private String port;
+    private String serviceName;
+
     /**
      * @return the host name of the RMI Service
      */
-    String getRmiHostName();
+    public String getHost() {
+        return host;
+    }
 
     /**
      * @param rmiHostName the hostname of the RMI Service
      */
-    void setRmiHostName(String rmiHostName);
+    public void setHost(String rmiHostName) {
+        this.host = rmiHostName;
+    }
 
     /**
      * @return the port number for the RMI Service
      */
-    String getRmiPort();
+    public String getPort() {
+        return port;
+    }
 
     /**
      * @param rmiPort the port number for the RMI Service
      */
-    void setRmiPort(String rmiPort);
+    public void setPort(String rmiPort) {
+        this.port = rmiPort;
+    }
 
     /**
      * @return returns the RMI Service Name
      */
-    String getRmiServiceName();
+    public String getServiceName() {
+        return serviceName;
+    }
 
     /**
      * Sets the service name for the RMI Server
+     * 
      * @param rmiServiceName the name of the RMI service
      */
-    void setRmiServiceName(String rmiServiceName);
+    public void setServiceName(String rmiServiceName) {
+        this.serviceName = rmiServiceName;
+    }
 }
