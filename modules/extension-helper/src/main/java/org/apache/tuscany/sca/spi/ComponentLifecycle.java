@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.spi;
 
 
-public interface ServiceListener {
+public interface ComponentLifecycle {
     
     void start();
     void stop();

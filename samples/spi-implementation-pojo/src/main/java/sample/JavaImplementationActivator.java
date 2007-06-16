@@ -31,16 +31,16 @@ public class JavaImplementationActivator implements ImplementationActivator<Java
 
     private static final QName IMPLEMENTATION_JAVA = new QName(Constants.SCA_NS, "implementation.java");
     
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, ComponentType ct, JavaImplementation implementation) {
-        return new JavaInvokerFactory(rc, ct, implementation);
+    public QName getSCDLQName() {
+        return IMPLEMENTATION_JAVA;
     }
 
     public Class<JavaImplementation> getImplementationClass() {
         return JavaImplementation.class;
     }
 
-    public QName getSCDLQName() {
-        return IMPLEMENTATION_JAVA;
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, ComponentType ct, JavaImplementation implementation) {
+        return new JavaInvokerFactory(rc, ct, implementation);
     }
 
 }

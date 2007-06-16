@@ -30,28 +30,25 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.ReferenceInvokerFactory;
-import org.apache.tuscany.sca.spi.ServiceListener;
+import org.apache.tuscany.sca.spi.ComponentLifecycle;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class EJBBindingActivator implements BindingActivator {
 
     public static final QName BINDING_EJB = new QName(Constants.SCA10_NS, "binding.ejb");
     
-    public ReferenceInvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, final Binding binding) {
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, final Binding binding) {
         // TODO: assumes a Java interface, need to support tuscany generic Interface
         final Class si = ((JavaInterface)rcr.getInterfaceContract().getInterface()).getJavaClass();
-        return new ReferenceInvokerFactory() {
+        return new InvokerFactory() {
             public Invoker createInvoker(Operation operation) {
                 return new EJBTargetInvoker((EJBBinding)binding, si, operation);
             }
-            public void start() {
-            }
-            public void stop() {
-            }};
+         };
     }
 
-    public ServiceListener createServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding) {
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding) {
         throw new ServiceRuntimeException("services not yet implemented for binidng.ejb");
     }
 

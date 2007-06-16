@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.ReferenceInvokerFactory;
-import org.apache.tuscany.sca.spi.ServiceListener;
+import org.apache.tuscany.sca.spi.InvokerFactory;
+import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
 public class RMIBindingActivator implements BindingActivator<RMIBinding> {
 
@@ -48,12 +48,12 @@ public class RMIBindingActivator implements BindingActivator<RMIBinding> {
         return RMIBinding.class;
     }
 
-    public ReferenceInvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, RMIBinding binding) {
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, RMIBinding binding) {
         return new RMIReferenceInvokerFactory(rc, rcr, binding, rmiHost);
     }
 
-    public ServiceListener createServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding) {
-        return new RMIServiceListener(rc, rcs, binding, rmiHost);
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding) {
+        return new RMIService(rc, rcs, binding, rmiHost);
     }
 
 }

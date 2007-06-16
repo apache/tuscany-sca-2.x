@@ -32,8 +32,8 @@ public interface BindingActivator<B extends Binding> {
     
     Class<B> getBindingClass();
 
-    ReferenceInvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, B binding);
+    InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, B binding);
     
-    ServiceListener createServiceListener(RuntimeComponent rc, RuntimeComponentService rcs, B binding);
+    ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, B binding);
     
 }

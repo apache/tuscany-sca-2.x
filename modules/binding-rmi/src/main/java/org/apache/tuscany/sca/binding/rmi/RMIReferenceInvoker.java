@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.rmi.RMIHost;
 
-public class RMIBindingInvoker implements Invoker {
+public class RMIReferenceInvoker implements Invoker {
 
     private RMIHost rmiHost;
     private String host;
@@ -32,7 +32,7 @@ public class RMIBindingInvoker implements Invoker {
     private Method remoteMethod;
     private Remote proxy;
 
-    public RMIBindingInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
+    public RMIReferenceInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
         this.rmiHost = rmiHost;
         this.remoteMethod = remoteMethod;
         this.host = host;
