@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.apache.tuscany.sca.binding.jsonrpc.JSONRPCServiceBindingProvider.SERVICE_PREFIX;
+import static org.apache.tuscany.sca.binding.jsonrpc.JSONRPCServiceListener.SERVICE_PREFIX;
 
 /**
  * Servlet to handle requests for the scaDomain.js script.
