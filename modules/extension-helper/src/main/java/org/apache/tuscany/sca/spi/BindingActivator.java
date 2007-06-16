@@ -24,6 +24,38 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
+/**
+ * A BindingActivator adds an SCA binding type to the Tuscany runtime.
+ * 
+ * The SCDL XML used for the binding is derived from the name of the
+ * class returned from the getBindingClass method - the package name and
+ * any trailing "Binding" string is removed, leading upper case characters
+ * are converted to lowercase, and the suffix "binding." is added.
+ * For example if getBindingClass returns a class named "mypkg.FooBinding"
+ * then the SCDL for the binding will be <binding.foo>.
+ * 
+ * Attributes of the <binding.foo> SCDL are based on the getters/setters of
+ * the binding class. So if FooBinding had getBar/setBar then there
+ * would be an attribute name 'bar', for example, <binding.foo bar="xxx">. 
+ * 
+ * BindingActivator implementations may use constructor arguments to have 
+ * Tuscany ExtensionPointRegistry objects passed in on their constructor.
+ * For example:
+ * 
+ *    public class MyBindingActivator implements BindingActivator {
+ *       ServletHost servletHost;
+ *       public MyBindingActivator(ServletHost servletHost) {
+ *          this.servletHost = servletHost;
+ *       }
+ *       ...
+ *    }
+ *    
+ * BindingActivator implementations are discovered by the Tuscany runtime
+ * using the J2SE jar file extensions for service provider discovery. All
+ * that means is packaging the new binding type in a jar which contains a  
+ * file META-INF/services/org.apache.tuscany.sca.spi.BindingActivator and
+ * that file lists the BindingActivator implementation class name.
+ */
 public interface BindingActivator<B extends Binding> {
 
     Class<B> getBindingClass();
