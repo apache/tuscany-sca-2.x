@@ -29,28 +29,10 @@
     <name>Apache Tuscany Java RMI Binding</name>
 
     <dependencies>
-        <!-- FIXME: The MessageFactoryImpl is in tuscany-core -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-            
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface-java</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-spi</artifactId>
+            <artifactId>tuscany-extension-helper</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -73,10 +55,5 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 </project>
