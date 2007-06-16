@@ -46,6 +46,7 @@
                 <module>chat-webapp</module>
                 <module>databinding-echo</module>
                 <module>feed-aggregator</module>
+                <module>helloworld-dojo</module>
                 <module>helloworld-jsonrpc</module>
                 <module>helloworld-ws-service</module>
                 <module>helloworld-ws-reference</module>
