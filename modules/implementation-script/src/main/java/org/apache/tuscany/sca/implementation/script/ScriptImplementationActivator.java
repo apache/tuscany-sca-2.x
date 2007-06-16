@@ -19,10 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.script;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.spi.ImplementationActivator;
 import org.apache.tuscany.sca.spi.InvokerFactory;
@@ -30,17 +27,11 @@ import org.apache.tuscany.sca.spi.utils.PropertyValueObjectFactory;
 
 public class ScriptImplementationActivator implements ImplementationActivator<ScriptImplementation> {
 
-    private static final QName IMPLEMENTATION_SCRIPT_QNAME = new QName(Constants.SCA10_NS, "implementation.script");
-
     // TODO: seems wrong to need PropertyValueObjectFactory, could it be on Property somehow? 
     protected PropertyValueObjectFactory propertyFactory;
 
     public ScriptImplementationActivator(PropertyValueObjectFactory propertyFactory) {
         this.propertyFactory = propertyFactory;
-    }
-
-    public QName getSCDLQName() {
-        return IMPLEMENTATION_SCRIPT_QNAME;
     }
 
     public Class<ScriptImplementation> getImplementationClass() {

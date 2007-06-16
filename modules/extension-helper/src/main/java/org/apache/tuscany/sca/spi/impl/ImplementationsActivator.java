@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -67,7 +68,7 @@ public class ImplementationsActivator implements ModuleActivator {
         for (final ImplementationActivator implementationActivator : implementationActivators) {
 
             Class<Implementation> implClass = implementationActivator.getImplementationClass();
-            QName scdlQName = implementationActivator.getSCDLQName();
+            QName scdlQName = getSCDLQName(implClass);
             staxProcessors.addArtifactProcessor(new SCDLProcessor(assemblyFactory, scdlQName, implClass, registry, factories));
 
             if (implementationActivator.getImplementationClass() != null && providerFactories != null) {
@@ -80,8 +81,8 @@ public class ImplementationsActivator implements ModuleActivator {
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
         for (final ImplementationActivator implementationActivator : implementationActivators) {
-            if (staxProcessors != null && implementationActivator.getSCDLQName() != null) {
-                StAXArtifactProcessor processor = staxProcessors.getProcessor(implementationActivator.getSCDLQName());
+            if (staxProcessors != null) {
+                StAXArtifactProcessor processor = staxProcessors.getProcessor(getSCDLQName(implementationActivator.getImplementationClass()));
                 if (processor != null) {
                     staxProcessors.removeArtifactProcessor(processor);
                 }
@@ -110,6 +111,26 @@ public class ImplementationsActivator implements ModuleActivator {
             }
         });
     }
+
+    protected QName getSCDLQName(Class implementationClass) {
+        String localName = implementationClass.getName();
+        if (localName.lastIndexOf('.') > -1) {
+            localName = localName.substring(localName.lastIndexOf('.') + 1);
+        }
+        if (localName.endsWith("Implementation")) {
+            localName = localName.substring(0, localName.length() - 14);
+        }
+        StringBuilder sb = new StringBuilder(localName);
+        for (int i=0; i<sb.length(); i++) {
+            if (Character.isUpperCase(sb.charAt(i))) {
+                sb.setCharAt(i, Character.toLowerCase(sb.charAt(i)));
+            } else {
+                break;
+            }
+        }
+        return new QName(Constants.SCA10_NS, "implementation." + sb.toString());
+    }
+
 
     public Object[] getExtensionPoints() {
         return null;

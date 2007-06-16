@@ -19,29 +19,20 @@
 
 package org.apache.tuscany.sca.binding.rmi;
 
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.rmi.RMIHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 
 public class RMIBindingActivator implements BindingActivator<RMIBinding> {
 
     private RMIHost rmiHost;
 
-    private QName BINDING_RMI_QNAME = new QName(Constants.SCA10_NS, "binding.rmi");
-
     public RMIBindingActivator(RMIHost rmiHost) {
         this.rmiHost = rmiHost;
-    }
-
-    public QName getSCDLQName() {
-        return BINDING_RMI_QNAME;
     }
 
     public Class<RMIBinding> getBindingClass() {

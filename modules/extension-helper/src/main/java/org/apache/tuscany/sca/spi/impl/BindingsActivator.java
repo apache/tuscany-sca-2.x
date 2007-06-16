@@ -22,8 +22,11 @@ package org.apache.tuscany.sca.spi.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -42,8 +45,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 
 public class BindingsActivator implements ModuleActivator {
 
@@ -61,7 +64,8 @@ public class BindingsActivator implements ModuleActivator {
 
         for (final BindingActivator bindingActivator : bindingActivators) {
 
-            staxProcessors.addArtifactProcessor(new BindingSCDLProcessor(bindingActivator.getSCDLQName(), bindingActivator.getBindingClass()));
+            QName scdlQName = getBindingQName(bindingActivator.getBindingClass());
+            staxProcessors.addArtifactProcessor(new BindingSCDLProcessor(scdlQName, bindingActivator.getBindingClass()));
 
             if (bindingActivator.getBindingClass() != null) {
                 // Add a ProviderFactory
@@ -130,8 +134,8 @@ public class BindingsActivator implements ModuleActivator {
         for (final BindingActivator bindingActivator : bindingActivators) {
 
             // Remove the binding SCDL processor from the runtime
-            if (staxProcessors != null && bindingActivator.getSCDLQName() != null) {
-                StAXArtifactProcessor processor = staxProcessors.getProcessor(bindingActivator.getSCDLQName());
+            if (staxProcessors != null) {
+                StAXArtifactProcessor processor = staxProcessors.getProcessor(getBindingQName(bindingActivator.getBindingClass()));
                 if (processor != null) {
                     staxProcessors.removeArtifactProcessor(processor);
                 }
@@ -146,6 +150,26 @@ public class BindingsActivator implements ModuleActivator {
             }
         }
     }
+
+    protected QName getBindingQName(Class bindingClass) {
+        String localName = bindingClass.getName();
+        if (localName.lastIndexOf('.') > -1) {
+            localName = localName.substring(localName.lastIndexOf('.') + 1);
+        }
+        if (localName.endsWith("Binding")) {
+            localName = localName.substring(0, localName.length()-7);
+        }
+        StringBuilder sb = new StringBuilder(localName);
+        for (int i=0; i<sb.length(); i++) {
+            if (Character.isUpperCase(sb.charAt(i))) {
+                sb.setCharAt(i, Character.toLowerCase(sb.charAt(i)));
+            } else {
+                break;
+            }
+        }
+        return new QName(Constants.SCA10_NS, "binding." + sb.toString());
+    }
+
 
     public Object[] getExtensionPoints() {
         return null; // not used by binding or implementation extensions

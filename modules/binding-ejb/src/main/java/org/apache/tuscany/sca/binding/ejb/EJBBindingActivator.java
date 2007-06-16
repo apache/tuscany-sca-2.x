@@ -19,10 +19,7 @@
 
 package org.apache.tuscany.sca.binding.ejb;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -36,8 +33,6 @@ import org.osoa.sca.ServiceRuntimeException;
 
 public class EJBBindingActivator implements BindingActivator {
 
-    public static final QName BINDING_EJB = new QName(Constants.SCA10_NS, "binding.ejb");
-    
     public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, final Binding binding) {
         // TODO: assumes a Java interface, need to support tuscany generic Interface
         final Class si = ((JavaInterface)rcr.getInterfaceContract().getInterface()).getJavaClass();
@@ -54,10 +49,6 @@ public class EJBBindingActivator implements BindingActivator {
 
     public Class getBindingClass() {
         return EJBBinding.class;
-    }
-
-    public QName getSCDLQName() {
-        return BINDING_EJB;
     }
 
 }
