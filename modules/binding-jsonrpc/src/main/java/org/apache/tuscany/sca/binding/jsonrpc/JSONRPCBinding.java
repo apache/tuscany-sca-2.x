@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
+import org.apache.tuscany.sca.spi.utils.AbstractBinding;
+
 /**
  * A model for the JSONRPC binding.
  */

@@ -21,11 +21,10 @@ package org.apache.tuscany.sca.binding.jsonrpc;
 
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.spi.ServiceListener;
 
 /**
  * Implementation of the JSONRPC binding provider.
@@ -34,7 +33,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * One servlet to handle requests for the scaDomain script and seperate
  * servlets for each SCA <service> which uses <binding.jsonrpc>. 
  */
-public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
+public class JSONRPCServiceListener implements ServiceListener {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
@@ -49,7 +48,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     public static final String SCA_DOMAIN_SCRIPT = SERVICE_PREFIX + "scaDomain.js";
 
 
-    public JSONRPCServiceBindingProvider(RuntimeComponent component,
+    public JSONRPCServiceListener(RuntimeComponent component,
                                          RuntimeComponentService service,
                                          JSONRPCBinding binding,
                                          ServletHost servletHost) {
@@ -57,10 +56,6 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;
-    }
-
-    public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
     }
 
     public void start() {
@@ -101,7 +96,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         }
     }
 
-    private Class<?> getTargetJavaClass(Interface targetInterface) {
+    protected Class<?> getTargetJavaClass(Interface targetInterface) {
         // TODO: right now assume that the target is always a Java
         // Implementation. Need to figure out  how to generate Java
         // Interface in cases where the target is not a Java Implementation
