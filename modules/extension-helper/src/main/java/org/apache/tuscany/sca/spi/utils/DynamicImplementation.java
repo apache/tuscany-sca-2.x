@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.spi.utils;
 
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
@@ -48,6 +49,12 @@ public class DynamicImplementation extends AbstractImplementation implements Com
             }
         }
         
+        for (Property property : rtc.getProperties()) {
+            if (getProptery(property.getName()) == null) {
+                getProperties().add(createProperty(property));
+            }
+        }
+        
         // TODO: support properties
     }
     
@@ -70,6 +77,16 @@ public class DynamicImplementation extends AbstractImplementation implements Com
             throw new AssertionError(e); // should not ever happen
         }
         return newReference;
+    }
+    
+    protected Property createProperty(Property property) {
+        Property newProperty;
+        try {
+            newProperty = (Property)property.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e); // should not ever happen
+        }
+        return newProperty;
     }
 
 }

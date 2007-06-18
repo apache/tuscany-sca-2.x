@@ -114,5 +114,14 @@ public abstract class AbstractImplementation implements Implementation {
         }
         return null;
     }
+    
+    public Property getProptery(String name) {
+        for (Property property : getProperties()) {
+            if (property.getName().equals(name)) {
+                return property;
+            }
+        }
+        return null;
+    }
 
 }
