@@ -27,6 +27,7 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
+import org.apache.tuscany.sca.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.http.ServletMappingException;
 
@@ -50,7 +51,18 @@ public class WebAppServletHost implements ServletHost {
 
     public void addServletMapping(String path, Servlet servlet) throws ServletMappingException {
         URI pathURI = URI.create(path);
-        // for webapps just use the path and ignore the host and port
+        
+        // Ignore registrations of our default resource servlet, as resources
+        // are already served by the web container
+        if (servlet instanceof DefaultResourceServlet) {
+            //TODO maybe ignore registration of the servlet only if it's
+            // mapped to "/" and still honor other registrations, to do this
+            // we will need a way to determine what's the default servlet
+            // in the web container that we are running in.
+            return;
+        }
+            
+        // For webapps just use the path and ignore the host and port
         servlets.put(pathURI.getPath(), servlet);
     }
 
