@@ -19,14 +19,13 @@
 
 package org.apache.tuscany.sca.binding.ajax;
 
-import org.apache.tuscany.sca.spi.utils.AbstractBinding;
 
 
 
 /**
  * The runtime representation of the <binding.ajax> SCDL
  */
-public class AjaxBinding extends AbstractBinding {
+public class AjaxBinding {
 
     // Empty as <binding.ajax> doesn't use any additional attributes or elements (yet).
     

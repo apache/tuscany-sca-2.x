@@ -21,22 +21,23 @@ package org.apache.tuscany.sca.binding.ajax;
 
 import static org.apache.tuscany.sca.binding.ajax.AjaxService.SERVLET_PATH;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 
 public class AjaxInvokerFactory implements InvokerFactory, ComponentLifecycle {
 
     protected RuntimeComponent runtimeComponent;
     protected RuntimeComponentReference runtimeComponentReference;
-    protected AjaxBinding binding; 
+    protected Binding binding;
     protected ServletHost servletHost;
     
-    public AjaxInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, AjaxBinding b, ServletHost servletHost) {
+    public AjaxInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, AjaxBinding ab, ServletHost servletHost) {
         this.runtimeComponent = rc;
         this.runtimeComponentReference = rcr;
         this.binding = b;

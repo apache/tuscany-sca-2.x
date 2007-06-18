@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.ajax;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -39,12 +40,17 @@ public class AjaxBindingActivator implements BindingActivator<AjaxBinding>{
         return AjaxBinding.class;
     }
 
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, AjaxBinding binding) {
-        return new AjaxInvokerFactory(rc, rcr, binding, servletHost);
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, AjaxBinding ab) {
+        return new AjaxInvokerFactory(rc, rcr, b, ab, servletHost);
     }
 
-    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, AjaxBinding binding) {
-        return new AjaxService(rc, rcs, binding, servletHost);
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding b, AjaxBinding ab) {
+        return new AjaxService(rc, rcs, b, ab, servletHost);
+    }
+
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, AjaxBinding binding) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

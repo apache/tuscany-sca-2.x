@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -40,12 +41,12 @@ public class JSONRPCBindingActivator implements BindingActivator<JSONRPCBinding>
         return JSONRPCBinding.class;
     }
 
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, JSONRPCBinding binding) {
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, JSONRPCBinding binding) {
         throw new ServiceRuntimeException("SCA reference support not yet implemented");
     }
 
-    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, JSONRPCBinding binding) {
-        return new JSONRPCService(rc, rcs, binding, servletHost);
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding b, JSONRPCBinding binding) {
+        return new JSONRPCService(rc, rcs, b, binding, servletHost);
     }
 
 }

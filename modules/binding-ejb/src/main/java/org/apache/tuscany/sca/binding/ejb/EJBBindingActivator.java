@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.ejb;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -32,7 +33,7 @@ import org.osoa.sca.ServiceRuntimeException;
 
 public class EJBBindingActivator implements BindingActivator<EJBBinding> {
 
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, final EJBBinding binding) {
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, final Binding b, final EJBBinding binding) {
         // TODO: assumes a Java interface, need to support tuscany generic Interface
         final Class si = ((JavaInterface)rcr.getInterfaceContract().getInterface()).getJavaClass();
         return new InvokerFactory() {
@@ -42,7 +43,7 @@ public class EJBBindingActivator implements BindingActivator<EJBBinding> {
          };
     }
 
-    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, EJBBinding binding) {
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding b, EJBBinding binding) {
         throw new ServiceRuntimeException("services not yet implemented for binding.ejb");
     }
 
