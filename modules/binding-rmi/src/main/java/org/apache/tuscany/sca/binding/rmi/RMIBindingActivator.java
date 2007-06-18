@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.rmi;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.rmi.RMIHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -39,11 +40,11 @@ public class RMIBindingActivator implements BindingActivator<RMIBinding> {
         return RMIBinding.class;
     }
 
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, RMIBinding binding) {
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, RMIBinding binding) {
         return new RMIReferenceInvokerFactory(rc, rcr, binding, rmiHost);
     }
 
-    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding) {
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding b, RMIBinding binding) {
         return new RMIService(rc, rcs, binding, rmiHost);
     }
 

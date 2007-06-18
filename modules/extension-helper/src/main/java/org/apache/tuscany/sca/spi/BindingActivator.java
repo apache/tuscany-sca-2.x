@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.spi;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -59,8 +60,8 @@ public interface BindingActivator<B> {
 
     Class<B> getBindingClass();
 
-    InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, B binding);
+    InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, B pojoBinding);
     
-    ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, B binding);
+    ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding b, B pojoBinding);
     
 }

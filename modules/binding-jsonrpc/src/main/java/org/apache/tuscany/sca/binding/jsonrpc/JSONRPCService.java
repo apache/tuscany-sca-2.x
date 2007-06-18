@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -37,8 +38,9 @@ public class JSONRPCService implements ComponentLifecycle {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
-    private JSONRPCBinding binding;
+    private JSONRPCBinding jsonBinding;
     private ServletHost servletHost;
+    private Binding binding;
 
     public static final String SERVICE_PREFIX = "/SCADomain/";
 
@@ -50,11 +52,13 @@ public class JSONRPCService implements ComponentLifecycle {
 
     public JSONRPCService(RuntimeComponent component,
                                          RuntimeComponentService service,
+                                         Binding b,
                                          JSONRPCBinding binding,
                                          ServletHost servletHost) {
         this.component = component;
         this.service = service;
-        this.binding = binding;
+        this.binding = b;
+        this.jsonBinding = binding;
         this.servletHost = servletHost;
     }
 

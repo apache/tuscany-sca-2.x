@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.spi.utils.AbstractBinding;
 /**
  * A model for the JSONRPC binding.
  */
-public class JSONRPCBinding extends AbstractBinding {
+public class JSONRPCBinding {
     
     // empty as right now the json-rpc binding has no attributes
     
