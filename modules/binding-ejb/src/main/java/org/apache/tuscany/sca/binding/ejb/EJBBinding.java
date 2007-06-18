@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.sca.binding.ejb;
 
-import org.apache.tuscany.sca.spi.utils.AbstractBinding;
 
 
 /**
  * An implementation of EJBBinding.
  */
-public class EJBBinding extends AbstractBinding {
+public class EJBBinding {
 
     /**
      * corba location For exmaple,

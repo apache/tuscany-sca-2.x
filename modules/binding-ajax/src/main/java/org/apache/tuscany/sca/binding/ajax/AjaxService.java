@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ajax;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -30,12 +29,12 @@ public class AjaxService implements ComponentLifecycle {
 
     RuntimeComponent rc;
     RuntimeComponentService rcs;
-    Binding binding;
+    AjaxBinding binding;
     protected ServletHost servletHost;
     
     public static final String SERVLET_PATH = AjaxServlet.AJAX_SERVLET_PATH + "/*";
 
-    public AjaxService(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding, ServletHost servletHost) {
+    public AjaxService(RuntimeComponent rc, RuntimeComponentService rcs, AjaxBinding binding, ServletHost servletHost) {
         this.rc = rc;
         this.rcs = rcs;
         this.binding = binding;

@@ -30,11 +30,12 @@ public class ScriptImplementation extends DynamicImplementation {
     protected String scriptSrc;
     protected String scriptLanguage;
 
+    public String getScript() {
+        return scriptName;
+    }
+
     public void setScript(String scriptName) {
         this.scriptName = scriptName;
-
-        // TODO: hack so the .componentType side file is found. how to do this?
-        setURI(Thread.currentThread().getContextClassLoader().getResource(scriptName).toString());
     }
 
     public void setLanguage(String language) {
@@ -43,10 +44,6 @@ public class ScriptImplementation extends DynamicImplementation {
 
     public void setElementText(String elementText) {
         scriptSrc = elementText;
-    }
-
-    public String getScriptName() {
-        return scriptName;
     }
 
     public String getScriptLanguage() {

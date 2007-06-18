@@ -39,7 +39,7 @@ public class ScriptImplementationActivator implements ImplementationActivator<Sc
     }
 
     public InvokerFactory createInvokerFactory(RuntimeComponent rc, ComponentType ct, ScriptImplementation implementation) {
-        return new ScriptInvokerFactory(rc, implementation, propertyFactory);
+        return new ScriptInvokerFactory(rc, ct, implementation, propertyFactory);
     }
 
 }

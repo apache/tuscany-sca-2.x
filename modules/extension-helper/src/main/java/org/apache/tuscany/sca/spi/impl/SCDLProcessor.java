@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.spi.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,13 +38,20 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.spi.utils.AbstractStAXArtifactProcessor;
 import org.apache.tuscany.sca.spi.utils.DynamicImplementation;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * An SCDL ArtifactProcessor which uses the Implementation class getters/setters
@@ -170,4 +178,64 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
     public void write(Implementation arg0, XMLStreamWriter arg1) throws ContributionWriteException, XMLStreamException {
     }
 
+    protected void addSideFileComponentType(String name, Implementation impl, ModelResolver resolver) {
+//    protected void addSideFileComponentType(Implementation impl, ModelResolver resolver) {
+
+        ComponentType componentType;
+        try {
+            componentType = getComponentType(resolver, impl);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+
+        if (componentType != null && !componentType.isUnresolved()) {
+            for (Reference reference : componentType.getReferences()) {
+                impl.getReferences().add(reference);
+            }
+            for (Service service : componentType.getServices()) {
+                impl.getServices().add(service);
+            }
+            for (Property property : componentType.getProperties()) {
+                impl.getProperties().add(property);
+            }
+            if (componentType.getConstrainingType() != null) {
+                impl.setConstrainingType(componentType.getConstrainingType());
+            }
+        }
+    }
+
+    private ComponentType getComponentType(ModelResolver resolver, Implementation impl) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        for (Object o :((ModelResolverImpl)resolver).getModels()) {
+            if (o instanceof ComponentType) {
+                ComponentType ct = (ComponentType)o;
+                String uri = ct.getURI();
+                if (uri != null && uri.endsWith(".componentType")) {
+                    String name = uri.substring(0, uri.lastIndexOf('.'));
+                    for (Method m : getGetters()) {
+                        String value = (String) m.invoke(impl, new Object[]{});
+                        if (value != null && name.endsWith(value.substring(0, value.lastIndexOf('.')))) {
+                            return ct;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Method> getGetters() {
+        List<Method> ms = new ArrayList<Method>();
+        for (Method setter : attributeSetters.values()) {
+            String s = getFieldName(setter);
+            for (Method m : implementationClass.getMethods()) {
+                String name = m.getName();
+                if (name.length() > 3 && name.startsWith("get")) {
+                    if (s.endsWith(name.substring(4))) {
+                        ms.add(m);
+                    }
+                }
+            }
+        }
+        return ms;
+    }
 }

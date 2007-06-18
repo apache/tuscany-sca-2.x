@@ -17,17 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ajax;
+package org.apache.tuscany.sca.spi.impl;
 
 import org.apache.tuscany.sca.spi.utils.AbstractBinding;
 
+public class PojoBinding extends AbstractBinding {
 
-
-/**
- * The runtime representation of the <binding.ajax> SCDL
- */
-public class AjaxBinding extends AbstractBinding {
-
-    // Empty as <binding.ajax> doesn't use any additional attributes or elements (yet).
+    Object userBinding;
     
+    public PojoBinding(Object userImpl) {
+        this.userBinding = userImpl;
+    }
+
+    public Object getUserBinding() {
+        return userBinding;
+    }
+
 }

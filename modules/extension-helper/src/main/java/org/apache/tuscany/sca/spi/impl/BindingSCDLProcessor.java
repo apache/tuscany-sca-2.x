@@ -97,7 +97,7 @@ public class BindingSCDLProcessor implements StAXArtifactProcessor {
     }
 
     public Binding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        Binding impl;
+        Object impl;
         try {
             impl = bindingClass.newInstance();
         } catch (Exception e) {
@@ -130,7 +130,10 @@ public class BindingSCDLProcessor implements StAXArtifactProcessor {
             reader.next();
         }
 
-        return impl;
+        if (!(impl instanceof Binding)) {
+            impl = new PojoBinding(impl);
+        }
+        return (Binding)impl;
     }
 
     public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
