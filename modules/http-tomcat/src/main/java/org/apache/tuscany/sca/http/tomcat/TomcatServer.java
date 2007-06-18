@@ -22,10 +22,10 @@ import java.net.URI;
 import java.util.concurrent.Executor;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardEngine;
@@ -35,6 +35,7 @@ import org.apache.coyote.http11.Http11Protocol;
 import org.apache.tomcat.util.buf.MessageBytes;
 import org.apache.tomcat.util.http.mapper.MappingData;
 import org.apache.tomcat.util.net.JIoEndpoint;
+import org.apache.tuscany.sca.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.http.ServletMappingException;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -165,9 +166,10 @@ public class TomcatServer implements ServletHost {
         }
     }
 
-    public void addServletMapping(String uri, Servlet servlet) {
+    public void addServletMapping(String strURI, Servlet servlet) {
+        URI uri = URI.create(strURI);
 
-        int port = URI.create(uri).getPort();
+        int port = uri.getPort();
         if (port == -1) {
             port = DEFAULT_PORT;
         }
@@ -187,14 +189,39 @@ public class TomcatServer implements ServletHost {
         }
 
         // Register the servlet mapping
-        String mapping = URI.create(uri).getPath();
+        ServletWrapper wrapper;
+        if (servlet instanceof DefaultResourceServlet) {
+            
+            // Optimize the handling of resource requests, use the Tomcat default servlet
+            // instead of our default resource servlet
+            String servletPath = uri.getPath();
+            if (servletPath.endsWith("*")) {
+                servletPath = servletPath.substring(0, servletPath.length()-1);
+            }
+            if (servletPath.endsWith("/")) {
+                servletPath = servletPath.substring(0, servletPath.length()-1);
+            }
+            DefaultResourceServlet resourceServlet = (DefaultResourceServlet)servlet;
+            TomcatDefaultServlet defaultServlet = new TomcatDefaultServlet(servletPath, resourceServlet.getDocumentRoot());
+            wrapper = new ServletWrapper(defaultServlet);
+            
+        } else {
+            wrapper = new ServletWrapper(servlet);
+        }
+        String mapping = uri.getPath();
         Context context = host.map(mapping);
-        Wrapper wrapper = new ServletWrapper(servlet);
         wrapper.setName(mapping);
         wrapper.addMapping(mapping);
         context.addChild(wrapper);
         context.addServletMapping(mapping, mapping);
         connector.getMapper().addWrapper("localhost", "", mapping, wrapper);
+
+        // Initialize the servlet
+        try {
+            wrapper.initServlet();
+        } catch (ServletException e) {
+            throw new ServletMappingException(e);
+        }
     }
 
     public Servlet removeServletMapping(String uri) {
@@ -212,6 +239,7 @@ public class TomcatServer implements ServletHost {
             ServletWrapper servletWrapper = (ServletWrapper)md.wrapper;
             context.removeServletMapping(mapping);
             context.removeChild(servletWrapper);
+            servletWrapper.destroyServlet();
             return servletWrapper.getServlet();
         } else {
             return null;

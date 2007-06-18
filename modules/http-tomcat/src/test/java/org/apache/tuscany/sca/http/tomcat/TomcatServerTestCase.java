@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
@@ -47,6 +49,15 @@ public class TomcatServerTestCase extends TestCase {
     private static final String REQUEST1_CONTENT = "";
     private static final String REQUEST1 =
         REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
+
+    private static final String REQUEST2_HEADER =
+        "GET /webcontent/test.html HTTP/1.0\n" + "Host: localhost\n"
+            + "Content-Type: text/xml\n"
+            + "Connection: close\n"
+            + "Content-Length: ";
+    private static final String REQUEST2_CONTENT = "";
+    private static final String REQUEST2 =
+        REQUEST2_HEADER + REQUEST2_CONTENT.getBytes().length + "\n\n" + REQUEST2_CONTENT;
 
     private static final int HTTP_PORT = 8085;
 
@@ -133,6 +144,47 @@ public class TomcatServerTestCase extends TestCase {
         service.destroy();
     }
 
+    public void testResourceServlet() throws Exception {
+        TomcatServer service = new TomcatServer(workScheduler);
+        service.init();
+        
+        String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
+        documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
+        DefaultResourceServlet resourceServlet = new DefaultResourceServlet(documentRoot);
+        TestResourceServlet servlet = new TestResourceServlet(resourceServlet);
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/webcontent/*", servlet);
+        
+        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+        OutputStream os = client.getOutputStream();
+        os.write(REQUEST2.getBytes());
+        os.flush();
+        
+        String document = read(client);
+        assertTrue(document.indexOf("<html><body><p>hello</body></html>") != -1);
+        
+        service.destroy();
+    }
+
+    public void testDefaultServlet() throws Exception {
+        TomcatServer service = new TomcatServer(workScheduler);
+        service.init();
+        
+        String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
+        documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
+        DefaultResourceServlet resourceServlet = new DefaultResourceServlet(documentRoot);
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/webcontent/*", resourceServlet);
+        
+        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+        OutputStream os = client.getOutputStream();
+        os.write(REQUEST2.getBytes());
+        os.flush();
+        
+        String document = read(client);
+        assertTrue(document.indexOf("<html><body><p>hello</body></html>") != -1);
+        
+        service.destroy();
+    }
+
     private static String read(Socket socket) throws IOException {
         BufferedReader reader = null;
         try {
@@ -166,5 +218,37 @@ public class TomcatServerTestCase extends TestCase {
             }
         }
 
+    }
+
+    private class TestResourceServlet extends HttpServlet {
+        private static final long serialVersionUID = 1L;
+        private HttpServlet delegate;
+        
+        public TestResourceServlet(HttpServlet delegate) {
+            this.delegate = delegate;
+        }
+        
+        @Override
+        public void init() throws ServletException {
+            super.init();
+            delegate.init();
+        }
+
+        @Override
+        public void init(ServletConfig config) throws ServletException {
+            super.init();
+            delegate.init(config);
+        }
+        
+        @Override
+        protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            delegate.service(req, resp);
+        }
+        
+        @Override
+        public void destroy() {
+            super.destroy();
+            delegate.destroy();
+        }
     }
 }

@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.http.tomcat;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
 import org.apache.catalina.core.StandardWrapper;
 
@@ -42,6 +43,14 @@ public class ServletWrapper extends StandardWrapper {
 
     public Servlet getServlet() {
         return servlet;
+    }
+    
+    public void initServlet() throws ServletException {
+        servlet.init(facade);
+    }
+    
+    public void destroyServlet() {
+        servlet.destroy();
     }
 
 }
