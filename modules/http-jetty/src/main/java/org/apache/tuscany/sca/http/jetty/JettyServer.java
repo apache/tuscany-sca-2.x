@@ -26,6 +26,7 @@ import java.util.List;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
+import org.apache.tuscany.sca.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.http.ServletMappingException;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -34,6 +35,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.security.SslSocketConnector;
+import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
@@ -188,7 +190,26 @@ public class JettyServer implements ServletHost {
             }
         }
 
-        ServletHolder holder = new ServletHolder(servlet);
+        // Register the servlet mapping
+        ServletHolder holder;
+        if (servlet instanceof DefaultResourceServlet) {
+            
+            // Optimize the handling of resource requests, use the Jetty default servlet
+            // instead of our default resource servlet
+            String servletPath = uri.getPath();
+            if (servletPath.endsWith("*")) {
+                servletPath = servletPath.substring(0, servletPath.length()-1);
+            }
+            if (servletPath.endsWith("/")) {
+                servletPath = servletPath.substring(0, servletPath.length()-1);
+            }
+            DefaultResourceServlet resourceServlet = (DefaultResourceServlet)servlet;
+            DefaultServlet defaultServlet = new JettyDefaultServlet(servletPath, resourceServlet.getDocumentRoot());
+            holder = new ServletHolder(defaultServlet);
+            
+        } else {
+            holder = new ServletHolder(servlet);
+        }
         servletHandler.addServlet(holder);
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
