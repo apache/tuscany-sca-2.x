@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -88,7 +89,11 @@ public class BindingsActivator implements ModuleActivator {
                                 return null;
                             }
                             public void start() {
-                                factory = bindingActivator.createInvokerFactory(rc, rcr, b);
+                                if (b instanceof PojoBinding) {
+                                    factory = bindingActivator.createInvokerFactory(rc, rcr, ((PojoBinding)b).getUserBinding());
+                                } else {
+                                    factory = bindingActivator.createInvokerFactory(rc, rcr, b);
+                                }
                                 if (factory instanceof ComponentLifecycle) {
                                     ((ComponentLifecycle)factory).start();
                                 }
@@ -106,8 +111,14 @@ public class BindingsActivator implements ModuleActivator {
                     public ServiceBindingProvider createServiceBindingProvider(final RuntimeComponent rc,
                                                                                final RuntimeComponentService rcs,
                                                                                final Binding b) {
+                        final Object binding;
+                        if (b instanceof PojoBinding) {
+                            binding = ((PojoBinding)b).getUserBinding();
+                        } else {
+                            binding = b;
+                        }
                         return new ServiceBindingProvider(){
-                            ComponentLifecycle listener = bindingActivator.createService(rc, rcs, b);
+                            ComponentLifecycle listener = bindingActivator.createService(rc, rcs, binding);
                             public InterfaceContract getBindingInterfaceContract() {
                                 return null;
                             }
@@ -120,7 +131,12 @@ public class BindingsActivator implements ModuleActivator {
                     }
 
                     public Class getModelType() {
-                        return bindingActivator.getBindingClass();
+                        Class c = bindingActivator.getBindingClass();
+                        if (Binding.class.isAssignableFrom(c)) {
+                            return c;
+                        } else {
+                            return PojoBinding.class;
+                        }
                     }
                 });
             }

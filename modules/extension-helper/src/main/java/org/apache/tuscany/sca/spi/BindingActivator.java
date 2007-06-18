@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.spi;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -56,7 +55,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * file META-INF/services/org.apache.tuscany.sca.spi.BindingActivator and
  * that file lists the BindingActivator implementation class name.
  */
-public interface BindingActivator<B extends Binding> {
+public interface BindingActivator<B> {
 
     Class<B> getBindingClass();
 

@@ -29,6 +29,7 @@ import javax.script.ScriptException;
 import org.apache.axiom.om.OMElement;
 import org.apache.bsf.xml.XMLHelper;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -49,15 +50,15 @@ public class ScriptInvokerFactory implements InvokerFactory {
     protected ScriptEngine scriptEngine;
     protected XMLHelper xmlHelper;
 
-    public ScriptInvokerFactory(RuntimeComponent rc, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
-        init(rc, implementation, propertyFactory);
+    public ScriptInvokerFactory(RuntimeComponent rc, ComponentType ct, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
+        init(rc, ct, implementation, propertyFactory);
     }
     
     public Invoker createInvoker(Operation operation) {
         return new ScriptInvoker(scriptEngine, xmlHelper, operation);
     }
     
-    protected void init(RuntimeComponent rc, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
+    protected void init(RuntimeComponent rc, ComponentType ct, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
         try {
             scriptEngine = getScriptEngineByExtension(implementation.getScriptLanguage());
             if (scriptEngine == null) {
@@ -67,11 +68,11 @@ public class ScriptInvokerFactory implements InvokerFactory {
                 throw new ObjectCreationException("script engine does not support Invocable: " + scriptEngine);
             }
             
-            for (Reference reference : implementation.getReferences()) {
+            for (Reference reference : ct.getReferences()) {
                 scriptEngine.put(reference.getName(), createReferenceProxy(reference.getName(), rc));
             }
 
-            for (Property property : rc.getProperties()) {
+            for (Property property : implementation.getProperties()) {
                 ObjectFactory<?> propertyValueFactory = propertyFactory.createValueFactory(property);
                 if ( propertyValueFactory != null) {
                     scriptEngine.put(property.getName(), propertyValueFactory.getInstance());
