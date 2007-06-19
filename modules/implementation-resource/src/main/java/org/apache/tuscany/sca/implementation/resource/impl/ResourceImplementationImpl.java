@@ -94,7 +94,6 @@ public class ResourceImplementationImpl implements ResourceImplementation {
     
     public void setLocationURL(URL url) {
         this.url = url;
-        System.out.println("URL = " + url);
     }
     
     public ConstrainingType getConstrainingType() {
