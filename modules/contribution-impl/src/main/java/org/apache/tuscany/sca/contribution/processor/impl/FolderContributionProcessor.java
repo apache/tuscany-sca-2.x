@@ -62,9 +62,13 @@ public class FolderContributionProcessor implements PackageProcessor {
     private void traverse(List<URI> fileList, File file, File root) throws IOException {
         if (file.isFile()) {
             fileList.add(root.toURI().relativize(file.toURI()));
+            
         } else if (file.isDirectory()) {
             // FIXME: Maybe we should externalize it as a property
             // Regular expression to exclude .xxx files
+            
+            fileList.add(root.toURI().relativize(file.toURI()));
+            
             File[] files = file.listFiles(FileHelper.getFileFilter("[^\u002e].*", true));
             for (int i = 0; i < files.length; i++) {
                 traverse(fileList, files[i], root);
