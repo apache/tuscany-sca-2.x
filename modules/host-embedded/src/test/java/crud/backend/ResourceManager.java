@@ -22,15 +22,13 @@ package crud.backend;
 import java.util.HashMap;
 import java.util.Map;
 
-import crud.CRUD;
-
 /**
  * A fake resource manager implementation used as a backend by the sample
  * CRUD component implementation.
  *  
  * @version $Rev$ $Date$
  */
-public class ResourceManager implements CRUD {
+public class ResourceManager {
     private static int counter;
     private static final Map<String, Object> store = new HashMap<String, Object>();
     private String directory;
@@ -91,21 +89,4 @@ public class ResourceManager implements CRUD {
         return store.put(id, resource);
     }
 
-    //FIXME We shouldn't have to implement the CRUD interface here
-    
-    public String create(Object resource) {
-        return createResource(resource);
-    }
-    
-    public Object retrieve(String id) {
-        return retrieveResource(id);
-    }
-    
-    public Object update(String id, Object resource) {
-        return updateResource(id, resource);
-    }
-    
-    public void delete(String id) {
-        deleteResource(id);
-    }
 }
