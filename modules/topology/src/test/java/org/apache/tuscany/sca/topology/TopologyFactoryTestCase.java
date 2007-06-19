@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.topology;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 
 

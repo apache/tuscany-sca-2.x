@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.topology;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents an SCA node implementation. An SCA node is a running instance
@@ -43,6 +44,13 @@ public interface Node {
      * @param name
      */
     public void setName(String name);
+    
+    /**
+     * Get domain names
+     * 
+     * @return
+     */
+    public Set<String> getDomainNames();    
     
     /**
      * Return the Scheme/base URL pairs that this node uses for the 
