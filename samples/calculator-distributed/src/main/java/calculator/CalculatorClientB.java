@@ -20,7 +20,15 @@
 package calculator;
 
 import java.io.IOException;
+import java.net.URL;
 
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
+import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
@@ -29,16 +37,47 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class CalculatorClientB {
     public static void main(String[] args) throws Exception {
-
-        SCADomain scaDomain = SCADomain.newInstance("sca://mydomain/B","/","Calculator.composite");
-
+        ClassLoader cl = CalculatorClientA.class.getClassLoader();
+        DistributedSCADomain domain = new DistributedSCADomain(cl,
+                                                               "TheDomain",
+                                                               "nodeB");
+        //Start the domain
+        domain.start();
+        
+        // configure the topology - should be done by file or remotely
+        ComponentRegistry componentRegistry = 
+            domain.getNodeService(ComponentRegistry.class, "ComponentRegistry");
+        
+        componentRegistry.setComponentNode("CalculatorServiceComponent", "nodeA");
+        componentRegistry.setComponentNode("AddServiceComponent", "nodeB");        
+        
+        // Contribute the SCA application
+        ContributionService contributionService = domain.getContributionService();
+        ModelResolver resolver = new ModelResolverImpl(cl);
+        URL contributionURL = new URL("file:/C:/simon/Projects/Tuscany/java/java-head/sca/samples/calculator-distributed/target/sample-calculator-distributed.jar");
+        Contribution contribution = contributionService.contribute("http://calculator", 
+                                                                   contributionURL, 
+                                                                   resolver, 
+                                                                   false);
+        Composite composite = contribution.getDeployables().get(0);
+        
+        // add the contributed composite to the domain
+        domain.getDomainCompositeHelper().addComposite(composite);  
+        
+        // activate the domain, i.e. build the composite and
+        // create the wires
+        domain.getDomainCompositeHelper().activateDomain();
+        
+        // start the components, i.e. bring any exposed services on line
+        domain.getDomainCompositeHelper().startComponents();
+        
         try {
             System.out.println("Runtime sca://mydomain/B started (press enter to shutdown)");
             System.in.read();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        scaDomain.close();
+        domain.close();
     }
 
 }

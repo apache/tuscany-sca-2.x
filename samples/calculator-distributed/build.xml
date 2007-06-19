@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="calculator" default="compile">
-    <property name="test.class" value="calculator.CalculatorClient" />
+    <property name="test.class" value="calculator.CalculatorNode" />
 	<property name="test.jar"   value="sample-calculator.jar" />
 	
 	<!-- a classpath so I can test without building the distribution jars -->
@@ -54,6 +54,11 @@
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-host-embedded/1.0-incubating-SNAPSHOT/tuscany-host-embedded-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-binding-jms/1.0-incubating-SNAPSHOT/tuscany-binding-jms-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/org/apache/activemq/apache-activemq/4.1.1/apache-activemq-4.1.1.jar"/>
+    	<!--pathelement location="${m2.repo}/org/apache/activemq/apache-activemq/4.2-SNAPSHOT/apache-activemq-4.2-SNAPSHOT.jar"/-->
+    	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-binding-sca/1.0-incubating-SNAPSHOT/tuscany-binding-sca-1.0-incubating-SNAPSHOT.jar"/>    	
+    	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-distributed/1.0-incubating-SNAPSHOT/tuscany-distributed-1.0-incubating-SNAPSHOT.jar"/>
+    	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-topology/1.0-incubating-SNAPSHOT/tuscany-topology-1.0-incubating-SNAPSHOT.jar"/>
+    	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-topology-xml/1.0-incubating-SNAPSHOT/tuscany-topology-xml-1.0-incubating-SNAPSHOT.jar"/>    	
     	<pathelement location="target/classes"/>    	
     </path>	
     		
@@ -81,7 +86,7 @@
         </jar>    	
     </target>	
 	
-    <target name="run-classesA">
+    <target name="runA">
         <java classname="${test.class}A"
               fork="true">
             <classpath>
@@ -92,7 +97,7 @@
         </java>
     </target>
 	
-    <target name="run-classesB">
+    <target name="runB">
         <java classname="${test.class}B"
               fork="true">
             <classpath>
@@ -103,25 +108,6 @@
         </java>
     </target>	
 	
-    <target name="runA">
-        <java classname="${test.class}A"
-              fork="true">
-            <classpath>
-                <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>    	
-    </target>	
-	
-    <target name="runB">
-        <java classname="${test.class}B"
-              fork="true">
-            <classpath>
-                <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>    	
-    </target>	
 	
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">

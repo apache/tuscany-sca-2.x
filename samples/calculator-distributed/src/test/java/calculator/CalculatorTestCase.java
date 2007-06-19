@@ -18,41 +18,64 @@
  */
 package calculator;
 
-import java.util.Properties;
+import junit.framework.Assert;
 
-import junit.framework.TestCase;
-
+import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * This shows how to test the Calculator service component.
+ * This shows how to test the Calculator service component in a 
+ * distributed runtime
  */
-public class CalculatorTestCase extends TestCase {
+public class CalculatorTestCase {
 
-    private CalculatorService calculatorService;
-    private SCADomain scaDomain;
+    private static BrokerService broker;
+    private static CalculatorNode nodeA;
+    private static SCADomain domainA;
+    private static CalculatorNode nodeB;
+    private static SCADomain domainB;
+    private static CalculatorService calculatorService;
 
-    protected void setUp() throws Exception {
-        // set system properties in order to get a 
-        // distributed domain
-        Properties properties = new Properties(System.getProperties());
-        properties.put("org.apache.tuscany.sca.host.embedded.SCADomain",
-                       "org.apache.tuscany.sca.host.embedded.impl.DistributedSCADomain");
-        System.setProperties(properties);
+    @BeforeClass
+    public static void init() throws Exception {
+        System.out.println("Setting but distributed nodes");
+        
+        // start the activemq broker
+        broker = new BrokerService();
+        broker.addConnector("tcp://localhost:61616");
+        broker.start();        
+        
+        // start the node that runs the 
+        // calculator component
+        nodeA = new CalculatorNode("domainA","nodeA");
+        domainA = nodeA.startDomain();
+        
+        // start the node that runs the 
+        // add component
+        nodeB = new CalculatorNode("domainA","nodeB");
+        domainB = nodeB.startDomain();
+        
+        calculatorService = domainA.getService(CalculatorService.class, "CalculatorServiceComponent");
+   }
 
-        // construct the portion of the distributed domain 
-        // that this process represents
-        scaDomain = SCADomain.newInstance("Calculator.composite");
-        calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
+    @AfterClass
+    public static void destroy() throws Exception {
+        // stop the domains
+        nodeA.stopDomain();
+        nodeB.stopDomain();
+        
+        // stop the ActiveMQ broker
+        broker.stop();
     }
 
-    protected void tearDown() throws Exception {
-        scaDomain.close();
-    }
-
+    @Test
     public void testCalculator() throws Exception {
+        
         // Calculate
-        assertEquals(calculatorService.add(3, 2), 5.0);
+        Assert.assertEquals(calculatorService.add(3, 2), 5.0);
 //        assertEquals(calculatorService.subtract(3, 2), 1.0);
 //        assertEquals(calculatorService.multiply(3, 2), 6.0);
 //        assertEquals(calculatorService.divide(3, 2), 1.5);

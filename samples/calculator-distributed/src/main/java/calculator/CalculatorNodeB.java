@@ -16,16 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package calculator;
 
-/**
- * An implementation of the Add service
- */
-public class AddServiceImpl implements AddService {
+import java.io.IOException;
 
-    public double add(double n1, double n2) {
-        System.out.println("AddService - add " + n1 + " and " + n2);
-        return n1 + n2;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+
+/**
+ * This client program shows how to create an SCA runtime, start it,
+ * and locate and invoke a SCA component
+ */
+public class CalculatorNodeB {
+
+    public static void main(String[] args) throws Exception {
+              
+        // start the node that runs the 
+        // calculator component
+        CalculatorNode node = new CalculatorNode("domainA","nodeB");
+        node.startDomain();
+        
+        // Calculate
+        try {
+            System.out.println("Node started (press enter to shutdown)");
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }  
+        
+        node.stopDomain();
+             
     }
 
 }

@@ -52,6 +52,7 @@ public class CalculatorServiceImpl implements CalculatorService {
     }
 
     public double add(double n1, double n2) {
+        System.out.println("CalculatorService - add " + n1 + " and " + n2);
         return addService.add(n1, n2);
     }
 

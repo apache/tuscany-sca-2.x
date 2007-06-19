@@ -18,9 +18,11 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
            name="Calculator">
 
-    <component name="CalculatorServiceComponent" runtimeId="sca://mydomain/A">
+    <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" target="AddServiceComponent" />
 <!--        
@@ -30,19 +32,19 @@
 -->
     </component>
 
-    <component name="AddServiceComponent" runtimeId="sca://mydomain/B">
+    <component name="AddServiceComponent">
         <implementation.java class="calculator.AddServiceImpl" />
     </component>
 <!--
-    <component name="SubtractServiceComponent" runtimeId="sca://mydomain/B">
+    <component name="SubtractServiceComponent">
         <implementation.java class="calculator.SubtractServiceImpl" />
     </component>
 
-    <component name="MultiplyServiceComponent" runtimeId="sca://mydomain/B">
+    <component name="MultiplyServiceComponent">
         <implementation.java class="calculator.MultiplyServiceImpl" />
     </component>
 
-    <component name="DivideServiceComponent" runtimeId="sca://mydomain/B">
+    <component name="DivideServiceComponent">
         <implementation.java class="calculator.DivideServiceImpl" />
     </component>
 -->

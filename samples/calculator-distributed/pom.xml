@@ -46,16 +46,45 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
         </dependency>
-
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distributed</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>   
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-topology</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-topology-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>                       
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-sca</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>    
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>           
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
             <scope>test</scope>
         </dependency>
-
+                
     </dependencies>
 
     <build>

@@ -57,17 +57,30 @@ import org.apache.tuscany.sca.topology.xml.TopologyDocumentProcessor;
 import org.apache.tuscany.sca.topology.xml.TopologyProcessor;
 
 /**
- * This client program shows how to create an SCA runtime, start it,
- * and locate and invoke a SCA component
+ * This is an example node implementation that uses the 
+ * distributed runtime to run the calculator sample
+ * We need to remove some of the function from here and 
+ * put it in the runtime proper 
  */
-public class CalculatorClientA {
+public class CalculatorNode {
+    
+    private DistributedSCADomain domain;
+    private String domainName;
+    private String nodeName;
+    
+    public CalculatorNode(String domainName, String nodeName) {
+        this.domainName = domainName;
+        this.nodeName = nodeName;
+    }
+    
 
-    public static void main(String[] args) throws Exception {
+    public SCADomain startDomain()
+      throws Exception {
               
-        ClassLoader cl = CalculatorClientA.class.getClassLoader();
-        DistributedSCADomain domain = new DistributedSCADomain(cl,
-                                                               "TheDomain",
-                                                               "nodeA");
+        ClassLoader cl = CalculatorNode.class.getClassLoader();
+        domain = new DistributedSCADomain(cl,
+                                          domainName,
+                                          nodeName);
         //Start the domain
         domain.start();
         
@@ -96,16 +109,13 @@ public class CalculatorClientA {
         domain.getDomainCompositeHelper().activateDomain();
         
         // start the components, i.e. bring any exposed services on line
-        domain.getDomainCompositeHelper().startComponents();
+        domain.getDomainCompositeHelper().startComponents();   
         
-        // do some application stuff
-        CalculatorService calculatorService = 
-            domain.getService(CalculatorService.class, "CalculatorServiceComponent");
-
-        // Calculate
-        System.out.println("3 + 2=" + calculatorService.add(3, 2));     
-        
-        //Start the domain
+        return domain;        
+    }
+    
+    public void stopDomain() {
+        //Stop the domain
         domain.close();        
     }
 
