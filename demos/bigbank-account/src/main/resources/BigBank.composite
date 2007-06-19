@@ -24,6 +24,13 @@
         <implementation.composite name="bb:AccountData"/>
     </component>
 
+    <component name="WebResourceComponent">
+    	<service name="Resource">
+    		<binding.resource uri="/"/>
+    	</service>
+        <implementation.resource location="web"/>
+    </component>
+
     <reference name="CalculatorReference" promote="AccountServiceComponent/calculatorService">
     	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
    	</reference> 
