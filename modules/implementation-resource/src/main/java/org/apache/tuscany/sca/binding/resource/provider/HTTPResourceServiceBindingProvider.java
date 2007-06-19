@@ -61,7 +61,7 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
                 uri += "*";
             }
         } else {
-            uri = "http://localhost:8080/" + this.component.getName() + "/*";
+            uri = "/" + this.component.getName() + "/*";
         }
     }
 
