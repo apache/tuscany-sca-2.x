@@ -25,18 +25,6 @@
         //djConfig.debugAtAllCosts = true;
     </script>
 
-    <script type="text/javascript" src="services/SCA/scripts"></script>
-
-    <script language="JavaScript">
-       SCA = new JSONRpcClient("services/AccountJSONService");
-    
-       function getAccountReport() {
-          var name = document.getElementById("name").value;
-          var result = SCA.AccountJSONService.getAccountReport(name);
-          document.getElementById('balance').innerHTML=result;
-       }
-    </script>
-    
     <script type="text/javascript" src="dojo/dojo.js"> 
     </script>
 
@@ -59,9 +47,9 @@
         <td colspan="2">
            <p>This example uses the <a href="http://dojotoolkit.org/">Dojo Toolkit</a>
            to create a JavaScript object <code>accountService</code> for the service at
-           <b>services/AccountJSONService</b>
+           <b>SCADomain/AccountJSONService</b>
            using <a href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's RPC classes</a>
-           and providing them with <a href="services/AccountJSONService?smd">services/AccountJSONService?smd</a>
+           and providing them with <a href="SCADomain/AccountJSONService?smd">SCADomain/AccountJSONService?smd</a>
            for <a href="http://dojo.jot.com/SMD">Simple Method Description (SMD)</a> input.</p>
            <p>It then creates a Dojo button that will envoke the <code>getAccountReport</code> method of the <code>accountService</code> object.</p>
       </tr>
@@ -71,7 +59,7 @@
       </tr>
       <tr>
         <td>
-            <br><div id="myaccount" dojoType="Button" onClick='accountService.getAccountReport("Dojo").addCallback(contentCallBack);'>accountService.getAccountReport("Dojo").addCallback(contentCallBack);</div><br>
+            <br><div id="myaccount" dojoType="Button" onClick='accountService.getAccountReport("Dojo1234").addCallback(contentCallBack);'>getAccountReport("Dojo1234")</div><br>
         </td>
         <td>           
             <div id="ReturnedContent">None Yet.</div>
@@ -84,9 +72,6 @@
       </tr>
     </table>    
     
-    
-   
-    
     <script type="text/javascript">
     
     	function contentCallBack(result) {
@@ -94,7 +79,7 @@
     		handlerNode.innerHTML = "<p>" + result + "</p>" ;
     	}
     
-    	var accountService = new dojo.rpc.JsonService("services/AccountJSONService?smd");
+    	var accountService = new dojo.rpc.JsonService("SCADomain/AccountJSONService?smd");
     
     </script>
        
