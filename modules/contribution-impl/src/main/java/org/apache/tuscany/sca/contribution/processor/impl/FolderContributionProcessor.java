@@ -67,7 +67,11 @@ public class FolderContributionProcessor implements PackageProcessor {
             // FIXME: Maybe we should externalize it as a property
             // Regular expression to exclude .xxx files
             
-            fileList.add(root.toURI().relativize(file.toURI()));
+            String uri = root.toURI().relativize(file.toURI()).toString();
+            if (uri.endsWith("/")) {
+                uri = uri.substring(0, uri.length() - 1);
+            }
+            fileList.add(URI.create(uri));
             
             File[] files = file.listFiles(FileHelper.getFileFilter("[^\u002e].*", true));
             for (int i = 0; i < files.length; i++) {
