@@ -80,9 +80,6 @@ public class JarContributionProcessor implements PackageProcessor {
                     // EOF
                     break;
                 }
-                if (entry.isDirectory()) {
-                    continue;
-                }
 
                 // FIXME: Maybe we should externalize the filter as a property
                 if (!entry.getName().startsWith(".")) {
