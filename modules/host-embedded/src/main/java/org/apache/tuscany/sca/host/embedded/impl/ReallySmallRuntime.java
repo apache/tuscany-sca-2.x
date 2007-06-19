@@ -91,6 +91,7 @@ public class ReallySmallRuntime {
         SCABindingFactory scaBindingFactory = new DefaultSCABindingFactory();
         factories.addFactory(scaBindingFactory);
         ContributionFactory contributionFactory = new ContributionFactoryImpl(); 
+        factories.addFactory(contributionFactory);
         
         // Create a contribution service
         contributionService = ReallySmallRuntimeBuilder.createContributionService(registry,
