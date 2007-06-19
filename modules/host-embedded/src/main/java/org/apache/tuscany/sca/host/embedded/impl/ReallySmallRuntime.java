@@ -24,6 +24,8 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultModelFactoryExtensionPoint;
@@ -88,9 +90,11 @@ public class ReallySmallRuntime {
         factories.addFactory(policyFactory);
         SCABindingFactory scaBindingFactory = new DefaultSCABindingFactory();
         factories.addFactory(scaBindingFactory);
+        ContributionFactory contributionFactory = new ContributionFactoryImpl(); 
         
         // Create a contribution service
         contributionService = ReallySmallRuntimeBuilder.createContributionService(registry,
+                                                                                  contributionFactory,
                                                                                   assemblyFactory,
                                                                                   policyFactory,
                                                                                   mapper);

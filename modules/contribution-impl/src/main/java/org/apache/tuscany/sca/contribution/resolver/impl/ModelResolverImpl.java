@@ -42,7 +42,7 @@ public class ModelResolverImpl implements ModelResolver {
     public ModelResolverImpl(ClassLoader classLoader) {
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
     }
-
+    
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
         if (resolved != null) {

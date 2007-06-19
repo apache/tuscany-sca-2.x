@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 
 /**
@@ -31,13 +34,16 @@ import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 public class ArtifactResolverTestCase extends TestCase {
     
     private ModelResolver resolver;
+    private ContributionFactory factory;
     
     protected void setUp() throws Exception {
         resolver = new ModelResolverImpl(getClass().getClassLoader());
+        factory = new ContributionFactoryImpl();
     }
     
     protected void tearDown() throws Exception {
         resolver = null;
+        factory = null;
     }
     
     public void testResolved() {
@@ -67,7 +73,15 @@ public class ArtifactResolverTestCase extends TestCase {
         assertTrue(clazz.getJavaClass() == null);
     }
     
-    
+    public void testResolvedArtifact() {
+        DeployedArtifact artifact = factory.createDeployedArtifact();
+        artifact.setURI("foo/bar");
+        resolver.addModel(artifact);
+        DeployedArtifact x = factory.createDeployedArtifact();
+        x.setURI("foo/bar");
+        x = resolver.resolveModel(DeployedArtifact.class, x);
+        assertTrue(x == artifact);
+    }
     
     class Model {
         private String name;
