@@ -21,35 +21,52 @@ package org.apache.tuscany.sca.topology;
 
 
 /**
- * A factory for the topology model.
+ * Represents an SCA scheme. This holds the base URL that a runtime node
+ * will use by default to expose services
  *
  * @version $Rev$ $Date$
  */
-public interface TopologyFactory {
+public interface Scheme {
+    
+    /**
+     * Get the scheme name
+     * 
+     * @return
+     */
+    public String getName();
+    
+    /**
+     * Set the scheme name
+     * 
+     * @param name
+     */
+    public void setName(String name);
 
-    
     /**
-     * Creates a new runtime.
+     * Get the scheme base URL
+     * 
      * @return
      */
-    public Runtime createRuntime();    
+    public String getBaseURL();
     
     /**
-     * Creates a new node.
-     * @return
+     * Set the scheme base URL
+     * 
+     * @param name
      */
-    public Node createNode();   
+    public void setBaseURL(String urlString);
     
     /**
-     * Creates a new scheme.
+     * Get the name of the domain that this scheme belongs to
+     * 
      * @return
      */
-     public Scheme createScheme();    
+    public String getDomainName();
     
     /**
-     * Creates a new component.
-     * @return
+     * Set the name of the domain that this scheme belongs to
+     * 
+     * @param name
      */
-    public Component createComponent();      
-    
+    public void setDomainName(String domainName);
 }

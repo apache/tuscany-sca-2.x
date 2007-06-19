@@ -18,12 +18,9 @@
  */
 package org.apache.tuscany.sca.topology;
 
-import javax.xml.namespace.QName;
+import java.util.List;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
@@ -35,38 +32,74 @@ import junit.framework.TestCase;
  */
 public class TopologyFactoryTestCase extends TestCase {
 
-    TopologyFactory factory;
-    AssemblyFactory assemblyFactory;
+    TopologyFactory topologyFactory;
     
     public void setUp() throws Exception {
-        factory = new DefaultTopologyFactory();
-        assemblyFactory = new DefaultAssemblyFactory();
+        topologyFactory = new DefaultTopologyFactory();
     }
 
     public void tearDown() throws Exception {
-        factory = null;
-        assemblyFactory = null;
+        topologyFactory = null;
     }
 
-    public void testCreateTopology() {
+    public void testCreateRuntime() {
+        Runtime runtime = topologyFactory.createRuntime();
         
-        // Create a new topology composition
-        Composite topology = assemblyFactory.createComposite();
-        topology.setName(new QName("http://my.network", "MyTopology"));
-        
-        // Create SCA node A
-        Component nodeA = assemblyFactory.createComponent();
-        nodeA.setName("NodeA");
-        NodeImplementation implA = factory.createNodeImplementation();
-        nodeA.setImplementation(implA);
-        topology.getComponents().add(nodeA);
-        
-        // Create SCA node B
-        Component nodeB = assemblyFactory.createComponent();
-        nodeB.setName("NodeB");
-        NodeImplementation implB = factory.createNodeImplementation();
-        nodeB.setImplementation(implB);
-        topology.getComponents().add(nodeB);
+        List<Node> nodeList = runtime.getNodes();
+        assertNotNull(nodeList);
     }
 
+    public void testCreateNode() {
+        Node node = topologyFactory.createNode();
+        
+        node.setName("nodeA");
+        assertEquals(node.getName(), "nodeA");
+        
+        List<Scheme> schemeList = node.getSchemes("domainA");
+        assertNotNull(schemeList);   
+        
+        List<Component> componentList = node.getComponents("domainA");
+        assertNotNull(componentList); 
+    }
+    
+    public void testCreateScheme() {
+        Scheme scheme = topologyFactory.createScheme();
+        
+        scheme.setName("http");
+        assertEquals(scheme.getName(), "http");
+        
+        scheme.setBaseURL("http://localhost:8080");
+        assertEquals(scheme.getBaseURL(), "http://localhost:8080");
+        
+        scheme.setDomainName("domainA");
+        assertEquals(scheme.getDomainName(), "domainA");
+        
+        Node node = topologyFactory.createNode();
+        List<Scheme> schemeList = node.getSchemes("domainA");
+        schemeList.add(scheme);
+        List<Scheme> schemeList1 = node.getSchemes("domainA");
+        Scheme scheme1 = schemeList1.get(0);
+        
+        assertEquals(scheme1.getName(), "http");
+        
+    }
+    
+    public void testCreateComponent() {
+        Component component = topologyFactory.createComponent();
+        
+        component.setName("componentA");
+        assertEquals(component.getName(), "componentA");
+               
+        component.setDomainName("domainA");
+        assertEquals(component.getDomainName(), "domainA");
+        
+        Node node = topologyFactory.createNode();
+        List<Component> componentList = node.getComponents("domainA");
+        componentList.add(component);
+        List<Component> componentList1 = node.getComponents("domainA");
+        Component component1 = componentList1.get(0);
+        
+        assertEquals(component1.getName(), "componentA");        
+    }    
+    
 }

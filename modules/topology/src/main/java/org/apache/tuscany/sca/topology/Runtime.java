@@ -19,13 +19,22 @@
 
 package org.apache.tuscany.sca.topology;
 
-import org.apache.tuscany.sca.assembly.Implementation;
+import java.util.List;
+
 
 /**
- * Represents an SCA node implementation.
+ * Represents an SCA runtime.
+ * 
+ * TBD - just a place holder at the moment
  *
  * @version $Rev$ $Date$
  */
-public interface NodeImplementation extends Implementation {
+public interface Runtime {
 
+    /**
+     * Returns the list of nodes that form this runtime
+     * 
+     * @return
+     */
+    public List<Node> getNodes();
 }

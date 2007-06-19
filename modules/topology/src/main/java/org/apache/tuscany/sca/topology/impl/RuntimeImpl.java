@@ -17,39 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.topology;
+package org.apache.tuscany.sca.topology.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tuscany.sca.topology.Runtime;
+import org.apache.tuscany.sca.topology.Node;
 
 /**
- * A factory for the topology model.
+ * Represents an SCA runtime.
+ * 
+ * TBD - just a place holder at the moment
  *
  * @version $Rev$ $Date$
  */
-public interface TopologyFactory {
+public class RuntimeImpl implements Runtime {
+    private List<Node> nodes = new ArrayList<Node>();
+    
+    public List<Node> getNodes() {
+        return nodes;
+    }
 
-    
-    /**
-     * Creates a new runtime.
-     * @return
-     */
-    public Runtime createRuntime();    
-    
-    /**
-     * Creates a new node.
-     * @return
-     */
-    public Node createNode();   
-    
-    /**
-     * Creates a new scheme.
-     * @return
-     */
-     public Scheme createScheme();    
-    
-    /**
-     * Creates a new component.
-     * @return
-     */
-    public Component createComponent();      
-    
 }

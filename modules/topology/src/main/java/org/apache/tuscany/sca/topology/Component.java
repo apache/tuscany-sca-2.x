@@ -20,36 +20,47 @@
 package org.apache.tuscany.sca.topology;
 
 
+import javax.xml.namespace.QName;
+
 /**
- * A factory for the topology model.
+ * Represents an SCA component and is used to represent which components
+ * will run on a node
  *
  * @version $Rev$ $Date$
  */
-public interface TopologyFactory {
-
+public interface Component {
     
     /**
-     * Creates a new runtime.
+     * Get the compoent name
+     * 
      * @return
      */
-    public Runtime createRuntime();    
+    public String getName();
     
     /**
-     * Creates a new node.
-     * @return
+     * Set the compoent name
+     * 
+     * @param name
      */
-    public Node createNode();   
+    public void setName(String name);
     
     /**
-     * Creates a new scheme.
+     * Get the name of the domain that this scheme belongs to
+     * Not sure in this case whether the domain name should
+     * be part of the component name but am keeping it 
+     * separate for now
+     * 
      * @return
      */
-     public Scheme createScheme();    
+    public String getDomainName();
     
     /**
-     * Creates a new component.
-     * @return
+     * Set the name of the domain that this scheme belongs to
+     * Not sure in this case whether the domain name should
+     * be part of the component name but am keeping it 
+     * separate for now     
+     * 
+     * @param name
      */
-    public Component createComponent();      
-    
+    public void setDomainName(String domainName);    
 }

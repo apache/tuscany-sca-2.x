@@ -19,37 +19,47 @@
 
 package org.apache.tuscany.sca.topology;
 
+import java.util.List;
 
 /**
- * A factory for the topology model.
+ * Represents an SCA node implementation. An SCA node is a running instance
+ * of a program able to run SCA assemblies. A distributes runtime contains
+ * main nodes
  *
  * @version $Rev$ $Date$
  */
-public interface TopologyFactory {
+public interface Node {
+    
+    /**
+     * Get the node name
+     * 
+     * @return
+     */
+    public String getName();
+    
+    /**
+     * Set the node name
+     * 
+     * @param name
+     */
+    public void setName(String name);
+    
+    /**
+     * Return the Scheme/base URL pairs that this node uses for the 
+     * specified domain. 
+     * 
+     * @param domainName
+     * @return
+     */    
+    public List<Scheme> getSchemes(String domainName);
 
-    
     /**
-     * Creates a new runtime.
+     * Return the list of components that this node will run for the
+     * specified domain
+     * 
+     * @param domainName
      * @return
      */
-    public Runtime createRuntime();    
-    
-    /**
-     * Creates a new node.
-     * @return
-     */
-    public Node createNode();   
-    
-    /**
-     * Creates a new scheme.
-     * @return
-     */
-     public Scheme createScheme();    
-    
-    /**
-     * Creates a new component.
-     * @return
-     */
-    public Component createComponent();      
-    
+    public List<Component> getComponents(String domainName);
+
 }
