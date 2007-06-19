@@ -17,39 +17,58 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.topology;
+package org.apache.tuscany.sca.topology.impl;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.topology.Component;
 
 /**
- * A factory for the topology model.
+ * Represents the scheme defintion for a domain.
+ * 
+ * TBD - just a place holder at the moment
  *
  * @version $Rev$ $Date$
  */
-public interface TopologyFactory {
+public class ComponentImpl implements Component {
+    
+    private String name;
+    private String domainName;
 
-    
     /**
-     * Creates a new runtime.
+     * Get the component name
+     * 
      * @return
      */
-    public Runtime createRuntime();    
+    public String getName() {
+        return this.name;
+    }
     
     /**
-     * Creates a new node.
+     * Set the component name
+     * 
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+   
+    /**
+     * Get the name of the domain that this component belongs to
+     * 
      * @return
      */
-    public Node createNode();   
+    public String getDomainName() {
+        return domainName;
+    }
     
     /**
-     * Creates a new scheme.
-     * @return
+     * Set the name of the domain that this component belongs to
+     * 
+     * @param name
      */
-     public Scheme createScheme();    
-    
-    /**
-     * Creates a new component.
-     * @return
-     */
-    public Component createComponent();      
-    
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
+
 }
