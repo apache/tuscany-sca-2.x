@@ -84,6 +84,9 @@
                 <module>implementation-java-runtime</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
+                <!--
+                <module>implementation-web-resource</module>
+                -->
                 <module>java2wsdl</module>
                 <!--
                 <module>jmx</module>

@@ -59,7 +59,7 @@ public class JettyServer implements ServletHost {
     private static final int STARTED = 2;
     private static final int STOPPING = 3;
     private static final int STOPPED = 4;
-    private static final int DEFAULT_PORT = 8085;
+    private static final int DEFAULT_PORT = 8080;
 
     private final Object joinLock = new Object();
     private int state = UNINITIALIZED;

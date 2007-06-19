@@ -29,7 +29,8 @@
 
     <service name="helloWorld" promote="HelloWorldService">
         <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-om#wsdl.binding(HelloWorldSoapBinding)"/>
+        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"
+			wsdlElement="http://helloworld-om#wsdl.binding(HelloWorldSoapBinding)"/>
     </service>
 
     <component name="HelloWorldService">

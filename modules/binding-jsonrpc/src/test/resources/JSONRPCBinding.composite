@@ -24,7 +24,7 @@
 
     <service name="EchoService" promote="EchoComponent">
         <interface.java interface="org.apache.tuscany.sca.binding.jsonrpc.Echo"/>
-        <binding.jsonrpc />
+        <binding.jsonrpc uri="http://localhost:8085/SCADomain/EchoService"/>
     </service>
 
     <component name="EchoComponent">
