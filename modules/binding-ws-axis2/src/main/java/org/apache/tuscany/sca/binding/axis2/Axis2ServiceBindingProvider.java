@@ -65,7 +65,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     private MessageFactory messageFactory;
 
     // TODO: what to do about the base URI?
-    private static final String BASE_URI = "http://localhost:8085/";
+    private static final String BASE_URI = "http://localhost:8080/";
 
     public Axis2ServiceBindingProvider(RuntimeComponent component,
                                        RuntimeComponentService service,

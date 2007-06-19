@@ -68,7 +68,11 @@ public class JSONRPCService implements ComponentLifecycle {
         Class<?> serviceInterface = getTargetJavaClass(service.getInterfaceContract().getInterface());
         Object instance = component.createSelfReference(serviceInterface).getService();
         JSONRPCServiceServlet serviceServlet = new JSONRPCServiceServlet(binding.getName(), serviceInterface, instance);
-        servletHost.addServletMapping(SERVICE_PREFIX + binding.getName(), serviceServlet);
+        if (binding.getURI() != null) {
+            servletHost.addServletMapping(binding.getURI(), serviceServlet);
+        } else {
+            servletHost.addServletMapping(SERVICE_PREFIX + binding.getName(), serviceServlet);
+        }
 
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
         // this uses removeServletMapping / addServletMapping as theres no getServletMapping facility
@@ -86,7 +90,11 @@ public class JSONRPCService implements ComponentLifecycle {
     public void stop() {
 
         // Unregister from the service servlet mapping
-        servletHost.removeServletMapping(SERVICE_PREFIX + binding.getName());
+        if (binding.getURI() != null) {
+            servletHost.removeServletMapping(binding.getURI());
+        } else {
+            servletHost.removeServletMapping(SERVICE_PREFIX + binding.getName());
+        }
 
         // Unregister the service from the scaDomain script servlet
         // don't unregister the scaDomain script servlet if it still has other service names

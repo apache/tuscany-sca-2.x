@@ -29,7 +29,7 @@ public class CreditCheckServer {
 
         System.out.println("Starting the CreditCheck Service...");
 
-        SCADomain domain = SCADomain.newInstance("http://localhost:8085", "/", "CreditCheck.composite");
+        SCADomain domain = SCADomain.newInstance("http://localhost", "/", "CreditCheck.composite");
 
         System.out.println("Press Enter to Exit...");
         System.in.read();

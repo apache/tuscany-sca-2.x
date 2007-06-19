@@ -23,7 +23,7 @@
 
     <service name="helloWorld" promote="HelloWorldService">
         <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
-        <binding.ws/>
+        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
     </service>
 
     <component name="HelloWorldService">

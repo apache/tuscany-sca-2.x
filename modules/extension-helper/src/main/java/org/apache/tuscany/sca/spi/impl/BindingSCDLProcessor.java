@@ -115,6 +115,10 @@ public class BindingSCDLProcessor implements StAXArtifactProcessor {
             }
         }
 
+        //FIXME: none of the attributes of Binding seem to be working with PojoBinding
+        // For now at least read the binding URI
+        String uri = reader.getAttributeValue(null, "uri");
+        
         if (elementTextSetter != null) {
             try {
                 String value = reader.getElementText();
@@ -132,6 +136,12 @@ public class BindingSCDLProcessor implements StAXArtifactProcessor {
 
         if (!(impl instanceof Binding)) {
             impl = new PojoBinding(impl);
+            
+            //FIXME: none of the attributes of Binding seem to be working with PojoBinding
+            // For now at least read the binding URI
+            if (uri != null) {
+                ((PojoBinding)impl).setURI(uri);
+            }
         }
         return (Binding)impl;
     }
