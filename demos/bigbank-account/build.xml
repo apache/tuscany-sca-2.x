@@ -22,7 +22,7 @@
 
     <property name="dojo.version" value="0.4.0"/>
     <property name="dojo.distro" value="ajax"/>
-    <property name="unpack.location" value="${basedir}/src/main/resources/dojo"/>
+    <property name="unpack.location" value="${basedir}/src/main/resources/web/dojo"/>
 	
 
     <target name="check-dojo-installed">
