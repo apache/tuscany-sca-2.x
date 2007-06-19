@@ -42,7 +42,6 @@ import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
@@ -136,6 +135,7 @@ public class ReallySmallRuntimeBuilder {
      * @throws ActivationException
      */
     public static ContributionService createContributionService(ExtensionPointRegistry registry,
+                                                                ContributionFactory contributionFactory,
                                                                 AssemblyFactory assemblyFactory,
                                                                 PolicyFactory policyFactory,
                                                                 InterfaceContractMapper mapper)
@@ -186,7 +186,6 @@ public class ReallySmallRuntimeBuilder {
             throw new ActivationException(e);
         }
 
-        ContributionFactory contributionFactory = new ContributionFactoryImpl();
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
                                                                               documentProcessor, assemblyFactory,

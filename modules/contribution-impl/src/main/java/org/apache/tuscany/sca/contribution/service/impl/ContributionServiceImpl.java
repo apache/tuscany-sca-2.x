@@ -284,20 +284,28 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
+        
+        ModelResolver modelResolver = contribution.getModelResolver();
         URL contributionURL = new URL(contribution.getLocation()); 
         for (URI a : artifacts) {
             URL artifactURL = packageProcessor.getArtifactURL(new URL(contribution.getLocation()), a);
-            Object model = this.artifactProcessor.read(contributionURL, a, artifactURL);
             
+            // Add the deployed artifact model to the resolver
+            DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
+            artifact.setURI(a.toString());
+            artifact.setLocation(artifactURL.toString());
+            contribution.getArtifacts().add(artifact);
+            modelResolver.addModel(artifact);
+
+            // Let the artifact processor read the artifact into a model
+            Object model = this.artifactProcessor.read(contributionURL, a, artifactURL);
             if (model != null) {
-                contribution.getModelResolver().addModel(model);
-                
-                DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
-                artifact.setURI(a.toString());
-                artifact.setLocation(artifactURL.toString());
                 artifact.setModel(model);
-                contribution.getArtifacts().add(artifact);
+                
+                // Add the loaded model to the model resolver
+                modelResolver.addModel(model);
             }
+            
         }
     }
 
