@@ -160,7 +160,7 @@ public class TomcatServerTestCase extends TestCase {
         os.flush();
         
         String document = read(client);
-        assertTrue(document.indexOf("<html><body><p>hello</body></html>") != -1);
+        assertTrue(document.indexOf("<body><p>hello</body>") != -1);
         
         service.destroy();
     }
@@ -180,7 +180,7 @@ public class TomcatServerTestCase extends TestCase {
         os.flush();
         
         String document = read(client);
-        assertTrue(document.indexOf("<html><body><p>hello</body></html>") != -1);
+        assertTrue(document.indexOf("<body><p>hello</body>") != -1);
         
         service.destroy();
     }
