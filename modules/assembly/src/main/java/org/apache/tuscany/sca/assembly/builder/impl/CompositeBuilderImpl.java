@@ -393,7 +393,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         configureComponents(composite, null);
     }
     
-    private void indexImplPropServRef(Component component,
+    private void indexImplementationPropertiesServicesAndReferences(Component component,
                                       Map<String, Service> services,
                                       Map<String, Reference> references,
                                       Map<String, Property> properties) {
@@ -446,7 +446,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
     }
     
-    private void indexCompPropServRef(Component component,
+    private void indexComponentPropertiesServicesAndReferences(Component component,
                                       Map<String, ComponentService> componentServices,
                                       Map<String, ComponentReference> componentReferences,
                                       Map<String, ComponentProperty> componentProperties) {
@@ -563,14 +563,14 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
             //Index properties, services and references
-            indexImplPropServRef(component, services, references, properties);
+            indexImplementationPropertiesServicesAndReferences(component, services, references, properties);
 
             Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
             Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
             Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
             //Index component services, references and properties
             // Also check for duplicates
-            indexCompPropServRef(component, componentServices, componentReferences, componentProperties);
+            indexComponentPropertiesServicesAndReferences(component, componentServices, componentReferences, componentProperties);
 
             // Reconcile component services/references/properties and
             // implementation
