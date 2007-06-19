@@ -19,8 +19,6 @@
 
 package echo.impl;
 
-import static org.osoa.sca.Constants.SCA_NS;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -39,7 +37,7 @@ import echo.EchoBindingFactory;
  */
 public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> {
 
-    private QName BINDING_ECHO = new QName(SCA_NS, "binding.echo");
+    private QName BINDING_ECHO = new QName("http://echo", "binding.echo");
     
     private final EchoBindingFactory factory;
 

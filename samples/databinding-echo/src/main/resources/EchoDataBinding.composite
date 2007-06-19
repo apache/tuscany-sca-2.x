@@ -17,9 +17,13 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:local="http://tuscany.apache.org/xmlns/sca/binding/1.0" xmlns:f="http://foo"
-    xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" name="EchoDataBinding">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:local="http://tuscany.apache.org/xmlns/sca/binding/1.0"
+	xmlns:f="http://foo"
+    xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+    xmlns:e="http://echo"
+	name="EchoDataBinding">
 
     <component name="ComponentA">
         <implementation.java class="dbecho.ComponentAImpl" />
@@ -41,7 +45,7 @@
             wsdli:wsdlLocation="http://example.com/echo.wsdl wsdl/echo.wsdl">
             <db:databinding xmlns:db="http://tuscany.apache.org/xmlns/sca/databinding/1.0" name="org.apache.axiom.om.OMElement" />
         </interface.wsdl>
-        <binding.echo/>
+        <e:binding.echo/>
     </reference>
 
     <property name="messagePrefix" type="xsd:string">ABC</property>

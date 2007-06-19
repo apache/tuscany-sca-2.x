@@ -27,7 +27,7 @@ public interface EchoBindingFactory {
     /**
      * Creates a new Echo binding.
      * 
-     * @return a new Echi binding
+     * @return a new Echo binding
      */
     EchoBinding createEchoBinding();
 }
