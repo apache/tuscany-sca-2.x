@@ -58,6 +58,7 @@ public class CRUDModuleActivator implements ModuleActivator {
         JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
         CRUDImplementationFactory crudFactory = new DefaultCRUDImplementationFactory(assemblyFactory, javaFactory, introspector);
+        factories.addFactory(crudFactory);
 
         // Add the CRUD implementation extension to the StAXArtifactProcessor
         // extension point
