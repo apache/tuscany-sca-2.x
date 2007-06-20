@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 /**
  * @version $Rev: 543175 $ $Date: 2007-05-31 09:09:12 -0700 (Thu, 31 May 2007) $
  */
-public class DATACompanyAtomFeedTestCase extends TestCase {
+public class CompanyFeedTestCase extends TestCase {
     private SCADomain scaDomain;
 
     @Override

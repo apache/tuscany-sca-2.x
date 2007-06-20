@@ -38,7 +38,10 @@ public class DataAccessEngine {
 
     public DataObject executeGet(String table, String id) {
         try {
-            String sqlQuery = "select * from " + table.toUpperCase() + " where ID = " + id;
+            String sqlQuery = "select * from " + table.toUpperCase();
+            if(id != null && id.length() > 0) {
+                sqlQuery += " where ID = " + id;
+            }
             Command command = this.das.createCommand(sqlQuery);
             return command.executeQuery();
         } catch (Exception e) {
