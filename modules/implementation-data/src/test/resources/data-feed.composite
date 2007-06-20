@@ -21,15 +21,21 @@
 	targetNamespace="http://data"
 	name="data-feed">
 
-     <service name="CompanyDataServiceComponent" promote="CompanyDataComponent">
-        <binding.atom uri="http://localhost:8085/comnpanyfeed"/>
-     </service>
-    
+     
+    <service name="CompanyFeed" promote="CompanyFeedComponent">
+   		<binding.atom uri="http://localhost:8085/comnpanyfeed/*"/>
+   	</service>
+   	
+    <component name="CompanyFeedComponent">
+        <implementation.java class="org.apache.tuscany.sca.implementation.das.CompanyFeed"/>
+        <reference name="dataService" target="CompanyDataComponent"/>
+    </component>
+
+     <!-- service name="CompanyDataServiceComponent" promote="CompanyDataComponent">
+        <binding.atom uri="http://localhost:8085/comnpanyfeed/"/>
+     </service -->
+
     <component name="CompanyDataComponent">
-        <!-- service name="CompanyDataServiceComponent">
-           <binding.atom uri="http://localhost:8085/comnpanyfeed"/>
-        </service -->
-        
         <implementation.data table="company">
            <connectionInfo>
 		      <connectionProperties 
