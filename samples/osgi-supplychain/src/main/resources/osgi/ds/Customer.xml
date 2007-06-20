@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="CustomerComponent" immediate="true">
+    <implementation class="supplychain.customer.OSGiCustomerComponentImpl" />
+    <service>
+         <provide interface="supplychain.customer.Customer" />
+    </service>
+    <reference 
+        name="retailer" 
+        interface="supplychain.retailer.Retailer" 
+        bind="setRetailer"
+        unbind="unsetRetailer"
+        target="(component.name=RetailerComponent)"
+        policy="dynamic"
+    />
+</component>

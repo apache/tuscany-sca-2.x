@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Tuscany Supply Chain</title>
+<!-- LINK rel="stylesheet" href="ait.css" type="text/css" -->
+  <style type="text/css" media="all">
+@import url("../../../../css/maven-base.css");
+@import url("../../../../css/maven-theme.css");
+@import url("../../../../css/site.css");
+  </style>
+  <link rel="stylesheet" href="./css/print.css" type="text/css"
+ media="print">
+</head>
+<body>
+<h2>Tuscany
+Supply Chain Sample using OSGi<br>
+</h2>
+<h3>Overview</h3>
+<p>The Tuscany OSGi supply chain sample shows using the Tuscany SCA
+runtime in a J2SE environment&nbsp;executing the SCA asynchronous API
+with OSGi and Java implementation types.</p>
+<h3>Location</h3>
+This
+sample is located &nbsp;in the samples\osgi-supplychain directory.<br>
+<h3>Setup</h3>
+This sample depends on the Tuscany runtime
+and the sample jar, <span style="font-weight: bold;"></span>both of
+these must be available on the classpath to run the sample.
+<h3>Running</h3>
+In the directory&nbsp;samples\osgi-supplychain
+use the JDK 1.5 java command to run the class <span
+ style="font-weight: bold;">supplychain.SupplyChainClient</span>
+<pre>Linux: java -cp ../../../lib/tuscany-runtime-incubating-M1.jar:target/sample-osgi-supplychain-incubating-M1.jar supplychain.SupplyChainClient</pre>
+<pre>Windows: java -cp ../../../lib/tuscany-runtime-incubating-M1.jar;target/sample-osgi-supplychain-incubating-M1.jar supplychain.SupplyChainClient</pre>
+<h3>Results</h3>
+<p>The sample when run should simply display on the standard output
+some startup messages followed by:<br>
+<br>
+Work thread Thread[Thread-1,5,main]
+- <span style="font-weight: bold;">Order, submitted, fulfilled, shipped</span><code></code></p>
+<h3>Code Overview</h3>
+The source files are physically organized as shown below:
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td>src<br>
++---main<br>
+&nbsp;&nbsp;&nbsp;
++---java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp; +---supplychain<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OSGiBundleImpl.java<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SupplyChainClient.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---customer<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&nbsp; &nbsp;
+Customer.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+JavaCustomerComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiCustomerComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiCustomerImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---retailer<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&nbsp; &nbsp;
+Retailer.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+JavaRetailerComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiRetailerComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiRetailerImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---shipper<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Shipper.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+JavaShipperComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiShipperComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiShipperImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---warehouse<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Warehouse.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+JavaWarehouseComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiWarehouseComponentImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OSGiWarehouseImpl.java<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;<br>
+&nbsp;&nbsp;&nbsp; +---resources<br>
+&nbsp;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp; +---osgi<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Customer.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Retailer.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Shipper.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Warehouse.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++---ds<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; Customer.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&nbsp; &nbsp;&nbsp; Retailer.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Shipper.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Warehouse.mf<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; Customer.xml<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&nbsp; &nbsp;&nbsp; Retailer.xml<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Shipper.xml<br>
+&nbsp;&nbsp;&nbsp; &brvbar;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Warehouse.xml<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;
+Customer.componentType<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;
+Retailer.componentType<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;
+Shipper.componentType<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;
+Warehouse.componentType<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;
+supplychain.composite<br>
+&nbsp;&nbsp;&nbsp; &brvbar; &nbsp;&nbsp;&nbsp;&nbsp;
+supplychain.ds.composite<br>
+&nbsp;&nbsp; <br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<table style="text-align: left; width: 879px; height: 154px;" border="0"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">Customer.java</td>
+      <td>Defines the Java interface implemented by the Customer
+component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">JavaCustomerComponentImpl.java</td>
+      <td>POJO Implementation of the SCA Customer component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiCustomerComponentImpl.java</td>
+      <td style="vertical-align: top;">OSGi Declarative Services
+Implementation of the SCA Customer component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiCustomerImpl.java</td>
+      <td style="vertical-align: top;">OSGi Procedural Services
+Implementation of the SCA Customer component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Retailer.java</td>
+      <td>Defines the Java interface implemented by the Retailer
+component.</td>
+    </tr>
+    <tr>
+      <td>JavaRetailerComponentImpl.java</td>
+      <td>POJO Implementation of&nbsp; the SCA&nbsp;RetailerComponent
+component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiRetailerComponentImpl.java</td>
+      <td style="vertical-align: top;">OSGi Declarative Services
+Implementation of the SCA Retailer component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiRetailerImpl.java</td>
+      <td style="vertical-align: top;">OSGi Procedural Services
+Implementation of the SCA Retailer component.</td>
+    </tr>
+    <tr>
+      <td>Shipper.java</td>
+      <td>Defines
+the Java interface implemented by the&nbsp;Shipper component</td>
+    </tr>
+    <tr>
+      <td>JavaShipperComponentImpl.java</td>
+      <td>POJO Implementation of the SCA&nbsp;ShipperComponent
+component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiShipperComponentImpl.java</td>
+      <td style="vertical-align: top;">OSGi Declarative Services
+Implementation of the SCA Shipper component.</td>
+    </tr>
+    <tr>
+      <td>OSGiShipperImpl.java</td>
+      <td>OSGi Procedural Services Implementation of the SCA Shipper
+component.</td>
+    </tr>
+    <tr>
+      <td>Warehouse.java</td>
+      <td>Defines
+the Java interface implemented by the&nbsp;Warehouse component.</td>
+    </tr>
+    <tr>
+      <td>JavaWarehouseComponentImpl.java</td>
+      <td>POJO Implementation of the SCA&nbsp;WarehouseComponent
+component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiWarehouseComponentImpl.java</td>
+      <td style="vertical-align: top;">OSGi Declarative Services
+Implementation of the SCA Warehouse component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiWarehouseImpl.java</td>
+      <td style="vertical-align: top;">OSGi Procedural Services
+Implementation of the SCA Warehouse component.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSGiBundleImpl.java<br>
+      </td>
+      <td style="vertical-align: top;">Common code for OSGi Procedural
+Services Implementation of the SCA components<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SupplyChainClient.java</td>
+      <td style="vertical-align: top;">SupplyChainClient.java
+loads SCA runtime <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SupplyChainClientTestCase.java</td>
+      <td style="vertical-align: top;">JUnit test for this sample<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">resources/osgi/*.mf<br>
+      </td>
+      <td style="vertical-align: top;">Manifest files for OSGi bundles
+for OSGi procedural services implementation<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">resources/osgi/ds/*.mf</td>
+      <td style="vertical-align: top;">Manifest files for OSGi bundles
+for OSGi declarative services implementation</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">resources/osgi/ds/*.xml</td>
+      <td style="vertical-align: top;">OSGi Declarative services
+component xml files<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">resources/*.componentType<br>
+      </td>
+      <td style="vertical-align: top;">Component types used by OSGi
+implementation provider for SCA<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">resources/supplychain.composite<br>
+      </td>
+      <td style="vertical-align: top;">Composite file using OSGi and
+Java implementation types<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">resources/supplychain.ds.composite</td>
+      <td style="vertical-align: top;">Composite file using OSGi
+(declarative services) and Java implementation types <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</body>
+</html>

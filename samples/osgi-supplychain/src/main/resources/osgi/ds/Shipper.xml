@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ShipperComponent"  immediate="true">
+    <implementation class="supplychain.shipper.OSGiShipperComponentImpl" />
+    <service>
+         <provide interface="supplychain.shipper.Shipper"/>
+    </service>
+    <reference 
+        name="customer" 
+        interface="supplychain.customer.Customer" 
+        bind="setCustomer"
+        unbind="unsetCustomer"
+        target="(component.name=CustomerComponent)"
+        cardinality="0..1"
+        policy="dynamic"
+    />
+</component>
