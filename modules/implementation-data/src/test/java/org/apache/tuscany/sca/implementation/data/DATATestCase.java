@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.das;
+package org.apache.tuscany.sca.implementation.data;
 
 import junit.framework.TestCase;
 
