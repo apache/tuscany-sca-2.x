@@ -70,7 +70,8 @@ public class FeedBindingListener extends HttpServlet {
 
         // Assuming that the service provided by this binding implements the Feed
         // service interface, get the Feed from the service
-        SyndFeed syndFeed = ((Feed)serviceInstance).get();
+        String uri = request.getRequestURL().toString();
+        SyndFeed syndFeed = ((Feed)serviceInstance).get(uri);
         syndFeed.setFeedType(requestFeedType);
 
         // Write the Feed to the servlet output

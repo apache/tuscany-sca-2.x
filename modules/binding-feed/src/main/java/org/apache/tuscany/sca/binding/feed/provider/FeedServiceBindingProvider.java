@@ -33,12 +33,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class FeedServiceBindingProvider implements ServiceBindingProvider {
 
-    public static final String SERVICE_MAPPING_PREFIX = "/";
-
     private RuntimeComponent component;
     private RuntimeComponentService service;
     private FeedBinding binding;
     private ServletHost servletHost;
+    private String uri;
 
     public FeedServiceBindingProvider(RuntimeComponent component,
                                       RuntimeComponentService service,
@@ -48,6 +47,10 @@ public class FeedServiceBindingProvider implements ServiceBindingProvider {
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;
+        uri = binding.getURI();
+        if (uri == null) {
+            uri = "/" + component.getName();
+        }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -61,18 +64,10 @@ public class FeedServiceBindingProvider implements ServiceBindingProvider {
         FeedBindingListener servlet =
             new FeedBindingListener(binding.getName(), aClass, instance, binding.getFeedType());
 
-        String uri = binding.getURI();
-        if (uri == null) {
-            uri = SERVICE_MAPPING_PREFIX + binding.getName();
-        }
         servletHost.addServletMapping(uri, servlet);
     }
 
     public void stop() {
-        String uri = binding.getURI();
-        if (uri == null) {
-            uri = SERVICE_MAPPING_PREFIX + binding.getName();
-        }
         servletHost.removeServletMapping(uri);
     }
 

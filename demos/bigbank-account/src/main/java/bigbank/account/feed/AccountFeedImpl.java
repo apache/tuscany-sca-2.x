@@ -16,61 +16,53 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package feed;
-
-import java.util.ArrayList;
-import java.util.List;
+package bigbank.account.feed;
 
 import org.apache.tuscany.sca.binding.feed.Feed;
-import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
+import bigbank.account.AccountService;
+
+import com.sun.syndication.feed.synd.SyndContent;
+import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 
 /**
- * Implementation of an SCA component that aggregates several
- * Atom and RSS feeds.
- *
- * @version $Rev$ $Date$
+ * @version $$Rev$$ $$Date$$
  */
-public class AggregatorImpl implements Feed {
+
+@Service(Feed.class)
+public class AccountFeedImpl implements Feed {
 
     @Reference
-    public Feed feed1;
-    @Reference
-    public Feed feed2;
-    @Reference(required = false)
-    public Sort sort;
-
-    @Property
-    public String feedTitle = "Aggregated Feed";
-    @Property
-    public String feedDescription = "Anonymous Aggregated Feed";
-    @Property
-    public String feedAuthor = "anonymous";
-
+    protected AccountService accountService;
+    
     @SuppressWarnings("unchecked")
     public SyndFeed get(String uri) {
         
+        // Get the account report for the specified customer ID
+        String customerID = uri.substring(uri.lastIndexOf('/')+1);
+        double balance = accountService.getAccountReport(customerID); 
+        String value = Double.toString(balance);
+        
         // Create a new Feed
         SyndFeed feed = new SyndFeedImpl();
-        feed.setTitle(feedTitle);
-        feed.setDescription(feedDescription);
-        feed.setAuthor(feedAuthor);
+        feed.setTitle("Account Report Feed");
+        feed.setDescription("A sample Account Report feed");
+        feed.setAuthor("anonymous");
         feed.setLink(uri);
+        
+        SyndEntry entry = new SyndEntryImpl();
+        entry.setAuthor("anonymous");
+        SyndContent content = new SyndContentImpl();
+        content.setValue(value);
+        entry.setDescription(content);
+        feed.getEntries().add(entry);
 
-        // Aggregate entries from feed1 and feed2
-        List<SyndEntry> entries = new ArrayList<SyndEntry>();
-        entries.addAll(feed1.get(null).getEntries());
-        entries.addAll(feed2.get(null).getEntries());
-
-        // Sort entries by published date
-        if (sort != null)
-            feed.setEntries(sort.sort(entries));
-        else
-            feed.setEntries(entries);
         return feed;
     }
 }
