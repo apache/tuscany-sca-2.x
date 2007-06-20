@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="WarehouseComponent"  immediate="true">
+    <implementation class="supplychain.warehouse.OSGiWarehouseComponentImpl" />
+    <service>
+         <provide interface="supplychain.warehouse.Warehouse"/>
+    </service>
+    <reference 
+        name="shipper" 
+        interface="supplychain.shipper.Shipper" 
+        bind="setShipper"
+        unbind="unsetShipper"
+        target="(component.name=ShipperComponent)"
+        policy="dynamic"
+    />
+</component>

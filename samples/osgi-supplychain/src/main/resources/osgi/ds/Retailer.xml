@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="RetailerComponent" immediate="true" >
+    <implementation class="supplychain.retailer.OSGiRetailerComponentImpl" />
+    <service>
+         <provide interface="supplychain.retailer.Retailer" />
+    </service>
+    <reference 
+        name="warehouse" 
+        interface="supplychain.warehouse.Warehouse" 
+        bind="setWarehouse"
+        unbind="unsetWarehouse"
+        target="(component.name=WarehouseComponent)"
+        policy="dynamic"
+    />
+</component>
