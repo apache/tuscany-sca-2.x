@@ -48,9 +48,4 @@ public class AjaxBindingActivator implements BindingActivator<AjaxBinding>{
         return new AjaxService(rc, rcs, b, ab, servletHost);
     }
 
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, AjaxBinding binding) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
