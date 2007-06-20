@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class DASImplementationProviderFactory implements ImplementationProviderFactory<DASImplementation> {
 
     /**
-     * Constructs a new CRUD implementation.
+     * Constructs a new DAS implementation.
      */
     public DASImplementationProviderFactory() {
     }

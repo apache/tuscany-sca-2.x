@@ -19,12 +19,10 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://sample/das"
-	xmlns:sd="http://sample/das"
-	xmlns:das="http://das"
 	name="das">
 
     <component name="DASServiceComponent">
-        <das:implementation.das config="/CompanyConfig.xml" dataAccessType="rdb" />
+        <implementation.das config="/CompanyConfig.xml" dataAccessType="rdb" />
     </component>
 
 </composite>

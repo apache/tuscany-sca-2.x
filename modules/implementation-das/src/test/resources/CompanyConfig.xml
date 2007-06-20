@@ -26,6 +26,8 @@
 			loginTimeout="600000"/>
 	</ConnectionInfo>
     
+    <Command name="getCompanies" SQL="select * from COMPANY" kind="Select"/>
+    
     <Command name="all companies" SQL="select * from COMPANY" kind="Select"/>
     
     <Command name="all companies and departments" SQL="select * from COMPANY left outer join DEPARTMENT on COMPANY.ID = DEPARTMENT.COMPANYID" kind="Select"/>

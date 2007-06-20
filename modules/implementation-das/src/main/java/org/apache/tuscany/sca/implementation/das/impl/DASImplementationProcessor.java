@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -45,7 +46,7 @@ import org.apache.tuscany.sca.implementation.das.DASImplementationFactory;
  * @version $Rev$ $Date$
  */
 public class DASImplementationProcessor implements StAXArtifactProcessor<DASImplementation> {
-    private static final QName IMPLEMENTATION_DAS = new QName("http://das", "implementation.das");
+    private static final QName IMPLEMENTATION_DAS = new QName(Constants.SCA10_NS, "implementation.das");
     
     private DASImplementationFactory dasFactory;
     
