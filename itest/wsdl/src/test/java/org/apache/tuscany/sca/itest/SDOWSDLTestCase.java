@@ -57,12 +57,10 @@ public class SDOWSDLTestCase extends TestCase {
         doit("Client1b2a3a4b");
         doit("Client1b2a3b4a");
         doit("Client1b2a3b4b");
-
-// TODO: TUSCANY-1135, service using wsdl wired to component using wsdl fails  
-//        doit("Client1b2b3a4a");
-//        doit("Client1b2b3a4b");
-//        doit("Client1b2b3b4a");
-//        doit("Client1b2b3b4b");
+        doit("Client1b2b3a4a");
+        doit("Client1b2b3a4b");
+        doit("Client1b2b3b4a");
+        doit("Client1b2b3b4b");
     }
 
     private void doit(String compName) throws RemoteException {
