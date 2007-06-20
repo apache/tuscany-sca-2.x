@@ -79,6 +79,7 @@
                 <module>interface-wsdl-runtime</module>
                 <module>implementation-bpel</module>
                 <module>implementation-das</module>
+                <module>implementation-data</module>
                 <module>implementation-java</module>
                 <module>implementation-java-xml</module>
                 <module>implementation-java-runtime</module>
