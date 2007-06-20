@@ -27,7 +27,7 @@
    	</service>
    	
     <component name="CompanyFeedComponent">
-        <implementation.java class="org.apache.tuscany.sca.implementation.das.CompanyFeed"/>
+        <implementation.java class="org.apache.tuscany.sca.implementation.data.companyFeed.CompanyFeed"/>
         <reference name="dataService" target="CompanyDataComponent"/>
     </component>
 
