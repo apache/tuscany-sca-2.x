@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="calculator" default="compile">
-    <property name="test.class" value="calculator.CalculatorNode" />
+    <property name="test.class" value="calculator.CalculatorNodeExe" />
 	<property name="test.jar"   value="sample-calculator.jar" />
 	
 	<!-- a classpath so I can test without building the distribution jars -->
@@ -87,24 +87,26 @@
     </target>	
 	
     <target name="runA">
-        <java classname="${test.class}A"
+        <java classname="${test.class}"
               fork="true">
             <classpath>
                 <!--pathelement path="target/classes"/-->
             	<!--pathelement location="../../lib/tuscany-sca-manifest.jar"/-->
             	<path refid="test.classpath"/>
             </classpath>
+        	<arg value="nodeA"/>        	        	
         </java>
     </target>
 	
     <target name="runB">
-        <java classname="${test.class}B"
+        <java classname="${test.class}"
               fork="true">
             <classpath>
                 <!--pathelement path="target/classes"/-->
             	<!--pathelement location="../../lib/tuscany-sca-manifest.jar"/-->
             	<path refid="test.classpath"/>
             </classpath>
+        	<arg value="nodeB"/>        	
         </java>
     </target>	
 	

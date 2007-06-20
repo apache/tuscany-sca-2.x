@@ -20,14 +20,14 @@
 
 <runtime>
     <node name="nodeA">
-        <schema name="http" baseURL="http://localhost:80" domain="DomainA"/> 
-        <schema name="https" baseURL="https://localhost:443" domain="DomainA"/>
-        <component name="CalculatorServiceComponent" domain="DomainA"/>
+        <schema name="http" baseURL="http://localhost:80" /> 
+        <schema name="https" baseURL="https://localhost:443" />
+        <component name="CalculatorServiceComponent" />
     </node>
     <node name="nodeB">
-        <schema name="http" baseURL="http://localhost:81" domain="DomainA"/> 
-        <schema name="https" baseURL="https://localhost:444" domain="DomainA"/>
-        <component name="AddServiceComponent" domain="DomainA"/>
+        <schema name="http" baseURL="http://localhost:81"/> 
+        <schema name="https" baseURL="https://localhost:444" />
+        <component name="AddServiceComponent"/>
     </node>    
 </runtime>
 
