@@ -21,12 +21,14 @@ package org.apache.tuscany.sca.binding.feed.provider;
 
 import org.apache.tuscany.sca.binding.feed.FeedBinding;
 import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * Implementation of the Feed binding provider.
@@ -37,19 +39,22 @@ public class FeedServiceBindingProvider implements ServiceBindingProvider {
     private RuntimeComponentService service;
     private FeedBinding binding;
     private ServletHost servletHost;
+    private MessageFactory messageFactory;
     private String uri;
 
     public FeedServiceBindingProvider(RuntimeComponent component,
                                       RuntimeComponentService service,
                                       FeedBinding binding,
-                                      ServletHost servletHost) {
+                                      ServletHost servletHost,
+                                      MessageFactory messageFactory) {
         this.component = component;
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;
+        this.messageFactory = messageFactory;
         uri = binding.getURI();
         if (uri == null) {
-            uri = "/" + component.getName();
+            uri = "/" + this.component.getName();
         }
     }
 
@@ -58,11 +63,13 @@ public class FeedServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void start() {
-        Class<?> aClass = getTargetJavaClass(service.getInterfaceContract().getInterface());
-        Object instance = component.createSelfReference(aClass).getService();
+        RuntimeComponentService componentService = (RuntimeComponentService) service;
+        RuntimeWire wire = componentService.getRuntimeWire(binding);
+        InvocationChain chain = wire.getInvocationChains().get(0);
+        Invoker invoker = chain.getHeadInvoker(); 
 
         FeedBindingListener servlet =
-            new FeedBindingListener(binding.getName(), aClass, instance, binding.getFeedType());
+            new FeedBindingListener(invoker, messageFactory, binding.getFeedType());
 
         servletHost.addServletMapping(uri, servlet);
     }
@@ -71,7 +78,4 @@ public class FeedServiceBindingProvider implements ServiceBindingProvider {
         servletHost.removeServletMapping(uri);
     }
 
-    private Class<?> getTargetJavaClass(Interface targetInterface) {
-        return ((JavaInterface)targetInterface).getJavaClass();
-    }
 }
