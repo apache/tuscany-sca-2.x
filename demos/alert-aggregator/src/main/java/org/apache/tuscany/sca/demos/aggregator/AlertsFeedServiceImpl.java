@@ -21,25 +21,18 @@ package org.apache.tuscany.sca.demos.aggregator;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
-import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
-import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
-import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
+import org.apache.tuscany.sca.binding.feed.Feed;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
-import org.apache.tuscany.sca.demos.aggregator.types.impl.AlertsTypeImpl;
-
-import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
-
-import org.apache.tuscany.sca.binding.feed.Feed;
 
 /**
  * Read all new alerts from the specified sources
@@ -63,14 +56,14 @@ public class AlertsFeedServiceImpl implements Feed {
      * 
      * @return the structure containing alerts 
      */    
-    public SyndFeed get() {
+    public SyndFeed get(String uri) {
         
         // Create a new Feed
         SyndFeed feed = new SyndFeedImpl();
         feed.setTitle("Apache Tuscant Feed Aggregator");
         feed.setDescription("A sample showing an SCA application to aggregate various types of feeds");
         feed.setAuthor("Apache Tuscany");
-        feed.setLink("http://incubator.apache.org/tuscany");
+        feed.setLink(uri);
  
         // Aggregate entries from feed1 and feed2
         List<SyndEntry> entries = new ArrayList<SyndEntry>();

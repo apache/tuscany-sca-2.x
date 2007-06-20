@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.feed.provider;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -43,11 +44,22 @@ public class FeedBindingInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
-            URL feedUrl = new URL(uri);
+            URL feedURL;
+            Object[] args = msg.getBody();
+            if (args[0] != null) {
+                URI arg = URI.create((String)args[0]);
+                if (arg.isAbsolute()) {
+                    feedURL = arg.toURL();
+                } else {
+                    feedURL = new URL(uri + "/" + arg.toString());
+                }
+            } else {
+                feedURL = new URL(uri);
+            }
 
             // Read the configured feed into a Feed object
             SyndFeedInput input = new SyndFeedInput();
-            SyndFeed feed = input.build(new XmlReader(feedUrl));
+            SyndFeed feed = input.build(new XmlReader(feedURL));
             msg.setBody(feed);
 
             System.out.println(">>> FeedBindingInvoker (" + feed.getFeedType() + ") " + uri);

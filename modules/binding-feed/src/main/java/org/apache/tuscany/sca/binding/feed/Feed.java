@@ -32,5 +32,11 @@ import com.sun.syndication.feed.synd.SyndFeed;
 @Remotable
 public interface Feed {
 
-    SyndFeed get();
+    /**
+     * Get an RSS or Atom feed.
+     * 
+     * @param uri the uri of the feed
+     * @return the RSS or Atom feed
+     */
+    SyndFeed get(String uri);
 }
