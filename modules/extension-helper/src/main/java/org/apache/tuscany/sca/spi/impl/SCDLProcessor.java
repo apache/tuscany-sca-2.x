@@ -212,7 +212,13 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
                 if (uri != null && uri.endsWith(".componentType")) {
                     String name = uri.substring(0, uri.lastIndexOf('.'));
                     for (Method m : getGetters()) {
-                        String value = (String) m.invoke(impl, new Object[]{});
+                        Object io;
+                        if (impl instanceof PojoImplementation) {
+                            io = ((PojoImplementation)impl).getUserImpl();
+                        } else {
+                            io = impl;
+                        }
+                        String value = (String) m.invoke(io, new Object[]{});
                         if (value != null && name.endsWith(value.substring(0, value.lastIndexOf('.')))) {
                             return ct;
                         }
