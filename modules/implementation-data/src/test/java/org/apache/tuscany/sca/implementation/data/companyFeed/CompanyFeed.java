@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.data;
+package org.apache.tuscany.sca.implementation.data.companyFeed;
 
 import org.apache.tuscany.sca.binding.feed.Feed;
 import org.apache.tuscany.sca.implementation.data.DATA;
