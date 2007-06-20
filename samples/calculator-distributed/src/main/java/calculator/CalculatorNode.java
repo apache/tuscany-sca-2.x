@@ -90,7 +90,10 @@ public class CalculatorNode {
             domain.getNodeService(ComponentRegistry.class, "ComponentRegistry");
         
         componentRegistry.setComponentNode("CalculatorServiceComponent", "nodeA");
-        componentRegistry.setComponentNode("AddServiceComponent", "nodeB");        
+        componentRegistry.setComponentNode("AddServiceComponent", "nodeB");  
+        componentRegistry.setComponentNode("SubtractServiceComponent", "nodeC"); 
+        componentRegistry.setComponentNode("MultiplyServiceComponent", "nodeA");
+        componentRegistry.setComponentNode("DivideServiceComponent", "nodeA");
         
         // find the current directory as a URL. This is where our contribution 
         // will come from

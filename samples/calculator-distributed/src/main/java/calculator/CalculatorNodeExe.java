@@ -49,6 +49,9 @@ public class CalculatorNodeExe {
     
             // Calculate
             System.out.println("3 + 2=" + calculatorService.add(3, 2));
+            System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
+            System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
+            System.out.println("3 / 2=" + calculatorService.divide(3, 2));
         } else {
             // start up and wait for messages
             try {

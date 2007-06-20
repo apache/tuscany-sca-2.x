@@ -36,20 +36,21 @@ public class CalculatorServiceImpl implements CalculatorService {
         this.addService = addService;
     }
 
-//    @Reference
+    @Reference
     public void setSubtractService(SubtractService subtractService) {
        this.subtractService = subtractService;
     }
 
-//    @Reference
-    public void setDivideService(DivideService divideService) {
-        this.divideService = divideService;
-    }
-
-//    @Reference
+    @Reference
     public void setMultiplyService(MultiplyService multiplyService) {
         this.multiplyService = multiplyService;
     }
+    
+    @Reference
+    public void setDivideService(DivideService divideService) {
+        this.divideService = divideService;
+    }
+    
 
     public double add(double n1, double n2) {
         System.out.println("CalculatorService - add " + n1 + " and " + n2);
@@ -57,14 +58,17 @@ public class CalculatorServiceImpl implements CalculatorService {
     }
 
     public double subtract(double n1, double n2) {
+        System.out.println("CalculatorService - subtract " + n1 + " and " + n2);
         return subtractService.subtract(n1, n2);
     }
 
     public double multiply(double n1, double n2) {
+        System.out.println("CalculatorService - multiply " + n1 + " and " + n2);
         return multiplyService.multiply(n1, n2);
     }
 
     public double divide(double n1, double n2) {
+        System.out.println("CalculatorService - divide " + n1 + " and " + n2);
         return divideService.divide(n1, n2);
     }
 

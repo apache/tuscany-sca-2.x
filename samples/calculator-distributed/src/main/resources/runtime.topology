@@ -28,6 +28,11 @@
         <schema name="http" baseURL="http://localhost:81"/> 
         <schema name="https" baseURL="https://localhost:444" />
         <component name="AddServiceComponent"/>
-    </node>    
+    </node>   
+    <node name="nodeC">
+        <schema name="http" baseURL="http://localhost:81"/> 
+        <schema name="https" baseURL="https://localhost:444" />
+        <component name="SubtractServiceComponent"/>
+    </node>       
 </runtime>
 

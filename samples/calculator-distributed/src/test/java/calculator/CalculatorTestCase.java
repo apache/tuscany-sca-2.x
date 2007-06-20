@@ -37,6 +37,8 @@ public class CalculatorTestCase {
     private static SCADomain domainA;
     private static CalculatorNode nodeB;
     private static SCADomain domainB;
+    private static CalculatorNode nodeC;
+    private static SCADomain domainC;    
     private static CalculatorService calculatorService;
 
     @BeforeClass
@@ -58,6 +60,11 @@ public class CalculatorTestCase {
         nodeB = new CalculatorNode("domainA","nodeB");
         domainB = nodeB.startDomain();
         
+        // start the node that runs the 
+        // subtract component
+        nodeC = new CalculatorNode("domainA","nodeC");
+        domainC = nodeC.startDomain();        
+        
         calculatorService = domainA.getService(CalculatorService.class, "CalculatorServiceComponent");
    }
 
@@ -66,6 +73,7 @@ public class CalculatorTestCase {
         // stop the domains
         nodeA.stopDomain();
         nodeB.stopDomain();
+        nodeC.stopDomain();
         
         // stop the ActiveMQ broker
         broker.stop();
@@ -76,9 +84,9 @@ public class CalculatorTestCase {
         
         // Calculate
         Assert.assertEquals(calculatorService.add(3, 2), 5.0);
-//        assertEquals(calculatorService.subtract(3, 2), 1.0);
-//        assertEquals(calculatorService.multiply(3, 2), 6.0);
-//        assertEquals(calculatorService.divide(3, 2), 1.5);
+        Assert.assertEquals(calculatorService.subtract(3, 2), 1.0);
+        Assert.assertEquals(calculatorService.multiply(3, 2), 6.0);
+        Assert.assertEquals(calculatorService.divide(3, 2), 1.5);
 
     }
 }

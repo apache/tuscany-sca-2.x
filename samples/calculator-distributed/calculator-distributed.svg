@@ -31,12 +31,12 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.44"
-   sodipodi:docbase="C:\simon\Projects\Tuscany\java\sandbox\slaws\calculator-distributed"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\calculator-distributed"
    sodipodi:docname="calculator-distributed.svg"
    version="1.0"
-   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\calculator\calculator.png"
-   inkscape:export-xdpi="52.84"
-   inkscape:export-ydpi="52.84">
+   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\calculator-distributed\calculator-distributed.png"
+   inkscape:export-xdpi="104.05"
+   inkscape:export-ydpi="104.05">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -327,15 +327,6 @@
        d="M 477.14286,404.09448 L 527.85714,404.09448 L 527.85714,427.66591 L 580,426.95163"
        id="path1950" />
     <rect
-       style="opacity:0.32777778;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999976;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999928, 1.99999976;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect1954"
-       width="328.57144"
-       height="277.85715"
-       x="165.71428"
-       y="221.23734"
-       rx="6.9961648"
-       ry="5.8193965" />
-    <rect
        style="opacity:0.32777776;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999869, 1.99999955;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2844"
        width="328.57144"
@@ -353,34 +344,7 @@
        y="268.73746"
        rx="6.9961648"
        ry="2.0644646" />
-    <rect
-       style="opacity:0.32777776;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999988;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999975, 1.99999991;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect2848"
-       width="328.57144"
-       height="95.714294"
-       x="534.28571"
-       y="380.16605"
-       rx="6.9961648"
-       ry="2.0046251" />
-    <rect
-       style="opacity:0.32777776;fill:#f19a9a;fill-opacity:1;stroke:#2e2424;stroke-width:1.99999976;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:5.99999925, 1.99999974;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect2850"
-       width="328.57144"
-       height="104.99999"
-       x="534.28571"
-       y="487.30896"
-       rx="6.9961648"
-       ry="2.1991034" />
     <flowRoot
-       xml:space="preserve"
-       id="flowRoot2852"><flowRegion
-         id="flowRegion2854"><rect
-           id="rect2856"
-           width="75"
-           height="32.857143"
-           x="173.57143"
-           y="231.95163" /></flowRegion><flowPara
-         id="flowPara2858">RuntimeA</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2860"
        transform="translate(614.3034,-75.00004)"><flowRegion
@@ -390,7 +354,7 @@
            height="32.857143"
            x="173.57143"
            y="231.95163" /></flowRegion><flowPara
-         id="flowPara2866">RuntimeB</flowPara></flowRoot>    <flowRoot
+         id="flowPara2866">nodeB</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2868"
        transform="translate(616.0952,47.8571)"><flowRegion
@@ -400,25 +364,20 @@
            height="32.857143"
            x="173.57143"
            y="231.95163" /></flowRegion><flowPara
-         id="flowPara2874">RuntimeC</flowPara></flowRoot>    <flowRoot
+         id="flowPara2874">nodeC</flowPara></flowRoot>    <path
+       style="opacity:0.35555558;fill:#efacac;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:3,3;stroke-dashoffset:0"
+       d="M 172.73609,222.85576 L 495.9849,223.86592 L 498.00521,384.48017 L 863.68043,383.47002 L 862.67028,606.71373 L 173.74624,605.70358 L 172.73609,222.85576 z "
+       id="path1975"
+       sodipodi:nodetypes="ccccccc" />
+    <flowRoot
        xml:space="preserve"
-       id="flowRoot2876"
-       transform="translate(617.5238,158.5714)"><flowRegion
-         id="flowRegion2878"><rect
-           id="rect2880"
+       id="flowRoot2852"
+       transform="translate(8,0)"><flowRegion
+         id="flowRegion2854"><rect
+           id="rect2856"
            width="75"
            height="32.857143"
            x="173.57143"
            y="231.95163" /></flowRegion><flowPara
-         id="flowPara2882">RuntimeD</flowPara></flowRoot>    <flowRoot
-       xml:space="preserve"
-       id="flowRoot2884"
-       transform="translate(621.0952,264.9999)"><flowRegion
-         id="flowRegion2886"><rect
-           id="rect2888"
-           width="75"
-           height="32.857143"
-           x="173.57143"
-           y="231.95163" /></flowRegion><flowPara
-         id="flowPara2890">RuntimeE</flowPara></flowRoot>  </g>
+         id="flowPara2858">nodeA</flowPara></flowRoot>  </g>
 </svg>

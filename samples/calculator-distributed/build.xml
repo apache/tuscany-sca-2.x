@@ -110,6 +110,17 @@
         </java>
     </target>	
 	
+    <target name="runC">
+        <java classname="${test.class}"
+              fork="true">
+            <classpath>
+                <!--pathelement path="target/classes"/-->
+            	<!--pathelement location="../../lib/tuscany-sca-manifest.jar"/-->
+            	<path refid="test.classpath"/>
+            </classpath>
+        	<arg value="nodeC"/>        	
+        </java>
+    </target>	
 	
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">
