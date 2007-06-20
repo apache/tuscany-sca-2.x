@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.spi.utils.ResourceHelper;
 /**
  * Represents a Script implementation.
  */
-public class ScriptImplementation extends DynamicImplementation {
+public class ScriptImplementation {
 
     protected String scriptName;
     protected String scriptSrc;

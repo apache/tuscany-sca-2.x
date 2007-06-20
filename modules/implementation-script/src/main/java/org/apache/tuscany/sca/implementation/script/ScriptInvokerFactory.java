@@ -72,7 +72,7 @@ public class ScriptInvokerFactory implements InvokerFactory {
                 scriptEngine.put(reference.getName(), createReferenceProxy(reference.getName(), rc));
             }
 
-            for (Property property : implementation.getProperties()) {
+            for (Property property : ct.getProperties()) {
                 ObjectFactory<?> propertyValueFactory = propertyFactory.createValueFactory(property);
                 if ( propertyValueFactory != null) {
                     scriptEngine.put(property.getName(), propertyValueFactory.getInstance());
