@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.data;
+package org.apache.tuscany.sca.implementation.data.companyFeed;
 
 import java.io.IOException;
 import java.net.Socket;
