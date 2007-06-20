@@ -19,6 +19,7 @@
 
 package calculator;
 
+import java.io.File;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -91,10 +92,14 @@ public class CalculatorNode {
         componentRegistry.setComponentNode("CalculatorServiceComponent", "nodeA");
         componentRegistry.setComponentNode("AddServiceComponent", "nodeB");        
         
+        // find the current directory as a URL. This is where our contribution 
+        // will come from
+        File currentDirectory = new File (".");
+        URL contributionURL = new URL("file:/" + currentDirectory.getCanonicalPath() + "/src/main/resources/");        
+        
         // Contribute the SCA application
         ContributionService contributionService = domain.getContributionService();
         ModelResolver resolver = new ModelResolverImpl(cl);
-        URL contributionURL = new URL("file:/C:/simon/Projects/Tuscany/java/java-head/sca/samples/calculator-distributed/target/sample-calculator-distributed.jar");
         Contribution contribution = contributionService.contribute("http://calculator", 
                                                                    contributionURL, 
                                                                    resolver, 
