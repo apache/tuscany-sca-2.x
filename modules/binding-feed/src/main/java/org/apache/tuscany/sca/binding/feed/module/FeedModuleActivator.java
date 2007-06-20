@@ -26,8 +26,10 @@ import org.apache.tuscany.sca.binding.feed.xml.AtomBindingProcessor;
 import org.apache.tuscany.sca.binding.feed.xml.RssBindingProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 /**
@@ -43,11 +45,12 @@ public class FeedModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
 
         // Create the Feed model factory
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         FeedBindingFactory factory = new DefaultFeedBindingFactory();
+        factories.addFactory(factory);
 
         // Add the AtomBindingProcessor and RSSBindingProcessor extensions
-        StAXArtifactProcessorExtensionPoint processors =
-            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         AtomBindingProcessor atomBindingProcessor = new AtomBindingProcessor(factory);
         processors.addArtifactProcessor(atomBindingProcessor);
         RssBindingProcessor rssBindingProcessor = new RssBindingProcessor(factory);
@@ -56,7 +59,8 @@ public class FeedModuleActivator implements ModuleActivator {
         // Add the Feed binding provider factory extension
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
-        providerFactories.addProviderFactory(new FeedBindingProviderFactory(servletHost));
+        MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
+        providerFactories.addProviderFactory(new FeedBindingProviderFactory(servletHost, messageFactory));
     }
 
     public void stop(ExtensionPointRegistry registry) {

@@ -28,7 +28,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tuscany.sca.binding.feed.Feed;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
@@ -41,15 +43,13 @@ import com.sun.syndication.io.SyndFeedOutput;
 public class FeedBindingListener extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    String serviceName;
-    Class<?> serviceInterface;
-    Object serviceInstance;
+    Invoker invoker;
+    MessageFactory messageFactory;
     String feedType;
 
-    public FeedBindingListener(String serviceName, Class<?> serviceInterface, Object serviceInstance, String feedType) {
-        this.serviceName = serviceName;
-        this.serviceInterface = serviceInterface;
-        this.serviceInstance = serviceInstance;
+    public FeedBindingListener(Invoker invoker, MessageFactory messageFactory, String feedType) {
+        this.invoker = invoker;
+        this.messageFactory = messageFactory;
         this.feedType = feedType;
     }
 
@@ -71,7 +71,16 @@ public class FeedBindingListener extends HttpServlet {
         // Assuming that the service provided by this binding implements the Feed
         // service interface, get the Feed from the service
         String uri = request.getRequestURL().toString();
-        SyndFeed syndFeed = ((Feed)serviceInstance).get(uri);
+        
+        Message requestMessage = messageFactory.createMessage();
+        requestMessage.setBody(new Object[] {uri});
+        // dispatch and get the response
+        Message responseMessage = invoker.invoke(requestMessage);
+        if (responseMessage.isFault()) {
+            throw new ServletException((Throwable)responseMessage.getBody());
+        }
+        
+        SyndFeed syndFeed = (SyndFeed)responseMessage.getBody();
         syndFeed.setFeedType(requestFeedType);
 
         // Write the Feed to the servlet output

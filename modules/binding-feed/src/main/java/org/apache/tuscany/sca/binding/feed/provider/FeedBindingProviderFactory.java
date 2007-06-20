@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.feed.provider;
 
 import org.apache.tuscany.sca.binding.feed.FeedBinding;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -33,10 +34,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class FeedBindingProviderFactory implements BindingProviderFactory<FeedBinding> {
 
+    MessageFactory messageFactory;
     ServletHost servletHost;
 
-    public FeedBindingProviderFactory(ServletHost servletHost) {
+    public FeedBindingProviderFactory(ServletHost servletHost, MessageFactory messageFactory) {
         this.servletHost = servletHost;
+        this.messageFactory = messageFactory;
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
@@ -48,7 +51,7 @@ public class FeedBindingProviderFactory implements BindingProviderFactory<FeedBi
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                FeedBinding binding) {
-        return new FeedServiceBindingProvider(component, service, binding, servletHost);
+        return new FeedServiceBindingProvider(component, service, binding, servletHost, messageFactory);
     }
 
     public Class<FeedBinding> getModelType() {
