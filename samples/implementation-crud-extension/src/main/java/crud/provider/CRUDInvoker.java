@@ -19,8 +19,6 @@
 
 package crud.provider;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -47,31 +45,26 @@ public class CRUDInvoker implements Invoker {
     public Message invoke(Message msg) {
         try {
             Object[] args = msg.getBody();
-            Object resp = doTheWork(args);
+            Object resp = null;
+            
+            if (operation.getName().equals("create")) {
+                resp = resourceManager.createResource(args[0]);
+                
+            } else if (operation.getName().equals("retrieve")) {
+                resp = resourceManager.retrieveResource((String)args[0]);
+                
+            } else if (operation.getName().equals("update")) {
+                resp = resourceManager.updateResource((String)args[0], args[1]);
+                
+            } else if (operation.getName().equals("delete")) {
+                resourceManager.deleteResource((String)args[0]);
+            }
+            
             msg.setBody(resp);
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             msg.setFaultBody(e.getCause());
         }
         return msg;
-    }
-
-    public Object doTheWork(Object[] args) throws InvocationTargetException {
-        if (operation.getName().equals("create")) {
-            return resourceManager.createResource(args[0]);
-            
-        } else if (operation.getName().equals("retrieve")) {
-            return resourceManager.retrieveResource((String)args[0]);
-            
-        } else if (operation.getName().equals("update")) {
-            return resourceManager.updateResource((String)args[0], args[1]);
-            
-        } else if (operation.getName().equals("delete")) {
-            resourceManager.deleteResource((String)args[0]);
-            return null;
-            
-        } else {
-            return null;
-        }
     }
 
 }

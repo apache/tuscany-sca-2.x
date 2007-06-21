@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-import crud.CRUDImplementation;
-import crud.CRUDImplementationFactory;
+import crud.model.CRUDImplementation;
+import crud.model.CRUDImplementationFactory;
 
 /**
  * Implements a STAX artifact processor for CRUD implementations.

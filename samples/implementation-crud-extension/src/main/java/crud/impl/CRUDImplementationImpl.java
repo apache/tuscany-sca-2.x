@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 import crud.CRUD;
-import crud.CRUDImplementation;
+import crud.model.CRUDImplementation;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.

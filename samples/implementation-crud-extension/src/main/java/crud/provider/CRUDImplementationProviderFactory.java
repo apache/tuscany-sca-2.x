@@ -22,7 +22,7 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-import crud.CRUDImplementation;
+import crud.model.CRUDImplementation;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.

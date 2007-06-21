@@ -31,9 +31,9 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospe
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
-import crud.CRUDImplementationFactory;
-import crud.DefaultCRUDImplementationFactory;
 import crud.impl.CRUDImplementationProcessor;
+import crud.model.CRUDImplementationFactory;
+import crud.model.DefaultCRUDImplementationFactory;
 import crud.provider.CRUDImplementationProviderFactory;
 
 /**

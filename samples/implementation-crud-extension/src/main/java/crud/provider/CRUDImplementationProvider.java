@@ -24,8 +24,8 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
-import crud.CRUDImplementation;
 import crud.backend.ResourceManager;
+import crud.model.CRUDImplementation;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
