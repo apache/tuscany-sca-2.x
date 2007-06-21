@@ -94,7 +94,7 @@ import commonj.work.WorkManager;
  * options are required to run and manage the node. 
  *
  */
-public class NodeServiceRuntimeBuilder extends ReallySmallRuntimeBuilder {
+public class NodeServiceRuntimeBuilder {
 
 
     /**
@@ -103,9 +103,10 @@ public class NodeServiceRuntimeBuilder extends ReallySmallRuntimeBuilder {
      * @throws ActivationException
      */
     public static ContributionService createContributionService(ExtensionPointRegistry registry,
-                                                                AssemblyFactory assemblyFactory,
-                                                                PolicyFactory policyFactory,
-                                                                InterfaceContractMapper mapper)
+                                                          ContributionFactory contributionFactory,
+                                                          AssemblyFactory assemblyFactory,
+                                                          PolicyFactory policyFactory,
+                                                          InterfaceContractMapper mapper)
         throws ActivationException {
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
@@ -154,7 +155,6 @@ public class NodeServiceRuntimeBuilder extends ReallySmallRuntimeBuilder {
             throw new ActivationException(e);
         }
 
-        ContributionFactory contributionFactory = new ContributionFactoryImpl();
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
                                                                               documentProcessor, assemblyFactory,
