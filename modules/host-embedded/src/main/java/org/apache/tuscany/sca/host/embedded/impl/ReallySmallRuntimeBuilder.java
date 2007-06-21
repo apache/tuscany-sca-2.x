@@ -26,9 +26,12 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -218,7 +221,7 @@ public class ReallySmallRuntimeBuilder {
      * @return A class name which extends/implements the service class
      * @throws IOException
      */
-    private static Set<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
+    public static Set<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
         Set<String> set = new HashSet<String>();
         Enumeration<URL> urls = classLoader.getResources("META-INF/services/" + name);
         while (urls.hasMoreElements()) {
@@ -276,6 +279,33 @@ public class ReallySmallRuntimeBuilder {
             throw new IllegalStateException(e);
         }
         return instances;
+    }
+
+    /**
+     * Parse a service declaration in the form class;attr=value,attr=value and
+     * return a map of attributes
+     * @param declaration
+     * @return a map of attributes
+     */
+    public static Map<String, String> parseServiceDeclaration(String declaration) {
+        Map<String, String> attributes = new HashMap<String, String>(); 
+        StringTokenizer tokens = new StringTokenizer(declaration);
+        String className = tokens.nextToken(";");
+        if (className != null) {
+            attributes.put("class", className);
+        }
+        for (;;) {
+            if (!tokens.hasMoreTokens())
+                break;
+            String key = tokens.nextToken("=").substring(1);
+            if (key == null)
+                break;
+            String value = tokens.nextToken(",").substring(1);
+            if (value == null)
+                break;
+            attributes.put(key, value);
+        }
+        return attributes;
     }
 
 }

@@ -19,13 +19,25 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.processor.ArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultModelFactoryExtensionPoint;
@@ -43,6 +55,10 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
 
 public class ReallySmallRuntime {
@@ -111,8 +127,19 @@ public class ReallySmallRuntime {
                                                                                 scopeRegistry,
                                                                                 workManager);
 
+        // Load the runtime modules
+        modules = loadModules(registry, classLoader);
+        
         // Start the runtime modules
-        modules = startModules(registry, classLoader);
+        startModules(registry, modules);
+        
+        // Load the artifact processor extensions
+        loadArtifactProcessors(registry, classLoader, URLArtifactProcessor.class);
+        loadArtifactProcessors(registry, classLoader, StAXArtifactProcessor.class);
+        
+        // Load the provider factory extensions
+        loadProviderFactories(registry, classLoader, BindingProviderFactory.class);
+        loadProviderFactories(registry, classLoader, ImplementationProviderFactory.class);
 
     }
 
@@ -147,8 +174,7 @@ public class ReallySmallRuntime {
     }
 
     @SuppressWarnings("unchecked")
-    private List<ModuleActivator> startModules(ExtensionPointRegistry registry, ClassLoader classLoader)
-        throws ActivationException {
+    private List<ModuleActivator> loadModules(ExtensionPointRegistry registry, ClassLoader classLoader) {
 
         // Load and instantiate the modules found on the classpath
         List<ModuleActivator> modules = ReallySmallRuntimeBuilder.getServices(classLoader, ModuleActivator.class);
@@ -160,13 +186,110 @@ public class ReallySmallRuntime {
                 }
             }
         }
+        return modules;
+    }
+    
+    private void startModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) throws ActivationException {
 
         // Start all the extension modules
         for (ModuleActivator activator : modules) {
             activator.start(registry);
         }
+    }
 
-        return modules;
+    private List<ArtifactProcessor> loadArtifactProcessors(ExtensionPointRegistry registry, ClassLoader classLoader, Class<?> processorClass) {
+
+        // Get the processor service declarations
+        Set<String> processorDeclarations; 
+        try {
+            processorDeclarations = ReallySmallRuntimeBuilder.getServiceClassNames(classLoader, processorClass.getName());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Get the target extension points
+        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        List<ArtifactProcessor> processors = new ArrayList<ArtifactProcessor>();
+        
+        for (String processorDeclaration: processorDeclarations) {
+            Map<String, String> attributes = ReallySmallRuntimeBuilder.parseServiceDeclaration(processorDeclaration);
+            String className = attributes.get("class");
+            
+            // Load a StAX artifact processor
+            if (processorClass == StAXArtifactProcessor.class) {
+                QName artifactType = null;
+                String qname = attributes.get("type");
+                if (qname != null) {
+                    int h = qname.indexOf('#');
+                    if (h == -1) {
+                        artifactType = new QName(Constants.SCA10_NS, qname);
+                    } else {
+                        artifactType = new QName(qname.substring(0, h), qname.substring(h+1));
+                    }
+                }
+                
+                String modelTypeName = attributes.get("model");
+                
+                // Create a processor wrapper and register it
+                StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(registry, artifactType, modelTypeName, classLoader, className);
+                staxProcessors.addArtifactProcessor(processor);
+                processors.add(processor);
+
+            } else if (processorClass == URLArtifactProcessor.class) {
+
+                String artifactType = attributes.get("type");
+                String modelTypeName = attributes.get("model");
+                
+                // Create a processor wrapper and register it
+                URLArtifactProcessor processor = new LazyURLArtifactProcessor(registry, artifactType, modelTypeName, classLoader, className);
+                urlProcessors.addArtifactProcessor(processor);
+                processors.add(processor);
+
+            }
+        }
+        return processors;
+    }
+
+    private List<ProviderFactory> loadProviderFactories(ExtensionPointRegistry registry, ClassLoader classLoader, Class<?> factoryClass) {
+
+        // Get the processor service declarations
+        Set<String> factoryDeclarations; 
+        try {
+            factoryDeclarations = ReallySmallRuntimeBuilder.getServiceClassNames(classLoader, factoryClass.getName());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Get the target extension point
+        ProviderFactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        List<ProviderFactory> factories = new ArrayList<ProviderFactory>();
+        
+        for (String factoryDeclaration: factoryDeclarations) {
+            Map<String, String> attributes = ReallySmallRuntimeBuilder.parseServiceDeclaration(factoryDeclaration);
+            String className = attributes.get("class");
+            
+            // Load an implementation provider factory
+            if (factoryClass == ImplementationProviderFactory.class) {
+                String modelTypeName = attributes.get("model");
+                
+                // Create a provider factory wrapper and register it
+                ImplementationProviderFactory factory = new LazyImplementationProviderFactory(registry, modelTypeName, classLoader, className);
+                factoryExtensionPoint.addProviderFactory(factory);
+                factories.add(factory);
+
+            } else if (factoryClass == BindingProviderFactory.class) {
+
+                // Load a binding provider factory
+                String modelTypeName = attributes.get("model");
+                
+                // Create a provider factory wrapper and register it
+                BindingProviderFactory factory = new LazyBindingProviderFactory(registry, modelTypeName, classLoader, className);
+                factoryExtensionPoint.addProviderFactory(factory);
+                factories.add(factory);
+            }
+        }
+        return factories;
     }
 
     private void stopModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) {
