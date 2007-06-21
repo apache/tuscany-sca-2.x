@@ -45,6 +45,7 @@
                 <module>binding-feed</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-rmi</module>
+                <module>binding-sca</module>
                 <module>binding-ws</module>
                 <module>binding-ws-axis2</module>
                 <module>binding-ws-xml</module>
@@ -64,6 +65,7 @@
                 <!--
                 <module>discovery-jms</module>
                 -->
+                <module>distributed</module>
                 <module>extension-helper</module>
                 <module>host-embedded</module>
                 <module>host-http</module>
