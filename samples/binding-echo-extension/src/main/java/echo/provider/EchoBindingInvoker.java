@@ -18,28 +18,24 @@
  */
 package echo.provider;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**
- * Interceptor for the sample echo binding.
+ * Invoker for the sample echo binding.
  */
 public class EchoBindingInvoker implements Invoker {
 
-    private Object echo(Object[] args) throws InvocationTargetException {
-        // echo back the result, a real binding would invoke some API for flowing the request
-        return args[0];
-    }
-
     public Message invoke(Message msg) {
         try {
-            Object resp = echo((Object[])msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setFaultBody(e.getCause());
-        } catch (Throwable e) {
+            Object[] args = msg.getBody();
+
+            // echo back the first parameter, a real binding would invoke some API for flowing the request
+            Object result = args[0];
+                                 
+            msg.setBody(result);
+            
+        } catch (Exception e) {
             msg.setFaultBody(e);
         }
         return msg;
