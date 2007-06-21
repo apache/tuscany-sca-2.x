@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -75,7 +76,8 @@ public class NodeServiceRuntime extends DistributedRuntime  {
     }
     
     /**
-     * The node service runtime uses a bog standards composite activator
+     * The node service runtime uses a bog standard composite activator
+     * 
      * @param registry
      * @param assemblyFactory
      * @param scaBindingFactory
@@ -103,18 +105,21 @@ public class NodeServiceRuntime extends DistributedRuntime  {
                                            wireProcessor,
                                            providerFactories);
 
-}    
+    }    
     
     /**
      *  Use the node service runtime builder. The only thing that is different is
      *  that the .node document processor is added instead of .composite
      */
-    public  ContributionService createContributionService(ExtensionPointRegistry registry,
-                                                          AssemblyFactory assemblyFactory,
-                                                          PolicyFactory policyFactory,
-                                                          InterfaceContractMapper mapper)
+    @Override
+    public ContributionService createContributionService(ExtensionPointRegistry registry,
+                                                         ContributionFactory contributionFactory,
+                                                         AssemblyFactory assemblyFactory,
+                                                         PolicyFactory policyFactory,
+                                                         InterfaceContractMapper mapper)
       throws ActivationException {        
         return NodeServiceRuntimeBuilder.createContributionService(registry,
+                                                                   contributionFactory,
                                                                    assemblyFactory,
                                                                    policyFactory,
                                                                    mapper);        

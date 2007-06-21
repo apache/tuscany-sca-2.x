@@ -140,7 +140,21 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
                         
                         // check if reference and service are operating on 
                         // different nodes 
-                        if ( !referenceNode.equals(serviceNode) ) {
+                        if ( referenceNode == null ) {
+                            // if the reference component hasn't been assigned to a particular
+                            // node then it may be valid to let it run everywhere. For now
+                            // raise an exception
+                            throw new CompositeBuilderException("Component " +
+                                                                sourceComponent.getName() + 
+                                                                " is not assigned to a node");
+                        } else if ( serviceNode == null) {
+                            // if the service component hasn't been assigned to a particular
+                            // node then it may be valid to let it run everywhere. For now
+                            // raise an exception
+                            throw new CompositeBuilderException("Component " +
+                                                                targetComponent.getName() + 
+                                                                " is not assigned to a node");                            
+                        } else if ( !referenceNode.equals(serviceNode) ) {
                             // TODO - need to check if the service
                             // interface is remoteable
                            
