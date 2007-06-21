@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="bining-echo" default="compile">
+<project name="binding-echo-extension" default="compile">
 	<property name="test.jar"   value="sample-binding-echo-extension.jar" />
 	
     <target name="init">

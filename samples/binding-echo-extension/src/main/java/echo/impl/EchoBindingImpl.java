@@ -67,6 +67,7 @@ public class EchoBindingImpl implements EchoBinding {
     }
 
     public boolean isUnresolved() {
+        // The sample binding is always resolved
         return false;
     }
 
