@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 import echo.EchoBinding;
 import echo.server.EchoServer;
-import echo.server.EchoService;
+import echo.server.EchoServiceListener;
 
 /**
  * Implementation of the Echo binding provider.
@@ -61,7 +61,7 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider {
         
         // Register with the hosting server
         String uri = component.getURI() + "/" + binding.getName();
-        EchoServer.getServer().register(uri, new EchoService(chain.getHeadInvoker(), messageFactory));
+        EchoServer.getServer().register(uri, new EchoServiceListener(chain.getHeadInvoker(), messageFactory));
     }
 
     public void stop() {

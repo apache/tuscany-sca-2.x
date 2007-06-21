@@ -30,17 +30,17 @@ public class EchoServer {
 
     public static EchoServer server;
 
-    private Map<String, EchoService> services = new HashMap<String, EchoService>();
+    private Map<String, EchoServiceListener> services = new HashMap<String, EchoServiceListener>();
 
     public static void start() {
-        server = new EchoServer();
     }
 
     public static void stop() {
-        server = null;
     }
 
     public static EchoServer getServer() {
+        if (server == null)
+            server = new EchoServer();
         return server;
     }
 
@@ -50,12 +50,18 @@ public class EchoServer {
      * @param service
      * @param name
      */
-    public void register(String uri, EchoService service) {
+    public void register(String uri, EchoServiceListener service) {
+        if (services.isEmpty()) {
+            start();
+        }
         services.put(uri, service);
     }
 
     public void unregister(String uri) {
         services.remove(uri);
+        if (services.isEmpty()) {
+            stop();
+        }
     }
 
     /**

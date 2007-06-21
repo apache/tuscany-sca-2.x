@@ -27,11 +27,11 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 /**
  * The EchoService
  */
-public class EchoService {
+public class EchoServiceListener {
     private Invoker invoker;
     private MessageFactory messageFactory;
 
-    public EchoService(Invoker invoker, MessageFactory messageFactory) {
+    public EchoServiceListener(Invoker invoker, MessageFactory messageFactory) {
         super();
         this.invoker = invoker;
         this.messageFactory = messageFactory;
