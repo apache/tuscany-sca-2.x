@@ -51,7 +51,7 @@ public class EchoBindingTestCase extends TestCase {
     public void testService() throws Exception {
         // Call the echo server. This will dispatch the call to a service with an 
         // echo binding. The echo binding will pass the call to the echo component.
-        String echoString = EchoServer.getServer().sendReceive("EchoComponent/EchoService", "bar");
+        String echoString = EchoServer.getServer().sendReceive("http://tempuri.org", "bar");
         assertEquals(echoString, "bar");
     }
 }
