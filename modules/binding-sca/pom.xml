@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-sca</artifactId>
-    <name>Apache Tuscany default binding</name>
+    <name>Apache Tuscany Default SCA Binding</name>
 
     <dependencies>
 
