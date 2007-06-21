@@ -60,7 +60,10 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider {
         InvocationChain chain = wire.getInvocationChains().get(0);
         
         // Register with the hosting server
-        String uri = component.getURI() + "/" + binding.getName();
+        String uri = binding.getURI();
+        if (uri == null) {
+            uri = component.getURI() + "/" + binding.getName();
+        }
         EchoServer.getServer().register(uri, new EchoServiceListener(chain.getHeadInvoker(), messageFactory));
     }
 
