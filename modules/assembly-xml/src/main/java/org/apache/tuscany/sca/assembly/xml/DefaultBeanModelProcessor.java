@@ -61,9 +61,22 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
         // Introspect the bean model class
         try {
             beanInfo = Introspector.getBeanInfo(beanModelType);
+            
+            // Index the bean's property descriptors
             PropertyDescriptor[] pd = beanInfo.getPropertyDescriptors();
             for (int i =0; i < pd.length; i++) {
-                propertyDescriptors.put(pd[i].getName(), pd[i]);
+                
+                // Map an uppercase property name to a lowercase attribute name 
+                String name = pd[i].getName();
+                if (name.toUpperCase().equals(name)) {
+                    name = name.toLowerCase();
+                }
+                
+                // Trim trailing _ from property names
+                if (name.endsWith("_")) {
+                    name = name.substring(0, name.length()-1);
+                }
+                propertyDescriptors.put(name, pd[i]);
             }
         } catch (IntrospectionException e) {
             throw new IllegalArgumentException(e);
