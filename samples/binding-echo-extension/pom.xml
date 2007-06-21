@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-binding-echo-extension</artifactId>
-    <name>Apache Tuscany Echo Binding Sample</name>
+    <name>Apache Tuscany Echo Binding Extension Sample</name>
 
     <repositories>
        <repository>
