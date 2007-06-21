@@ -30,7 +30,6 @@ import echo.DefaultEchoBindingFactory;
 import echo.EchoBindingFactory;
 import echo.impl.EchoBindingProcessor;
 import echo.provider.EchoBindingProviderFactory;
-import echo.server.EchoServer;
 
 /**
  * A module activator for the sample Echo binding extension.
@@ -57,13 +56,9 @@ public class EchoModuleActivator implements ModuleActivator {
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(new EchoBindingProviderFactory(messageFactory));
-       
-        // Start the Echo server
-        EchoServer.start();
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        EchoServer.stop();
     }
 
 }
