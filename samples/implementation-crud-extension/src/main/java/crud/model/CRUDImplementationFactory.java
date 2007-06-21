@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package crud;
+package crud.model;
 
 /**
  * A factory for the sample CRUD implementation model.

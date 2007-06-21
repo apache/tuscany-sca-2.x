@@ -38,6 +38,7 @@
             <modules>
                 <module>binding-echo</module>
                 <module>binding-echo-extension</module>
+                <module>binding-echo-simplified</module>
                 <module>calculator</module>
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
@@ -53,6 +54,7 @@
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
                 <module>implementation-crud-extension</module>
+                <module>implementation-crud-simplified</module>
                 <!--
                 <module>loanapplication</module>
                 -->

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package crud;
+package crud.model;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
