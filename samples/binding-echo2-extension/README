@@ -1,0 +1,77 @@
+Binding Echo Sample
+===================
+This sample demonstrates how new bindings are constructed for Apache Tuscany 
+SCA. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you want to try out the echo binding that this sample provides
+please see the binding-echo sample that provides the necessary client and
+application code to bring up an application that uses this binding
+
+Sample Overview
+---------------
+This sample contains a implementation of an SCA binding that simply echoes back 
+any messages that are sent to it. 
+
+binding-echo-extension/
+  src/
+    main/
+      java/
+        echo/                    - The binding interfaces
+          impl/                  - The bindings model classes
+          module/                - The activator that loads the binding into the 
+                                   SCA runtime
+          provider/              - The bindings runtime classes
+          server/                - A dummy server that the binding is plugged into
+      resources/
+        META-INF/
+          services/
+            org.apache.sca.tuscany.sca.core.ModuleActivator - specifies the
+                                 module activation class to call
+    test/
+      java/
+        echo/                    - test code
+      resources/
+        EchoBinding.composite    - the SCA assembly used by the unit test
+  build.xml                      - the Ant build file
+  pom.xml                        - the Maven build file
+  
+Building The Sample Using Ant
+-----------------------------
+With the binary distribution the sample can be built using Ant as 
+follows
+
+cd binding-echo-extension
+ant compile
+
+See the binding-echo sample to run a sample that uses this binding. 
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd binding-echo-extension
+mvn
+
+Maven will also test that the sample extension built properly. You should see 
+the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running echo.EchoReferenceTestCase
+Returned message: foo
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.111 sec
+Running echo.EchoServiceTestCase
+Returned message: foo
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.121 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
