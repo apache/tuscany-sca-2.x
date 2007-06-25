@@ -21,9 +21,6 @@ package bigbank.account;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-
 import bigbank.accountdata.AccountDataService;
 import bigbank.accountdata.CheckingAccount;
 import bigbank.accountdata.SavingsAccount;
@@ -35,14 +32,11 @@ import bigbank.stockquote.StockQuoteService;
  */
 public class AccountServiceImpl implements AccountService {
 
-    @Reference
-    public AccountDataService accountDataService;
+    private AccountDataService accountDataService;
     
-    @Reference
-    public StockQuoteService stockQuoteService;
+    private StockQuoteService stockQuoteService;
     
-    @Property
-    public String currency;
+    private String currency;
 
     public AccountReport getAccountReport(String s) {
         List<String> summaries = new ArrayList<String>();
@@ -65,4 +59,27 @@ public class AccountServiceImpl implements AccountService {
         return report;
     }
 
+    public AccountDataService getAccountDataService() {
+        return accountDataService;
+    }
+
+    public void setAccountDataService(AccountDataService accountDataService) {
+        this.accountDataService = accountDataService;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public StockQuoteService getStockQuoteService() {
+        return stockQuoteService;
+    }
+
+    public void setStockQuoteService(StockQuoteService stockQuoteService) {
+        this.stockQuoteService = stockQuoteService;
+    }
 }

@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,22 +16,19 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-package bigbank.stockquote;
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	targetNamespace="http://bigbank"
+	xmlns:s="http://stockquote"
+	name="BigBank">
 
+    <component name="AccountServiceComponent">
+        <implementation.spring location="Account-context.xml"/>
+        <reference name="stockQuoteService" target="StockQuoteServiceComponent"/>
+    </component>
 
-/**
- * This class implements the StockQuote service.
- */
-public class StockQuoteImpl implements StockQuoteService {
+    <component name="StockQuoteServiceComponent">
+        <implementation.composite name="s:StockQuote"/>
+    </component>
 
-    public double getQuote(String symbol) {
-        double price = 104.0 + Math.random();
-        price = ((int)(price * 100)) / 100.0;
-
-        System.out.println("Getting stock quote for: " + symbol + ", value: "+ price);
-
-        return price;
-    }
-
-}
+</composite>

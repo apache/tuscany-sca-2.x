@@ -16,21 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.stockquote;
+package bigbank;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+
+import bigbank.account.AccountService;
 
 /**
- * This class implements the StockQuote service.
+ * Tests out the big bank service
+ *
  */
-public class StockQuoteImpl implements StockQuoteService {
+public class BigBankTestCase extends TestCase {
 
-    public double getQuote(String symbol) {
-        double price = 104.0 + Math.random();
-        price = ((int)(price * 100)) / 100.0;
+    private SCADomain scaDomain;
+    AccountService accountService;
 
-        System.out.println("Getting stock quote for: " + symbol + ", value: "+ price);
-
-        return price;
+    protected void setUp() throws Exception {
+        scaDomain = SCADomain.newInstance("BigBank.composite");
+        accountService = scaDomain.getService(AccountService.class, "AccountServiceComponent");
+    }
+    
+    protected void tearDown() throws Exception {
+        scaDomain.close();
     }
 
+    public void test() throws Exception {
+        System.out.println("Account summary: " + accountService.getAccountReport("Foo") );
+    }
 }
