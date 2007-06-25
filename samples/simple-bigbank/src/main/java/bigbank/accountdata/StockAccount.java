@@ -25,6 +25,7 @@ public class StockAccount implements Account {
     private String accountNumber;
     private String symbol;
     private int quantity;
+    private double balance;
 
     public String getAccountNumber() { return accountNumber; }
     public void setAccountNumber(String n) { this.accountNumber = n; }
@@ -34,6 +35,9 @@ public class StockAccount implements Account {
 
     public String getSymbol() { return symbol; }
     public void setSymbol(String s) { this.symbol = s; }
+    
+    public double getBalance() { return balance; }
+    public void setBalance(double balance) { this.balance = balance; }
 
-    public String getSummary() { return "ID:" + accountNumber + ", symbol:" + symbol + ", quantity:" + quantity; }
+    public String getSummary() { return "ID:" + accountNumber + ", symbol:" + symbol + ", quantity:" + quantity + ", balance:" + balance; }
 }

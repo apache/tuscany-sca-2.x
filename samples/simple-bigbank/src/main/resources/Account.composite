@@ -18,18 +18,21 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://bigbank"
-	xmlns:a="http://account"
-	xmlns:s="http://stockquote"
-	name="BigBank">
+	targetNamespace="http://account"
+	name="Account">
+           
+    <service name="AccountService" promote="AccountServiceComponent"/>
 
     <component name="AccountServiceComponent">
-        <implementation.composite name="a:Account"/>
-        <reference name="stockQuoteService" target="StockQuoteServiceComponent"/>
+        <implementation.java class="bigbank.account.AccountServiceImpl"/>
+        <reference name="accountDataService" target="AccountDataServiceComponent"/>
+        <property name="currency">USD</property>
     </component>
 
-    <component name="StockQuoteServiceComponent">
-        <implementation.composite name="s:StockQuote"/>
+    <component name="AccountDataServiceComponent">
+        <implementation.java class="bigbank.accountdata.AccountDataServiceImpl"/>
     </component>
+    
+    <reference name="stockQuoteService" promote="AccountServiceComponent/stockQuoteService"/>
 
 </composite>
