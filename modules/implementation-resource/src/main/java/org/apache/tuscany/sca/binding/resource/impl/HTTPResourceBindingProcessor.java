@@ -57,11 +57,11 @@ public class HTTPResourceBindingProcessor implements StAXArtifactProcessor<HTTPR
 
     public HTTPResourceBinding read(XMLStreamReader reader) throws ContributionReadException {
         String uri = reader.getAttributeValue(null, "uri");
-        HTTPResourceBinding echoBinding = factory.createHTTPResourceBinding();
+        HTTPResourceBinding resourceBinding = factory.createHTTPResourceBinding();
         if (uri != null) {
-            echoBinding.setURI(uri.trim());
+            resourceBinding.setURI(uri.trim());
         }
-        return echoBinding;
+        return resourceBinding;
     }
 
     public void write(HTTPResourceBinding echoBinding, XMLStreamWriter writer) throws ContributionWriteException {
