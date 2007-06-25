@@ -21,7 +21,7 @@ package stockquote;
 import org.osoa.sca.annotations.Service;
 
 /**
- * This class implements the HelloWorld service.
+ * This class implements the StockQuote service.
  */
 @Service(StockQuoteService.class)
 public class StockQuoteImpl implements StockQuoteService {
