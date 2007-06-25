@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,20 +15,19 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://bigbank"
-	xmlns:a="http://account"
-	xmlns:s="http://stockquote"
-	name="BigBank">
+ */
+package bigbank.stockquote;
 
-    <component name="AccountServiceComponent">
-        <implementation.composite name="a:Account"/>
-        <reference name="stockQuoteService" target="StockQuoteServiceComponent"/>
-    </component>
+import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Service;
 
-    <component name="StockQuoteServiceComponent">
-        <implementation.composite name="s:StockQuote"/>
-    </component>
+/**
+ * This is the business interface of the StockQuote service.
+ */
+@Remotable
+@Service
+public interface StockQuoteService {
 
-</composite>
+    public double getQuote(String symbol);
+}
+

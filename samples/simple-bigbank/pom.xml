@@ -50,12 +50,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-databinding</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-                
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
