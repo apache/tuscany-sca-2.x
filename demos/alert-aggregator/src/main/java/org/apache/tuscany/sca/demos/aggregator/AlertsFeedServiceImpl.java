@@ -23,12 +23,13 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.Feed;
+import org.apache.tuscany.sca.binding.feed.ResourceCollection;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -39,8 +40,8 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
  *
  * @version $Rev$ $Date$
  */
-@Service(Feed.class)
-public class AlertsFeedServiceImpl implements Feed {
+@Service(ResourceCollection.class)
+public class AlertsFeedServiceImpl implements ResourceCollection {
   
     private AlertsService alerts;
     
@@ -56,14 +57,14 @@ public class AlertsFeedServiceImpl implements Feed {
      * 
      * @return the structure containing alerts 
      */    
-    public SyndFeed get(String uri) {
+    public Feed getCollection() {
         
         // Create a new Feed
         SyndFeed feed = new SyndFeedImpl();
         feed.setTitle("Apache Tuscant Feed Aggregator");
         feed.setDescription("A sample showing an SCA application to aggregate various types of feeds");
         feed.setAuthor("Apache Tuscany");
-        feed.setLink(uri);
+        feed.setLink("http://incubator.apache.org/tuscany");
  
         // Aggregate entries from feed1 and feed2
         List<SyndEntry> entries = new ArrayList<SyndEntry>();
@@ -86,6 +87,7 @@ public class AlertsFeedServiceImpl implements Feed {
         }
         
         feed.setEntries(entries);
-        return feed;
+        
+        return (Feed)feed.createWireFeed("atom_1.0");
     }    
 }

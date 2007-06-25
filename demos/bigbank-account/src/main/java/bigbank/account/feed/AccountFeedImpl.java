@@ -18,51 +18,87 @@
  */
 package bigbank.account.feed;
 
-import org.apache.tuscany.sca.binding.feed.Feed;
+import java.io.InputStream;
+import java.util.Collections;
+
+import org.apache.tuscany.sca.binding.feed.EditableResourceCollection;
+import org.apache.tuscany.sca.binding.feed.ResourceNotFoundException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import bigbank.account.AccountService;
 
-import com.sun.syndication.feed.synd.SyndContent;
-import com.sun.syndication.feed.synd.SyndContentImpl;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
+import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.atom.Link;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 
-@Service(Feed.class)
-public class AccountFeedImpl implements Feed {
+@Service(EditableResourceCollection.class)
+public class AccountFeedImpl implements EditableResourceCollection {
 
     @Reference
     protected AccountService accountService;
     
     @SuppressWarnings("unchecked")
-    public SyndFeed get(String uri) {
-        
-        // Get the account report for the specified customer ID
-        String customerID = uri.substring(uri.lastIndexOf('/')+1);
-        double balance = accountService.getAccountReport(customerID); 
-        String value = Double.toString(balance);
+    public com.sun.syndication.feed.atom.Feed getCollection() {
         
         // Create a new Feed
-        SyndFeed feed = new SyndFeedImpl();
+        Feed feed = new Feed();
+        feed.setId("accounts");
         feed.setTitle("Account Report Feed");
-        feed.setDescription("A sample Account Report feed");
-        feed.setAuthor("anonymous");
-        feed.setLink(uri);
-        
-        SyndEntry entry = new SyndEntryImpl();
-        entry.setAuthor("anonymous");
-        SyndContent content = new SyndContentImpl();
-        content.setValue(value);
-        entry.setDescription(content);
+        Content subtitle = new Content();
+        subtitle.setValue("This is a sample feed");
+        feed.setSubtitle(subtitle);
+        Link link = new Link();
+        link.setHref("http://incubator.apache.org/tuscany");
+        feed.getAlternateLinks().add(link);
+
+        // Add the Account report entry 
+        Entry entry = get("1234");
         feed.getEntries().add(entry);
 
         return feed;
+    }
+
+    public void delete(String id) {
+    }
+
+    public Entry get(String id) {
+
+        // Get the account report for the specified customer ID
+        double balance = accountService.getAccountReport(id); 
+        String value = Double.toString(balance);
+        
+        Entry entry = new Entry();
+        entry.setId("account-" + id);
+        entry.setTitle("Account Report Entry");
+        Content summary = new Content();
+        summary.setType(Content.HTML);
+        summary.setValue("This is your account report: <b>" + value + "</b>");
+        entry.setSummary(summary);
+        Content content = new Content();
+        content.setValue(value);
+        entry.setContents(Collections.singletonList(content));
+        return entry;
+    }
+
+    public Entry post(Entry entry) {
+        return null;
+    }
+
+    public Entry put(String id, Entry entry) {
+        return null;
+    }
+
+    public Entry postMedia(String title, String slug, String contentType, InputStream media) {
+        return null;
+    }
+    
+    public Entry putMedia(String id, String contentType, InputStream media) throws ResourceNotFoundException {
+        return null;
     }
 }

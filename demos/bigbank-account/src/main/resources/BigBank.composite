@@ -19,7 +19,11 @@
    	</service>
 
    	<service name="AccountFeed" promote="AccountFeedComponent">
-   		<binding.atom uri="/feed/*"/>
+   		<binding.rss uri="/rss"/>
+   	</service>
+
+   	<service name="AccountFeed" promote="AccountFeedComponent">
+   		<binding.atom uri="/atom"/>
    	</service>
 
     <component name="AccountServiceComponent">
