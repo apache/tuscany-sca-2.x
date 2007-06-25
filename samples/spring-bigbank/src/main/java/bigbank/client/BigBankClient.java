@@ -16,21 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.stockquote;
 
+package bigbank.client;
+
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+
+import bigbank.account.AccountService;
 
 /**
- * This class implements the StockQuote service.
+ * This client program shows how to create an SCA runtime, start it,
+ * and locate and invoke a SCA component
  */
-public class StockQuoteImpl implements StockQuoteService {
+public class BigBankClient {
+    public static void main(String[] args) throws Exception {
 
-    public double getQuote(String symbol) {
-        double price = 104.0 + Math.random();
-        price = ((int)(price * 100)) / 100.0;
+        SCADomain scaDomain = SCADomain.newInstance("BigBank.composite");
+        
+        AccountService accountService = scaDomain.getService(AccountService.class,
+                                                          "AccountServiceComponent");
 
-        System.out.println("Getting stock quote for: " + symbol + ", value: "+ price);
+        System.out.println("Account summary: " + accountService.getAccountReport("Foo") );
 
-        return price;
-    }
+        scaDomain.close();
+    }  
 
 }

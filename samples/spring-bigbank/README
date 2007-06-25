@@ -1,0 +1,91 @@
+Spring Bigbank Sample
+=================
+This sample implements a simple a version of the BigBank scenrio used in 
+various places in the SCA specification documents. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-spring-bigbank.jar bigbank.client.BigBankClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-spring-bigbank.jar bigbank.client.BigBankClient
+
+
+Sample Overview
+---------------
+The sample provides a composite with two java components wired together 
+with a default binding. A request to the AccountComponent results in a 
+request to the AccountDataComponent to get account data. The data returns 
+back via the AccountComponent to the client.
+
+calculator/
+  src/
+    main/
+      java/
+        bigbank/
+          account/                - AccountComponent implementation
+          accountdata/            - AccountDataComponent implementation
+          client/                 - starts the SCA Runtime and 
+                                    deploys the BigBank.composite. 
+                                    It then calls the deployed AccountService 
+      resources/
+        Account.composite         - SCA assembly for this sample
+        BigBank.composite         - SCA assembly for this sample
+        StockQuote.composite      - SCA assembly for this sample
+    test/
+      java/
+        bigbank/
+          BigBankTestCase.java    - JUnit test case 
+  spring-bigbank.png              - a pictorial representation of the sample 
+                                    .composite file
+  build.xml                       - the Ant build file
+  pom.xml                         - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd spring-bigbank
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] Account summary: currency: USD, [ID:Foo_CHA12345, balance:1500.0, ID
+:Foo_SAA12345, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100]
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd spring-bigbank
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running bigbank.BigBankTestCase
+Account summary: currency: USD, [ID:Foo_CHA12345, balance:1500.0, ID:Foo_SAA1234
+5, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100, balance:10432.0]]
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.592 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 

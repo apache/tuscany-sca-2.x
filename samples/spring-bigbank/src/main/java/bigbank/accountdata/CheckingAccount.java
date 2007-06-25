@@ -16,21 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.stockquote;
-
+package bigbank.accountdata;
 
 /**
- * This class implements the StockQuote service.
+ * An account service implementation for a checking account
  */
-public class StockQuoteImpl implements StockQuoteService {
+public class CheckingAccount implements Account {
+    private String accountNumber;
+    private double balance;
 
-    public double getQuote(String symbol) {
-        double price = 104.0 + Math.random();
-        price = ((int)(price * 100)) / 100.0;
+    public String getAccountNumber() { return accountNumber; }
+    public void setAccountNumber(String n) { this.accountNumber = n; }
 
-        System.out.println("Getting stock quote for: " + symbol + ", value: "+ price);
+    public double getBalance() { return balance; }
+    public void setBalance(double b) { this.balance = b; }
 
-        return price;
-    }
-
+    public String getSummary() { return "ID:" + accountNumber + ", balance:" + balance; }
 }

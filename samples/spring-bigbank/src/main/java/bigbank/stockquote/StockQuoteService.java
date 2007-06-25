@@ -18,19 +18,14 @@
  */
 package bigbank.stockquote;
 
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * This class implements the StockQuote service.
+ * This is the business interface of the StockQuote service.
  */
-public class StockQuoteImpl implements StockQuoteService {
+@Remotable
+public interface StockQuoteService {
 
-    public double getQuote(String symbol) {
-        double price = 104.0 + Math.random();
-        price = ((int)(price * 100)) / 100.0;
-
-        System.out.println("Getting stock quote for: " + symbol + ", value: "+ price);
-
-        return price;
-    }
-
+    public double getQuote(String symbol);
 }
+
