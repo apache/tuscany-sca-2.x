@@ -19,24 +19,11 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import org.osoa.sca.annotations.Remotable;
-
-import com.sun.syndication.feed.synd.SyndFeed;
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
- * The business interface used on services and references that provide and
- * consume feeds.
- * 
- * @version $Rev$ $Date$
+ * A model for the RSS binding.
  */
-@Remotable
-public interface Feed {
+public interface RSSBinding extends Binding {
 
-    /**
-     * Get an RSS or Atom feed.
-     * 
-     * @param uri the uri of the feed
-     * @return the RSS or Atom feed
-     */
-    SyndFeed get(String uri);
 }

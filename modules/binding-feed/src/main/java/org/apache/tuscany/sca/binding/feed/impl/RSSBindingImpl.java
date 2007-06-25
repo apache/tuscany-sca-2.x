@@ -22,18 +22,17 @@ package org.apache.tuscany.sca.binding.feed.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.FeedBinding;
+import org.apache.tuscany.sca.binding.feed.RSSBinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Implementation of the Feed binding model.
  */
-public class FeedBindingImpl implements FeedBinding {
+public class RSSBindingImpl implements RSSBinding {
 
     private String name;
     private String uri;
-    private String feedType;
 
     public String getName() {
         return name;
@@ -72,14 +71,6 @@ public class FeedBindingImpl implements FeedBinding {
 
     public void setUnresolved(boolean unresolved) {
         // The binding is always resolved
-    }
-
-    public String getFeedType() {
-        return feedType;
-    }
-
-    public void setFeedType(String value) {
-        feedType = value;
     }
 
 }

@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.binding.feed.provider;
 
-import org.apache.tuscany.sca.binding.feed.FeedBinding;
+import org.apache.tuscany.sca.binding.feed.AtomBinding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -31,20 +29,20 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
- * Implementation of the Feed binding provider.
+ * Implementation of the Atom binding provider.
  */
-public class FeedServiceBindingProvider implements ServiceBindingProvider {
+public class AtomServiceBindingProvider implements ServiceBindingProvider {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
-    private FeedBinding binding;
+    private AtomBinding binding;
     private ServletHost servletHost;
     private MessageFactory messageFactory;
     private String uri;
 
-    public FeedServiceBindingProvider(RuntimeComponent component,
+    public AtomServiceBindingProvider(RuntimeComponent component,
                                       RuntimeComponentService service,
-                                      FeedBinding binding,
+                                      AtomBinding binding,
                                       ServletHost servletHost,
                                       MessageFactory messageFactory) {
         this.component = component;
@@ -63,19 +61,23 @@ public class FeedServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void start() {
-        RuntimeComponentService componentService = (RuntimeComponentService) service;
+        RuntimeComponentService componentService = (RuntimeComponentService)service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
-        InvocationChain chain = wire.getInvocationChains().get(0);
-        Invoker invoker = chain.getHeadInvoker(); 
 
-        FeedBindingListener servlet =
-            new FeedBindingListener(invoker, messageFactory, binding.getFeedType());
+        ResourceCollectionBindingListener servlet =
+            new ResourceCollectionBindingListener(wire, messageFactory, "atom_1.0");
 
-        servletHost.addServletMapping(uri, servlet);
+        String mapping = uri;
+        if (!mapping.endsWith("/")) {
+            mapping += "/";
+        }
+        if (!mapping.endsWith("*")) {
+            mapping += "*";
+        }
+        servletHost.addServletMapping(mapping, servlet);
     }
 
     public void stop() {
         servletHost.removeServletMapping(uri);
     }
-
 }

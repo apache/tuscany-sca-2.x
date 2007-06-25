@@ -19,57 +19,93 @@
 
 package org.apache.tuscany.sca.implementation.data.companyFeed;
 
-import org.apache.tuscany.sca.binding.feed.Feed;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.tuscany.sca.binding.feed.EditableResourceCollection;
+import org.apache.tuscany.sca.binding.feed.ResourceNotFoundException;
 import org.apache.tuscany.sca.implementation.data.DATA;
 import org.osoa.sca.annotations.Reference;
 
-import com.sun.syndication.feed.synd.SyndContent;
-import com.sun.syndication.feed.synd.SyndContentImpl;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
-
+import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.atom.Person;
 import commonj.sdo.DataObject;
 
-public class CompanyFeed implements Feed {
+public class CompanyFeed implements EditableResourceCollection {
     
     @Reference
     protected DATA dataService;
-
-    protected String parseId(String uri) {
-        int separator = uri.lastIndexOf("/");
-        return uri.substring(separator + 1);
-    }
     
-    @SuppressWarnings("unchecked")
-    public SyndFeed get(String uri) {
-        String id = parseId(uri);
+    public Feed getCollection() {
+        
+        // Create a new Feed
+        Feed feed = new Feed();
+        feed.setTitle("Company Feed");
+        Content subtitle = new Content(); 
+        subtitle.setValue("A sample company feed");
+        feed.setSubtitle(subtitle);
+        Person author = new Person();
+        author.setName("anonymous");
+        feed.setAuthors(Collections.singletonList(author));
+        Link link = new Link();
+        link.setHref("http://incubator.apache.org/tuscany");
+        feed.setAlternateLinks(Collections.singletonList(link));
+
+        return feed;
+    }
+
+    public Entry get(String id) throws ResourceNotFoundException{
         
         DataObject data = dataService.get(id);        
         if(data == null) {
-            //FIXME: how to handle errors here ?
+            throw new ResourceNotFoundException();
         }
         
-        // Create a new Feed
-        SyndFeed feed = new SyndFeedImpl();
-        feed.setTitle("Company Feed");
-        feed.setDescription("A sample company feed");
-        feed.setAuthor("anonymous");
-        feed.setLink(uri);
-        
-        //loop torugh all the results returned
-        SyndEntry entry = new SyndEntryImpl();
-        entry.setUri(uri);
-        entry.setAuthor("anonymous");
+        Entry entry = new Entry();
+        entry.setId(id);
         entry.setTitle(data.getString("name"));
-        
-        SyndContent content = new SyndContentImpl();
-        content.setValue(data.getString("name"));
-        entry.setDescription(content);
-        feed.getEntries().add(entry);
+        List<Link> links = new ArrayList<Link>();
+        Link link = new Link();
+        link.setRel("edit");
+        link.setHref("entry/" + id);
+        links.add(link);
+        entry.setOtherLinks(links);
 
-        return feed;
+        links = new ArrayList<Link>();
+        link = new Link();
+        link.setRel("alternate");
+        link.setHref("entry/" + id);
+        links.add(link);
+        entry.setAlternateLinks(links);
+
+        entry.setCreated(new Date());
+
+        return entry;
+    }
+
+    public void delete(String id) throws ResourceNotFoundException {
+    }
+
+    public Entry post(Entry entry) {
+        return null;
+    }
+
+    public Entry postMedia(String title, String slug, String contentType, InputStream media) {
+        return null;
+    }
+
+    public Entry put(String id, Entry entry) throws ResourceNotFoundException {
+        return null;
+    }
+
+    public Entry putMedia(String id, String contentType, InputStream media) throws ResourceNotFoundException {
+        return null;
     }
 
 }

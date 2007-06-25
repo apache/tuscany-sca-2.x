@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.binding.feed.module;
 
-import org.apache.tuscany.sca.binding.feed.DefaultFeedBindingFactory;
-import org.apache.tuscany.sca.binding.feed.FeedBindingFactory;
-import org.apache.tuscany.sca.binding.feed.provider.FeedBindingProviderFactory;
-import org.apache.tuscany.sca.binding.feed.xml.AtomBindingProcessor;
-import org.apache.tuscany.sca.binding.feed.xml.RssBindingProcessor;
+import org.apache.tuscany.sca.binding.feed.AtomBindingFactory;
+import org.apache.tuscany.sca.binding.feed.DefaultAtomBindingFactory;
+import org.apache.tuscany.sca.binding.feed.DefaultRSSBindingFactory;
+import org.apache.tuscany.sca.binding.feed.RSSBindingFactory;
+import org.apache.tuscany.sca.binding.feed.impl.AtomBindingProcessor;
+import org.apache.tuscany.sca.binding.feed.impl.RSSBindingProcessor;
+import org.apache.tuscany.sca.binding.feed.provider.AtomBindingProviderFactory;
+import org.apache.tuscany.sca.binding.feed.provider.RSSBindingProviderFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
@@ -44,23 +47,28 @@ public class FeedModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        // Create the Feed model factory
+        // Create the model factories
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        FeedBindingFactory factory = new DefaultFeedBindingFactory();
-        factories.addFactory(factory);
+        RSSBindingFactory feedFactory = new DefaultRSSBindingFactory();
+        factories.addFactory(feedFactory);
+        AtomBindingFactory atomFactory = new DefaultAtomBindingFactory();
+        factories.addFactory(atomFactory);
 
         // Add the AtomBindingProcessor and RSSBindingProcessor extensions
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        AtomBindingProcessor atomBindingProcessor = new AtomBindingProcessor(factory);
+        StAXArtifactProcessorExtensionPoint processors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        AtomBindingProcessor atomBindingProcessor = new AtomBindingProcessor(atomFactory);
         processors.addArtifactProcessor(atomBindingProcessor);
-        RssBindingProcessor rssBindingProcessor = new RssBindingProcessor(factory);
+        RSSBindingProcessor rssBindingProcessor = new RSSBindingProcessor(feedFactory);
         processors.addArtifactProcessor(rssBindingProcessor);
 
         // Add the Feed binding provider factory extension
-        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        ProviderFactoryExtensionPoint providerFactories =
+            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
-        providerFactories.addProviderFactory(new FeedBindingProviderFactory(servletHost, messageFactory));
+        providerFactories.addProviderFactory(new RSSBindingProviderFactory(servletHost, messageFactory));
+        providerFactories.addProviderFactory(new AtomBindingProviderFactory(servletHost, messageFactory));
     }
 
     public void stop(ExtensionPointRegistry registry) {

@@ -19,14 +19,14 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import org.apache.tuscany.sca.binding.feed.impl.FeedBindingImpl;
+import org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl;
 
 /**
- * A factory for the Feed binding model.
+ * A factory for the Atom binding model.
  */
-public class DefaultFeedBindingFactory implements FeedBindingFactory {
+public class DefaultAtomBindingFactory implements AtomBindingFactory {
 
-    public FeedBinding createFeedBinding() {
-        return new FeedBindingImpl();
+    public AtomBinding createAtomBinding() {
+        return new AtomBindingImpl();
     }
 }
