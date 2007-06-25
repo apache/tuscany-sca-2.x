@@ -47,8 +47,6 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -66,9 +64,6 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
     
-    private ContributionFactory contributionFactory;
-    private DeployedArtifact deployedArtifact;
-    
     /**
      * Construct a new composite processor
      * @param assemblyFactory
@@ -77,9 +72,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      */
     public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory,
                               InterfaceContractMapper interfaceContractMapper,
-                              StAXArtifactProcessor extensionProcessor, ContributionFactory contributionFactory) {
+                              StAXArtifactProcessor extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
-        this.contributionFactory = contributionFactory;
     }
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException {
@@ -181,10 +175,6 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                                 property = componentProperty;
                                 componentProperty.setSource(getString(reader, SOURCE));
                                 componentProperty.setFile(getString(reader, FILE));
-                                if ( componentProperty.getFile() != null) {
-                                    deployedArtifact = contributionFactory.createDeployedArtifact();
-                                    deployedArtifact.setURI(componentProperty.getFile());
-                                }
                                 readPolicies(property, reader);
                                 readProperty(componentProperty, reader);
                                 component.getProperties().add(componentProperty);
@@ -446,8 +436,6 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         ConstrainingType constrainingType = composite.getConstrainingType(); 
         constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType); 
         composite.setConstrainingType(constrainingType);
-        
-        Object obj = resolver.resolveModel(DeployedArtifact.class, deployedArtifact);
         
         // Resolve includes in the composite
         for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
