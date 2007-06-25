@@ -69,6 +69,7 @@
                 <module>extension-helper</module>
                 <module>host-embedded</module>
                 <module>host-http</module>
+                <module>host-rmi</module>
                 <module>host-webapp</module>
                 <module>http-jetty</module>
                 <module>http-tomcat</module>
@@ -96,8 +97,7 @@
                 -->
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
-                <!--module>policy</module-->
-		<module>host-rmi</module>
+                <module>policy</module>
                 <module>sca-api</module>
                 <module>topology</module>
                 <module>topology-xml</module>
