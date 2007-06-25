@@ -65,6 +65,7 @@
                 <module>simple-bigbank</module>
                 <module>simple-callback</module>
                 <module>supplychain</module>
+                <module>web-resource</module>
             </modules>
         </profile>
 
