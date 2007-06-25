@@ -23,7 +23,7 @@
 	name="BigBank">
 
     <component name="AccountServiceComponent">
-        <implementation.spring location="Account-context.xml"/>
+        <implementation.spring location="Account-spring-context.xml"/>
         <reference name="stockQuoteService" target="StockQuoteServiceComponent"/>
     </component>
 
