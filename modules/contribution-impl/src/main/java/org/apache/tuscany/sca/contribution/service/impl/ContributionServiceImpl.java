@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -69,6 +70,11 @@ public class ContributionServiceImpl implements ContributionService {
      */
 
     private URLArtifactProcessor artifactProcessor;
+    
+    /**
+     * Contribution post processor
+     */
+    private ContributionPostProcessor postProcessor;
 
     /**
      * xml factory used to create reader instance to load contribution metadata
@@ -94,6 +100,7 @@ public class ContributionServiceImpl implements ContributionService {
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
                                    URLArtifactProcessor artifactProcessor,
+                                   ContributionPostProcessor postProcessor,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory) {
@@ -101,6 +108,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
         this.artifactProcessor = artifactProcessor;
+        this.postProcessor = postProcessor;
         this.xmlFactory = xmlFactory;
 
         this.contributionFactory = contributionFactory;
@@ -267,6 +275,9 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
         
+        //post process contribution
+        this.postProcessor.visit(contribution);
+        
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getURI(), contribution);
         
@@ -336,5 +347,4 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.getDeployables().clear();
         contribution.getDeployables().addAll(resolvedDeployables);
     }
-
 }

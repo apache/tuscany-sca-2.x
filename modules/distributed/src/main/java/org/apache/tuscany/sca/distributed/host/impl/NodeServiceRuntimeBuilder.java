@@ -43,9 +43,12 @@ import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
+import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
@@ -147,6 +150,12 @@ public class NodeServiceRuntimeBuilder {
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
         packageProcessors.addPackageProcessor(new FolderContributionProcessor());
 
+        //Create contribution postProcessor extension point
+        DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
+        ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
+        registry.addExtensionPoint(contributionPostProcessors);
+        
+        
         // Create a contribution repository
         ContributionRepository repository;
         try {
@@ -157,7 +166,7 @@ public class NodeServiceRuntimeBuilder {
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
-                                                                              documentProcessor, assemblyFactory,
+                                                                              documentProcessor, postProcessor, assemblyFactory,
                                                                               contributionFactory, xmlFactory);
         return contributionService;
     }

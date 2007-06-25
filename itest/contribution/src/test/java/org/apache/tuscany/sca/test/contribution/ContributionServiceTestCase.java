@@ -42,9 +42,12 @@ import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
+import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
@@ -118,19 +121,26 @@ public class ContributionServiceTestCase extends TestCase {
         // Register base package processors
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
         packageProcessors.addPackageProcessor(new FolderContributionProcessor());
+        
+        //Create contribution postProcessor extension point
+        DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
+        ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
+        extensionRegistry.addExtensionPoint(contributionPostProcessors);
+
 
         // Create a repository
         ContributionRepository repository = new ContributionRepositoryImpl("target");
 
         // Create an artifact resolver and contribution service
-        this.contributionService = new ContributionServiceImpl(repository, packageProcessor, documentProcessor,
-                                                               assemblyFactory,
+        this.contributionService = new ContributionServiceImpl(repository, packageProcessor, documentProcessor, 
+                                                               postProcessor, assemblyFactory,
                                                                new ContributionFactoryImpl(), XMLInputFactory
                                                                    .newInstance());
     }
 
     public void testContributeJAR() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
+        //URL contributionLocation = new URL("file:/D:/dev/Opensource/Apache/Tuscany/source/java/sca/samples/calculator/target/sample-calculator.jar");
         String contributionId = CONTRIBUTION_001_ID;
         ModelResolver resolver = new ModelResolverImpl(getClass().getClassLoader());
         contributionService.contribute(contributionId, contributionLocation, resolver, false);
