@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
 import org.apache.tuscany.sca.binding.resource.HTTPResourceBindingFactory;
 import org.apache.tuscany.sca.implementation.resource.Resource;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
@@ -74,10 +73,6 @@ public class ResourceImplementationImpl implements ResourceImplementation {
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         interfaceContract.setInterface(javaInterface);
         resourceService.setInterfaceContract(interfaceContract);
-        
-        // Configure the resource service with a default HTTP resource binding
-        HTTPResourceBinding resourceBinding = bindingFactory.createHTTPResourceBinding();
-        resourceService.getBindings().add(resourceBinding);
     }
 
     public String getLocation() {
