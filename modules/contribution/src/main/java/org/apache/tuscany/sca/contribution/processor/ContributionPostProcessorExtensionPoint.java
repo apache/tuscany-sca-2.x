@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.contribution.processor;
 
+import java.util.List;
+
 /**
  * An extension point for contribution post processor extensions.
  * 
@@ -29,14 +31,20 @@ public interface ContributionPostProcessorExtensionPoint {
     /**
      * Add a ContributionPostProcessor
      * 
-     * @param processor The post processor
+     * @param postProcessor The post processor
      */
-    void addPostProcessor(ContributionPostProcessor processor);
+    void addPostProcessor(ContributionPostProcessor postProcessor);
     
     /**
      * Remove a ContributionPostProcessor
      * 
-     * @param processor The post processor
+     * @param postProcessor The post processor
      */
-    void removePostProcessor(ContributionPostProcessor processor);
+    void removePostProcessor(ContributionPostProcessor postProcessor);
+    
+    /**
+     * Get a list of postProcessors
+     * @return The list of postProcessors
+     */
+    List <ContributionPostProcessor> getPostProcessors();
 }

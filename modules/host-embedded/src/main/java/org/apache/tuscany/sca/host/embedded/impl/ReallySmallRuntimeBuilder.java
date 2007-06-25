@@ -45,18 +45,23 @@ import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
+import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
@@ -161,8 +166,7 @@ public class ReallySmallRuntimeBuilder {
             .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
 
         // Create URL artifact processor extension point
-        // FIXME use the interface instead of the class
-        DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
+        URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         registry.addExtensionPoint(documentProcessors);
 
         // Create and register document processors for SCA assembly XML
@@ -172,7 +176,7 @@ public class ReallySmallRuntimeBuilder {
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
         // Create contribution package processor extension point
-        PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
+        TypeDescriber describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
         registry.addExtensionPoint(packageProcessors);
@@ -181,6 +185,11 @@ public class ReallySmallRuntimeBuilder {
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
         packageProcessors.addPackageProcessor(new FolderContributionProcessor());
 
+        //Create contribution postProcessor extension point
+        DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
+        ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
+        registry.addExtensionPoint(contributionPostProcessors);
+        
         // Create a contribution repository
         ContributionRepository repository;
         try {
@@ -191,7 +200,8 @@ public class ReallySmallRuntimeBuilder {
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
-                                                                              documentProcessor, assemblyFactory,
+                                                                              documentProcessor, postProcessor, 
+                                                                              assemblyFactory,
                                                                               contributionFactory, xmlFactory);
         return contributionService;
     }
