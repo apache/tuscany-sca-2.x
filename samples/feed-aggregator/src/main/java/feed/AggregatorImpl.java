@@ -19,15 +19,17 @@
 package feed;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.Feed;
+import org.apache.tuscany.sca.binding.feed.ResourceCollection;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
+import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.atom.Person;
 
 /**
  * Implementation of an SCA component that aggregates several
@@ -35,12 +37,12 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
  *
  * @version $Rev$ $Date$
  */
-public class AggregatorImpl implements Feed {
+public class AggregatorImpl implements ResourceCollection {
 
     @Reference
-    public Feed feed1;
+    public ResourceCollection feed1;
     @Reference
-    public Feed feed2;
+    public ResourceCollection feed2;
     @Reference(required = false)
     public Sort sort;
 
@@ -52,19 +54,25 @@ public class AggregatorImpl implements Feed {
     public String feedAuthor = "anonymous";
 
     @SuppressWarnings("unchecked")
-    public SyndFeed get(String uri) {
+    public com.sun.syndication.feed.atom.Feed getCollection() {
         
         // Create a new Feed
-        SyndFeed feed = new SyndFeedImpl();
+        com.sun.syndication.feed.atom.Feed feed = new com.sun.syndication.feed.atom.Feed();
         feed.setTitle(feedTitle);
-        feed.setDescription(feedDescription);
-        feed.setAuthor(feedAuthor);
-        feed.setLink(uri);
+        Content subtitle = new Content();
+        subtitle.setValue(feedDescription);
+        feed.setSubtitle(subtitle);
+        Person author = new Person();
+        author.setName(feedAuthor);
+        feed.setAuthors(Collections.singletonList(author));
+        Link link = new Link();
+        link.setHref("http://incubator.apache.org/tuscany");
+        feed.getAlternateLinks().add(link);
 
         // Aggregate entries from feed1 and feed2
-        List<SyndEntry> entries = new ArrayList<SyndEntry>();
-        entries.addAll(feed1.get(null).getEntries());
-        entries.addAll(feed2.get(null).getEntries());
+        List<Entry> entries = new ArrayList<Entry>();
+        entries.addAll(feed1.getCollection().getEntries());
+        entries.addAll(feed2.getCollection().getEntries());
 
         // Sort entries by published date
         if (sort != null)

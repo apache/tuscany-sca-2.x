@@ -20,7 +20,7 @@ package feed;
 
 import java.util.List;
 
-import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.atom.Entry;
 
 /**
  * The Sort service business interface.
@@ -34,5 +34,5 @@ public interface Sort {
      * @param entries
      * @return
      */
-    List<SyndEntry> sort(List<SyndEntry> entries);
+    List<Entry> sort(List<Entry> entries);
 }
