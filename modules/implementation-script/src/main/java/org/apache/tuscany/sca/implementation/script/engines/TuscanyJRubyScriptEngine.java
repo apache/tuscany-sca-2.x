@@ -228,7 +228,7 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                 filename = "<unknown>";
             }
             return runtime.parse(script, filename, null, 0);
-        } catch (Exception exp) {
+        } catch (Exception exp) { 
             throw new ScriptException(exp);
         } finally {
             if (oldGlobals != null) {

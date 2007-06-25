@@ -43,5 +43,12 @@ public interface PolicyFactory {
      * @return a new intent map
      */
     IntentMap createIntentMap();
+    
+    /**
+     * Create a new intent map qualifier.
+     * 
+     * @return a new intent map qualifier
+     */
+    IntentMapQualifier createIntentMapQualifier();
 
 }
