@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
 
@@ -83,20 +82,5 @@ public class IntentImpl implements Intent {
 
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof Intent) {
-            if (getName() != null) {
-                return getName().equals(((Intent)obj).getName());
-            } else {
-                return ((Intent)obj).getName() == null;
-            }
-        } else {
-            return false;
-        }
     }
 }
