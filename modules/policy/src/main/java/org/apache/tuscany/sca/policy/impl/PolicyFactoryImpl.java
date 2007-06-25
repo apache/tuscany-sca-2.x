@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.policy.impl;
 
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.IntentMapQualifier;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -40,6 +41,10 @@ public abstract class PolicyFactoryImpl implements PolicyFactory {
 
     public IntentMap createIntentMap() {
         return new IntentMapImpl();
+    }
+    
+    public IntentMapQualifier createIntentMapQualifier() {
+        return new IntentMapQualifierImpl();
     }
 
 }

@@ -64,15 +64,20 @@ public interface PolicySet {
      * @return
      */
     List<Intent> getProvidedIntents();
-
+    
     /**
-     * Returns the list of SCA constructs that this policy set is meant to
-     * configure.
+     * Returns the xpath expression used to determing the SCA Contructs to which this PolicySet applies
      * 
-     * @return the list of SCA constructs that this policy set is meant to
-     *         configure
+     * @return xpath expression string
      */
-    List<QName> getAppliesTo();
+    String getAppliesTo();
+    
+    /**
+     * Sets the xpath expression used to determing the SCA Contructs to which this PolicySet applies
+     * 
+     * @param xpathExp the xpath expression string
+     */
+    void setAppliesTo(String xpathExp);
 
     /**
      * Returns the list of concrete policies, either WS-Policy policy
@@ -97,4 +102,12 @@ public interface PolicySet {
      */
     void setUnresolved(boolean unresolved);
 
+    /**
+     * Returns the list of SCA constructs that this policy set is meant to
+     * configure.
+     * 
+     * @return the list of SCA constructs that this policy set is meant to
+     *         configure
+     
+    List<QName> getAppliesTo();*/
 }
