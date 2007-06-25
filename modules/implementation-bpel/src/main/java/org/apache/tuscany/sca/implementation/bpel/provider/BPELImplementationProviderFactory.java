@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.bpel.provider;
 
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
+import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -28,14 +29,18 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  */
 public class BPELImplementationProviderFactory implements ImplementationProviderFactory<BPELImplementation> {
 
+    private EmbeddedODEServer odeServer;
+
     /**
      * Constructs a new CRUD implementation.
+     * @param odeServer the server instance passed to the implementation provider
      */
-    public BPELImplementationProviderFactory() {
+    public BPELImplementationProviderFactory(EmbeddedODEServer odeServer) {
+        this.odeServer = odeServer;
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, BPELImplementation implementation) {
-        return new BPELImplementationProvider(component, implementation);
+        return new BPELImplementationProvider(component, implementation, odeServer);
     }
     
     public Class<BPELImplementation> getModelType() {

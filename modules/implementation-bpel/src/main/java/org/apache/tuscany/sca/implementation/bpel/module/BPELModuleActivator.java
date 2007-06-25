@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELImplementationFactory;
+import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationProcessor;
 import org.apache.tuscany.sca.implementation.bpel.provider.BPELImplementationProviderFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
@@ -34,6 +35,7 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfa
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
+import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
  * Implements a module activator for the BPEL implementation extension module.
@@ -44,6 +46,8 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class BPELModuleActivator implements ModuleActivator {
+
+    private EmbeddedODEServer odeServer;
 
     public Object[] getExtensionPoints() {
         // This module extension does not contribute any new extension point
@@ -65,10 +69,13 @@ public class BPELModuleActivator implements ModuleActivator {
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         BPELImplementationProcessor implementationArtifactProcessor = new BPELImplementationProcessor(bpelFactory);
         processors.addArtifactProcessor(implementationArtifactProcessor);
-        
+
+        // Instantiating the ODE server to pass it to the providers
+        odeServer = new EmbeddedODEServer();
+
         // Add the CRUD provider factory to the ProviderFactory extension point
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        providerFactories.addProviderFactory(new BPELImplementationProviderFactory());
+        providerFactories.addProviderFactory(new BPELImplementationProviderFactory(odeServer));
     }
 
     public void stop(ExtensionPointRegistry registry) {
