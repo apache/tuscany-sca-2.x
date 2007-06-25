@@ -39,26 +39,27 @@ public interface IntentMap {
      * @param providedIntent the intent realized by this intent map
      */
     void setProvidedIntent(Intent providedIntent);
-    
+
     /**
-     * Returns the list of qualifiers for this Intent Map
+     * Returns the default qualified intent map.
+     * 
+     * @return the default qualified intent map
+     */
+    IntentMap getDefaultQualifiedIntentMap();
+
+    /**
+     * Sets the default qualified intent map.
+     * 
+     * @param defaultQualifiedIntentMap the default qualified intent map
+     */
+    void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap);
+
+    /**
+     * Returns the list of children qualified intent maps.
      * 
      * @return
      */
-    List<IntentMapQualifier> getQualifiers();
-    
-    /**
-     * Returns the default qualifier for this Intent Map
-     * @return
-     */
-    IntentMapQualifier getDefaultQualifier();
-    
-    /**
-     * sets the default qualifier for this Intent Map
-     * 
-     * @param qualifier
-     */
-    void setDefaultQualifier(IntentMapQualifier qualifier);
+    List<IntentMap> getQualifiedIntentMaps();
 
     /**
      * Returns the list of concrete policies, either WS-Policy policy
@@ -82,19 +83,5 @@ public interface IntentMap {
      * @param unresolved whether the model element is unresolved
      */
     void setUnresolved(boolean unresolved);
-    
-    /**
-     * Returns the default qualified intent map.
-     * 
-     * @return the default qualified intent map
-     
-    IntentMap getDefaultQualifiedIntentMap();*/
-
-    /**
-     * Sets the default qualified intent map.
-     * 
-     * @param defaultQualifiedIntentMap the default qualified intent map
-     
-    void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap);*/
 
 }

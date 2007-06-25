@@ -36,8 +36,7 @@ public class PolicySetImpl implements PolicySet {
 
     private QName name;
     private List<Operation> operations = new ArrayList<Operation>();
-    //private List<QName> appliesTo;
-    private String appliesTo;
+    private List<QName> appliesTo;
     private List<Intent> providedIntents;
     private List<PolicySet> referencedPolicySets;
     private List<Object> policies;
@@ -58,9 +57,9 @@ public class PolicySetImpl implements PolicySet {
         return operations;
     }
 
-    /*public List<QName> getAppliesTo() {
+    public List<QName> getAppliesTo() {
         return appliesTo;
-    }*/
+    }
 
     public List<Intent> getProvidedIntents() {
         return providedIntents;
@@ -80,13 +79,5 @@ public class PolicySetImpl implements PolicySet {
 
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
-    }
-
-    public String getAppliesTo() {
-        return appliesTo;
-    }
-
-    public void setAppliesTo(String xpathExp) {
-        this.appliesTo = xpathExp;
     }
 }
