@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.bpel.provider;
 
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
+import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -38,13 +39,16 @@ public class BPELImplementationProvider implements ImplementationProvider {
     
     private RuntimeComponent component;
     private BPELImplementation implementation;
+    private EmbeddedODEServer odeServer;
 
     /**
      * Constructs a new CRUD implementation.
      */
-    public BPELImplementationProvider(RuntimeComponent component, BPELImplementation implementation) {
+    public BPELImplementationProvider(RuntimeComponent component, BPELImplementation implementation,
+                                      EmbeddedODEServer odeServer) {
         this.component = component;
         this.implementation = implementation;
+        this.odeServer = odeServer;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
@@ -58,11 +62,12 @@ public class BPELImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-        System.out.println("Starting " + component.getName());
+        System.out.println("Starting " + component.getName() + " " + component.getClass().getName());
+        if (!odeServer.isInitialized()) odeServer.init();
     }
 
     public void stop() {
-        System.out.println("Stopping " + component.getName());
+        System.out.println("Stopping " + component.getName() + " " + component.getClass().getName());
     }
 
 }
