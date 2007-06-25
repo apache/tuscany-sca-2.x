@@ -46,6 +46,10 @@ public class JettyDefaultServlet extends DefaultServlet {
             } else {
                 pathInContext = "";
             }
+        } else {
+            if ((pathInContext + "/").equals(servletPath)) {
+                pathInContext = "";
+            }
         }
         return super.getResource(pathInContext);
     }
@@ -54,6 +58,8 @@ public class JettyDefaultServlet extends DefaultServlet {
     public String getInitParameter(String name) {
         if ("resourceBase".equals(name)) {
             return documentRoot;
+        } else if ("redirectWelcome".equals(name)) {
+            return "true";
         } else {
             return super.getInitParameter(name);
         }
