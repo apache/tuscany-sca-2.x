@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.xml;
+package org.apache.tuscany.sca.binding.feed.impl;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.binding.feed.FeedBinding;
-import org.apache.tuscany.sca.binding.feed.FeedBindingFactory;
+import org.apache.tuscany.sca.binding.feed.RSSBinding;
+import org.apache.tuscany.sca.binding.feed.RSSBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -36,17 +36,18 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 /**
  * A processor for <binding.rss> elements.
  */
-public class RssBindingProcessor implements StAXArtifactProcessor<FeedBinding> {
+public class RSSBindingProcessor implements StAXArtifactProcessor<RSSBinding> {
 
     private final static QName BINDING_RSS = new QName(SCA_NS, "binding.rss");
 
-    private final FeedBindingFactory factory;
+    private final RSSBindingFactory factory;
 
     /**
      * Constructs a new binding processor.
+     * 
      * @param factory
      */
-    public RssBindingProcessor(FeedBindingFactory factory) {
+    public RSSBindingProcessor(RSSBindingFactory factory) {
         this.factory = factory;
     }
 
@@ -54,26 +55,25 @@ public class RssBindingProcessor implements StAXArtifactProcessor<FeedBinding> {
         return BINDING_RSS;
     }
 
-    public Class<FeedBinding> getModelType() {
-        return FeedBinding.class;
+    public Class<RSSBinding> getModelType() {
+        return RSSBinding.class;
     }
 
-    public FeedBinding read(XMLStreamReader reader) throws ContributionReadException {
-        
-        // Read the <binding.rss> element 
+    public RSSBinding read(XMLStreamReader reader) throws ContributionReadException {
+
+        // Read the <binding.rss> element
         String uri = reader.getAttributeValue(null, "uri");
-        FeedBinding binding = factory.createFeedBinding();
-        binding.setFeedType("rss_2.0");
+        RSSBinding binding = factory.createRSSBinding();
         if (uri != null) {
             binding.setURI(uri.trim());
         }
         return binding;
     }
 
-    public void write(FeedBinding binding, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(RSSBinding binding, XMLStreamWriter writer) throws ContributionWriteException {
     }
 
-    public void resolve(FeedBinding binding, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(RSSBinding binding, ModelResolver resolver) throws ContributionResolveException {
     }
 
 }

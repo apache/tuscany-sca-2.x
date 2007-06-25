@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.binding.feed.provider;
 
-import org.apache.tuscany.sca.binding.feed.FeedBinding;
+import org.apache.tuscany.sca.binding.feed.RSSBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -28,16 +28,16 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
- * Implementation of the Feed binding provider.
+ * Implementation of the RSS binding provider.
  */
-public class FeedReferenceBindingProvider implements ReferenceBindingProvider {
+public class RSSReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
-    private FeedBinding binding;
+    private RSSBinding binding;
 
-    public FeedReferenceBindingProvider(RuntimeComponent component,
-                                        RuntimeComponentReference reference,
-                                        FeedBinding binding) {
+    public RSSReferenceBindingProvider(RuntimeComponent component,
+                                       RuntimeComponentReference reference,
+                                       RSSBinding binding) {
         this.reference = reference;
         this.binding = binding;
     }
@@ -46,7 +46,7 @@ public class FeedReferenceBindingProvider implements ReferenceBindingProvider {
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {
-            return new FeedBindingInvoker(binding.getURI(), binding.getFeedType());
+            return new RSSBindingInvoker(binding.getURI(), "rss_2.0");
         }
     }
 

@@ -20,50 +20,51 @@ package org.apache.tuscany.sca.binding.feed.provider;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
+import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
+import com.sun.syndication.io.WireFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 /**
- * Invoker for the Feed binding.
+ * Invoker for the RSS binding.
  */
-public class FeedBindingInvoker implements Invoker {
+public class RSSBindingInvoker implements Invoker {
 
+    private String feedType;
     private String uri;
 
-    public FeedBindingInvoker(String uri, String feedType) {
+    public RSSBindingInvoker(String uri, String feedType) {
         this.uri = uri;
+        this.feedType = feedType;
     }
 
     public Message invoke(Message msg) {
         try {
-            URL feedURL;
-            Object[] args = msg.getBody();
-            if (args[0] != null) {
-                URI arg = URI.create((String)args[0]);
-                if (arg.isAbsolute()) {
-                    feedURL = arg.toURL();
-                } else {
-                    feedURL = new URL(uri + "/" + arg.toString());
-                }
-            } else {
-                feedURL = new URL(uri);
-            }
+            System.out.println(">>> RSSBindingInvoker (" + feedType + ") " + uri);
 
-            // Read the configured feed into a Feed object
-            SyndFeedInput input = new SyndFeedInput();
-            SyndFeed feed = input.build(new XmlReader(feedURL));
+            // Read the configured feed URI into a Feed object
+            Feed feed;
+            if (feedType.startsWith("atom_")) {
+
+                // Read an Atom feed
+                WireFeedInput input = new WireFeedInput();
+                feed = (Feed)input.build(new XmlReader(new URL(uri)));
+            } else {
+
+                // Read an RSS feed and convert it to an Atom feed
+                SyndFeedInput input = new SyndFeedInput();
+                SyndFeed syndFeed = input.build(new XmlReader(new URL(uri)));
+                feed = (Feed)syndFeed.createWireFeed("atom_1.0");
+            }
             msg.setBody(feed);
 
-            System.out.println(">>> FeedBindingInvoker (" + feed.getFeedType() + ") " + uri);
-            
         } catch (MalformedURLException e) {
             msg.setFaultBody(e);
         } catch (IllegalArgumentException e) {

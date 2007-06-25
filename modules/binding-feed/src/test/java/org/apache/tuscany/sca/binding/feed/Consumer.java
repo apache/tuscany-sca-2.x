@@ -19,23 +19,17 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-/**
- * A model for the Feed binding.
- */
-public interface FeedBinding extends Binding {
+public class Consumer {
 
-    /**
-     * Returns the feed type.
-     * @return the feed type
-     */
-    String getFeedType();
+    public static void main(String[] args) throws Exception {
 
-    /**
-     * Sets the feed type.
-     * @param value the feed type
-     */
-    void setFeedType(String value);
-    
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Consumer.composite");
+
+        CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
+        testService.testCustomerCollection();
+
+        scaDomain.close();
+    }
 }

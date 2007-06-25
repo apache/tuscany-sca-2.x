@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.xml;
+package org.apache.tuscany.sca.binding.feed.impl;
 
 import static org.osoa.sca.Constants.SCA_NS;
 
@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.binding.feed.FeedBinding;
-import org.apache.tuscany.sca.binding.feed.FeedBindingFactory;
+import org.apache.tuscany.sca.binding.feed.AtomBinding;
+import org.apache.tuscany.sca.binding.feed.AtomBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -36,17 +36,13 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 /**
  * A processor for <binding.atom> elements.
  */
-public class AtomBindingProcessor implements StAXArtifactProcessor<FeedBinding> {
+public class AtomBindingProcessor implements StAXArtifactProcessor<AtomBinding> {
 
-    private final static QName BINDING_ATOM = new QName(SCA_NS, "binding.atom");
+    private QName BINDING_ATOM = new QName(SCA_NS, "binding.atom");
 
-    private final FeedBindingFactory factory;
+    private final AtomBindingFactory factory;
 
-    /**
-     * Constructs a new binding processor.
-     * @param factory
-     */
-    public AtomBindingProcessor(FeedBindingFactory factory) {
+    public AtomBindingProcessor(AtomBindingFactory factory) {
         this.factory = factory;
     }
 
@@ -54,26 +50,23 @@ public class AtomBindingProcessor implements StAXArtifactProcessor<FeedBinding> 
         return BINDING_ATOM;
     }
 
-    public Class<FeedBinding> getModelType() {
-        return FeedBinding.class;
+    public Class<AtomBinding> getModelType() {
+        return AtomBinding.class;
     }
 
-    public FeedBinding read(XMLStreamReader reader) throws ContributionReadException {
-        
-        // Read a <binding.atom> element
+    public AtomBinding read(XMLStreamReader reader) throws ContributionReadException {
         String uri = reader.getAttributeValue(null, "uri");
-        FeedBinding binding = factory.createFeedBinding();
-        binding.setFeedType("atom_1.0");
+        AtomBinding binding = factory.createAtomBinding();
         if (uri != null) {
             binding.setURI(uri.trim());
         }
         return binding;
     }
 
-    public void write(FeedBinding binding, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(AtomBinding binding, XMLStreamWriter writer) throws ContributionWriteException {
     }
 
-    public void resolve(FeedBinding binding, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(AtomBinding binding, ModelResolver resolver) throws ContributionResolveException {
     }
 
 }

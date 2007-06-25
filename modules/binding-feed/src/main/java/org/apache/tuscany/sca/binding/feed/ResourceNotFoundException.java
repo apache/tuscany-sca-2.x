@@ -20,14 +20,26 @@
 package org.apache.tuscany.sca.binding.feed;
 
 /**
- * A factory for the Feed binding model.
+ * Indicates that a resource could not be found.
+ * 
+ * @version $Rev$ $Date$
  */
-public interface FeedBindingFactory {
+public class ResourceNotFoundException extends Exception {
+    private static final long serialVersionUID = -5046027674128627383L;
 
-    /**
-     * Creates a new Feed binding.
-     * 
-     * @return a new Feed binding
-     */
-    FeedBinding createFeedBinding();
+    public ResourceNotFoundException() {
+    }
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+
+    public ResourceNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    public ResourceNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
