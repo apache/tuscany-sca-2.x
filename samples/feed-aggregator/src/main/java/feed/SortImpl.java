@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Property;
 
-import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.atom.Entry;
 
 /**
  * Implementation of a Feed Sort service component.
@@ -38,13 +38,13 @@ public class SortImpl implements Sort {
     public boolean newFirst = true;
 
     @SuppressWarnings("unchecked")
-    public List<SyndEntry> sort(List<SyndEntry> entries) {
-        SyndEntry[] entriesArray = new SyndEntry[entries.size()];
-        entriesArray = (SyndEntry[])entries.toArray(entriesArray);
+    public List<Entry> sort(List<Entry> entries) {
+        Entry[] entriesArray = new Entry[entries.size()];
+        entriesArray = (Entry[])entries.toArray(entriesArray);
         Arrays.sort(entriesArray, new Comparator() {
             public int compare(final Object xObj, final Object yObj) {
-                Date xDate = ((SyndEntry)xObj).getPublishedDate();
-                Date yDate = ((SyndEntry)yObj).getPublishedDate();
+                Date xDate = ((Entry)xObj).getPublished();
+                Date yDate = ((Entry)yObj).getPublished();
                 if (xDate == null)
                     return -1;
                 if (newFirst)
