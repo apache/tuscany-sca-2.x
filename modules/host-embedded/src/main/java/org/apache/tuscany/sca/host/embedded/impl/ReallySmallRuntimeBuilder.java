@@ -155,7 +155,7 @@ public class ReallySmallRuntimeBuilder {
                                                                                             XMLOutputFactory
                                                                                                 .newInstance());
         staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper,
-                                                                   staxProcessor, contributionFactory));
+                                                                   staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors
             .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
