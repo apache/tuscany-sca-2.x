@@ -40,7 +40,9 @@
                 <module>binding-echo2-extension</module>
                 <module>binding-echo-extension</module>
                 <module>calculator</module>
+                <!--
                 <module>calculator-distributed</module>
+                -->
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
