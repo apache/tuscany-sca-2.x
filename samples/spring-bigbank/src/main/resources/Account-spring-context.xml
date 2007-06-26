@@ -20,7 +20,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:sca="http://www.springframework.org/schema/sca"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
+
+    <sca:service name="AccountService"
+		type="bigbank.account.AccountService" target="AccountServiceBean"/>
 
     <bean id="AccountServiceBean" class="bigbank.account.AccountServiceImpl">
         <property name="accountDataService" ref="AccountDataServiceBean"/>
@@ -30,5 +35,8 @@
 
     <bean id="AccountDataServiceBean" class="bigbank.accountdata.AccountDataServiceImpl">
     </bean>
+
+    <sca:reference name="stockQuoteService"
+		type="bigbank.stockquote.StockQuoteService"/>
 
 </beans>
