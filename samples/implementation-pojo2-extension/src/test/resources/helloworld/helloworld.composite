@@ -19,10 +19,15 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://test/helloworld"
+	xmlns:p="http://pojo"
 	name="helloworld">
 
     <component name="HelloWorldComponent">
-        <implementation.pojo class="helloworld.HelloWorldImpl" />
+        <p:implementation.pojo class="helloworld.HelloWorldImpl" />
+    </component>
+
+    <component name="HelloWorldComponent2">
+        <p:implementation.pojo class="helloworld.HelloWorldImpl2" />
     </component>
 
 </composite>

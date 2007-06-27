@@ -44,7 +44,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface-java-xml</artifactId>
+            <artifactId>tuscany-interface-java-runtime</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>        
 

@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;type=implementation.pojo,model=pojo2.extension.POJOImplementation
+pojo2.extension.POJOImplementationProcessor;type=http://pojo#implementation.pojo,model=pojo2.extension.POJOImplementation

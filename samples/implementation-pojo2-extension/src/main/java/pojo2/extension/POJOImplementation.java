@@ -20,6 +20,7 @@
 package pojo2.extension;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +34,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
-import pojo2.helper.TemporaryExtensionHelper;
-
 
 /**
  * Represents a POJO implementation in an SCA assembly.
@@ -45,29 +44,28 @@ public class POJOImplementation implements Implementation {
     
     private String pojoName;
     private Class<?> pojoClass;
+    private String uri;
     private Map<String, Method> methods;
-    private Service service;
+    private List<Service> services = new ArrayList<Service>();
+    private List<Reference> references = new ArrayList<Reference>();
+    private List<Property> properties = new ArrayList<Property>();
+    private boolean unresolved;
 
     /**
      * Returns the POJO class name
      * @return
      */
-    public String getClass_() {
+    public String getPOJOName() {
         return pojoName;
     }
 
     /**
      * Sets the POJO class name
-     * @param class_
+     * @param pojoName
      */
-    public void setClass_(String class_) {
-        this.pojoName = class_;
-        
-        try {
-            setPOJOClass(Class.forName(pojoName));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
+    public void setPOJOName(String pojoName) {
+        this.pojoName = pojoName;
+        setURI(pojoName.replace('.', '/'));
     }
     
     /**
@@ -84,6 +82,7 @@ public class POJOImplementation implements Implementation {
      */
     public void setPOJOClass(Class<?> pojoClass) {
         this.pojoClass = pojoClass;
+        setPOJOName(pojoClass.getName());
         
         // Index the POJO's methods
         methods = new HashMap<String, Method>();
@@ -91,9 +90,6 @@ public class POJOImplementation implements Implementation {
         for (int i = 0; i < m.length; i++) {
             methods.put(m[i].getName(), m[i]);
         }
-        
-        // Create a service for the POJO class
-        service = TemporaryExtensionHelper.createJavaService(pojoClass.getSimpleName(), pojoClass);
     }
   
     /**
@@ -110,23 +106,19 @@ public class POJOImplementation implements Implementation {
     }
 
     public List<Property> getProperties() {
-        // The sample POJO implementation does not support properties
-        return Collections.emptyList();
+        return properties;
     }
 
     public List<Service> getServices() {
-        // The sample POJO implementation provides a single fixed POJO service
-        return Collections.singletonList(service);
+        return services;
     }
     
     public List<Reference> getReferences() {
-        // The sample POJO implementation does not support properties
-        return Collections.emptyList();
+        return references;
     }
 
     public String getURI() {
-        // The sample POJO implementation does not have a URI
-        return null;
+        return uri;
     }
 
     public void setConstrainingType(ConstrainingType constrainingType) {
@@ -134,7 +126,7 @@ public class POJOImplementation implements Implementation {
     }
 
     public void setURI(String uri) {
-        // The sample POJO implementation does not have a URI
+        this.uri = uri;
     }
 
     public List<PolicySet> getPolicySets() {
@@ -153,12 +145,25 @@ public class POJOImplementation implements Implementation {
     }
 
     public boolean isUnresolved() {
-        // The sample POJO implementation is always resolved
-        return false;
+        return unresolved;
     }
 
     public void setUnresolved(boolean unresolved) {
-        // The sample POJO implementation is always resolved
+        this.unresolved = unresolved;
+    }
+
+    @Override
+    public int hashCode() {
+        return uri.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof POJOImplementation) {
+            return ((POJOImplementation)obj).getURI().equals(uri);
+        } else {
+            return false;
+        }
     }
 
 }
