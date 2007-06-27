@@ -21,16 +21,25 @@ package crud2.extension;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 import crud2.CRUD;
-import crud2.helper.TemporaryExtensionHelper;
 
 
 /**
@@ -47,8 +56,29 @@ public class CRUDImplementation implements Implementation {
     public CRUDImplementation() {
 
         // CRUD implementation always provide a single service exposing
-        // the CRUD interface, and have no references and properties
-        crudService = TemporaryExtensionHelper.createJavaService("CRUD", CRUD.class);
+        // the CRUD Java interface, create the model representing that
+        // fixed service here
+        
+        // Create a default service named CRUD
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        crudService = assemblyFactory.createService();
+        crudService.setName("CRUD");
+        
+        // Create a Java interface model for the CRUD Java interface
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterface javaInterface;
+        try {
+            JavaInterfaceIntrospector javaIntrospector = new ExtensibleJavaInterfaceIntrospector(javaFactory, new DefaultJavaInterfaceIntrospectorExtensionPoint());
+            javaInterface = javaIntrospector.introspect(CRUD.class);
+        } catch (InvalidInterfaceException e) {
+            throw new IllegalArgumentException(e);
+        }
+        
+        // Create a Java interface contract model and set it
+        // into the service
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        interfaceContract.setInterface(javaInterface);
+        crudService.setInterfaceContract(interfaceContract);
     }
 
     public String getDirectory() {
