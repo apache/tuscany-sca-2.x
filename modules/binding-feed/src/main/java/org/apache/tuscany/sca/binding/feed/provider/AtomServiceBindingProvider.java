@@ -64,8 +64,8 @@ public class AtomServiceBindingProvider implements ServiceBindingProvider {
         RuntimeComponentService componentService = (RuntimeComponentService)service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
 
-        ResourceCollectionBindingListener servlet =
-            new ResourceCollectionBindingListener(wire, messageFactory, "atom_1.0");
+        FeedBindingListenerServlet servlet =
+            new FeedBindingListenerServlet(wire, messageFactory, "atom_1.0");
 
         String mapping = uri;
         if (!mapping.endsWith("/")) {
