@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl.module;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -41,11 +42,14 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
         
+        // Register the WSDL interface factory
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
-        WSDLInterfaceIntrospector interfaceIntrospector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class); 
+        modelFactories.addFactory(wsdlFactory);
         
         // Register <interface.wsdl> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        WSDLInterfaceIntrospector interfaceIntrospector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
         processors.addArtifactProcessor(new WSDLInterfaceProcessor(wsdlFactory, interfaceIntrospector));
         
         // Register .wsdl document processor 

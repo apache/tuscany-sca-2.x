@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.java.module;
 
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -48,6 +49,10 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
+        
+        // Register the Java interface factory
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class); 
+        modelFactories.addFactory(javaFactory);
         
         // Register <interface.java> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
