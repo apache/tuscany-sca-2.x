@@ -61,7 +61,9 @@ public class ComponentTypeDocumentProcessor extends BaseArtifactProcessor implem
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
             ComponentType componentType = (ComponentType)extensionProcessor.read(reader);
-            componentType.setURI(url.toString());
+            if (componentType != null) {
+                componentType.setURI(uri.toString());
+            }
             return componentType;
             
         } catch (XMLStreamException e) {
