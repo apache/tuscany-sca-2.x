@@ -1,0 +1,70 @@
+Notification Implementation Sample
+===============================
+
+This sample illustrates the use of <implementation.notification/>
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+mvn test
+
+Sample Overview
+---------------
+
+This sample consists of a single composite that contains a notification component,
+a producer component and two consumer components. Take a look at the composite file 
+or the .svg file which shows the composite file in pictorial form. The notification
+component has an <implementation.notification/> that refers to the component type
+that defines the TrafficAdvisory java interface. This interface indicates the
+makeup of the messages being sent and received and is also implemented by the
+consumer components.
+
+Sample directory structure:
+
+implementation-notification/
+  src/
+    main/
+      java/
+        notification/
+          TestCaseProducer.java                    - interface for the producer component
+          TrafficAdvisory.java                     - interface for the notification and consumer components
+          TrafficAdvisoryConsumer.java             - implementation for the consumer components
+          TrafficAdvisoryProducer.java             - implementation for the producer component
+    test/
+      java/
+        notification/
+          TrafficAdvisoryTestCase.java             - JUnit test case
+      resources/
+        TrafficAdvisoryNotification.componentType  - the component type referred to by
+                                                     <implementation.notification/>
+        TrafficAdvisoryNotification.composite      - the main composite including producer,
+                                                     notification component, and consumers
+  pom.xml                                          - the Maven build file        
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd implementation-notification
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running notification.TrafficAdvisoryTestCase
+Consumer [Consumer1] received report: Nothing to report today
+Consumer [Consumer2] received report: Nothing to report today
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.742 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
