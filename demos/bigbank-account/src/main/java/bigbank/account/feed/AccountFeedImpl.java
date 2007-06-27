@@ -21,8 +21,8 @@ package bigbank.account.feed;
 import java.io.InputStream;
 import java.util.Collections;
 
-import org.apache.tuscany.sca.binding.feed.EditableResourceCollection;
-import org.apache.tuscany.sca.binding.feed.ResourceNotFoundException;
+import org.apache.tuscany.sca.binding.feed.EditableCollection;
+import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -37,14 +37,14 @@ import com.sun.syndication.feed.atom.Link;
  * @version $$Rev$$ $$Date$$
  */
 
-@Service(EditableResourceCollection.class)
-public class AccountFeedImpl implements EditableResourceCollection {
+@Service(EditableCollection.class)
+public class AccountFeedImpl implements EditableCollection {
 
     @Reference
     protected AccountService accountService;
     
     @SuppressWarnings("unchecked")
-    public com.sun.syndication.feed.atom.Feed getCollection() {
+    public com.sun.syndication.feed.atom.Feed getFeed() {
         
         // Create a new Feed
         Feed feed = new Feed();
@@ -98,7 +98,7 @@ public class AccountFeedImpl implements EditableResourceCollection {
         return null;
     }
     
-    public Entry putMedia(String id, String contentType, InputStream media) throws ResourceNotFoundException {
+    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
         return null;
     }
 }

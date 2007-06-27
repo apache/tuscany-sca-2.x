@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.ResourceCollection;
+import org.apache.tuscany.sca.binding.feed.Collection;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -37,12 +37,12 @@ import com.sun.syndication.feed.atom.Person;
  *
  * @version $Rev$ $Date$
  */
-public class AggregatorImpl implements ResourceCollection {
+public class AggregatorImpl implements Collection {
 
     @Reference
-    public ResourceCollection feed1;
+    public Collection feed1;
     @Reference
-    public ResourceCollection feed2;
+    public Collection feed2;
     @Reference(required = false)
     public Sort sort;
 
@@ -54,7 +54,7 @@ public class AggregatorImpl implements ResourceCollection {
     public String feedAuthor = "anonymous";
 
     @SuppressWarnings("unchecked")
-    public com.sun.syndication.feed.atom.Feed getCollection() {
+    public com.sun.syndication.feed.atom.Feed getFeed() {
         
         // Create a new Feed
         com.sun.syndication.feed.atom.Feed feed = new com.sun.syndication.feed.atom.Feed();
@@ -71,8 +71,8 @@ public class AggregatorImpl implements ResourceCollection {
 
         // Aggregate entries from feed1 and feed2
         List<Entry> entries = new ArrayList<Entry>();
-        entries.addAll(feed1.getCollection().getEntries());
-        entries.addAll(feed2.getCollection().getEntries());
+        entries.addAll(feed1.getFeed().getEntries());
+        entries.addAll(feed2.getFeed().getEntries());
 
         // Sort entries by published date
         if (sort != null)

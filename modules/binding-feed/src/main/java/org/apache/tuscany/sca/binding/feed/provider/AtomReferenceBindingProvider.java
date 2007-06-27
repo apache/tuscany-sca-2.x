@@ -75,7 +75,7 @@ public class AtomReferenceBindingProvider implements ReferenceBindingProvider {
             } else if (operationName.equals("delete")) {
                 return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), httpClient,
                                                             authorizationHeader);
-            } else if (operationName.equals("getCollection")) {
+            } else if (operationName.equals("getFeed")) {
                 return new AtomBindingInvoker.GetCollectionInvoker(operation, binding.getURI(), httpClient,
                                                                    authorizationHeader);
             } else if (operationName.equals("postMedia")) {

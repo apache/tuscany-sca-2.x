@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.sca.binding.feed.ResourceNotFoundException;
+import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -63,7 +63,7 @@ public class ResourceCollectionBindingListener extends HttpServlet {
     private final static Namespace ATOM_NS = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
 
     private RuntimeWire wire;
-    private Invoker getCollectionInvoker;
+    private Invoker getFeedInvoker;
     private Invoker getInvoker;
     private Invoker postInvoker;
     private Invoker postMediaInvoker;
@@ -88,8 +88,8 @@ public class ResourceCollectionBindingListener extends HttpServlet {
         // Get the invokers for the supported operations
         for (InvocationChain invocationChain : this.wire.getInvocationChains()) {
             String operationName = invocationChain.getSourceOperation().getName();
-            if (operationName.equals("getCollection")) {
-                getCollectionInvoker = invocationChain.getHeadInvoker();
+            if (operationName.equals("getFeed")) {
+                getFeedInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("get")) {
                 getInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("put")) {
@@ -163,7 +163,7 @@ public class ResourceCollectionBindingListener extends HttpServlet {
 
                 // Get the Feed from the service implementation
                 Message requestMessage = messageFactory.createMessage();
-                Message responseMessage = getCollectionInvoker.invoke(requestMessage);
+                Message responseMessage = getFeedInvoker.invoke(requestMessage);
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
@@ -183,13 +183,13 @@ public class ResourceCollectionBindingListener extends HttpServlet {
                 } else {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
-            } else if (path.startsWith("/entry/")) {
+            } else if (path.startsWith("/")) {
 
                 // Return a specific entry in the collection
 
                 // Get the entry from the service implementation
                 Message requestMessage = messageFactory.createMessage();
-                String id = path.substring(7);
+                String id = path.substring(1);
                 requestMessage.setBody(new Object[] {id});
                 Message responseMessage = getInvoker.invoke(requestMessage);
                 if (responseMessage.isFault()) {
@@ -222,7 +222,7 @@ public class ResourceCollectionBindingListener extends HttpServlet {
 
                 // Get the Feed from the service
                 Message requestMessage = messageFactory.createMessage();
-                Message responseMessage = getCollectionInvoker.invoke(requestMessage);
+                Message responseMessage = getFeedInvoker.invoke(requestMessage);
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
@@ -353,8 +353,8 @@ public class ResourceCollectionBindingListener extends HttpServlet {
         // Get the request path
         String path = request.getPathInfo();
 
-        if (path != null && path.startsWith("/entry/")) {
-            String id = path.substring(7);
+        if (path != null && path.startsWith("/")) {
+            String id = path.substring(1);
             Entry updatedEntry = null;
 
             // Update an Atom entry
@@ -377,7 +377,7 @@ public class ResourceCollectionBindingListener extends HttpServlet {
                 Message responseMessage = putInvoker.invoke(requestMessage);
                 if (responseMessage.isFault()) {
                     Object body = responseMessage.getBody();
-                    if (body instanceof ResourceNotFoundException) {
+                    if (body instanceof NotFoundException) {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     } else {
                         throw new ServletException((Throwable)responseMessage.getBody());
@@ -395,8 +395,8 @@ public class ResourceCollectionBindingListener extends HttpServlet {
                 requestMessage.setBody(new Object[] {id, contentType, request.getInputStream()});
                 Message responseMessage = putMediaInvoker.invoke(requestMessage);
                 Object body = responseMessage.getBody();
-                if (body instanceof ResourceNotFoundException) {
-                    if (body instanceof ResourceNotFoundException) {
+                if (body instanceof NotFoundException) {
+                    if (body instanceof NotFoundException) {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     } else {
                         throw new ServletException((Throwable)responseMessage.getBody());
@@ -443,8 +443,8 @@ public class ResourceCollectionBindingListener extends HttpServlet {
         // Get the request path
         String path = request.getPathInfo();
 
-        if (path.startsWith("/entry/")) {
-            String id = path.substring(7);
+        if (path.startsWith("/")) {
+            String id = path.substring(1);
 
             // Delete a specific entry from the collection
             Message requestMessage = messageFactory.createMessage();
@@ -452,7 +452,7 @@ public class ResourceCollectionBindingListener extends HttpServlet {
             Message responseMessage = deleteInvoker.invoke(requestMessage);
             if (responseMessage.isFault()) {
                 Object body = responseMessage.getBody();
-                if (body instanceof ResourceNotFoundException) {
+                if (body instanceof NotFoundException) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 } else {
                     throw new ServletException((Throwable)responseMessage.getBody());

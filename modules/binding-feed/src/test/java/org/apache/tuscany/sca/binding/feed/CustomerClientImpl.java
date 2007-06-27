@@ -31,7 +31,7 @@ import com.sun.syndication.feed.atom.Feed;
 public class CustomerClientImpl implements CustomerClient {
 
     @Reference
-    public EditableResourceCollection resourceCollection;
+    public EditableCollection resourceCollection;
 
     public void testCustomerCollection() throws Exception {
 
@@ -58,7 +58,7 @@ public class CustomerClientImpl implements CustomerClient {
         System.out.println("<<< delete id=" + entry.getId());
 
         System.out.println(">>> get collection");
-        Feed feed = resourceCollection.getCollection();
+        Feed feed = resourceCollection.getFeed();
         System.out.println("<<< get collection");
         for (Object o : feed.getEntries()) {
             Entry e = (Entry)o;
