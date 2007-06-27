@@ -61,6 +61,9 @@ public class CompositeDocumentProcessor extends BaseArtifactProcessor implements
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
             Composite composite = (Composite)extensionProcessor.read(reader);
+            if (composite != null) {
+                composite.setURI(uri.toString());
+            }
             return composite;
             
         } catch (XMLStreamException e) {

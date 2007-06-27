@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
@@ -82,12 +83,14 @@ public class ReadDocumentTestCase extends TestCase {
     public void testResolveConstrainingType() throws Exception {
         
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, null, url);
+        URI uri = URI.create("CalculatorComponent.constrainingType");
+        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url);
         assertNotNull(constrainingType);
         resolver.addModel(constrainingType);
 
         url = getClass().getResource("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, null, url);
+        uri = URI.create("TestAllCalculator.constrainingType");
+        Composite composite = (Composite)documentProcessor.read(null, uri, url);
         assertNotNull(composite);
         
         documentProcessor.resolve(composite, resolver);
@@ -98,12 +101,14 @@ public class ReadDocumentTestCase extends TestCase {
 
     public void testResolveComposite() throws Exception {
         URL url = getClass().getResource("Calculator.composite");
-        Composite nestedComposite = (Composite)documentProcessor.read(null, null, url);
+        URI uri = URI.create("Calculator.composite");
+        Composite nestedComposite = (Composite)documentProcessor.read(null, uri, url);
         assertNotNull(nestedComposite);
         resolver.addModel(nestedComposite);
 
         url = getClass().getResource("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, null, url);
+        uri = URI.create("TestAllCalculator.composite");
+        Composite composite = (Composite)documentProcessor.read(null, uri, url);
         
         documentProcessor.resolve(composite, resolver);
         
