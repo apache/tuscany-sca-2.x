@@ -56,7 +56,7 @@ import com.sun.syndication.io.WireFeedOutput;
  * A resource collection binding listener, implemented as a servlet and
  * registered in a servlet host provided by the SCA hosting runtime.
  */
-public class ResourceCollectionBindingListener extends HttpServlet {
+public class FeedBindingListenerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
@@ -80,7 +80,7 @@ public class ResourceCollectionBindingListener extends HttpServlet {
      * @param messageFactory
      * @param feedType
      */
-    public ResourceCollectionBindingListener(RuntimeWire wire, MessageFactory messageFactory, String feedType) {
+    public FeedBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, String feedType) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.feedType = feedType;
