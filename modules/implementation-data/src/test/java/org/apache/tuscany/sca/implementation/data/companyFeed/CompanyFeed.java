@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.EditableResourceCollection;
-import org.apache.tuscany.sca.binding.feed.ResourceNotFoundException;
+import org.apache.tuscany.sca.binding.feed.EditableCollection;
+import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.apache.tuscany.sca.implementation.data.DATA;
 import org.osoa.sca.annotations.Reference;
 
@@ -37,12 +37,12 @@ import com.sun.syndication.feed.atom.Link;
 import com.sun.syndication.feed.atom.Person;
 import commonj.sdo.DataObject;
 
-public class CompanyFeed implements EditableResourceCollection {
+public class CompanyFeed implements EditableCollection {
     
     @Reference
     protected DATA dataService;
     
-    public Feed getCollection() {
+    public Feed getFeed() {
         
         // Create a new Feed
         Feed feed = new Feed();
@@ -60,11 +60,11 @@ public class CompanyFeed implements EditableResourceCollection {
         return feed;
     }
 
-    public Entry get(String id) throws ResourceNotFoundException{
+    public Entry get(String id) throws NotFoundException{
         
         DataObject data = dataService.get(id);        
         if(data == null) {
-            throw new ResourceNotFoundException();
+            throw new NotFoundException();
         }
         
         Entry entry = new Entry();
@@ -89,7 +89,7 @@ public class CompanyFeed implements EditableResourceCollection {
         return entry;
     }
 
-    public void delete(String id) throws ResourceNotFoundException {
+    public void delete(String id) throws NotFoundException {
     }
 
     public Entry post(Entry entry) {
@@ -100,11 +100,11 @@ public class CompanyFeed implements EditableResourceCollection {
         return null;
     }
 
-    public Entry put(String id, Entry entry) throws ResourceNotFoundException {
+    public Entry put(String id, Entry entry) throws NotFoundException {
         return null;
     }
 
-    public Entry putMedia(String id, String contentType, InputStream media) throws ResourceNotFoundException {
+    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
         return null;
     }
 

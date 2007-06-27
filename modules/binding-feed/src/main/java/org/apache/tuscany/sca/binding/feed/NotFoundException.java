@@ -19,21 +19,27 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import org.osoa.sca.annotations.Remotable;
-
 /**
- * Provides access to a resource collection feed.
+ * Indicates that a resource could not be found.
  * 
  * @version $Rev$ $Date$
  */
-@Remotable
-public interface ResourceCollection {
+public class NotFoundException extends Exception {
+    private static final long serialVersionUID = -5046027674128627383L;
 
-    /**
-     * Get an RSS or Atom feed for a collection of resources.
-     * 
-     * @param uri the uri of the feed
-     * @return the RSS or Atom feed
-     */
-    com.sun.syndication.feed.atom.Feed getCollection();
+    public NotFoundException() {
+    }
+
+    public NotFoundException(String message) {
+        super(message);
+    }
+
+    public NotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    public NotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

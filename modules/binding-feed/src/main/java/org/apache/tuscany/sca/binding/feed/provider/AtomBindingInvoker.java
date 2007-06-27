@@ -27,7 +27,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.tuscany.sca.binding.feed.ResourceNotFoundException;
+import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -80,7 +80,7 @@ public class AtomBindingInvoker implements Invoker {
             String id = (String)((Object[])msg.getBody())[0];
 
             // Send an HTTP GET
-            GetMethod getMethod = new GetMethod(uri + "/entry/" + id);
+            GetMethod getMethod = new GetMethod(uri + "/" + id);
             getMethod.setRequestHeader("Authorization", authorizationHeader);
             try {
                 httpClient.executeMethod(getMethod);
@@ -93,7 +93,7 @@ public class AtomBindingInvoker implements Invoker {
                     msg.setBody(entry);
 
                 } else if (status == 404) {
-                    msg.setFaultBody(new ResourceNotFoundException());
+                    msg.setFaultBody(new NotFoundException());
                 } else {
                     msg.setFaultBody(new ServiceRuntimeException("HTTP status code: " + status));
                 }
@@ -147,7 +147,7 @@ public class AtomBindingInvoker implements Invoker {
                     msg.setBody(createdEntry);
 
                 } else if (status == 404) {
-                    msg.setFaultBody(new ResourceNotFoundException());
+                    msg.setFaultBody(new NotFoundException());
                 } else {
                     msg.setFaultBody(new ServiceRuntimeException("HTTP status code: " + status));
                 }
@@ -182,7 +182,7 @@ public class AtomBindingInvoker implements Invoker {
             Entry entry = (Entry)args[1];
 
             // Send an HTTP PUT
-            PutMethod putMethod = new PutMethod(uri + "/entry/" + id);
+            PutMethod putMethod = new PutMethod(uri + "/" + id);
             putMethod.setRequestHeader("Authorization", authorizationHeader);
             try {
 
@@ -207,7 +207,7 @@ public class AtomBindingInvoker implements Invoker {
                     }
 
                 } else if (status == 404) {
-                    msg.setFaultBody(new ResourceNotFoundException());
+                    msg.setFaultBody(new NotFoundException());
                 } else {
                     msg.setFaultBody(new ServiceRuntimeException("HTTP status code: " + status));
                 }
@@ -240,7 +240,7 @@ public class AtomBindingInvoker implements Invoker {
             String id = (String)((Object[])msg.getBody())[0];
 
             // Send an HTTP DELETE
-            DeleteMethod deleteMethod = new DeleteMethod(uri + "/entry/" + id);
+            DeleteMethod deleteMethod = new DeleteMethod(uri + "/" + id);
             deleteMethod.setRequestHeader("Authorization", authorizationHeader);
             try {
                 httpClient.executeMethod(deleteMethod);
@@ -251,7 +251,7 @@ public class AtomBindingInvoker implements Invoker {
                     msg.setBody(null);
 
                 } else if (status == 404) {
-                    msg.setFaultBody(new ResourceNotFoundException());
+                    msg.setFaultBody(new NotFoundException());
                 } else {
                     msg.setFaultBody(new ServiceRuntimeException("HTTP status code: " + status));
                 }
@@ -296,7 +296,7 @@ public class AtomBindingInvoker implements Invoker {
                     msg.setBody(feed);
 
                 } else if (status == 404) {
-                    msg.setFaultBody(new ResourceNotFoundException());
+                    msg.setFaultBody(new NotFoundException());
                 } else {
                     msg.setFaultBody(new ServiceRuntimeException("HTTP status code: " + status));
                 }

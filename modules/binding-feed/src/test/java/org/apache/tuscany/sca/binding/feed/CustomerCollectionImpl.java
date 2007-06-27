@@ -36,7 +36,7 @@ import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 
 @Scope("COMPOSITE")
-public class CustomerCollectionImpl implements EditableResourceCollection {
+public class CustomerCollectionImpl implements EditableCollection {
 
     private Map<String, Entry> entries = new HashMap<String, Entry>();
 
@@ -57,14 +57,14 @@ public class CustomerCollectionImpl implements EditableResourceCollection {
             List<Link> links = new ArrayList<Link>();
             Link link = new Link();
             link.setRel("edit");
-            link.setHref("entry/" + id);
+            link.setHref("" + id);
             links.add(link);
             entry.setOtherLinks(links);
 
             links = new ArrayList<Link>();
             link = new Link();
             link.setRel("alternate");
-            link.setHref("entry/" + id);
+            link.setHref("" + id);
             links.add(link);
             entry.setAlternateLinks(links);
 
@@ -84,14 +84,14 @@ public class CustomerCollectionImpl implements EditableResourceCollection {
         List<Link> links = new ArrayList<Link>();
         Link link = new Link();
         link.setRel("edit");
-        link.setHref("entry/" + id);
+        link.setHref("" + id);
         links.add(link);
         entry.setOtherLinks(links);
 
         links = new ArrayList<Link>();
         link = new Link();
         link.setRel("alternate");
-        link.setHref("entry/" + id);
+        link.setHref("" + id);
         links.add(link);
         entry.setAlternateLinks(links);
 
@@ -122,7 +122,7 @@ public class CustomerCollectionImpl implements EditableResourceCollection {
     }
 
     @SuppressWarnings("unchecked")
-    public Feed getCollection() {
+    public Feed getFeed() {
         System.out.println(">>> ResourceCollectionImpl.get collection");
 
         Feed feed = new Feed();
@@ -138,7 +138,7 @@ public class CustomerCollectionImpl implements EditableResourceCollection {
         return null;
     }
 
-    public Entry putMedia(String id, String contentType, InputStream media) throws ResourceNotFoundException {
+    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
         return null;
     }
 }

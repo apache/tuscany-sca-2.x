@@ -39,7 +39,7 @@ import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 
-import org.apache.tuscany.sca.binding.feed.ResourceCollection;
+import org.apache.tuscany.sca.binding.feed.Collection;
 
 /**
  * Read all new alerts from the specified sources

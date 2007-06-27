@@ -27,7 +27,7 @@ import com.sun.syndication.feed.atom.Entry;
  * 
  * @version $Rev$ $Date$
  */
-public interface EditableResourceCollection extends ResourceCollection {
+public interface EditableCollection extends Collection {
 
     /**
      * Creates a new entry.
@@ -53,7 +53,7 @@ public interface EditableResourceCollection extends ResourceCollection {
      * @param id
      * @return
      */
-    Entry get(String id) throws ResourceNotFoundException;
+    Entry get(String id) throws NotFoundException;
 
     /**
      * Update an entry.
@@ -62,7 +62,7 @@ public interface EditableResourceCollection extends ResourceCollection {
      * @param entry
      * @return
      */
-    Entry put(String id, Entry entry) throws ResourceNotFoundException;
+    Entry put(String id, Entry entry) throws NotFoundException;
 
     /**
      * Update a media entry.
@@ -72,13 +72,13 @@ public interface EditableResourceCollection extends ResourceCollection {
      * @param media
      * @return
      */
-    Entry putMedia(String id, String contentType, InputStream media) throws ResourceNotFoundException;
+    Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException;
 
     /**
      * Delete an entry.
      * 
      * @param id
      */
-    void delete(String id) throws ResourceNotFoundException;
+    void delete(String id) throws NotFoundException;
 
 }

@@ -23,7 +23,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.ResourceCollection;
+import org.apache.tuscany.sca.binding.feed.Collection;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.osoa.sca.annotations.Reference;
@@ -40,8 +40,8 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
  *
  * @version $Rev$ $Date$
  */
-@Service(ResourceCollection.class)
-public class AlertsFeedServiceImpl implements ResourceCollection {
+@Service(Collection.class)
+public class AlertsFeedServiceImpl implements Collection {
   
     private AlertsService alerts;
     
@@ -57,7 +57,7 @@ public class AlertsFeedServiceImpl implements ResourceCollection {
      * 
      * @return the structure containing alerts 
      */    
-    public Feed getCollection() {
+    public Feed getFeed() {
         
         // Create a new Feed
         SyndFeed feed = new SyndFeedImpl();
