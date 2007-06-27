@@ -21,12 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>tuscany-modules</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
     <artifactId>tuscany-implementation-notification</artifactId>
     <name>Notification Implementation</name>
-    <description></description>
 
     <dependencies>
         <dependency>
