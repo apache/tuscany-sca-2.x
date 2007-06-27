@@ -25,11 +25,26 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 /**
  */
 public class HelloWorldTestCase extends TestCase {
+    
+    private SCADomain scaDomain;
+    
+    @Override
+    protected void setUp() throws Exception {
+        scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
+    }
+    
+    @Override
+    protected void tearDown() throws Exception {
+        scaDomain.close();
+    }
 
     public void testHello() throws Exception {
-        SCADomain scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
         HelloWorld helloworld = scaDomain.getService(HelloWorld.class, "HelloWorldComponent");
         assertEquals("Hello petra", helloworld.sayHello("petra"));
-        scaDomain.close();
+    }
+
+    public void testHello2() throws Exception {
+        HelloWorld helloworld = scaDomain.getService(HelloWorld.class, "HelloWorldComponent2/HelloWorld2");
+        assertEquals("Hello petra", helloworld.sayHello("petra"));
     }
 }
