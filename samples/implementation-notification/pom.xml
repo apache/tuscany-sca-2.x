@@ -19,11 +19,16 @@
 -->
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca</groupId>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-sca</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
     <artifactId>sample-implementation-notification</artifactId>
     <name>Notification Implementation Sample</name>
     <version>1.0-incubating-SNAPSHOT</version>
-    <description></description>
+    <description>A sample illustrating use of implementation.notification</description>
 
     <dependencies>
         <dependency>
