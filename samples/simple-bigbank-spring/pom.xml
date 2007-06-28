@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-spring-bigbank</artifactId>
+    <artifactId>sample-simple-bigbank-spring</artifactId>
     <name>Apache Tuscany Simplified Spring-Based BigBank Sample</name>
 
     <repositories>
