@@ -121,6 +121,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
+            <artifactId>ode-dao-jpa-ojpa-derby</artifactId>
+            <version>1.0-incubating</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-runtime</artifactId>
             <version>1.0-incubating</version>
         </dependency>
