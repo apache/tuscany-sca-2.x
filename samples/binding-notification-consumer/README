@@ -1,0 +1,89 @@
+Notification Consumer Binding Sample
+===============================
+
+This sample illustrates the use of <binding.notification/> with a
+remote consumer.
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+Sample Overview
+---------------
+
+This sample illustrates the use of a notification consumer that is located in a
+separate (and remote) composite with respect to any producers. As such, this sample
+is run in conjunction with the binding-notification-producer sample, the
+binding-notification-broker sample, or both. Take a look at the composite file 
+or the .svg file which shows the composite file in pictorial form. The composite
+service, wired to the notification component, has a <binding.notification/>
+that handles the remote communication. This binding includes an 'ntm' attribute
+that refers to the notification type manager, which manages the connectivity of
+producers, consumers and brokers, and which (for this sample) is assumed to be
+running on http://localhost:8083. The ntm is a system component that is included in
+and runs as part of the binding-notification module.
+This sample also illustrates the use of a wsdl interface in the notification
+component's <implementation.notification/>. This allows messages sent and received
+via <binding.notification/> to be transported as literal xml over http.
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd binding-notification-consumer
+mvn
+
+Sample Usage
+------------
+
+This sample is run using the tuscany binary distribution. To run it, first set the
+following environment variables:
+
+set MAVEN_REPO=<Directory where your maven repo resides, e.g. \Documents and Settings\Administrator\.m2\repository>
+set NOTIFICATION_IMPL_JAR=%MAVEN_REPO%\org\apache\tuscany\sca\tuscany-implementation-notification\1.0-incubating-SNAPSHOT\tuscany-implementation-notification-1.0-incubating-SNAPSHOT.jar
+set NOTIFICATION_BINDING_JAR=%MAVEN_REPO%\org\apache\tuscany\sca\tuscany-binding-notification\1.0-incubating-SNAPSHOT\tuscany-binding-notification-1.0-incubating-SNAPSHOT.jar
+set STAX_JAR=%MAVEN_REPO%\stax\stax\1.1.1-dev\stax-1.1.1-dev.jar
+set TUSCANY_BIN_DISTRO=<Directory where the distro was extracted, e.g. \Devt\tuscany-sca-distr\tuscany-sca-1.0-incubating-SNAPSHOT>
+set TUSCANY_SCA_MANIFEST_JAR=%TUSCANY_BIN_DISTRO%\lib\tuscany-sca-manifest.jar
+
+Then navigate to this sample directory and do:
+
+java -Dnotification.httpPort=8082 -cp "target\sample-binding-notification-consumer-1.0-incubating-SNAPSHOT.jar;%NOTIFICATION_IMPL_JAR%;%NOTIFICATION_BINDING_JAR%;%STAX_JAR%;%TUSCANY_SCA_MANIFEST_JAR%" notification.consumer.TrafficAdvisoryServer
+
+this should bring up the following prompt:
+
+TrafficAdvisoryServer, hit return to end
+
+at this point you should be able to receive messages.
+
+Notice that before you try to receive any message, you should bring up the
+producer sample or the broker sample. When you have finished using this
+sample, hit return to end.
+
+Also notice that '-Dnotification.httpPort=8082' is used in the java command.
+This indicates the port the sample should use. This also says that this server
+is not going to play the role of ntm, given our previous assumption. It is important
+that the first one of the producer, consumer or broker sample that is run be the
+one that uses '-Dnotification.httpPort=8083', otherwise there is no ntm to talk
+to and an exception will be thrown.
+
+Sample directory structure:
+---------------------------
+
+binding-notification-consumer/
+  src/
+    main/
+      java/
+        notification.producer/
+          TrafficAdvisory.java                     - remote interface referred to by the producer component
+          TrafficAdvisoryConsumer.java             - implementation for the consumer components
+          TrafficAdvisoryServer.java               - server class including main entry point
+      resources/
+        wsdl/
+          TrafficAdvisory.wsdl                     - remote interface for the notification component
+        TrafficAdvisoryNotification.componentType  - the component type referred to by
+                                                     <implementation.notification/>
+        TrafficAdvisoryNotification.composite      - the main composite including producer and
+                                                     notification components, and composite reference
+  pom.xml                                          - the Maven build file        

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<definitions name="TrafficAdvisory"
+             targetNamespace="http://example.com/TrafficAdvisory.wsdl"
+             xmlns:tns="http://example.com/TrafficAdvisory.wsdl"
+             xmlns:xsd1="http://example.com/TrafficAdvisory.xsd"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <schema targetNamespace="http://example.com/TrafficAdvisory.xsd"
+                xmlns:tns="http://example.com/TrafficAdvisory.xsd"
+                xmlns="http://www.w3.org/2001/XMLSchema">
+            <element name="trafficNotification">
+                <complexType>
+                    <sequence>
+                        <element name="report" type="string" />
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
+    <message name="TrafficNotificationInput">
+        <part name="body" element="xsd1:trafficNotification" />
+    </message>
+
+    <portType name="TrafficAdvisoryPortType">
+        <operation name="trafficNotification">
+            <input message="tns:TrafficNotificationInput" />
+        </operation>
+    </portType>
+
+</definitions>
