@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-implementation-notification</artifactId>
-    <name>Notification Implementation</name>
+    <name>Apache Tuscany Notification Implementation</name>
 
     <dependencies>
         <dependency>

@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-binding-notification</artifactId>
-    <name>Notification Binding</name>
+    <name>Apache Tuscany Notification Binding</name>
 
     <dependencies>
         <dependency>
