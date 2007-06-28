@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.io.File;
+import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +57,12 @@ public class EmbeddedODEServer {
 
     public void init() throws ODEInitializationException {
         _config = new OdeConfigProperties(new Properties(), "ode-sca");
-        _workRoot = new File("ode-work");
+
+        // Setting work root as the directory containing our database (wherever in the classpath)
+        URL dbLocation = getClass().getClassLoader().getResource("jpadb");
+        if (dbLocation == null)
+            throw new ODEInitializationException("Couldn't find database in the classpath");
+        _workRoot = new File(dbLocation.getFile()).getParentFile();
 
         initTxMgr();
         initPersistence();
