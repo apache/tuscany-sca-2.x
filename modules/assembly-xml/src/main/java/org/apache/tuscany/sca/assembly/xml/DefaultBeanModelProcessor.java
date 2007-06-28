@@ -33,6 +33,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -65,6 +67,9 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
             // Index the bean's property descriptors
             PropertyDescriptor[] pd = beanInfo.getPropertyDescriptors();
             for (int i =0; i < pd.length; i++) {
+                if (pd[i].getWriteMethod() == null) {
+                    continue;
+                }
                 
                 // Map an uppercase property name to a lowercase attribute name 
                 String name = pd[i].getName();
@@ -110,6 +115,11 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
 
             // TODO read extension elements
             
+            // By default mark the model object unresolved
+            if (bean instanceof Base) {
+                ((Base)bean).setUnresolved(true);
+            }
+            
             // Skip to end element
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && artifactType.equals(reader.getName())) {
@@ -144,6 +154,45 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
     }
 
     public void resolve(Object bean, ModelResolver resolver) throws ContributionResolveException {
+        
+        // Resolve and merge the component type associated with an
+        // implementation model
+        if (bean instanceof Implementation) {
+            Implementation implementation = (Implementation)bean;
+            String uri = implementation.getURI();
+            if (uri != null) {
+                int d = uri.lastIndexOf('.');
+                if (d != -1) {
+                    uri = uri.substring(0, d) + ".componentType";
+                    
+                    // Resolve the component type
+                    ComponentType componentType = assemblyFactory.createComponentType();
+                    componentType.setURI(uri);
+                    componentType.setUnresolved(true);
+                    
+                    componentType = resolver.resolveModel(ComponentType.class, componentType);
+                    if (componentType != null && !componentType.isUnresolved()) {
+                        
+                        // We found a component type, merge it into the implementation model
+                        implementation.getServices().addAll(componentType.getServices());
+                        implementation.getReferences().addAll(componentType.getReferences());
+                        implementation.getProperties().addAll(componentType.getProperties());
+                        implementation.setConstrainingType(componentType.getConstrainingType());
+                        if (implementation.getPolicySets() != null) {
+                            implementation.getPolicySets().addAll(componentType.getPolicySets());
+                        }
+                        if (implementation.getRequiredIntents() != null) {
+                            implementation.getRequiredIntents().addAll(componentType.getRequiredIntents());
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Mark the model resolved
+        if (bean instanceof Base) {
+            ((Base)bean).setUnresolved(false);
+        }
     }
 
     public QName getArtifactType() {
