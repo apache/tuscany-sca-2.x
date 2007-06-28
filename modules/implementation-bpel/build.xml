@@ -27,13 +27,13 @@
     <target name="test-db">
         <artifact:pom id="maven.project" file="pom.xml" />
         <artifact:dependencies filesetId="dependency.derby" useScope="test">
-            <dependency groupId="org.apache.ode" artifactId="ode-dao-jpa-ojpa-derby" version="1.1-SNAPSHOT" type="zip"/>
+            <dependency groupId="org.apache.ode" artifactId="ode-dao-jpa-ojpa-derby" version="1.0-incubating" type="zip"/>
         </artifact:dependencies>
         <copy todir="${maven.project.build.directory}/scratch" flatten="true">
             <fileSet refid="dependency.derby"/>
         </copy>
         <delete dir="${maven.project.build.directory}/test-classes/jpadb"/>
-        <unzip src="${maven.project.build.directory}/scratch/ode-dao-jpa-ojpa-derby-1.0-SNAPSHOT.zip"
+        <unzip src="${maven.project.build.directory}/scratch/ode-dao-jpa-ojpa-derby-1.0-incubating.zip"
                dest="${maven.project.build.directory}/test-classes/"/>
     </target>
 
