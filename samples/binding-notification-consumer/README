@@ -75,7 +75,7 @@ binding-notification-consumer/
   src/
     main/
       java/
-        notification.producer/
+        notification.consumer/
           TrafficAdvisory.java                     - remote interface referred to by the producer component
           TrafficAdvisoryConsumer.java             - implementation for the consumer components
           TrafficAdvisoryServer.java               - server class including main entry point
