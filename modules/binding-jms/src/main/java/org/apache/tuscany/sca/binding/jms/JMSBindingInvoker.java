@@ -126,6 +126,10 @@ public class JMSBindingInvoker implements Invoker {
             throw new InvocationTargetException(e);
         }
     }
+    
+    public void stop() throws NamingException, JMSException{
+        jmsResourceFactory.closeConnection();
+    }
 
     protected Message sendRequest(Object[] payload, Session session, Destination replyToDest) throws JMSException {
 

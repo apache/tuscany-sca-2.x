@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jms;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -41,6 +42,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private RuntimeComponent          component;
     private RuntimeComponentReference reference;
     private JMSBinding                jmsBinding;
+    private List<JMSBindingInvoker>   jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
 
     public JMSBindingReferenceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentReference reference,
@@ -99,8 +101,10 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {
-            return new JMSBindingInvoker(jmsBinding,
-                                         operation);                                      
+            JMSBindingInvoker invoker =  new JMSBindingInvoker(jmsBinding,
+                                                               operation); 
+            jmsBindingInvokers.add(invoker);
+            return invoker;
         }
     }
 
@@ -113,6 +117,14 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public void stop() {
+        try {
+            for (JMSBindingInvoker invoker : jmsBindingInvokers) {
+                invoker.stop();
+                
+            }
+        } catch (Exception e) {
+            throw new JMSBindingException("Error stopping JMSReferenceBinding", e);
+        }        
     }
 
 }

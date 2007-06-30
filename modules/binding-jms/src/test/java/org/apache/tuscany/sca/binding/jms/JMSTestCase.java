@@ -76,7 +76,7 @@ public class JMSTestCase {
         //broker.waitUntilStopped();
     }
     
-/* At the moment I can't get at the target list in order to aut generate queue names
+/* At the moment I can't get at the target list in order to auto generate queue names
  * so binding.jms with no configuration doesn't work
     @Test
     public void testHelloWorldMinimal() throws Exception {
