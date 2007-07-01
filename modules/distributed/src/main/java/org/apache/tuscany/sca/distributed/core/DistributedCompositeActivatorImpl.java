@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
-import org.apache.tuscany.sca.distributed.host.SCADomainNode;
+import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -48,24 +48,30 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
 
-    private SCADomainNode domainNode;
-    private ComponentRegistry componentRegistry;    
-    
+    private DistributedSCADomain domain;
+    private ComponentRegistry componentRegistry; 
+        
     /**
+     * To extra information over and above that provided to the CompositeActivatirImpl
+     * is the domian. This is the domain for which this activiator was created. 
+     *
      * @param assemblyFactory
+     * @param scaBindingFactory
      * @param interfaceContractMapper
-     * @param workContext
+     * @param scopeRegistry
      * @param workScheduler
-     * @param wirePostProcessorRegistry
+     * @param wireProcessor
+     * @param providerFactories
+     * @param domain
      */
     public DistributedCompositeActivatorImpl(AssemblyFactory assemblyFactory,
-                                     SCABindingFactory scaBindingFactory,
-                                     InterfaceContractMapper interfaceContractMapper,
-                                     ScopeRegistry scopeRegistry,
-                                     WorkScheduler workScheduler,
-                                     RuntimeWireProcessor wireProcessor,
-                                     ProviderFactoryExtensionPoint providerFactories,
-                                     SCADomainNode domainNode) {
+                                             SCABindingFactory scaBindingFactory,
+                                             InterfaceContractMapper interfaceContractMapper,
+                                             ScopeRegistry scopeRegistry,
+                                             WorkScheduler workScheduler,
+                                             RuntimeWireProcessor wireProcessor,
+                                             ProviderFactoryExtensionPoint providerFactories,
+                                             DistributedSCADomain domain) {
         super(assemblyFactory,
               scaBindingFactory,
               interfaceContractMapper,
@@ -74,21 +80,28 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
               wireProcessor,
               providerFactories);
         
-        this.domainNode = domainNode;
-        
+        this.domain = domain;
+                
         // if the domain node is available find the component registry 
-        if (domainNode != null) {
+        if ((domain != null) && (domain.getNodeDomain() != null)) {
             // get the ComponentRegistry
-            componentRegistry = domainNode.getNodeService(ComponentRegistry.class, "ComponentRegistry");
+            componentRegistry = domain.getNodeDomain().getService(ComponentRegistry.class, "ComponentRegistry");
         }      
         
     }
 
-
+    /**
+     * Take the composite and use the super class to build it. Once done 
+     * work out which components run in this node and create appropriate
+     * bindings to take account of references between nodes in the 
+     * distributed domain.
+     * 
+     * @param composite
+     */
     protected void buildComposite(Composite composite) throws CompositeBuilderException {
         super.buildComposite(composite);
         
-        // now we have a build composite look at which SCABindings
+        // now we have a built composite look at which SCABindings
         // need updating based on which components are present
         // in this node
         assignComponentsToNode(composite);
@@ -133,10 +146,10 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
                         // get the information about the reference and associated services
                         
                         // reference
-                        String referenceNode = componentRegistry.getComponentNode(sourceComponent.getName());
+                        String referenceNode = componentRegistry.getComponentNode(domain.getURI(), sourceComponent.getName());
                         
                         // service 
-                        String serviceNode = componentRegistry.getComponentNode(targetComponent.getName());
+                        String serviceNode = componentRegistry.getComponentNode(domain.getURI(), targetComponent.getName());
                         
                         // check if reference and service are operating on 
                         // different nodes 
@@ -160,7 +173,7 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
                            
                             // if the reference is operating on this node
                             // mark the binding as distributed
-                            if (referenceNode.equals(domainNode.getNodeName())) {
+                            if (referenceNode.equals(domain.getNodeDomain().getNodeName())) {
                                 DistributedSCABinding referenceSCABinding = 
                                     (DistributedSCABinding)reference.getBinding(SCABinding.class);
                                 
@@ -178,7 +191,7 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
                                                    " SCABinding is set remote" );
                             }
                             
-                            if (serviceNode.equals(domainNode.getNodeName())) { 
+                            if (serviceNode.equals(domain.getNodeDomain().getNodeName())) { 
                                 // not used at the moment but maintain this 
                                 // flag in case the SCABinding becomes more 
                                 // functional                                

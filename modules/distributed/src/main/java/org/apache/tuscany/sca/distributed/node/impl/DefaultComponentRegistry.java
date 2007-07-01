@@ -28,7 +28,8 @@ import org.osoa.sca.annotations.Scope;
 /**
  * Represents the mapping between components and runtime nodes.
  * 
- * TBD - just a place holder at the moment
+ * TODO - just a place holder at the moment. For example, 
+ *        doesn;t take any notice of domains at present
  *
  * @version $Rev$ $Date$
  */
@@ -47,7 +48,7 @@ public class DefaultComponentRegistry {
      * @param componentName the string name for the component of interest
      * @return node name
      */
-    public String getComponentNode(String componentName){
+    public String getComponentNode(String domainName, String componentName){
         return components.get(componentName);
     }
     
@@ -58,7 +59,7 @@ public class DefaultComponentRegistry {
      * @param componentName the string name for the component of interest
      * @return node name
      */
-    public void setComponentNode(String componentName, String nodeName){
+    public void setComponentNode(String domainName, String componentName, String nodeName){
         components.put(componentName, nodeName);
     }
     
@@ -69,7 +70,7 @@ public class DefaultComponentRegistry {
      * @param nodeName
      * @return
      */
-    public List<String> getComponentsForNode(String nodeName) {
+    public List<String> getComponentsForNode(String domainName, String nodeName) {
         List<String> componentList = new ArrayList<String>();
         
         for (String componentName : components.keySet()) {
