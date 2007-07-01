@@ -22,50 +22,30 @@ package calculator;
 import java.io.File;
 import java.net.URL;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
+
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
+import org.apache.tuscany.sca.core.runtime.ActivationException;
+import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomainImpl;
+import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.topology.DefaultTopologyFactory;
-import org.apache.tuscany.sca.topology.Node;
-import org.apache.tuscany.sca.topology.TopologyFactory;
-import org.apache.tuscany.sca.topology.xml.TopologyDocumentProcessor;
-import org.apache.tuscany.sca.topology.xml.TopologyProcessor;
 
 /**
  * This is an example node implementation that uses the 
  * distributed runtime to run the calculator sample
  * We need to remove some of the function from here and 
- * put it in the runtime proper 
+ * put it in the runtime proper when we decide how nodes 
+ * will be configured remotely. For now the node is hardcoded
+ * to run the calculator sample. 
  */
 public class CalculatorNode {
     
-    private DistributedSCADomain domain;
+    private NodeImpl node;
+    private DistributedSCADomainImpl domain;
     private String domainName;
     private String nodeName;
     
@@ -75,25 +55,24 @@ public class CalculatorNode {
     }
     
 
-    public SCADomain startDomain()
+    public SCADomain start()
       throws Exception {
-              
-        ClassLoader cl = CalculatorNode.class.getClassLoader();
-        domain = new DistributedSCADomain(cl,
-                                          domainName,
-                                          nodeName);
-        //Start the domain
-        domain.start();
+        ClassLoader cl = CalculatorNodeExe.class.getClassLoader();        
         
-        // configure the topology - should be done by file or remotely
-        ComponentRegistry componentRegistry = 
-            domain.getNodeService(ComponentRegistry.class, "ComponentRegistry");
+        // create the node implementation. The node implementation
+        // will read the node configuration and then wait until you
+        // contribute assemblies
+        node = new NodeImpl("MyRuntime",
+                            nodeName,
+                            cl);
         
-        componentRegistry.setComponentNode("CalculatorServiceComponent", "nodeA");
-        componentRegistry.setComponentNode("AddServiceComponent", "nodeB");  
-        componentRegistry.setComponentNode("SubtractServiceComponent", "nodeC"); 
-        componentRegistry.setComponentNode("MultiplyServiceComponent", "nodeA");
-        componentRegistry.setComponentNode("DivideServiceComponent", "nodeA");
+        // start the node to load the configuration
+        // and create the intial domains
+        node.start();          
+        
+        // load an application into a domain
+        // TODO - how are applications really going to be contributed?
+        domain = (DistributedSCADomainImpl)node.getDomain(domainName);
         
         // find the current directory as a URL. This is where our contribution 
         // will come from
@@ -117,14 +96,15 @@ public class CalculatorNode {
         domain.getDomainCompositeHelper().activateDomain();
         
         // start the components, i.e. bring any exposed services on line
-        domain.getDomainCompositeHelper().startComponents();   
+        domain.getDomainCompositeHelper().startComponents(); 
         
-        return domain;        
+        return domain;
+    
     }
     
-    public void stopDomain() {
-        //Stop the domain
-        domain.close();        
+    public void stop() throws ActivationException {
+        //Stop the domains for this node
+        node.stop();
     }
 
 }

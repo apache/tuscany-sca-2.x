@@ -22,6 +22,7 @@ import junit.framework.Assert;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.topology.xml.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,28 +53,30 @@ public class CalculatorTestCase {
         
         // start the node that runs the 
         // calculator component
-        nodeA = new CalculatorNode("domainA","nodeA");
-        domainA = nodeA.startDomain();
+        nodeA = new CalculatorNode(Constants.DEFAULT_DOMAIN,"nodeA");
+        domainA = nodeA.start();
         
         // start the node that runs the 
         // add component
-        nodeB = new CalculatorNode("domainA","nodeB");
-        domainB = nodeB.startDomain();
+        nodeB = new CalculatorNode(Constants.DEFAULT_DOMAIN,"nodeB");
+        domainB = nodeB.start();
         
         // start the node that runs the 
         // subtract component
-        nodeC = new CalculatorNode("domainA","nodeC");
-        domainC = nodeC.startDomain();        
+        nodeC = new CalculatorNode(Constants.DEFAULT_DOMAIN,"nodeC");
+        domainC = nodeC.start();        
         
+        // get a reference to the calculator service from domainA
+        // which will be running this component
         calculatorService = domainA.getService(CalculatorService.class, "CalculatorServiceComponent");
    }
 
     @AfterClass
     public static void destroy() throws Exception {
-        // stop the domains
-        nodeA.stopDomain();
-        nodeB.stopDomain();
-        nodeC.stopDomain();
+        // stop the nodes and hence the domains they contain
+        nodeA.stop();
+        nodeB.stop();
+        nodeC.stop();
         
         // stop the ActiveMQ broker
         broker.stop();
@@ -87,6 +90,5 @@ public class CalculatorTestCase {
         Assert.assertEquals(calculatorService.subtract(3, 2), 1.0);
         Assert.assertEquals(calculatorService.multiply(3, 2), 6.0);
         Assert.assertEquals(calculatorService.divide(3, 2), 1.5);
-
     }
 }

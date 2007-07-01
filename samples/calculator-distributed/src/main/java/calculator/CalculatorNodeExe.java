@@ -22,26 +22,33 @@ package calculator;
 import java.io.IOException;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.topology.xml.Constants;
 
 /**
- * This client program shows how to create an SCA runtime, start it,
- * and locate and invoke an SCA component
+ * This client program shows how to run a distributed SCA node. In this case a 
+ * calculator node has been constructed specifically for running the calculator 
+ * composite. 
  */
 public class CalculatorNodeExe {
-
+    
     public static void main(String[] args) throws Exception {
-              
+        
+        // Check that the correct arguments have been provided
         if (null == args || args.length != 1) {
              System.err.println("Useage: java CalculatorNodeExe nodename");   
              System.exit(1);
         }    
         
         String nodeName = args[0];
+                
+        // create and start the node. 
+        // this creates domains based on the runtime.topology file that
+        // must be present on the classpath
+        CalculatorNode node = new CalculatorNode(Constants.DEFAULT_DOMAIN,nodeName);
+        SCADomain domain = node.start(); 
         
-        // start the node and the domain at that node
-        CalculatorNode node = new CalculatorNode("domainA",nodeName);
-        SCADomain domain = node.startDomain();        
-        
+        // nodeA is the head node and runs some tests while all other nodes
+        // simply listen for incoming messages
         if ( nodeName.equals("nodeA") ) {            
             // do some application stuff
             CalculatorService calculatorService = 
@@ -62,7 +69,7 @@ public class CalculatorNodeExe {
             }  
         }
         
-        node.stopDomain();        
-             
+        // stop the node and all the domains in it 
+        node.stop(); 
     }
 }
