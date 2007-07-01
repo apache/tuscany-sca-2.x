@@ -30,15 +30,14 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingFactory;
 import org.apache.tuscany.sca.binding.jms.JMSBindingFactoryImpl;
-import org.apache.tuscany.sca.binding.jms.JMSBindingProviderFactory;
-import org.apache.tuscany.sca.binding.jms.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
-import org.apache.tuscany.sca.distributed.host.SCADomainNode;
+import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomainImpl;
 import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 /**
  * Represents an SCA binding.
@@ -52,7 +51,7 @@ public class SCABindingImpl implements DistributedSCABinding {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<Object> extensions = new ArrayList<Object>();
     private boolean isDistributed = false;
-    private SCADomainNode domainNode;
+    private DistributedSCADomain domain;
     private ExtensionPointRegistry registry;
     private ComponentRegistry componentRegistry;
     
@@ -61,14 +60,14 @@ public class SCABindingImpl implements DistributedSCABinding {
     /**
      * Constructs a new SCA binding.
      */
-    public SCABindingImpl(SCADomainNode domainNode,
+    public SCABindingImpl(DistributedSCADomain domain,
                           ExtensionPointRegistry registry) {
-        this.domainNode = domainNode;
+        this.domain = domain;
         this.registry = registry;
         
-        if (domainNode != null) {
+        if ((domain != null) && (domain.getNodeDomain() != null)) {
             // get the ComponentRegistry
-            this.componentRegistry = domainNode.getNodeService(ComponentRegistry.class, "ComponentRegistry");
+            this.componentRegistry = domain.getNodeDomain().getService(ComponentRegistry.class, "ComponentRegistry");
         }
     }
     
@@ -156,7 +155,7 @@ public class SCABindingImpl implements DistributedSCABinding {
         SCABinding serviceSCABinding = service.getBinding(SCABinding.class);
         Component targetComponent = serviceSCABinding.getComponent();
         String serviceName = targetComponent.getName();            
-        String serviceNode = componentRegistry.getComponentNode(targetComponent.getName());
+        String serviceNode = componentRegistry.getComponentNode(domain.getURI(), targetComponent.getName());
         
       
         // set the destination queue to the target service name
@@ -168,7 +167,7 @@ public class SCABindingImpl implements DistributedSCABinding {
         jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_ALLWAYS);
         
         // get the reference information
-        String referenceNode = componentRegistry.getComponentNode(component.getName());
+        String referenceNode = componentRegistry.getComponentNode(domain.getURI(), component.getName());
       
         // set the response queue name to this reference
         jmsBinding.setResponseDestinationName(referenceNode +
@@ -203,7 +202,7 @@ public class SCABindingImpl implements DistributedSCABinding {
         // get the service information
         
         String serviceName = service.getName();            
-        String serviceNode = componentRegistry.getComponentNode(component.getName());
+        String serviceNode = componentRegistry.getComponentNode(domain.getURI(), component.getName());
         
       
         // set the destination queue to the target service name
