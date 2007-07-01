@@ -27,7 +27,9 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
-import org.apache.tuscany.sca.distributed.host.SCADomainNode;
+import org.apache.tuscany.sca.distributed.core.DistributedSCADomainExtensionPoint;
+import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomainImpl;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
@@ -46,17 +48,17 @@ public class SCABindingModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
         
         // get the local domain from the extension registry
-        SCADomainNode domainNode = registry.getExtensionPoint(SCADomainNode.class);
+        DistributedSCADomain domain = (DistributedSCADomain)registry.getExtensionPoint(DistributedSCADomainExtensionPoint.class);
         
         // Create the SCA binding model factory
-        SCABindingFactory bindingFactory = new SCABindingFactoryImpl(domainNode, registry);
+        SCABindingFactory bindingFactory = new SCABindingFactoryImpl(domain, registry);
         
         // add binding gactory to the factories list
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         factories.addFactory(bindingFactory);
 
         // Add the SCABindingProviderFactory extension
-        BindingProviderFactory<DistributedSCABinding> providerFactory = new SCABindingProviderFactoryImpl(domainNode, registry);
+        BindingProviderFactory<DistributedSCABinding> providerFactory = new SCABindingProviderFactoryImpl(domain, registry);
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(providerFactory);

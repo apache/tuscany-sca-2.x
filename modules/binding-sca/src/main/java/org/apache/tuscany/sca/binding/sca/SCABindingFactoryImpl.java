@@ -22,7 +22,8 @@ package org.apache.tuscany.sca.binding.sca;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.distributed.host.SCADomainNode;
+import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomainImpl;
 
 /**
  * A factory for the SCA binding model.
@@ -30,16 +31,16 @@ import org.apache.tuscany.sca.distributed.host.SCADomainNode;
  * @version $Rev$ $Date$
  */
 public class SCABindingFactoryImpl implements SCABindingFactory {
-    private SCADomainNode domainNode;
+    private DistributedSCADomain domain;
     private ExtensionPointRegistry registry;
     
-    public SCABindingFactoryImpl(SCADomainNode domainNode,
+    public SCABindingFactoryImpl(DistributedSCADomain domain,
                                  ExtensionPointRegistry registry) {
-        this.domainNode = domainNode;
+        this.domain = domain;
         this.registry = registry;
     }
     public SCABinding createSCABinding() {     
-        return new SCABindingImpl(domainNode,
+        return new SCABindingImpl(domain,
                                   registry);
     }
     

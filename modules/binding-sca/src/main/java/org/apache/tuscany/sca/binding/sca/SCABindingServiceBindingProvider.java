@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.binding.jms.JMSBindingProviderFactory;
 import org.apache.tuscany.sca.binding.jms.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
-import org.apache.tuscany.sca.distributed.host.SCADomainNode;
+import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -44,8 +44,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class SCABindingServiceBindingProvider implements ServiceBindingProvider {
 
-    ExtensionPointRegistry registry;      
-    SCADomainNode domainNode;
+    private ExtensionPointRegistry registry;      
+    private DistributedSCADomain domain;
     private RuntimeComponent component;
     private RuntimeComponentService service;
     private DistributedSCABinding binding;
@@ -54,12 +54,12 @@ public class SCABindingServiceBindingProvider implements ServiceBindingProvider 
     private JMSBindingServiceBindingProvider jmsServiceProvider = null;    
   
     public SCABindingServiceBindingProvider(ExtensionPointRegistry registry,
-                                            SCADomainNode domainNode,
+                                            DistributedSCADomain domain,
                                             RuntimeComponent component,
                                             RuntimeComponentService service,
                                             DistributedSCABinding binding) {
         this.registry  = registry;
-        this.domainNode= domainNode;        
+        this.domain    = domain;        
         this.component = component;
         this.service   = service;
         this.binding   = binding;

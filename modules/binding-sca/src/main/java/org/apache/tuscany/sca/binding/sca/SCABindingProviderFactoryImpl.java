@@ -19,10 +19,9 @@
 
 package org.apache.tuscany.sca.binding.sca;
 
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
-import org.apache.tuscany.sca.distributed.host.SCADomainNode;
+import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -35,25 +34,25 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class SCABindingProviderFactoryImpl implements BindingProviderFactory<DistributedSCABinding> {
     
-    private SCADomainNode domainNode;
+    private DistributedSCADomain domain;
     private ExtensionPointRegistry registry;
     
-    public SCABindingProviderFactoryImpl(SCADomainNode domainNode,
+    public SCABindingProviderFactoryImpl(DistributedSCADomain domain,
                                          ExtensionPointRegistry registry) {
-        this.domainNode = domainNode;
+        this.domain = domain;
         this.registry = registry;
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    DistributedSCABinding binding) {       
-        return new SCABindingReferenceBindingProvider(registry, domainNode, component, reference, binding);
+        return new SCABindingReferenceBindingProvider(registry, domain, component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                DistributedSCABinding binding) {        
-        return new SCABindingServiceBindingProvider(registry, domainNode, component, service, binding);
+        return new SCABindingServiceBindingProvider(registry, domain, component, service, binding);
     }
 
     public Class<DistributedSCABinding> getModelType() {
