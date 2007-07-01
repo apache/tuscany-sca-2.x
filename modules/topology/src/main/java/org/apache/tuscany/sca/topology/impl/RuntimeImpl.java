@@ -38,5 +38,18 @@ public class RuntimeImpl implements Runtime {
     public List<Node> getNodes() {
         return nodes;
     }
+    
+    public Node getNode(String nodeName){
+        Node returnNode = null;
+        
+        for(Node node : getNodes()){
+            if ( node.getName().equals(nodeName)){
+                returnNode = node;
+                break;
+            }
+        }
+            
+        return returnNode;
+    }
 
 }
