@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.distributed.host.impl;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +34,8 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
-import org.apache.tuscany.sca.distributed.host.SCADomainNode;
+import org.apache.tuscany.sca.distributed.core.DistributedSCADomainExtensionPoint;
+import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.osoa.sca.CallableReference;
@@ -46,25 +45,29 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * An SCA domain implementation that allows the damin to be distributed
- * across one or more processors.
+ * An SCA domain implementation that allows the damain to be distributed
+ * across one or more processors. There is nothing particularly complicated
+ * about this domain implementation. It differs from the embedded domain implementation
+ * in that a different runtime is used to allow the domain to be stored in the 
+ * extension registry and for a new DistributedCompositeActivator to be use which, 
+ * in turn, uses the SCA binding to insert remote bindings at the right points 
+ * in the model. This domain also holds information about the node in which it 
+ * is running so that this information in available at various points in the runtime
+ * that need to make decisions based on node information. Namely the DistributedComposite
+ * Activator and the Distributed SCA binding. 
  * 
  * @version $Rev$ $Date$
  */
-public class DistributedSCADomain extends SCADomain implements SCADomainNode{
+public class DistributedSCADomainImpl extends DistributedSCADomain implements DistributedSCADomainExtensionPoint  {
     
     private String uri;
     private Composite domainComposite;
     private DistributedRuntime runtime;
     private Map<String, Component> components = new HashMap<String, Component>();
     private DomainCompositeHelper domainCompositeHelper;
-    
-    private String nodeName;
-    private NodeServiceRuntime nodeServiceRuntime;
-    private Composite nodeComposite;
     private ClassLoader runtimeClassLoader;
-    private Map<String, Component> nodeComponents = new HashMap<String, Component>();
-    
+    private DistributedSCADomain nodeDomain;
+       
     public class DomainCompositeHelper {
         
         /**
@@ -156,9 +159,9 @@ public class DistributedSCADomain extends SCADomain implements SCADomainNode{
             CompositeActivator compositeActivator = runtime.getCompositeActivator();
             
             ComponentRegistry componentRegistry = 
-                getNodeService(ComponentRegistry.class, "ComponentRegistry");
+                ((SCADomain)nodeDomain).getService(ComponentRegistry.class, "ComponentRegistry");
             
-            List<String> components = componentRegistry.getComponentsForNode(nodeName);
+            List<String> components = componentRegistry.getComponentsForNode(uri, nodeDomain.getNodeName());
             
             for (String componentName : components) {
                 compositeActivator.start(getComponent(componentName));
@@ -174,9 +177,9 @@ public class DistributedSCADomain extends SCADomain implements SCADomainNode{
             CompositeActivator compositeActivator = runtime.getCompositeActivator();
             
             ComponentRegistry componentRegistry = 
-                getNodeService(ComponentRegistry.class, "ComponentRegistry");
+                ((SCADomain)nodeDomain).getService(ComponentRegistry.class, "ComponentRegistry");
             
-            List<String> components = componentRegistry.getComponentsForNode(nodeName);
+            List<String> components = componentRegistry.getComponentsForNode(uri, nodeDomain.getNodeName());
             
             for (String componentName : components) {
                 compositeActivator.stop(getComponent(componentName));
@@ -204,23 +207,20 @@ public class DistributedSCADomain extends SCADomain implements SCADomainNode{
     }    
     
     /**
-     * Constructs a new node in the distributed domain
+     * Constructs a distributed domain for a node
      *
      * @param runtimeClassLoader
      * @param domainURI
      */
-    public DistributedSCADomain(ClassLoader runtimeClassLoader,
-                                String domainURI,
-                                String nodeName) {
+    public DistributedSCADomainImpl(ClassLoader runtimeClassLoader,
+                                    String domainURI,
+                                    DistributedSCADomain nodeDomain) {
         this.runtimeClassLoader = runtimeClassLoader;
         this.uri = domainURI;
-        this.nodeName = nodeName;
+        this.nodeDomain = nodeDomain;
 
         // create a runtime to host the application services
-        this.runtime = new DistributedRuntime(runtimeClassLoader);
-        
-        // Create a runtime to host the node services
-        nodeServiceRuntime = new NodeServiceRuntime(runtimeClassLoader);
+        this.runtime = new DistributedRuntime(this.runtimeClassLoader);
     }
     
     /**
@@ -230,54 +230,29 @@ public class DistributedSCADomain extends SCADomain implements SCADomainNode{
      * @return the node name
      */
     public String getNodeName(){
-        return nodeName;
+        return nodeDomain.getNodeName();
     }
     
+    /**
+     * Returns the domain that is running the system
+     * components for this node
+     * 
+     * @return the node name
+     */
+    public DistributedSCADomain getNodeDomain(){
+        return nodeDomain;
+    }
+    
+    /** Starts the domain operation. Usually involves starting the
+     *  runtime and creating the top level composite ready for 
+     *  new contributions
+     *  
+     * @throws ActivationException
+     */    
     public void start()
       throws ActivationException {
 
-        try {
-        
-            // start up the node services
-            
-            // Start the node service runtime. Null is passed in here
-            // to stop the SCAbinding in this runtime trying to look 
-            // back into the domain node model
-            nodeServiceRuntime.start(null);
-            
-            // get the node service configuration model
-                   
-            // we expect the node file to be in the same package as the
-            // mainline for the node itself. At some point we may want to
-            // get smart about where we find this information. 
-            // For now we look if there is a file specifically for this
-            // node and if not we read the generic file. 
-            URL url = runtimeClassLoader.getResource(nodeName + ".node");
-            
-            if (url == null) {
-                url = runtimeClassLoader.getResource("default.node");
-            }
-            
-            if (url == null) {
-                throw new ServiceRuntimeException("Node file not found at either  " 
-                                                  + nodeName + 
-                                                  ".node or node.node");
-            }
-            
-            // load the node file
-            nodeComposite = nodeServiceRuntime.getNodeComposite(url);
-                       
-            // activate the composite
-            CompositeActivator compositeActivator = nodeServiceRuntime.getCompositeActivator();
-            compositeActivator.activate(nodeComposite);
-            
-            // record the components
-            for (Component component : nodeComposite.getComponents()) {
-                nodeComponents.put(component.getName(), component);
-            }
-            
-            // start up the application domain
-            
+        try {           
             // Start the runtime
             runtime.start(this);
             
@@ -295,21 +270,47 @@ public class DistributedSCADomain extends SCADomain implements SCADomainNode{
         }
     }
     
+    /**
+     * Stops the runtime and all running components
+     * 
+     * @throws ActivationException
+     */    
     public void stop() throws ActivationException {
         
-        // Stop the runtimes
-        runtime.stop();
-        nodeServiceRuntime.stop();
+        // close the domain 
+        close();
+        
+        // Stop the SCA domain components
+        getDomainCompositeHelper().stopComponents();    
+        
+        // Stop the runtime
+        try {
+            runtime.stop();
+        } catch (ActivationException e) {
+            throw new ServiceRuntimeException(e);
+        }
         
         // Cleanup
         domainComposite = null;
         domainCompositeHelper = null;
     }
 
+    /** 
+     * Get the contribution service from the runtime. Nodes
+     * use this to add and remove contributions from the domain
+     * 
+     * @return
+     */
     public ContributionService getContributionService() {
         return runtime.getContributionService();
     }
     
+    /** 
+     * Get the composite helper for this domain. Nodes use this
+     * for fine grain controled over the operation of the domain
+     * 
+     * @return
+     */
     public DomainCompositeHelper getDomainCompositeHelper() {
         return domainCompositeHelper;
     }
@@ -317,6 +318,7 @@ public class DistributedSCADomain extends SCADomain implements SCADomainNode{
     @Override
     public void close() {
         super.close();
+                       
     }
 
     @Override
@@ -402,89 +404,4 @@ public class DistributedSCADomain extends SCADomain implements SCADomainNode{
         return uri;
     }    
     
-    /**
-     * Direct copy from getService but dealing in nodeCompinents
-     * 
-     * @param <B>
-     * @param businessInterface
-     * @param serviceName
-     * @return
-     */
-    public <B> B getNodeService(Class<B> businessInterface, String serviceName) {       
-        ServiceReference<B> serviceReference = getNodeServiceReference(businessInterface, serviceName);
-        if (serviceReference == null) {
-            throw new ServiceRuntimeException("Service not found: " + serviceName);
-        }
-        return serviceReference.getService();
-    }  
-    
-    /**
-     * Direct copy from getServiceReference but dealing in nodeCompinents
-     * 
-     * @param <B>
-     * @param businessInterface
-     * @param name
-     * @return
-     */
-    public <B> ServiceReference<B> getNodeServiceReference(Class<B> businessInterface, String name) {
-
-        // Extract the component name
-        String componentName;
-        String serviceName;
-        int i = name.indexOf('/');
-        if (i != -1) {
-            componentName = name.substring(0, i);
-            serviceName = name.substring(i + 1);
-
-        } else {
-            componentName = name;
-            serviceName = null;
-        }
-
-        // Lookup the component in the domain
-        Component component = nodeComponents.get(componentName);
-        if (component == null) {
-            throw new ServiceRuntimeException("Component not found: " + componentName);
-        }
-        ComponentContext componentContext = null;
-
-        // If the component is a composite, then we need to find the
-        // non-composite
-        // component that provides the requested service
-        if (component.getImplementation() instanceof Composite) {
-            ComponentService promotedService = null;
-            for (ComponentService componentService : component.getServices()) {
-                if (serviceName == null || serviceName.equals(componentService.getName())) {
-
-                    CompositeService compositeService = (CompositeService)componentService.getService();
-                    if (compositeService != null) {
-                        promotedService = compositeService.getPromotedService();
-                        SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                        if (scaBinding != null) {
-                            Component promotedComponent = scaBinding.getComponent();
-                            if (serviceName != null) {
-                                serviceName = "$promoted$." + serviceName;
-                            }
-                            componentContext = (ComponentContext)promotedComponent;
-                        }
-                    }
-                    break;
-                }
-            }
-            if (componentContext == null) {
-                throw new ServiceRuntimeException("Composite service not found: " + name);
-            }
-        } else {
-            componentContext = (ComponentContext)component;
-        }
-
-        ServiceReference<B> serviceReference;
-        if (serviceName != null) {
-            serviceReference = componentContext.createSelfReference(businessInterface, serviceName);
-        } else {
-            serviceReference = componentContext.createSelfReference(businessInterface);
-        }
-        return serviceReference;
-
-    }    
 }

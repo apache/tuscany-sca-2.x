@@ -39,7 +39,7 @@ public interface DistributedSCABinding extends SCABinding {
     public boolean getIsDistributed(); 
 
     /**
-     * Gets the flag which tells you if this SCABinding is distributed across nodes
+     * Sets the flag which tells you if this SCABinding is distributed across nodes
      * 
      * @param isDistributed true if this binding is distributed across nodes
      */

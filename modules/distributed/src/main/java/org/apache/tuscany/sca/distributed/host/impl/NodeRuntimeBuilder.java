@@ -19,30 +19,18 @@
 
 package org.apache.tuscany.sca.distributed.host.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
@@ -62,33 +50,10 @@ import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryIm
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
-import org.apache.tuscany.sca.core.invocation.JDKProxyService;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
-import org.apache.tuscany.sca.core.runtime.CompositeActivator;
-import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
-import org.apache.tuscany.sca.core.runtime.RuntimeSCABindingProviderFactory;
-import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
-import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
-import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
-import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
-import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.sca.distributed.node.impl.NodeDocumentProcessor;
-import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntimeBuilder;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.provider.DefaultProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.runtime.DefaultWireProcessorExtensionPoint;
-import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
-import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
-import org.apache.tuscany.sca.scope.ScopeContainerFactory;
-import org.apache.tuscany.sca.scope.ScopeRegistry;
-import org.apache.tuscany.sca.work.WorkScheduler;
-
-import commonj.work.WorkManager;
 
 /**
  * This is almost exactly the same as the really small runtime builder
@@ -97,7 +62,7 @@ import commonj.work.WorkManager;
  * options are required to run and manage the node. 
  *
  */
-public class NodeServiceRuntimeBuilder {
+public class NodeRuntimeBuilder {
 
 
     /**
@@ -153,9 +118,8 @@ public class NodeServiceRuntimeBuilder {
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
         ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
-        registry.addExtensionPoint(contributionPostProcessors);
-        
-        
+        registry.addExtensionPoint(contributionPostProcessors);        
+
         // Create a contribution repository
         ContributionRepository repository;
         try {
@@ -165,9 +129,13 @@ public class NodeServiceRuntimeBuilder {
         }
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
-        ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
-                                                                              documentProcessor, postProcessor, assemblyFactory,
-                                                                              contributionFactory, xmlFactory);
+        ContributionService contributionService = new ContributionServiceImpl(repository, 
+                                                                              packageProcessor,
+                                                                              documentProcessor, 
+                                                                              postProcessor,
+                                                                              assemblyFactory,
+                                                                              contributionFactory, 
+                                                                              xmlFactory);
         return contributionService;
     }
 }
