@@ -37,4 +37,12 @@ public interface Runtime {
      * @return
      */
     public List<Node> getNodes();
+    
+    /**
+     * Get a node by node name
+     * 
+     * @param nodeName the name of the node to return
+     * @return the node
+     */
+    public Node getNode(String nodeName);
 }
