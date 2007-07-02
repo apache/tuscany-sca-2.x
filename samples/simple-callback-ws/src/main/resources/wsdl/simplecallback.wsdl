@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<wsdl:definitions targetNamespace="http://simplecallback" xmlns:tns="http://simplecallback" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="simplecallback">
+
+    <wsdl:types>
+        <schema elementFormDefault="qualified" targetNamespace="http://simplecallback" xmlns="http://www.w3.org/2001/XMLSchema">
+
+            <element name="someMethod">
+                <complexType>
+                    <sequence>
+                        <element name="name" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="someMethodResponse">
+                <complexType/>
+            </element>
+
+            <element name="receiveResult">
+                <complexType>
+                    <sequence>
+                        <element name="name" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="receiveResultResponse">
+                <complexType/>
+            </element>
+
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="someMethodRequest">
+        <wsdl:part element="tns:someMethod" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="someMethodResponse">
+        <wsdl:part element="tns:someMethodResponse" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="receiveResultRequest">
+        <wsdl:part element="tns:receiveResult" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="receiveResultResponse">
+        <wsdl:part element="tns:receiveResultResponse" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:portType name="MyService">
+        <wsdl:operation name="someMethod">
+            <wsdl:input message="tns:someMethodRequest" name="someMethodRequest"/>
+            <wsdl:output message="tns:someMethodResponse" name="someMethodResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="MyServiceCallback">
+        <wsdl:operation name="receiveResult">
+            <wsdl:input message="tns:receiveResultRequest" name="receiveResultRequest"/>
+            <wsdl:output message="tns:receiveResultResponse" name="receiveResultResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="MyServiceSoapBinding" type="tns:MyService">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="someMethod">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="someMethodRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="someMethodResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="MyServiceCallbackSoapBinding" type="tns:MyServiceCallback">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="receiveResult">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="receiveResultRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="receiveResultResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="MyServiceSoapService">
+        <wsdl:port binding="tns:MyServiceSoapBinding" name="MyServiceSoapPort">
+            <wsdlsoap:address location="http://localhost:8080/MyServiceComponent"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

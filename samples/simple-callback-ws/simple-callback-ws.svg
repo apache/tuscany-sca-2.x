@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\simple-callback"
+   sodipodi:docname="simple-callback.svg"
+   version="1.0">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="375"
+     inkscape:cy="414.63224"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1054"
+     inkscape:window-height="721"
+     inkscape:window-x="74"
+     inkscape:window-y="306" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997">
+      <rect
+         rx="15.307091"
+         ry="12.692303"
+         y="192.00233"
+         x="258.31146"
+         height="299.99988"
+         width="495.71429"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:1.99999964;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">simplecallback</flowPara></flowRoot>      <rect
+         style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect1883"
+         width="115.66247"
+         height="85.862968"
+         x="549.39777"
+         y="308.7417"
+         rx="6.9961648"
+         ry="7.1230249" />
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot1885"
+         transform="translate(281.807,102.8031)"><flowRegion
+           id="flowRegion1887"><rect
+             id="rect1889"
+             width="170"
+             height="61.42857"
+             x="281.42856"
+             y="212.66591" /></flowRegion><flowPara
+           id="flowPara1891">MyService</flowPara><flowPara
+           id="flowPara1915">Component</flowPara></flowRoot>      <path
+         style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 532.24723,340.58867 L 565.58227,340.58867 L 571.64318,353.72065 L 564.57212,365.84249 L 532.24723,365.84249 L 539.82338,353.72065 L 532.24723,340.58867 z "
+         id="path1895" />
+    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.66247"
+       height="85.862968"
+       x="339.91632"
+       y="310.73904"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(72.32554,104.8005)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2972">MyClient</flowPara><flowPara
+         id="flowPara1913">Component</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 436.01825,340.74775 L 469.35329,340.74775 L 475.4142,353.87973 L 468.34314,366.00157 L 436.01825,366.00157 L 443.5944,353.87973 L 436.01825,340.74775 z "
+       id="path3019" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 474.28571,353.3802 L 539.28571,354.09448"
+       id="path1917"
+       inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\simple-callback\simple-callback.png"
+       inkscape:export-xdpi="52.84"
+       inkscape:export-ydpi="52.84" />
+  </g>
+</svg>
