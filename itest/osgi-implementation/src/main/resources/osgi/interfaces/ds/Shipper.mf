@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Shipper
+Bundle-SymbolicName: ds.interfaces.supplychain.shipper.Shipper
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,
+ org.osgi.service.component, supplychain.customer
+Export-Package: supplychain.shipper
+Service-Component: osgi/interfaces/ds/Shipper.xml

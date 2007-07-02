@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="RetailerComponent2.Retailer1" immediate="true" >
+    <implementation class="supplychain.retailer.OSGiRetailerComponentImpl" />
+    <service>
+         <provide interface="supplychain.retailer.Retailer"/>
+    </service>
+    <reference 
+        name="supplychain.warehouse.Warehouse" 
+        interface="supplychain.warehouse.Warehouse" 
+        bind="setWarehouse"
+        unbind="unsetWarehouse"
+        target="(component.service.name=WarehouseComponent2/Warehouse)"
+    />
+    <property name="retailerName">amazon.com</property>
+    <property name="version">2</property>
+</component>

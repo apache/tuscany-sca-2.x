@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="RetailerComponent1.Retailer2" immediate="true" >
+    <implementation class="supplychain.retailer.OSGiRetailerComponentImpl" />
+    <service>
+         <provide interface="supplychain.retailer.Retailer"/>
+    </service>
+    <reference 
+        name="supplychain.warehouse.Warehouse" 
+        interface="supplychain.warehouse.Warehouse" 
+        bind="setWarehouse"
+        unbind="unsetWarehouse"
+        target="(component.service.name=WarehouseComponent1/Warehouse)"
+    />
+    <property name="retailerName">play.com</property>
+</component>

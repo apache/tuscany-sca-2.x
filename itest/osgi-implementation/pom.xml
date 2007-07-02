@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-sca</artifactId>
+        <version>1.0-incubating-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>itest-osgi-implementation</artifactId>
+    <name>Apache Tuscany OSGi-SCA Integration tests</name>
+
+    <repositories>
+       <!-- for felix snapshots -->
+       <repository>
+          <id>apache.snapshots</id>
+          <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+       </repository>
+    </repositories>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.main</artifactId>
+            <version>0.9.0-incubator-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr</artifactId>
+            <version>0.9.0-incubator-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.configadmin</artifactId>
+            <version>0.9.0-incubator-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.log</artifactId>
+            <version>0.9.0-incubator-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-osgi</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-http</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-http-jetty</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+            <finalName>itest-osgi-implementation</finalName>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.1</version>
+                    <executions>
+                        <execution>
+                            <id>create-bundles</id>
+                            <phase>generate-test-sources</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/customer/OSGiCustomerImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/retailer/OSGiRetailerImpl.class \
+                                                    supplychain/retailer/OSGiRetailerServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/shipper/OSGiShipperImpl.class \
+                                                    supplychain/shipper/OSGiShipperServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/Warehouse.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/ds/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    osgi/wiring/ds/Customer.xml \
+                                                    supplychain/customer/OSGiCustomerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/ds/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    osgi/wiring/ds/Retailer1.xml \
+                                                    osgi/wiring/ds/Retailer2.xml \
+                                                    supplychain/retailer/OSGiRetailerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/ds/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    osgi/wiring/ds/Shipper1.xml \
+                                                    osgi/wiring/ds/Shipper2.xml \
+                                                    supplychain/shipper/OSGiShipperComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse.jar"/>
+                                        <property name="manifest.file.name" value="osgi/wiring/ds/Warehouse.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    osgi/wiring/ds/Warehouse1.xml \
+                                                    osgi/wiring/ds/Warehouse2.xml \
+                                                    supplychain/warehouse/OSGiWarehouseComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/factory"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/factory/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/customer/OSGiCustomerImpl.class \
+                                                    supplychain/customer/OSGiCustomerFactoryImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/factory"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/factory/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/retailer/OSGiRetailerImpl.class \
+                                                    supplychain/retailer/OSGiRetailerServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/factory"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/factory/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/shipper/OSGiShipperImpl.class \
+                                                    supplychain/shipper/OSGiShipperServiceImpl.class \
+                                                    supplychain/shipper/OSGiShipperFactoryImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/factory/ds/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    osgi/factory/ds/Customer.xml \
+                                                    supplychain/customer/OSGiCustomerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/factory/ds/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    osgi/factory/ds/Retailer1.xml \
+                                                    osgi/factory/ds/Retailer2.xml \
+                                                    supplychain/retailer/OSGiRetailerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/factory/ds/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    osgi/factory/ds/Shipper1.xml \
+                                                    osgi/factory/ds/Shipper2.xml \
+                                                    supplychain/shipper/OSGiShipperComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse.jar"/>
+                                        <property name="manifest.file.name" value="osgi/factory/ds/Warehouse.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    osgi/factory/ds/Warehouse.xml \
+                                                    supplychain/warehouse/OSGiWarehouseComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/customer/OSGiCustomerImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/retailer/OSGiRetailerImpl.class \
+                                                    supplychain/retailer/OSGiRetailerServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/shipper/OSGiShipperImpl.class \
+                                                    supplychain/shipper/OSGiShipperServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/Warehouse.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/ds/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    osgi/services/ds/Customer.xml \
+                                                    supplychain/customer/OSGiCustomerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/ds/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    osgi/services/ds/Retailer1.xml \
+                                                    osgi/services/ds/Retailer2.xml \
+                                                    supplychain/retailer/OSGiRetailerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/ds/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    osgi/services/ds/Shipper1.xml \
+                                                    osgi/services/ds/Shipper2.xml \
+                                                    supplychain/shipper/OSGiShipperComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse.jar"/>
+                                        <property name="manifest.file.name" value="osgi/services/ds/Warehouse.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    osgi/services/ds/Warehouse1.xml \
+                                                    osgi/services/ds/Warehouse2.xml \
+                                                    supplychain/warehouse/OSGiWarehouseComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/interfaces"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/interfaces/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/customer/OSGiCustomerWithQueryImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/interfaces"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/interfaces/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    supplychain/retailer/RetailerQuery.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/retailer/OSGiRetailerWithQueryImpl.class" />
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/interfaces"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/interfaces/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/shipper/OSGiShipperImpl.class \
+                                                    supplychain/shipper/OSGiShipperServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/interfaces/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/interfaces/ds/Customer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    osgi/interfaces/ds/Customer.xml \
+                                                    supplychain/customer/OSGiCustomerWithQueryComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/interfaces/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer.jar"/>
+                                        <property name="manifest.file.name" value="osgi/interfaces/ds/Retailer.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    supplychain/retailer/RetailerQuery.class \
+                                                    osgi/interfaces/ds/Retailer.xml \
+                                                    supplychain/retailer/OSGiRetailerWithQueryComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/interfaces/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper.jar"/>
+                                        <property name="manifest.file.name" value="osgi/interfaces/ds/Shipper.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    osgi/interfaces/ds/Shipper.xml \
+                                                    supplychain/shipper/OSGiShipperComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Customer1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/customer/OSGiVersionedCustomerImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Retailer1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/retailer/OSGiVersionedRetailerImpl.class \
+                                                    supplychain/retailer/OSGiVersionedRetailerServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Shipper1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/shipper/OSGiVersionedShipperImpl.class \
+                                                    supplychain/shipper/OSGiVersionedShipperServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Warehouse1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Customer2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/customer/OSGiVersionedCustomerImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Retailer2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/retailer/OSGiVersionedRetailerImpl.class \
+                                                    supplychain/retailer/OSGiVersionedRetailerServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Shipper2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/shipper/OSGiVersionedShipperImpl.class \
+                                                    supplychain/shipper/OSGiVersionedShipperServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/Warehouse2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    supplychain/OSGiBundleImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseImpl.class \
+                                                    supplychain/warehouse/OSGiWarehouseServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Customer1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    osgi/version/ds/CustomerV1.xml \
+                                                    supplychain/customer/OSGiCustomerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Customer2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Customer2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/customer/Customer.class \
+                                                    osgi/version/ds/CustomerV2.xml \
+                                                    supplychain/customer/OSGiCustomerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Retailer1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    osgi/version/ds/Retailer1V1.xml \
+                                                    osgi/version/ds/Retailer2V1.xml \
+                                                    supplychain/retailer/OSGiRetailerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Retailer2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Retailer2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/retailer/Retailer.class \
+                                                    osgi/version/ds/Retailer1V2.xml \
+                                                    osgi/version/ds/Retailer2V2.xml \
+                                                    supplychain/retailer/OSGiRetailerComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Shipper1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    osgi/version/ds/Shipper1V1.xml \
+                                                    osgi/version/ds/Shipper2V1.xml \
+                                                    supplychain/shipper/OSGiShipperComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Shipper2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Shipper2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/shipper/Shipper.class \
+                                                    osgi/version/ds/Shipper1V2.xml \
+                                                    osgi/version/ds/Shipper2V2.xml \
+                                                    supplychain/shipper/OSGiShipperComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse1.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Warehouse1.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    osgi/version/ds/Warehouse1V1.xml \
+                                                    osgi/version/ds/Warehouse2V1.xml \
+                                                    supplychain/warehouse/OSGiWarehouseComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Warehouse2.jar"/>
+                                        <property name="manifest.file.name" value="osgi/version/ds/Warehouse2.mf"/>
+                                        <property name="files.list" 
+                                             value="supplychain/warehouse/Warehouse.class \
+                                                    osgi/version/ds/Warehouse1V2.xml \
+                                                    osgi/version/ds/Warehouse2V2.xml \
+                                                    supplychain/warehouse/OSGiWarehouseComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/ws"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="HelloWorld.jar"/>
+                                        <property name="manifest.file.name" value="osgi/ws/HelloWorld.mf"/>
+                                        <property name="files.list" 
+                                             value="helloworld/HelloWorld.class \
+                                                    helloworld/OSGiHelloWorldImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/passbyref"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="Greetings.jar"/>
+                                        <property name="manifest.file.name" value="osgi/passbyref/Greetings.mf"/>
+                                        <property name="files.list" 
+                                             value="helloworld/Greetings.class \
+                                                    helloworld/OSGiGreetingsImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/properties"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="StockQuote.jar"/>
+                                        <property name="manifest.file.name" value="osgi/properties/StockQuote.mf"/>
+                                        <property name="files.list" 
+                                             value="stockquote/StockQuote.class \
+                                                    stockquote/OSGiStockQuoteImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/properties/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="StockQuote.jar"/>
+                                        <property name="manifest.file.name" value="osgi/properties/ds/StockQuote.mf"/>
+                                        <property name="files.list" 
+                                             value="stockquote/StockQuote.class \
+                                                    osgi/properties/ds/StockQuote.xml \
+                                                    stockquote/OSGiStockQuoteComponentImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/properties"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="StockQuoteFactory.jar"/>
+                                        <property name="manifest.file.name" value="osgi/properties/StockQuoteFactory.mf"/>
+                                        <property name="files.list" 
+                                             value="stockquote/StockQuote.class \
+                                                    stockquote/OSGiStockQuoteImpl.class \
+                                                    stockquote/OSGiStockQuoteFactoryImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/properties/ds"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="StockQuoteFactory.jar"/>
+                                        <property name="manifest.file.name" value="osgi/properties/ds/StockQuoteFactory.mf"/>
+                                        <property name="files.list" 
+                                             value="stockquote/StockQuote.class \
+                                                    osgi/properties/ds/StockQuoteFactory.xml \
+                                                    stockquote/OSGiStockQuoteComponentImpl.class"/>
+              
+                                    </ant>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+    </build>
+</project>

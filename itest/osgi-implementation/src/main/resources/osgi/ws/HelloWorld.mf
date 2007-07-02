@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HelloWorld
+Bundle-SymbolicName: helloworld.HelloWorld
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,
+ org.osgi.service.component ,
+ helloworld.ws
+Export-Package: helloworld
+Bundle-Activator: helloworld.OSGiHelloWorldImpl
+
