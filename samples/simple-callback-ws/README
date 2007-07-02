@@ -1,0 +1,134 @@
+Simple Callback Sample Using Web Services
+=========================================
+This sample demonstrates asynchronous messaging using a callback over the
+Web Service binding.  It is very similar to the simple-callback sample.
+The only differences are that simplecallback.composite has been updated
+to use the Web Service binding, and there is a simplecallback.wsdl file.
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-simple-callback.jar simplecallback.SimpleCallbackClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-simple-callback.jar simplecallback.SimpleCallbackClient
+
+
+Sample Overview
+---------------
+The sample provides a single composite with two components. MyClientComponent is 
+wired to MyServiceComponent. The interface of MyServiceComponent describes one
+method as ONEWAY and with a callback semantic. When a message passes from 
+client to service the response is returned via the callback asynchronously.  
+
+simple-callback/
+  src/
+    main/
+      java/
+        simplecallback/
+          MyClient.java           - client interface 
+          MyClientImpl.java       - implements the client and service callback
+                                    interfaces
+          MyService.java          - service interface
+          MyServiceCallback.java  - service callback interface, implemented by the 
+                                    client
+          MyServiceImpl.java      - implements the service interface
+          SimpleCallbackClient.java - starts the SCA Runtime and 
+                                    deploys the simplecallback.composite. 
+                                    It then calls MyClientComponent which in turn
+                                    calls MyServiceComponent
+      resources/
+        simplecallback.composite  - the SCA assembly for this sample
+        wsdl/
+          simplecallback.wsdl     - the service description and callback binding  
+    test/
+      java/
+        simplecallback/
+          SimpleCallbackTestCase.java - JUnit test case 
+  simple-callback.png             - a pictorial representation of the sample 
+                                    .composite file
+  build.xml                       - the Ant build file
+  pom.xml                         - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd simple-callback-ws
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Main thread Thread[main,5,main]
+     [java] aClientMethod on thread Thread[main,5,main]
+     [java] setMyServiceCallback on thread Thread[pool-1-thread-3,5,main]
+     [java] someMethod on thread Thread[pool-1-thread-3,5,main]
+     [java] receiveResult on thread Thread[Axis2 Task,5,main]
+     [java] Result: -> someMethod -> receiveResult
+     [java] aClientMethod return from someMethod on thread Thread[main,5,main]
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd simple-callback-ws
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running simplecallback.SimpleCallbackTestCase
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAXUtils).
+log4j:WARN Please initialize the log4j system properly.
+01-Jul-2007 21:20:06 org.apache.catalina.core.StandardEngine start
+INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
+01-Jul-2007 21:20:07 org.apache.catalina.startup.ContextConfig defaultWebConfig
+INFO: No default web.xml
+01-Jul-2007 21:20:07 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.xsd
+01-Jul-2007 21:20:07 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+01-Jul-2007 21:20:07 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+01-Jul-2007 21:20:07 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+01-Jul-2007 21:20:07 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_1_1.xsd
+01-Jul-2007 21:20:07 org.apache.coyote.http11.Http11Protocol init
+INFO: Initializing Coyote HTTP/1.1 on http-8080
+01-Jul-2007 21:20:07 org.apache.coyote.http11.Http11Protocol start
+INFO: Starting Coyote HTTP/1.1 on http-8080
+Main thread Thread[main,5,main]
+aClientMethod on thread Thread[main,5,main]
+setMyServiceCallback on thread Thread[pool-1-thread-1,5,main]
+someMethod on thread Thread[pool-1-thread-1,5,main]
+aClientMethod return from someMethod on thread Thread[main,5,main]
+Sleeping ...
+receiveResult on thread Thread[Axis2 Task,5,main]
+Result: -> someMethod -> receiveResult
+01-Jul-2007 21:20:08 org.apache.coyote.http11.Http11Protocol destroy
+INFO: Stopping Coyote HTTP/1.1 on http-8080
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.525 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully.
