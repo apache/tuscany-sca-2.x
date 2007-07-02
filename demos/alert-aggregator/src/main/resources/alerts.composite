@@ -28,12 +28,12 @@
     <dbsdo:import.sdo factory="org.apache.tuscany.sca.demos.aggregator.types.TypesFactory"/> 
 
     <!-- The alerts rss service -->
-    <service name="AlertsFeedServiceRSS" promote="AlertsFeedServiceComponent/Feed">
+    <service name="AlertsFeedServiceRSS" promote="AlertsFeedServiceComponent/Collection">
         <binding.rss />
     </service>    
     
     <!-- The alerts atom service -->
-    <service name="AlertsFeedServiceAtom" promote="AlertsFeedServiceComponent/Feed">
+    <service name="AlertsFeedServiceAtom" promote="AlertsFeedServiceComponent/Collection">
         <binding.atom />
     </service> 
     
