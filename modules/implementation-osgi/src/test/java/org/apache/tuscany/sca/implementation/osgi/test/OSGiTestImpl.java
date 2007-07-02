@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,13 +15,36 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <service name="OSGiTestService">
-        <interface.java interface="org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface"/>
-    </service>
+ */
+
+package org.apache.tuscany.sca.implementation.osgi.test;
+
+import java.util.Hashtable;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+/**
+ * 
+ * Test class - Implementation of an OSGi service
+ *
+ */
+public class OSGiTestImpl implements OSGiTestInterface, BundleActivator {
     
-    <property name="currency" type="xsd:string" >GBP</property> 
-    <property name="exchangeRate" type="xsd:double" >1.0</property> 
+    public String testService() {
+        
+        return OSGiTestImpl.class.getName();
+        
+    }
+
+    public void start(BundleContext bc) throws Exception {
+        
+        bc.registerService(OSGiTestInterface.class.getName(), this, new Hashtable<String, Object>());
+        
+    }
+
+    public void stop(BundleContext bc) throws Exception {
+    }
+
     
-</componentType>
+}

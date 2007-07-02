@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,13 +15,34 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <service name="OSGiTestService">
-        <interface.java interface="org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface"/>
-    </service>
+ */
+package org.apache.tuscany.sca.implementation.osgi;
+
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.ComponentProperty;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.scope.Scope;
+
+/**
+ * 
+ * The model representing an OSGi implementation in an SCA assembly model.
+ *
+ */
+public interface OSGiImplementationInterface extends Implementation {
     
-    <property name="currency" type="xsd:string" >GBP</property> 
-    <property name="exchangeRate" type="xsd:double" >1.0</property> 
+    public String getBundleName();
     
-</componentType>
+    public String getBundleLocation();
+
+    
+    public String[] getImports();
+    
+    
+    public Scope getScope();
+    
+    public List<ComponentProperty> getReferenceProperties(String referenceName);
+    
+    public List<ComponentProperty> getServiceProperties(String serviceName);
+
+}
