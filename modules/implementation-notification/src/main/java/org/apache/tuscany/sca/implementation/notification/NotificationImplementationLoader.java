@@ -83,16 +83,7 @@ public class NotificationImplementationLoader implements StAXArtifactProcessor<N
     }
 
     public void resolve(NotificationImplementationImpl impl, ModelResolver resolver) throws ContributionResolveException {
-        String tmpUri = impl.getComponentType().getURI();
-        
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        if (cl.getResource(tmpUri) == null) {
-            throw new ContributionResolveException("missing .componentType side file [" + tmpUri + "]");
-        }
-        String ctUri = cl.getResource(tmpUri).toString();
-        ComponentType ct = impl.getComponentType();
-        ct.setURI(ctUri);
-        ComponentType componentType = resolver.resolveModel(ComponentType.class, ct);
+        ComponentType componentType = resolver.resolveModel(ComponentType.class, impl.getComponentType());
         
         if (componentType.isUnresolved()) {
             throw new ContributionResolveException("ComponentType still unresolved");
