@@ -17,14 +17,20 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="OSGiTestComposite">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+           name="OSGiTestComposite">
 
     <component name="OSGiTestServiceComponent">
         <implementation.osgi 
             bundle="OSGiTestService" 
             bundleLocation="file:target/OSGiTestService.jar" 
             scope="COMPOSITE"
+            injectProperties="true"
         />
+        
+        <property name="currency" type="xsd:string" >USD</property> 
+        <property name="exchangeRate" type="xsd:double" >2.0</property> 
             
     </component>
 
