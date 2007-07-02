@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Warehouse
+Bundle-SymbolicName: wiring.supplychain.warehouse.Warehouse
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,
+ supplychain.shipper
+Export-Package: supplychain.warehouse
+Bundle-Activator: supplychain.warehouse.OSGiWarehouseImpl

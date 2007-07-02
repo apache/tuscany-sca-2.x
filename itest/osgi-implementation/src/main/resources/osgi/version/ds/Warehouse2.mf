@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Warehouse
+Bundle-SymbolicName: ds.version.supplychain.warehouse.Warehouse
+Bundle-Version: 2.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,
+ org.osgi.service.component,
+ supplychain.shipper;version="[2.0.0,3.0.0)"
+Export-Package: supplychain.warehouse;version="2.0.0"
+Service-Component: osgi/version/ds/Warehouse1V1.xml, osgi/version/ds/Warehouse2V2.xml

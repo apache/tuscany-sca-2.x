@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Retailer
+Bundle-SymbolicName: version.supplychain.retailer.Retailer
+Bundle-Version: 2.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,
+ supplychain.warehouse
+Export-Package: supplychain.retailer;version="2.0.0"
+Bundle-Activator: supplychain.retailer.OSGiVersionedRetailerImpl

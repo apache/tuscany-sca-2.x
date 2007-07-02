@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Greetings
+Bundle-SymbolicName: helloworld.Greetings
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework
+Export-Package: helloworld
+Bundle-Activator: helloworld.OSGiGreetingsImpl
+

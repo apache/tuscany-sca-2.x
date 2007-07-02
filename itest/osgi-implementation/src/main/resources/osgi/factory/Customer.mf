@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Customer
+Bundle-SymbolicName: factory.supplychain.customer.Customer
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,
+ supplychain.retailer
+Export-Package: supplychain.customer
+Bundle-Activator: supplychain.customer.OSGiCustomerFactoryImpl
+

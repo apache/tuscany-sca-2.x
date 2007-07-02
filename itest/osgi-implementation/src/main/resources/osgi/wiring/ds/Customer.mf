@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Customer
+Bundle-SymbolicName: ds.wiring.supplychain.customer.Customer
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,
+ org.osgi.service.component, supplychain.retailer
+Export-Package: supplychain.customer
+Service-Component: osgi/wiring/ds/Customer.xml

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="CustomerComponent1" immediate="true">
+    <implementation class="supplychain.customer.OSGiCustomerComponentImpl" />
+    <service>
+         <provide interface="supplychain.customer.Customer"/>
+    </service>
+    <reference 
+        name="retailer1"
+        interface="supplychain.retailer.Retailer" 
+        bind="setRetailer1"
+        unbind="unsetRetailer1"
+        target="(retailerName=amazon.com)"
+        policy="dynamic"
+    />
+    <reference 
+        name="retailer2"
+        interface="supplychain.retailer.Retailer" 
+        bind="setRetailer2"
+        unbind="unsetRetailer2"
+        target="(retailerName=play.com)"
+        policy="dynamic"
+    />
+</component>

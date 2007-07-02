@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="StockQuoteComponent" immediate="true">
+    <implementation class="stockquote.OSGiStockQuoteComponentImpl" />
+    <service>
+         <provide interface="stockquote.StockQuote"/>
+    </service>
+    <property name="currency">GBP</property>
+    <property name="exchangeRate" type="Double">1.0</property>
+</component>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="CustomerComponent" immediate="true">
+    <implementation class="supplychain.customer.OSGiCustomerWithQueryComponentImpl" />
+    <service>
+         <provide interface="supplychain.customer.Customer"/>
+    </service>
+    <reference 
+        name="retailer"
+        interface="supplychain.retailer.Retailer" 
+        bind="setRetailer"
+        unbind="unsetRetailer"
+        target="(retailerName=amazon.com)"
+        policy="dynamic"
+    />
+    
+    <reference 
+        name="retailerQuery"
+        interface="supplychain.retailer.RetailerQuery" 
+        bind="setRetailerQuery"
+        unbind="unsetRetailerQuery"
+        target="(retailerName=amazon.com)"
+        policy="dynamic"
+    />
+    
+</component>

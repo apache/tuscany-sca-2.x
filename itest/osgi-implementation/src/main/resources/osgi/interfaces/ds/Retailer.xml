@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="RetailerComponent" immediate="true" >
+    <implementation class="supplychain.retailer.OSGiRetailerWithQueryComponentImpl" />
+    <service>
+         <provide interface="supplychain.retailer.Retailer"/>
+         <provide interface="supplychain.retailer.RetailerQuery"/>
+    </service>
+    <reference 
+        name="supplychain.warehouse.Warehouse" 
+        interface="supplychain.warehouse.Warehouse" 
+        bind="setWarehouse"
+        unbind="unsetWarehouse"
+    />
+    <reference 
+        name="supplychain.warehouse.WarehouseQuery" 
+        interface="supplychain.warehouse.WarehouseQuery" 
+        bind="setWarehouseQuery"
+        unbind="unsetWarehouseQuery"
+    />
+    <property name="retailerName">amazon.com</property>
+</component>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ShipperComponent1.ShipperService1"  immediate="true" >
+    <implementation class="supplychain.shipper.OSGiShipperComponentImpl" />
+    <service>
+         <provide interface="supplychain.shipper.Shipper" />
+    </service>
+    <reference 
+        name="customer" 
+        interface="supplychain.customer.Customer" 
+        bind="setCustomer"
+        unbind="unsetCustomer"
+        cardinality="0..1"
+        policy="dynamic"
+        target="(component.name=CustomerComponent1)"
+    />
+    <property name="shipperName">RoyalMail</property>
+</component>

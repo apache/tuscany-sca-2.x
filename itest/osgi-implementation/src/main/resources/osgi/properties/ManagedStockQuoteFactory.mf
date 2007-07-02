@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: StockQuote
+Bundle-SymbolicName: stockquote.StockQuote
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework, org.osgi.service.cm
+Export-Package: stockquote
+Bundle-Activator: stockquote.OSGiManagedStockQuoteFactoryImpl
+
