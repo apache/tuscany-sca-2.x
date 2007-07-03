@@ -186,9 +186,6 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                     serviceProperties,
                     injectProperties);
             
-            
-            processComponentType(bundleName, implementation);
-            
             implementation.setUnresolved(true);
             
             return implementation;
@@ -204,17 +201,9 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             
             impl.setUnresolved(false);
             
-            // FIXME: Tuscany will only process the component type file if it is visible
-            //        to its classloader. So it can't really be located anywhere in the
-            //        directory structure like the bundle. So even though the bundle name
-            //        is used to find the relative pathname of the component type file,
-            //        its absolute location is obtained from the classloader. This doesn't
-            //        seem right, since the bundle could potentially be located anywhere.
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            String bundleName = impl.getBundleName();
-            String ctName = bundleName.replaceAll("\\.", "/") + ".componentType";
-            String ctURI = cl.getResource(ctName).toString();
             
+            String bundleName = impl.getBundleName();
+            String ctURI = bundleName.replaceAll("\\.", "/") + ".componentType";
             impl.setURI(ctURI);
             ComponentType componentType = resolver.resolveModel(ComponentType.class, impl);
             if (componentType.isUnresolved()) {
@@ -302,17 +291,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     public void write(OSGiImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
     }
     
-    private void processComponentType(String bundleName, OSGiImplementation implementation) {
-        
-        // Form the URI of the expected .componentType file;
-        String ctName = bundleName.replaceAll("\\.", "/") + ".componentType";
-        String uri = ctName;
-
-        
-        implementation.setURI(uri);
-        implementation.setUnresolved(true);
-    }
-
+    
     private QName getQNameValue(XMLStreamReader reader, String value) {
         if (value != null) {
             int index = value.indexOf(':');

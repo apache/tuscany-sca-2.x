@@ -24,6 +24,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
+import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
 import org.apache.tuscany.sca.scope.Scope;
@@ -42,8 +44,9 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
     private Scope scope;
     private String[] allowsPassByRef;
     private boolean needsPropertyInjection;
-    Hashtable<String, List<ComponentProperty>> referenceProperties;
-    Hashtable<String, List<ComponentProperty>> serviceProperties;
+    private Hashtable<String, List<ComponentProperty>> referenceProperties;
+    private Hashtable<String, List<ComponentProperty>> serviceProperties;
+    
 
     public OSGiImplementation(String bundleName, 
             String bundleLocation,
@@ -126,6 +129,5 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
     public long getMaxIdleTime() {
         return Long.MAX_VALUE;
     }
-    
     
 }
