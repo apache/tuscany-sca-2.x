@@ -98,6 +98,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     private RuntimeComponent runtimeComponent;
     
     private Bundle osgiBundle;
+    private ArrayList<Bundle> dependentBundles = new ArrayList<Bundle>();
     private OSGiServiceListener osgiServiceListener;
     private PackageAdmin packageAdmin;
     
@@ -123,23 +124,14 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
         // Install and start all dependent  bundles
         String[] imports = implementation.getImports();
-        ArrayList<Bundle>bundles = new ArrayList<Bundle>();
         for (int i = 0; i < imports.length; i++) {
             String location = imports[i].trim();
             if (location.length() > 0) {
                 Bundle bundle = bundleContext.installBundle(location);
-                bundles.add(bundle);
+                dependentBundles.add(bundle);
             }                
         }
-        for (int i = 0; i < bundles.size(); i++) {
-            Bundle bundle = bundles.get(i);
-            try {
-                bundle.start();
-            } catch (BundleException e) {
-                if (bundle.getHeaders().get("Fragment-Host") == null)
-                    throw e;
-            }
-        }
+        
         
         // PackageAdmin is used to resolve bundles 
         org.osgi.framework.ServiceReference packageAdminReference = 
@@ -332,6 +324,17 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                 configurePropertiesUsingConfigAdmin();
         
                 resolveBundle();
+                
+                for (Bundle bundle : dependentBundles) {
+                    try {
+                        if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.STARTING) {
+                            bundle.start();
+                        }
+                    } catch (BundleException e) {
+                        if (bundle.getHeaders().get("Fragment-Host") == null)
+                            throw e;
+                    }
+                }
             
                 if (osgiBundle.getState() != Bundle.ACTIVE && osgiBundle.getState() != Bundle.STARTING) {
 
@@ -362,7 +365,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
     
     protected org.osgi.framework.ServiceReference getOSGiServiceReference( 
-            RuntimeComponentService service) 
+            ComponentService service) 
             throws ObjectCreationException {
         
         try {

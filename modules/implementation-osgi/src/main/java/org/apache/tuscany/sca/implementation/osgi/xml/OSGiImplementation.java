@@ -24,8 +24,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
 import org.apache.tuscany.sca.scope.Scope;
@@ -42,6 +40,7 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
     private String bundleLocation;
     private String[] imports;
     private Scope scope;
+    private boolean isEagerInit;
     private String[] allowsPassByRef;
     private boolean needsPropertyInjection;
     private Hashtable<String, List<ComponentProperty>> referenceProperties;
@@ -52,6 +51,7 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
             String bundleLocation,
             String[] imports, 
             String scopeName,
+            boolean isEagerInit,
             String[] allowsPassByRef,
             Hashtable<String, List<ComponentProperty>> refProperties,
             Hashtable<String, List<ComponentProperty>> serviceProperties,
@@ -62,6 +62,7 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
         this.bundleLocation = bundleLocation;
         this.imports = imports;
         this.scope = new Scope(scopeName == null?"COMPOSITE":scopeName);
+        this.isEagerInit = isEagerInit;
         this.allowsPassByRef = allowsPassByRef;
         this.referenceProperties = refProperties;
         this.serviceProperties = serviceProperties;
@@ -119,7 +120,7 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
 
 
     public boolean isEagerInit() {
-        return false;
+        return isEagerInit;
     }
 
     public long getMaxAge() {

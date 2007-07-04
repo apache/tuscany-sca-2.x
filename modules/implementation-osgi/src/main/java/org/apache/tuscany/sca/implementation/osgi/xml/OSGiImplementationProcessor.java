@@ -77,9 +77,11 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private static final String BUNDLE             = "bundle";
     private static final String BUNDLE_LOCATION    = "bundleLocation";
     private static final String SCOPE              = "scope";
+    private static final String EAGER_INIT         = "eagerInit";
     private static final String IMPORTS            = "imports";
     private static final String ALLOWS_PASS_BY_REF = "allowsPassByReference";
     private static final String INJECT_PROPERTIES  = "injectProperties";
+
    
     private static final QName PROPERTIES_QNAME    = new QName(SCA_NS, "properties");
     private static final QName PROPERTY_QNAME      = new QName(SCA_NS, "property");
@@ -145,6 +147,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                 allowsPassByRefList = new String[0];
             
             boolean injectProperties = !"false".equalsIgnoreCase(reader.getAttributeValue(null, INJECT_PROPERTIES));
+            boolean eagerInit = "true".equalsIgnoreCase(reader.getAttributeValue(null, EAGER_INIT));
             
             
             Hashtable<String, List<ComponentProperty>> refProperties = 
@@ -181,10 +184,12 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                     bundleLocation,
                     importList, 
                     scope,
+                    eagerInit,
                     allowsPassByRefList,
                     refProperties,
                     serviceProperties,
                     injectProperties);
+            
             
             implementation.setUnresolved(true);
             
@@ -204,6 +209,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             
             String bundleName = impl.getBundleName();
             String ctURI = bundleName.replaceAll("\\.", "/") + ".componentType";
+            
             impl.setURI(ctURI);
             ComponentType componentType = resolver.resolveModel(ComponentType.class, impl);
             if (componentType.isUnresolved()) {
@@ -291,7 +297,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     public void write(OSGiImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
     }
     
-    
+  
     private QName getQNameValue(XMLStreamReader reader, String value) {
         if (value != null) {
             int index = value.indexOf(':');

@@ -20,10 +20,13 @@ package org.apache.tuscany.sca.implementation.osgi.invocation;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
@@ -47,10 +50,8 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
     
     private OSGiImplementationProvider provider;
     private BundleContext bundleContext;
-    private T osgiInstance;
-    private ServiceReference osgiServiceReference;
-    private Bundle dummyBundle;
-    private BundleContext refBundleContext;
+    private Hashtable<ComponentService,InstanceInfo<T>> instanceInfoList = 
+        new Hashtable<ComponentService,InstanceInfo<T>>();
 
     public OSGiInstanceWrapper(OSGiImplementationProvider provider, 
             BundleContext bundleContext) {
@@ -59,22 +60,28 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
         this.bundleContext = bundleContext;
     }
     
-    public T getInstance(RuntimeComponentService service) throws TargetInitializationException {
+    public synchronized T getInstance(ComponentService service) throws TargetInitializationException {
+        
+        if (instanceInfoList.get(service) != null)
+            return instanceInfoList.get(service).osgiInstance;
 
         Bundle refBundle = provider.startBundle();
         
-        if (provider.getImplementation().getScope() != Scope.COMPOSITE) {
+        if (!provider.getImplementation().getScope().equals(Scope.COMPOSITE)) {
             refBundle = getDummyReferenceBundle();
         }
+        
+        InstanceInfo<T> instanceInfo = new InstanceInfo<T>();
+        instanceInfoList.put(service, instanceInfo);
 
-        osgiServiceReference = provider.getOSGiServiceReference(service);
+        instanceInfo.osgiServiceReference = provider.getOSGiServiceReference(service);
         
-        refBundleContext = refBundle.getBundleContext();
-        osgiInstance = (T)refBundleContext.getService(osgiServiceReference);
+        instanceInfo.refBundleContext = refBundle.getBundleContext();
+        instanceInfo.osgiInstance = (T)instanceInfo.refBundleContext.getService(instanceInfo.osgiServiceReference);
         
-        provider.injectProperties(osgiInstance);
+        provider.injectProperties(instanceInfo.osgiInstance);
         
-        return osgiInstance;
+        return instanceInfo.osgiInstance;
     }
     
     // This method is provided purely to implement InstanceWrapper interface, and is never called.
@@ -84,29 +91,40 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
     }
     
     public void start() throws TargetInitializationException {
-        
+
+        if (provider.isEagerInit()) {
+            List<ComponentService> services = provider.getRuntimeComponent().getServices();
+            for (ComponentService service : services) {
+                getInstance(service);
+            }
+        }
     }
 
-    public void stop() throws TargetDestructionException {
-        if (osgiInstance != null && osgiServiceReference != null) {
+    public synchronized void stop() throws TargetDestructionException {
+        
+        for (InstanceInfo<T> instanceInfo : instanceInfoList.values()) {
+            if (instanceInfo.osgiInstance != null && instanceInfo.osgiServiceReference != null) {
             
-            refBundleContext.ungetService(osgiServiceReference);
+                instanceInfo.refBundleContext.ungetService(instanceInfo.osgiServiceReference);
             
-            osgiInstance = null;
-            osgiServiceReference = null;
+                instanceInfo.osgiInstance = null;
+                instanceInfo.osgiServiceReference = null;
             
-            try {
-                if (dummyBundle != null) {
-                    dummyBundle.uninstall();
-                }
-            } catch (Exception e) {
-                throw new TargetDestructionException(e);
-            }            
+                try {
+                    if (instanceInfo.dummyBundle != null) {
+                        instanceInfo.dummyBundle.uninstall();
+                    }
+                } catch (Exception e) {
+                    throw new TargetDestructionException(e);
+                }            
+            }
         }
+        instanceInfoList.clear();
     }
     
     private Bundle getDummyReferenceBundle() throws TargetInitializationException {
         
+        Bundle dummyBundle = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         String EOL = System.getProperty("line.separator");
@@ -148,6 +166,14 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
         
         return dummyBundle;
         
+    }
+    
+    private static class InstanceInfo<T> {
+        private T osgiInstance;
+        private ServiceReference osgiServiceReference;
+        private Bundle dummyBundle;
+        private BundleContext refBundleContext;
+
     }
     
 }
