@@ -47,6 +47,7 @@
                 <module>databindings</module>
                 <module>exceptions</module>
                 <module>extended-api</module>
+                <module>osgi-implementation</module>
                 <module>operation-overloading</module>
                 <module>properties</module>
                 <module>recursive</module>
