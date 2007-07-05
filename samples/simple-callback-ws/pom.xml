@@ -39,27 +39,27 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
-            <version>0.90-incubating</version>
+            <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>0.90-incubating</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>0.90-incubating</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-http-tomcat</artifactId>
-            <version>0.90-incubating</version>
+            <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
