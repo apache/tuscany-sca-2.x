@@ -48,10 +48,18 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     }
 
     public void visitInterface(JavaInterface contract) throws InvalidInterfaceException {
+
+        Class<?> clazz = contract.getJavaClass();
+        WebService webService = clazz.getAnnotation(WebService.class);
+        String tns = "";
+        if (webService != null) {
+            tns = webService.targetNamespace();
+            // Mark SEI as Remotable
+            contract.setRemotable(true);
+        }
         if (!contract.isRemotable()) {
             return;
         }
-        Class<?> clazz = contract.getJavaClass();
         Map<String, Operation> operations = new HashMap<String, Operation>();
         for (Operation op : contract.getOperations()) {
             operations.put(op.getName(), op);
@@ -72,11 +80,6 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 return;
             }
 
-            WebService webService = clazz.getAnnotation(WebService.class);
-            String tns = "";
-            if (webService != null) {
-                tns = webService.targetNamespace();
-            }
 
             String ns = getValue(requestWrapper.targetNamespace(), tns);
             String name = getValue(requestWrapper.localName(), operationName);
