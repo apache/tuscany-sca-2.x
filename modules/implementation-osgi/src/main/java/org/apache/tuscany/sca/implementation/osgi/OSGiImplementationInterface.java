@@ -34,10 +34,8 @@ public interface OSGiImplementationInterface extends Implementation {
     public String getBundleName();
     
     public String getBundleLocation();
-
     
     public String[] getImports();
-    
     
     public Scope getScope();
     

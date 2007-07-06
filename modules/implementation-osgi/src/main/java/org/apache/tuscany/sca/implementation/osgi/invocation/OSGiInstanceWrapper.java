@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
@@ -50,8 +51,9 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
     
     private OSGiImplementationProvider provider;
     private BundleContext bundleContext;
-    private Hashtable<ComponentService,InstanceInfo<T>> instanceInfoList = 
-        new Hashtable<ComponentService,InstanceInfo<T>>();
+    private Hashtable<Object,InstanceInfo<T>> instanceInfoList = 
+        new Hashtable<Object,InstanceInfo<T>>();
+
 
     public OSGiInstanceWrapper(OSGiImplementationProvider provider, 
             BundleContext bundleContext) {
@@ -80,6 +82,30 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
         instanceInfo.osgiInstance = (T)instanceInfo.refBundleContext.getService(instanceInfo.osgiServiceReference);
         
         provider.injectProperties(instanceInfo.osgiInstance);
+        
+        return instanceInfo.osgiInstance;
+    }
+    
+    public synchronized T getCallbackInstance(EndpointReference from, Interface callbackInterface) 
+            throws TargetInitializationException {
+        
+        if (instanceInfoList.get(callbackInterface) != null)
+            return instanceInfoList.get(callbackInterface).osgiInstance;
+
+        Bundle refBundle = provider.startBundle();
+        
+        if (!provider.getImplementation().getScope().equals(Scope.COMPOSITE)) {
+            refBundle = getDummyReferenceBundle();
+        }
+        
+        InstanceInfo<T> instanceInfo = new InstanceInfo<T>();
+        instanceInfoList.put(callbackInterface, instanceInfo);
+        
+
+        instanceInfo.osgiServiceReference = provider.getOSGiServiceReference(from, callbackInterface);
+        
+        instanceInfo.refBundleContext = refBundle.getBundleContext();
+        instanceInfo.osgiInstance = (T)instanceInfo.refBundleContext.getService(instanceInfo.osgiServiceReference);
         
         return instanceInfo.osgiInstance;
     }
