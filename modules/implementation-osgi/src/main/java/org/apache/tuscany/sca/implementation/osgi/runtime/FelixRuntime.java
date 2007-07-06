@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -98,17 +99,28 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         Constructor implConstructor = propertyResolverImplClass.getConstructor(Map.class);
         Object mutableProps = implConstructor.newInstance(props);
         
-        felix = felixClass.newInstance();
-        Method startMethod = felixClass.getMethod("start", propertyResolverClass, List.class);
-        List<BundleActivator> activators = new ArrayList<BundleActivator>();
-        BundleActivator activator = new FelixRuntime();
-        activators.add(activator);
-        startMethod.invoke(felix, mutableProps, activators);
+        try {
+            Constructor felixConstructor = felixClass.getConstructor(propertyResolverClass, List.class);
+            List<BundleActivator> activators = new ArrayList<BundleActivator>();
+            felix = felixConstructor.newInstance(mutableProps, activators);
+            ((Bundle)felix).start();
+            bundleContext = ((Bundle)felix).getBundleContext();
+            
+        } catch (Exception e) {
+            
         
-        synchronized (activator) {
-            int retries = 0;
-            while (bundleContext == null && retries++ < 10) {
-                activator.wait(1000);
+            felix = felixClass.newInstance();
+            Method startMethod = felixClass.getMethod("start", propertyResolverClass, List.class);
+            List<BundleActivator> activators = new ArrayList<BundleActivator>();
+            BundleActivator activator = new FelixRuntime();
+            activators.add(activator);
+            startMethod.invoke(felix, mutableProps, activators);
+        
+            synchronized (activator) {
+                int retries = 0;
+                while (bundleContext == null && retries++ < 10) {
+                    activator.wait(1000);
+                }
             }
         }
         
@@ -143,7 +155,11 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
             return;
         bundleContext = null;
         instance = null;
-        if (felix != null) {
+        
+        if (felix instanceof Bundle) {
+            ((Bundle)felix).stop();
+        }
+        else if (felix != null) {
             Method shutdownMethod = felixClass.getMethod("shutdown");
             try {
                 shutdownMethod.invoke(felix);

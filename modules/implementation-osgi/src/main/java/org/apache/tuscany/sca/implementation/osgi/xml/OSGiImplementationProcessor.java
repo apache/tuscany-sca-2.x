@@ -154,6 +154,10 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                 new Hashtable<String, List<ComponentProperty>>();
             Hashtable<String, List<ComponentProperty>> serviceProperties = 
                 new Hashtable<String, List<ComponentProperty>>();
+            Hashtable<String, List<ComponentProperty>> refCallbackProperties = 
+                new Hashtable<String, List<ComponentProperty>>();
+            Hashtable<String, List<ComponentProperty>> serviceCallbackProperties = 
+                new Hashtable<String, List<ComponentProperty>>();
             
             while (reader.hasNext()) {
                 
@@ -170,11 +174,17 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                     //        instance of an implementation.
                     String refName = reader.getAttributeValue(null, "reference");
                     String serviceName = reader.getAttributeValue(null, "service");
+                    String refCallbackName = reader.getAttributeValue(null, "referenceCallback");
+                    String serviceCallbackName = reader.getAttributeValue(null, "serviceCallback");
                     List<ComponentProperty> props = readProperties(reader);
                     if (refName != null)
                         refProperties.put(refName, props);
                     else if (serviceName != null)
                         serviceProperties.put(serviceName, props);
+                    else if (refCallbackName != null)
+                        refCallbackProperties.put(refCallbackName, props);
+                    else if (serviceCallbackName != null)
+                        serviceCallbackProperties.put(serviceCallbackName, props);
                     else
                         throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");                }
             }
@@ -189,6 +199,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                     refProperties,
                     serviceProperties,
                     injectProperties);
+            implementation.setCallbackProperties(refCallbackProperties, serviceCallbackProperties);
             
             
             implementation.setUnresolved(true);
@@ -225,7 +236,17 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                         Class<?> javaClass = Class.forName(javaInterface.getName());
                         javaInterface.setJavaClass(javaClass);
                     }
-                    Service serv = createService(service, javaInterface.getJavaClass());
+                    Class<?> callback = null;
+                    if (service.getInterfaceContract().getCallbackInterface() instanceof JavaInterface) {
+                        JavaInterface callbackInterface = (JavaInterface)service.getInterfaceContract().getCallbackInterface();
+                        if (callbackInterface.getJavaClass() == null) {
+                            Class<?> javaClass = Class.forName(javaInterface.getName());
+                            callbackInterface.setJavaClass(javaClass);
+                        }
+                        callback = callbackInterface.getJavaClass();
+                    }
+                    
+                    Service serv = createService(service, javaInterface.getJavaClass(), callback);
                     impl.getServices().add(serv);
                 }
             }
@@ -259,17 +280,23 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         
     }
     
-    private Service createService(Service serv, Class<?> interfaze) throws InvalidInterfaceException {
+    private Service createService(Service serv, Class<?> interfaze, Class<?> callbackInterfaze) throws InvalidInterfaceException {
         Service service = assemblyFactory.createService();
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
-
+        
+        
         // create a relative URI
         service.setName(serv.getName());
 
         JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
-        if (callInterface.getCallbackClass() != null) {
+        
+        if (callbackInterfaze != null) {
+            JavaInterface callbackInterface = interfaceIntrospector.introspect(callbackInterfaze);
+            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+        }
+        else if (callInterface.getCallbackClass() != null) {
             JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }

@@ -30,8 +30,10 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.ScopeContainer;
@@ -71,7 +73,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
         this.scopeContainer = ((ScopedRuntimeComponent) component).getScopeContainer();
         this.cacheable = true;
         stateless = Scope.STATELESS == scopeContainer.getScope();
-
+        
     }
 
     /**
@@ -110,9 +112,15 @@ public class OSGiTargetInvoker<T> implements Invoker {
     
         ConversationSequence sequence = msg.getConversationSequence();
         Object contextId = ThreadMessageContext.getMessageContext().getConversationID();
+        EndpointReference from = ThreadMessageContext.getMessageContext().getFrom();
         try {
             OSGiInstanceWrapper wrapper = (OSGiInstanceWrapper)getInstance(sequence, contextId);
-            Object instance = wrapper.getInstance(service);
+            Object instance;
+            
+            if (service != null)
+                instance = wrapper.getInstance(service);
+            else
+                instance = wrapper.getCallbackInstance(from, operation.getInterface());
         
             Method m = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
         

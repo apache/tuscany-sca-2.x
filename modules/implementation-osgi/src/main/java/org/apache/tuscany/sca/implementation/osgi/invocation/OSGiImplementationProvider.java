@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.invocation.JDKProxyService;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -217,11 +218,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         }
     }
     
-    private String getOSGiFilter(ComponentService service) {
+    private String getOSGiFilter(Hashtable<String, Object> props) {
         
         String filter = "";
-        Hashtable<String, Object> props = new Hashtable<String, Object>();
-        processProperties(implementation.getServiceProperties(service.getName()), props);
         
         if (props != null && props.size() > 0) {
             int propCount = 0;
@@ -269,7 +268,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                     Object compName = ref.getProperty(COMPONENT_SERVICE_NAME);
                     if (compName == null && reference == null)
                         reference = ref;
-                    if (compServiceName.equals(compName)) {
+                    if (scaServiceName == null || compServiceName.equals(compName)) {
                         reference = ref;
                         break;
                     }
@@ -280,7 +279,8 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
            
         }
         
-        filter = "(" + COMPONENT_SERVICE_NAME + "="+ compServiceName + ")";
+        filter = scaServiceName == null? null : 
+                                         "(" + COMPONENT_SERVICE_NAME + "="+ compServiceName + ")";
         
         org.osgi.framework.ServiceReference[] references = 
             bundleContext.getServiceReferences(osgiServiceName, filter);
@@ -363,17 +363,49 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     }
     
     
+    protected org.osgi.framework.ServiceReference getOSGiServiceReference(ComponentService service) 
+            throws ObjectCreationException {
+         
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        processProperties(implementation.getServiceProperties(service.getName()), props);
+        
+        String filter = getOSGiFilter(props);
+        Interface serviceInterface = service.getInterfaceContract().getInterface();
+        String scaServiceName = service.getName();
+            
+        return getOSGiServiceReference(serviceInterface, filter, scaServiceName);
+           
+    }
     
-    protected org.osgi.framework.ServiceReference getOSGiServiceReference( 
-            ComponentService service) 
+    protected org.osgi.framework.ServiceReference getOSGiServiceReference(
+            EndpointReference from, Interface callbackInterface) 
+            throws ObjectCreationException {
+        
+        RuntimeWire refWire = null;
+        String filter = null;
+        for (RuntimeWire wire : referenceWires.keySet()) {
+            if (wire.getSource() == from) {
+                refWire = wire;
+                break;
+            }
+        }
+        if (refWire != null) {
+            Hashtable<String, Object> props = new Hashtable<String, Object>();
+            ComponentReference scaRef = componentReferenceWires.get(refWire);
+            processProperties(implementation.getReferenceCallbackProperties(scaRef.getName()), props);
+            filter = getOSGiFilter(props);
+        }
+        
+        return getOSGiServiceReference(callbackInterface, filter, null);
+    }
+    
+    private org.osgi.framework.ServiceReference getOSGiServiceReference(Interface serviceInterface,
+            String filter, String scaServiceName)
             throws ObjectCreationException {
         
         try {
             
-            String filter = getOSGiFilter(service);
-            Interface serviceInterface = service.getInterfaceContract().getInterface();
             String serviceInterfaceName = null;
-            String scaServiceName = service.getName();
 
             org.osgi.framework.ServiceReference osgiServiceReference = null;
             
@@ -401,13 +433,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                         }
                     }   
                     
-                        
                 }
             }
                 
-            
-            
-            
             return osgiServiceReference;
             
         } catch (Exception e) {
@@ -620,7 +648,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
    
     
-    private  void resolveWireCreateDummyBundles(Class interfaceClass, RuntimeWire wire) throws Exception {
+    private  void resolveWireCreateDummyBundles(Class interfaceClass) throws Exception {
         
         
         try {
@@ -753,6 +781,27 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
     }
     
+    private void registerCallbackProxyService(Bundle bundle, Class interfaceClass,
+            RuntimeComponentService service) throws Exception {
+        
+        List<RuntimeWire> wires = service.getCallbackWires();
+        Hashtable<String, Object> targetProperties = new Hashtable<String, Object>();
+        processProperties(implementation.getServiceCallbackProperties(service.getName()), targetProperties);
+        targetProperties.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
+          
+        JDKProxyService proxyService = new JDKProxyService();
+              
+        Class<?> proxyInterface = bundle.loadClass(interfaceClass.getName());
+                
+
+        Object proxy = proxyService.createCallbackProxy(proxyInterface, wires);
+       
+            
+        bundleContext.registerService(proxyInterface.getName(), proxy, targetProperties);
+            
+        
+    }
+    
     
     private void resolveBundle() throws ObjectCreationException {
         
@@ -762,10 +811,11 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             if (!wiresResolved) {
                 wiresResolved = true;
                     
-                boolean[] createProxyService = new boolean[referenceWires.size()];
-                Class<?>[] interfaceClasses = new Class<?>[referenceWires.size()] ;
-                boolean[] isOSGiToOSGiWire = new boolean[referenceWires.size()];
-                boolean[] wireResolved = new boolean[referenceWires.size()];
+                int refPlusServices = referenceWires.size() + runtimeComponent.getServices().size();
+                boolean[] createProxyService = new boolean[refPlusServices];
+                Class<?>[] interfaceClasses = new Class<?>[refPlusServices] ;
+                boolean[] isOSGiToOSGiWire = new boolean[refPlusServices];
+                boolean[] wireResolved = new boolean[refPlusServices];
                 int index = 0;
                 for (RuntimeWire wire : referenceWires.keySet()) {
                 
@@ -780,7 +830,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                         interfaceClasses[index] = ((JavaInterface)refInterface).getJavaClass();
                     
                         if (!isOSGiToOSGiWire[index])
-                            resolveWireCreateDummyBundles(interfaceClasses[index], wire);
+                            resolveWireCreateDummyBundles(interfaceClasses[index]);
 
                     }
                     
@@ -789,6 +839,16 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                     }
                     else
                         wireResolved[index] = true;
+                    
+                    index++;
+                }
+                for (ComponentService service : runtimeComponent.getServices()) {
+                    Interface callbackInterface = service.getInterfaceContract().getCallbackInterface();
+                    if (callbackInterface instanceof JavaInterface) {
+                        interfaceClasses[index] = ((JavaInterface)callbackInterface).getJavaClass();
+                        
+                        resolveWireCreateDummyBundles(interfaceClasses[index]);
+                    }
                     
                     index++;
                 }
@@ -805,11 +865,19 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                     index++;
                 }
                 
+                
                 index = 0;
                 for (RuntimeWire wire : referenceWires.keySet()) {
                     
                     if (createProxyService[index] && !wireResolved[index])
                         resolveWireRegisterProxyService(osgiBundle, interfaceClasses[index], wire);
+                    index++;
+                }
+                for (ComponentService service : runtimeComponent.getServices()) {
+                    if (interfaceClasses[index] != null) {
+                        registerCallbackProxyService(osgiBundle, interfaceClasses[index],
+                                ((RuntimeComponentService)service));
+                    }
                     index++;
                 }
             }
@@ -890,7 +958,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
 
     }
     
-    protected void injectPropertiesUsingAnnotations(Object instance)  {
+    protected void injectProperties(Object instance)  {
         
         if (!implementation.needsPropertyInjection())
             return;
@@ -959,7 +1027,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
     }
     
-    protected void injectProperties(Object instance)  {
+    protected void injectPropertiesWithoutAnnotations(Object instance)  {
         
         if (!implementation.needsPropertyInjection())
             return;
@@ -1053,7 +1121,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
     }
     
+    
     public Invoker createCallbackInvoker(Operation operation) {
+        
         return createTargetInvoker(null, operation);
     }
 
@@ -1062,8 +1132,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     }
 
     public void start() {
-        
-        
+                
         for (Reference ref: implementation.getReferences()) {
             List<RuntimeWire> wireList = null;
             ComponentReference compRef = null;

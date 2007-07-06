@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
 import org.apache.tuscany.sca.scope.Scope;
+import org.osoa.sca.annotations.AllowsPassByReference;
 
 
 /**
@@ -45,6 +46,9 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
     private boolean needsPropertyInjection;
     private Hashtable<String, List<ComponentProperty>> referenceProperties;
     private Hashtable<String, List<ComponentProperty>> serviceProperties;
+
+    private Hashtable<String, List<ComponentProperty>> referenceCallbackProperties;
+    private Hashtable<String, List<ComponentProperty>> serviceCallbackProperties;
     
 
     public OSGiImplementation(String bundleName, 
@@ -97,6 +101,14 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
         return serviceProperties.get(serviceName);
     }
     
+    public List<ComponentProperty> getReferenceCallbackProperties(String referenceName) {
+        return referenceCallbackProperties.get(referenceName);
+    }
+    
+    public List<ComponentProperty> getServiceCallbackProperties(String serviceName) {
+        return serviceCallbackProperties.get(serviceName);
+    }
+    
 
     public boolean isAllowsPassByReference(Method method) {
         
@@ -111,6 +123,18 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
                 return true;
         }
         return false;
+    }
+    
+    public boolean isAllowsPassByReferenceAnnotation(Method method) {
+        
+        if (method.getAnnotation(AllowsPassByReference.class) != null) {
+            return true;
+        }
+        else if (method.getClass().getAnnotation(AllowsPassByReference.class) != null) {
+            return true;
+        }
+        else            
+            return false;
     }
 
     
@@ -131,4 +155,13 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
         return Long.MAX_VALUE;
     }
     
+    
+    protected void setCallbackProperties(Hashtable<String, List<ComponentProperty>> refCallbackProperties, 
+            Hashtable<String, List<ComponentProperty>> serviceCallbackProperties) {
+        
+        this.referenceCallbackProperties = refCallbackProperties;
+        this.serviceCallbackProperties = serviceCallbackProperties;
+        
+    }
+
 }
