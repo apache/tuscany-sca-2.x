@@ -145,4 +145,7 @@ public class EmbeddedODEServer {
         return _initialized;
     }
 
+    public BpelServerImpl getBpelServer() {
+        return _bpelServer;
+    }
 }

@@ -19,12 +19,16 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://bpel"
-	xmlns:sc="http://bpel"
-	xmlns:c="http://bpel"
-	name="bpel">
+    xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
+    name="bpel">
 
-    <component name="BPELServiceComponent">
-        <c:implementation.bpel process="bpel-process" />
+    <service name="BPELHelloWorldService" promote="BPELHelloWorldComponent">
+          <interface.wsdl
+                  interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsd#wsdl.interface(HelloPortType)" />
+    </service>
+    
+    <component name="BPELHelloWorldComponent">
+        <implementation.bpel process="hns:HelloWorld" file="HelloWorld.bpel"/>
     </component>
 
 </composite>
