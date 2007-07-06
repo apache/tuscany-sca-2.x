@@ -47,6 +47,13 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         if (source == target) {
             return false;
         }
+        
+        // Output type can be null
+        if (source == null && target == null) {
+            return false;
+        } else if (source == null || target == null) {
+            return true;
+        }
         String sourceDataBinding = source.getDataBinding();
         String targetDataBinding = target.getDataBinding();
         if (sourceDataBinding == targetDataBinding) {
