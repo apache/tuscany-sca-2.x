@@ -19,6 +19,9 @@
 package org.apache.tuscany.sca.implementation.bpel;
 
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.ode.bpel.iapi.ProcessConf;
+
+import javax.xml.namespace.QName;
 
 /**
  * The model representing the BPEL implementation in an SCA assembly model.
@@ -28,17 +31,20 @@ import org.apache.tuscany.sca.assembly.Implementation;
 public interface BPELImplementation extends Implementation {
 
     /**
-     * Returns a target QName of some executable WS-BPEL process.
-     * 
-     * @return the BPEL process name
+     * Builds the process configuration used by ODE to get deployment and configuration
+     * level information about a process.
+     * @return
      */
-    public String getProcess();
+    ProcessConf getProcessConf();
 
     /**
-     * Sets a target QName of some executable WS-BPEL process.
-     * 
-     * @param BPEL process name
+     * Sets the implementation compiled process bytes
+     * @param compiledProcess serialized compiled process
      */
-    public void setProcess(String process);
+    void setCompiledProcess(byte[] compiledProcess);
 
+    /**
+     * @param processName process QName
+     */
+    void setProcessName(QName processName);
 }

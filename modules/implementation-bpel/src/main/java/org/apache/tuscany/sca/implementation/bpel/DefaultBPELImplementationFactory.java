@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.implementation.bpel;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationImpl;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 
 /**
  * A default factory for the BPEL implementation model.
@@ -32,19 +32,19 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospe
 public class DefaultBPELImplementationFactory implements BPELImplementationFactory {
     
     private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector introspector;
+    private WSDLFactory wsdlFactory;
+    private WSDLInterfaceIntrospector introspector;
     
     public DefaultBPELImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory,
-                                            JavaInterfaceIntrospector introspector) {
+                                            WSDLFactory wsdlFactory,
+                                            WSDLInterfaceIntrospector introspector) {
         this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
+        this.wsdlFactory = wsdlFactory;
         this.introspector = introspector;
     }
 
     public BPELImplementation createBPELImplementation() {
-        return new BPELImplementationImpl(assemblyFactory, javaFactory, introspector);
+        return new BPELImplementationImpl(assemblyFactory, wsdlFactory, introspector);
     }
 
 }

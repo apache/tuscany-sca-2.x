@@ -32,6 +32,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
+import org.apache.ode.bpel.compiler.BpelC;
+import org.osoa.sca.Constants;
+
+import java.net.URL;
+import java.io.File;
+import java.io.IOException;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
  * Implements a STAX artifact processor for BPEL implementations.
@@ -44,7 +52,7 @@ import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
  *  @version $Rev$ $Date$
  */
 public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELImplementation> {
-    private static final QName IMPLEMENTATION_BPEL = new QName("http://bpel", "implementation.bpel");
+    private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA_NS, "implementation.bpel");
     
     private BPELImplementationFactory bpelFactory;
     
@@ -68,11 +76,27 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
         // Read an <implementation.bpel> element
         try {
             // Read the process attribute. 
-            String process = reader.getAttributeValue(null, "process");
-            
+            QName process = getAttributeValueNS(reader, "process");
+            String bpelFile = reader.getAttributeValue(null, "file");
+
+            // Resolving the BPEL file and compiling it
+            URL bpelURL = getClass().getClassLoader().getResource(bpelFile);
+            if (bpelURL == null)
+                throw new ODEProcessException("Couldn't find referenced bpel file " + bpelFile);
+            BpelC bpelc = BpelC.newBpelCompiler();
+            ByteArrayOutputStream compiledProcess = new ByteArrayOutputStream();
+            bpelc.setOutputStream(compiledProcess);
+            try {
+                bpelc.compile(new File(bpelURL.getFile()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             // Create an initialize the BPEL implementation model
             BPELImplementation implementation = bpelFactory.createBPELImplementation();
-            implementation.setProcess(process);
+            implementation.setProcessName(process);
+            implementation.setCompiledProcess(compiledProcess.toByteArray());
+            implementation.setUnresolved(true);
             
             // Skip to end element
             while (reader.hasNext()) {
@@ -88,8 +112,23 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
     }
 
     public void resolve(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+        System.out.println("IN RESOLVE");
     }
 
     public void write(BPELImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    }
+
+    private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
+        String fullValue = reader.getAttributeValue(null, "process");
+        if (fullValue.indexOf(":") < 0)
+            throw new ODEProcessException("Attribute " + attribute + " with value " + fullValue +
+                    " in your composite should be prefixed (process=\"prefix:name\").");
+        String prefix = fullValue.substring(0, fullValue.indexOf(":"));
+        String name = fullValue.substring(fullValue.indexOf(":") + 1);
+        String nsUri = reader.getNamespaceContext().getNamespaceURI(prefix);
+        if (nsUri == null)
+            throw new ODEProcessException("Attribute " + attribute + " with value " + fullValue +
+                    " in your composite has un unrecognized namespace prefix.");
+        return new QName(nsUri, name, prefix);
     }
 }

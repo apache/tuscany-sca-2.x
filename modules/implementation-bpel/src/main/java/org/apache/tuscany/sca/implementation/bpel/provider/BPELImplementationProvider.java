@@ -64,6 +64,8 @@ public class BPELImplementationProvider implements ImplementationProvider {
     public void start() {
         System.out.println("Starting " + component.getName() + " " + component.getClass().getName());
         if (!odeServer.isInitialized()) odeServer.init();
+        
+        odeServer.getBpelServer().register(implementation.getProcessConf());
     }
 
     public void stop() {
