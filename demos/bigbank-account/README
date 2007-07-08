@@ -1,0 +1,50 @@
+BigBank
+======
+
+This application comprises three modules that represent the different aspects 
+of a fictitious banking application. To run the sample you need to run each of 
+the modules sample servers. This will bring up a Tuscany runtime, load the 
+application and make the application's services available. You will need both
+ant and maven installed to run these applications.
+
+Bigbank-calculator
+
+A calculator application, based on the calculator-script sample that uses a 
+variety of languages to implement a calculator, which the banking application 
+uses for simple value multiplication. To run the service do the following:
+
+cd bigbank-calculator
+Ant run
+
+Bigbank-stockquote
+
+A very simple web services based stock quote application which returns random 
+stock quotes on request.
+
+cd bigbank-stockquote
+Ant run
+
+Bigbank-account 
+  
+The front end of this demo application this module provides a web app for 
+retrieving account information. It makes calls out to the stockquote and 
+calculator applications to satisfy account requests. See the README in this 
+module for further instructions.
+
+cd bigbank-account
+mvn -f pom-runapp.xml
+
+Maven is used in this last step as there are unresolved issues with running
+this app from the provided ant file. 
+
+To try the app out point you browser at:
+
+http://localhost:8082/WebResourceComponent/AccountJSON.html
+
+This should display an interface with a single button that goes and retrieves 
+a single set of account details exercising services across the three running 
+SCA applications. 
+
+
+
+
