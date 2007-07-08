@@ -17,6 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<contribution xmlns=http://www.osoa.org/xmlns/sca/1.0>
-   <deployable composite="Calculator"/>
+<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
+              targetNamespace="http://sample"
+              xmlns:sample="http://sample">
+   <deployable composite="sample:Calculator"/>
 </contribution>
