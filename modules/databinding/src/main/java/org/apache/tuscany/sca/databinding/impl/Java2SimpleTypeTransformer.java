@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
@@ -56,5 +57,10 @@ public abstract class Java2SimpleTypeTransformer<T> extends BaseTransformer<Obje
     }
 
     protected abstract T createElement(QName element, String literal, TransformationContext context);
+
+    @Override
+    public String getSourceDataBinding() {
+        return SimpleJavaDataBinding.NAME;
+    }
 
 }

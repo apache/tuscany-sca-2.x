@@ -18,9 +18,12 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
@@ -41,8 +44,13 @@ public abstract class SimpleType2JavaTransformer<T> extends BaseTransformer<T, O
     }
 
     public Object transform(T source, TransformationContext context) {
-        XMLType xmlType = (XMLType) context.getSourceDataType().getLogical();
-        return mapper.toJavaObject(xmlType.getTypeName(), getText(source), context);
+        XMLType xmlType = (XMLType)context.getSourceDataType().getLogical();
+        QName type = (xmlType != null) ? xmlType.getTypeName() : null;
+        if (type == null) {
+            xmlType = (XMLType)context.getTargetDataType().getLogical();
+            type = (xmlType != null) ? xmlType.getTypeName() : null;
+        }
+        return mapper.toJavaObject(type, getText(source), context);
     }
 
     public Class getTargetType() {
@@ -60,4 +68,9 @@ public abstract class SimpleType2JavaTransformer<T> extends BaseTransformer<T, O
      * @return A string
      */
     protected abstract String getText(T source);
+
+    @Override
+    public String getTargetDataBinding() {
+        return SimpleJavaDataBinding.NAME;
+    }
 }

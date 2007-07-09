@@ -35,18 +35,21 @@ import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.databinding.xml.InputSource2Node;
 import org.apache.tuscany.sca.databinding.xml.InputSource2SAX;
 import org.apache.tuscany.sca.databinding.xml.InputStream2Node;
 import org.apache.tuscany.sca.databinding.xml.InputStream2SAX;
 import org.apache.tuscany.sca.databinding.xml.Node2OutputStream;
+import org.apache.tuscany.sca.databinding.xml.Node2SimpleJavaType;
 import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.apache.tuscany.sca.databinding.xml.Node2Writer;
 import org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;
 import org.apache.tuscany.sca.databinding.xml.Reader2Node;
 import org.apache.tuscany.sca.databinding.xml.Reader2SAX;
 import org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;
+import org.apache.tuscany.sca.databinding.xml.SimpleJavaType2Node;
 import org.apache.tuscany.sca.databinding.xml.Source2ResultTransformer;
 import org.apache.tuscany.sca.databinding.xml.StreamDataPipe;
 import org.apache.tuscany.sca.databinding.xml.String2Node;
@@ -112,6 +115,10 @@ public class DataBindingModuleActivator implements ModuleActivator {
         JavaBeansDataBinding javaBeansDataBinding = new JavaBeansDataBinding();
         javaBeansDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(javaBeansDataBinding);
+        
+        SimpleJavaDataBinding simpleJavaDataBinding = new SimpleJavaDataBinding();
+        simpleJavaDataBinding.setDataBindingRegistry(dataBindings);
+        dataBindings.addDataBinding(simpleJavaDataBinding);
 
         Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
         group2GroupTransformer.setMediator(mediator);
@@ -144,6 +151,9 @@ public class DataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(new XMLStreamReader2Node());
         transformers.addTransformer(new XMLStreamReader2SAX());
         transformers.addTransformer(new XMLStreamReader2String());
+        
+        transformers.addTransformer(new Node2SimpleJavaType());
+        transformers.addTransformer(new SimpleJavaType2Node());
     }
 
     public void stop(ExtensionPointRegistry registry) {

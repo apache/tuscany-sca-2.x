@@ -232,7 +232,7 @@ public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements Simple
         }
     }
 
-    public TypeInfo getXMLType(Class javaType) {
+    public static TypeInfo getXMLType(Class javaType) {
         return XSD_SIMPLE_TYPES.get(JAVA2XML.get(javaType));
     }
 
