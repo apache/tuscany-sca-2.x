@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELImplementationFactory;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
-import org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationProcessor;
+import org.apache.tuscany.sca.implementation.bpel.impl.BPELArtifactProcessor;
 import org.apache.tuscany.sca.implementation.bpel.provider.BPELImplementationProviderFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -72,7 +72,7 @@ public class BPELModuleActivator implements ModuleActivator {
         // Add the CRUD implementation extension to the StAXArtifactProcessor
         // extension point
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        BPELImplementationProcessor implementationArtifactProcessor = new BPELImplementationProcessor(bpelFactory);
+        BPELArtifactProcessor implementationArtifactProcessor = new BPELArtifactProcessor(bpelFactory);
         processors.addArtifactProcessor(implementationArtifactProcessor);
 
         // Instantiating the ODE server to pass it to the providers
