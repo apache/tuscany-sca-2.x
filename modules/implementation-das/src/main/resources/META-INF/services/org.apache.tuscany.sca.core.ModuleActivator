@@ -17,4 +17,4 @@
 #
 # Implementation class for the ExtensionActivator
 #
-org.apache.tuscany.sca.implementation.das.module.DASModuleActivator
+org.apache.tuscany.sca.implementation.das.DASModuleActivator

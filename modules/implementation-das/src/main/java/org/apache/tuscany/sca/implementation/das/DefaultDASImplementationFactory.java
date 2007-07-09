@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.das;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.implementation.das.impl.DASImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
@@ -45,7 +44,7 @@ public class DefaultDASImplementationFactory implements DASImplementationFactory
     }
 
     public DASImplementation createDASImplementation() {
-        return new DASImplementationImpl(assemblyFactory, javaFactory, introspector);
+        return new DASImplementation(assemblyFactory, javaFactory, introspector);
     }
 
 }
