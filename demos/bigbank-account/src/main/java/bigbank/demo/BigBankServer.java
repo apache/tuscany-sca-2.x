@@ -28,13 +28,20 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class BigBankServer {
 
     public static void main(String[] args) throws Exception {
-
+        long timeout = -1L;
+        if (args.length > 0) {
+            timeout = Long.parseLong(args[0]);
+        }
         System.out.println("Starting the Sample SCA BigBank server...");
 
         SCADomain domain = SCADomain.newInstance("BigBank.composite");
 
-        System.out.println("Press Enter to Exit...");
-        System.in.read();
+        if (timeout < 0) {
+            System.out.println("Press Enter to Exit...");
+            System.in.read();
+        } else {
+            Thread.sleep(timeout);
+        }
 
         domain.close();
 
