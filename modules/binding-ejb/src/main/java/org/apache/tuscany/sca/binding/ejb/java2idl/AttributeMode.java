@@ -26,37 +26,34 @@ import org.omg.CORBA.portable.IDLEntity;
  * Mode of an IDL attribute
  */
 public final class AttributeMode implements IDLEntity {
-    private static final long serialVersionUID = 4193442157999151834L;
+    public static final int INT_NORMAL = 0;
+    public static final int INT_READONLY = 1;
+    public static final AttributeMode ATTR_NORMAL = new AttributeMode(INT_NORMAL);
+    public static final AttributeMode ATTR_READONLY = new AttributeMode(INT_READONLY);
+    private static final long serialVersionUID = 8549003678215309053L;
 
-    private int value;
+    private final int value;
 
-    public static final int _ATTR_NORMAL = 0;
+    private AttributeMode(int value) {
+        this.value = value;
+    }
 
-    public static final AttributeMode ATTR_NORMAL = new AttributeMode(_ATTR_NORMAL);
+    public static AttributeMode valueOf(final int value) {
+        switch (value) {
+            case INT_NORMAL:
+                return ATTR_NORMAL;
+            case INT_READONLY:
+                return ATTR_READONLY;
+            default:
+                throw new BAD_PARAM("Invalid Attribute Mode");
+        }
+    }
 
-    public static final int _ATTR_READONLY = 1;
-
-    public static final AttributeMode ATTR_READONLY = new AttributeMode(_ATTR_READONLY);
-
-    public int value() {
+    public int getValue() {
         return value;
     }
 
-    public static AttributeMode from_int(int i) {
-        switch (i) {
-            case _ATTR_NORMAL:
-                return ATTR_NORMAL;
-            case _ATTR_READONLY:
-                return ATTR_READONLY;
-        }
-        throw new BAD_PARAM();
-    }
-
-    private AttributeMode(int i) {
-        value = i;
-    }
-
     Object readResolve() throws ObjectStreamException {
-        return from_int(value());
+        return valueOf(getValue());
     }
 }

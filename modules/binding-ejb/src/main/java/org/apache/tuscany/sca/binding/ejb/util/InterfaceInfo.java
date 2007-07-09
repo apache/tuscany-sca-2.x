@@ -38,34 +38,27 @@ import org.apache.tuscany.sca.binding.ejb.java2idl.OperationType;
  */
 public class InterfaceInfo implements Serializable {
 
-    private static final Map interfaces = Collections.synchronizedMap(new WeakHashMap());
+    private static final Map<Class, InterfaceInfo> INTERFACES =
+        Collections.synchronizedMap(new WeakHashMap<Class, InterfaceInfo>());
 
     private static final long serialVersionUID = 2314533906465094860L;
     private String name;
 
-    private Map methods = new HashMap();
-
-    public synchronized final static InterfaceInfo getInstance(final Class iface) {
-        InterfaceInfo info = (InterfaceInfo)interfaces.get(iface);
-        if (info == null) {
-            info = new InterfaceInfo(iface);
-            interfaces.put(iface, info);
-        }
-        return info;
-    }
+    private Map<String, MethodInfo> methods = new HashMap<String, MethodInfo>();
 
     public InterfaceInfo(final Class iface) {
         super();
-        if (iface == null)
+        if (iface == null) {
             throw new IllegalArgumentException("The interface cannot be null");
+        }
         this.name = iface.getName();
         // SECURITY
         /*
          * Permission: accessDeclaredMembers : Access denied
          * (java.lang.RuntimePermission accessDeclaredMembers)
          */
-        Map idlNames = (Map)AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        Map idlNames = AccessController.doPrivileged(new PrivilegedAction<Map>() {
+            public Map run() {
                 return Java2IDL.getIDLMapping(iface);
             }
         });
@@ -80,20 +73,19 @@ public class InterfaceInfo implements Serializable {
         }
     }
 
-    /*
-     * public InterfaceInfo(String portType, String wsdlOperationName) {
-     * super(); this.name = portType; // <DataObject> operation(<DataObject>)
-     * throws RemoteException MethodInfo method = new
-     * MethodInfo(wsdlOperationName, DataObject.class.getName(), new
-     * String[]{DataObject.class.getName()}, new
-     * String[]{RemoteException.class.getName()}); methods.put(method.getName(),
-     * method); }
-     */
+    public static synchronized final InterfaceInfo getInstance(final Class iface) {
+        InterfaceInfo info = (InterfaceInfo)INTERFACES.get(iface);
+        if (info == null) {
+            info = new InterfaceInfo(iface);
+            INTERFACES.put(iface, info);
+        }
+        return info;
+    }
 
     /**
      * @return
      */
-    public Map getMethods() {
+    public Map<String, MethodInfo> getMethods() {
         return methods;
     }
 

@@ -24,29 +24,29 @@ import java.util.Map;
 /**
  * Type class for primitive types.
  */
-public class PrimitiveType extends ClassType {
+public final class PrimitiveType extends ClassType {
 
-    public final static PrimitiveType voidType = new PrimitiveType(void.class, "void", "void");
-    public final static PrimitiveType booleanType = new PrimitiveType(boolean.class, "boolean", "boolean");
-    public final static PrimitiveType charType = new PrimitiveType(char.class, "wchar", "char");
-    public final static PrimitiveType byteType = new PrimitiveType(byte.class, "octet", "byte");
-    public final static PrimitiveType shortType = new PrimitiveType(short.class, "short", "short");
-    public final static PrimitiveType intType = new PrimitiveType(int.class, "long", "int");
-    public final static PrimitiveType longType = new PrimitiveType(long.class, "long_long", "long");
-    public final static PrimitiveType floatType = new PrimitiveType(float.class, "float", "float");
-    public final static PrimitiveType doubleType = new PrimitiveType(double.class, "double", "double");
+    public static final PrimitiveType VOID_TYPE = new PrimitiveType(void.class, "void", "void");
+    public static final PrimitiveType BOOLEAN_TYPE = new PrimitiveType(boolean.class, "boolean", "boolean");
+    public static final PrimitiveType CHAR_TYPE = new PrimitiveType(char.class, "wchar", "char");
+    public static final PrimitiveType BYTE_TYPE = new PrimitiveType(byte.class, "octet", "byte");
+    public static final PrimitiveType SHORT_TYPE = new PrimitiveType(short.class, "short", "short");
+    public static final PrimitiveType INT_TYPE = new PrimitiveType(int.class, "long", "int");
+    public static final PrimitiveType LONG_TYPE = new PrimitiveType(long.class, "long_long", "long");
+    public static final PrimitiveType FLOAT_TYPE = new PrimitiveType(float.class, "float", "float");
+    public static final PrimitiveType DOUBLE_TYPE = new PrimitiveType(double.class, "double", "double");
 
-    private final static Map types = new HashMap();
+    private static final Map<Class, PrimitiveType> TYPES = new HashMap<Class, PrimitiveType>();
     static {
-        types.put(void.class, voidType);
-        types.put(boolean.class, booleanType);
-        types.put(byte.class, byteType);
-        types.put(char.class, charType);
-        types.put(short.class, shortType);
-        types.put(int.class, intType);
-        types.put(long.class, longType);
-        types.put(float.class, floatType);
-        types.put(double.class, doubleType);
+        TYPES.put(void.class, VOID_TYPE);
+        TYPES.put(boolean.class, BOOLEAN_TYPE);
+        TYPES.put(byte.class, BYTE_TYPE);
+        TYPES.put(char.class, CHAR_TYPE);
+        TYPES.put(short.class, SHORT_TYPE);
+        TYPES.put(int.class, INT_TYPE);
+        TYPES.put(long.class, LONG_TYPE);
+        TYPES.put(float.class, FLOAT_TYPE);
+        TYPES.put(double.class, DOUBLE_TYPE);
     }
 
     private PrimitiveType(Class cls, String idlName, String javaName) {
@@ -56,10 +56,11 @@ public class PrimitiveType extends ClassType {
     /**
      * Get a singleton instance representing one of the peimitive types.
      */
-    public final static PrimitiveType getPrimitiveType(Class cls) {
-        PrimitiveType type = (PrimitiveType)types.get(cls);
-        if (type == null)
+    public static PrimitiveType getPrimitiveType(final Class cls) {
+        final PrimitiveType type = TYPES.get(cls);
+        if (type == null) {
             throw new IllegalArgumentException(cls + " is not a primitive type");
+        }    
         return type;
     }
 

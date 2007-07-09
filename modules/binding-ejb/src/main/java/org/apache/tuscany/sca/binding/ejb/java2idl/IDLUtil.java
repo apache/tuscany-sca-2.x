@@ -46,15 +46,46 @@ import org.omg.CORBA.Any;
 /**
  * This is a RMI/IIOP metadata conversion utility class.
  */
-public class IDLUtil {
+public final class IDLUtil {
+    /**
+     * A cache for calculated class hash codes.
+     */
+    private static Map<Class, Long> classHashCodeCache = Collections.synchronizedMap(new WeakHashMap<Class, Long>());
+    /**
+     * A cache for class IR identifiers.
+     */
+    private static Map<Class, String> classIRIdentifierCache =
+        Collections.synchronizedMap(new WeakHashMap<Class, String>());
+    /**
+     * Reserved IDL keywords. Section 1.3.2.2 says that Java identifiers with
+     * these names should have prepended an underscore.
+     */
+
+    private static final Set<String> KEYWORDS = new HashSet<String>();
+    static {
+        String[] reservedIDLKeywords =
+            new String[] {"abstract", "any", "attribute", "boolean", "case", "char", "const", "context", "custom",
+                          "default", "double", "exception", "enum", "factory", "FALSE", "fixed", "float", "in",
+                          "inout", "interface", "local", "long", "module", "native", "Object", "octet", "oneway",
+                          "out", "private", "public", "raises", "readonly", "sequence", "short", "string", "struct",
+                          "supports", "switch", "TRUE", "truncatable", "typedef", "unsigned", "union", "ValueBase",
+                          "valuetype", "void", "wchar", "wstring"};
+        for (int i = 0; i < reservedIDLKeywords.length; i++) {
+            KEYWORDS.add(reservedIDLKeywords[i]);
+        }
+    }
+
+    private IDLUtil() {
+    }
 
     /**
      * Return the IDL type name for the given class. Here we use the mapping for
      * parameter types and return values.
      */
     public static String getTypeIDLName(Class cls) {
-        if (cls.isPrimitive())
+        if (cls.isPrimitive()) {
             return PrimitiveType.getPrimitiveType(cls).getIDLName();
+        }
         if (cls.isArray()) {
             int dimension = 0;
             Class type = cls;
@@ -75,20 +106,27 @@ public class IDLUtil {
         }
 
         // special classes
-        if (cls == java.lang.String.class)
+        if (cls == String.class) {
             return "::CORBA::WStringValue";
-        if (cls == java.lang.Object.class)
+        }
+        if (cls == Object.class) {
             return "::java::lang::_Object";
-        if (cls == java.lang.Class.class)
+        }
+        if (cls == Class.class) {
             return "::javax::rmi::CORBA::ClassDesc";
-        if (cls == java.io.Serializable.class)
+        }
+        if (cls == java.io.Serializable.class) {
             return "::java::io::Serializable";
-        if (cls == java.io.Externalizable.class)
+        }
+        if (cls == java.io.Externalizable.class) {
             return "::java::io::Externalizable";
-        if (cls == java.rmi.Remote.class)
+        }
+        if (cls == java.rmi.Remote.class) {
             return "::java::rmi::Remote";
-        if (cls == org.omg.CORBA.Object.class)
+        }
+        if (cls == org.omg.CORBA.Object.class) {
             return "::CORBA::Object";
+        }
         // remote interface?
         if (cls.isInterface() && java.rmi.Remote.class.isAssignableFrom(cls)) {
             InterfaceType ia = InterfaceType.getInterfaceType(cls);
@@ -102,7 +140,7 @@ public class IDLUtil {
         }
         // exception?
         if (Throwable.class.isAssignableFrom(cls)) {
-            if (Exception.class.isAssignableFrom(cls) && !RuntimeException.class.isAssignableFrom(cls)) {
+            if (Exception.class.isAssignableFrom(cls) && !AssertionError.class.isAssignableFrom(cls)) {
                 ExceptionType ea = ExceptionType.getExceptionType(cls);
                 return ea.getIDLModuleName() + "::" + ea.getIDLName();
             }
@@ -117,13 +155,16 @@ public class IDLUtil {
      * either throw an exception or return true.
      */
     public static boolean isValidRMIIIOP(Class cls) {
-        if (cls.isPrimitive())
+        if (cls.isPrimitive()) {
             return true;
-        if (cls.isArray())
+        }
+        if (cls.isArray()) {
             return isValidRMIIIOP(cls.getComponentType());
+        }
         // special interfaces
-        if (cls == Serializable.class || cls == Externalizable.class)
+        if (cls == Serializable.class || cls == Externalizable.class) {
             return true;
+        }
         // interface?
         if (cls.isInterface() && Remote.class.isAssignableFrom(cls)) {
             InterfaceType.getInterfaceType(cls);
@@ -131,14 +172,15 @@ public class IDLUtil {
         }
         // exception?
         if (Throwable.class.isAssignableFrom(cls)) {
-            if (Exception.class.isAssignableFrom(cls) && (!RuntimeException.class.isAssignableFrom(cls))) {
+            if (Exception.class.isAssignableFrom(cls) && (!AssertionError.class.isAssignableFrom(cls))) {
                 ExceptionType.getExceptionType(cls);
             }
             return true;
         }
         // special values
-        if (cls == Object.class || cls == String.class || cls == Class.class)
+        if (cls == Object.class || cls == String.class || cls == Class.class) {
             return true;
+        }
         // got to be value
         ValueType.getValueType(cls);
         return true;
@@ -150,24 +192,25 @@ public class IDLUtil {
      */
     public static void insertAnyPrimitive(Any any, Object primitive) {
         Class type = primitive.getClass();
-        if (type == Boolean.class)
+        if (type == Boolean.class) {
             any.insert_boolean(((Boolean)primitive).booleanValue());
-        else if (type == Character.class)
+        } else if (type == Character.class) {
             any.insert_wchar(((Character)primitive).charValue());
-        else if (type == Byte.class)
+        } else if (type == Byte.class) {
             any.insert_octet(((Byte)primitive).byteValue());
-        else if (type == Short.class)
+        } else if (type == Short.class) {
             any.insert_short(((Short)primitive).shortValue());
-        else if (type == Integer.class)
+        } else if (type == Integer.class) {
             any.insert_long(((Integer)primitive).intValue());
-        else if (type == Long.class)
+        } else if (type == Long.class) {
             any.insert_longlong(((Long)primitive).longValue());
-        else if (type == Float.class)
+        } else if (type == Float.class) {
             any.insert_float(((Float)primitive).floatValue());
-        else if (type == Double.class)
+        } else if (type == Double.class) {
             any.insert_double(((Double)primitive).doubleValue());
-        else
+        } else {
             throw new IllegalArgumentException(type.getName() + "is not a primitive type");
+        }
     }
 
     /**
@@ -175,26 +218,31 @@ public class IDLUtil {
      * This only works for a single name component, without a qualifying dot.
      */
     public static String javaToIDLName(String name) {
-        if (name == null || "".equals(name))
+        if (name == null || "".equals(name)) {
             throw new IllegalArgumentException("Illegal name: " + name);
-        if (name.indexOf('.') != -1)
+        }
+        if (name.indexOf('.') != -1) {
             throw new IllegalArgumentException("Qualified name is not supported: " + name);
+        }
         StringBuffer res = new StringBuffer(name.length());
-        if (name.charAt(0) == '_')
+        if (name.charAt(0) == '_') {
             res.append('J'); // 1.3.2.3
+        }
         for (int i = 0; i < name.length(); ++i) {
             char c = name.charAt(i);
-            if (isLegalIDLIdentifierChar(c))
+            if (isLegalIDLIdentifierChar(c)) {
                 res.append(c);
-            else
+            } else {
                 // 1.3.2.4
                 res.append('U').append(toHexString((int)c));
+            }
         }
         String s = res.toString();
-        if (isReservedIDLKeyword(s))
+        if (isReservedIDLKeyword(s)) {
             return "_" + s;
-        else
+        } else {
             return s;
+        }
     }
 
     /**
@@ -202,27 +250,31 @@ public class IDLUtil {
      * described in section 1.3.5.7.
      */
     public static String getIRIdentifier(Class cls) {
-        if (cls.isPrimitive())
+        if (cls.isPrimitive()) {
             throw new IllegalArgumentException("Primitive type doesn't have IR IDs.");
+        }
         String result = (String)classIRIdentifierCache.get(cls);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
         String name = cls.getName();
         StringBuffer b = new StringBuffer("RMI:");
         for (int i = 0; i < name.length(); ++i) {
             char c = name.charAt(i);
-            if (c < 256)
+            if (c < 256) {
                 b.append(c);
-            else
+            } else {
                 b.append("\\U").append(toHexString((int)c));
+            }
         }
         long clsHash = getClassHashCode(cls);
         b.append(':').append(toHexString(clsHash));
         ObjectStreamClass osClass = ObjectStreamClass.lookup(cls);
         if (osClass != null) {
             long serialVersionUID = osClass.getSerialVersionUID();
-            if (clsHash != serialVersionUID)
+            if (clsHash != serialVersionUID) {
                 b.append(':').append(toHexString(serialVersionUID));
+            }
         }
         result = b.toString();
         classIRIdentifierCache.put(cls, result);
@@ -230,78 +282,52 @@ public class IDLUtil {
     }
 
     /**
-     * A cache for calculated class hash codes.
-     */
-    private static Map classHashCodeCache = Collections.synchronizedMap(new WeakHashMap());
-    /**
-     * A cache for class IR identifiers.
-     */
-    private static Map classIRIdentifierCache = Collections.synchronizedMap(new WeakHashMap());
-    /**
-     * Reserved IDL keywords. Section 1.3.2.2 says that Java identifiers with
-     * these names should have prepended an underscore.
-     */
-
-    private static final Set reservedIDLKeywordSet = new HashSet();
-    static {
-        String[] reservedIDLKeywords = new String[] {"abstract", "any", "attribute", "boolean", "case", "char",
-                                                     "const", "context", "custom", "default", "double", "exception",
-                                                     "enum", "factory", "FALSE", "fixed", "float", "in", "inout",
-                                                     "interface", "local", "long", "module", "native", "Object",
-                                                     "octet", "oneway", "out", "private", "public", "raises",
-                                                     "readonly", "sequence", "short", "string", "struct", "supports",
-                                                     "switch", "TRUE", "truncatable", "typedef", "unsigned", "union",
-                                                     "ValueBase", "valuetype", "void", "wchar", "wstring"};
-        for (int i = 0; i < reservedIDLKeywords.length; i++)
-            reservedIDLKeywordSet.add(reservedIDLKeywords[i]);
-    }
-
-    /**
      * Convert an integer to a 16-digit hex string.
      */
-    private static String toHexString(int i) {
+    public static String toHexString(int i) {
         String s = Integer.toHexString(i).toUpperCase();
-        if (s.length() < 8)
+        if (s.length() < 8) {
             return "00000000".substring(8 - s.length()) + s;
-        else
+        } else {
             return s;
+        }
     }
 
     /**
      * Convert a long to a 16-digit hex string.
      */
-    private static String toHexString(long l) {
+    public static String toHexString(long l) {
         String s = Long.toHexString(l).toUpperCase();
-        if (s.length() < 16)
+        if (s.length() < 16) {
             return "0000000000000000".substring(16 - s.length()) + s;
-        else
+        } else {
             return s;
+        }
     }
 
     /**
      * Determine if the argument is a reserved IDL keyword.
      */
-    private static boolean isReservedIDLKeyword(String s) {
-        return reservedIDLKeywordSet.contains(s);
-        /*
-         * // TODO: faster lookup for (int i = 0; i <
-         * reservedIDLKeywords.length; ++i) if
-         * (reservedIDLKeywords[i].equals(s)) return true; return false;
-         */
+    public static boolean isReservedIDLKeyword(String s) {
+        return KEYWORDS.contains(s);
     }
 
     /**
      * Determine if a <code>char</code> is a legal IDL identifier character.
      */
     private static boolean isLegalIDLIdentifierChar(char c) {
-        if (c >= 0x61 && c <= 0x7a)
+        if (c >= 'a' && c <= 'z') {
             return true; // lower case letter
-        if (c >= 0x30 && c <= 0x39)
+        }
+        if (c >= '0' && c <= '9') {
             return true; // digit
-        if (c >= 0x41 && c <= 0x5a)
+        }
+        if (c >= 'A' && c <= 'Z') {
             return true; // upper case letter
-        if (c == '_')
+        }
+        if (c == '_') {
             return true; // underscore
+        }
         return false;
     }
 
@@ -311,16 +337,20 @@ public class IDLUtil {
      */
     static long getClassHashCode(Class cls) {
         // The simple cases
-        if (cls.isInterface())
+        if (cls.isInterface()) {
             return 0;
-        if (!Serializable.class.isAssignableFrom(cls))
+        }
+        if (!Serializable.class.isAssignableFrom(cls)) {
             return 0;
-        if (Externalizable.class.isAssignableFrom(cls))
+        }
+        if (Externalizable.class.isAssignableFrom(cls)) {
             return 1;
+        }
         // Try cache
         Long l = (Long)classHashCodeCache.get(cls);
-        if (l != null)
+        if (l != null) {
             return l.longValue();
+        }
         // Has to calculate the hash.
         ByteArrayOutputStream baos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(baos);
@@ -330,7 +360,7 @@ public class IDLUtil {
             try {
                 dos.writeLong(getClassHashCode(superClass));
             } catch (IOException ex) {
-                throw new RuntimeException("Unexpected IOException: " + ex);
+                throw new AssertionError(ex);
             }
         }
         // Step 2
@@ -340,23 +370,25 @@ public class IDLUtil {
             int mods;
             m = cls.getDeclaredMethod("writeObject", new Class[] {ObjectOutputStream.class});
             mods = m.getModifiers();
-            if (!Modifier.isPrivate(mods) && !Modifier.isStatic(mods))
+            if (!Modifier.isPrivate(mods) && !Modifier.isStatic(mods)) {
                 hasWriteObject = true;
+            }
         } catch (NoSuchMethodException ex) {
             // ignore
         }
         try {
             dos.writeInt(hasWriteObject ? 2 : 1);
         } catch (IOException ex) {
-            throw new RuntimeException("Unexpected IOException: " + ex);
+            throw new AssertionError(ex);
         }
         // Step 3
         Field[] fields = cls.getDeclaredFields();
-        SortedSet set = new TreeSet(new FieldComparator());
+        SortedSet<Field> set = new TreeSet<Field>(new FieldComparator());
         for (int i = 0; i < fields.length; ++i) {
             int mods = fields[i].getModifiers();
-            if (!Modifier.isStatic(mods) && !Modifier.isTransient(mods))
+            if (!Modifier.isStatic(mods) && !Modifier.isTransient(mods)) {
                 set.add(fields[i]);
+            }
         }
         Iterator iter = set.iterator();
         try {
@@ -366,13 +398,13 @@ public class IDLUtil {
                 dos.writeUTF(getSignature(f.getType()));
             }
         } catch (IOException ex) {
-            throw new RuntimeException("Unexpected IOException: " + ex);
+            throw new AssertionError(ex);
         }
         // Convert to byte[]
         try {
             dos.flush();
         } catch (IOException ex) {
-            throw new RuntimeException("Unexpected IOException: " + ex);
+            throw new AssertionError(ex);
         }
         byte[] bytes = baos.toByteArray();
         // Calculate SHA digest
@@ -380,7 +412,7 @@ public class IDLUtil {
         try {
             digest = MessageDigest.getInstance("SHA");
         } catch (NoSuchAlgorithmException ex) {
-            throw new RuntimeException("No SHA MEssageDigest: " + ex);
+            throw new AssertionError(ex);
         }
         digest.update(bytes);
         byte[] sha = digest.digest();
@@ -399,26 +431,35 @@ public class IDLUtil {
      * specification, section 4.3.2.
      */
     private static String getSignature(Class cls) {
-        if (cls.isArray())
+        if (cls.isArray()) {
             return "[" + cls.getComponentType();
+        }
         if (cls.isPrimitive()) {
-            if (cls == Byte.TYPE)
+            if (cls == Byte.TYPE) {
                 return "B";
-            if (cls == Character.TYPE)
+            }
+            if (cls == Character.TYPE) {
                 return "C";
-            if (cls == Double.TYPE)
+            }
+            if (cls == Double.TYPE) {
                 return "D";
-            if (cls == Float.TYPE)
+            }
+            if (cls == Float.TYPE) {
                 return "F";
-            if (cls == Integer.TYPE)
+            }
+            if (cls == Integer.TYPE) {
                 return "I";
-            if (cls == Long.TYPE)
+            }
+            if (cls == Long.TYPE) {
                 return "J";
-            if (cls == Short.TYPE)
+            }
+            if (cls == Short.TYPE) {
                 return "S";
-            if (cls == Boolean.TYPE)
+            }
+            if (cls == Boolean.TYPE) {
                 return "Z";
-            throw new RuntimeException("Unknown primitive class.");
+            }
+            throw new IllegalArgumentException("Unknown primitive class.");
         }
         return "L" + cls.getName().replace('.', '/') + ";";
     }
@@ -426,36 +467,42 @@ public class IDLUtil {
     /**
      * Handle mappings for primitive types, as per section 1.3.3.
      */
-    static String primitiveTypeIDLName(Class type) {
-        if (type == Void.TYPE)
+    static String getIDLNameForPrimitives(Class type) {
+        if (type == Void.TYPE) {
             return "void";
-        if (type == Boolean.TYPE)
+        }
+        if (type == Boolean.TYPE) {
             return "boolean";
-        if (type == Character.TYPE)
+        }
+        if (type == Character.TYPE) {
             return "wchar";
-        if (type == Byte.TYPE)
+        }
+        if (type == Byte.TYPE) {
             return "octet";
-        if (type == Short.TYPE)
+        }
+        if (type == Short.TYPE) {
             return "short";
-        if (type == Integer.TYPE)
+        }
+        if (type == Integer.TYPE) {
             return "long";
-        if (type == Long.TYPE)
+        }
+        if (type == Long.TYPE) {
             return "long long";
-        if (type == Float.TYPE)
+        }
+        if (type == Float.TYPE) {
             return "float";
-        if (type == Double.TYPE)
+        }
+        if (type == Double.TYPE) {
             return "double";
+        }
         throw new IllegalArgumentException(type + "is not a primitive type.");
     }
 
-    /**
-     * A <code>Comparator</code> for <code>Field</code>s, ordering the
-     * fields according to the lexicographic ordering of their Java names.
-     */
     private static class FieldComparator implements Comparator {
         public int compare(Object o1, Object o2) {
-            if (o1 == o2)
+            if (o1 == o2) {
                 return 0;
+            }
             String n1 = ((Field)o1).getName();
             String n2 = ((Field)o2).getName();
             return n1.compareTo(n2);

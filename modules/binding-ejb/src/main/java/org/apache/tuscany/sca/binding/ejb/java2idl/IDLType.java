@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.binding.ejb.java2idl;
 
 /**
- * Abstract base class for all IDL types.
+ * Base class for all IDL types.
  */
-abstract class IDLType {
+public abstract class IDLType {
 
     /**
      * Unqualified IDL name.
@@ -30,14 +30,14 @@ abstract class IDLType {
     /**
      * Unqualified java name.
      */
-    protected String javaName;
+    protected final String javaName;
 
-    IDLType(String idlName, String javaName) {
+    public IDLType(String idlName, String javaName) {
         this.idlName = idlName;
         this.javaName = javaName;
     }
 
-    IDLType(String javaName) {
+    public IDLType(String javaName) {
         this(IDLUtil.javaToIDLName(javaName), javaName);
     }
 

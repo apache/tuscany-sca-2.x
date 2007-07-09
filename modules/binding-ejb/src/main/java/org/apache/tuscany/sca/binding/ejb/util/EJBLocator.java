@@ -52,21 +52,22 @@ public class EJBLocator {
     public static final String CELL_ROOT = "NameServiceCellRoot";
     public static final String NODE_ROOT = "NameServiceNodeRoot";
     public static final String DEFAULT_ROOT = "NameService"; // Same as
-                                                                // CELL_ROOT
-
-    private static final Set ROOTS = new HashSet(Arrays.asList(new String[] {SERVER_ROOT, CELL_PERSISTENT_ROOT,
-                                                                             CELL_ROOT, DEFAULT_ROOT, NODE_ROOT}));
+    // CELL_ROOT
 
     public static final String DEFAULT_HOST = "127.0.0.1"; // Default host name
-                                                            // or IP address for
-                                                            // Websphere
+    // or IP address for
+    // Websphere
     public static final int DEFAULT_NAMING_PORT = 2809; // Default port
     public static final String NAMING_SERVICE = "NameService"; // The name of
-                                                                // the naming
-                                                                // service
+    // the naming
+    // service
+    private static final Set<String> ROOTS =
+        new HashSet<String>(Arrays.asList(new String[] {SERVER_ROOT, CELL_PERSISTENT_ROOT, CELL_ROOT, DEFAULT_ROOT,
+                                                        NODE_ROOT}));
 
     // private static final String CHARS_TO_ESCAPE = "\\/.";
-    private static final String RFC2396 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;/:?@&=+$,-_.!~*'()";
+    private static final String RFC2396 =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;/:?@&=+$,-_.!~*'()";
     private static final String HEX = "0123456789ABCDEF";
 
     private String hostName = DEFAULT_HOST;
@@ -80,12 +81,36 @@ public class EJBLocator {
     public EJBLocator(boolean managed) {
         this.managed = managed;
         if (!managed) {
-            String url = (String)AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
+            String url = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                public String run() {
                     return System.getProperty(Context.PROVIDER_URL);
                 }
             });
             processCorbaURL(url);
+        }
+    }
+
+    public EJBLocator(String hostName, int port) {
+        this.hostName = (hostName == null) ? DEFAULT_HOST : hostName;
+        this.port = port > 0 ? port : DEFAULT_NAMING_PORT;
+        this.root = SERVER_ROOT;
+    }
+
+    public EJBLocator(String hostName, int port, String root) {
+        this(hostName, port);
+        if (ROOTS.contains(root)) {
+            this.root = root;
+        } else {
+            throw new IllegalArgumentException(root + " is not a legal root");
+        }
+    }
+
+    public EJBLocator(String corbaName, boolean managed) {
+        this.managed = managed;
+        if (corbaName.startsWith("corbaname:iiop:")) {
+            processCorbaURL(corbaName);
+        } else {
+            throw new IllegalArgumentException(corbaName + " is not a legal corbaname");
         }
     }
 
@@ -101,36 +126,17 @@ public class EJBLocator {
             if (parts.length > 2 && parts[2].length() > 0) {
                 hostName = parts[2]; // The host name
                 int index = hostName.lastIndexOf('@'); // version@hostname
-                if (index != -1)
+                if (index != -1) {
                     hostName = hostName.substring(index + 1);
+                }
             }
-            if (parts.length > 3 && parts[3].length() > 0)
+            if (parts.length > 3 && parts[3].length() > 0) {
                 port = Integer.parseInt(parts[3]); // The port number
-            if (parts.length > 4 && parts[4].length() > 0)
+            }
+            if (parts.length > 4 && parts[4].length() > 0) {
                 root = parts[4]; // The root of naming
+            }
         }
-    }
-
-    public EJBLocator(String hostName, int port) {
-        this.hostName = (hostName == null) ? DEFAULT_HOST : hostName;
-        this.port = port > 0 ? port : DEFAULT_NAMING_PORT;
-        this.root = SERVER_ROOT;
-    }
-
-    public EJBLocator(String hostName, int port, String root) {
-        this(hostName, port);
-        if (ROOTS.contains(root))
-            this.root = root;
-        else
-            throw new IllegalArgumentException(root + " is not a legal root");
-    }
-
-    public EJBLocator(String corbaName, boolean managed) {
-        this.managed = managed;
-        if (corbaName.startsWith("corbaname:iiop:")) {
-            processCorbaURL(corbaName);
-        } else
-            throw new IllegalArgumentException(corbaName + " is not a legal corbaname");
     }
 
     /**
@@ -149,10 +155,11 @@ public class EJBLocator {
      * @return
      */
     private static String getCorbaloc(String hostName, int port, String service) {
-        if (service == null)
+        if (service == null) {
             return "corbaloc:iiop:" + hostName + ":" + port;
-        else
+        } else {
             return "corbaloc:iiop:" + hostName + ":" + port + "/" + service;
+        }
     }
 
     private String getCorbaloc(String service) {
@@ -180,10 +187,11 @@ public class EJBLocator {
      * @param name The JNDI name
      */
     private static String getCorbaname(String hostName, int port, String root, String name) {
-        if (name == null)
+        if (name == null) {
             return "corbaname:iiop:" + hostName + ":" + port + "/" + root;
-        else
+        } else {
             return "corbaname:iiop:" + hostName + ":" + port + "/" + root + "#" + toCorbaname(name);
+        }
     }
 
     String getCorbaname(String name) {
@@ -199,10 +207,14 @@ public class EJBLocator {
     public ORB connect() {
         if (orb == null) {
             Properties props = new Properties();
-            /* This code is for IBM JVM
-            props.put("org.omg.CORBA.ORBClass", "com.ibm.CORBA.iiop.ORB");
-            props.put("com.ibm.CORBA.ORBInitRef.NameService", getCorbaloc(NAMING_SERVICE));
-            props.put("com.ibm.CORBA.ORBInitRef.NameServiceServerRoot", getCorbaloc("NameServiceServerRoot"));  */
+            /*
+             * This code is for IBM JVM props.put("org.omg.CORBA.ORBClass",
+             * "com.ibm.CORBA.iiop.ORB");
+             * props.put("com.ibm.CORBA.ORBInitRef.NameService",
+             * getCorbaloc(NAMING_SERVICE));
+             * props.put("com.ibm.CORBA.ORBInitRef.NameServiceServerRoot",
+             * getCorbaloc("NameServiceServerRoot"));
+             */
             orb = ORB.init((String[])null, props);
         }
         return orb;
@@ -336,17 +348,19 @@ public class EJBLocator {
     private boolean isJndiConfigured() {
         if (managed)
             return true;
-        Boolean provided = (Boolean)AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        Boolean provided = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
                 String initCtxFactory = System.getProperty(Context.INITIAL_CONTEXT_FACTORY);
                 if (initCtxFactory == null) {
                     URL file = Thread.currentThread().getContextClassLoader().getResource("jndi.properties");
-                    if (file != null)
+                    if (file != null) {
                         return Boolean.TRUE;
-                    else
+                    } else {
                         return Boolean.FALSE;
-                } else
+                    }
+                } else {
                     return Boolean.TRUE;
+                }
             }
         });
         return provided.booleanValue();
@@ -367,23 +381,24 @@ public class EJBLocator {
      * @return RFC2396-encoded stringified name
      */
     static String encode2396(String s) {
-        if (s == null)
+        if (s == null) {
             return null;
+        }
         StringBuffer encoded = new StringBuffer(s);
         for (int i = 0; i < encoded.length(); i++) {
             char c = encoded.charAt(i);
             if (RFC2396.indexOf(c) == -1) {
                 encoded.setCharAt(i, '%');
                 char ac[] = Integer.toHexString(c).toCharArray();
-                if (ac.length == 2)
+                if (ac.length == 2) {
                     encoded.insert(i + 1, ac);
-                else if (ac.length == 1) {
+                } else if (ac.length == 1) {
                     encoded.insert(i + 1, '0');
                     encoded.insert(i + 2, ac[0]);
                 } else {
                     throw new IllegalArgumentException("Invalid character '" + c + "' in \"" + s + "\"");
                 }
-                i += 2;
+                i += 2; // NOPMD
             }
         }
         return encoded.toString();
@@ -396,20 +411,23 @@ public class EJBLocator {
      * @return Plain string
      */
     static String decode2396(String s) {
-        if (s == null)
+        if (s == null) {
             return null;
+        }
         StringBuffer decoded = new StringBuffer(s);
         for (int i = 0; i < decoded.length(); i++) {
             char c = decoded.charAt(i);
             if (c == '%') {
-                if (i + 2 >= decoded.length())
+                if (i + 2 >= decoded.length()) {
                     throw new IllegalArgumentException("Incomplete key_string escape sequence");
+                }
                 int j;
                 j = HEX.indexOf(decoded.charAt(i + 1)) * 16 + HEX.indexOf(decoded.charAt(i + 2));
                 decoded.setCharAt(i, (char)j);
                 decoded.delete(i + 1, i + 3);
-            } else if (RFC2396.indexOf(c) == -1)
+            } else if (RFC2396.indexOf(c) == -1) {
                 throw new IllegalArgumentException("Invalid key_string character '" + c + "'");
+            }
         }
         return decoded.toString();
     }
@@ -440,8 +458,9 @@ public class EJBLocator {
     }
 
     private ObjectLocator getObjectLocator() throws NamingException {
-        if (locator != null)
+        if (locator != null) {
             return locator;
+        }
         /*
          * For managed env, jndi is assumed to be configured by default For
          * unmanaged environment, jndi could have configured through
@@ -450,7 +469,7 @@ public class EJBLocator {
         if (isJndiConfigured()) {
             locator = new JndiLocator();
         } else { // this is definitely JSE env without jndi configured. Use
-                    // Corba.
+            // Corba.
             locator = new CosNamingLocator();
         }
         return locator;
@@ -463,10 +482,10 @@ public class EJBLocator {
     }
 
     private static interface ObjectLocator {
-        public Object locate(String name) throws NamingException;
+        Object locate(String name) throws NamingException;
     }
 
-    private class JndiLocator implements ObjectLocator {
+    private final class JndiLocator implements ObjectLocator {
         private Context context;
 
         private JndiLocator() throws NamingException {
@@ -478,17 +497,12 @@ public class EJBLocator {
         }
 
         public Object locate(String name) throws NamingException {
-            try {
             return context.lookup(name);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
         }
     }
 
-    private class CosNamingLocator implements ObjectLocator {
-        private NamingContextExt context = null;
+    private final class CosNamingLocator implements ObjectLocator {
+        private NamingContextExt context;
 
         private CosNamingLocator() {
         }
@@ -498,10 +512,11 @@ public class EJBLocator {
         }
 
         public Object locate(String name) throws NamingException {
-            if (context != null)
+            if (context != null) {
                 return resovleString(context, name);
-            else
+            } else {
                 return stringToObject(name);
+            }
         }
     }
 

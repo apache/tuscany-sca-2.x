@@ -34,19 +34,19 @@ public class AttributeType extends IDLType {
     /**
      * Read Method.
      */
-    private Method readMethod = null;
+    private Method readMethod;
     /**
      * Write Method. This is null for read-only attributes.
      */
-    private Method writeMethod = null;
+    private Method writeMethod;
     /**
      * Read method type.
      */
-    private OperationType readOperationType = null;
+    private OperationType readOperationType;
     /**
      * Write method type. This is null for read-only attributes.
      */
-    private OperationType writeOperationType = null;
+    private OperationType writeOperationType;
 
     /**
      * Create an attribute type.
@@ -61,8 +61,9 @@ public class AttributeType extends IDLType {
         if (readMethod.getDeclaringClass().isInterface() && Remote.class.isAssignableFrom(readMethod
             .getDeclaringClass())) {
             readOperationType = new OperationType(readMethod);
-            if (writeMethod != null)
+            if (writeMethod != null) {
                 writeOperationType = new OperationType(writeMethod);
+            }    
             setIDLName(getIDLName()); // Fixup operation names
         }
     }
@@ -71,14 +72,14 @@ public class AttributeType extends IDLType {
      * Create an attribute type for a read-only attribute.
      */
     AttributeType(String javaName, Method accessor) {
-        this(javaName, AttributeMode.ATTR_READONLY, accessor, null);
+        this(javaName, AttributeMode.ATTR_READONLY, accessor, null); //NOPMD
     }
 
     /**
      * Create an attribute type for a read-write attribute.
      */
     AttributeType(String javaName, Method accessor, Method mutator) {
-        this(javaName, AttributeMode.ATTR_NORMAL, accessor, mutator);
+        this(javaName, AttributeMode.ATTR_NORMAL, accessor, mutator); //NOPMD
     }
 
     /**
@@ -122,15 +123,18 @@ public class AttributeType extends IDLType {
      */
     void setIDLName(String idlName) {
         super.setIDLName(idlName);
+        String name = idlName;
         // If the first char is an uppercase letter and the second char is not
         // an uppercase letter, then convert the first char to lowercase.
-        char ch0 = idlName.charAt(0);
-        if (Character.isUpperCase(ch0) && (idlName.length() <= 1 || (!Character.isUpperCase(idlName.charAt(1))))) {
-            idlName = Character.toLowerCase(ch0) + idlName.substring(1);
+        char ch0 = name.charAt(0);
+        if (Character.isUpperCase(ch0) && (name.length() <= 1 || (!Character.isUpperCase(name.charAt(1))))) {
+            name = Character.toLowerCase(ch0) + name.substring(1);
         }
-        if (readOperationType != null)
-            readOperationType.setIDLName("_get_" + idlName);
-        if (writeOperationType != null)
-            writeOperationType.setIDLName("_set_" + idlName);
+        if (readOperationType != null) {
+            readOperationType.setIDLName("_get_" + name);
+        }    
+        if (writeOperationType != null) {
+            writeOperationType.setIDLName("_set_" + name);
+        }    
     }
 }

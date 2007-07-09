@@ -34,17 +34,19 @@ public class NamingEndpoint {
     public NamingEndpoint(String name) {
 
         /**
-         * by default it's a managed environment means SCA composite with ref binding is running on
-         * an AppServer. If running on J2SE, pass -Dmanaged=false for the VM 
-         */  
-        String managedEnv = (String)AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+         * by default it's a managed environment means SCA composite with ref
+         * binding is running on an AppServer. If running on J2SE, pass
+         * -Dmanaged=false for the VM
+         */
+        final String managedEnv = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
                 return System.getProperty("managed");
             }
         });
 
-        if (managedEnv != null)
-            managed = new Boolean(managedEnv);
+        if (managedEnv != null) {
+            managed = Boolean.valueOf(managedEnv);
+        }
 
         if ((!managed) && name.startsWith("corbaname:iiop:")) {
             /**
@@ -54,8 +56,9 @@ public class NamingEndpoint {
              */
 
             String[] parts = split(name, '#');
-            if (parts.length != 2)
+            if (parts.length != 2) {
                 throw new IllegalArgumentException("Invalid corbaname: " + name);
+            }    
 
             this.jndiName = parts[1]; // The logical jndi name
             this.locator = new EJBLocator(parts[0], managed);

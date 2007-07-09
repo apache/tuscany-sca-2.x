@@ -18,47 +18,48 @@
  */
 package org.apache.tuscany.sca.binding.ejb.java2idl;
 
+import static org.apache.tuscany.sca.binding.ejb.java2idl.IDLUtil.toHexString;
+
 import java.io.Externalizable;
 import java.io.ObjectStreamClass;
 import java.io.Serializable;
-import java.lang.ref.SoftReference;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Common base class of ValueType and InterfaceType.
  */
 public abstract class ContainerType extends ClassType {
-
+    protected static final Map<Class, ContainerType> PARSED_TYPES = new ConcurrentHashMap<Class, ContainerType>();
     /** Flags a method as overloaded. */
-    protected final byte M_OVERLOADED = 1;
+    protected static final byte M_OVERLOADED = 1;
     /** Flags a method as the accessor of a read-write property. */
-    protected final byte M_READ = 2;
+    protected static final byte M_READ = 2;
     /** Flags a method as the mutator of a read-write property. */
-    protected final byte M_WRITE = 4;
+    protected static final byte M_WRITE = 4;
     /** Flags a method as the accessor of a read-only property. */
-    protected final byte M_READONLY = 8;
+    protected static final byte M_READONLY = 8;
     /** Flags a method as being inherited. */
-    protected final byte M_INHERITED = 16;
+    protected static final byte M_INHERITED = 16;
     /**
      * Flags a method as being the writeObject() method used for serialization.
      */
-    protected final byte M_WRITEOBJECT = 32;
+    protected static final byte M_WRITEOBJECT = 32;
     /** Flags a field as being a constant (public final static). */
-    protected final byte F_CONSTANT = 1;
+    protected static final byte F_CONSTANT = 1;
     /**
      * Flags a field as being the special <code> public final static
      *  java.io.ObjectStreamField[] serialPersistentFields</code>
      * field.
      */
-    protected final byte F_SPFFIELD = 2;
+    protected static final byte F_SPFFIELD = 2;
 
     /**
      * Array of all java methods.
@@ -67,7 +68,7 @@ public abstract class ContainerType extends ClassType {
     /**
      * Array with flags for all java methods.
      */
-    protected byte[] m_flags;
+    protected byte[] mutatorFlags;
     /**
      * Index of the mutator for read-write attributes. Only entries
      * <code>i</code> where <code>(m_flags[i]&M_READ) != 0</code> are used.
@@ -82,23 +83,22 @@ public abstract class ContainerType extends ClassType {
     /**
      * Array with flags for all java fields.
      */
-    protected byte[] f_flags;
+    protected byte[] fieldFlags;
     /**
      * The class hash code, as specified in "The Common Object Request Broker:
      * Architecture and Specification" (01-02-33), section 10.6.2.
      */
-    protected long classHashCode = 0;
+    protected long classHashCode;
     /**
-     * The repository ID. This is in the RMI hashed format, like
-     * "RMI:java.util.Hashtable:C03324C0EA357270:13BB0F25214AE4B8".
+     * The repository ID. This is in the RMI hashed format.
      */
     protected String repositoryId;
     /**
      * The prefix and postfix of members repository ID. These are used to
-     * calculate member repository IDs and are like "RMI:java.util.Hashtable."
-     * and ":C03324C0EA357270:13BB0F25214AE4B8".
+     * calculate member repository IDs.
      */
-    protected String memberPrefix, memberPostfix;
+    protected String memberPrefix;
+    protected String memberPostfix;
     /**
      * Array of type of the interfaces implemented/extended here.
      */
@@ -123,12 +123,13 @@ public abstract class ContainerType extends ClassType {
     /**
      * A cache for the fully qualified IDL name of the IDL module we belong to.
      */
-    private String idlModuleName = null;
+    private String idlModuleName;
 
     protected ContainerType(Class cls) {
         super(cls);
-        if (cls == java.lang.Object.class || cls == java.io.Serializable.class || cls == java.io.Externalizable.class)
+        if (cls == Object.class || cls == Serializable.class || cls == Externalizable.class) {
             throw new IllegalArgumentException("Cannot parse special class: " + cls.getName());
+        }
         this.javaClass = cls;
     }
 
@@ -214,29 +215,6 @@ public abstract class ContainerType extends ClassType {
         return idlModuleName;
     }
 
-    // Protected -----------------------------------------------------
-    /**
-     * Convert an integer to a 16-digit hex string.
-     */
-    protected String toHexString(int i) {
-        String s = Integer.toHexString(i).toUpperCase();
-        if (s.length() < 8)
-            return "00000000".substring(0, 8 - s.length()) + s;
-        else
-            return s;
-    }
-
-    /**
-     * Convert a long to a 16-digit hex string.
-     */
-    protected String toHexString(long l) {
-        String s = Long.toHexString(l).toUpperCase();
-        if (s.length() < 16)
-            return "0000000000000000".substring(0, 16 - s.length()) + s;
-        else
-            return s;
-    }
-
     /**
      * Check if a method is an accessor.
      */
@@ -269,14 +247,17 @@ public abstract class ContainerType extends ClassType {
         /*
          * Is a checked exception
          */
-        if (!Throwable.class.isAssignableFrom(type))
+        if (!Throwable.class.isAssignableFrom(type)) {
             return false;
+        }
 
-        if (Error.class.isAssignableFrom(type))
+        if (Error.class.isAssignableFrom(type)) {
             return false;
+        }
 
-        if (RuntimeException.class.isAssignableFrom(type))
+        if (RuntimeException.class.isAssignableFrom(type)) {
             return false;
+        }
         return true;
     }
 
@@ -287,10 +268,12 @@ public abstract class ContainerType extends ClassType {
     protected boolean hasNonAppExceptions(Method m) {
         Class[] ex = m.getExceptionTypes();
         for (int i = 0; i < ex.length; ++i) {
-            if (!isCheckedException(ex[i]))
+            if (!isCheckedException(ex[i])) {
                 continue;
-            if (!RemoteException.class.isAssignableFrom(ex[i]))
+            }
+            if (!RemoteException.class.isAssignableFrom(ex[i])) {
                 return false;
+            }
         }
         return true;
     }
@@ -301,11 +284,12 @@ public abstract class ContainerType extends ClassType {
      */
     protected void parseFields() {
         fields = javaClass.getDeclaredFields();
-        f_flags = new byte[fields.length];
+        fieldFlags = new byte[fields.length];
         for (int i = 0; i < fields.length; ++i) {
             int mods = fields[i].getModifiers();
-            if (Modifier.isFinal(mods) && Modifier.isStatic(mods) && Modifier.isPublic(mods))
-                f_flags[i] |= F_CONSTANT;
+            if (Modifier.isFinal(mods) && Modifier.isStatic(mods) && Modifier.isPublic(mods)) {
+                fieldFlags[i] |= F_CONSTANT;
+            }
         }
     }
 
@@ -315,28 +299,23 @@ public abstract class ContainerType extends ClassType {
      */
     protected void parseInterfaces() {
         Class[] intfs = javaClass.getInterfaces();
-        ArrayList a = new ArrayList();
-        ArrayList b = new ArrayList();
+        List<InterfaceType> iTypes = new ArrayList<InterfaceType>();
+        List<ValueType> vTypes = new ArrayList<ValueType>();
         for (int i = 0; i < intfs.length; ++i) {
             // Ignore java.rmi.Remote
-            if (intfs[i] == java.rmi.Remote.class)
+            if (intfs[i] == Remote.class || intfs[i] == Serializable.class || intfs[i] == Externalizable.class) {
                 continue;
-            // Ignore java.io.Serializable
-            if (intfs[i] == java.io.Serializable.class)
-                continue;
-            // Ignore java.io.Externalizable
-            if (intfs[i] == java.io.Externalizable.class)
-                continue;
+            }
             if (!Java2IDLUtil.isAbstractValueType(intfs[i])) {
-                a.add(InterfaceType.getInterfaceType(intfs[i]));
+                iTypes.add(InterfaceType.getInterfaceType(intfs[i]));
             } else {
-                b.add(ValueType.getValueType(intfs[i]));
+                vTypes.add(ValueType.getValueType(intfs[i]));
             }
         }
-        interfaces = new InterfaceType[a.size()];
-        interfaces = (InterfaceType[])a.toArray(interfaces);
-        abstractBaseValuetypes = new ValueType[b.size()];
-        abstractBaseValuetypes = (ValueType[])b.toArray(abstractBaseValuetypes);
+        interfaces = new InterfaceType[iTypes.size()];
+        interfaces = (InterfaceType[])iTypes.toArray(interfaces);
+        abstractBaseValuetypes = new ValueType[vTypes.size()];
+        abstractBaseValuetypes = (ValueType[])vTypes.toArray(abstractBaseValuetypes);
     }
 
     /**
@@ -348,41 +327,43 @@ public abstract class ContainerType extends ClassType {
         // requires the inclusion of inherited methods in the type of
         // remote interfaces. To speed things up, inherited methods are
         // not considered in the type of a class or non-remote interface.
-        if (javaClass.isInterface() && java.rmi.Remote.class.isAssignableFrom(javaClass))
+        if (javaClass.isInterface() && Remote.class.isAssignableFrom(javaClass)) {
             methods = javaClass.getMethods();
-        else
+        } else {
             methods = javaClass.getDeclaredMethods();
-        m_flags = new byte[methods.length];
+        }
+        mutatorFlags = new byte[methods.length];
         setters = new int[methods.length];
         // Find read-write properties
-        for (int i = 0; i < methods.length; ++i)
-            setters[i] = -1; // no mutator here
         for (int i = 0; i < methods.length; ++i) {
-            if (isReadMethod(methods[i]) && (m_flags[i] & M_READ) == 0) {
-                String attrName = attributeReadName(methods[i].getName());
+            setters[i] = -1; // no mutator here
+        }
+        for (int i = 0; i < methods.length; ++i) {
+            if (isReadMethod(methods[i]) && (mutatorFlags[i] & M_READ) == 0) {
+                String attrName = getAttributeNameFromGetter(methods[i].getName());
                 Class iReturn = methods[i].getReturnType();
                 for (int j = i + 1; j < methods.length; ++j) {
-                    if (isWriteMethod(methods[j]) && (m_flags[j] & M_WRITE) == 0
-                        && attrName.equals(attributeWriteName(methods[j].getName()))) {
+                    if (isWriteMethod(methods[j]) && (mutatorFlags[j] & M_WRITE) == 0
+                        && attrName.equals(getAttributeNameFromSetter(methods[j].getName()))) {
                         Class[] jParams = methods[j].getParameterTypes();
                         if (jParams.length == 1 && jParams[0] == iReturn) {
-                            m_flags[i] |= M_READ;
-                            m_flags[j] |= M_WRITE;
+                            mutatorFlags[i] |= M_READ;
+                            mutatorFlags[j] |= M_WRITE;
                             setters[i] = j;
                             break;
                         }
                     }
                 }
-            } else if (isWriteMethod(methods[i]) && (m_flags[i] & M_WRITE) == 0) {
-                String attrName = attributeWriteName(methods[i].getName());
+            } else if (isWriteMethod(methods[i]) && (mutatorFlags[i] & M_WRITE) == 0) {
+                String attrName = getAttributeNameFromSetter(methods[i].getName());
                 Class[] iParams = methods[i].getParameterTypes();
                 for (int j = i + 1; j < methods.length; ++j) {
-                    if (isReadMethod(methods[j]) && (m_flags[j] & M_READ) == 0
-                        && attrName.equals(attributeReadName(methods[j].getName()))) {
+                    if (isReadMethod(methods[j]) && (mutatorFlags[j] & M_READ) == 0
+                        && attrName.equals(getAttributeNameFromGetter(methods[j].getName()))) {
                         Class jReturn = methods[j].getReturnType();
                         if (iParams.length == 1 && iParams[0] == jReturn) {
-                            m_flags[i] |= M_WRITE;
-                            m_flags[j] |= M_READ;
+                            mutatorFlags[i] |= M_WRITE;
+                            mutatorFlags[j] |= M_READ;
                             setters[j] = i;
                             break;
                         }
@@ -391,22 +372,25 @@ public abstract class ContainerType extends ClassType {
             }
         }
         // Find read-only properties
-        for (int i = 0; i < methods.length; ++i)
-            if ((m_flags[i] & (M_READ | M_WRITE)) == 0 && isReadMethod(methods[i]))
-                m_flags[i] |= M_READONLY;
+        for (int i = 0; i < methods.length; ++i) {
+            if ((mutatorFlags[i] & (M_READ | M_WRITE)) == 0 && isReadMethod(methods[i])) {
+                mutatorFlags[i] |= M_READONLY;
+            }
+        }
         // Check for overloaded and inherited methods
         for (int i = 0; i < methods.length; ++i) {
-            if ((m_flags[i] & (M_READ | M_WRITE | M_READONLY)) == 0) {
+            if ((mutatorFlags[i] & (M_READ | M_WRITE | M_READONLY)) == 0) {
                 String iName = methods[i].getName();
                 for (int j = i + 1; j < methods.length; ++j) {
                     if (iName.equals(methods[j].getName())) {
-                        m_flags[i] |= M_OVERLOADED;
-                        m_flags[j] |= M_OVERLOADED;
+                        mutatorFlags[i] |= M_OVERLOADED;
+                        mutatorFlags[j] |= M_OVERLOADED;
                     }
                 }
             }
-            if (methods[i].getDeclaringClass() != javaClass)
-                m_flags[i] |= M_INHERITED;
+            if (methods[i].getDeclaringClass() != javaClass) {
+                mutatorFlags[i] |= M_INHERITED;
+            }
         }
     }
 
@@ -414,13 +398,15 @@ public abstract class ContainerType extends ClassType {
      * Convert an attribute read method name in Java format to an attribute name
      * in Java format.
      */
-    protected String attributeReadName(String name) {
-        if (name.startsWith("get"))
+    protected String getAttributeNameFromGetter(String attrName) {
+        String name = attrName;
+        if (name.startsWith("get")) {
             name = name.substring(3);
-        else if (name.startsWith("is"))
+        } else if (name.startsWith("is")) {
             name = name.substring(2);
-        else
-            throw new IllegalArgumentException("Not an accessor: " + name);
+        } else {
+            throw new IllegalArgumentException("Invalid accessor: " + name);
+        }
         return name;
     }
 
@@ -428,32 +414,34 @@ public abstract class ContainerType extends ClassType {
      * Convert an attribute write method name in Java format to an attribute
      * name in Java format.
      */
-    protected String attributeWriteName(String name) {
-        if (name.startsWith("set"))
-            name = name.substring(3);
-        else
-            throw new IllegalArgumentException("Not an accessor: " + name);
-        return name;
+    protected String getAttributeNameFromSetter(String name) {
+        if (name.startsWith("set")) {
+            return name.substring(3);
+        } else {
+            throw new IllegalArgumentException("Invalid accessor: " + name);
+        }
     }
 
     /**
      * Analyse constants. This will fill in the <code>constants</code> array.
      */
     protected void parseConstants() {
-        ArrayList a = new ArrayList();
+        List<ConstantType> types = new ArrayList<ConstantType>();
         for (int i = 0; i < fields.length; ++i) {
-            if ((f_flags[i] & F_CONSTANT) == 0)
+            if ((fieldFlags[i] & F_CONSTANT) == 0) {
                 continue;
+            }
             Class type = fields[i].getType();
             // Only map primitives and java.lang.String
             if (!type.isPrimitive() && type != java.lang.String.class) {
                 // It is an RMI/IIOP violation for interfaces.
-                if (javaClass.isInterface())
+                if (javaClass.isInterface()) {
                     throw new IDLViolationException("Field \"" + fields[i].getName()
                         + "\" of interface \""
                         + javaClass.getName()
                         + "\" is a constant, but not of one "
                         + "of the primitive types, or String.", "1.2.3");
+                }
                 continue;
             }
             String name = fields[i].getName();
@@ -461,12 +449,12 @@ public abstract class ContainerType extends ClassType {
             try {
                 value = fields[i].get(null);
             } catch (Exception ex) {
-                throw new RuntimeException(ex.toString());
+                throw new IllegalArgumentException(ex.toString());
             }
-            a.add(new ConstantType(name, type, value));
+            types.add(new ConstantType(name, type, value));
         }
-        constants = new ConstantType[a.size()];
-        constants = (ConstantType[])a.toArray(constants);
+        constants = new ConstantType[types.size()];
+        constants = (ConstantType[])types.toArray(constants);
     }
 
     /**
@@ -474,22 +462,23 @@ public abstract class ContainerType extends ClassType {
      * array.
      */
     protected void parseAttributes() {
-        ArrayList a = new ArrayList();
+        List<AttributeType> types = new ArrayList<AttributeType>();
         for (int i = 0; i < methods.length; ++i) {
             // if ((m_flags[i]&M_INHERITED) != 0)
             // continue;
-            if ((m_flags[i] & (M_READ | M_READONLY)) != 0) {
+            if ((mutatorFlags[i] & (M_READ | M_READONLY)) != 0) {
                 // Read method of an attribute.
-                String name = attributeReadName(methods[i].getName());
-                if ((m_flags[i] & M_READONLY) != 0)
-                    a.add(new AttributeType(name, methods[i]));
-                else
-                    a.add(new AttributeType(name, methods[i], methods[setters[i]]));
+                String name = getAttributeNameFromGetter(methods[i].getName());
+                if ((mutatorFlags[i] & M_READONLY) != 0) {
+                    types.add(new AttributeType(name, methods[i]));
+                } else {
+                    types.add(new AttributeType(name, methods[i], methods[setters[i]]));
+                }
             }
         }
 
-        attributes = new AttributeType[a.size()];
-        attributes = (AttributeType[])a.toArray(attributes);
+        attributes = new AttributeType[types.size()];
+        attributes = (AttributeType[])types.toArray(attributes);
     }
 
     /**
@@ -506,24 +495,30 @@ public abstract class ContainerType extends ClassType {
      */
     protected void fixupOverloadedOperationNames() {
         for (int i = 0; i < methods.length; ++i) {
-            if ((m_flags[i] & M_OVERLOADED) == 0)
+            if ((mutatorFlags[i] & M_OVERLOADED) == 0) {
                 continue;
+            }
             // Find the operation
             OperationType oa = null;
-            for (int opIdx = 0; oa == null && opIdx < operations.length; ++opIdx)
-                if (operations[opIdx].getMethod().equals(methods[i]))
+            for (int opIdx = 0; oa == null && opIdx < operations.length; ++opIdx) {
+                if (operations[opIdx].getMethod().equals(methods[i])) {
                     oa = operations[opIdx];
-            if (oa == null)
+                }
+            }
+            if (oa == null) {
                 continue; // This method is not mapped.
-            // Calculate new IDL name
+                // Calculate new IDL name
+            }
             ParameterType[] parms = oa.getParameters();
             StringBuffer b = new StringBuffer(oa.getIDLName());
-            if (parms.length == 0)
+            if (parms.length == 0) {
                 b.append("__");
+            }
             for (int j = 0; j < parms.length; ++j) {
                 String s = parms[j].getTypeIDLName();
-                if (s.startsWith("::"))
+                if (s.startsWith("::")) {
                     s = s.substring(2);
+                }
                 b.append('_');
                 while (!"".equals(s)) {
                     int idx = s.indexOf("::");
@@ -546,7 +541,7 @@ public abstract class ContainerType extends ClassType {
      * Fixup names differing only in case. As specified in section 1.3.2.7.
      */
     protected void fixupCaseNames() {
-        ArrayList entries = getContainedEntries();
+        List<IDLType> entries = getContainedEntries();
         boolean[] clash = new boolean[entries.size()];
         String[] upperNames = new String[entries.size()];
         for (int i = 0; i < entries.size(); ++i) {
@@ -561,20 +556,23 @@ public abstract class ContainerType extends ClassType {
             }
         }
         for (int i = 0; i < entries.size(); ++i) {
-            if (!clash[i])
+            if (!clash[i]) {
                 continue;
+            }
             IDLType aa = (IDLType)entries.get(i);
             boolean noUpper = true;
             String name = aa.getIDLName();
             StringBuffer b = new StringBuffer(name);
             b.append('_');
             for (int j = 0; j < name.length(); ++j) {
-                if (!Character.isUpperCase(name.charAt(j)))
+                if (!Character.isUpperCase(name.charAt(j))) {
                     continue;
-                if (noUpper)
+                }
+                if (noUpper) {
                     noUpper = false;
-                else
+                } else {
                     b.append('_');
+                }
                 b.append(j);
             }
             aa.setIDLName(b.toString());
@@ -585,9 +583,9 @@ public abstract class ContainerType extends ClassType {
      * Return a list of all the entries contained here.
      * 
      * @param entries The list of entries contained here. Entries in this list
-     *            must be subclasses of <code>AbstractType</code>.
+     *            must be subclasses of <code>IDLType</code>.
      */
-    abstract protected ArrayList getContainedEntries();
+    protected abstract List<IDLType> getContainedEntries();
 
     /**
      * Return the class hash code, as specified in "The Common Object Request
@@ -595,15 +593,16 @@ public abstract class ContainerType extends ClassType {
      */
     protected void calculateClassHashCode() {
         // The simple cases
-        if (javaClass.isInterface())
+        if (javaClass.isInterface()) {
             classHashCode = 0;
-        else if (!Serializable.class.isAssignableFrom(javaClass))
+        } else if (!Serializable.class.isAssignableFrom(javaClass)) {
             classHashCode = 0;
-        else if (Externalizable.class.isAssignableFrom(javaClass))
+        } else if (Externalizable.class.isAssignableFrom(javaClass)) {
             classHashCode = 1;
-        else
+        } else {
             // Go ask Util class for the hash code
             classHashCode = IDLUtil.getClassHashCode(javaClass);
+        }
     }
 
     /**
@@ -613,10 +612,11 @@ public abstract class ContainerType extends ClassType {
         StringBuffer b = new StringBuffer();
         for (int i = 0; i < name.length(); ++i) {
             char c = name.charAt(i);
-            if (c < 256)
+            if (c < 256) {
                 b.append(c);
-            else
-                b.append("\\U").append(toHexString((int)c));
+            } else {
+                b.append("\\U").append(IDLUtil.toHexString((int)c));
+            }
         }
         return b.toString();
     }
@@ -627,8 +627,9 @@ public abstract class ContainerType extends ClassType {
      * format, like "RMI:java.util.Hashtable:C03324C0EA357270:13BB0F25214AE4B8".
      */
     protected void calculateRepositoryId() {
-        if (javaClass.isArray() || javaClass.isPrimitive())
+        if (javaClass.isArray() || javaClass.isPrimitive()) {
             throw new IllegalArgumentException("Not a class or interface.");
+        }
         if (javaClass.isInterface() && org.omg.CORBA.Object.class.isAssignableFrom(javaClass)
             && org.omg.CORBA.portable.IDLEntity.class.isAssignableFrom(javaClass)) {
             StringBuffer b = new StringBuffer("IDL:");
@@ -647,145 +648,16 @@ public abstract class ContainerType extends ClassType {
             ObjectStreamClass osClass = ObjectStreamClass.lookup(javaClass);
             if (osClass != null) {
                 long serialVersionUID = osClass.getSerialVersionUID();
-                String SVUID = toHexString(serialVersionUID);
-                if (classHashCode != serialVersionUID)
-                    b.append(':').append(SVUID);
-                memberPostfix = ":" + hashStr + ":" + SVUID;
-            } else
+                String uid = toHexString(serialVersionUID);
+                if (classHashCode != serialVersionUID) {
+                    b.append(':').append(uid);
+                }
+                memberPostfix = ":" + hashStr + ":" + uid;
+            } else {
                 memberPostfix = ":" + hashStr;
+            }
             repositoryId = b.toString();
         }
     }
-
-    /**
-     * A simple aggregate of work-in-progress, and the thread doing the work.
-     */
-    private static class Task {
-        ContainerType type;
-        Thread thread;
-
-        Task(ContainerType type, Thread thread) {
-            this.type = type;
-            this.thread = thread;
-        }
-    }
-
-    /**
-     * Instances of this class cache the most complex types. The types cached
-     * are:
-     * <ul>
-     * <li><code>InterfaceType</code> for interfaces.</li>
-     * <li><code>ValueType</code> for value types.</li>
-     * <li><code>ExceptionType</code> for exceptions.</li>
-     * </ul>
-     * Besides caching work already done, this caches work in progress, as we
-     * need to know about this to handle cyclic graphs of parses. When a thread
-     * re-enters the <code>getType()</code> metohd, an unfinished type will be
-     * returned if the same thread is already working on this type.
-     */
-    protected static class WorkCache {
-        /**
-         * The type constructor of our type class. This constructor takes a
-         * single argument of type <code>Class</code>.
-         */
-        private Constructor constructor;
-
-        /**
-         * This maps the classes of completely done parses to soft references of
-         * their type.
-         */
-        private Map workDone;
-
-        /**
-         * This maps the classes of parses in progress to their type.
-         */
-        private Map workInProgress;
-
-        /**
-         * Create a new work cache manager.
-         * 
-         * @param containerType The class of the type type we cache here.
-         */
-        WorkCache(Class containerType) {
-            // Find the constructor and initializer.
-            try {
-                constructor = containerType.getDeclaredConstructor(new Class[] {Class.class});
-            } catch (NoSuchMethodException ex) {
-                throw new IllegalArgumentException("Bad Class: " + ex.toString());
-            }
-            workDone = new WeakHashMap();
-            workInProgress = new HashMap();
-        }
-
-        /**
-         * Returns an type. If the calling thread is currently doing an type of
-         * this class, an unfinished type is returned.
-         */
-        ContainerType getType(Class cls) {
-            ContainerType ret;
-            synchronized (this) {
-                ret = lookupDone(cls);
-                if (ret != null)
-                    return ret;
-                // is it work-in-progress?
-                Task inProgress = (Task)workInProgress.get(cls);
-                if (inProgress != null) {
-                    if (inProgress.thread == Thread.currentThread())
-                        return inProgress.type; // return unfinished
-                    // Do not wait for the other thread: We may deadlock
-                    // Double work is better than deadlock...
-                }
-                ret = createTask(cls);
-            }
-            // Do the work
-            parse(cls, ret);
-            // We did it
-            synchronized (this) {
-                workInProgress.remove(cls);
-                workDone.put(cls, new SoftReference(ret));
-                notifyAll();
-            }
-            return ret;
-        }
-
-        /**
-         * Lookup an type in the fully done map.
-         */
-        private ContainerType lookupDone(Class cls) {
-            SoftReference ref = (SoftReference)workDone.get(cls);
-            if (ref == null)
-                return null;
-            ContainerType ret = (ContainerType)ref.get();
-            if (ret == null)
-                workDone.remove(cls); // clear map entry if soft ref. was
-            // cleared.
-            return ret;
-        }
-
-        /**
-         * Create new work-in-progress.
-         */
-        private ContainerType createTask(Class cls) {
-            try {
-                ContainerType type = (ContainerType)constructor.newInstance(new Object[] {cls});
-                workInProgress.put(cls, new Task(type, Thread.currentThread()));
-                return type;
-            } catch (Exception ex) {
-                // Ignore it
-                return null;
-            }
-        }
-
-        private void parse(Class cls, ContainerType ret) {
-            try {
-                ret.parse();
-            } finally {
-                synchronized (this) {
-                    workInProgress.remove(cls);
-                }
-            }
-        }
-
-    }
-
+    
 }

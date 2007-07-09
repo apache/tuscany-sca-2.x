@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.binding.ejb.java2idl;
 
 /**
- * IDL types.
+ * IDL types for java classes
  */
 public class ClassType extends IDLType {
 
@@ -27,17 +27,6 @@ public class ClassType extends IDLType {
      * java class.
      */
     protected Class javaClass;
-
-    private static String getJavaName(Class cls) {
-        if (cls == null)
-            throw new IllegalArgumentException("Class cannot be null.");
-        String s = cls.getName();
-        int index = s.lastIndexOf('.');
-        if (index == -1)
-            return s;
-        else
-            return s.substring(index + 1);
-    }
 
     public ClassType(Class cls, String idlName, String javaName) {
         super(idlName, javaName);
@@ -50,6 +39,19 @@ public class ClassType extends IDLType {
 
     public ClassType(Class cls) {
         this(cls, getJavaName(cls));
+    }
+
+    private static String getJavaName(Class cls) {
+        if (cls == null) {
+            throw new IllegalArgumentException("Class cannot be null.");
+        }
+        String s = cls.getName();
+        int index = s.lastIndexOf('.');
+        if (index == -1) {
+            return s;
+        } else {
+            return s.substring(index + 1);
+        }
     }
 
     /**

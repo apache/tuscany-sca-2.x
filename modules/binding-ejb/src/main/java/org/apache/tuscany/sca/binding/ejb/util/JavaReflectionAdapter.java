@@ -34,26 +34,26 @@ import org.osoa.sca.ServiceRuntimeException;
  * An adapter for java classes, indexes the methods by name and provides an
  * invoke method that takes a method name.
  */
-public class JavaReflectionAdapter {
+public final class JavaReflectionAdapter {
 
-    private static Map adapters = Collections.synchronizedMap(new WeakHashMap());
+    private static Map<Class, JavaReflectionAdapter> adapters =
+        Collections.synchronizedMap(new WeakHashMap<Class, JavaReflectionAdapter>());
+
+    private static final Map<Class, Object> DEFAULT_VALUES = new HashMap<Class, Object>();
+    static {
+        DEFAULT_VALUES.put(boolean.class, Boolean.FALSE);
+        DEFAULT_VALUES.put(byte.class, new Byte((byte)0));
+        DEFAULT_VALUES.put(char.class, new Character((char)0));
+        DEFAULT_VALUES.put(short.class, new Short((short)0));
+        DEFAULT_VALUES.put(int.class, Integer.valueOf(0));
+        DEFAULT_VALUES.put(long.class, new Long(0));
+        DEFAULT_VALUES.put(float.class, new Float(0.0));
+        DEFAULT_VALUES.put(double.class, new Double(0.0));
+    }
 
     private Class clazz;
-    private Map methodMap = new HashMap();
 
-    /**
-     * Create a java reflection adapter
-     * 
-     * @param clazz
-     */
-    public synchronized static JavaReflectionAdapter createJavaReflectionAdapter(Class clazz) {
-        JavaReflectionAdapter adapter = (JavaReflectionAdapter)adapters.get(clazz);
-        if (adapter == null) {
-            adapter = new JavaReflectionAdapter(clazz);
-            adapters.put(clazz, adapter);
-        }
-        return adapter;
-    }
+    private Map<String, Method> methodMap = new HashMap<String, Method>();
 
     /**
      * Constructor
@@ -64,23 +64,28 @@ public class JavaReflectionAdapter {
         this.clazz = clazz;
 
         // Index the methods on the implementation class
-        Method[] methods = (Method[])AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        Method[] methods = AccessController.doPrivileged(new PrivilegedAction<Method[]>() {
+            public Method[] run() {
                 return clazz.getMethods();
             }
         });
-        for (int i = 0, n = methods.length; i < n; i++) {
+        for (int i = 0; i < methods.length; i++) {
             methodMap.put(methods[i].getName(), methods[i]);
         }
     }
 
     /**
-     * Returns a map containing the methods on the class, keyed by name
+     * Create a java reflection adapter
      * 
-     * @return
+     * @param clazz
      */
-    public Map getMethods() {
-        return methodMap;
+    public static synchronized JavaReflectionAdapter createJavaReflectionAdapter(Class clazz) {
+        JavaReflectionAdapter adapter = (JavaReflectionAdapter)adapters.get(clazz);
+        if (adapter == null) {
+            adapter = new JavaReflectionAdapter(clazz);
+            adapters.put(clazz, adapter);
+        }
+        return adapter;
     }
 
     /**
@@ -93,21 +98,19 @@ public class JavaReflectionAdapter {
     public Method getMethod(String methodName) throws NoSuchMethodException {
 
         Method method = (Method)methodMap.get(methodName);
-        if (method == null)
+        if (method == null) {
             throw new NoSuchMethodException(methodName);
+        }
         return method;
     }
 
-    private final static Map DEFAULT_PRIMITIVE_VALUES = new HashMap();
-    static {
-        DEFAULT_PRIMITIVE_VALUES.put(boolean.class, Boolean.FALSE);
-        DEFAULT_PRIMITIVE_VALUES.put(byte.class, new Byte((byte)0));
-        DEFAULT_PRIMITIVE_VALUES.put(char.class, new Character((char)0));
-        DEFAULT_PRIMITIVE_VALUES.put(short.class, new Short((short)0));
-        DEFAULT_PRIMITIVE_VALUES.put(int.class, new Integer(0));
-        DEFAULT_PRIMITIVE_VALUES.put(long.class, new Long(0));
-        DEFAULT_PRIMITIVE_VALUES.put(float.class, new Float(0.0));
-        DEFAULT_PRIMITIVE_VALUES.put(double.class, new Double(0.0));
+    /**
+     * Returns a map containing the methods on the class, keyed by name
+     * 
+     * @return
+     */
+    public Map getMethods() {
+        return methodMap;
     }
 
     /**
@@ -126,7 +129,7 @@ public class JavaReflectionAdapter {
         for (int i = 0; i < parameterTypes.length; i++) {
             Class parameterType = parameterTypes[i];
             if (args[i] == null && parameterType.isPrimitive()) {
-                args[i] = DEFAULT_PRIMITIVE_VALUES.get(parameterType);
+                args[i] = DEFAULT_VALUES.get(parameterType);
             }
         }
         return method.invoke(object, args);

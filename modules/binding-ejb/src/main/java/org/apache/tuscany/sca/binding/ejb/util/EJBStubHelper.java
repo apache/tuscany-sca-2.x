@@ -26,7 +26,7 @@ import javax.naming.NamingException;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.ServiceUnavailableException;
 
-public class EJBStubHelper {
+public final class EJBStubHelper {
 
     private static Object stub;
     private static ServiceRuntimeException exception;
