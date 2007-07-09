@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.implementation.data.config.ConnectionProperties;
  * 
  * @version $Rev$ $Date$
  */
-public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAImplementation> {
+public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplementation> {
     protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_NS, "implementation.data");
     
     private static final QName CONNECTION_INFO = new QName(Constants.SCA10_NS, "connectionInfo");
@@ -55,7 +55,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
     
     private DATAImplementationFactory dataFactory;
     
-    public DATAImplementationProcessor(DATAImplementationFactory dataFactory) {
+    public DATAArtifactProcessor(DATAImplementationFactory dataFactory) {
         this.dataFactory = dataFactory;
     }
 

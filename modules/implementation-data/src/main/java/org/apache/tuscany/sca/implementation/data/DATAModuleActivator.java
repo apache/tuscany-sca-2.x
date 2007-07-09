@@ -58,7 +58,7 @@ public class DATAModuleActivator implements ModuleActivator {
         // Add the CRUD implementation extension to the StAXArtifactProcessor
         // extension point
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        DATAImplementationProcessor implementationArtifactProcessor = new DATAImplementationProcessor(crudFactory);
+        DATAArtifactProcessor implementationArtifactProcessor = new DATAArtifactProcessor(crudFactory);
         processors.addArtifactProcessor(implementationArtifactProcessor);
         
         // Add the CRUD provider factory to the ProviderFactory extension point

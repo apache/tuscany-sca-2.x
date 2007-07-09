@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.implementation.data.DATAImplementation;
 import org.apache.tuscany.sca.implementation.data.DATAImplementationFactory;
-import org.apache.tuscany.sca.implementation.data.DATAImplementationProcessor;
+import org.apache.tuscany.sca.implementation.data.DATAArtifactProcessor;
 import org.apache.tuscany.sca.implementation.data.config.ConnectionInfo;
 import org.apache.tuscany.sca.implementation.data.config.ConnectionProperties;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
@@ -90,8 +90,8 @@ public class DATAImplementationProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingDatasource() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_DATASOURCE));
         
-        DATAImplementationProcessor dataProcessor = 
-            new DATAImplementationProcessor(dataFactory);
+        DATAArtifactProcessor dataProcessor = 
+            new DATAArtifactProcessor(dataFactory);
         
         while(true) {
             int event = reader.next();
@@ -116,8 +116,8 @@ public class DATAImplementationProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingConnectionProperties() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_CONNECTION_PROPERTIES));
 
-        DATAImplementationProcessor dataProcessor = 
-            new DATAImplementationProcessor(dataFactory);
+        DATAArtifactProcessor dataProcessor = 
+            new DATAArtifactProcessor(dataFactory);
         
         while(true) {
             int event = reader.next();
