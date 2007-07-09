@@ -1093,11 +1093,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             List<ComponentReference> promotedReferences = getPromotedComponentReferences(compositeReference);
             for (ComponentReference promotedReference : promotedReferences) {
 
-                // Override the configuration of the promoted reference
-                SCABinding scaBinding = promotedReference.getBinding(SCABinding.class);
-                promotedReference.getBindings().clear();
-                promotedReference.getBindings().add(scaBinding);
-                promotedReference.getBindings().addAll(compositeReference.getBindings());
+                consolidateBindings(compositeReference, promotedReference);
             }
         }
 
@@ -1112,12 +1108,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                         List<ComponentReference> promotedReferences = getPromotedComponentReferences(compositeReference);
                         for (ComponentReference promotedReference : promotedReferences) {
 
-                            // Override the configuration of the promoted
-                            // reference
-                            SCABinding scaBinding = promotedReference.getBinding(SCABinding.class);
-                            promotedReference.getBindings().clear();
-                            promotedReference.getBindings().add(scaBinding);
-                            promotedReference.getBindings().addAll(componentReference.getBindings());
+                            // Override the configuration of the promoted reference
+                            consolidateBindings(componentReference, promotedReference);
 
                             // Wire the promoted reference to the actual
                             // non-composite component services
@@ -1162,6 +1154,23 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     }
                 }
             }
+        }
+    }
+
+    private void consolidateBindings(Reference reference, ComponentReference promotedReference) {
+        Multiplicity multiplicity = promotedReference.getMultiplicity();
+        if(multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
+            // Merging for 0..N or 1..N
+            promotedReference.getBindings().addAll(reference.getBindings());
+        } else {
+            // Override the configuration of the promoted reference for 0..1 or 1..1
+            SCABinding scaBinding = promotedReference.getBinding(SCABinding.class);
+            promotedReference.getBindings().clear();
+            // FIXME: [rfeng] I don't think we should keep the SCABinding
+            if (scaBinding != null) {
+                promotedReference.getBindings().add(scaBinding);
+            }
+            promotedReference.getBindings().addAll(reference.getBindings());
         }
     }
 
@@ -1316,6 +1325,30 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             componentReference.setMultiplicity(Multiplicity.ONE_ONE);
             component.getReferences().add(componentReference);
         }
+    }
+    
+    // Choose a binding for the reference based on the bindings available on the service 
+    protected Binding resolveBindings(ComponentReference reference, ComponentService service) {
+        List<Binding> refBindings = new ArrayList<Binding>(reference.getBindings());
+        for(Binding binding: reference.getBindings()){
+            for(Binding serviceBinding: service.getBindings()) {
+                if(binding.getClass() == serviceBinding.getClass()) {
+                    refBindings.add(binding);
+                    break;
+                }
+            }
+        }
+        if(refBindings.isEmpty()) {
+           return null; 
+        } else {
+            for(Binding binding: refBindings) {
+                if(SCABinding.class.isInstance(binding)) {
+                    return binding;
+                }
+            }
+            return refBindings.get(0);
+        }
+        
     }
     
     /**
