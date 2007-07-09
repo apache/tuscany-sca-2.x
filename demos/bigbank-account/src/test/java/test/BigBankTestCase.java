@@ -22,23 +22,19 @@ import junit.framework.TestCase;
 
 import bigbank.demo.BigBankServer;
 
-
-
 /**
  * @version $Rev$ $Date$
  */
 public class BigBankTestCase extends TestCase {
 
-
     protected void setUp() throws Exception {
     }
-    
+
     protected void tearDown() throws Exception {
     }
 
     public void testServer() throws Exception {
-        BigBankServer.main(null);
+        BigBankServer.main(new String[] {"1000"});
     }
-
 
 }
