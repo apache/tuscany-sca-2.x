@@ -16,54 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.databinding.xml;
 
+package org.apache.tuscany.sca.databinding.javabeans;
 
 import java.lang.annotation.Annotation;
 
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.w3c.dom.Node;
 
 /**
- * DOM DataBinding
- *
- * @version $Rev$ $Date$
+ * DataBinding for Java simple types
  */
-public class DOMDataBinding extends BaseDataBinding {
-    public static final String NAME = Node.class.getName();
-    public static final String[] ALIASES = new String[] {"dom"};
+public class SimpleJavaDataBinding extends BaseDataBinding {
+    public static final String NAME = "java:simpleType";
 
-    public static final String ROOT_NAMESPACE = "http://tuscany.apache.org/xmlns/sca/databinding/dom/1.0";
-    public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "root");
-
-    public DOMDataBinding() {
-        super(NAME, ALIASES, Node.class);
+    public SimpleJavaDataBinding() {
+        super(NAME, Object.class);
     }
 
-    @Override
-    public WrapperHandler getWrapperHandler() {
-        return new DOMWrapperHandler();
-    }
-
-    public Object copy(Object source) {
-        if (Node.class.isAssignableFrom(source.getClass())) {
-            Node nodeSource = (Node) source;
-            return nodeSource.cloneNode(true);
-        }
-        return super.copy(source);
+    public Object copy(Object arg) {
+        return arg;
     }
 
     @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
-        if(Node.class.isAssignableFrom(type.getPhysical())) {
-            type.setLogical(new XMLType(ROOT_ELEMENT, null));
-            return true;
+        Class<?> cls = type.getPhysical();
+        if (cls == Object.class) {
+            return false;
         }
-        return false;
+        if (SimpleTypeMapperImpl.JAVA2XML.keySet().contains(cls)) {
+            type.setDataBinding(getName());
+            type.setLogical(new XMLType(SimpleTypeMapperImpl.getXMLType(cls)));
+            return true;
+        } else {
+            return false;
+        }
     }
+
 }
