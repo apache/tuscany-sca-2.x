@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.das.impl;
+package org.apache.tuscany.sca.implementation.das;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -31,8 +31,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.implementation.das.DASImplementation;
-import org.apache.tuscany.sca.implementation.das.DASImplementationFactory;
 
 
 /**
@@ -45,12 +43,12 @@ import org.apache.tuscany.sca.implementation.das.DASImplementationFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class DASImplementationProcessor implements StAXArtifactProcessor<DASImplementation> {
+public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementation> {
     private static final QName IMPLEMENTATION_DAS = new QName(Constants.SCA10_NS, "implementation.das");
     
     private DASImplementationFactory dasFactory;
     
-    public DASImplementationProcessor(DASImplementationFactory crudFactory) {
+    public DASArtifactProcessor(DASImplementationFactory crudFactory) {
         this.dasFactory = crudFactory;
     }
 

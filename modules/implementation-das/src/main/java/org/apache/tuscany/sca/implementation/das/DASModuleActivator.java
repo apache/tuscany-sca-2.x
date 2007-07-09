@@ -17,16 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.das.module;
+package org.apache.tuscany.sca.implementation.das;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.implementation.das.DASImplementationFactory;
-import org.apache.tuscany.sca.implementation.das.DefaultDASImplementationFactory;
-import org.apache.tuscany.sca.implementation.das.impl.DASImplementationProcessor;
 import org.apache.tuscany.sca.implementation.das.provider.DASImplementationProviderFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -61,7 +58,7 @@ public class DASModuleActivator implements ModuleActivator {
         // Add the CRUD implementation extension to the StAXArtifactProcessor
         // extension point
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        DASImplementationProcessor implementationArtifactProcessor = new DASImplementationProcessor(crudFactory);
+        DASArtifactProcessor implementationArtifactProcessor = new DASArtifactProcessor(crudFactory);
         processors.addArtifactProcessor(implementationArtifactProcessor);
         
         // Add the CRUD provider factory to the ProviderFactory extension point
