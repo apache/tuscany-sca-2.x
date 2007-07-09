@@ -34,7 +34,7 @@ import org.omg.CORBA.portable.ObjectImpl;
 import org.omg.CORBA.portable.RemarshalException;
 import org.osoa.sca.ServiceRuntimeException;
 
-public class EJBObjectFactory {
+public final class EJBObjectFactory {
 
     private EJBObjectFactory() {
     }

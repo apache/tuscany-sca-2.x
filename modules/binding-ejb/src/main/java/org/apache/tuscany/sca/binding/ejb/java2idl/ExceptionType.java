@@ -24,29 +24,34 @@ import java.util.StringTokenizer;
  * IDL Exception
  */
 public class ExceptionType extends ValueType {
-
-    private static WorkCache cache = new WorkCache(ExceptionType.class);
-
     private String repositoryId;
-
-    public static ExceptionType getExceptionType(Class cls) {
-        return (ExceptionType)cache.getType(cls);
-    }
 
     protected ExceptionType(Class cls) {
         super(cls);
     }
 
+    public static ExceptionType getExceptionType(Class cls) {
+        ExceptionType type = (ExceptionType)PARSED_TYPES.get(cls);
+        if (type != null) {
+            return type;
+        }
+        type = new ExceptionType(cls);
+        type.parse();
+        return type;
+    }
+
     protected void parse() {
         super.parse();
-        if (!Exception.class.isAssignableFrom(javaClass) || RuntimeException.class.isAssignableFrom(javaClass))
+        if (!Exception.class.isAssignableFrom(javaClass) || RuntimeException.class.isAssignableFrom(javaClass)) {
             throw new IDLViolationException("Exception type " + javaClass.getName() + " must be a checked exception.",
                                             "1.2.6");
+        }
         // calculate exceptionRepositoryId
         StringBuffer b = new StringBuffer("IDL:");
         String base = javaClass.getName();
-        if (base.endsWith("Exception"))
+        if (base.endsWith("Exception")) {
             base = base.substring(0, base.length() - 9);
+        }
         StringTokenizer tokenizer = new StringTokenizer(base, ".");
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();

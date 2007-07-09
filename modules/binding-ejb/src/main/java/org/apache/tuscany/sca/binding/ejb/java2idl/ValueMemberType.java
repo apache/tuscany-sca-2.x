@@ -26,11 +26,11 @@ public class ValueMemberType extends IDLType {
     /**
      * Java type.
      */
-    private Class javaClass;
+    private final Class javaClass;
     /**
      * Flags that this member is public.
      */
-    private boolean isPublic;
+    private final boolean isPublic;
 
     ValueMemberType(String javaName, Class cls, boolean isPublic) {
         super(javaName);

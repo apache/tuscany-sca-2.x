@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.ejb.java2idl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,29 +28,34 @@ import java.util.Map;
  * Mapping Specification", version 1.1 (01-06-07).
  */
 public class InterfaceType extends ContainerType {
-
     private boolean abstractInterface;
     private String[] typeIDs;
 
     /**
      * Map of IDL operation names to operation parses.
      */
-    private Map operationTypeMap;
-
-    private static WorkCache cache = new WorkCache(InterfaceType.class);
-
-    public static InterfaceType getInterfaceType(Class cls) {
-        return (InterfaceType)cache.getType(cls);
-    }
+    private Map<String, OperationType> operationTypeMap;
 
     protected InterfaceType(Class cls) {
         super(cls);
     }
 
+    public static InterfaceType getInterfaceType(Class cls) {
+        InterfaceType type = (InterfaceType)PARSED_TYPES.get(cls);
+        if (type != null) {
+            return type;
+        }
+        type = new InterfaceType(cls);
+        type.parse();
+        PARSED_TYPES.put(cls, type);
+        return type;
+    }
+
     protected void parse() {
         super.parse();
-        if (!javaClass.isInterface())
+        if (!javaClass.isInterface()) {
             throw new IllegalArgumentException("Class [" + javaClass.getName() + "] is not an interface.");
+        }
         abstractInterface = Java2IDLUtil.isAbstractInterface(javaClass);
         calculateOperationTypeMap();
         calculateAllTypeIds();
@@ -61,7 +67,7 @@ public class InterfaceType extends ContainerType {
     }
 
     private boolean isRemoteInterface() {
-        return (!abstractInterface);
+        return !abstractInterface;
     }
 
     public String[] getTypeIDs() {
@@ -74,14 +80,17 @@ public class InterfaceType extends ContainerType {
      * @param entries The list of entries contained here. Entries in this list
      *            are subclasses of <code>AbstractType</code>.
      */
-    protected ArrayList getContainedEntries() {
-        ArrayList ret = new ArrayList(constants.length + attributes.length + operations.length);
-        for (int i = 0; i < constants.length; ++i)
+    protected List<IDLType> getContainedEntries() {
+        List<IDLType> ret = new ArrayList<IDLType>(constants.length + attributes.length + operations.length);
+        for (int i = 0; i < constants.length; ++i) {
             ret.add(constants[i]);
-        for (int i = 0; i < attributes.length; ++i)
+        }
+        for (int i = 0; i < attributes.length; ++i) {
             ret.add(attributes[i]);
-        for (int i = 0; i < operations.length; ++i)
+        }
+        for (int i = 0; i < operations.length; ++i) {
             ret.add(operations[i]);
+        }
         return ret;
     }
 
@@ -91,13 +100,15 @@ public class InterfaceType extends ContainerType {
      */
     protected void parseOperations() {
         int operationCount = 0;
-        for (int i = 0; i < methods.length; ++i)
-            if ((m_flags[i] & (M_READ | M_WRITE | M_READONLY)) == 0)
+        for (int i = 0; i < methods.length; ++i) {
+            if ((mutatorFlags[i] & (M_READ | M_WRITE | M_READONLY)) == 0) {
                 ++operationCount;
+            }
+        }
         operations = new OperationType[operationCount];
         operationCount = 0;
         for (int i = 0; i < methods.length; ++i) {
-            if ((m_flags[i] & (M_READ | M_WRITE | M_READONLY)) == 0) {
+            if ((mutatorFlags[i] & (M_READ | M_WRITE | M_READONLY)) == 0) {
                 operations[operationCount] = new OperationType(methods[i]);
                 ++operationCount;
             }
@@ -110,7 +121,7 @@ public class InterfaceType extends ContainerType {
      * and mutator operations.
      */
     protected void calculateOperationTypeMap() {
-        operationTypeMap = new HashMap();
+        operationTypeMap = new HashMap<String, OperationType>();
         OperationType oa;
         // Map the operations
         for (int i = 0; i < operations.length; ++i) {

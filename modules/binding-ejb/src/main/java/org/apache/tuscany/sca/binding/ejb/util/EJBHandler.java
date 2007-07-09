@@ -48,6 +48,19 @@ import org.osoa.sca.ServiceRuntimeException;
  * EJBMessageHandler
  */
 public class EJBHandler {
+    private static final Map<String, Class> PRIMITIVE_TYPES = new HashMap<String, Class>();
+    static {
+        PRIMITIVE_TYPES.put("boolean", boolean.class);
+        PRIMITIVE_TYPES.put("byte", byte.class);
+        PRIMITIVE_TYPES.put("char", char.class);
+        PRIMITIVE_TYPES.put("short", short.class);
+        PRIMITIVE_TYPES.put("int", int.class);
+        PRIMITIVE_TYPES.put("long", long.class);
+        PRIMITIVE_TYPES.put("float", float.class);
+        PRIMITIVE_TYPES.put("double", double.class);
+        PRIMITIVE_TYPES.put("void", void.class);
+    }
+
     private Object ejbStub;
 
     private InterfaceInfo interfaceInfo;
@@ -64,30 +77,16 @@ public class EJBHandler {
             this.ejbStub = EJBStubHelper.lookup(namingEndpoint);
             this.interfaceInfo = ejbInterface;
         } catch (Exception e) {
-            Throwable b = e.getCause();
-            b.printStackTrace();
             throw new ServiceRuntimeException(e);
         }
     }
 
-    private final static Map<String, Class> primitiveClasses = new HashMap<String, Class>();
-    static {
-        primitiveClasses.put("boolean", boolean.class);
-        primitiveClasses.put("byte", byte.class);
-        primitiveClasses.put("char", char.class);
-        primitiveClasses.put("short", short.class);
-        primitiveClasses.put("int", int.class);
-        primitiveClasses.put("long", long.class);
-        primitiveClasses.put("float", float.class);
-        primitiveClasses.put("double", double.class);
-        primitiveClasses.put("void", void.class);
-    }
-
     private static Class loadClass(final String name) {
-        Class type = (Class)primitiveClasses.get(name);
-        if (type != null)
+        Class type = (Class)PRIMITIVE_TYPES.get(name);
+        if (type != null) {
             return type;
-        return (Class)AccessController.doPrivileged(new PrivilegedAction<Class>() {
+        }
+        return AccessController.doPrivileged(new PrivilegedAction<Class>() {
             public Class run() {
                 try {
                     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -160,13 +159,15 @@ public class EJBHandler {
      * @return The IDL operation name
      */
     private String getOperation(String methodName) {
-        if (interfaceInfo == null)
+        if (interfaceInfo == null) {
             return methodName;
+        }
         MethodInfo methodInfo = interfaceInfo.getMethod(methodName);
-        if (methodInfo != null)
+        if (methodInfo != null) {
             return methodInfo.getIDLName();
-        else
+        } else {
             return null;
+        }
     }
 
     /*
@@ -382,16 +383,16 @@ public class EJBHandler {
      */
     protected Object readValue(InputStream in, Class type) {
         Object value = null;
-        if (type == null)
+        if (type == null) {
             value = in.read_value();
-        else if (type == Object.class || type == Serializable.class || type == Externalizable.class) {
+        } else if (type == Object.class || type == Serializable.class || type == Externalizable.class) {
             value = Util.readAny(in);
         } else if (type == Integer.TYPE) {
-            value = new Integer(in.read_long());
+            value = Integer.valueOf(in.read_long());
         } else if (type == Short.TYPE) {
             value = new Short(in.read_short());
         } else if (type == Boolean.TYPE) {
-            value = new Boolean(in.read_boolean());
+            value = Boolean.valueOf(in.read_boolean());
         } else if (type == Byte.TYPE) {
             value = new Byte(in.read_octet());
         } else if (type == Long.TYPE) {

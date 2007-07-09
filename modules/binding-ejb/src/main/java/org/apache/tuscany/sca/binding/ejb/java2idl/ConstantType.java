@@ -28,16 +28,17 @@ public class ConstantType extends IDLType {
     /**
      * Java type of constant.
      */
-    private Class type;
+    private final Class type;
     /**
      * The value of the constant.
      */
-    private Object value;
+    private final Object value;
 
     ConstantType(String javaName, Class type, Object value) {
         super(javaName);
-        if (type == void.class || (!type.isPrimitive()) && type != java.lang.String.class)
+        if (type == void.class || (!type.isPrimitive()) && type != java.lang.String.class) {
             throw new IllegalArgumentException("Illegal type for constant: " + type.getName());
+        }
         this.type = type;
         this.value = value;
     }
@@ -60,9 +61,10 @@ public class ConstantType extends IDLType {
      * Insert the constant value into the argument Any.
      */
     public void insertValue(Any any) {
-        if (type == String.class)
+        if (type == String.class) {
             any.insert_wstring((String)value); // 1.3.5.10 Map to wstring
-        else
+        } else {
             IDLUtil.insertAnyPrimitive(any, value);
+        }
     }
 }
