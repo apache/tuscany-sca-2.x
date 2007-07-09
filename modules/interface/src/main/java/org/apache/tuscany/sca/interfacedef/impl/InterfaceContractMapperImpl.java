@@ -160,7 +160,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             }
             if (!source.getInterface().isRemotable()) {
                 // FIXME: for remotable operation, only compare name for now
-                if (!operation.equals(targetOperation)) {
+                if (!isCompatible(operation, targetOperation, false)) {
                     if (!silent) {
                         throw new IncompatibleInterfaceContractException("Target operations are not compatible",
                                                                          source, target);
