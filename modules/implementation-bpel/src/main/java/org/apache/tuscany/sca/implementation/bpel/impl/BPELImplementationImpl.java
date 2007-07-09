@@ -60,6 +60,7 @@ public class BPELImplementationImpl implements BPELImplementation {
     private Service _bpelService;
     private QName _processName;
     private byte[] _compiledProcess;
+    private boolean unresolved;
 
     /**
      * Constructs a new BPEL implementation.
@@ -142,12 +143,11 @@ public class BPELImplementationImpl implements BPELImplementation {
     }
 
     public boolean isUnresolved() {
-        // The sample BPEL implementation is always resolved
-        return false;
+        return this.unresolved;
     }
 
     public void setUnresolved(boolean unresolved) {
-        // The sample BPEL implementation is always resolved
+        this.unresolved = unresolved;
     }
 
     private class ProcessConfImpl implements ProcessConf {

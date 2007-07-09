@@ -51,12 +51,12 @@ import java.io.ByteArrayOutputStream;
  * 
  *  @version $Rev$ $Date$
  */
-public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELImplementation> {
+public class BPELArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
     private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA_NS, "implementation.bpel");
     
     private BPELImplementationFactory bpelFactory;
     
-    public BPELImplementationProcessor(BPELImplementationFactory crudFactory) {
+    public BPELArtifactProcessor(BPELImplementationFactory crudFactory) {
         this.bpelFactory = crudFactory;
     }
 
@@ -96,7 +96,7 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
             BPELImplementation implementation = bpelFactory.createBPELImplementation();
             implementation.setProcessName(process);
             implementation.setCompiledProcess(compiledProcess.toByteArray());
-            implementation.setUnresolved(true);
+            implementation.setUnresolved(false);
             
             // Skip to end element
             while (reader.hasNext()) {
@@ -113,6 +113,11 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
 
     public void resolve(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
         System.out.println("IN RESOLVE");
+        if( impl != null && impl.isUnresolved()) {
+            
+            impl.setUnresolved(false);
+        }
+        
     }
 
     public void write(BPELImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
