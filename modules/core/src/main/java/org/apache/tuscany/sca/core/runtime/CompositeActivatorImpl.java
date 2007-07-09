@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -331,7 +332,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
         InterfaceContract bindingContract = getInterfaceContract(reference, binding);
 
         if (!(binding instanceof SCABinding)) {
-            InterfaceContract sourceContract = reference.getInterfaceContract();
+            // Use the interface contract of the reference on the component type
+            Reference componentTypeRef = reference.getReference();
+            InterfaceContract sourceContract = componentTypeRef == null ? reference.getInterfaceContract()
+                                                                       : componentTypeRef.getInterfaceContract();
 
             // Component Reference --> External Service
             EndpointReference wireSource = new EndpointReferenceImpl((RuntimeComponent)component,
