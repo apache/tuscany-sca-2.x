@@ -62,10 +62,22 @@ public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementa
         return DASImplementation.class;
     }
 
+    /*
+     * <component name="CompanyDataComponent">
+     *   <implementation.das config="/CompanyConfig.xml" dataAccessType="rdb">
+     *      <connectionInfo>
+     *         <connectionProperties 
+     *          driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
+     *          databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
+     *          loginTimeout="600000"/>
+     *      </connectionInfo>
+     *   </implementation.data>
+     * </component>
+     */
     public DASImplementation read(XMLStreamReader reader) throws ContributionReadException {
         assert IMPLEMENTATION_DAS.equals(reader.getName());
         
-        // Read an <implementation.crud> element
+        // Read an <implementation.das> element
         try {
             // Read the das config file attribute. 
             // This is das configuration side file to use
