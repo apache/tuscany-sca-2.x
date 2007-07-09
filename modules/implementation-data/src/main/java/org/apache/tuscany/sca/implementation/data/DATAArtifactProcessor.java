@@ -71,7 +71,7 @@ public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplemen
 
     /*
      * <component name="CompanyDataComponent">
-     *   <implementation.data datacource="" table="company">
+     *   <implementation.data table="company">
      *      <connectionInfo>
      *         <connectionProperties 
      *          driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
