@@ -44,6 +44,9 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     }
 
     public boolean isTransformationRequired(DataType source, DataType target) {
+        if (source == null || target == null) { // void return type
+            return false;
+        }
         if (source == target) {
             return false;
         }
