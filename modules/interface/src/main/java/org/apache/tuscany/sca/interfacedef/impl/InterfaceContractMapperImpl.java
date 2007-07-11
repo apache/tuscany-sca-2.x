@@ -38,6 +38,9 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return true;
         }
         if (!remotable) {
+            if (source == null || target == null) {
+                return false;
+            }
             // For local case
             return target.getPhysical() == source.getPhysical();
         } else {
@@ -55,6 +58,10 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
         // Check name
         if (!source.getName().equals(target.getName())) {
+            return false;
+        }
+        
+        if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
             return false;
         }
 
@@ -196,12 +203,15 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                     return false;
                 }
             }
-            if (!operation.equals(targetOperation)) {
-                if (!silent) {
-                    throw new IncompatibleInterfaceContractException("Target callback operation is not compatible",
-                                                                     source, target, operation, targetOperation);
-                } else {
-                    return false;
+            if (!source.getCallbackInterface().isRemotable()) {
+                // FIXME: for remotable operation, only compare name for now
+                if (!operation.equals(targetOperation)) {
+                    if (!silent) {
+                        throw new IncompatibleInterfaceContractException("Target callback operation is not compatible",
+                                                                         source, target, operation, targetOperation);
+                    } else {
+                        return false;
+                    }
                 }
             }
         }

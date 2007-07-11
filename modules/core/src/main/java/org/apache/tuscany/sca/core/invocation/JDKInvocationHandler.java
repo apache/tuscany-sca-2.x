@@ -66,7 +66,7 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
         }
         InvocationChain chain = getInvocationChain(method);
         if (chain == null) {
-            throw new IllegalArgumentException("No matching opeeration is found: " + method);
+            throw new IllegalArgumentException("No matching operation is found: " + method);
         }
 
         // send the invocation down the wire

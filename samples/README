@@ -38,6 +38,8 @@ helloworld-jsonrpc       - An SCA application that exposes a service using
                            JSONRPC
 simple-callback          - An SCA application with two components demonstrating
                            the callback interface
+simple-callback-ws       - An SCA application with two components demonstrating
+                           the callback interface across the Web service binding
 implementation-composite - An SCA application that shows how composites are used to 
                            implement components
 supplychain              - A more complicated sample showing how asynchronous 
@@ -241,4 +243,5 @@ In a new or existing workspace
 
 The details of how to do this for other development environments will
 vary but the process will be similar. 
+
 

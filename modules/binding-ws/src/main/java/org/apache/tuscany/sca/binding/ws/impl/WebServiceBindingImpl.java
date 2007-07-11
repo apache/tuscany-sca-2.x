@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class WebServiceBindingImpl implements WebServiceBinding {
     private String name;
     private String uri;
+    private boolean isCallback;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private boolean unresolved;
@@ -78,6 +79,14 @@ public class WebServiceBindingImpl implements WebServiceBinding {
 
     public void setURI(String uri) {
         this.uri = uri;
+    }
+
+    public boolean isCallback() {
+        return isCallback;
+    }
+
+    public void setCallback(boolean isCallback) {
+        this.isCallback = isCallback;
     }
 
     public List<Intent> getRequiredIntents() {

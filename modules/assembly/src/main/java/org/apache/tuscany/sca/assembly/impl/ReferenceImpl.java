@@ -69,6 +69,17 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         return null;
     }
 
+    public <B> B getCallbackBinding(Class<B> bindingClass) {
+        if (callback != null) {
+            for (Binding binding : callback.getBindings()) {
+                if (bindingClass.isInstance(binding)) {
+                    return bindingClass.cast(binding);
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean isWiredByImpl() {
         return wiredByImpl;
     }

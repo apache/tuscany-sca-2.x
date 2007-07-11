@@ -149,7 +149,11 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                                 } else if (extension instanceof Binding) {
     
                                     // <service><binding> and <reference><binding>
-                                    contract.getBindings().add((Binding)extension);
+                                    if (callback != null) {
+                                        callback.getBindings().add((Binding)extension);
+                                    } else {
+                                        contract.getBindings().add((Binding)extension);
+                                    }
                                 }
                             }
                         }

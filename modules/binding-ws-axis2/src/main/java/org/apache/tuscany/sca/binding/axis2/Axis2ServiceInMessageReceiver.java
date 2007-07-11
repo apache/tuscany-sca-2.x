@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.axis2;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
@@ -46,19 +48,16 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
             Object[] args = new Object[] {requestOM};
             String conversationID = provider.isConversational() ?  Axis2ServiceBindingProvider.getConversationID(inMC) : null;
 
-//            axis2Service.invokeTarget(operation, args, null, conversationID);
+            provider.invokeTarget(operation, args, null, conversationID);
 
-//        } catch (InvocationTargetException e) {
-//            Throwable t = e.getCause();
-//            if (t instanceof Exception) {
-//                throw AxisFault.makeFault((Exception)t);
-//            }
-//            throw new InvocationRuntimeException(e);
-        } catch (Throwable t) {
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getCause();
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception)t);
             }
-            throw new RuntimeException(t);
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw AxisFault.makeFault(e);
         }
 
     }

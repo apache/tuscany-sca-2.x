@@ -41,14 +41,15 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
-public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
+public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 {
 
     private MessageFactory messageFactory;
     private RuntimeComponent component;
@@ -56,6 +57,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
     private WebServiceBinding wsBinding;
     private ConfigurationContext configContext;
     private ServiceClient serviceClient;
+    private WebServiceBinding callbackBinding;
 
     public Axis2ReferenceBindingProvider(RuntimeComponent component,
                                          RuntimeComponentReference reference,
@@ -73,20 +75,57 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
         }
+
         initServiceClient();
+
+        // FIXME: only needed for the current tactical solution
+        // connect forward providers with matching callback providers
+        if (!wsBinding.isCallback()) {
+            // this is a forward binding, so look for a matching callback binding
+            if (reference.getCallback() != null) {
+                for (org.apache.tuscany.sca.assembly.Binding binding :
+                                          reference.getCallback().getBindings()) {
+                    if (binding instanceof WebServiceBinding) {
+                        // set the first compatible callback binding
+                        setCallbackBinding((WebServiceBinding)binding);
+                        continue;
+                    }
+                }
+            }
+        } else {
+            // this is a callback binding, so look for all matching forward bindings
+            for (org.apache.tuscany.sca.assembly.Binding binding : reference.getBindings()) {
+                if (reference.getBindingProvider(binding) instanceof Axis2ReferenceBindingProvider) {
+                    // set all compatible forward binding providers for this reference
+                    ((Axis2ReferenceBindingProvider)reference.getBindingProvider(binding)).
+                            setCallbackBinding(wsBinding);
+                }
+            }
+        }
     }
 
-    // methods for ReferenceBindingActivator
+    // FIXME: only needed for the current tactical solution
+    public void setCallbackBinding(WebServiceBinding callbackBinding) {
+        if (this.callbackBinding == null) {
+            this.callbackBinding = callbackBinding;
+        }
+    }
 
     public void initServiceClient() {
+
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
-            contract = reference.getInterfaceContract();
+            contract = reference.getInterfaceContract().makeUnidirectional(wsBinding.isCallback());
             wsBinding.setBindingInterfaceContract(contract);
         }
 
         // Set to use the Axiom data binding
-        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
+        if (contract.getInterface() != null) {
+            contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
+        }
+        if (contract.getCallbackInterface() != null) {
+            contract.getCallbackInterface().setDefaultDataBinding(OMElement.class.getName());
+        }
 
         // ??? following line was in Axis2BindingBuilder before the SPI changes
         // and code reorg
@@ -102,20 +141,6 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
         // create an Axis2 ServiceClient
         serviceClient = createServiceClient();
-    }
-
-    public void start() {
-    }
-
-    public void stop() {
-
-        // close all connections that we have initiated, so that the jetty
-        // server
-        // can be restarted without seeing ConnectExceptions
-        HttpClient httpClient = (HttpClient)serviceClient.getServiceContext().getConfigurationContext()
-            .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
-        if (httpClient != null)
-            ((MultiThreadedHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
     }
 
     /**
@@ -137,23 +162,55 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         }
     }
 
-    // methods for ReferenceBindingProvider
+    public void start() {
+        // FIXME: only needed for the current tactical solution
+        for (InvocationChain chain : reference.getRuntimeWire(wsBinding).getInvocationChains()) {
+            Invoker tailInvoker = chain.getTailInvoker();
+            if (tailInvoker instanceof Axis2AsyncBindingInvoker) {
+                RuntimeWire callbackWire = reference.getRuntimeWire(callbackBinding);
+                Operation callbackOperation = findCallbackOperation(callbackBinding.getBindingInterfaceContract());
+                Axis2CallbackInvocationHandler invocationHandler
+                    = new Axis2CallbackInvocationHandler(messageFactory, callbackWire);
+                Axis2ReferenceCallbackTargetInvoker callbackInvoker
+                    = new Axis2ReferenceCallbackTargetInvoker(callbackOperation, callbackWire, invocationHandler);
+                ((Axis2AsyncBindingInvoker)tailInvoker).setCallbackTargetInvoker(callbackInvoker);
+            }
+        }
+    }
+
+    public void stop() {
+
+        // close all connections that we have initiated, so that the jetty
+        // server
+        // can be restarted without seeing ConnectExceptions
+        HttpClient httpClient = (HttpClient)serviceClient.getServiceContext().getConfigurationContext()
+            .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
+        if (httpClient != null)
+            ((MultiThreadedHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
+    }
 
     public InterfaceContract getBindingInterfaceContract() {
         return wsBinding.getBindingInterfaceContract();
     }
 
+    public boolean supportsAsyncOneWayInvocation() {
+        return true;
+    }
+
+    @Deprecated
     public Invoker createInvoker(Operation operation, boolean isCallback) {
+        if (isCallback) {
+            throw new UnsupportedOperationException();
+        } else {
+            return createInvoker(operation);
+        }
+    }
+
+    public Invoker createInvoker(Operation operation) {
 
         Axis2BindingInvoker invoker;
 
-        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
-        if (contract == null) {
-            contract = reference.getInterfaceContract();
-            wsBinding.setBindingInterfaceContract(contract);
-        }
-
-        if (wsBinding.getBindingInterfaceContract().getCallbackInterface() == null) {
+        if (reference.getInterfaceContract().getCallbackInterface() == null) {
             invoker = createOperationInvoker(serviceClient, operation, false, operation.isNonBlocking());
         } else {
             // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
@@ -166,29 +223,17 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
             // of what actual callback method was invoked by the service at the
             // other end
 
-            RuntimeWire wire = reference.getRuntimeWire(wsBinding);
-            Operation callbackOperation = findCallbackOperation(wire);
-            Axis2CallbackInvocationHandler invocationHandler = new Axis2CallbackInvocationHandler(messageFactory, wire);
-            Axis2ReferenceCallbackTargetInvoker callbackInvoker = new Axis2ReferenceCallbackTargetInvoker(
-                                                                                                          callbackOperation,
-                                                                                                          wire,
-                                                                                                          invocationHandler);
+            // the code to create the callback invoker has been moved to the start() method
 
-            Axis2AsyncBindingInvoker asyncInvoker = (Axis2AsyncBindingInvoker)createOperationInvoker(serviceClient,
-                                                                                                     operation,
-                                                                                                     true,
-                                                                                                     false);
-            asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
+            Axis2AsyncBindingInvoker asyncInvoker
+                    = (Axis2AsyncBindingInvoker)createOperationInvoker(serviceClient, operation, true, false);
             invoker = asyncInvoker;
         }
 
         return invoker;
     }
 
-    private Operation findCallbackOperation(RuntimeWire wire) {
-        InterfaceContract contract = wire.getTarget().getInterfaceContract(); // TODO:
-                                                                                // which
-                                                                                // end?
+    private Operation findCallbackOperation(InterfaceContract contract) {
         List callbackOperations = contract.getCallbackInterface().getOperations();
         if (callbackOperations.size() != 1) {
             throw new RuntimeException("Can only handle one callback operation");

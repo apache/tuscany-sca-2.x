@@ -64,6 +64,17 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
         return null;
     }
 
+    public <B> B getCallbackBinding(Class<B> bindingClass) {
+        if (callback != null) {
+            for (Binding binding : callback.getBindings()) {
+                if (bindingClass.isInstance(binding)) {
+                    return bindingClass.cast(binding);
+                }
+            }
+        }
+        return null;
+    }
+
     public List<PolicySet> getPolicySets() {
         return policySets;
     }

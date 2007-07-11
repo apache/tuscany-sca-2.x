@@ -28,6 +28,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 
 public class Axis2AsyncBindingInvoker extends Axis2BindingInvoker {
 
@@ -40,8 +41,8 @@ public class Axis2AsyncBindingInvoker extends Axis2BindingInvoker {
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    private Object invokeTarget(final Object payload, String conversationId)
-        throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final ConversationSequence sequence,
+                                  String conversationId) throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
             OperationClient operationClient = createOperationClient(args, conversationId);
