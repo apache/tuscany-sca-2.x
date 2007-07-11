@@ -18,12 +18,14 @@
  */
 package org.apache.tuscany.sca.binding.axis2;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
+import org.apache.tuscany.sca.binding.axis2.Axis2ServiceBindingProvider.InvocationContext;
 import org.apache.tuscany.sca.interfacedef.Operation;
 
 public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiver {
@@ -31,39 +33,45 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
     private Operation operation;
 
     private Axis2ServiceBindingProvider provider;
+    private Axis2ServiceBindingProvider callbackProvider;
 
     public Axis2ServiceInOutAsyncMessageReceiver(Axis2ServiceBindingProvider provider,
+                                                 Axis2ServiceBindingProvider callbackProvider,
                                                  Operation operation) {
         this.provider = provider;
+        this.callbackProvider = callbackProvider;
         this.operation = operation;
    }
 
     public Axis2ServiceInOutAsyncMessageReceiver() {
     }
 
-    public final void receive(final MessageContext messageCtx) {
+    public final void receive(final MessageContext messageCtx) throws AxisFault {
+        Object messageId = messageCtx.getMessageID();
+        if (messageId == null) {
+            messageId = new MessageId();
+        }
+
+        // Now use message id as index to context to be used by callback
+        // target invoker
+        CountDownLatch doneSignal = new CountDownLatch(1);
+        InvocationContext invCtx =
+            callbackProvider.new InvocationContext(messageCtx, operation, getSOAPFactory(messageCtx), doneSignal);
+        callbackProvider.addMapping(messageId, invCtx);
+
+        ThreadContextDescriptor tc = setThreadContext(messageCtx);
         try {
-            Object messageId = messageCtx.getMessageID();
-            if (messageId == null) {
-                messageId = new MessageId();
-            }
-
-            // Now use message id as index to context to be used by callback
-            // target invoker
-            CountDownLatch doneSignal = new CountDownLatch(1);
-//            InvocationContext invCtx =
-//                service.new InvocationContext(messageCtx, operation, getSOAPFactory(messageCtx), doneSignal);
-//            service.addMapping(messageId, invCtx);
-
             invokeBusinessLogic(messageCtx, messageId);
-            
-            try {
-                doneSignal.await();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (AxisFault e) {
-            // log.error(e);
+        } finally {
+            restoreThreadContext(tc);
+        }
+
+        // wait for callback to trigger the latch
+        // if no callback, block forever
+        try {
+            doneSignal.await();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -72,17 +80,16 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
             String conversationID = provider.isConversational() ?  Axis2ServiceBindingProvider.getConversationID(inMC) : null;
-//            service.invokeTarget(operation, args, messageId, conversationID);
-//        } catch (InvocationTargetException e) {
-//            Throwable t = e.getCause();
-//            if (t instanceof Exception) {
-//                throw AxisFault.makeFault((Exception)t);
-//            }
-//            throw new InvocationRuntimeException(e);
+            provider.invokeTarget(operation, args, messageId, conversationID);
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getCause();
+            if (t instanceof Exception) {
+                throw AxisFault.makeFault((Exception)t);
+            }
+            throw new RuntimeException(e);
         } catch (Exception e) {
             throw AxisFault.makeFault(e);
         }
-
     }
 
     /**

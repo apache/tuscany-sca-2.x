@@ -20,8 +20,10 @@
 package org.apache.tuscany.sca.core.runtime;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -35,6 +37,7 @@ public class RuntimeWireImpl implements RuntimeWire {
 
     private final List<InvocationChain> chains = new ArrayList<InvocationChain>();
     private final List<InvocationChain> callbackChains = new ArrayList<InvocationChain>();
+    IdentityHashMap<Operation, InvocationChain> callbackMap = new IdentityHashMap<Operation, InvocationChain>();
 
     /**
      * @param source
@@ -61,6 +64,15 @@ public class RuntimeWireImpl implements RuntimeWire {
 
     public EndpointReference  getTarget() {
         return wireTarget;
+    }
+
+    public void addCallbackInvocationChain(InvocationChain chain) {
+        callbackChains.add(chain);
+        callbackMap.put(chain.getSourceOperation(), chain);
+    }
+   
+    public IdentityHashMap<Operation, InvocationChain> getCallbackInvocationMap() {
+        return callbackMap;
     }
 
 }

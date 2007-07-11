@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
+import org.apache.tuscany.sca.assembly.CallbackBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -252,7 +253,14 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
                                 } else if (extension instanceof Binding) {
                                     // <service><binding> and <reference><binding>
-                                    contract.getBindings().add((Binding)extension);
+                                    if (callback != null) {
+                                        callback.getBindings().add((Binding)extension);
+                                    } else {
+                                        contract.getBindings().add((Binding)extension);
+                                    }
+                                    if (extension instanceof CallbackBinding) {
+                                        ((CallbackBinding)extension).setCallback(callback != null);
+                                    }
     
                                 } else if (extension instanceof Implementation) {
     

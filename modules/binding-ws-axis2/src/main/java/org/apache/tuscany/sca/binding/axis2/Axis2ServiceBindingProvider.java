@@ -43,6 +43,7 @@ import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.http.ServletHost;
@@ -51,11 +52,11 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
-public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
+public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
@@ -63,6 +64,8 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     private ServletHost servletHost;
     private ConfigurationContext configContext;
     private MessageFactory messageFactory;
+    private Axis2ServiceBindingProvider callbackProvider;
+    private InterfaceContract bindingInterfaceContract;
 
     // TODO: what to do about the base URI?
     private static final String BASE_URI = "http://localhost:8080/";
@@ -85,51 +88,85 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
         }
-    }
 
-    // methods for ServiceBindingActivator
-
-    public void start() {
-
-        // TODO: add back in from duplicate code in getBindingInterfaceContract
-        // to temporarily bypass NPE
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
-            contract = service.getInterfaceContract();
+            contract = service.getInterfaceContract().makeUnidirectional(wsBinding.isCallback());
             wsBinding.setBindingInterfaceContract(contract);
         }
 
         // Set to use the Axiom data binding
-        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
-
-        String uri = computeActualURI(BASE_URI, component, service).normalize().toString();
-        if (uri.endsWith("/")) {
-            uri = uri.substring(0, uri.length() - 1);
+        if (contract.getInterface() != null) {
+            contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
         }
-        wsBinding.setURI(uri.toString());
-
-        // TODO: if <binding.ws> specifies the wsdl service then should create a
-        // service for every port
-
-        try {
-            configContext.getAxisConfiguration().addService(createAxisService());
-        } catch (AxisFault e) {
-            throw new RuntimeException(e);
+        if (contract.getCallbackInterface() != null) {
+            contract.getCallbackInterface().setDefaultDataBinding(OMElement.class.getName());
         }
 
-        Axis2ServiceServlet servlet = new Axis2ServiceServlet();
-        servlet.init(configContext);
-        String servletURI = wsBinding.getURI();
-        configContext.setContextRoot(servletURI);
-        servletHost.addServletMapping(servletURI, servlet);
+        // FIXME: only needed for the current tactical solution
+        // connect forward providers with matching callback providers
+        if (!wsBinding.isCallback()) {
+            // this is a forward binding, so look for a matching callback binding
+            if (service.getCallback() != null) {
+                for (Binding binding : service.getCallback().getBindings()) {
+                    if (service.getBindingProvider(binding) instanceof Axis2ServiceBindingProvider) {
+                        // use the first compatible callback binding provider for this service
+                        setCallbackProvider((Axis2ServiceBindingProvider)service.getBindingProvider(binding));
+                        continue;
+                    }
+                }
+            }
+        } else {
+            // this is a callback binding, so look for all matching forward bindings
+            for (Binding binding : service.getBindings()) {
+                if (service.getBindingProvider(binding) instanceof Axis2ServiceBindingProvider) {
+                    // set all compatible forward binding providers for this service
+                    ((Axis2ServiceBindingProvider)service.getBindingProvider(binding)).setCallbackProvider(this);
+                }
+            }
+        }
+    }
+
+    // FIXME: only needed for the current tactical solution
+    public void setCallbackProvider(Axis2ServiceBindingProvider callbackProvider) {
+        if (this.callbackProvider == null) {
+            this.callbackProvider = callbackProvider;
+        }
+    }
+
+    public void start() {
+        if (!wsBinding.isCallback()) {
+            String uri = computeActualURI(BASE_URI, component, service).normalize().toString();
+            if (uri.endsWith("/")) {
+                uri = uri.substring(0, uri.length() - 1);
+            }
+            wsBinding.setURI(uri.toString());
+
+            // TODO: if <binding.ws> specifies the wsdl service then should create a
+            // service for every port
+
+            try {
+                configContext.getAxisConfiguration().addService(createAxisService());
+            } catch (AxisFault e) {
+                throw new RuntimeException(e);
+            }
+
+            Axis2ServiceServlet servlet = new Axis2ServiceServlet();
+            servlet.init(configContext);
+            String servletURI = wsBinding.getURI();
+            configContext.setContextRoot(servletURI);
+            servletHost.addServletMapping(servletURI, servlet);
+        }
     }
 
     public void stop() {
-        servletHost.removeServletMapping(wsBinding.getURI());
-        try {
-            configContext.getAxisConfiguration().removeService(wsBinding.getURI());
-        } catch (AxisFault e) {
-            throw new RuntimeException(e);
+        if (!wsBinding.isCallback()) {
+            servletHost.removeServletMapping(wsBinding.getURI());
+            try {
+                configContext.getAxisConfiguration().removeService(wsBinding.getURI());
+            } catch (AxisFault e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -156,9 +193,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
             wsdlURI = getEndpoint(wsBinding.getPort());
         }
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
-            if (wsBinding.getURI() != null && (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null)) {
-                throw new IllegalArgumentException("binding URI cannot be used with absolute WSDL endpoint URI");
-            }
+//            if (wsBinding.getURI() != null && (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null)) {
+//                throw new IllegalArgumentException("binding URI cannot be used with absolute WSDL endpoint URI");
+//            }
             return URI.create(wsdlURI.toString());
         }
 
@@ -268,8 +305,8 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
                 }
 
                 MessageReceiver msgrec = null;
-                if (wsBinding.getBindingInterfaceContract().getCallbackInterface() != null) {
-                    msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op);
+                if (service.getInterfaceContract().getCallbackInterface() != null) {
+                    msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, callbackProvider, op);
                 } else if (op.isNonBlocking()) {
                     msgrec = new Axis2ServiceInMessageReceiver(this, op);
                 } else {
@@ -292,44 +329,19 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         return null;
     }
 
-    // methods for ServiceBindingProvider
-
     public InterfaceContract getBindingInterfaceContract() {
-        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
-        if (contract == null) {
-            contract = service.getInterfaceContract();
-            wsBinding.setBindingInterfaceContract(contract);
-        }
-
-        // Set to use the Axiom data binding
-        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
-        return contract;
+        return wsBinding.getBindingInterfaceContract();
     }
 
-    // other methods that were previously in Axis2ServiceBinding
-    // TODO: are these still needed?
-
-    private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
-
-    public Invoker createTargetInvoker(InterfaceContract contract, Operation operation) {
-        // if (!operation.isCallback()) { TODO: no isCallback methjod yet?
-        // throw new UnsupportedOperationException();
-        // } else {
+    public Invoker createCallbackInvoker(Operation operation) {
         return new Axis2ServiceCallbackTargetInvoker(this);
-        // }
     }
 
-    public void addMapping(Object msgId, InvocationContext invCtx) {
-        this.invCtxMap.put(msgId, invCtx);
+    public boolean supportsAsyncOneWayInvocation() {
+        return true;
     }
 
-    public InvocationContext retrieveMapping(Object msgId) {
-        return this.invCtxMap.get(msgId);
-    }
-
-    public void removeMapping(Object msgId) {
-        this.invCtxMap.remove(msgId);
-    }
+    // methods for Axis2 message receivers
 
     /**
      * @param inMC
@@ -391,6 +403,26 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         }
     }
 
+    public boolean isConversational() {
+        return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
+    }
+
+    // methods for handling callbacks
+
+    private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
+
+    public void addMapping(Object msgId, InvocationContext invCtx) {
+        this.invCtxMap.put(msgId, invCtx);
+    }
+
+    public InvocationContext retrieveMapping(Object msgId) {
+        return this.invCtxMap.get(msgId);
+    }
+
+    public void removeMapping(Object msgId) {
+        this.invCtxMap.remove(msgId);
+    }
+
     protected class InvocationContext {
         public MessageContext inMessageContext;
 
@@ -409,10 +441,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
             this.soapFactory = soapFactory;
             this.doneSignal = doneSignal;
         }
-    }
-
-    public boolean isConversational() {
-        return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
     }
 
 }

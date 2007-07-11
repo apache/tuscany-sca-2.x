@@ -16,23 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.axis2;
+package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.core.invocation.AbstractInvocationHandler;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+/**
+ * Represents a binding that can be used in the <callback> element.
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface CallbackBinding extends Binding {
 
-public class Axis2CallbackInvocationHandler extends AbstractInvocationHandler {
+    /**
+     * Returns true if a callback binding, false if not.
+     * 
+     * @return true if a callback binding, false if not
+     */
+    boolean isCallback();
 
-    private RuntimeWire wire;
-
-    public Axis2CallbackInvocationHandler(MessageFactory messageFactory, RuntimeWire wire) {
-        super(messageFactory, false);
-        this.wire = wire;
-    }
-
-    public Object invoke(Operation operation, Object[] args) throws Throwable {
-        return invoke(wire.getCallbackInvocationMap().get(operation), args, wire);
-    }
+    /**
+     * Sets a flag indicating whether this is a callback binding.
+     * 
+     * @param true if a callback binding, false if not
+     */
+    void setCallback(boolean isCallback);
 }

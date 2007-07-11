@@ -56,24 +56,11 @@ public class Axis2ReferenceCallbackTargetInvoker {
         // FIXME synchronize with forward thread to return value
         signal.countDown();
         try {
-//            return invocationHandler.invoke(operation, args, callbackRoutingChain);
-            return null; // TODO ???
+            return invocationHandler.invoke(operation, args);
         } catch (Throwable t) {
             t.printStackTrace();
             throw new InvocationTargetException(t);
         }
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object resp = invokeTarget(msg.getBody(), null);
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setFaultBody(e.getCause());
-        } catch (Throwable e) {
-            msg.setFaultBody(e);
-        }
-        return msg;
     }
 
     public boolean isCacheable() {

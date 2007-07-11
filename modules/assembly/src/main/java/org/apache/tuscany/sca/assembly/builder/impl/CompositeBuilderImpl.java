@@ -208,6 +208,14 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 if (componentService.getBindings().isEmpty()) {
                     componentService.getBindings().addAll(service.getBindings());
                 }
+
+                // Reconcile callback bindings
+                if (componentService.getCallback() == null) {
+                    componentService.setCallback(service.getCallback());
+                } else if (componentService.getCallback().getBindings().isEmpty() &&
+                           service.getCallback() != null) {
+                    componentService.getCallback().getBindings().addAll(service.getCallback().getBindings());
+                }
             }
 
         }
@@ -280,6 +288,14 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 // Reconcile bindings
                 if (componentReference.getBindings().isEmpty()) {
                     componentReference.getBindings().addAll(reference.getBindings());
+                }
+
+                // Reconcile callback bindings
+                if (componentReference.getCallback() == null) {
+                    componentReference.setCallback(reference.getCallback());
+                } else if (componentReference.getCallback().getBindings().isEmpty() &&
+                           reference.getCallback() != null) {
+                    componentReference.getCallback().getBindings().addAll(reference.getCallback().getBindings());
                 }
 
                 // Propagate autowire setting from the component
@@ -465,6 +481,13 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     binding.setName(componentService.getName());
                 }
             }
+            if (componentService.getCallback() != null) {
+                for (Binding binding : componentService.getCallback().getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(componentService.getName());
+                    }
+                }
+            }
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
@@ -479,6 +502,13 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             for (Binding binding : componentReference.getBindings()) {
                 if (binding.getName() == null) {
                     binding.setName(componentReference.getName());
+                }
+            }
+            if (componentReference.getCallback() != null) {
+                for (Binding binding : componentReference.getCallback().getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(componentReference.getName());
+                    }
                 }
             }
         }
@@ -530,11 +560,25 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     binding.setName(service.getName());
                 }
             }
+            if (service.getCallback() != null) {
+                for (Binding binding : service.getCallback().getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(service.getName());
+                    }
+                }
+            }
         }
         for (Reference reference : composite.getReferences()) {
             for (Binding binding : reference.getBindings()) {
                 if (binding.getName() == null) {
                     binding.setName(reference.getName());
+                }
+            }
+            if (reference.getCallback() != null) {
+                for (Binding binding : reference.getCallback().getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(reference.getName());
+                    }
                 }
             }
         }
@@ -619,6 +663,22 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 }
                 scaBinding.setURI(uri);
                 scaBinding.setComponent(component);
+
+                // if service has a callback, create and configure an SCA binding for the callback
+                if (componentService.getInterfaceContract() != null &&  // can be null in unit tests
+                    componentService.getInterfaceContract().getCallbackInterface() != null) {
+                    SCABinding scaCallbackBinding = componentService.getCallbackBinding(SCABinding.class);
+                    if (scaCallbackBinding == null) {
+                        scaCallbackBinding = scaBindingFactory.createSCABinding();
+                        scaCallbackBinding.setName(componentService.getName());
+                        if (componentService.getCallback() == null) {
+                            componentService.setCallback(assemblyFactory.createCallback());
+                        }
+                        componentService.getCallback().getBindings().add(scaCallbackBinding);
+                    }
+                    scaCallbackBinding.setURI(uri);
+                    scaCallbackBinding.setComponent(component);
+                }
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
@@ -633,6 +693,22 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 }
                 scaBinding.setURI(uri);
                 scaBinding.setComponent(component);
+
+                // if reference has a callback, create and configure an SCA binding for the callback
+                if (componentReference.getInterfaceContract() != null &&  // can be null in unit tests
+                    componentReference.getInterfaceContract().getCallbackInterface() != null) {
+                    SCABinding scaCallbackBinding = componentReference.getCallbackBinding(SCABinding.class);
+                    if (scaCallbackBinding == null) {
+                        scaCallbackBinding = scaBindingFactory.createSCABinding();
+                        scaCallbackBinding.setName(componentReference.getName());
+                        if (componentReference.getCallback() == null) {
+                            componentReference.setCallback(assemblyFactory.createCallback());
+                        }
+                        componentReference.getCallback().getBindings().add(scaCallbackBinding);
+                    }
+                    scaCallbackBinding.setURI(uri);
+                    scaCallbackBinding.setComponent(component);
+                }
             }
         }
 
@@ -1013,7 +1089,18 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 newComponentService.getBindings().add(scaBinding);
                                 newComponentService.getBindings().addAll(compositeService.getBindings());
                                 newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                                newComponentService.setCallback(compositeService.getCallback());
+                                if (compositeService.getInterfaceContract() != null &&  // can be null in unit tests
+                                    compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                                    SCABinding scaCallbackBinding = promotedService.getCallbackBinding(SCABinding.class);
+                                    newComponentService.setCallback(assemblyFactory.createCallback());
+                                    if (scaCallbackBinding != null) {
+                                        newComponentService.getCallback().getBindings().add(scaCallbackBinding);
+                                    }
+                                    if (compositeService.getCallback() != null) {
+                                        newComponentService.getCallback().getBindings().addAll(
+                                                                compositeService.getCallback().getBindings());
+                                    }
+                                }
                                 
                                 // FIXME: [rfeng] Set the service to promoted
                                  newComponentService.setService(promotedService.getService());
@@ -1056,7 +1143,18 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     newComponentService.getBindings().add(scaBinding);
                     newComponentService.getBindings().addAll(compositeService.getBindings());
                     newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                    newComponentService.setCallback(compositeService.getCallback());
+                    if (compositeService.getInterfaceContract() != null &&  // can be null in unit tests
+                        compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                        SCABinding scaCallbackBinding = promotedService.getCallbackBinding(SCABinding.class);
+                        newComponentService.setCallback(assemblyFactory.createCallback());
+                        if (scaCallbackBinding != null) {
+                            newComponentService.getCallback().getBindings().add(scaCallbackBinding);
+                        }
+                        if (compositeService.getCallback() != null) {
+                            newComponentService.getCallback().getBindings().addAll(
+                                                    compositeService.getCallback().getBindings());
+                        }
+                    }
                     
                     // FIXME: [rfeng] Set the service to promoted
                     newComponentService.setService(promotedService.getService());
@@ -1094,6 +1192,22 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             for (ComponentReference promotedReference : promotedReferences) {
 
                 consolidateBindings(compositeReference, promotedReference);
+                if (compositeReference.getInterfaceContract() != null &&  // can be null in unit tests
+                    compositeReference.getInterfaceContract().getCallbackInterface() != null) {
+                    SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
+                    if (promotedReference.getCallback() != null) {
+                        promotedReference.getCallback().getBindings().clear();
+                    } else {
+                        promotedReference.setCallback(assemblyFactory.createCallback());
+                    }
+                    if (scaCallbackBinding != null) {
+                        promotedReference.getCallback().getBindings().add(scaCallbackBinding);
+                    }
+                    if (compositeReference.getCallback() != null) {
+                        promotedReference.getCallback().getBindings().addAll(
+                                              compositeReference.getCallback().getBindings());
+                    }
+                }
             }
         }
 
@@ -1110,6 +1224,22 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
                             // Override the configuration of the promoted reference
                             consolidateBindings(componentReference, promotedReference);
+                            if (componentReference.getInterfaceContract() != null &&  // can be null in unit tests
+                                componentReference.getInterfaceContract().getCallbackInterface() != null) {
+                                SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
+                                if (promotedReference.getCallback() != null) {
+                                    promotedReference.getCallback().getBindings().clear();
+                                } else {
+                                    promotedReference.setCallback(assemblyFactory.createCallback());
+                                }
+                                if (scaCallbackBinding != null) {
+                                    promotedReference.getCallback().getBindings().add(scaCallbackBinding);
+                                }
+                                if (componentReference.getCallback() != null) {
+                                    promotedReference.getCallback().getBindings().addAll(
+                                                          componentReference.getCallback().getBindings());
+                                }
+                            }
 
                             // Wire the promoted reference to the actual
                             // non-composite component services
@@ -1315,6 +1445,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             ComponentReference componentReference = assemblyFactory.createComponentReference();
             componentReference.setName("$self$." + service.getName());
             componentReference.getBindings().addAll(service.getBindings());
+            componentReference.setCallback(service.getCallback());
             ComponentService componentService = assemblyFactory.createComponentService();
             componentService.setName(component.getName() + "/" + service.getName());
             componentService.setUnresolved(true);

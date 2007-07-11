@@ -25,7 +25,7 @@ package org.apache.tuscany.sca.interfacedef;
  * 
  * @version $Rev$ $Date$
  */
-public interface InterfaceContract {
+public interface InterfaceContract extends Cloneable {
 
     /**
      * Returns the interface definition representing the interface for
@@ -62,5 +62,15 @@ public interface InterfaceContract {
      *            interface for invocations from the provider to the requestor.
      */
     void setCallbackInterface(Interface callbackInterface);
+
+    // FIXME: We need a better way to do this
+    /**
+     * Convert an interface contract to a unidirectional interface contract
+     *  
+     * @param isCallback true for a callback interface contract, false for
+     *        a forward interface contract
+     * @return A unidirectional interface contract, cloned if necessary 
+     */
+    InterfaceContract makeUnidirectional(boolean isCallback);
 
 }

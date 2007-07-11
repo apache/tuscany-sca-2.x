@@ -48,4 +48,26 @@ public abstract class InterfaceContractImpl implements InterfaceContract {
         this.callInterface = callInterface;
     }
 
+    public InterfaceContract makeUnidirectional(boolean isCallback) {
+        if (!isCallback && callbackInterface == null)
+            return this;  // already a unidirectional forward interface contract
+        
+        if (isCallback && callInterface == null)
+            return this;  // already a unidirectional callback interface contract
+
+        // contract is bidrectional, so create a new unidirectional contract        
+        try {
+            InterfaceContract newContract = (InterfaceContract)clone();
+            if (!isCallback) {
+                newContract.setCallbackInterface(null);  // create unidirectional forward interface contract
+            } else {
+                newContract.setInterface(null);  // create unidirectional callback interface contract
+            }
+            return newContract;
+        } catch (CloneNotSupportedException e) {
+            // will not happen
+            return null;
+        }
+    }
+
 }

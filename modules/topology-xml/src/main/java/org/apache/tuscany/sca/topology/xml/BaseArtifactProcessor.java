@@ -277,6 +277,14 @@ public abstract class BaseArtifactProcessor implements Constants {
                 Binding binding = contract.getBindings().get(i);
                 extensionProcessor.resolve(binding, resolver);
             }
+
+            // Resolve callback bindings
+            if (contract.getCallback() != null) {
+                for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
+                    Binding binding = contract.getCallback().getBindings().get(i);
+                    extensionProcessor.resolve(binding, resolver);
+                }
+            }
         }
     }    
 

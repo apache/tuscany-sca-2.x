@@ -72,13 +72,14 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
             // TODO beter hash algorithm
         }
         EndpointReference from = ThreadMessageContext.getMessageContext().getFrom();
-        RuntimeWire wire = wires.get(from.getURI());
-        assert wire != null;
-        List<InvocationChain> chains = wire.getCallbackInvocationChains();
-        IdentityHashMap<Operation, InvocationChain> map = new IdentityHashMap<Operation, InvocationChain>();
-        for (InvocationChain chain : chains) {
-            map.put(chain.getTargetOperation(), chain);
+        RuntimeWire wire = null;
+        if (from != null) {
+            wire = wires.get(from.getURI());
+        } else { // service with binding
+            wire = wires.get(null);
         }
+        assert wire != null;
+        IdentityHashMap<Operation, InvocationChain> map = wire.getCallbackInvocationMap();
         Operation operation = JavaInterfaceUtil.findOperation(method, map.keySet());
         InvocationChain chain = map.get(operation);
         try {
