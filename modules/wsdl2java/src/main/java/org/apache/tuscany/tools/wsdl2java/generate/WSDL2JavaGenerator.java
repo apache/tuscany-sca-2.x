@@ -32,6 +32,7 @@ import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sdo.helper.HelperContextImpl;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass;
@@ -51,6 +52,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
 
 public class WSDL2JavaGenerator {
@@ -122,10 +124,10 @@ public class WSDL2JavaGenerator {
      {
 
         // Initialize the SDO runtime
-        DataObjectUtil.initRuntime();
         EPackage.Registry packageRegistry = new EPackageRegistryImpl(EPackage.Registry.INSTANCE);
         ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(packageRegistry);
-        XSDHelper xsdHelper = new XSDHelperImpl(extendedMetaData, null);
+        HelperContext context = new HelperContextImpl(extendedMetaData, false);
+        XSDHelper xsdHelper = context.getXSDHelper();
 
         try {
             
