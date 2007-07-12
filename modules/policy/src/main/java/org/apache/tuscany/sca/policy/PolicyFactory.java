@@ -44,4 +44,17 @@ public interface PolicyFactory {
      */
     IntentMap createIntentMap();
 
+    /**
+     * create a new Profile Intent
+     * 
+     * @return a ProfileIntent instance
+     */
+    ProfileIntent createProfileIntent();
+    
+    /**
+     * create a new QualifiedIntent
+     * 
+     * @return a QualifiedIntent instance
+     */
+    QualifiedIntent createQualifiedIntent();
 }
