@@ -72,9 +72,6 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         
         Class felixMainClass = cl.loadClass("org.apache.felix.main.Main");
         felixClass = cl.loadClass("org.apache.felix.framework.Felix");
-        Class propertyResolverClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolver");
-        Class propertyResolverImplClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolverImpl");
-        
         Method propsMethod = felixMainClass.getMethod("loadConfigProperties");
         Properties props = (Properties)propsMethod.invoke(null);
         
@@ -92,34 +89,52 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
                 "org.osgi.framework; version=1.3.0," +
                 "org.osgi.service.packageadmin; version=1.2.0, " +
                 "org.osgi.service.startlevel; version=1.0.0, " +
-                "org.osgi.service.url; version=1.0.0 ");
+                "org.osgi.service.url; version=1.0.0, " +
+                "org.osoa.sca.annotations; version=1.0.0, " +
+                "org.osoa.sca; version=1.0.0");
         
-        
-        
-        Constructor implConstructor = propertyResolverImplClass.getConstructor(Map.class);
-        Object mutableProps = implConstructor.newInstance(props);
         
         try {
-            Constructor felixConstructor = felixClass.getConstructor(propertyResolverClass, List.class);
+            Constructor felixConstructor = felixClass.getConstructor(Map.class, List.class);
             List<BundleActivator> activators = new ArrayList<BundleActivator>();
-            felix = felixConstructor.newInstance(mutableProps, activators);
+            felix = felixConstructor.newInstance(props, activators);
             ((Bundle)felix).start();
             bundleContext = ((Bundle)felix).getBundleContext();
             
+            
         } catch (Exception e) {
             
+            // This is the older Felix API which has been retained temporarily to avoid build break
+            // TODO: Remove these once Felix 1.0.0 is released.
+            
+            Class propertyResolverClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolver");
+            Class propertyResolverImplClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolverImpl");
+
+            Constructor implConstructor = propertyResolverImplClass.getConstructor(Map.class);
+            Object mutableProps = implConstructor.newInstance(props);
+            
+            
+            try {
+                Constructor felixConstructor = felixClass.getConstructor(propertyResolverClass, List.class);
+                List<BundleActivator> activators = new ArrayList<BundleActivator>();
+                felix = felixConstructor.newInstance(mutableProps, activators);
+                ((Bundle)felix).start();
+                bundleContext = ((Bundle)felix).getBundleContext();
+            } catch (Exception e1) {
+                
         
-            felix = felixClass.newInstance();
-            Method startMethod = felixClass.getMethod("start", propertyResolverClass, List.class);
-            List<BundleActivator> activators = new ArrayList<BundleActivator>();
-            BundleActivator activator = new FelixRuntime();
-            activators.add(activator);
-            startMethod.invoke(felix, mutableProps, activators);
+                felix = felixClass.newInstance();
+                Method startMethod = felixClass.getMethod("start", propertyResolverClass, List.class);
+                List<BundleActivator> activators = new ArrayList<BundleActivator>();
+                BundleActivator activator = new FelixRuntime();
+                activators.add(activator);
+                startMethod.invoke(felix, mutableProps, activators);
         
-            synchronized (activator) {
-                int retries = 0;
-                while (bundleContext == null && retries++ < 10) {
-                    activator.wait(1000);
+                synchronized (activator) {
+                    int retries = 0;
+                    while (bundleContext == null && retries++ < 10) {
+                        activator.wait(1000);
+                    }
                 }
             }
         }
