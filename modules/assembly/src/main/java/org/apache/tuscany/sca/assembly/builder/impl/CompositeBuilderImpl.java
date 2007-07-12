@@ -1243,7 +1243,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
                             // Wire the promoted reference to the actual
                             // non-composite component services
-                            promotedReference.getTargets().clear();
+                            if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference
+                                    .getMultiplicity() == Multiplicity.ONE_ONE) {
+                                promotedReference.getTargets().clear();
+                            }
                             for (ComponentService target : componentReference.getTargets()) {
                                 if (target.getService() instanceof CompositeService) {
 
@@ -1291,15 +1294,16 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         Multiplicity multiplicity = promotedReference.getMultiplicity();
         if(multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
             // Merging for 0..N or 1..N
+            promotedReference.getBindings().clear();
             promotedReference.getBindings().addAll(reference.getBindings());
         } else {
             // Override the configuration of the promoted reference for 0..1 or 1..1
             SCABinding scaBinding = promotedReference.getBinding(SCABinding.class);
             promotedReference.getBindings().clear();
             // FIXME: [rfeng] I don't think we should keep the SCABinding
-            if (scaBinding != null) {
-                promotedReference.getBindings().add(scaBinding);
-            }
+//            if (scaBinding != null) {
+//                promotedReference.getBindings().add(scaBinding);
+//            }
             promotedReference.getBindings().addAll(reference.getBindings());
         }
     }
@@ -1461,6 +1465,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     // Choose a binding for the reference based on the bindings available on the service 
     protected Binding resolveBindings(ComponentReference reference, ComponentService service) {
         List<Binding> refBindings = new ArrayList<Binding>(reference.getBindings());
+        // Find the corresponding bindings from the service side
         for(Binding binding: reference.getBindings()){
             for(Binding serviceBinding: service.getBindings()) {
                 if(binding.getClass() == serviceBinding.getClass()) {
@@ -1470,13 +1475,16 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             }
         }
         if(refBindings.isEmpty()) {
+            // No matching binding
            return null; 
         } else {
             for(Binding binding: refBindings) {
+                // If binding.sca is present, 
                 if(SCABinding.class.isInstance(binding)) {
                     return binding;
                 }
             }
+            // Use the first one
             return refBindings.get(0);
         }
         
