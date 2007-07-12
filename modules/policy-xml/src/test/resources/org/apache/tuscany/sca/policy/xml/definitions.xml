@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ASCII"?>
+<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 			targetNamespace="http://test"
+ 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+
+<!-- simple intent -->
+ <intent name="confidentiality" 
+ 			 constrains="sca:binding">
+ 			 <description>
+ 			 Communitcation thro this binding must prevent
+ 			 unauthorized users from reading the messages.
+ 			 </description>
+ </intent>
+ 
+ <intent name="integrity" 
+ 			 constrains="sca:binding">
+ 			 <description>
+ 			 Communitcation thro this binding must prevent
+ 			 unauthorized modification of the messages.
+ 			 </description>
+ </intent>
+ 
+ <!-- profile intent -->
+ <intent name="messageProtection" 
+ 			 constrains="sca:binding"
+ 			 requires="confidentiality integrity">
+ 			 <description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </description>
+ </intent>
+ 
+ <!-- qualified intents -->
+ <intent name="confidentiality.transport" />
+ <intent name="confidentiality.message" />
+</definitions>
