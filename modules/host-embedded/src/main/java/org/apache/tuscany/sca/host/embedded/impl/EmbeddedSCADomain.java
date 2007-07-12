@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -104,6 +106,10 @@ public class EmbeddedSCADomain extends SCADomain {
         public void stopComposite(Composite composite) throws ActivationException {
             CompositeActivator compositeActivator = runtime.getCompositeActivator();
             compositeActivator.stop(composite);
+        }
+
+        public Set<String> getComponentNames(){
+            return  Collections.unmodifiableSet(components.keySet());
         }
 
         /**
