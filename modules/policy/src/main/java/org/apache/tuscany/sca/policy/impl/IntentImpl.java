@@ -35,11 +35,10 @@ public class IntentImpl implements Intent {
 
     private QName name;
     private List<Operation> operations = new ArrayList<Operation>();
-    private List<QName> constrains;
+    private List<QName> constrains = new ArrayList<QName>();
     private String description;
-    private List<Intent> qualifiedIntents;
-    private List<Intent> requiredIntents;
-    private boolean unresolved;
+    //private List<Intent> qualifiedIntents;
+    private boolean unresolved = true;
     
     protected IntentImpl() {
     }
@@ -68,13 +67,9 @@ public class IntentImpl implements Intent {
         this.description = description;
     }
 
-    public List<Intent> getQualifiedIntents() {
+    /*public List<Intent> getQualifiedIntents() {
         return qualifiedIntents;
-    }
-
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
+    }*/
 
     public boolean isUnresolved() {
         return unresolved;
@@ -82,5 +77,25 @@ public class IntentImpl implements Intent {
 
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
+    }
+    
+    @Override
+    public int hashCode() {
+        return String.valueOf(getName()).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Intent) {
+            if (getName() != null) {
+                return getName().equals(((Intent)obj).getName());
+            } else {
+                return ((Intent)obj).getName() == null;
+            }
+        } else {
+            return false;
+        }
     }
 }

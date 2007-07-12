@@ -60,18 +60,11 @@ public interface Intent {
     List<QName> getConstrains();
 
     /**
-     * Returns the list of required intents.
-     * 
-     * @return
-     */
-    List<Intent> getRequiredIntents();
-
-    /**
      * Returns the list of children qualified intents.
      * 
      * @return the list of children qualified intents.
      */
-    List<Intent> getQualifiedIntents();
+    //List<Intent> getQualifiedIntents();
 
     /**
      * Returns the intent description.

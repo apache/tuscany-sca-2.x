@@ -22,6 +22,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.ProfileIntent;
+import org.apache.tuscany.sca.policy.QualifiedIntent;
 
 /**
  * A factory for the policy model.
@@ -40,6 +42,14 @@ public abstract class PolicyFactoryImpl implements PolicyFactory {
 
     public IntentMap createIntentMap() {
         return new IntentMapImpl();
+    }
+
+    public ProfileIntent createProfileIntent() {
+        return new ProfileIntentImpl();
+    }
+
+    public QualifiedIntent createQualifiedIntent() {
+        return new QualifiedIntentImpl();
     }
 
 }
