@@ -21,4 +21,5 @@
 	          targetNamespace="http://hello"
               xmlns:hello="http://hello">
    	<deployable composite="hello:hello"/>
+   	<export namespace="http://hello"/>
 </contribution>
