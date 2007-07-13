@@ -54,18 +54,25 @@ public class HelloWorldServerTestCase extends TestCase{
         File compositeContribLocation = new File("../contrib-composite/target/classes");
         URL compositeContribURL = compositeContribLocation.toURL();
         Contribution compositeContribution = contributionService.contribute("http://import-export/contrib-composite", compositeContribURL, compositeContributionResolver, false);
-        Composite providerComposite = compositeContribution.getDeployables().get(0);
-        domain.getDomainCompositeHelper().addComposite(providerComposite);
+        for (Composite deployable : compositeContribution.getDeployables() ) {
+            domain.getDomainCompositeHelper().addComposite(deployable);
+        }
         
-        ModelResolver helloWorldResolver = new ModelResolverImpl(cl);
-        File helloWorldContrib = new File("./target/classes/");
-        URL helloWorldURL = helloWorldContrib.toURL();
-        Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldURL, helloWorldResolver, false);
-        Composite consumerComposite = helloWorldContribution.getDeployables().get(0);
-        domain.getDomainCompositeHelper().addComposite(consumerComposite);
+        ModelResolver helloWorldContributionResolver = new ModelResolverImpl(cl);
+        File helloWorldContribLocation = new File("./target/classes/");
+        URL helloWorldContribURL = helloWorldContribLocation.toURL();
+        Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, helloWorldContributionResolver, false);
+        for (Composite deployable : helloWorldContribution.getDeployables() ) {
+            domain.getDomainCompositeHelper().addComposite(deployable);
+        }
         
         //activate SCA Domain
         domain.getDomainCompositeHelper().activateDomain();
+        
+        //Start Components from my composite
+        domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloServiceComponent"));
+        domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("SourceHelloServiceComponent"));
+        domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
     }
     
 	public void testPing() throws IOException {
