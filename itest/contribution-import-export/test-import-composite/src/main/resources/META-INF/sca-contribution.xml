@@ -22,5 +22,6 @@
               xmlns:helloworld="http://helloworld"
               xmlns:hello="http://hello">
    <deployable composite="helloworld:helloworldws"/>
-   <import namespace="hello:hello" location="http://import-export/contrib-composite"/>
+   <import namespace="http://hello"/>
+   <!-- import namespace="http://hello" location="http://import-export/contrib-composite"/ -->
 </contribution>
