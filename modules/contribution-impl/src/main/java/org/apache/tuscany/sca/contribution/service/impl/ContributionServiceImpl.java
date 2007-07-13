@@ -36,7 +36,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
@@ -46,6 +48,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.contribution.service.util.ConcurrentHashList;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 /**
@@ -80,7 +83,17 @@ public class ContributionServiceImpl implements ContributionService {
      * xml factory used to create reader instance to load contribution metadata
      */
     private XMLInputFactory xmlFactory;
-    
+
+    /**
+     * Assembly factory
+     */
+    private AssemblyFactory assemblyFactory;
+
+    /**
+     * Contribution model facotry
+     */
+    private ContributionFactory contributionFactory;
+
     /**
      * contribution metadata loader
      */
@@ -90,12 +103,7 @@ public class ContributionServiceImpl implements ContributionService {
      * Contribution registry This is a registry of processed Contributions indexed by URI
      */
     private Map<String, Contribution> contributionRegistry = new ConcurrentHashMap<String, Contribution>();
-
-    /**
-     * Contribution model facotry
-     */
-    private ContributionFactory contributionFactory;
-    
+    private ConcurrentHashList<String, Contribution> contributionByExportedNamespace = new ConcurrentHashList<String, Contribution>();
     
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
@@ -110,7 +118,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.artifactProcessor = artifactProcessor;
         this.postProcessor = postProcessor;
         this.xmlFactory = xmlFactory;
-
+        this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
         this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
@@ -236,6 +244,7 @@ public class ContributionServiceImpl implements ContributionService {
         Contribution contribution = initializeContributionMetadata(locationURL, modelResolver);
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(locationURL.toString());
+        contribution.setModelResolver(modelResolver);
 
         List<URI> contributionArtifacts = null;
 
@@ -280,6 +289,11 @@ public class ContributionServiceImpl implements ContributionService {
         
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getURI(), contribution);
+        
+        //store the contribution based on the namespaces being exported
+        for (ContributionExport export : contribution.getExports()) {
+            this.contributionByExportedNamespace.put(export.getNamespace(), contribution);
+        }
         
         return contribution;
     }
@@ -328,12 +342,14 @@ public class ContributionServiceImpl implements ContributionService {
      * @throws ContributionException
      */
     @SuppressWarnings("unchecked")
-    private void processResolvePhase(Contribution contribution) throws ContributionException {
+    private void processResolvePhase(Contribution contribution) throws ContributionException {       
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
             // resolve the model object
             if (artifact.getModel() != null) {
                 this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
+
+                processResolveImportsPhase(contribution, artifact);                
             }
         }
         
@@ -341,10 +357,64 @@ public class ContributionServiceImpl implements ContributionService {
         List<Composite> resolvedDeployables = new ArrayList<Composite>();
         for (Composite deployableComposite : contribution.getDeployables()) {
             Composite resolvedDeployable = contribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
+            
+            if (resolvedDeployable.isUnresolved()) {
+                resolvedDeployable = processResolveImportsPhase(contribution, resolvedDeployable);
+            }
+            
             resolvedDeployables.add(resolvedDeployable);
         }
-        
         contribution.getDeployables().clear();
         contribution.getDeployables().addAll(resolvedDeployables);
     }
+
+    @SuppressWarnings("unchecked")
+    private Object processResolveImportsPhase(Contribution contribution, DeployedArtifact artifact) throws ContributionException {
+        for(ContributionImport importedArtifact : contribution.getImports()) {
+            String importedContributionURI = importedArtifact.getLocation();
+            if (importedContributionURI != null && importedContributionURI.length() > 0) {
+                //location provided (contribution uri)
+                Contribution importedContribution = this.getContribution(importedContributionURI);
+                if (importedContribution != null) {
+                    this.artifactProcessor.resolve(artifact.getModel(), importedContribution.getModelResolver());
+                }
+            } else {
+                //look into all the contributions that match exported uri
+                for(Contribution importedContribution : this.contributionByExportedNamespace.get(importedArtifact.getNamespace())) {
+                    this.artifactProcessor.resolve(artifact.getModel(), importedContribution.getModelResolver());
+                }
+            }
+            
+
+        }
+        
+        return artifact.getModel();
+    }
+    
+    @SuppressWarnings("unchecked")
+    private Composite processResolveImportsPhase(Contribution contribution, Composite deployableComposite) throws ContributionException {
+        Composite resolvedDeployable = deployableComposite;
+        
+        for(ContributionImport importedArtifact : contribution.getImports()) {
+            String importedContributionURI = importedArtifact.getLocation();
+            if (importedContributionURI != null && importedContributionURI.length() > 0) {
+                //location provided (contribution uri)
+                Contribution importedContribution = this.getContribution(importedContributionURI);
+                if (importedContribution != null) {
+                    resolvedDeployable = importedContribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
+                }
+            } else {
+                //look into all the contributions that match exported uri
+                for(Contribution importedContribution : this.contributionByExportedNamespace.get(importedArtifact.getNamespace())) {
+                    Composite resolvingDeployable = importedContribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
+                    if (resolvingDeployable != null && resolvingDeployable.isUnresolved() == false) {
+                        resolvedDeployable = resolvingDeployable;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return resolvedDeployable;
+    }    
 }
