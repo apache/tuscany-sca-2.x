@@ -128,7 +128,7 @@ public class SCABindingImpl implements DistributedSCABinding {
      * 
      * @param isDistributed true if this binding is distributed across nodes
      */
-    public void setDisitributed(boolean isDistributed) {
+    public void setDistributed(boolean isDistributed) {
         this.isDistributed = isDistributed;
     }
 

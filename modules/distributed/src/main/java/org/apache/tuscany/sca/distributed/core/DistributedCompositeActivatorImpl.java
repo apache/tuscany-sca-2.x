@@ -180,7 +180,7 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
                                 // not used at the moment but maintain this 
                                 // flag in case the SCABinding becomes more 
                                 // functional
-                                referenceSCABinding.setDisitributed(true);
+                                referenceSCABinding.setDistributed(true);
                                 
                                 Binding newBinding = referenceSCABinding.getRemoteReferenceBinding(reference, 
                                                                                                    service);
@@ -195,7 +195,7 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
                                 // not used at the moment but maintain this 
                                 // flag in case the SCABinding becomes more 
                                 // functional                                
-                                serviceSCABinding.setDisitributed(true);  
+                                serviceSCABinding.setDistributed(true);  
                                 
                                 Binding newBinding = serviceSCABinding.getRemoteReferenceBinding(reference, 
                                                                                                  service);

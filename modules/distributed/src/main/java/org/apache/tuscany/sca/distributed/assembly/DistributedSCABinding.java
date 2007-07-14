@@ -43,7 +43,7 @@ public interface DistributedSCABinding extends SCABinding {
      * 
      * @param isDistributed true if this binding is distributed across nodes
      */
-    public void setDisitributed(boolean isDistributed);
+    public void setDistributed(boolean isDistributed);
     
     /**
      * Return the remote reference binding that the SCABinding deems is appropriate
