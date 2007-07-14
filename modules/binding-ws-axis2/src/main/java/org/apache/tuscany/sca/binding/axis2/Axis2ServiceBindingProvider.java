@@ -65,7 +65,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
     private ConfigurationContext configContext;
     private MessageFactory messageFactory;
     private Axis2ServiceBindingProvider callbackProvider;
-    private InterfaceContract bindingInterfaceContract;
 
     // TODO: what to do about the base URI?
     private static final String BASE_URI = "http://localhost:8080/";
@@ -193,9 +192,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
             wsdlURI = getEndpoint(wsBinding.getPort());
         }
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
-//            if (wsBinding.getURI() != null && (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null)) {
-//                throw new IllegalArgumentException("binding URI cannot be used with absolute WSDL endpoint URI");
-//            }
+            if (wsBinding.getURI() != null && (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null)) {
+                throw new IllegalArgumentException("binding URI cannot be used with absolute WSDL endpoint URI");
+            }
             return URI.create(wsdlURI.toString());
         }
 
