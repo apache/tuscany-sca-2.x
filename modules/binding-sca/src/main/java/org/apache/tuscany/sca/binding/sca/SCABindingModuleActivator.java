@@ -19,52 +19,51 @@
 
 package org.apache.tuscany.sca.binding.sca;
 
-
-
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.distributed.core.DistributedSCADomainExtensionPoint;
 import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomainImpl;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 /**
  * A module activator for the JMS binding extension.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class SCABindingModuleActivator implements ModuleActivator {
-    
+
     public Object[] getExtensionPoints() {
         // No extensionPoints being contributed here
         return null;
     }
 
     public void start(ExtensionPointRegistry registry) {
-        
+
         // get the local domain from the extension registry
-        DistributedSCADomain domain = (DistributedSCADomain)registry.getExtensionPoint(DistributedSCADomainExtensionPoint.class);
-        
+        DistributedSCADomain domain =
+            (DistributedSCADomain)registry.getExtensionPoint(DistributedSCADomainExtensionPoint.class);
+
         // Create the SCA binding model factory
         SCABindingFactory bindingFactory = new SCABindingFactoryImpl(domain, registry);
-        
+
         // add binding gactory to the factories list
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         factories.addFactory(bindingFactory);
 
         // Add the SCABindingProviderFactory extension
-        BindingProviderFactory<DistributedSCABinding> providerFactory = new SCABindingProviderFactoryImpl(domain, registry);
-        
-        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        BindingProviderFactory<DistributedSCABinding> providerFactory =
+            new SCABindingProviderFactoryImpl(domain, registry);
+
+        ProviderFactoryExtensionPoint providerFactories =
+            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(providerFactory);
     }
 
-    public void stop(ExtensionPointRegistry registry) {        
+    public void stop(ExtensionPointRegistry registry) {
     }
 
 }
