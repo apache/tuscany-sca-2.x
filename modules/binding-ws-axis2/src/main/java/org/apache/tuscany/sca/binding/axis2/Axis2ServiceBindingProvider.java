@@ -33,8 +33,10 @@ import javax.xml.namespace.QName;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
@@ -49,6 +51,7 @@ import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -268,13 +271,45 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
     }
 
     private AxisService createAxisService() throws AxisFault {
+        AxisService axisService;
+        if (wsBinding.getWSDLDefinition() != null) {
+            axisService = createWSDLAxisService();
+        } else {
+            axisService = createJavaAxisService();
+        }
+        initAxisOperations(axisService);
+        return axisService;
+    }
+
+    /**
+     * Create an AxisService from the interface class from the SCA service interface
+     */
+    protected AxisService createJavaAxisService() throws AxisFault {
+        AxisService axisService = new AxisService();
+        String path = URI.create(wsBinding.getURI()).getPath();
+        axisService.setName(path);
+        axisService.setServiceDescription("Tuscany configured AxisService for service: " + wsBinding.getURI());
+        axisService.setClientSide(false);
+        Parameter classParam = new Parameter(Constants.SERVICE_CLASS, ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass().getName());
+        axisService.addParameter(classParam);
+        try {
+            Utils.fillAxisService(axisService, configContext.getAxisConfiguration(), null, null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return axisService;
+    }
+
+    /**
+     * Create an AxisService from the WSDL doc used by ws binding
+     */
+    protected AxisService createWSDLAxisService() throws AxisFault {
         Definition definition = wsBinding.getWSDLDefinition().getDefinition();
 
-        // WSDLToAxisServiceBuilder only uses the service and port to find the
-        // wsdl4J Binding
-        // An SCA service with binding.ws does not require a service or port so
-        // we may not have these
-        // but
+        // WSDLToAxisServiceBuilder only uses the service and port to find the wsdl4J Binding
+        // An SCA service with binding.ws does not require a service or port so we may not have
+        // these but ...
 
         WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, wsBinding.getServiceName(),
                                                                           wsBinding.getPortName());
@@ -292,6 +327,10 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         Parameter userWSDL = new Parameter("useOriginalwsdl", "true");
         axisService.addParameter(userWSDL);
 
+        return axisService;
+    }
+
+    protected void initAxisOperations(AxisService axisService) {
         for (Iterator i = axisService.getOperations(); i.hasNext();) {
             AxisOperation axisOp = (AxisOperation)i.next();
             Operation op = getOperation(axisOp);
@@ -314,10 +353,8 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
                 axisOp.setMessageReceiver(msgrec);
             }
         }
-
-        return axisService;
     }
-
+    
     protected Operation getOperation(AxisOperation axisOp) {
         String operationName = axisOp.getName().getLocalPart();
         for (Operation op : wsBinding.getBindingInterfaceContract().getInterface().getOperations()) {
