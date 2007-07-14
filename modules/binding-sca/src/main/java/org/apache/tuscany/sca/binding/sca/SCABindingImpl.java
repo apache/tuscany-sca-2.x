@@ -119,7 +119,7 @@ public class SCABindingImpl implements DistributedSCABinding {
      * 
      * @return isDistributed flag
      */
-    public boolean getIsDistributed() {
+    public boolean isDistributed() {
         return isDistributed;
     }
 
@@ -128,7 +128,7 @@ public class SCABindingImpl implements DistributedSCABinding {
      * 
      * @param isDistributed true if this binding is distributed across nodes
      */
-    public void setIsDisitributed(boolean isDistributed) {
+    public void setDisitributed(boolean isDistributed) {
         this.isDistributed = isDistributed;
     }
 
