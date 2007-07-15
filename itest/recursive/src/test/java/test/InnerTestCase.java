@@ -22,14 +22,14 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class BindingsTestCase extends TestCase {
+public class InnerTestCase extends TestCase {
 
     private SCADomain domain;
     private Aggregator aggregator;
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("Outer.composite");
-        aggregator = domain.getService(Aggregator.class, "Inner");
+        domain = SCADomain.newInstance("Inner.composite");
+        aggregator = domain.getService(Aggregator.class, "Aggregator");
     }
 
     protected void tearDown() throws Exception {
@@ -40,7 +40,7 @@ public class BindingsTestCase extends TestCase {
         try {
             String result = aggregator.getAggregatedData();
             assertTrue(result.contains("InnerSource"));
-            assertTrue(result.contains("OuterSource"));
+            assertTrue(result.contains("InnerSource"));
             System.out.println(result);
         } catch (Throwable t) {
             t.printStackTrace();
