@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.spi.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -52,105 +54,52 @@ public class BindingsActivator implements ModuleActivator {
 
     protected List<BindingActivator> bindingActivators;
     protected AssemblyFactory assemblyFactory;
-    
+    protected Map<Class, BindingActivator> bindingActivatorMap = new HashMap<Class, BindingActivator>();
+
     public void start(ExtensionPointRegistry registry) {
 
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
 
-        this.bindingActivators = DiscoveryUtils.discoverActivators(BindingActivator.class, getClass().getClassLoader(), registry);
+        this.bindingActivators =
+            DiscoveryUtils.discoverActivators(BindingActivator.class, getClass().getClassLoader(), registry);
 
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+
+        ProviderFactoryExtensionPoint providerFactories =
+            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
 
         for (final BindingActivator bindingActivator : bindingActivators) {
-
-            QName scdlQName = getBindingQName(bindingActivator.getBindingClass());
-            staxProcessors.addArtifactProcessor(new BindingSCDLProcessor(scdlQName, bindingActivator.getBindingClass()));
-
-            if (bindingActivator.getBindingClass() != null) {
-                // Add a ProviderFactory
-                ProviderFactoryExtensionPoint providerFactories =
-                    registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-
-                providerFactories.addProviderFactory(new BindingProviderFactory() {
-                    public ReferenceBindingProvider createReferenceBindingProvider(final RuntimeComponent rc,
-                                                                                   final RuntimeComponentReference rcr,
-                                                                                   final Binding b) {
-                        return new ReferenceBindingProvider() {
-                            List<InvokerProxy> invokers = new ArrayList<InvokerProxy>();
-                            private InvokerFactory factory;
-                            public Invoker createInvoker(Operation operation, boolean isCallback) {
-                                InvokerProxy invoker = new InvokerProxy(operation);
-                                invokers.add(invoker);    
-                                return invoker;
-                            }
-                            public InterfaceContract getBindingInterfaceContract() {
-                                return null;
-                            }
-                            public void start() {
-                                if (b instanceof PojoBinding) {
-                                    factory = bindingActivator.createInvokerFactory(rc, rcr, b, ((PojoBinding)b).getUserBinding());
-                                } else {
-                                    factory = bindingActivator.createInvokerFactory(rc, rcr, b, b);
-                                }
-                                if (factory instanceof ComponentLifecycle) {
-                                    ((ComponentLifecycle)factory).start();
-                                }
-                                for (InvokerProxy invoker : invokers) {
-                                    invoker.start(factory);
-                                }
-                            }
-                            public void stop() {
-                                if (factory instanceof ComponentLifecycle) {
-                                    ((ComponentLifecycle)factory).stop();
-                                }
-                            }};
-                    }
-
-                    public ServiceBindingProvider createServiceBindingProvider(final RuntimeComponent rc,
-                                                                               final RuntimeComponentService rcs,
-                                                                               final Binding b) {
-                        final Object pojoBinding;
-                        if (b instanceof PojoBinding) {
-                            pojoBinding = ((PojoBinding)b).getUserBinding();
-                        } else {
-                            pojoBinding = b;
-                        }
-                        return new ServiceBindingProvider(){
-                            ComponentLifecycle listener = bindingActivator.createService(rc, rcs, b, pojoBinding);
-                            public InterfaceContract getBindingInterfaceContract() {
-                                return null;
-                            }
-                            public void start() {
-                                listener.start();
-                            }
-                            public void stop() {
-                                listener.stop();
-                            }};
-                    }
-
-                    public Class getModelType() {
-                        Class c = bindingActivator.getBindingClass();
-                        if (Binding.class.isAssignableFrom(c)) {
-                            return c;
-                        } else {
-                            return PojoBinding.class;
-                        }
-                    }
-                });
+            Class bindingClass = bindingActivator.getBindingClass();
+            bindingActivatorMap.put(bindingClass, bindingActivator);
+            QName scdlQName = getBindingQName(bindingClass);
+            staxProcessors.addArtifactProcessor(new BindingSCDLProcessor(scdlQName, bindingClass));
+            
+            // Check if the binding extends from Binding interface
+            if (Binding.class.isAssignableFrom(bindingClass)) {
+                // Add provider factory against the binding class
+                providerFactories.addProviderFactory(new DelegatingBindingProviderFactory(bindingClass));
             }
+
         }
+
+        // Add a generic provider factory against PojoBinding.class
+        providerFactories.addProviderFactory(new DelegatingBindingProviderFactory(PojoBinding.class));
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        ProviderFactoryExtensionPoint providerFactories =
+            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
 
         for (final BindingActivator bindingActivator : bindingActivators) {
 
             // Remove the binding SCDL processor from the runtime
             if (staxProcessors != null) {
-                StAXArtifactProcessor processor = staxProcessors.getProcessor(getBindingQName(bindingActivator.getBindingClass()));
+                StAXArtifactProcessor processor =
+                    staxProcessors.getProcessor(getBindingQName(bindingActivator.getBindingClass()));
                 if (processor != null) {
                     staxProcessors.removeArtifactProcessor(processor);
                 }
@@ -164,6 +113,12 @@ public class BindingsActivator implements ModuleActivator {
                 }
             }
         }
+        if (providerFactories != null) {
+            ProviderFactory factory = providerFactories.getProviderFactory(PojoBinding.class);
+            if (factory != null) {
+                providerFactories.removeProviderFactory(factory);
+            }
+        }
     }
 
     protected QName getBindingQName(Class bindingClass) {
@@ -172,10 +127,10 @@ public class BindingsActivator implements ModuleActivator {
             localName = localName.substring(localName.lastIndexOf('.') + 1);
         }
         if (localName.endsWith("Binding")) {
-            localName = localName.substring(0, localName.length()-7);
+            localName = localName.substring(0, localName.length() - 7);
         }
         StringBuilder sb = new StringBuilder(localName);
-        for (int i=0; i<sb.length(); i++) {
+        for (int i = 0; i < sb.length(); i++) {
             if (Character.isUpperCase(sb.charAt(i))) {
                 sb.setCharAt(i, Character.toLowerCase(sb.charAt(i)));
             } else {
@@ -185,23 +140,111 @@ public class BindingsActivator implements ModuleActivator {
         return new QName(Constants.SCA10_NS, "binding." + sb.toString());
     }
 
-
     public Object[] getExtensionPoints() {
         return null; // not used by binding or implementation extensions
     }
 
+    private final class DelegatingBindingProviderFactory implements BindingProviderFactory {
+        private Class modelType;
+
+        public DelegatingBindingProviderFactory(Class modelType) {
+            super();
+            this.modelType = modelType;
+        }
+
+        public ReferenceBindingProvider createReferenceBindingProvider(final RuntimeComponent rc,
+                                                                       final RuntimeComponentReference rcr,
+                                                                       final Binding b) {
+            final Object realBinding;
+            if (b instanceof PojoBinding) {
+                realBinding = ((PojoBinding)b).getUserBinding();
+            } else {
+                realBinding = b;
+            }
+            final BindingActivator bindingActivator = bindingActivatorMap.get(realBinding.getClass());
+            return new ReferenceBindingProvider() {
+                List<InvokerProxy> invokers = new ArrayList<InvokerProxy>();
+                private InvokerFactory factory;
+
+                public Invoker createInvoker(Operation operation, boolean isCallback) {
+                    InvokerProxy invoker = new InvokerProxy(operation);
+                    invokers.add(invoker);
+                    return invoker;
+                }
+
+                public InterfaceContract getBindingInterfaceContract() {
+                    return null;
+                }
+
+                public void start() {
+                    if (b instanceof PojoBinding) {
+                        factory = bindingActivator.createInvokerFactory(rc, rcr, b, ((PojoBinding)b).getUserBinding());
+                    } else {
+                        factory = bindingActivator.createInvokerFactory(rc, rcr, b, b);
+                    }
+                    if (factory instanceof ComponentLifecycle) {
+                        ((ComponentLifecycle)factory).start();
+                    }
+                    for (InvokerProxy invoker : invokers) {
+                        invoker.start(factory);
+                    }
+                }
+
+                public void stop() {
+                    if (factory instanceof ComponentLifecycle) {
+                        ((ComponentLifecycle)factory).stop();
+                    }
+                }
+            };
+        }
+
+        public ServiceBindingProvider createServiceBindingProvider(final RuntimeComponent rc,
+                                                                   final RuntimeComponentService rcs,
+                                                                   final Binding b) {
+            final Object realBinding;
+            if (b instanceof PojoBinding) {
+                realBinding = ((PojoBinding)b).getUserBinding();
+            } else {
+                realBinding = b;
+            }
+            final BindingActivator bindingActivator = bindingActivatorMap.get(realBinding.getClass());
+            return new ServiceBindingProvider() {
+                ComponentLifecycle listener = bindingActivator.createService(rc, rcs, b, realBinding);
+
+                public InterfaceContract getBindingInterfaceContract() {
+                    return null;
+                }
+
+                public void start() {
+                    listener.start();
+                }
+
+                public void stop() {
+                    listener.stop();
+                }
+            };
+        }
+
+        public Class getModelType() {
+            return modelType;
+        }
+    }
+
 }
+
 class InvokerProxy implements Invoker {
     Invoker invoker;
     Operation op;
+
     InvokerProxy(Operation op) {
         this.op = op;
     }
+
     public Message invoke(Message arg0) {
         return invoker.invoke(arg0);
     }
+
     public void start(InvokerFactory factory) {
         invoker = factory.createInvoker(op);
     }
- }
-
+}

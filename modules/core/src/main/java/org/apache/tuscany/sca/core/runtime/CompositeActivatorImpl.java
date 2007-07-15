@@ -241,7 +241,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 ReferenceBindingProvider bindingProvider = ((RuntimeComponentReference)reference)
                     .getBindingProvider(binding);
                 if (bindingProvider != null) {
-                    bindingProvider.start();
+                    try {
+                        bindingProvider.start();
+                    } catch (RuntimeException e) {
+                        // TODO: [rfeng] Ignore the self reference if a runtime exception happens
+                        if (!reference.getName().startsWith("$self$.")) {
+                            throw e;
+                        }
+                    }
                 }
             }
             if (reference.getCallback() != null) {
@@ -630,17 +637,24 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                        Binding binding,
                                        InvocationChain chain,
                                        Operation operation) {
-        ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
-        if (provider != null) {
-            Invoker invoker = null;
-            if (provider instanceof ReferenceBindingProvider2) { 
-                invoker = ((ReferenceBindingProvider2)provider).createInvoker(operation);
-            } else {
-                // must be an old provider that only has the deprecated signature
-                invoker = provider.createInvoker(operation, false);
+        try {
+            ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
+            if (provider != null) {
+                Invoker invoker = null;
+                if (provider instanceof ReferenceBindingProvider2) {
+                    invoker = ((ReferenceBindingProvider2)provider).createInvoker(operation);
+                } else {
+                    // must be an old provider that only has the deprecated signature
+                    invoker = provider.createInvoker(operation, false);
+                }
+                if (invoker != null) {
+                    chain.addInvoker(invoker);
+                }
             }
-            if (invoker != null) {
-                chain.addInvoker(invoker);
+        } catch (RuntimeException e) {
+            // TODO: [rfeng] Ignore the self reference if a runtime exception happens
+            if (!reference.getName().startsWith("$self$.")) {
+                throw e;
             }
         }
     }
