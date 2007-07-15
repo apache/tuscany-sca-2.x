@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.databinding.wire;
+package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.util.List;
 

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.databinding.processor;
+package org.apache.tuscany.sca.core.databinding.processor;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

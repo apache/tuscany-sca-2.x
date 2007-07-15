@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.databinding.transformers;
+package org.apache.tuscany.sca.core.databinding.transformers;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.ExceptionHandler;
