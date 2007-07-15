@@ -20,8 +20,10 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -681,6 +683,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 }
             }
             for (ComponentReference componentReference : component.getReferences()) {
+                // FIXME: [rfeng] I don't think we should calculate the reference binding URI as follows.
                 String uri = component.getName() + '/' + componentReference.getName();
                 componentReferences.put(uri, componentReference);
 
@@ -905,6 +908,20 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                         }
                     }
                 }
+            }
+            // [rfeng] For any targets, select the matching binding for the reference
+            List<Binding> selectedBindings = new ArrayList<Binding>();
+            for (ComponentService service : targets) {
+                Binding selected = resolveBindings(componentReference, service);
+                if (selected == null) {
+                    warning("Component reference doesn't have a matching binding", componentReference);
+                } else {
+                    selectedBindings.add(selected);
+                }
+            }
+            if (!targets.isEmpty()) {
+                componentReference.getBindings().clear();
+                componentReference.getBindings().addAll(selectedBindings);
             }
         }
     }
@@ -1191,7 +1208,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             List<ComponentReference> promotedReferences = getPromotedComponentReferences(compositeReference);
             for (ComponentReference promotedReference : promotedReferences) {
 
-                consolidateBindings(compositeReference, promotedReference);
+                reconcileReferenceBindings(compositeReference, promotedReference);
                 if (compositeReference.getInterfaceContract() != null &&  // can be null in unit tests
                     compositeReference.getInterfaceContract().getCallbackInterface() != null) {
                     SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
@@ -1223,7 +1240,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                         for (ComponentReference promotedReference : promotedReferences) {
 
                             // Override the configuration of the promoted reference
-                            consolidateBindings(componentReference, promotedReference);
+                            reconcileReferenceBindings(componentReference, promotedReference);
                             if (componentReference.getInterfaceContract() != null &&  // can be null in unit tests
                                 componentReference.getInterfaceContract().getCallbackInterface() != null) {
                                 SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
@@ -1245,7 +1262,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                             // non-composite component services
                             if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference
                                     .getMultiplicity() == Multiplicity.ONE_ONE) {
-                                promotedReference.getTargets().clear();
+                                // promotedReference.getTargets().clear();
                             }
                             for (ComponentService target : componentReference.getTargets()) {
                                 if (target.getService() instanceof CompositeService) {
@@ -1290,21 +1307,22 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
     }
 
-    private void consolidateBindings(Reference reference, ComponentReference promotedReference) {
-        Multiplicity multiplicity = promotedReference.getMultiplicity();
-        if(multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
-            // Merging for 0..N or 1..N
-            promotedReference.getBindings().clear();
-            promotedReference.getBindings().addAll(reference.getBindings());
-        } else {
-            // Override the configuration of the promoted reference for 0..1 or 1..1
-            SCABinding scaBinding = promotedReference.getBinding(SCABinding.class);
-            promotedReference.getBindings().clear();
-            // FIXME: [rfeng] I don't think we should keep the SCABinding
-//            if (scaBinding != null) {
-//                promotedReference.getBindings().add(scaBinding);
-//            }
-            promotedReference.getBindings().addAll(reference.getBindings());
+    /**
+     * Override the bindings for a promoted reference from an outer component reference
+     * @param reference
+     * @param promotedReference
+     */
+    private void reconcileReferenceBindings(Reference reference, ComponentReference promotedReference) {
+        Set<Binding> bindings = new HashSet<Binding>();
+        bindings.addAll(promotedReference.getBindings());
+        bindings.addAll(reference.getBindings());
+        promotedReference.getBindings().clear();
+        promotedReference.getBindings().addAll(bindings);
+        if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
+            if (bindings.size() > 1) {
+                warning("Component reference " + promotedReference.getName() + " has more than one wires",
+                        promotedReference);
+            }
         }
     }
 
