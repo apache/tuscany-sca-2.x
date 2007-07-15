@@ -17,15 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.databinding.module;
+package org.apache.tuscany.sca.core.databinding.module;
 
-import org.apache.tuscany.core.databinding.processor.DataBindingJavaInterfaceProcessor;
-import org.apache.tuscany.core.databinding.transformers.Exception2ExceptionTransformer;
-import org.apache.tuscany.core.databinding.transformers.Input2InputTransformer;
-import org.apache.tuscany.core.databinding.transformers.Output2OutputTransformer;
-import org.apache.tuscany.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
+import org.apache.tuscany.sca.core.databinding.transformers.Exception2ExceptionTransformer;
+import org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransformer;
+import org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;
+import org.apache.tuscany.sca.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;

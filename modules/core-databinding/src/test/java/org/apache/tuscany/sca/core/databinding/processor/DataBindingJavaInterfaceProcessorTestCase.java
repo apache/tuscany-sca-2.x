@@ -17,10 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.core.databinding.processor;
+package org.apache.tuscany.sca.core.databinding.processor;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;

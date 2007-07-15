@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.core.databinding.module.DataBindingModuleActivator
+org.apache.tuscany.sca.core.databinding.module.DataBindingModuleActivator
