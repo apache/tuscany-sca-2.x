@@ -25,7 +25,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
 
-    <bean id="testBean" class="org.apache.tuscany.implementation.spring.itests.mock.TestHelloWorldBean" lazy-init="true">
+    <bean id="testBean" class="org.apache.tuscany.sca.implementation.spring.itests.mock.TestHelloWorldBean" lazy-init="true">
     </bean>
 
 </beans>

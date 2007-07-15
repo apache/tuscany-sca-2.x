@@ -28,11 +28,11 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
 
     <sca:service name="fooService" 
-                 type="org.apache.tuscany.implementation.spring.itests.helloworld.HelloWorld" 
+                 type="org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorld" 
                  target="testBean"/>
 
     <bean id="testBean" 
-          class="org.apache.tuscany.implementation.spring.itests.mock.TestHelloWorldBean" 
+          class="org.apache.tuscany.sca.implementation.spring.itests.mock.TestHelloWorldBean" 
           lazy-init="true">
     </bean>
 

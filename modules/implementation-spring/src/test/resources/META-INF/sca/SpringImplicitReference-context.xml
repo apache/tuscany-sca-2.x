@@ -24,7 +24,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
 
-    <bean id="testBean" class="org.apache.tuscany.implementation.spring.itests.mock.TestReferenceBean">
+    <bean id="testBean" class="org.apache.tuscany.sca.implementation.spring.itests.mock.TestReferenceBean">
         <!-- Here is the implicit reference - a property with a ref not satisifed within the
          * Spring application context.
          -->
