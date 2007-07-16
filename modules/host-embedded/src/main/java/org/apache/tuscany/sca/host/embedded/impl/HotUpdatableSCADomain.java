@@ -31,15 +31,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.management.ComponentManager;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
@@ -384,11 +383,8 @@ public class HotUpdatableSCADomain extends SCADomain {
         return domainURI;
     }
 
-    public Set<String> getComponentNames(){
-        return  scaDomain.getDomainCompositeHelper().getComponentNames();
+    public ComponentManager getComponentManager(){
+        return  scaDomain.getComponentManager();
     }
 
-    public Component getComponent(String name) {
-        return  scaDomain.getDomainCompositeHelper().getComponent(name);
-    }
 }
