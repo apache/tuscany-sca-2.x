@@ -18,12 +18,14 @@
 --%>
 
 <%@ page import="org.apache.tuscany.sca.host.embedded.impl.HotUpdatableSCADomain"%>
+<%@ page import="org.apache.tuscany.sca.host.management.ComponentManager"%>
 <%@ page import="org.apache.tuscany.sca.assembly.ComponentService"%>
 <%@ page import="org.apache.tuscany.sca.assembly.Binding"%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
    HotUpdatableSCADomain scaDomain = (HotUpdatableSCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
+   ComponentManager componentManager = scaDomain.getComponentManager();
 %>
 <html>
 <head><title>Apache Tuscany WebApp Runtime</title></head>
@@ -33,13 +35,13 @@ Apache Tuscany WebApp Runtime
 <br>
 Components in SCA Domain:
    <%
-        java.util.Iterator i = scaDomain.getComponentNames().iterator();
+        java.util.Iterator i = componentManager.getComponentNames().iterator();
         while (i.hasNext()) {
             String compName = i.next().toString();
 
       	%><br><%=compName%><br><%
 
-            org.apache.tuscany.sca.assembly.Component comp = scaDomain.getComponent(compName);
+            org.apache.tuscany.sca.assembly.Component comp = componentManager.getComponent(compName);
             java.util.Iterator j = comp.getServices().iterator();
             while (j.hasNext()) {
                 ComponentService compService = (ComponentService)j.next();
