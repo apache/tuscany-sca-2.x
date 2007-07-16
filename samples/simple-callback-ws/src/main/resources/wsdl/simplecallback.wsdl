@@ -108,7 +108,7 @@
 
     <wsdl:service name="MyServiceSoapService">
         <wsdl:port binding="tns:MyServiceSoapBinding" name="MyServiceSoapPort">
-            <wsdlsoap:address location="http://localhost:8080/MyServiceComponent"/>
+            <wsdlsoap:address location="http://localhost:8085/MyServiceComponent"/>
         </wsdl:port>
     </wsdl:service>
 
