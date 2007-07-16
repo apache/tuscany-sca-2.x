@@ -118,6 +118,11 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                             readProperty(property, reader);
                             componentType.getProperties().add(property);
                             
+                        } else if (Constants.IMPLEMENTATION_QNAME.equals(name)) {
+                            
+                            // Read an <implementation> element
+                            readPolicies(componentType, reader);
+                            
                         } else if (Constants.CALLBACK_QNAME.equals(name)) {
     
                             // Read a <callback>
