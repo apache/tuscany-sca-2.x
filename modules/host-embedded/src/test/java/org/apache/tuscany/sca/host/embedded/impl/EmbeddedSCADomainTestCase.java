@@ -25,9 +25,12 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.host.management.ComponentListener;
+import org.apache.tuscany.sca.host.management.ComponentManager;
 
 import crud.CRUD;
 
@@ -102,6 +105,83 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         
         // Stop the domain
         domain.stop();
+    }
+
+    public void testComponentManager() throws Exception {
+        // Start the domain
+        domain.start();
+        
+        // Determine my class loader and my test SCA contribution location  
+        ClassLoader myClassLoader = getClass().getClassLoader();
+        String url = myClassLoader.getResource("test.txt").toString();
+        url = url.substring(0, url.length()-8);
+        
+        // Contribute the SCA contribution
+        TestModelResolver myResolver = new TestModelResolver(myClassLoader);
+        ContributionService contributionService = domain.getContributionService();
+        Contribution contribution = contributionService.contribute("http://test/contribution", new URL(url), myResolver, false);
+        assertNotNull(contribution);
+        
+        // Decide which SCA composite I want to deploy
+        Composite myComposite = myResolver.getComposite(new QName("http://sample/crud", "crud"));
+        
+        // Add the deployable composite to the domain
+        EmbeddedSCADomain.DomainCompositeHelper domainHelper = domain.getDomainCompositeHelper();
+        domainHelper.addComposite(myComposite);
+
+        // Activate the SCA Domain
+        domainHelper.activateDomain();
+
+        // Start the components in my composite
+        domainHelper.startComponent(domainHelper.getComponent("CRUDServiceComponent"));
+        
+        // At this point the domain contains my contribution, my composite and
+        // it's started, my application code can start using it
+
+        ComponentManager componentManager = domain.getComponentManager();
+        assertEquals(1, componentManager.getComponentNames().size());
+        assertEquals("CRUDServiceComponent", componentManager.getComponentNames().iterator().next());
+        
+        Component component = componentManager.getComponent("CRUDServiceComponent");
+        assertNotNull(component);
+        assertEquals("CRUDServiceComponent", component.getName());
+        
+        MyComponentListener cl = new MyComponentListener();
+        componentManager.addComponentListener(cl);
+
+        assertFalse(cl.stopCalled);
+        componentManager.stopComponent("CRUDServiceComponent");
+        assertTrue(cl.stopCalled);
+        
+        assertFalse(cl.startCalled);
+        componentManager.startComponent("CRUDServiceComponent");
+        assertTrue(cl.startCalled);
+
+        // Stop my composite
+        domainHelper.stopComposite(myComposite);
+        
+        // Remove my composite
+        domainHelper.removeComposite(myComposite);
+        
+        // Remove my contribution
+        contributionService.remove("http://test/contribution");
+        
+        // Stop the domain
+        domain.stop();
+    }
+    
+    class MyComponentListener implements ComponentListener {
+        boolean startCalled;
+        boolean stopCalled;
+
+        public void componentStarted(String componentName) {
+            startCalled = true;
+        }
+
+        public void componentStopped(String componentName) {
+            stopCalled = true;
+        }
+        
     }
 
     /**
