@@ -54,6 +54,7 @@ public class EmbeddedSCADomain extends SCADomain {
     private ReallySmallRuntime runtime;
     private Map<String, Component> components = new HashMap<String, Component>();
     private DomainCompositeHelper domainCompositeHelper;
+    private ComponentManagerImpl componentManager = new ComponentManagerImpl(this);
     
     public class DomainCompositeHelper {
         
@@ -129,6 +130,7 @@ public class EmbeddedSCADomain extends SCADomain {
         public void startComponent(Component component) throws ActivationException {
             CompositeActivator compositeActivator = runtime.getCompositeActivator();
             compositeActivator.start(component);
+            componentManager.notifyComponentStarted(component.getName());
         }
         
         /**
@@ -139,6 +141,7 @@ public class EmbeddedSCADomain extends SCADomain {
         public void stopComponent(Component component) throws ActivationException {
             CompositeActivator compositeActivator = runtime.getCompositeActivator();
             compositeActivator.stop(component);
+            componentManager.notifyComponentStopped(component.getName());
         }        
         
         /**
@@ -199,6 +202,9 @@ public class EmbeddedSCADomain extends SCADomain {
     }
     
     public DomainCompositeHelper getDomainCompositeHelper() {
+        if (domainCompositeHelper == null) {
+            throw new IllegalStateException("domain not started");
+        }
         return domainCompositeHelper;
     }
     
