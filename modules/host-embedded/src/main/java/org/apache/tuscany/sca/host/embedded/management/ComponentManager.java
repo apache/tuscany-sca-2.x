@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.management;
+package org.apache.tuscany.sca.host.embedded.management;
 
 import java.util.Set;
 
@@ -29,6 +29,8 @@ public interface ComponentManager {
     Set<String> getComponentNames();
 
     Component getComponent(String componentName);
+    
+    boolean isComponentStarted(String componentName);
 
     void startComponent(String componentName) throws ActivationException;
 

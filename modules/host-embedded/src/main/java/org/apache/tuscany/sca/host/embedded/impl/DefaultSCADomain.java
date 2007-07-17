@@ -24,7 +24,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.namespace.QName;
 
@@ -42,7 +46,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
+import org.apache.tuscany.sca.core.runtime.RuntimeComponentImpl;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
+import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
@@ -63,6 +70,7 @@ public class DefaultSCADomain extends SCADomain {
     private Contribution contribution;
     private Map<String, Component> components = new HashMap<String, Component>();
     private ReallySmallRuntime runtime;
+    private ComponentManager componentManager;
 
     /**
      * Constructs a new domain facade.
@@ -152,6 +160,8 @@ public class DefaultSCADomain extends SCADomain {
         for (Component component : domainComposite.getComponents()) {
             components.put(component.getName(), component);
         }
+        
+        this.componentManager = new DefaultSCADomainComponentManager(this);
     }
 
     @Override
@@ -346,6 +356,114 @@ public class DefaultSCADomain extends SCADomain {
     @Override
     public String getURI() {
         return uri;
+    }
+
+    @Override
+    public ComponentManager getComponentManager() {
+        return componentManager;
+    }
+
+    public Set<String> getComponentNames() {
+        Set<String> componentNames = new HashSet<String>();
+        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            if (artifact.getModel() instanceof Composite) {
+                for (Component component : ((Composite)artifact.getModel()).getComponents()) {
+                    componentNames.add(component.getName());
+                }
+            }
+        }
+        return componentNames;
+    }
+    
+    
+    public Component getComponent(String componentName) {
+        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            if (artifact.getModel() instanceof Composite) {
+                for (Component component : ((Composite)artifact.getModel()).getComponents()) {
+                    if (component.getName().equals(componentName)) {
+                        return component;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    public void startComponent(String componentName) throws ActivationException {
+        Component component = getComponent(componentName);
+        if (component == null) {
+            throw new IllegalArgumentException("no component: " + componentName);
+        }
+        CompositeActivator compositeActivator = runtime.getCompositeActivator();
+        compositeActivator.start(component);
+    }
+
+    public void stopComponent(String componentName) throws ActivationException {
+        Component component = getComponent(componentName);
+        if (component == null) {
+            throw new IllegalArgumentException("no component: " + componentName);
+        }
+        CompositeActivator compositeActivator = runtime.getCompositeActivator();
+        compositeActivator.stop(component);
+    }
+}
+
+class DefaultSCADomainComponentManager implements ComponentManager {
+
+    protected DefaultSCADomain scaDomain;
+    protected List<ComponentListener> listeners = new CopyOnWriteArrayList<ComponentListener>();
+
+    public DefaultSCADomainComponentManager(DefaultSCADomain scaDomain) {
+        this.scaDomain = scaDomain;
+    }
+
+    public void addComponentListener(ComponentListener listener) {
+        this.listeners.add(listener);
+    }
+
+    public void removeComponentListener(ComponentListener listener) {
+        this.listeners.remove(listener);
+    }
+
+    public Set<String> getComponentNames() {
+        return scaDomain.getComponentNames();
+    }
+
+    public Component getComponent(String componentName) {
+        return scaDomain.getComponent(componentName);
+    }
+
+    public void startComponent(String componentName) throws ActivationException {
+        scaDomain.startComponent(componentName);
+    }
+
+    public void stopComponent(String componentName) throws ActivationException {
+        scaDomain.stopComponent(componentName);
+    }
+
+    public void notifyComponentStarted(String componentName) {
+        for (ComponentListener listener : listeners) {
+            try {
+                listener.componentStarted(componentName);
+            } catch (Exception e) {
+                e.printStackTrace(); // TODO: log
+            }
+        }
+    }
+
+    public void notifyComponentStopped(String componentName) {
+        for (ComponentListener listener : listeners) {
+            try {
+                listener.componentStopped(componentName);
+            } catch (Exception e) {
+                e.printStackTrace(); // TODO: log
+            }
+        }
+    }
+
+    public boolean isComponentStarted(String componentName) {
+        RuntimeComponentImpl runtimeComponent = (RuntimeComponentImpl)getComponent(componentName);
+        return runtimeComponent.isStarted();
     }
 
 }

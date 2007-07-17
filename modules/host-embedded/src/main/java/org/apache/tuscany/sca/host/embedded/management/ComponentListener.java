@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.management;
+package org.apache.tuscany.sca.host.embedded.management;
 
 import java.util.EventListener;
 

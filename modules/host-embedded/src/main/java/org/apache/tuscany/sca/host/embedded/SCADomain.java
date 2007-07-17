@@ -28,6 +28,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
+import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
@@ -262,6 +263,10 @@ public abstract class SCADomain {
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
+    }
+
+    public ComponentManager getComponentManager() {
+        return null; 
     }
 
 }
