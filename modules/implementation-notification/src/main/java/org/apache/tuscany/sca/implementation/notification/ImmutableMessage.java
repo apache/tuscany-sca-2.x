@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.notification;
 
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -91,5 +92,10 @@ public class ImmutableMessage implements Message {
     public void setWire(RuntimeWire arg0) {
     }
 
+    public Operation getOperation() {
+        return null;
+    }
 
+    public void setOperation(Operation op) {
+    }
 }
