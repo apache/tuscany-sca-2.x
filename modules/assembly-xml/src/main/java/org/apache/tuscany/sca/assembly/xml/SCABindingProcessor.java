@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -44,6 +43,9 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class SCABindingProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<SCABinding>{
     
     private SCABindingFactory scaBindingFactory;
+
+    protected static final String BINDING_SCA = "binding.sca";
+    protected static final QName BINDING_SCA_QNAME = new QName(SCA10_NS, BINDING_SCA);
 
     public SCABindingProcessor(AssemblyFactory assemblyFactory,
                                PolicyFactory policyFactory,
