@@ -104,8 +104,17 @@
             <finalName>demo-bigbank-account</finalName>
             <plugins>
             <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                    
+                <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-trax</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
+                
                     <executions>
                         <execution> 
                             <id>install-dojo</id>                       
