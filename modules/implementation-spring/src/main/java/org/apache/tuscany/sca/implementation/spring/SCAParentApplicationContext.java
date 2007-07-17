@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.spring;
 
@@ -49,28 +49,27 @@ import org.springframework.core.io.Resource;
 
 /**
  * A Spring ParentApplicationContext for a given Spring Implementation
- * 
+ *
  * The Parent application context is responsible for handling those entities within a Spring
- * application context that actually belong to SCA rather than to Spring.  The principal things 
+ * application context that actually belong to SCA rather than to Spring.  The principal things
  * are Properties and References.  These may be present either through explicit <sca:property/>
  * and <sca:reference/> elements in the application context or they may be implicit through
  * unresolved Spring bean <property.../> elements.  In either case, it is the Parent application
  * context that must provide Spring beans that correspond to the property or reference, as derived
- * from the SCA composite in which the Spring application context is an implementation. 
- * @author MikeEdwards
+ * from the SCA composite in which the Spring application context is an implementation.
  *
  */
 class SCAParentApplicationContext implements ApplicationContext {
-	
+
 	// The Spring implementation for which this is the parent application context
 	private SpringImplementation 	implementation;
 	private RuntimeComponent 		component;
 	private ProxyFactory 			proxyService;
 	private JavaPropertyValueObjectFactory propertyFactory;
-	
+
     private static final String[] EMPTY_ARRAY = new String[0];
-	
-	public SCAParentApplicationContext( 	RuntimeComponent component, 
+
+	public SCAParentApplicationContext( 	RuntimeComponent component,
 											SpringImplementation implementation,
 											ProxyFactory proxyService,
 											JavaPropertyValueObjectFactory propertyValueObjectFactory) {
@@ -83,7 +82,7 @@ class SCAParentApplicationContext implements ApplicationContext {
     public Object getBean(String name) throws BeansException {
         return getBean(name, null);
     }
-    
+
     /**
      * Get a Bean for a reference or for a property..
      * @param name - the name of the Bean required
@@ -92,14 +91,14 @@ class SCAParentApplicationContext implements ApplicationContext {
      */
     public Object getBean(String name, Class requiredType) throws BeansException {
     	System.out.println("Spring parent context - getBean called for name: " + name );
-    	// The expectation is that the requested Bean is either a reference or a property 
+    	// The expectation is that the requested Bean is either a reference or a property
     	// from the Spring context
     	for ( Reference reference : implementation.getReferences() ) {
-    		if( reference.getName().equals(name) ) { 
+    		if( reference.getName().equals(name) ) {
     			// Extract the Java interface for the reference (it can't be any other interface type
     	    	// for a Spring application context)
     	    	if( requiredType == null ) {
-    	    		JavaInterface javaInterface = 
+    	    		JavaInterface javaInterface =
     	    			(JavaInterface) reference.getInterfaceContract().getInterface();
     	    		requiredType = javaInterface.getJavaClass();
     	    	}
@@ -107,7 +106,7 @@ class SCAParentApplicationContext implements ApplicationContext {
     	    	return getService( requiredType, reference.getName() );
     		} // end if
     	} // end for
-    	
+
     	// For a property, get the name and the required Java type and create a Bean
     	// of that type with the value inserted.
     	for ( Property property : implementation.getProperties() ) {
@@ -120,13 +119,13 @@ class SCAParentApplicationContext implements ApplicationContext {
     				requiredType = implementation.getPropertyClass( name );
     			}
     			return getPropertyBean( requiredType, property.getName() );
-    		} // end if 
+    		} // end if
     	} // end for
     	throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name );
-  
+
     } // end method getBean( String, Class )
-    
-   
+
+
     /**
      * Creates a proxy Bean for a reference
      * @param <B> the Business interface type for the reference
@@ -145,7 +144,7 @@ class SCAParentApplicationContext implements ApplicationContext {
         }
         return null;
     }
-    
+
     /**
      * Method to create a Java Bean for a Property value
      * @param <B> the class type of the Bean
@@ -161,16 +160,16 @@ class SCAParentApplicationContext implements ApplicationContext {
     		if ( prop.getName().equals(name) ) {
     			// On finding the property, create a factory for it and create a Bean using
     			// the factory
-    			ObjectFactory factory = propertyFactory.createValueFactory( prop, 
-    					                                                    prop.getValue(), 
+    			ObjectFactory factory = propertyFactory.createValueFactory( prop,
+    					                                                    prop.getValue(),
     					                                                    requiredType );
     			propertyObject = (B)factory.getInstance();
     		} // end if
     	} // end for
-    	
+
     	return propertyObject;
     }
-    
+
     public boolean containsBean(String name) {
     	// TODO
     	System.out.println("Spring parent context - containsBean called for name: " + name );
@@ -238,7 +237,7 @@ class SCAParentApplicationContext implements ApplicationContext {
         throws BeansException {
         return null;
     }
-    
+
     public boolean isPrototype( String theString ) {
     	return false;
     }
