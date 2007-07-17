@@ -448,6 +448,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @throws XMLStreamException
      */
     protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs) throws XMLStreamException {
+        writeAttributePrefixes(writer, attrs);
         writer.writeStartElement(uri, name);
         writeAttributes(writer, attrs);
     }
@@ -504,6 +505,19 @@ abstract class BaseArtifactProcessor implements Constants {
         for (XAttr attr : attrs) {
             if (attr != null)
                 attr.write(writer);
+        }
+    }
+
+    /**
+     * Write attribute prefixes to the current element.
+     * @param writer
+     * @param attrs
+     * @throws XMLStreamException
+     */
+    protected void writeAttributePrefixes(XMLStreamWriter writer, XAttr... attrs) throws XMLStreamException {
+        for (XAttr attr : attrs) {
+            if (attr != null)
+                attr.writePrefix(writer);
         }
     }
 

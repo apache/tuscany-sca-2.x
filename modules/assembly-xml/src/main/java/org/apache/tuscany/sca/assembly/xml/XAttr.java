@@ -103,6 +103,34 @@ class XAttr {
         }
     }
 
+    /**
+     * Registers a prefix for the namespace of a QName.  
+     * @param reader
+     * @param value
+     * @return
+     */
+    protected void writeQNamePrefix(XMLStreamWriter writer, QName qname) throws XMLStreamException {
+        if (qname != null) {
+            String prefix = qname.getPrefix();
+            String uri = qname.getNamespaceURI();
+            prefix = writer.getPrefix(uri);
+            if (prefix != null) {
+                return;
+            } else {
+                
+                // Find an available prefix and bind it to the given uri 
+                NamespaceContext nsc = writer.getNamespaceContext();
+                for (int i=1; ; i++) {
+                    prefix = "ns" + i;
+                    if (nsc.getNamespaceURI(prefix) == null) {
+                        break;
+                    }
+                }
+                writer.setPrefix(prefix, uri);
+            }
+        }
+    }
+
     void write(XMLStreamWriter writer) throws XMLStreamException {
         if (value != null) {
             String str;
@@ -115,6 +143,14 @@ class XAttr {
                 writer.writeAttribute(uri, name, str);
             } else {
                 writer.writeAttribute(name,str);
+            }
+        }
+    }
+
+    void writePrefix(XMLStreamWriter writer) throws XMLStreamException {
+        if (value != null) {
+            if (value instanceof QName) {
+                writeQNamePrefix(writer, (QName)value);
             }
         }
     }
