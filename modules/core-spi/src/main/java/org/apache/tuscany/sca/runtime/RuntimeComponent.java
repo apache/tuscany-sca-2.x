@@ -42,4 +42,16 @@ public interface RuntimeComponent extends Component, ComponentContext {
      * @return The implementation provider for this component
      */
     ImplementationProvider getImplementationProvider();
+    
+    /**
+     * Tests if the RuntimeComponent is started
+     * @return true if the RuntimeComponent is started otherwise false
+     */
+    boolean isStarted();
+
+    /**
+     * Sets the RuntimeComponent started state
+     * @param the state to set
+     */
+    void setStarted(boolean started);
 }
