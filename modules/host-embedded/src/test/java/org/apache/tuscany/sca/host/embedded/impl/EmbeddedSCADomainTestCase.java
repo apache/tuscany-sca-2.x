@@ -29,8 +29,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.host.management.ComponentListener;
-import org.apache.tuscany.sca.host.management.ComponentManager;
+import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
+import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 
 import crud.CRUD;
 
@@ -149,13 +149,17 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         MyComponentListener cl = new MyComponentListener();
         componentManager.addComponentListener(cl);
 
+        assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
+        
         assertFalse(cl.stopCalled);
         componentManager.stopComponent("CRUDServiceComponent");
         assertTrue(cl.stopCalled);
+        assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
         
         assertFalse(cl.startCalled);
         componentManager.startComponent("CRUDServiceComponent");
         assertTrue(cl.startCalled);
+        assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
 
         // Stop my composite
         domainHelper.stopComposite(myComposite);

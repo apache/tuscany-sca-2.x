@@ -19,18 +19,19 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
-import org.apache.tuscany.sca.host.management.ComponentListener;
-import org.apache.tuscany.sca.host.management.ComponentManager;
+import org.apache.tuscany.sca.core.runtime.RuntimeComponentImpl;
+import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
+import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 
 public class ComponentManagerImpl implements ComponentManager {
 
-    protected List<ComponentListener> listeners = new ArrayList<ComponentListener>();
+    protected List<ComponentListener> listeners = new CopyOnWriteArrayList<ComponentListener>();
     protected EmbeddedSCADomain domain;
 
     public ComponentManagerImpl(EmbeddedSCADomain domain) {
@@ -87,6 +88,11 @@ public class ComponentManagerImpl implements ComponentManager {
                 e.printStackTrace(); // TODO: log
             }
         }
+    }
+
+    public boolean isComponentStarted(String componentName) {
+        RuntimeComponentImpl runtimeComponent = (RuntimeComponentImpl)getComponent(componentName);
+        return runtimeComponent.isStarted();
     }
 
 }

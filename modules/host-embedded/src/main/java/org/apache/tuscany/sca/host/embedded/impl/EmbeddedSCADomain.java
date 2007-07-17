@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.management.ComponentManager;
+import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
@@ -209,6 +209,7 @@ public class EmbeddedSCADomain extends SCADomain {
         return domainCompositeHelper;
     }
     
+    @Override
     public ComponentManager getComponentManager() {
         return componentManager;
     }

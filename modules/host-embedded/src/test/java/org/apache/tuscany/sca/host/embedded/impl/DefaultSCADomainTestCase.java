@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
+import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
+
 import junit.framework.TestCase;
 import crud.CRUD;
 
@@ -41,6 +43,18 @@ public class DefaultSCADomainTestCase extends TestCase {
         assertNotNull(service);
     }
 
+    public void testComponentManager() throws Exception {
+        ComponentManager componentManager = domain.getComponentManager();
+        assertEquals(1, componentManager.getComponentNames().size());
+        assertEquals("CRUDServiceComponent", componentManager.getComponentNames().iterator().next());
+        assertNotNull(componentManager.getComponent("CRUDServiceComponent"));
+        
+        assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
+        componentManager.startComponent("CRUDServiceComponent");
+        assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
+        componentManager.stopComponent("CRUDServiceComponent");
+        assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
+    }
     /**
      * @throws java.lang.Exception
      */
