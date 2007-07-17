@@ -287,7 +287,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 runtimeComponent.getScopeContainer().start();
             }
         }
-
+        
+        ((RuntimeComponent)component).setStarted(true);
     }
 
     /**
@@ -348,6 +349,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
 
+        ((RuntimeComponent)component).setStarted(false);
     }
     
     

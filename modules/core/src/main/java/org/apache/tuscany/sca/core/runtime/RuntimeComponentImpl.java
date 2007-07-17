@@ -45,6 +45,7 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     protected ImplementationProvider implementationProvider;
     protected ProxyFactory proxyService;
     protected ScopeContainer scopeContainer;
+    protected boolean started;
 
     /**
      * @param proxyService
@@ -124,5 +125,13 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
 
     public void setScopeContainer(ScopeContainer scopeContainer) {
         this.scopeContainer = scopeContainer;
+    }
+    
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
     }
 }
