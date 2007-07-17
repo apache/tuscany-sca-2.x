@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.spring;
 
@@ -26,14 +26,13 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * ImplementationProviderFactory for Spring implementation type
- * @author MikeEdwards
  *
  */
 public class SpringImplementationProviderFactory implements ImplementationProviderFactory<SpringImplementation> {
 
 	private ProxyFactory proxyService;
 	private JavaPropertyValueObjectFactory propertyFactory;
-	
+
 	/**
 	 * Simple constructor
 	 *
@@ -43,7 +42,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
         super();
         this.proxyService 		= proxyService;
         this.propertyFactory 	= propertyValueObjectFactory;
-    } 
+    }
 
     /**
      * Returns a SpringImplementationProvider for a given component and Spring implementation
@@ -54,7 +53,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        return new SpringImplementationProvider( component, implementation, 
+        return new SpringImplementationProvider( component, implementation,
         										 proxyService, propertyFactory );
     }
 
