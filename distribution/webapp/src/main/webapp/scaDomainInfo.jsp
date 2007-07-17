@@ -17,14 +17,14 @@
  * under the License.
 --%>
 
-<%@ page import="org.apache.tuscany.sca.host.embedded.impl.HotUpdatableSCADomain"%>
-<%@ page import="org.apache.tuscany.sca.host.management.ComponentManager"%>
+<%@ page import="org.apache.tuscany.sca.host.embedded.SCADomain"%>
+<%@ page import="org.apache.tuscany.sca.host.embedded.management.ComponentManager"%>
 <%@ page import="org.apache.tuscany.sca.assembly.ComponentService"%>
 <%@ page import="org.apache.tuscany.sca.assembly.Binding"%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-   HotUpdatableSCADomain scaDomain = (HotUpdatableSCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
+   SCADomain scaDomain = (SCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
    ComponentManager componentManager = scaDomain.getComponentManager();
 %>
 <html>
