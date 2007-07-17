@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.BindingEndpoint;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -663,7 +664,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     scaBinding.setName(componentService.getName());
                     componentService.getBindings().add(scaBinding);
                 }
-                scaBinding.setURI(uri);
                 scaBinding.setComponent(component);
 
                 // if service has a callback, create and configure an SCA binding for the callback
@@ -678,7 +678,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                         }
                         componentService.getCallback().getBindings().add(scaCallbackBinding);
                     }
-                    scaCallbackBinding.setURI(uri);
                     scaCallbackBinding.setComponent(component);
                 }
             }
@@ -694,7 +693,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     scaBinding.setName(componentReference.getName());
                     componentReference.getBindings().add(scaBinding);
                 }
-                scaBinding.setURI(uri);
                 scaBinding.setComponent(component);
 
                 // if reference has a callback, create and configure an SCA binding for the callback
@@ -709,7 +707,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                         }
                         componentReference.getCallback().getBindings().add(scaCallbackBinding);
                     }
-                    scaCallbackBinding.setURI(uri);
                     scaCallbackBinding.setComponent(component);
                 }
             }
@@ -1195,12 +1192,15 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     protected void wireCompositeReferences(Composite composite) {
 
         // Process nested composites recursively
+        // [rfeng] I comment out the following loop as there's no need to do the recursive wiring.
+        /*
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
                 wireCompositeReferences((Composite)implementation);
             }
         }
+        */
 
         // Process composite references declared in this composite
         for (Reference reference : composite.getReferences()) {
@@ -1529,6 +1529,35 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      */
     private void warning(String message, Object model) {
         monitor.problem(new ProblemImpl(Severity.WARNING, message, model));
+    }
+
+    /**
+     * This method encapsulates the logic needed to determine whether a binding
+     * is configured with an endpoint.  In most cases, this is determined by
+     * whether the binding's uri attribute was specified.  However, some bindings
+     * provide a binding-specific way of setting the target URI, so it's not
+     * sufficient to simply call getURI() on the binding.  The hasEndpoint()
+     * method of the BindingEndpoint interface allows the binding to provide
+     * a definite answer.
+     * 
+     * @param binding
+     * @return true if the binding has an endpoint, false otherwise
+     */
+    public static boolean bindingHasEndpoint(Binding binding) {
+        // for now, determine this based on knowledge of the various binding types
+        // all bindings should be changed to extend BindingEndpoint and implement hasEndpoint()
+        // evetually, BindingEndpoint should be merged with Binding
+        if (binding instanceof BindingEndpoint) {
+            // call hasEndpoint() to get the definitive answer
+            return ((BindingEndpoint)binding).hasEndpoint();
+        } else {
+            //FIXME: nasty hack to preserve compatibility with old bindings 
+            if (binding instanceof SCABinding) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
 }

@@ -75,10 +75,11 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         RuntimeWire wire = null;
         if (from != null) {
             wire = wires.get(from.getURI());
-        } else { // service with binding
-            wire = wires.get(null);
         }
-        assert wire != null;
+        if (wire == null) {
+            //FIXME: need better exception
+            throw new RuntimeException("Wire for callback cannot be found");
+        }
         IdentityHashMap<Operation, InvocationChain> map = wire.getCallbackInvocationMap();
         Operation operation = JavaInterfaceUtil.findOperation(method, map.keySet());
         InvocationChain chain = map.get(operation);

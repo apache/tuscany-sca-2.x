@@ -80,6 +80,15 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
     }
 
     public Invoker getInvoker(Binding binding, Operation operation) {
+        InvocationChain chain = getInvocationChain(binding, operation);
+        if (chain != null) {
+            return chain.getHeadInvoker();
+        } else {
+            return null;
+        }
+    }
+
+    public InvocationChain getInvocationChain(Binding binding, Operation operation) {
         RuntimeWire wire = getRuntimeWire(binding);
         if (wire == null) {
             return null;
@@ -87,7 +96,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation op = chain.getTargetOperation();
             if (mapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
-                return chain.getHeadInvoker();
+                return chain;
             }
         }
         return null;

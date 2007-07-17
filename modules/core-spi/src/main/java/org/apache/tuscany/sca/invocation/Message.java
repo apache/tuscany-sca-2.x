@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.invocation;
 
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 
 /**
@@ -123,10 +124,24 @@ public interface Message {
     ConversationSequence getConversationSequence();
 
     /**
-     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END
+     * Sets the conversational sequence the message is associated with, NONE, START, CONTINUE, or END
      *
      * @param sequence The conversational sequence
      */
     void setConversationSequence(ConversationSequence sequence);
+
+    /**
+     * Returns the operation that created the message.
+     *
+     * @return The operation that created the message
+     */
+    Operation getOperation();
+
+    /**
+     * Sets the operation that created the message.
+     *
+     * @param op The operation that created the message
+     */
+    void setOperation(Operation op);
 
 }

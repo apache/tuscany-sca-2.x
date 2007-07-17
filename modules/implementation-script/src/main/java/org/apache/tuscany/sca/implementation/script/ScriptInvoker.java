@@ -44,12 +44,16 @@ public class ScriptInvoker implements Invoker {
         this.operation = operation;
     }
 
-    protected Object doInvoke(Object[] objects) throws ScriptException {
+    protected Object doInvoke(Object[] objects, Operation op) throws ScriptException {
         if (xmlHelper != null) {
             objects[0] = xmlHelper.toScriptXML((OMElement)objects[0]);
         }
 
-        Object response = ((Invocable)scriptEngine).invokeFunction(operation.getName(), objects);
+        Operation oper = operation;  // static setting
+        if (oper.getName() == null) {  // if no static setting
+            oper = op;  // use dynamic setting
+        }
+        Object response = ((Invocable)scriptEngine).invokeFunction(oper.getName(), objects);
 
         if (xmlHelper != null) {
             response = xmlHelper.toOMElement(response);
@@ -60,7 +64,7 @@ public class ScriptInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
-            Object resp = doInvoke((Object[])msg.getBody());
+            Object resp = doInvoke((Object[])msg.getBody(), msg.getOperation());
             msg.setBody(resp);
         } catch (ScriptException e) {
             msg.setFaultBody(e.getCause());

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.LinkedList;
 
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -166,6 +167,14 @@ public class NonBlockingInterceptor implements Interceptor {
         }
 
         public void setTo(EndpointReference to) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Operation getOperation() {
+            return null;
+        }
+
+        public void setOperation(Operation op) {
             throw new UnsupportedOperationException();
         }
 

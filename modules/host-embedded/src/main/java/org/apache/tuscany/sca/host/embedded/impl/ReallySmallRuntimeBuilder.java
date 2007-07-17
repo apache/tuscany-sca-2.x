@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.assembly.xml.SCABindingProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
@@ -56,6 +57,7 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
@@ -121,6 +123,14 @@ public class ReallySmallRuntimeBuilder {
         RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
         registry.addExtensionPoint(wireProcessors);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
+
+        // Add the SCABindingProcessor extension
+        PolicyFactory policyFactory = registry.getExtensionPoint(PolicyFactory.class);
+        SCABindingProcessor scaBindingProcessor = new SCABindingProcessor(assemblyFactory,
+                                                                          policyFactory,
+                                                                          scaBindingFactory);
+        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.addArtifactProcessor(scaBindingProcessor);       
 
         // Create a provider factory extension point
         ProviderFactoryExtensionPoint providerFactories = new DefaultProviderFactoryExtensionPoint();

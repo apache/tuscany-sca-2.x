@@ -50,7 +50,8 @@ public class EndpointReferenceImpl implements EndpointReference {
         this.contract = contract;
         this.binding = binding;
         this.interfaceContract = interfaceContract;
-        this.uri = binding.getURI();
+        this.uri = (component != null ? component.getName() : "") + '/' +
+                   (contract != null ? contract.getName() : "");
     }
 
     /**

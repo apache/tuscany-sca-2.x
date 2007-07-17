@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.BindingEndpoint;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.policy.Intent;
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding {
+public class SCABindingImpl implements SCABinding, BindingEndpoint {
     private String name;
     private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -87,5 +88,9 @@ public class SCABindingImpl implements SCABinding {
     }
     
     public void setUnresolved(boolean unresolved) {
+    }
+
+    public boolean hasEndpoint() {
+        return uri != null;
     }
 }

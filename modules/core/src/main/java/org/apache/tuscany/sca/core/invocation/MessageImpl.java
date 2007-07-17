@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 
@@ -34,6 +35,7 @@ public class MessageImpl implements Message {
     private boolean isFault;
     private ConversationSequence conversationSequence;
     private String conversationId;
+    private Operation op;
     
     private EndpointReference from;
     private EndpointReference to;
@@ -114,4 +116,11 @@ public class MessageImpl implements Message {
         this.to = to;
     }
 
+    public Operation getOperation() {
+        return op;
+    }
+
+    public void setOperation(Operation op) {
+        this.op = op;
+    }
 }

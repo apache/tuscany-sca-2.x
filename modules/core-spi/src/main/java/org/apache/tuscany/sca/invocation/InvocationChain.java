@@ -36,6 +36,13 @@ public interface InvocationChain {
      * @return The target operation for this invocation chain
      */
     Operation getTargetOperation();
+
+    /**
+     * Updates the target operation for this invocation chain.
+     *
+     * @param operation The new target operation for this invocation chain
+     */
+    void setTargetOperation(Operation operation);
     
     /**
      * Returns the source operation for this invocation chain.

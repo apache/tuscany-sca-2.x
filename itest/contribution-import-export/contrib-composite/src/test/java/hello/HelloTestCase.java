@@ -62,6 +62,8 @@ public class HelloTestCase extends TestCase{
         
         //activate SCA Domain
         domain.getDomainCompositeHelper().activateDomain();
+        //Start Components from my composite
+        domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloServiceComponent"));
     }
     
 	public void testHello() throws IOException {
