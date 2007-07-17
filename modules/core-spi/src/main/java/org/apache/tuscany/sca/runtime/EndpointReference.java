@@ -56,9 +56,21 @@ public interface EndpointReference {
     InterfaceContract getInterfaceContract();
     
     /**
+     * Update the interface contract for the endpoint
+     * @param interfaceContract The updated interface contract
+     */
+    void setInterfaceContract(InterfaceContract interfaceContract);
+
+    /**
      * Get the URI for this endpoint
      * @return The URI of the endpoint
      */
     String getURI();
+
+    /**
+     * Set the URI for this endpoint
+     * @param uri The new URI of the endpoint
+     */
+    void setURI(String uri);
     
 }

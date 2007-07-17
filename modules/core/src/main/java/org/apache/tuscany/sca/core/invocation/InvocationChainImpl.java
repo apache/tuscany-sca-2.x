@@ -51,6 +51,10 @@ public class InvocationChainImpl implements InvocationChain {
         return targetOperation;
     }
 
+    public void setTargetOperation(Operation operation) {
+        this.targetOperation = operation;
+    }
+
     public void addInterceptor(Interceptor interceptor) {
         if (invokerChainHead == null) {
             invokerChainHead = interceptor;

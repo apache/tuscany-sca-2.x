@@ -60,9 +60,10 @@ public abstract class AbstractInvocationHandler {
         Invoker headInvoker = chain.getHeadInvoker();
         msg.setCorrelationID(msgContext.getCorrelationID());
         Operation operation = chain.getTargetOperation();
+        msg.setOperation(operation);
         Interface contract = operation.getInterface();
         if (contract != null && contract.isConversational()) {
-            ConversationSequence sequence = chain.getTargetOperation().getConversationSequence();
+            ConversationSequence sequence = operation.getConversationSequence();
             if (sequence == ConversationSequence.CONVERSATION_END) {
                 msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;

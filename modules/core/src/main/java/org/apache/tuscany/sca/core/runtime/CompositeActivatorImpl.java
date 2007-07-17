@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
@@ -91,7 +90,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         super();
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
-        this.interfaceContractMapper = interfaceContractMapper;
+         this.interfaceContractMapper = interfaceContractMapper;
         this.scopeRegistry = scopeRegistry;
         this.workScheduler = workScheduler;
         this.wireProcessor = wireProcessor;
@@ -235,6 +234,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     }
                 }
             }
+            for (RuntimeWire wire : ((RuntimeComponentService)service).getRuntimeWires()) {
+                wireProcessor.process(wire);
+            }
+            for (RuntimeWire wire : ((RuntimeComponentService)service).getCallbackWires()) {
+                wireProcessor.process(wire);
+            }
         }
         for (ComponentReference reference : component.getReferences()) {
             for (Binding binding : reference.getBindings()) {
@@ -259,6 +264,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         bindingProvider.start();
                     }
                 }
+            }
+            for (RuntimeWire wire : ((RuntimeComponentReference)reference).getRuntimeWires()) {
+                wireProcessor.process(wire);
             }
         }
 
@@ -408,121 +416,98 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param component
      * @param reference
      * @param binding
+     * @param isCallback
      */
-    private void createWires(Component component, ComponentReference reference, Binding binding, boolean isCallback) {
+    private void createWires(Component component, ComponentReference reference, Binding binding,
+                             boolean isCallback) {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
+        if (!reference.getTargets().isEmpty()) {
+            if (isCallback) {
+                createReferenceWire(reference, component, binding, null, null, binding, true);
+            }
+            for (ComponentService service : reference.getTargets()) {
+                // FIXME: [rfeng] Ignore unresolved services
+                if (service.isUnresolved()) {
+                    continue;
+                }
+                if (!isCallback) {
+                    Binding serviceBinding = service.getBinding(binding.getClass());
+                    if (serviceBinding != null) {
+                        createReferenceWire(reference, component, binding, service, null, serviceBinding, false);
+                    }
+                } else {
+                    Binding serviceBinding = service.getCallbackBinding(binding.getClass());
+                    if (serviceBinding != null) {
+                        createServiceWire(service, null, serviceBinding, reference, component, binding, true);
+                    }
+                }
+            }
+        } else {
+            if (CompositeBuilderImpl.bindingHasEndpoint(binding)) {  // create wire if binding has an endpoint
+                createReferenceWire(reference, component, binding, null, null, binding, isCallback);
+            }
+        }
+    }
+
+    /**
+     * Create a reference wire for a forward call or a callback
+     * 
+     * @param component
+     * @param reference
+     * @param referenceBinding
+     * @param service
+     * @param serviceBinding
+     * @param isCallback
+     */
+    private RuntimeWire createReferenceWire(
+                            ComponentReference reference, Component refComponent, Binding refBinding,
+                            ComponentService service, Component serviceComponent, Binding serviceBinding,
+                            boolean isCallback) {
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
-        InterfaceContract bindingContract = getInterfaceContract(reference, binding, isCallback);
+        InterfaceContract bindingContract = getInterfaceContract(reference, refBinding, isCallback);
 
-        if (!(binding instanceof SCABinding)) {
-            // Use the interface contract of the reference on the component type
-            Reference componentTypeRef = reference.getReference();
-            InterfaceContract sourceContract = componentTypeRef == null ? reference.getInterfaceContract()
-                                                                        : componentTypeRef.getInterfaceContract();
-            sourceContract = sourceContract.makeUnidirectional(isCallback);
+        // Use the interface contract of the reference on the component type
+        Reference componentTypeRef = reference.getReference();
+        InterfaceContract sourceContract = componentTypeRef == null ? reference.getInterfaceContract()
+                                                                    : componentTypeRef.getInterfaceContract();
+        sourceContract = sourceContract.makeUnidirectional(isCallback);
 
-            // Component Reference --> External Service
-            EndpointReference wireSource = new EndpointReferenceImpl((RuntimeComponent)component,
-                                                                     (RuntimeComponentReference)reference, binding,
-                                                                     sourceContract);
+        EndpointReference wireSource = new EndpointReferenceImpl((RuntimeComponent)refComponent,
+                                                                 (RuntimeComponentReference)reference,
+                                                                 refBinding, sourceContract);
 
-            EndpointReference wireTarget = new EndpointReferenceImpl(null, null, binding, bindingContract);
-            RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
-
-            if (sourceContract.getInterface() != null) {
-                for (Operation operation : sourceContract.getInterface().getOperations()) {
-                    Operation targetOperation = interfaceContractMapper.map(bindingContract.getInterface(), operation);
-                    InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                    if (operation.isNonBlocking()) {
-                        addNonBlockingInterceptor(reference, binding, chain);
-                    }
-                    addBindingInterceptor(reference, binding, chain, operation);
-                    wire.getInvocationChains().add(chain);
+        EndpointReference wireTarget = new EndpointReferenceImpl((RuntimeComponent)serviceComponent,
+                                                                 (RuntimeComponentService)service,
+                                                                 serviceBinding, bindingContract);
+ 
+        RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
+        if (!isCallback) {
+            for (Operation operation : sourceContract.getInterface().getOperations()) {
+                Operation targetOperation = interfaceContractMapper.map(bindingContract.getInterface(), operation);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                if (operation.isNonBlocking()) {
+                    addNonBlockingInterceptor(reference, refBinding, chain);
                 }
+                addBindingInterceptor(reference, refBinding, chain, operation);
+                wire.getInvocationChains().add(chain);
             }
-            if (bindingContract.getCallbackInterface() != null && !(reference.getName().startsWith("$self$."))) {
-                for (Operation operation : bindingContract.getCallbackInterface().getOperations()) {
-                    Operation targetOperation = interfaceContractMapper.map(sourceContract.getCallbackInterface(),
-                                                                            operation);
-                    InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                    addImplementationInterceptor(component, null, chain, targetOperation, true);
-                    wire.addCallbackInvocationChain(chain);
+        } else {
+            for (Operation operation : bindingContract.getCallbackInterface().getOperations()) {
+                Operation targetOperation = interfaceContractMapper.map(sourceContract.getCallbackInterface(),
+                                                                        operation);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                if (!reference.getName().startsWith("$self$.")) {
+                    addImplementationInterceptor(refComponent, null, chain, targetOperation, true);
+                } else {
+                    //FIXME: need to invoke the callback object
                 }
+                wire.addCallbackInvocationChain(chain);
             }
-            runtimeRef.getRuntimeWires().add(wire); 
-            wireProcessor.process(wire);
-            // TODO: For non-SCA binding, how do we deal with targets? For now, assuming targets only apply to SCABinding
-            return;
         }
-        for (ComponentService service : reference.getTargets()) {
-            Component target = null;
-            SCABinding scaBinding = service.getBinding(SCABinding.class);
-            if (scaBinding != null) {
-                target = scaBinding.getComponent();
-            }
-
-            // FIXME: [rfeng] Ignore unresolved services
-            if (service.isUnresolved()) {
-                continue;
-            }
-
-            // FIXME: [rfeng] We might need a better way to get the impl interface contract
-            InterfaceContract targetContract =
-                        service.getService().getInterfaceContract().makeUnidirectional(isCallback);
-
-            EndpointReference wireSource = new EndpointReferenceImpl((RuntimeComponent)component,
-                                                                     (RuntimeComponentReference)reference, binding,
-                                                                     bindingContract);
-
-            EndpointReference wireTarget = new EndpointReferenceImpl((RuntimeComponent)target,
-                                                                     (RuntimeComponentService)service, binding,
-                                                                     targetContract);
-
-            RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
-
-            if (bindingContract.getInterface() != null) {
-                for (Operation operation : bindingContract.getInterface().getOperations()) {
-                    Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
-                    InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                    if (operation.isNonBlocking()) {
-                        addNonBlockingInterceptor(reference, binding, chain);
-                    }
-                    addBindingInterceptor(reference, binding, chain, operation);
-                    if (target != null) {
-                        addImplementationInterceptor(target, service, chain, targetOperation, false);
-                    }
-                    wire.getInvocationChains().add(chain);
-                }
-            }
-            if (targetContract.getCallbackInterface() != null) {
-                for (Operation operation : targetContract.getCallbackInterface().getOperations()) {
-                    Operation targetOperation = interfaceContractMapper.map(bindingContract.getCallbackInterface(),
-                                                                            operation);
-                    InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                    if (operation.isNonBlocking()) {
-                        addNonBlockingCallbackInterceptor(service, binding, chain);
-                    }
-                    if (target != null) {
-                        addBindingCallbackInterceptor(service, binding, chain, operation);
-                    }
-                    // can't create callback implementation interceptor for self-reference
-                    if (!reference.getName().startsWith("$self$.")) { 
-                        addImplementationInterceptor(component, null, chain, targetOperation, true);
-                    }
-                    wire.addCallbackInvocationChain(chain);
-                }
-            }
-
-            runtimeRef.getRuntimeWires().add(wire);
-            if (!wire.getCallbackInvocationChains().isEmpty()) {
-                if (wire.getTarget().getContract() != null) {
-                    ((RuntimeComponentService) wire.getTarget().getContract()).getCallbackWires().add(wire);
-                }
-            }
-            wireProcessor.process(wire);
-        }
+        runtimeRef.getRuntimeWires().add(wire);
+        return wire;
     }
 
     /**
@@ -551,24 +536,47 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param component
      * @param service
      * @param binding
+     * @param isCallback
      */
     private void createWires(Component component, ComponentService service, Binding binding, boolean isCallback) {
         if (!(service instanceof RuntimeComponentService)) {
             return;
         }
+        RuntimeWire wire = createServiceWire(service, component, binding, null, null, binding, isCallback);
+
+        //FIXME: need better way to create the source URI
+        wire.getSource().setURI(binding.getClass().getName());
+    }
+
+    /**
+     * Create a service wire for a forward call or a callback
+     * 
+     * @param component
+     * @param service
+     * @param serviceBinding
+     * @param reference
+     * @param referenceBinding
+     * @param isCallback
+     */
+    private RuntimeWire createServiceWire(
+                            ComponentService service, Component serviceComponent, Binding serviceBinding,
+                            ComponentReference reference, Component refComponent, Binding refBinding,
+                            boolean isCallback) {
         RuntimeComponentService runtimeService = (RuntimeComponentService)service;
 
         // FIXME: [rfeng] We might need a better way to get the impl interface contract
         InterfaceContract targetContract = service.getService().getInterfaceContract().
                                                makeUnidirectional(isCallback);
 
-        InterfaceContract sourceContract = getInterfaceContract(service, binding, isCallback);
+        InterfaceContract sourceContract = getInterfaceContract(service, serviceBinding, isCallback);
 
-        EndpointReference wireSource = new EndpointReferenceImpl(null, null, binding, sourceContract);
+        EndpointReference wireSource = new EndpointReferenceImpl((RuntimeComponent)refComponent,
+                                                                 (RuntimeComponentReference)reference,
+                                                                 refBinding, sourceContract);
 
-        EndpointReference wireTarget = new EndpointReferenceImpl((RuntimeComponent)component,
-                                                                 (RuntimeComponentService)service, binding,
-                                                                 targetContract);
+        EndpointReference wireTarget = new EndpointReferenceImpl((RuntimeComponent)serviceComponent,
+                                                                 (RuntimeComponentService)service,
+                                                                 serviceBinding, targetContract);
 
         RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
 
@@ -576,7 +584,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
-                addImplementationInterceptor(component, service, chain, targetOperation, false);
+                addImplementationInterceptor(serviceComponent, service, chain, targetOperation, false);
                 wire.getInvocationChains().add(chain);
             }
             runtimeService.getRuntimeWires().add(wire);
@@ -588,16 +596,16 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     interfaceContractMapper.map(sourceContract.getCallbackInterface(), operation);
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 if (operation.isNonBlocking()) {
-                    addNonBlockingCallbackInterceptor(service, binding, chain);
+                    addNonBlockingCallbackInterceptor(service, serviceBinding, chain);
                 }
-                addBindingCallbackInterceptor(service, binding, chain, operation);
+                addBindingCallbackInterceptor(service, serviceBinding, chain, operation);
                 wire.addCallbackInvocationChain(chain);
             }
             runtimeService.getCallbackWires().add(wire);
         }
 
-        wireProcessor.process(wire);
-    }
+        return wire;
+    } 
 
     /**
      * Add the interceptor for a component implementation

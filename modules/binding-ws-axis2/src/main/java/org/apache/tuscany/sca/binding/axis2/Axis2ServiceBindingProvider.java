@@ -417,6 +417,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         }
         requestMsg.setBody(args);
 
+        //FIXME: need somewhere to store the callback URI 
+        requestMsg.setFrom(service.getRuntimeWire(wsBinding).getSource());
+
         Message workContext = ThreadMessageContext.getMessageContext();
 
         ThreadMessageContext.setMessageContext(requestMsg);

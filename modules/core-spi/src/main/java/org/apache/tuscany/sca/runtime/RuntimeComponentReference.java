@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
@@ -76,5 +77,13 @@ public interface RuntimeComponentReference extends ComponentReference {
      * @return The runtime Invoker
      */
     Invoker getInvoker(Binding binding, Operation operation);
+    
+    /**
+     * Get the callback invocation chain for the given binding and operation
+     * @param binding The assembly model binding 
+     * @param operation The assembly model operation
+     * @return The runtime callback invocation chain
+     */
+    InvocationChain getCallbackInvocationChain(Binding binding, Operation operation);    
     
 }

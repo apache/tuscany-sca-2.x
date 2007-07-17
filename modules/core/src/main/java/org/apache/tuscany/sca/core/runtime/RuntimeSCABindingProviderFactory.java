@@ -35,13 +35,13 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    SCABinding binding) {
-        return new RuntimeSCABindingProvider(component, reference, binding);
+        return new RuntimeSCAReferenceBindingProvider(component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                SCABinding binding) {
-        return null;
+        return new RuntimeSCAServiceBindingProvider(component, service, binding);
     }
 
     public Class<SCABinding> getModelType() {
