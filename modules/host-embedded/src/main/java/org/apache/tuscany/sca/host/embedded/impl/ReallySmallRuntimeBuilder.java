@@ -76,9 +76,11 @@ import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.runtime.RuntimeSCABindingProviderFactory;
 import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
+import org.apache.tuscany.sca.core.scope.ConversationalScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
+import org.apache.tuscany.sca.core.store.MemoryStore;
 import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -221,7 +223,7 @@ public class ReallySmallRuntimeBuilder {
         ScopeContainerFactory[] factories = new ScopeContainerFactory[] {new CompositeScopeContainerFactory(),
                                                                          new StatelessScopeContainerFactory(),
                                                                          new RequestScopeContainerFactory(),
-        // new ConversationalScopeContainer(monitor),
+         new ConversationalScopeContainerFactory(new MemoryStore(null)),
         // new HttpSessionScopeContainer(monitor)
         };
         for (ScopeContainerFactory f : factories) {

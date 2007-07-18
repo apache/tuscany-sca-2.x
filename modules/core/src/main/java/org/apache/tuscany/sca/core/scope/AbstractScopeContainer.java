@@ -73,7 +73,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     }
 
     public InstanceWrapper getAssociatedWrapper(KEY contextId) throws TargetResolutionException {
-        return null;
+        return getWrapper(contextId); // TODO: what is this method spossed to do diff than getWrapper? 
     }
 
     public Scope getScope() {

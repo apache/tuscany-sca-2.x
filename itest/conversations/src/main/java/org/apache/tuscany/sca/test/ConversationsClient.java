@@ -18,9 +18,11 @@
  */
 package org.apache.tuscany.sca.test;
 
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
+@Conversational
 public interface ConversationsClient { 
 	
 	public void run(); 
