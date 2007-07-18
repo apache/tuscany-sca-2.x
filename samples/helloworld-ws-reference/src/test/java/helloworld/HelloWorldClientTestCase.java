@@ -33,6 +33,7 @@ import org.junit.Test;
 public class HelloWorldClientTestCase {
 
     private HelloWorldService helloWorldService;
+    private HelloWorldService helloTuscanyService;
     private SCADomain scaDomain;
     
     private SCATestCaseRunner server;
@@ -42,6 +43,7 @@ public class HelloWorldClientTestCase {
         try {
             scaDomain = SCADomain.newInstance("helloworldwsclient.composite");
             helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
+            helloTuscanyService = scaDomain.getService(HelloWorldService.class, "HelloTuscanyServiceComponent");
     
             server =  new SCATestCaseRunner(HelloWorldServerTest.class);
             server.before();
@@ -55,6 +57,12 @@ public class HelloWorldClientTestCase {
     public void testWSClient() throws Exception {
         String msg = helloWorldService.getGreetings("Smith");
         Assert.assertEquals("Hello Smith", msg);
+   }
+    
+    @Test
+    public void testEmbeddedReferenceClient() throws Exception {
+        String msg = helloTuscanyService.getGreetings("Tuscany");
+        Assert.assertEquals("Hello Tuscany", msg);
     }
     
     @After

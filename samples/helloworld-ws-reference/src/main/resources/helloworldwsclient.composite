@@ -22,10 +22,21 @@
 	xmlns:hw="http://helloworld"
 	name="helloworldwsclient">
     
+    <!-- A component with an embedded reference definition connecting to an external webservice 
+         The wsdl interface for the reference is derived from the information specified by the 'wsdlElement'
+     -->
+    <component name="HelloTuscanyServiceComponent">
+      <implementation.java class="helloworld.HelloWorldServiceComponent"/>
+      <reference name="helloWorldService">
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+      </reference>
+    </component>
+    
+    <!-- A component with a reference promoted as a composite reference -->
     <component name="HelloWorldServiceComponent">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
     </component>
-
+    
     <reference name="HelloWorldService" promote="HelloWorldServiceComponent/helloWorldService">
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
