@@ -237,10 +237,12 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         }
     }
 
+    @Remotable
     private interface PropertyInterface {
         void setString1(String val);
     }
 
+    @Remotable
     private interface Interface1 {
     }
 
