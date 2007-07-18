@@ -30,7 +30,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -90,25 +89,38 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         List<org.apache.tuscany.sca.assembly.Service> services = type.getServices();
         if (services.isEmpty()) {
             // heuristically determine the service
-            // TODO finish algorithm
+            /**
+             * The following is quoted from Java spec 1.2.1.3. Introspecting services offered by a Java implementation
+             * In the cases described below, the services offered by a Java implementation class may be determined
+             * through introspection, eliding the need to specify them using @Service. The following algorithm is used 
+             * to determine how services are introspected from an implementation class:
+             * 
+             * If the interfaces of the SCA services are not specified with the @Service annotation on the 
+             * implementation class, it is assumed that all implemented interfaces that have been annotated 
+             * as @Remotable are the service interfaces provided by the component. If none of the implemented 
+             * interfaces is remotable, then by default the implementation offers a single service whose type 
+             * is the implementation class.
+             */
             Set<Class> interfaces = getAllInterfaces(clazz);
-            if (interfaces.size() == 0) {
+            for(Class<?> i: interfaces) {
+                if(i.isAnnotationPresent(Remotable.class)) {
+                    addService(type, i);
+                }
+            }
+            if(services.isEmpty()) {
                 // class is the interface
                 addService(type, clazz);
-            } else if (interfaces.size() == 1) {
-                // Only one interface, take it
-                addService(type, interfaces.iterator().next());
             }
         }
         Set<Method> methods = getAllUniquePublicProtectedMethods(clazz);
         if (!type.getReferenceMembers().isEmpty() || !type.getPropertyMembers().isEmpty()) {
             // references and properties have been explicitly defined
-            if (type.getServices().isEmpty()) {
-                calculateServiceInterface(clazz, type, methods);
-                if (type.getServices().isEmpty()) {
-                    throw new ServiceTypeNotFoundException(clazz.getName());
-                }
-            }
+//            if (type.getServices().isEmpty()) {
+//                calculateServiceInterface(clazz, type, methods);
+//                if (type.getServices().isEmpty()) {
+//                    throw new ServiceTypeNotFoundException(clazz.getName());
+//                }
+//            }
             evaluateConstructor(type, clazz);
             return;
         }
@@ -498,70 +510,6 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         property.setName(name);
         property.setXSDType(JavaXMLMapper.getXMLType(paramType));
         return property;
-    }
-
-    /**
-     * Populates a component type with a service whose interface type is
-     * determined by examining all implemented interfaces of the given class and
-     * chosing one whose operations match all of the class's non-property and
-     * non-reference methods
-     * 
-     * @param clazz the class to examine
-     * @param type the component type
-     * @param methods all methods in the class to examine
-     */
-    private void calculateServiceInterface(Class<?> clazz, JavaImplementation type, Set<Method> methods)
-        throws IntrospectionException {
-        List<Method> nonPropRefMethods = new ArrayList<Method>();
-        // Map<String, Service> services = type.getServices();
-        Map<String, JavaElementImpl> references = type.getReferenceMembers();
-        Map<String, JavaElementImpl> properties = type.getPropertyMembers();
-        // calculate methods that are not properties or references
-        for (Method method : methods) {
-            String name = toPropertyName(method.getName());
-            if (!references.containsKey(name) && !properties.containsKey(name)) {
-                nonPropRefMethods.add(method);
-            }
-        }
-        // determine if an implemented interface matches all of the non-property
-        // and non-reference methods
-        Class[] interfaces = clazz.getInterfaces();
-        if (interfaces.length == 0) {
-            return;
-        }
-        for (Class interfaze : interfaces) {
-            if (analyzeInterface(interfaze, nonPropRefMethods)) {
-                org.apache.tuscany.sca.assembly.Service service;
-                try {
-                    service = createService(interfaze);
-                } catch (InvalidInterfaceException e) {
-                    throw new IntrospectionException(e);
-                }
-                type.getServices().add(service);
-            }
-        }
-    }
-
-    /**
-     * Determines if the methods of a given interface match the given list of
-     * methods
-     * 
-     * @param interfaze the interface to examine
-     * @param nonPropRefMethods the list of methods to match against
-     * @return true if the interface matches
-     */
-    private boolean analyzeInterface(Class<?> interfaze, List<Method> nonPropRefMethods) {
-        Method[] interfaceMethods = interfaze.getMethods();
-        if (nonPropRefMethods.size() != interfaceMethods.length) {
-            return false;
-        }
-        for (Method method : nonPropRefMethods) {
-            boolean found = isMethodMatched(interfaze, method);
-            if (!found) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private boolean isAnnotated(JavaParameterImpl parameter) {
