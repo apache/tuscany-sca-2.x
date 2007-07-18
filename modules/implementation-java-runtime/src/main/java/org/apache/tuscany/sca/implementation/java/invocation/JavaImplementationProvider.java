@@ -104,15 +104,17 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
             ObjectFactory<?> objectFactory = (ObjectFactory<?>)component.getConfiguration().getFactories().get(resource
                 .getElement());
-            Class<?> type = resource.getElement().getType();
-            if (ComponentContext.class.equals(type)) {
-                objectFactory = new PojoComponentContextFactory(component);
-            } else if (String.class.equals(type)) {
-                objectFactory = new PojoComponentNameFactory(component);
-            } else {
-                boolean optional = resource.isOptional();
-                String mappedName = resource.getMappedName();
-                objectFactory = createResourceObjectFactory(type, mappedName, optional, null);
+            if (objectFactory == null) {
+                Class<?> type = resource.getElement().getType();
+                if (ComponentContext.class.equals(type)) {
+                    objectFactory = new PojoComponentContextFactory(component);
+                } else if (String.class.equals(type)) {
+                    objectFactory = new PojoComponentNameFactory(component);
+                } else {
+                    boolean optional = resource.isOptional();
+                    String mappedName = resource.getMappedName();
+                    objectFactory = createResourceObjectFactory(type, mappedName, optional, null);
+                }
             }
             component.addResourceFactory(name, objectFactory);
         }

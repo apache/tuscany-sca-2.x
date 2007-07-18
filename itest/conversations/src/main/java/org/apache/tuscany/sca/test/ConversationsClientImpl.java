@@ -112,7 +112,7 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	{
 		
 	  // Verify that conversationID was injected. 	
-//	  Assert.assertNotNull("test0 - conversationID injected", conversationID);
+	  Assert.assertNotNull("test0 - conversationID injected", conversationID);
 	  System.out.println("ConversationID: " + conversationID);
 	  
 	  //
