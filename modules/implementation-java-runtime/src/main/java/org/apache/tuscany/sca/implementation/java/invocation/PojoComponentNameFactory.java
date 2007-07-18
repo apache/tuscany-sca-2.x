@@ -16,19 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.api.annotation;
+package org.apache.tuscany.sca.implementation.java.invocation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.tuscany.sca.factory.ObjectCreationException;
+import org.apache.tuscany.sca.factory.ObjectFactory;
 
 /**
- * A system annotation to inject a monitor
- *
  * @version $Rev$ $Date$
  */
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Monitor {
+public class PojoComponentNameFactory implements ObjectFactory<String> {
+    private final JavaComponentInfo component;
+
+
+    public PojoComponentNameFactory(JavaComponentInfo component) {
+        this.component = component;
+    }
+
+
+    public String getInstance() throws ObjectCreationException {
+        String uri = component.getUri().toString();
+        return uri.substring(uri.lastIndexOf('/')+1);
+    }
 }

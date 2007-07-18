@@ -92,21 +92,21 @@ public class ResourceProcessorTestCase extends TestCase {
 
     private class Foo {
 
-        @org.apache.tuscany.api.annotation.Resource
+        @org.apache.tuscany.sca.implementation.java.introspect.impl.Resource
         protected Bar bar;
 
-        @org.apache.tuscany.api.annotation.Resource(optional = true)
+        @org.apache.tuscany.sca.implementation.java.introspect.impl.Resource(optional = true)
         protected Bar barNotRequired;
 
-        @org.apache.tuscany.api.annotation.Resource
+        @org.apache.tuscany.sca.implementation.java.introspect.impl.Resource
         public void setBar(Bar bar) {
         }
 
-        @org.apache.tuscany.api.annotation.Resource(name = "someName", mappedName = "mapped")
+        @org.apache.tuscany.sca.implementation.java.introspect.impl.Resource(name = "someName", mappedName = "mapped")
         public void setBar2(Bar bar) {
         }
 
-        @org.apache.tuscany.api.annotation.Resource
+        @org.apache.tuscany.sca.implementation.java.introspect.impl.Resource
         public void setBad() {
         }
 

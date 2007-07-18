@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Multiplicity;
@@ -595,8 +593,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotType = annotation.annotationType();
                 if (annotType.equals(Property.class) || annotType.equals(Reference.class)
-                    || annotType.equals(Resource.class)
-                    || annotType.equals(Monitor.class)) {
+                    || annotType.equals(Resource.class)) {
                     return true;
                 }
             }

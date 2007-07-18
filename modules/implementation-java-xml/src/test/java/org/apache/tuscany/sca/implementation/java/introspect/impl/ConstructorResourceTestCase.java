@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.api.annotation.Resource;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;

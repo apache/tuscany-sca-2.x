@@ -55,7 +55,7 @@ public class ContextProcessor extends BaseJavaClassVisitor {
         if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
             JavaElementImpl element = new JavaElementImpl(method, 0);
             element.setName(name);
-            element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
+            element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
             JavaResourceImpl resource = new JavaResourceImpl(element);
             type.getResources().put(resource.getName(), resource);
         } else {
@@ -70,7 +70,7 @@ public class ContextProcessor extends BaseJavaClassVisitor {
         Class<?> paramType = field.getType();
         if (ComponentContext.class.equals(paramType) || RequestContext.class.equals(paramType)) {
             JavaElementImpl element = new JavaElementImpl(field);
-            element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
+            element.setClassifer(Resource.class);
             JavaResourceImpl resource = new JavaResourceImpl(element);
             type.getResources().put(resource.getName(), resource);
         } else {
