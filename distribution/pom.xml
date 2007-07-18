@@ -129,8 +129,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ant-plugin</artifactId>
+                <!--
                 <version>1.1</version>
-
+                -->
                 <executions>
                     <execution>
                         <id>generate-sources</id>
