@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.BindingEndpoint;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -32,7 +34,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, BindingEndpoint {
+public class SCABindingImpl implements SCABinding, WireableBinding {
     private String name;
     private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -40,6 +42,10 @@ public class SCABindingImpl implements SCABinding, BindingEndpoint {
     private List<Object> extensions = new ArrayList<Object>();
     
     private Component component;
+    
+    private Component targetComponent;
+    private ComponentService targetComponentService;
+    private Binding targetBinding;
     
     /**
      * Constructs a new SCA binding.
@@ -90,7 +96,53 @@ public class SCABindingImpl implements SCABinding, BindingEndpoint {
     public void setUnresolved(boolean unresolved) {
     }
 
-    public boolean hasEndpoint() {
-        return uri != null;
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    /**
+     * @return the targetComponent
+     */
+    public Component getTargetComponent() {
+        return targetComponent;
+    }
+
+    /**
+     * @param targetComponent the targetComponent to set
+     */
+    public void setTargetComponent(Component targetComponent) {
+        this.targetComponent = targetComponent;
+    }
+
+    /**
+     * @return the targetComponentService
+     */
+    public ComponentService getTargetComponentService() {
+        return targetComponentService;
+    }
+
+    /**
+     * @param targetComponentService the targetComponentService to set
+     */
+    public void setTargetComponentService(ComponentService targetComponentService) {
+        this.targetComponentService = targetComponentService;
+    }
+
+    /**
+     * @return the targetBinding
+     */
+    public Binding getTargetBinding() {
+        return targetBinding;
+    }
+
+    /**
+     * @param targetBinding the targetBinding to set
+     */
+    public void setTargetBinding(Binding targetBinding) {
+        this.targetBinding = targetBinding;
     }
 }

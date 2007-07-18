@@ -19,20 +19,41 @@
 package org.apache.tuscany.sca.assembly;
 
 /**
- * Enables a binding to indicate whether or not it has an endpoint.
- * If the uri attribute is specified, the binding has an endpoint.
- * In other cases, an endpoint may be specified in a binding-specific way.
- * This information is needed to make wiring decisions.
+ * Represent a binding that supports SCA wiring between component references and services
  * 
  * @version $Rev$ $Date$
  */
-public interface BindingEndpoint {
- 
+public interface WireableBinding extends Binding, Cloneable {
     /**
-     * Indicate whether or not the binding has an endpoint.
-     *
-     * @return true if the binding has an endpoint, false otherwise
-     */ 
-    boolean hasEndpoint();
- 
+     * Clone the binding endpoit
+     * @return
+     */
+    Object clone() throws CloneNotSupportedException;
+
+    /**
+     * @param component
+     */
+    void setTargetComponent(Component component);
+    /**
+     * @param service
+     */
+    void setTargetComponentService(ComponentService service);
+    /**
+     * @param binding
+     */
+    void setTargetBinding(Binding binding);
+    
+    /**
+     * @return
+     */
+    Binding getTargetBinding();
+    /**
+     * @return
+     */
+    Component getTargetComponent();
+    /**
+     * @return
+     */
+    ComponentService getTargetComponentService();
+
 }
