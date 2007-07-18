@@ -19,10 +19,12 @@
 package org.apache.tuscany.sca.test;
 
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 @Callback(ConversationsCallback.class)
+@Conversational
 
 /**
  * 

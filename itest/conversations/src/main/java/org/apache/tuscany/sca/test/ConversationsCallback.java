@@ -18,7 +18,9 @@
  */
 package org.apache.tuscany.sca.test;
 
+import org.osoa.sca.annotations.Conversational;
 
+@Conversational
 /**
  *
  *

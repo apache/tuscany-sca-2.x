@@ -50,11 +50,11 @@ public abstract class AbstractInvocationHandler {
         Message msgContext = ThreadMessageContext.getMessageContext();
         Message msg = messageFactory.createMessage();
         if (conversational) {
-            Object id = msgContext.getConversationID();
+            String id = msgContext.getConversationID();
             if (id == null) {
-                String convIdFromThread = createConversationID();
-                msg.setConversationID(convIdFromThread);
+                id = createConversationID();
             }
+            msg.setConversationID(id);
         }
 
         Invoker headInvoker = chain.getHeadInvoker();

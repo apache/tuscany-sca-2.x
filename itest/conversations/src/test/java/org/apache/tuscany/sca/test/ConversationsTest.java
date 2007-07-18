@@ -37,7 +37,7 @@ public class ConversationsTest extends TestCase {
 
         aConversationsClient =
             domain.getService(ConversationsClient.class,
-                              "ConversationsClient/org.apache.tuscany.sca.test.ConversationsClient");
+                              "ConversationsClient/ConversationsClient");
 
     }
 

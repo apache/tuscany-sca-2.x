@@ -26,6 +26,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -57,6 +58,9 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
         this.wires = new HashMap<String, RuntimeWire>();
         for (RuntimeWire wire : wireList) {
             wires.put(wire.getSource().getURI(), wire);
+            InterfaceContract contract = wire.getSource().getInterfaceContract();
+            this.conversational = contract.getCallbackInterface().isConversational();
+            // TODO: doesn't work if mix conv. and non-conv, can that happen? 
         }
     }
 
