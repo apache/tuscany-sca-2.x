@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.BindingEndpoint;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -52,8 +52,8 @@ import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
- * A builder that handles the configuration of the components inside a
- * composite and the wiring of component references to component services.
+ * A builder that handles the configuration of the components inside a composite
+ * and the wiring of component references to component services.
  * 
  * @version $Rev$ $Date$
  */
@@ -71,13 +71,13 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      * @param interfaceContractMapper
      */
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
-                                   SCABindingFactory scaBindingFactory,
-                                   InterfaceContractMapper interfaceContractMapper,
-                                   CompositeBuilderMonitor monitor) {
+                                SCABindingFactory scaBindingFactory,
+                                InterfaceContractMapper interfaceContractMapper,
+                                CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
         this.interfaceContractMapper = interfaceContractMapper;
-        
+
         if (monitor != null) {
             this.monitor = monitor;
         } else {
@@ -102,7 +102,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
         // Wire the composite
         wireComposite(composite);
-        
+
         // Activate composite services
         activateCompositeServices(composite);
 
@@ -174,7 +174,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             if (service != null) {
                 componentService.setService(service);
             } else {
-                warning("Service not found for component service: " + component.getName() + "/" + componentService.getName(), component);
+                warning("Service not found for component service: " + component.getName()
+                    + "/"
+                    + componentService.getName(), component);
             }
         }
 
@@ -200,7 +202,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     if (!componentService.getInterfaceContract().equals(service.getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(), service
                             .getInterfaceContract())) {
-                            warning("Component service interface incompatible with service interface: " + component.getName() + "/" + componentService.getName(), component);
+                            warning("Component service interface incompatible with service interface: " + component
+                                .getName()
+                                + "/"
+                                + componentService.getName(), component);
                         }
                     }
                 } else {
@@ -215,8 +220,11 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 // Reconcile callback bindings
                 if (componentService.getCallback() == null) {
                     componentService.setCallback(service.getCallback());
-                } else if (componentService.getCallback().getBindings().isEmpty() &&
-                           service.getCallback() != null) {
+                    if (componentService.getCallback() == null) {
+                        // Create an empty callback to avoid null check
+                        componentService.setCallback(assemblyFactory.createCallback());
+                    }
+                } else if (componentService.getCallback().getBindings().isEmpty() && service.getCallback() != null) {
                     componentService.getCallback().getBindings().addAll(service.getCallback().getBindings());
                 }
             }
@@ -244,7 +252,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 componentReference.setReference(reference);
             } else {
                 if (!componentReference.getName().startsWith("$self$.")) {
-                    warning("Reference not found for component reference: " + component.getName() + "/" + componentReference.getName(), component);
+                    warning("Reference not found for component reference: " + component.getName()
+                        + "/"
+                        + componentReference.getName(), component);
                 }
             }
         }
@@ -270,7 +280,11 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 if (componentReference.getMultiplicity() != null) {
                     if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(), componentReference
                         .getMultiplicity())) {
-                        warning("Component reference multiplicity incompatible with reference multiplicity: " + component.getName() + "/" + componentReference.getName(), component);
+                        warning("Component reference multiplicity incompatible with reference multiplicity: " + component
+                                    .getName()
+                                    + "/"
+                                    + componentReference.getName(),
+                                component);
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -281,7 +295,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     if (!componentReference.getInterfaceContract().equals(reference.getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(reference.getInterfaceContract(), componentReference
                             .getInterfaceContract())) {
-                            warning("Component reference interface incompatible with reference interface: " + component.getName() + "/" + componentReference.getName(), component);
+                            warning("Component reference interface incompatible with reference interface: " + component
+                                .getName()
+                                + "/"
+                                + componentReference.getName(), component);
                         }
                     }
                 } else {
@@ -296,8 +313,12 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 // Reconcile callback bindings
                 if (componentReference.getCallback() == null) {
                     componentReference.setCallback(reference.getCallback());
-                } else if (componentReference.getCallback().getBindings().isEmpty() &&
-                           reference.getCallback() != null) {
+                    if (componentReference.getCallback() == null) {
+                        // Create an empty callback to avoid null check
+                        componentReference.setCallback(assemblyFactory.createCallback());
+                    }
+
+                } else if (componentReference.getCallback().getBindings().isEmpty() && reference.getCallback() != null) {
                     componentReference.getCallback().getBindings().addAll(reference.getCallback().getBindings());
                 }
 
@@ -333,7 +354,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                warning("Property not found for component property: " + component.getName() + "/" + componentProperty.getName(), component);
+                warning("Property not found for component property: " + component.getName()
+                    + "/"
+                    + componentProperty.getName(), component);
             }
         }
 
@@ -360,7 +383,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
-                    warning("Component property mustSupply attribute incompatible with property: " + component.getName() + "/" + componentProperty.getName(), component);
+                    warning("Component property mustSupply attribute incompatible with property: " + component
+                        .getName()
+                        + "/"
+                        + componentProperty.getName(), component);
                 }
 
                 // Default to the mustSupply attribute specified on the property
@@ -374,13 +400,17 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    warning("No value configured on a mustSupply property: " + component.getName() + "/" + componentProperty.getName(), component);
+                    warning("No value configured on a mustSupply property: " + component.getName()
+                        + "/"
+                        + componentProperty.getName(), component);
                 }
 
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
-                    warning("Component property many attribute incompatible with property: " + component.getName() + "/" + componentProperty.getName(), component);
+                    warning("Component property many attribute incompatible with property: " + component.getName()
+                        + "/"
+                        + componentProperty.getName(), component);
                 }
 
                 // Default to the many attribute defined on the property
@@ -396,7 +426,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                    warning("No type specified on component property: " + component.getName() + "/" + componentProperty.getName(), component);
+                    warning("No type specified on component property: " + component.getName()
+                        + "/"
+                        + componentProperty.getName(), component);
                 }
             }
         }
@@ -411,11 +443,11 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     protected void configureComponents(Composite composite) {
         configureComponents(composite, null);
     }
-    
+
     private void indexImplementationPropertiesServicesAndReferences(Component component,
-                                      Map<String, Service> services,
-                                      Map<String, Reference> references,
-                                      Map<String, Property> properties) {
+                                                                    Map<String, Service> services,
+                                                                    Map<String, Reference> references,
+                                                                    Map<String, Property> properties) {
         // First check that the component has a resolved implementation
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
@@ -426,9 +458,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         } else if (implementation.isUnresolved()) {
 
             // The implementation must be fully resolved
-            warning("Component implementation not found: " + component.getName()
-                + " : "
-                + implementation.getURI(), component);
+            warning("Component implementation not found: " + component.getName() + " : " + implementation.getURI(),
+                    component);
 
         } else {
 
@@ -436,27 +467,21 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                    warning("Duplicate property name: " + component.getName()
-                        + "/"
-                        + property.getName(), component);
+                    warning("Duplicate property name: " + component.getName() + "/" + property.getName(), component);
                 } else {
                     properties.put(property.getName(), property);
                 }
             }
             for (Service service : implementation.getServices()) {
                 if (services.containsKey(service.getName())) {
-                    warning("Duplicate service name: " + component.getName()
-                        + "/"
-                        + service.getName(), component);
+                    warning("Duplicate service name: " + component.getName() + "/" + service.getName(), component);
                 } else {
                     services.put(service.getName(), service);
                 }
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                    warning("Duplicate reference name: " + component.getName()
-                        + "/"
-                        + reference.getName(), component);
+                    warning("Duplicate reference name: " + component.getName() + "/" + reference.getName(), component);
                 } else {
                     references.put(reference.getName(), reference);
                 }
@@ -464,16 +489,15 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
 
     }
-    
+
     private void indexComponentPropertiesServicesAndReferences(Component component,
-                                      Map<String, ComponentService> componentServices,
-                                      Map<String, ComponentReference> componentReferences,
-                                      Map<String, ComponentProperty> componentProperties) {
+                                                               Map<String, ComponentService> componentServices,
+                                                               Map<String, ComponentReference> componentReferences,
+                                                               Map<String, ComponentProperty> componentProperties) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-                warning("Duplicate component service name: " + component.getName()
-                    + "/"
-                    + componentService.getName(), component);
+                warning("Duplicate component service name: " + component.getName() + "/" + componentService.getName(),
+                        component);
             } else {
                 componentServices.put(componentService.getName(), componentService);
             }
@@ -517,9 +541,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-                warning("Duplicate component property name: " + component.getName()
-                    + "/"
-                    + componentProperty.getName(), component);
+                warning("Duplicate component property name: " + component.getName() + "/" + componentProperty.getName(),
+                        component);
             } else {
                 componentProperties.put(componentProperty.getName(), componentProperty);
             }
@@ -603,9 +626,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             }
 
             if (component.getImplementation() instanceof ComponentPreProcessor) {
-                ((ComponentPreProcessor)component.getImplementation()).preProcess(component);   
+                ((ComponentPreProcessor)component.getImplementation()).preProcess(component);
             }
-            
+
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
@@ -617,7 +640,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
             //Index component services, references and properties
             // Also check for duplicates
-            indexComponentPropertiesServicesAndReferences(component, componentServices, componentReferences, componentProperties);
+            indexComponentPropertiesServicesAndReferences(component,
+                                                          componentServices,
+                                                          componentReferences,
+                                                          componentProperties);
 
             // Reconcile component services/references/properties and
             // implementation
@@ -658,56 +684,66 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 i++;
 
                 // Create and configure an SCA binding for the service
-                SCABinding scaBinding = componentService.getBinding(SCABinding.class);
-                if (scaBinding == null) {
-                    scaBinding = scaBindingFactory.createSCABinding();
-                    scaBinding.setName(componentService.getName());
-                    componentService.getBindings().add(scaBinding);
+                if (componentService.getBindings().isEmpty()) {
+                    SCABinding scaBinding = componentService.getBinding(SCABinding.class);
+                    if (scaBinding == null) {
+                        scaBinding = scaBindingFactory.createSCABinding();
+                        scaBinding.setName(componentService.getName());
+                        componentService.getBindings().add(scaBinding);
+                    }
+                    scaBinding.setComponent(component);
+                    scaBinding.setURI(uri);
                 }
-                scaBinding.setComponent(component);
 
                 // if service has a callback, create and configure an SCA binding for the callback
-                if (componentService.getInterfaceContract() != null &&  // can be null in unit tests
-                    componentService.getInterfaceContract().getCallbackInterface() != null) {
-                    SCABinding scaCallbackBinding = componentService.getCallbackBinding(SCABinding.class);
-                    if (scaCallbackBinding == null) {
-                        scaCallbackBinding = scaBindingFactory.createSCABinding();
-                        scaCallbackBinding.setName(componentService.getName());
-                        if (componentService.getCallback() == null) {
-                            componentService.setCallback(assemblyFactory.createCallback());
+                if (componentService.getInterfaceContract() != null && // can be null in unit tests
+                componentService.getInterfaceContract().getCallbackInterface() != null) {
+                    if (componentService.getCallback() != null && componentService.getCallback().getBindings()
+                        .isEmpty()) {
+                        SCABinding scaCallbackBinding = componentService.getCallbackBinding(SCABinding.class);
+                        if (scaCallbackBinding == null) {
+                            scaCallbackBinding = scaBindingFactory.createSCABinding();
+                            scaCallbackBinding.setName(componentService.getName());
+                            if (componentService.getCallback() == null) {
+                                componentService.setCallback(assemblyFactory.createCallback());
+                            }
+                            componentService.getCallback().getBindings().add(scaCallbackBinding);
                         }
-                        componentService.getCallback().getBindings().add(scaCallbackBinding);
+                        scaCallbackBinding.setComponent(component);
                     }
-                    scaCallbackBinding.setComponent(component);
                 }
             }
             for (ComponentReference componentReference : component.getReferences()) {
-                // FIXME: [rfeng] I don't think we should calculate the reference binding URI as follows.
                 String uri = component.getName() + '/' + componentReference.getName();
                 componentReferences.put(uri, componentReference);
 
-                // Create and configure an SCA binding for the reference
-                SCABinding scaBinding = componentReference.getBinding(SCABinding.class);
-                if (scaBinding == null) {
-                    scaBinding = scaBindingFactory.createSCABinding();
-                    scaBinding.setName(componentReference.getName());
-                    componentReference.getBindings().add(scaBinding);
+                if (componentReference.getBindings().isEmpty()) {
+                    // Create and configure an SCA binding for the reference
+                    SCABinding scaBinding = componentReference.getBinding(SCABinding.class);
+                    if (scaBinding == null) {
+                        scaBinding = scaBindingFactory.createSCABinding();
+                        scaBinding.setName(componentReference.getName());
+                        componentReference.getBindings().add(scaBinding);
+                    }
+                    scaBinding.setComponent(component);
                 }
-                scaBinding.setComponent(component);
 
                 // if reference has a callback, create and configure an SCA binding for the callback
-                if (componentReference.getInterfaceContract() != null &&  // can be null in unit tests
-                    componentReference.getInterfaceContract().getCallbackInterface() != null) {
-                    SCABinding scaCallbackBinding = componentReference.getCallbackBinding(SCABinding.class);
-                    if (scaCallbackBinding == null) {
-                        scaCallbackBinding = scaBindingFactory.createSCABinding();
-                        scaCallbackBinding.setName(componentReference.getName());
-                        if (componentReference.getCallback() == null) {
-                            componentReference.setCallback(assemblyFactory.createCallback());
+                if (componentReference.getInterfaceContract() != null && // can be null in unit tests
+                componentReference.getInterfaceContract().getCallbackInterface() != null) {
+                    if (componentReference.getCallback() != null && componentReference.getCallback().getBindings()
+                        .isEmpty()) {
+                        SCABinding scaCallbackBinding = componentReference.getCallbackBinding(SCABinding.class);
+                        if (scaCallbackBinding == null) {
+                            scaCallbackBinding = scaBindingFactory.createSCABinding();
+                            scaCallbackBinding.setName(componentReference.getName());
+                            if (componentReference.getCallback() == null) {
+                                componentReference.setCallback(assemblyFactory.createCallback());
+                            }
+                            componentReference.getCallback().getBindings().add(scaCallbackBinding);
                         }
-                        componentReference.getCallback().getBindings().add(scaCallbackBinding);
+                        scaCallbackBinding.setComponent(component);
                     }
-                    scaCallbackBinding.setComponent(component);
                 }
             }
         }
@@ -721,8 +757,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      * @param componentServices
      * @param problems
      */
-    private void connectCompositeServices(Composite composite,
-                                          Map<String, ComponentService> componentServices) {
+    private void connectCompositeServices(Composite composite, Map<String, ComponentService> componentServices) {
 
         // Propagate interfaces from inner composite components' services to
         // their component services
@@ -738,7 +773,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 }
             }
         }
-        
+
         // Connect composite services to the component services that they
         // promote
         for (Service service : composite.getServices()) {
@@ -773,8 +808,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      * @param componentReferences
      * @param problems
      */
-    private void connectCompositeReferences(Composite composite,
-                                            Map<String, ComponentReference> componentReferences) {
+    private void connectCompositeReferences(Composite composite, Map<String, ComponentReference> componentReferences) {
 
         // Propagate interfaces from inner composite components' references to
         // their component references
@@ -844,8 +878,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 for (Component component : composite.getComponents()) {
                     for (ComponentService componentService : component.getServices()) {
                         if (componentReference.getInterfaceContract() == null || interfaceContractMapper
-                                .isCompatible(componentReference.getInterfaceContract(), componentService
-                                    .getInterfaceContract())) {
+                            .isCompatible(componentReference.getInterfaceContract(), componentService
+                                .getInterfaceContract())) {
 
                             targets.add(componentService);
                             if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
@@ -868,12 +902,16 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                             // a superset of
                             // the component reference interface
                             if (componentReference.getInterfaceContract() == null || interfaceContractMapper
-                                    .isCompatible(componentReference.getInterfaceContract(), resolved
-                                        .getInterfaceContract())) {
+                                .isCompatible(componentReference.getInterfaceContract(), resolved
+                                    .getInterfaceContract())) {
 
                                 targets.set(i, resolved);
                             } else {
-                                warning("Incompatible interfaces on component reference and target: " + componentReference.getName() + " : " + target.getName(), composite);
+                                warning("Incompatible interfaces on component reference and target: " + componentReference
+                                            .getName()
+                                            + " : "
+                                            + target.getName(),
+                                        composite);
                             }
                         } else {
                             warning("Component reference target not found: " + target.getName(), composite);
@@ -893,12 +931,16 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                             // a superset of
                             // the component reference interface
                             if (componentReference.getInterfaceContract() == null || interfaceContractMapper
-                                    .isCompatible(componentReference.getInterfaceContract(), resolved
-                                        .getInterfaceContract())) {
+                                .isCompatible(componentReference.getInterfaceContract(), resolved
+                                    .getInterfaceContract())) {
 
                                 targets.add(resolved);
                             } else {
-                                warning("Incompatible interfaces on component reference and target: " + componentReference.getName() + " : " + target.getName(), composite);
+                                warning("Incompatible interfaces on component reference and target: " + componentReference
+                                            .getName()
+                                            + " : "
+                                            + target.getName(),
+                                        composite);
                             }
                         } else {
                             warning("Reference target not found: " + target.getName(), composite);
@@ -908,17 +950,44 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             }
             // [rfeng] For any targets, select the matching binding for the reference
             List<Binding> selectedBindings = new ArrayList<Binding>();
+
+            // Handle callback
+            boolean bidirectional = false;
+            if (componentReference.getInterfaceContract() != null && componentReference.getInterfaceContract()
+                .getCallbackInterface() != null) {
+                bidirectional = true;
+            }
+            List<Binding> selectedCallbackBindings = bidirectional ? new ArrayList<Binding>() : null;
+
             for (ComponentService service : targets) {
-                Binding selected = resolveBindings(componentReference, service);
+                ComponentService target = service;
+                if (service.getService() instanceof CompositeService) {
+                    // Normalize the service to be the final target
+                    target = ((CompositeService)service.getService()).getPromotedService();
+                }
+                Binding selected = resolveBindings(componentReference, target);
                 if (selected == null) {
                     warning("Component reference doesn't have a matching binding", componentReference);
                 } else {
                     selectedBindings.add(selected);
                 }
+                if (bidirectional) {
+                    Binding selectedCallback = resolveCallbackBindings(componentReference, target);
+                    if (selectedCallback != null) {
+                        selectedCallbackBindings.add(selectedCallback);
+                    }
+                }
             }
             if (!targets.isEmpty()) {
+                // Add all the effective bindings
                 componentReference.getBindings().clear();
                 componentReference.getBindings().addAll(selectedBindings);
+                if (bidirectional) {
+                    componentReference.getCallback().getBindings().clear();
+                    componentReference.getCallback().getBindings().addAll(selectedCallbackBindings);
+                }
+                // Remove the targets since they have been normalized as bindings
+                targets.clear();
             }
         }
     }
@@ -977,12 +1046,13 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 // a superset of
                 // the component reference interface
                 if (resolvedReference.getInterfaceContract() == null || interfaceContractMapper
-                        .isCompatible(resolvedReference.getInterfaceContract(), resolvedService
-                            .getInterfaceContract())) {
+                    .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
 
                     resolvedReference.getTargets().add(resolvedService);
                 } else {
-                    warning("Incompatible interfaces on wire source and target: " + source.getName() + " : " + target.getName(), composite);
+                    warning("Incompatible interfaces on wire source and target: " + source.getName()
+                        + " : "
+                        + target.getName(), composite);
                 }
             }
         }
@@ -1090,7 +1160,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                             if (componentService.getInterfaceContract() == null) {
                                 componentService.setInterfaceContract(promotedService.getInterfaceContract());
                             }
-                            
+
                             // Create a new component service to represent this composite
                             // service on the promoted component
                             SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
@@ -1103,26 +1173,27 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 newComponentService.getBindings().add(scaBinding);
                                 newComponentService.getBindings().addAll(compositeService.getBindings());
                                 newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                                if (compositeService.getInterfaceContract() != null &&  // can be null in unit tests
-                                    compositeService.getInterfaceContract().getCallbackInterface() != null) {
-                                    SCABinding scaCallbackBinding = promotedService.getCallbackBinding(SCABinding.class);
+                                if (compositeService.getInterfaceContract() != null && // can be null in unit tests
+                                compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                                    SCABinding scaCallbackBinding =
+                                        promotedService.getCallbackBinding(SCABinding.class);
                                     newComponentService.setCallback(assemblyFactory.createCallback());
                                     if (scaCallbackBinding != null) {
                                         newComponentService.getCallback().getBindings().add(scaCallbackBinding);
                                     }
                                     if (compositeService.getCallback() != null) {
-                                        newComponentService.getCallback().getBindings().addAll(
-                                                                compositeService.getCallback().getBindings());
+                                        newComponentService.getCallback().getBindings().addAll(compositeService
+                                            .getCallback().getBindings());
                                     }
                                 }
-                                
+
                                 // FIXME: [rfeng] Set the service to promoted
-                                 newComponentService.setService(promotedService.getService());
+                                newComponentService.setService(promotedService.getService());
 
                                 // Change the composite service to now promote the newly
                                 // created component service directly
                                 compositeService.setPromotedService(newComponentService);
-                                
+
                             } else {
                                 warning("Promoted component service not found: " + promotedService.getName(), composite);
                             }
@@ -1144,7 +1215,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 if (compositeService.getInterfaceContract() == null && promotedService.getInterfaceContract() != null) {
                     compositeService.setInterfaceContract(promotedService.getInterfaceContract());
                 }
-                
+
                 // Create a new component service to represent this composite
                 // service on the promoted component
                 SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
@@ -1157,19 +1228,19 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     newComponentService.getBindings().add(scaBinding);
                     newComponentService.getBindings().addAll(compositeService.getBindings());
                     newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                    if (compositeService.getInterfaceContract() != null &&  // can be null in unit tests
-                        compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                    if (compositeService.getInterfaceContract() != null && // can be null in unit tests
+                    compositeService.getInterfaceContract().getCallbackInterface() != null) {
                         SCABinding scaCallbackBinding = promotedService.getCallbackBinding(SCABinding.class);
                         newComponentService.setCallback(assemblyFactory.createCallback());
                         if (scaCallbackBinding != null) {
                             newComponentService.getCallback().getBindings().add(scaCallbackBinding);
                         }
                         if (compositeService.getCallback() != null) {
-                            newComponentService.getCallback().getBindings().addAll(
-                                                    compositeService.getCallback().getBindings());
+                            newComponentService.getCallback().getBindings().addAll(compositeService.getCallback()
+                                .getBindings());
                         }
                     }
-                    
+
                     // FIXME: [rfeng] Set the service to promoted
                     newComponentService.setService(promotedService.getService());
 
@@ -1209,8 +1280,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             for (ComponentReference promotedReference : promotedReferences) {
 
                 reconcileReferenceBindings(compositeReference, promotedReference);
-                if (compositeReference.getInterfaceContract() != null &&  // can be null in unit tests
-                    compositeReference.getInterfaceContract().getCallbackInterface() != null) {
+                if (compositeReference.getInterfaceContract() != null && // can be null in unit tests
+                compositeReference.getInterfaceContract().getCallbackInterface() != null) {
                     SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
                     if (promotedReference.getCallback() != null) {
                         promotedReference.getCallback().getBindings().clear();
@@ -1221,8 +1292,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                         promotedReference.getCallback().getBindings().add(scaCallbackBinding);
                     }
                     if (compositeReference.getCallback() != null) {
-                        promotedReference.getCallback().getBindings().addAll(
-                                              compositeReference.getCallback().getBindings());
+                        promotedReference.getCallback().getBindings().addAll(compositeReference.getCallback()
+                            .getBindings());
                     }
                 }
             }
@@ -1236,13 +1307,14 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                 for (ComponentReference componentReference : component.getReferences()) {
                     CompositeReference compositeReference = (CompositeReference)componentReference.getReference();
                     if (compositeReference != null) {
-                        List<ComponentReference> promotedReferences = getPromotedComponentReferences(compositeReference);
+                        List<ComponentReference> promotedReferences =
+                            getPromotedComponentReferences(compositeReference);
                         for (ComponentReference promotedReference : promotedReferences) {
 
                             // Override the configuration of the promoted reference
                             reconcileReferenceBindings(componentReference, promotedReference);
-                            if (componentReference.getInterfaceContract() != null &&  // can be null in unit tests
-                                componentReference.getInterfaceContract().getCallbackInterface() != null) {
+                            if (componentReference.getInterfaceContract() != null && // can be null in unit tests
+                            componentReference.getInterfaceContract().getCallbackInterface() != null) {
                                 SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
                                 if (promotedReference.getCallback() != null) {
                                     promotedReference.getCallback().getBindings().clear();
@@ -1253,15 +1325,15 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                     promotedReference.getCallback().getBindings().add(scaCallbackBinding);
                                 }
                                 if (componentReference.getCallback() != null) {
-                                    promotedReference.getCallback().getBindings().addAll(
-                                                          componentReference.getCallback().getBindings());
+                                    promotedReference.getCallback().getBindings().addAll(componentReference
+                                        .getCallback().getBindings());
                                 }
                             }
 
                             // Wire the promoted reference to the actual
                             // non-composite component services
                             if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference
-                                    .getMultiplicity() == Multiplicity.ONE_ONE) {
+                                .getMultiplicity() == Multiplicity.ONE_ONE) {
                                 // promotedReference.getTargets().clear();
                             }
                             for (ComponentService target : componentReference.getTargets()) {
@@ -1289,7 +1361,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     // Wire the component reference to the actual
                     // non-composite component services
                     List<ComponentService> targets = componentReference.getTargets();
-                    for (int i = 0, n = targets.size(); i<n; i++) {
+                    for (int i = 0, n = targets.size(); i < n; i++) {
                         ComponentService target = targets.get(i);
                         if (target.getService() instanceof CompositeService) {
 
@@ -1308,7 +1380,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     }
 
     /**
-     * Override the bindings for a promoted reference from an outer component reference
+     * Override the bindings for a promoted reference from an outer component
+     * reference
+     * 
      * @param reference
      * @param promotedReference
      */
@@ -1317,11 +1391,28 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         bindings.addAll(promotedReference.getBindings());
         bindings.addAll(reference.getBindings());
         promotedReference.getBindings().clear();
-        promotedReference.getBindings().addAll(bindings);
+        for (Binding binding : bindings) {
+            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
+                promotedReference.getBindings().add(binding);
+            }
+        }
         if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
-            if (bindings.size() > 1) {
+            if (promotedReference.getBindings().size() > 1) {
                 warning("Component reference " + promotedReference.getName() + " has more than one wires",
                         promotedReference);
+            }
+        }
+        Set<Binding> callbackBindings = new HashSet<Binding>();
+        if (promotedReference.getCallback() != null) {
+            callbackBindings.addAll(promotedReference.getCallback().getBindings());
+        }
+        if (reference.getCallback() != null) {
+            callbackBindings.addAll(reference.getCallback().getBindings());
+        }
+        promotedReference.setCallback(assemblyFactory.createCallback());
+        for (Binding binding : callbackBindings) {
+            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
+                promotedReference.getCallback().getBindings().add(binding);
             }
         }
     }
@@ -1354,7 +1445,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // services and references that they promote
         connectCompositeServices(composite, componentServices);
         connectCompositeReferences(composite, componentReferences);
-        
+
         // Connect component references to their targets
         connectComponentReferences(composite, componentServices, componentReferences);
 
@@ -1370,10 +1461,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
                 .getTargets(), componentReference.getBindings())) {
                 if (componentReference.getTargets().isEmpty()) {
-                    
+
                     // No warning if the reference is promoted out of the current composite
                     boolean promoted = false;
-                    for (Reference reference: composite.getReferences()) {
+                    for (Reference reference : composite.getReferences()) {
                         CompositeReference compositeReference = (CompositeReference)reference;
                         if (compositeReference.getPromotedReferences().contains(componentReference)) {
                             promoted = true;
@@ -1400,8 +1491,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
         return null;
     }
-    
-    
+
     /**
      * @param composite
      */
@@ -1411,13 +1501,13 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         ComponentProperty componentProperty = null;
         for (Property p : composite.getProperties()) {
             componentProperty = getComponentPropertyByName(p.getName(), propertySettings);
-            if ( componentProperty != null ) {
+            if (componentProperty != null) {
                 compositeProperties.put(p.getName(), componentProperty);
             } else {
                 compositeProperties.put(p.getName(), p);
             }
         }
-        
+
         for (Component component : composite.getComponents()) {
             try {
                 PropertyUtil.sourceComponentProperties(compositeProperties, component);
@@ -1431,7 +1521,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             }
         }
     }
-
 
     /**
      * Expand composite component implementations.
@@ -1479,35 +1568,77 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             component.getReferences().add(componentReference);
         }
     }
-    
-    // Choose a binding for the reference based on the bindings available on the service 
+
+    /**
+     * Choose a binding for the reference based on the bindings available on the
+     * service
+     * 
+     * @param reference The component reference
+     * @param service The component service
+     * @return Resolved binding
+     */
     protected Binding resolveBindings(ComponentReference reference, ComponentService service) {
-        List<Binding> refBindings = new ArrayList<Binding>(reference.getBindings());
+        List<Binding> source = reference.getBindings();
+        List<Binding> target = service.getBindings();
+
+        return matchBinding(service, source, target);
+
+    }
+
+    private Binding matchBinding(ComponentService service, List<Binding> source, List<Binding> target) {
+        List<Binding> matched = new ArrayList<Binding>();
         // Find the corresponding bindings from the service side
-        for(Binding binding: reference.getBindings()){
-            for(Binding serviceBinding: service.getBindings()) {
-                if(binding.getClass() == serviceBinding.getClass()) {
-                    refBindings.add(binding);
+        for (Binding binding : source) {
+            for (Binding serviceBinding : target) {
+                if (binding.getClass() == serviceBinding.getClass()) {
+                    Binding cloned = binding;
+                    // TODO: We need to clone the reference binding
+                    try {
+                        cloned = (Binding)((WireableBinding)binding).clone();
+                        WireableBinding endpoint = ((WireableBinding)cloned);
+                        // FIXME: This is a hack to get the target component
+                        SCABinding scaBinding = service.getBinding(SCABinding.class);
+                        if (scaBinding != null) {
+                            endpoint.setTargetComponent(scaBinding.getComponent());
+                        }
+                        endpoint.setTargetComponentService(service);
+                        endpoint.setTargetBinding(serviceBinding);
+                        cloned.setURI(serviceBinding.getURI());
+                    } catch (Exception e) {
+                        // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
+                    }
+                    matched.add(cloned);
                     break;
                 }
             }
         }
-        if(refBindings.isEmpty()) {
+        if (matched.isEmpty()) {
             // No matching binding
-           return null; 
+            return null;
         } else {
-            for(Binding binding: refBindings) {
+            for (Binding binding : matched) {
                 // If binding.sca is present, 
-                if(SCABinding.class.isInstance(binding)) {
+                if (SCABinding.class.isInstance(binding)) {
                     return binding;
                 }
             }
             // Use the first one
-            return refBindings.get(0);
+            return matched.get(0);
         }
-        
     }
-    
+
+    /**
+     * @param reference
+     * @param service
+     * @return
+     */
+    protected Binding resolveCallbackBindings(ComponentReference reference, ComponentService service) {
+        List<Binding> source = reference.getCallback().getBindings();
+        List<Binding> target = service.getCallback().getBindings();
+
+        return matchBinding(service, source, target);
+    }
+
     /**
      * Report an error.
      * 
@@ -1529,35 +1660,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      */
     private void warning(String message, Object model) {
         monitor.problem(new ProblemImpl(Severity.WARNING, message, model));
-    }
-
-    /**
-     * This method encapsulates the logic needed to determine whether a binding
-     * is configured with an endpoint.  In most cases, this is determined by
-     * whether the binding's uri attribute was specified.  However, some bindings
-     * provide a binding-specific way of setting the target URI, so it's not
-     * sufficient to simply call getURI() on the binding.  The hasEndpoint()
-     * method of the BindingEndpoint interface allows the binding to provide
-     * a definite answer.
-     * 
-     * @param binding
-     * @return true if the binding has an endpoint, false otherwise
-     */
-    public static boolean bindingHasEndpoint(Binding binding) {
-        // for now, determine this based on knowledge of the various binding types
-        // all bindings should be changed to extend BindingEndpoint and implement hasEndpoint()
-        // evetually, BindingEndpoint should be merged with Binding
-        if (binding instanceof BindingEndpoint) {
-            // call hasEndpoint() to get the definitive answer
-            return ((BindingEndpoint)binding).hasEndpoint();
-        } else {
-            //FIXME: nasty hack to preserve compatibility with old bindings 
-            if (binding instanceof SCABinding) {
-                return false;
-            } else {
-                return true;
-            }
-        }
     }
 
 }

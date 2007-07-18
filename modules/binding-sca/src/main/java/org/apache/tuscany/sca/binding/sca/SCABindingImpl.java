@@ -33,9 +33,7 @@ import org.apache.tuscany.sca.binding.jms.JMSBindingFactoryImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomainImpl;
 import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -57,6 +55,9 @@ public class SCABindingImpl implements DistributedSCABinding {
     
     private Component component;
     
+    private Component targetComponent;
+    private ComponentService targetComponentService;
+    private Binding targetBinding;    
     /**
      * Constructs a new SCA binding.
      */
@@ -215,4 +216,54 @@ public class SCABindingImpl implements DistributedSCABinding {
         
         return jmsBinding;     
     }      
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    /**
+     * @return the targetComponent
+     */
+    public Component getTargetComponent() {
+        return targetComponent;
+    }
+
+    /**
+     * @param targetComponent the targetComponent to set
+     */
+    public void setTargetComponent(Component targetComponent) {
+        this.targetComponent = targetComponent;
+    }
+
+    /**
+     * @return the targetComponentService
+     */
+    public ComponentService getTargetComponentService() {
+        return targetComponentService;
+    }
+
+    /**
+     * @param targetComponentService the targetComponentService to set
+     */
+    public void setTargetComponentService(ComponentService targetComponentService) {
+        this.targetComponentService = targetComponentService;
+    }
+
+    /**
+     * @return the targetBinding
+     */
+    public Binding getTargetBinding() {
+        return targetBinding;
+    }
+
+    /**
+     * @param targetBinding the targetBinding to set
+     */
+    public void setTargetBinding(Binding targetBinding) {
+        this.targetBinding = targetBinding;
+    }    
 }

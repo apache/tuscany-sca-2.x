@@ -23,10 +23,17 @@ package org.apache.tuscany.sca.assembly;
  * 
  * @version $Rev$ $Date$
  */
-public interface SCABinding extends Binding {
-    
+public interface SCABinding extends WireableBinding {
+    /**
+     * This is a hack to navigate to the containing component
+     * @return
+     */
+    @Deprecated
     Component getComponent();
-    
+    /**
+     * This is a hack to set the containing component
+     * @param component
+     */
+    @Deprecated
     void setComponent(Component component);
-
 }

@@ -18,48 +18,46 @@
  */
 package org.apache.tuscany.sca.core.spring.assembly.impl;
 
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 
 /**
- * An implementation of RuntimeBeanReference wrappering an SCA assembly Reference
- *
- *  @version $Rev$ $Date$
+ * An implementation of RuntimeBeanReference wrappering an SCA assembly
+ * Reference
+ * 
+ * @version $Rev$ $Date$
  */
 public class BeanReferenceImpl extends RuntimeBeanReference {
-	private Reference reference;
-	
-	protected BeanReferenceImpl(Reference reference) {
-		super("temp");
-		this.reference = reference;
-	}
-	
-	public String getBeanName() {
-		//TODO handle multiplicity
-		ComponentService componentService = reference.getTargets().get(0);
-		if (!componentService.isUnresolved()) {
-			SCABinding binding = componentService.getBinding(SCABinding.class);
-                        return binding.getComponent().getURI();
-		} else {
-			return null;
-		}
-	}
-	
-	public boolean equals(Object other) {
-		if (this != other) {
-			if (other instanceof RuntimeBeanReference) {
-				RuntimeBeanReference br = (RuntimeBeanReference) other;
-				return (getBeanName().equals(br.getBeanName()) && this.isToParent() == br.isToParent());
-			} else
-				return false;
-		} else
-			return true;
-	}
+    private Reference reference;
 
-	public int hashCode() {
-		return getBeanName().hashCode() * 29 + (this.isToParent() ? 1 : 0);
-	}
+    protected BeanReferenceImpl(Reference reference) {
+        super("temp");
+        this.reference = reference;
+    }
+
+    public String getBeanName() {
+        SCABinding binding = reference.getBinding(SCABinding.class);
+        if (binding != null) {
+            return binding.getTargetComponent().getURI();
+        } else {
+            return null;
+        }
+    }
+
+    public boolean equals(Object other) {
+        if (this != other) {
+            if (other instanceof RuntimeBeanReference) {
+                RuntimeBeanReference br = (RuntimeBeanReference)other;
+                return (getBeanName().equals(br.getBeanName()) && this.isToParent() == br.isToParent());
+            } else
+                return false;
+        } else
+            return true;
+    }
+
+    public int hashCode() {
+        return getBeanName().hashCode() * 29 + (this.isToParent() ? 1 : 0);
+    }
 
 }
