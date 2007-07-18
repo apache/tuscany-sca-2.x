@@ -40,7 +40,6 @@
     <service name="JAXBGreeterService" promote="JAXBGreeterServiceComponent">
         <interface.wsdl interface="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.interface(GreeterPortType)"/>
         <binding.ws wsdlElement="http://apache.org/tuscany/sca/itest/databinding/services#wsdl.port(GreeterService/GreeterPort)"/>
-        <reference>JAXBGreeterServiceComponent</reference>
     </service>
 
     <!-- Components used to implement the services -->
