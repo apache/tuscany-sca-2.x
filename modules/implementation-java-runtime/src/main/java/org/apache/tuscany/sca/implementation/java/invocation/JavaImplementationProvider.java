@@ -23,12 +23,15 @@ import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.injection.RequestContextObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -40,30 +43,36 @@ import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.RequestContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JavaImplementationProvider implements ScopedImplementationProvider {
     private JavaImplementation implementation;
-    private JavaComponentInfo atomicComponent;
-
-    public JavaImplementationProvider(
-                                      RuntimeComponent component,
+    private JavaComponentInfo componentInfo;
+    private ComponentContextFactory componentContextFactory;
+    private RequestContextFactory requestContextFactory;
+    
+    public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
                                       ProxyFactory proxyService,
                                       DataBindingExtensionPoint dataBindingRegistry,
-                                      JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+                                      JavaPropertyValueObjectFactory propertyValueObjectFactory,
+                                      ComponentContextFactory componentContextFactory,
+                                      RequestContextFactory requestContextFactory) {
         super();
         this.implementation = implementation;
-
+        this.componentContextFactory = componentContextFactory;
+        this.requestContextFactory = requestContextFactory;
         try {
             PojoConfiguration configuration = new PojoConfiguration(implementation);
             configuration.setProxyFactory(proxyService);
             // FIXME: Group id to be removed
             configuration.setGroupId(URI.create("/"));
-            atomicComponent = new JavaComponentInfo(component, configuration, dataBindingRegistry,
-                                                                      propertyValueObjectFactory);
+            componentInfo =
+                new JavaComponentInfo(component, configuration, dataBindingRegistry, propertyValueObjectFactory,
+                                      componentContextFactory, requestContextFactory);
 
             Scope scope = getScope();
 
@@ -87,36 +96,38 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             }
 
             if (implementation.getConversationIDMember() != null) {
-                atomicComponent.addConversationIDFactory(implementation.getConversationIDMember());
+                componentInfo.addConversationIDFactory(implementation.getConversationIDMember());
             }
 
-            atomicComponent.configureProperties(component.getProperties());
-            handleResources(implementation, atomicComponent);
+            componentInfo.configureProperties(component.getProperties());
+            handleResources(implementation);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
 
     }
 
-    private void handleResources(JavaImplementation componentType, JavaComponentInfo component) {
+    private void handleResources(JavaImplementation componentType) {
         for (JavaResourceImpl resource : componentType.getResources().values()) {
             String name = resource.getName();
 
-            ObjectFactory<?> objectFactory = (ObjectFactory<?>)component.getConfiguration().getFactories().get(resource
-                .getElement());
+            ObjectFactory<?> objectFactory =
+                (ObjectFactory<?>)componentInfo.getConfiguration().getFactories().get(resource.getElement());
             if (objectFactory == null) {
                 Class<?> type = resource.getElement().getType();
                 if (ComponentContext.class.equals(type)) {
-                    objectFactory = new PojoComponentContextFactory(component);
+                    objectFactory = new PojoComponentContextFactory(componentInfo);
+                } else if (RequestContext.class.equals(type)) {
+                    objectFactory = new RequestContextObjectFactory(requestContextFactory);
                 } else if (String.class.equals(type)) {
-                    objectFactory = new PojoComponentNameFactory(component);
+                    objectFactory = new PojoComponentNameFactory(componentInfo);
                 } else {
                     boolean optional = resource.isOptional();
                     String mappedName = resource.getMappedName();
                     objectFactory = createResourceObjectFactory(type, mappedName, optional, null);
                 }
             }
-            component.addResourceFactory(name, objectFactory);
+            componentInfo.addResourceFactory(name, objectFactory);
         }
     }
 
@@ -128,12 +139,12 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     }
 
     public Object createInstance(RuntimeComponent component, ComponentService service) {
-        return atomicComponent.createInstance();
+        return componentInfo.createInstance();
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         try {
-            return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
+            return new TargetInvokerInvoker(componentInfo.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }
@@ -141,7 +152,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
     public Invoker createCallbackInvoker(Operation operation) {
         try {
-            return new TargetInvokerInvoker(atomicComponent.createTargetInvoker(operation));
+            return new TargetInvokerInvoker(componentInfo.createTargetInvoker(operation));
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }
@@ -152,15 +163,15 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     }
 
     public void start() {
-        atomicComponent.start();
+        componentInfo.start();
     }
 
     public void stop() {
-        atomicComponent.stop();
+        componentInfo.stop();
     }
 
     public InstanceWrapper createInstanceWrapper() {
-        return atomicComponent.createInstanceWrapper();
+        return componentInfo.createInstanceWrapper();
     }
 
     public boolean isEagerInit() {

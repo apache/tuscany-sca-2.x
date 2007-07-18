@@ -20,6 +20,9 @@
 package org.apache.tuscany.sca.implementation.java.module;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
@@ -127,11 +130,16 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
         processors.addArtifactProcessor(javaImplementationProcessor);
 
+        ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
+        ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
+        RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
         JavaImplementationProviderFactory javaImplementationProviderFactory =
-            new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory);
+            new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory, componentContextFactory,
+                                                  requestContextFactory);
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(javaImplementationProviderFactory);
+        
     }
 
     public void stop(ExtensionPointRegistry registry) {

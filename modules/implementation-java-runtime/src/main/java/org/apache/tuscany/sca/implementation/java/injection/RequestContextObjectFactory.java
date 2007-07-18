@@ -18,23 +18,31 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
+import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.component.RequestContextImpl;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.osoa.sca.RequestContext;
 
 /**
- * Creates instances of {@link org.apache.tuscany.sca.core.component.RequestContextImpl} for injection on
- * component implementation instances
- *
+ * Creates instances of
+ * {@link org.apache.tuscany.sca.core.component.RequestContextImpl} for
+ * injection on component implementation instances
+ * 
  * @version $Rev$ $Date$
  */
 public class RequestContextObjectFactory implements ObjectFactory<RequestContext> {
+    private RequestContextFactory factory;
 
-    public RequestContextObjectFactory() {
+    public RequestContextObjectFactory(RequestContextFactory factory) {
+        this.factory = factory;
     }
 
     public RequestContext getInstance() throws ObjectCreationException {
-        return new RequestContextImpl();
+        if (factory != null) {
+            return factory.createRequestContext();
+        } else {
+            return new RequestContextImpl();
+        }
     }
 }

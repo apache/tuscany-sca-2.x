@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.ArtifactProcessor;
@@ -91,6 +93,10 @@ public class ReallySmallRuntime {
         // Create factory extension point
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         registry.addExtensionPoint(factories);
+        
+        // Create context factory extension point
+        ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint();
+        registry.addExtensionPoint(contextFactories);
         
         // Create Message factory
         MessageFactory messageFactory = new MessageFactoryImpl();
