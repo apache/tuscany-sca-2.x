@@ -23,14 +23,13 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.easymock.EasyMock;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
+import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 
 /**
@@ -38,30 +37,22 @@ import org.osoa.sca.annotations.Context;
  */
 public class ContextProcessorTestCase extends TestCase {
     private ContextProcessor processor;
-    private Component composite;
+    private ComponentNameProcessor nameProcessor;
     private JavaImplementationFactory javaImplementationFactory;
 
-    // FIXME: resurrect to test ComponentContext injection
-/*
-    public void testCompositeContextMethod() throws Exception {
+    public void testComponentContextMethod() throws Exception {
         Method method = Foo.class.getMethod("setContext", ComponentContext.class);
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
-        processor.visitMethod(composite, method, type);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitMethod(method, type);
         assertNotNull(type.getResources().get("context"));
     }
-*/
 
-    // FIXME: resurrect to test ComponentContext injection
-/*
-    public void testCompositeContextField() throws Exception {
+    public void testComponentContextField() throws Exception {
         Field field = Foo.class.getDeclaredField("context");
-        JavaImplementationDefinition type =
-            new JavaImplementationDefinition();
-        processor.visitField(composite, field, type);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitField(field, type);
         assertNotNull(type.getResources().get("context"));
     }
-*/
 
     public void testRequestContextMethod() throws Exception {
         Method method = Foo.class.getMethod("setRequestContext", RequestContext.class);
@@ -75,6 +66,20 @@ public class ContextProcessorTestCase extends TestCase {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitField(field, type);
         assertNotNull(type.getResources().get("requestContext"));
+    }
+
+    public void testComponentNameMethod() throws Exception {
+        Method method = Foo.class.getMethod("setName", String.class);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        nameProcessor.visitMethod(method, type);
+        assertNotNull(type.getResources().get("name"));
+    }
+
+    public void testComponentNameField() throws Exception {
+        Field field = Foo.class.getDeclaredField("name");
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        nameProcessor.visitField(field, type);
+        assertNotNull(type.getResources().get("name"));
     }
 
     public void testInvalidParamType() throws Exception {
@@ -140,13 +145,15 @@ public class ContextProcessorTestCase extends TestCase {
         super.setUp();
         javaImplementationFactory = new DefaultJavaImplementationFactory();
         processor = new ContextProcessor(new DefaultAssemblyFactory());
-        // processor.setWorkContext(EasyMock.createNiceMock(WorkContext.class));
-        composite = EasyMock.createNiceMock(Component.class);
+        nameProcessor = new ComponentNameProcessor(new DefaultAssemblyFactory());
     }
 
     private class Foo {
         @Context
         protected ComponentContext context;
+
+        @ComponentName
+        protected String name;
 
         @Context
         protected Object badContext;
@@ -158,6 +165,11 @@ public class ContextProcessorTestCase extends TestCase {
 
         @Context
         public void setContext(ComponentContext context) {
+
+        }
+
+        @ComponentName
+        public void setName(String name) {
 
         }
 

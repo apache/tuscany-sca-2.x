@@ -42,8 +42,8 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
     }
 
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
-        org.apache.tuscany.api.annotation.Resource annotation = method
-            .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+        org.apache.tuscany.sca.implementation.java.introspect.impl.Resource annotation = method
+            .getAnnotation(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
         if (annotation == null) {
             return;
         }
@@ -69,8 +69,8 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
 
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
 
-        org.apache.tuscany.api.annotation.Resource annotation = field
-            .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+        org.apache.tuscany.sca.implementation.java.introspect.impl.Resource annotation = field
+            .getAnnotation(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
         if (annotation == null) {
             return;
         }
@@ -94,15 +94,15 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
 
     @SuppressWarnings("unchecked")
     public JavaResourceImpl createResource(String name, JavaElementImpl element) {
-        element.setClassifer(org.apache.tuscany.api.annotation.Resource.class);
+        element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
         element.setName(name);
         return new JavaResourceImpl(element);
     }
 
     public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
-        org.apache.tuscany.api.annotation.Resource resourceAnnotation = parameter
-            .getAnnotation(org.apache.tuscany.api.annotation.Resource.class);
+        org.apache.tuscany.sca.implementation.java.introspect.impl.Resource resourceAnnotation = parameter
+            .getAnnotation(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
         if (resourceAnnotation != null) {
             String name = resourceAnnotation.name();
             if ("".equals(name)) {

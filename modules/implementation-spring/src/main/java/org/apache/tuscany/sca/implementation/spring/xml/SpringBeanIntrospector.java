@@ -19,18 +19,16 @@
 package org.apache.tuscany.sca.implementation.spring.xml;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
@@ -39,6 +37,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospect
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationProcessor;
@@ -52,11 +51,9 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProce
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-
-import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Service;
 
 /**
  * Provides introspection functions for Spring beans
@@ -87,6 +84,7 @@ public class SpringBeanIntrospector {
     	BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
                 new ConstructorProcessor(assemblyFactory),
                 new AllowsPassByReferenceProcessor(assemblyFactory),
+                new ComponentNameProcessor(assemblyFactory),
                 new ContextProcessor(assemblyFactory),
                 new ConversationProcessor(assemblyFactory),
                 new DestroyProcessor(assemblyFactory),

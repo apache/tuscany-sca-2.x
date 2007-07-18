@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospect
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationProcessor;
@@ -93,6 +94,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
             new AllowsPassByReferenceProcessor(assemblyFactory),
+            new ComponentNameProcessor(assemblyFactory),
             new ContextProcessor(assemblyFactory),
             new ConversationProcessor(assemblyFactory),
             new DestroyProcessor(assemblyFactory),
