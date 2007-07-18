@@ -20,6 +20,12 @@ package org.apache.tuscany.sca.core.component;
 
 import javax.security.auth.Subject;
 
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
@@ -37,18 +43,30 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public String getServiceName() {
-        throw new UnsupportedOperationException();
+        return ThreadMessageContext.getMessageContext().getTo().getContract().getName();
     }
 
     public <B> ServiceReference<B> getServiceReference() {
-        throw new UnsupportedOperationException();
+        EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
+        RuntimeComponentService service = (RuntimeComponentService) to.getContract();
+        RuntimeComponent component = (RuntimeComponent) to.getComponent();
+        JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getInterface();
+        return (ServiceReference<B>) component.createSelfReference(javaInterface.getJavaClass(), service.getName());
     }
 
     public <CB> CB getCallback() {
-        throw new UnsupportedOperationException();
+        return (CB) getCallbackReference().getService();
     }
 
     public <CB> CallableReference<CB> getCallbackReference() {
-        throw new UnsupportedOperationException();
+        EndpointReference from = ThreadMessageContext.getMessageContext().getFrom();
+        RuntimeComponentReference service = (RuntimeComponentReference) from.getContract();
+        RuntimeComponent component = (RuntimeComponent) from.getComponent();
+        JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getCallbackInterface();
+        if(javaInterface==null) {
+            return null;
+        }
+        // FIXME: Creating a self-ref is probably not right
+        return (CallableReference<CB>) component.createSelfReference(javaInterface.getCallbackClass());
     }
 }

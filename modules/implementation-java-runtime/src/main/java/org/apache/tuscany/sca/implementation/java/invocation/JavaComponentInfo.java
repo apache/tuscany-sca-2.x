@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.component.ComponentContextImpl;
 import org.apache.tuscany.sca.core.component.ComponentContextProvider;
 import org.apache.tuscany.sca.core.component.ServiceReferenceImpl;
@@ -81,7 +83,9 @@ import org.osoa.sca.annotations.ConversationID;
 public class JavaComponentInfo implements ComponentContextProvider {
     private JavaPropertyValueObjectFactory propertyValueFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
-
+    private ComponentContextFactory componentContextFactory;
+    private RequestContextFactory requestContextFactory;
+    
     protected RuntimeComponent component;
     protected PojoConfiguration<?> configuration;
     protected Scope scope;
@@ -90,17 +94,26 @@ public class JavaComponentInfo implements ComponentContextProvider {
 
     private final ComponentContext componentContext;
 
-    public JavaComponentInfo(RuntimeComponent component, PojoConfiguration configuration, 
+    public JavaComponentInfo(RuntimeComponent component,
+                             PojoConfiguration configuration,
                              DataBindingExtensionPoint dataBindingExtensionPoint,
-                             JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+                             JavaPropertyValueObjectFactory propertyValueObjectFactory,
+                             ComponentContextFactory componentContextFactory,
+                             RequestContextFactory requestContextFactory) {
         super();
         this.configuration = configuration;
-        componentContext = new ComponentContextImpl(this);
+        if (componentContextFactory != null) {
+            this.componentContext = componentContextFactory.createComponentContext(component, requestContextFactory);
+        } else {
+            this.componentContext = new ComponentContextImpl(this, requestContextFactory);
+        }
         this.groupId = configuration.getGroupId();
         this.component = component;
         this.proxyService = configuration.getProxyFactory();
         this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
+        this.componentContextFactory = componentContextFactory;
+        this.requestContextFactory = requestContextFactory;
     }
   
     public void destroy(Object instance) throws TargetDestructionException {
