@@ -91,4 +91,10 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
             return false;
         }
     }
+
+    @Override
+    public JavaInterfaceImpl clone() throws CloneNotSupportedException {
+        return (JavaInterfaceImpl) super.clone();
+    }
+
 }

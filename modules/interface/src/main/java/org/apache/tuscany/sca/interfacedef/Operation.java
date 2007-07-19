@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 /**
  * Represents an operation on a service interface.
  */
-public interface Operation {
+public interface Operation extends Cloneable {
     /**
      * Returns the name of the operation.
      * 
@@ -170,4 +170,9 @@ public interface Operation {
      * @param b
      */
     void setDynamic(boolean b);
+
+    /**
+     * Implementations must support cloning.
+     */
+    Object clone() throws CloneNotSupportedException;
 }

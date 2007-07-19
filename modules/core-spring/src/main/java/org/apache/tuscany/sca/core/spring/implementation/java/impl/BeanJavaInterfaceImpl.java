@@ -119,4 +119,9 @@ public class BeanJavaInterfaceImpl implements JavaInterface {
     public boolean isDynamic() {
         return false;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

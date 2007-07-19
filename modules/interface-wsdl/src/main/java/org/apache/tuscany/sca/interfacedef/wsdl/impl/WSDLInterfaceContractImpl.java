@@ -39,4 +39,9 @@ public class WSDLInterfaceContractImpl extends InterfaceContractImpl implements 
     public void setLocation(String location) {
         this.location = location;
     }
+
+    @Override
+    public WSDLInterfaceContractImpl clone() throws CloneNotSupportedException {
+        return (WSDLInterfaceContractImpl) super.clone();
+    }
 }

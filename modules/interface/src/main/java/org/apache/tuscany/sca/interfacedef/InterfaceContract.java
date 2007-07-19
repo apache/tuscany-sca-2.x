@@ -73,4 +73,9 @@ public interface InterfaceContract extends Cloneable {
      */
     InterfaceContract makeUnidirectional(boolean isCallback);
 
+    /**
+     * Implementations must support cloning.
+     */
+    Object clone() throws CloneNotSupportedException;
+
 }

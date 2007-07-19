@@ -25,7 +25,7 @@ import java.util.List;
  * support concrete interface type systems, such as Java interfaces, WSDL 1.1
  * portTypes and WSDL 2.0 interfaces.
  */
-public interface Interface {
+public interface Interface extends Cloneable {
 
     /**
      * Returns true if the interface is a remotable interface..
@@ -89,5 +89,10 @@ public interface Interface {
      * @return true if the Interface is dynamic.
      */
     boolean isDynamic();
+
+    /**
+     * Implementations must support cloning.
+     */
+    Object clone() throws CloneNotSupportedException;
 
 }

@@ -161,4 +161,55 @@ public class InterfaceImpl implements Interface {
         return false;
     }
 
+    @Override
+    public InterfaceImpl clone() throws CloneNotSupportedException {
+        InterfaceImpl copy = (InterfaceImpl) super.clone();
+        copy.operations = new OperationList();
+        for (Operation operation : this.operations) {
+            Operation clonedOperation = (Operation) operation.clone();
+            copy.operations.add(clonedOperation);
+        }
+        return copy;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (conversational ? 1231 : 1237);
+        result = prime * result + ((operations == null) ? 0 : operations.hashCode());
+        result = prime * result + (remotable ? 1231 : 1237);
+        result = prime * result + (unresolved ? 1231 : 1237);
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final InterfaceImpl other = (InterfaceImpl)obj;
+        if (conversational != other.conversational)
+            return false;
+        if (operations == null) {
+            if (other.operations != null)
+                return false;
+        } else if (!operations.equals(other.operations))
+            return false;
+        if (remotable != other.remotable)
+            return false;
+        if (unresolved != other.unresolved)
+            return false;
+        return true;
+    }
+
 }
