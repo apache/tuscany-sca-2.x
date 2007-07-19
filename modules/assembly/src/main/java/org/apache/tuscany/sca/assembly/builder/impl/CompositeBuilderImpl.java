@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -1392,7 +1391,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         bindings.addAll(reference.getBindings());
         promotedReference.getBindings().clear();
         for (Binding binding : bindings) {
-            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
+            if ((!(binding instanceof SCABinding)) || binding.getURI() != null) {
                 promotedReference.getBindings().add(binding);
             }
         }
@@ -1411,7 +1410,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
         promotedReference.setCallback(assemblyFactory.createCallback());
         for (Binding binding : callbackBindings) {
-            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
+            if ((!(binding instanceof SCABinding)) || binding.getURI() != null) {
                 promotedReference.getCallback().getBindings().add(binding);
             }
         }
@@ -1594,8 +1593,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     Binding cloned = binding;
                     // TODO: We need to clone the reference binding
                     try {
-                        cloned = (Binding)((WireableBinding)binding).clone();
-                        WireableBinding endpoint = ((WireableBinding)cloned);
+                        cloned = (Binding)((SCABinding)binding).clone();
+                        SCABinding endpoint = ((SCABinding)cloned);
                         // FIXME: This is a hack to get the target component
                         SCABinding scaBinding = service.getBinding(SCABinding.class);
                         if (scaBinding != null) {
