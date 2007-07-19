@@ -123,7 +123,7 @@
                         <reportFormat>brief</reportFormat>
                         <useFile>false</useFile>
                         <forkMode>once</forkMode>
-                        <argLine>-ea -Xmx256m</argLine>
+                        <argLine>-ea -Xmx512m</argLine>
                     </configuration>
                 </plugin>
 
