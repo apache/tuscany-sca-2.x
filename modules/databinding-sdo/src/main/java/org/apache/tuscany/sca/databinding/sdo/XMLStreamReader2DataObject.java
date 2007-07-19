@@ -43,7 +43,9 @@ public class XMLStreamReader2DataObject extends BaseTransformer<XMLStreamReader,
             while (source.getEventType() != XMLStreamConstants.START_ELEMENT && source.hasNext()) {
                 source.next();
             }
-            return streamHelper.loadObject(source);
+            DataObject target = streamHelper.loadObject(source);
+            source.close();
+            return target;
         } catch (Exception e) {
             throw new TransformationException(e);
         }
