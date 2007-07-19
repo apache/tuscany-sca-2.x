@@ -19,21 +19,41 @@
 package org.apache.tuscany.sca.assembly;
 
 /**
- * Represents an SCA binding.
+ * Represent a binding that supports SCA wiring between component references and services
  * 
  * @version $Rev$ $Date$
  */
-public interface SCABinding extends Binding {
+public interface WireableBinding extends Binding, Cloneable {
     /**
-     * This is a hack to navigate to the containing component
+     * Clone the binding endpoit
      * @return
      */
-    @Deprecated
-    Component getComponent();
+    Object clone() throws CloneNotSupportedException;
+
     /**
-     * This is a hack to set the containing component
      * @param component
      */
-    @Deprecated
-    void setComponent(Component component);
+    void setTargetComponent(Component component);
+    /**
+     * @param service
+     */
+    void setTargetComponentService(ComponentService service);
+    /**
+     * @param binding
+     */
+    void setTargetBinding(Binding binding);
+    
+    /**
+     * @return
+     */
+    Binding getTargetBinding();
+    /**
+     * @return
+     */
+    Component getTargetComponent();
+    /**
+     * @return
+     */
+    ComponentService getTargetComponentService();
+
 }
