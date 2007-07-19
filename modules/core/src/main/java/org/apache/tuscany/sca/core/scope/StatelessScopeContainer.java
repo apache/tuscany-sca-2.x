@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.core.scope;
 
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
+import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetResolutionException;
@@ -51,4 +52,12 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         throws TargetDestructionException {
         wrapper.stop();
     }
+    
+    /**
+     * The stateless scope container just does nothing if you try
+     * and remove component instances from it
+     */
+    public void remove() throws PersistenceException {
+        // Intentially left blank
+    }    
 }
