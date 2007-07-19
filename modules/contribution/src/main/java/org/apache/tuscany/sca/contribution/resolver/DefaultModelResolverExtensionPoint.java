@@ -26,7 +26,7 @@ import java.util.Map;
  * 
  * @version $Rev: 539693 $ $Date: 2007-05-18 23:24:07 -0700 (Fri, 18 May 2007) $
  */
-class DefaultModelResolverExtensionPoint implements ModelResolverExtensionPoint {
+public class DefaultModelResolverExtensionPoint implements ModelResolverExtensionPoint {
     protected final Map<Class<?>, ModelResolver> resolversByModelType = new HashMap<Class<?>, ModelResolver>();
 
     /**
