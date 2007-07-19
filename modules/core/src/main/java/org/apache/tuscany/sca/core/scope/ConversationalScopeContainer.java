@@ -82,6 +82,11 @@ public class ConversationalScopeContainer<KEY> extends AbstractScopeContainer<KE
         }
     }
 
+    @Override
+    public void remove() throws PersistenceException {
+        remove(component);
+    }
+    
     public void remove(RuntimeComponent component) throws PersistenceException {
          String conversationId = getConversationId();
         try {
