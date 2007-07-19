@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.core.component;
 
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.osoa.sca.ServiceReference;
 
@@ -33,10 +34,11 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     }
 
     public Object getConversationID() {
-        return null;
+        return ThreadMessageContext.getMessageContext().getConversationID();
     }
 
     public void setConversationID(Object conversationId) throws IllegalStateException {
+        ThreadMessageContext.getMessageContext().setConversationID((String)conversationId);
     }
 
     public void setCallbackID(Object callbackID) {

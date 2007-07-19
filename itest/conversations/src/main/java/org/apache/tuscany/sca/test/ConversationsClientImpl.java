@@ -119,9 +119,9 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	  // The client may access the ConversationID by calling getConversationID on a Service Reference.
 	  // This also verifies a session was created during injection of this Service Reference.
 	  //
-	  //FIXME Port to the 1.0 spec API
-	  //Object aServicesSessionID =((ServiceReference)aService).getSessionID();
-	  //Assert.assertNotNull("test0 - ConversationID from service reference", aServicesSessionID);	
+          ServiceReference<ConversationsService> aServiceserviceRef = myContext.getServiceReference(ConversationsService.class, "aService");
+          System.out.println("aServices cid: " + aServiceserviceRef.getConversationID());
+          Assert.assertNotNull("test0 - ConversationID from service reference", aServiceserviceRef.getConversationID());	
 	  
 	  //FIXME Port to the 1.0 spec API
 	  //Object aLifeCycleServicesSessionID =((ServiceReference)aLifeCycleService).getSessionID();
