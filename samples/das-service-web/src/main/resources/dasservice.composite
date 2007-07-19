@@ -18,9 +18,9 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           	targetNamespace="http://sample"
-           	xmlns:sample="http://sample"
-            name="DASService">
+           targetNamespace="http://das-service"
+           xmlns:das-service="http://das-service"
+           name="DASService">
 
     <service name="DASService"  promote="DASServiceComponent">
         <interface.java interface="das.DASService"/>
