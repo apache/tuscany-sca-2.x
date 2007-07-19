@@ -61,6 +61,8 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
@@ -190,18 +192,24 @@ public class ReallySmallRuntimeBuilder {
         // Create contribution package processor extension point
         TypeDescriber describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
-        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
         registry.addExtensionPoint(packageProcessors);
 
         // Register base package processors
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
         packageProcessors.addPackageProcessor(new FolderContributionProcessor());
 
+        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
+
+        //Create Contribution Model Resolver extension point
+        ModelResolverExtensionPoint resolverExtensionPoint = new DefaultModelResolverExtensionPoint();
+        
+        registry.addExtensionPoint(resolverExtensionPoint);
+        
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
         ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
         registry.addExtensionPoint(contributionPostProcessors);
-        
+
         // Create a contribution repository
         ContributionRepository repository;
         try {
