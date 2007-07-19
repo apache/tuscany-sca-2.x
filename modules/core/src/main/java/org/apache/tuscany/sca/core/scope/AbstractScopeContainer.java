@@ -96,7 +96,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     }
 
     public void remove() throws PersistenceException {
-        throw new UnsupportedOperationException("Scope does not support persistence");
     }
 
     public void returnWrapper(InstanceWrapper wrapper, KEY contextId) throws TargetDestructionException {

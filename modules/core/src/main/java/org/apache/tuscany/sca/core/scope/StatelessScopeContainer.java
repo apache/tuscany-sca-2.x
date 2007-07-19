@@ -44,7 +44,7 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
 
     public  InstanceWrapper getAssociatedWrapper(KEY contextId)
         throws TargetResolutionException {
-        throw new UnsupportedOperationException();
+        return getWrapper(contextId);
     }
 
     public  void returnWrapper(InstanceWrapper wrapper, KEY contextId)
