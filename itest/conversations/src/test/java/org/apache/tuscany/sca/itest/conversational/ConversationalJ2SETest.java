@@ -28,23 +28,25 @@ import org.junit.Test;
 public class ConversationalJ2SETest {
 
     private SCADomain domain;
-    private ConversationalService conversationalService;
 
     @Before
     public void setUp() throws Exception {
         domain = SCADomain.newInstance("conversational.composite");
 
-        conversationalService = domain.getService(ConversationalService.class,
-                                                 "ConversationalServiceStateful");
     }
 
     @After
     public void tearDown() throws Exception {
-        domain.close();
+        if (domain != null) {
+            domain.close();
+        }
     }
-    
+
     @Test
     public void testStatefulConversation() {
+        ConversationalService conversationalService =
+            domain.getService(ConversationalService.class, "ConversationalServiceStateful");
+
         conversationalService.initializeCount(1);
         Assert.assertEquals(1, conversationalService.retrieveCount());
         conversationalService.incrementCount();
@@ -52,13 +54,31 @@ public class ConversationalJ2SETest {
         conversationalService.endConversation();
 
         Assert.assertEquals(0, conversationalService.retrieveCount());
-        
+
         conversationalService.initializeCount(4);
         Assert.assertEquals(4, conversationalService.retrieveCount());
         conversationalService.incrementCount();
         Assert.assertEquals(5, conversationalService.retrieveCount());
         conversationalService.endConversation();
-    
-    }    
 
+    }
+
+    @Test
+    public void testStatelessConversation() {
+        ConversationalService conversationalService =
+            domain.getService(ConversationalService.class, "ConversationalServiceStateless");
+
+        conversationalService.initializeCount(1);
+        Assert.assertEquals(1, conversationalService.retrieveCount());
+        conversationalService.incrementCount();
+        Assert.assertEquals(2, conversationalService.retrieveCount());
+        conversationalService.endConversation();
+
+        conversationalService.initializeCount(4);
+        Assert.assertEquals(4, conversationalService.retrieveCount());
+        conversationalService.incrementCount();
+        Assert.assertEquals(5, conversationalService.retrieveCount());
+        conversationalService.endConversation();
+
+    }
 }
