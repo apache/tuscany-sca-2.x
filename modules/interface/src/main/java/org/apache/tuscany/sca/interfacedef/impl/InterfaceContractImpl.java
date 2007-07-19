@@ -23,9 +23,8 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 /**
- * Represents an interface contract.
- * InterfaceContractImpl
- *
+ * Represents an interface contract. InterfaceContractImpl
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class InterfaceContractImpl implements InterfaceContract {
@@ -50,24 +49,80 @@ public abstract class InterfaceContractImpl implements InterfaceContract {
 
     public InterfaceContract makeUnidirectional(boolean isCallback) {
         if (!isCallback && callbackInterface == null)
-            return this;  // already a unidirectional forward interface contract
-        
+            return this; // already a unidirectional forward interface contract
+
         if (isCallback && callInterface == null)
-            return this;  // already a unidirectional callback interface contract
+            return this; // already a unidirectional callback interface contract
 
         // contract is bidrectional, so create a new unidirectional contract        
         try {
             InterfaceContract newContract = (InterfaceContract)clone();
             if (!isCallback) {
-                newContract.setCallbackInterface(null);  // create unidirectional forward interface contract
+                newContract.setCallbackInterface(null); // create unidirectional forward interface contract
             } else {
-                newContract.setInterface(null);  // create unidirectional callback interface contract
+                newContract.setInterface(null); // create unidirectional callback interface contract
             }
             return newContract;
         } catch (CloneNotSupportedException e) {
             // will not happen
             return null;
         }
+    }
+
+    @Override
+    public InterfaceContractImpl clone() throws CloneNotSupportedException {
+        InterfaceContractImpl copy = (InterfaceContractImpl)super.clone();
+        if (this.callbackInterface != null) {
+            copy.callbackInterface = (Interface)this.callbackInterface.clone();
+        }
+        if (this.callInterface != null) {
+            copy.callInterface = (Interface)this.callInterface.clone();
+        }
+        return copy;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((callInterface == null) ? 0 : callInterface.hashCode());
+        result = prime * result + ((callbackInterface == null) ? 0 : callbackInterface.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final InterfaceContractImpl other = (InterfaceContractImpl)obj;
+        if (callInterface == null) {
+            if (other.callInterface != null) {
+                return false;
+            }
+        } else if (!callInterface.equals(other.callInterface)) {
+            return false;
+        }
+        if (callbackInterface == null) {
+            if (other.callbackInterface != null) {
+                return false;
+            }
+        } else if (!callbackInterface.equals(other.callbackInterface)) {
+            return false;
+        }
+        return true;
     }
 
 }

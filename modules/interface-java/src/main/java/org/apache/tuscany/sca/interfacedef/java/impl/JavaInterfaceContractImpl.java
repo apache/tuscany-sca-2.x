@@ -31,4 +31,9 @@ public class JavaInterfaceContractImpl extends InterfaceContractImpl implements 
     protected JavaInterfaceContractImpl() {
     }
 
+    @Override
+    public JavaInterfaceContractImpl clone() throws CloneNotSupportedException {
+        return (JavaInterfaceContractImpl) super.clone();
+    }
+
 }

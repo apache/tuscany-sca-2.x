@@ -90,4 +90,10 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
     public void setWsdlDefinition(WSDLDefinition wsdlDefinition) {
         this.wsdlDefinition = wsdlDefinition;
     }
+
+    @Override
+    public WSDLInterfaceImpl clone() throws CloneNotSupportedException {
+        return (WSDLInterfaceImpl) super.clone();
+    }
+
 }

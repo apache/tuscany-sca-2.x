@@ -176,11 +176,6 @@ public class OperationImpl implements Operation {
         this.nonBlocking = nonBlocking;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         final int PRIME = 31;
@@ -289,6 +284,33 @@ public class OperationImpl implements Operation {
 
     public void setDynamic(boolean b) {
         this.dynamic = b;
+    }
+
+    @Override
+    public OperationImpl clone() throws CloneNotSupportedException {
+        OperationImpl copy = (OperationImpl) super.clone();
+        
+        final List<DataType> clonedFaultTypes = new ArrayList<DataType>(this.faultTypes.size());
+        for (DataType t : this.faultTypes) {
+            clonedFaultTypes.add((DataType) t.clone());
+        }
+        copy.faultTypes = clonedFaultTypes;
+
+        List<DataType> clonedLogicalTypes = new ArrayList<DataType>();
+        for (DataType t : inputType.getLogical()) {
+            DataType type = (DataType) t.clone();
+            clonedLogicalTypes.add(type);
+        }
+        DataType<List<DataType>> clonedInputType =
+            new DataTypeImpl<List<DataType>>(inputType.getPhysical(), clonedLogicalTypes);
+        clonedInputType.setDataBinding(inputType.getDataBinding());
+        copy.inputType = clonedInputType;
+        
+        if(this.outputType!=null) {
+            copy.outputType = (DataType) this.outputType.clone();
+        }
+        
+        return copy;
     }
 
 }
