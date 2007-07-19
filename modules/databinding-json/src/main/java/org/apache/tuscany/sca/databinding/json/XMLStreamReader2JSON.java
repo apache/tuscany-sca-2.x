@@ -53,6 +53,7 @@ public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, JSONO
             XMLStreamWriter jsonWriter = new BadgerFishXMLStreamWriter(writer);
             XMLStreamSerializer serializer = new XMLStreamSerializer();
             serializer.serialize(source, jsonWriter);
+            source.close();
             return new JSONObject(writer.toString());
         } catch (Exception e) {
             throw new TransformationException(e);

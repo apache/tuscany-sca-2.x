@@ -24,7 +24,6 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 
 public class XMLStreamReader2XmlObject extends BaseTransformer<XMLStreamReader, XmlObject> implements PullTransformer<XMLStreamReader, XmlObject> {
@@ -32,8 +31,10 @@ public class XMLStreamReader2XmlObject extends BaseTransformer<XMLStreamReader, 
 
     public XmlObject transform(XMLStreamReader source, TransformationContext context) {
         try {
-            return XmlObject.Factory.parse(source);
-        } catch (XmlException e) {
+            XmlObject target = XmlObject.Factory.parse(source);
+            source.close();
+            return target;
+        } catch (Exception e) {
             throw new TransformationException(e);
         }
     }

@@ -62,6 +62,7 @@ public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, Conten
         StAX2SAXAdapter adapter = new StAX2SAXAdapter(false);
         try {
             adapter.parse(source, sink);
+            source.close();
         } catch (Exception e) {
             throw new TransformationException(e);
         }

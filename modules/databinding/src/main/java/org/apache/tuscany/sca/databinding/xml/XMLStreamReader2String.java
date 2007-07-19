@@ -31,7 +31,9 @@ public class XMLStreamReader2String extends BaseTransformer<XMLStreamReader, Str
 
     public String transform(XMLStreamReader source, TransformationContext context) {
         try {
-            return StAXHelper.save(source);
+            String str = StAXHelper.save(source);
+            source.close();
+            return str;
         } catch (XMLStreamException e) {
             throw new TransformationException(e);
         }

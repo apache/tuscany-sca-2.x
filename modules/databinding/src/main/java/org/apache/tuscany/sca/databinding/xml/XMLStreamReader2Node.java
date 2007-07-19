@@ -38,7 +38,9 @@ public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node>
     public Node transform(XMLStreamReader source, TransformationContext context) {
         try {
             stax2sax.transform(source, pipe.getSink(), context);
-            return pipe.getResult();
+            Node node = pipe.getResult();
+            source.close();
+            return node;
         } catch (Exception e) {
             throw new TransformationException(e);
         }
