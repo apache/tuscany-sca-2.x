@@ -21,11 +21,17 @@
 	targetNamespace="http://conversations"
 	name="ConversationalITest">
  	      
-    <component name="ConversationalClientStateful">
+    <component name="ConversationalClientStateless">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <!--reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/-->		
-		<reference name="conversationalService" target="ConversationalServiceStateful"/>
+		<reference name="conversationalService" target="ConversationalServiceStatelessSL"/>
     </component>   
+    
+    <component name="ConversationalClientStateful">
+        <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
+        <!--reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/-->       
+        <reference name="conversationalService" target="ConversationalServiceStateful"/>
+    </component>      
     
     <!--component name="ConversationalReferenceClient">
         <implementation.java class="org.apache.tuscany.sca.test.AnotherServiceImpl"/>
@@ -33,10 +39,14 @@
         
     <component name="ConversationalServiceStateful">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl"/>
-	</component>          
-     
+	</component>       
+   
     <component name="ConversationalServiceStateless">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessScope"/>
-	</component>          
+	</component>  
+	
+	<component name="ConversationalServiceStatelessSL">
+        <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl"/>
+    </component> 
 
 </composite>

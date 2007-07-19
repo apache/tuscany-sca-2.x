@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalReferenceClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.Destroy;
@@ -67,6 +68,17 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         return clientCount;
     } 
 	public int runConversationFromReference(){
+	    ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
+	                                                                                                    "conversationalService");
+	    serviceReference.setConversationID("MyConversation");
+	    
+	    ConversationalService callableReference = serviceReference.getService();
+	    
+	    conversationalService.initializeCount(1);
+	    conversationalService.incrementCount();
+	    int count = conversationalService.retrieveCount();
+	    conversationalService.endConversation();
+	    
         return clientCount;
     }
 	public int runConversationPassingReference(){

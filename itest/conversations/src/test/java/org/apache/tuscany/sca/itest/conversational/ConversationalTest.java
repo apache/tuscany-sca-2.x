@@ -29,25 +29,39 @@ import org.junit.Test;
 public class ConversationalTest {
 
     private SCADomain domain;
-    private ConversationalClient conversationalClient;
+    private ConversationalClient conversationalClientStateless;
+    private ConversationalClient conversationalClientStateful;
 
     @Before
     public void setUp() throws Exception {
         domain = SCADomain.newInstance("conversational.composite");
 
-        conversationalClient = domain.getService(ConversationalClient.class,
-                                                 "ConversationalClientStateful");
+        conversationalClientStateless = domain.getService(ConversationalClient.class,
+                                                          "ConversationalClientStateless");
+
+        conversationalClientStateful  = domain.getService(ConversationalClient.class,
+                                                          "ConversationalClientStateful");
+
     }
 
     @After
     public void tearDown() throws Exception {
         domain.close();
     }
-    
+   
     @Test
     public void testStatefulConversation() {
-        int count = conversationalClient.runConversation();
-        Assert.assertEquals(count, 2);
-    }    
-
+        int count = conversationalClientStateful.runConversation();
+        Assert.assertEquals(2, count);
+        
+        // need to check that initialization and destruction run correctly
+    } 
+    
+    @Test
+    public void testStatelessConversation() {
+        int count = conversationalClientStateless.runConversationFromReference();
+        Assert.assertEquals(2, count);
+        
+        // need to check that initialization and destruction run correctly
+    }     
 }

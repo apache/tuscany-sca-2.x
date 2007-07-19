@@ -18,10 +18,15 @@
  */
 package org.apache.tuscany.sca.itest.conversational.impl;
 
+import java.util.HashMap;
+
 import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Conversational;
@@ -39,38 +44,41 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */
 @Service(ConversationalService.class)
-@Scope("CONVERSATION")
-@ConversationAttributes(maxAge="10 minutes",
-                        singlePrincipal=false)
-public class ConversationalServiceStatefulImpl implements ConversationalService {
-
-    @ConversationID
-    private String conversationId;
+public class ConversationalServiceStatelessImpl implements ConversationalService {
     
-   // @Callback - not working yet
+    @Context
+    protected ComponentContext componentContext;
+    
+    // @Callback - not working yet
     protected ConversationalCallback conversationalCallback; 
     
-    private int count;
+    // static area in which to hold conversational data
+    private HashMap<String, Integer> conversationalState = new HashMap<String, Integer>();
+
 
     public void init(){
-        count = 999;
+        // does nothing - service is stateless
     }
     
     public void destroy(){
-        // how do we know that destroy is called?
-        count = 0;
+        // does nothing - service is stateless
     }
     
     public void initializeCount(int count){
-        this.count = count;
+        Integer conversationalCount = new Integer(count); 
+        String conversationId = getConversationId();
+        conversationalState.put(conversationId, conversationalCount);
     }
     
     public void incrementCount(){
-        count++;
+        String conversationId = getConversationId();
+        Integer conversationalCount = conversationalState.get(conversationId);
+        conversationalCount++;
     }
     
     public int retrieveCount(){
-        return count;
+        String conversationId = getConversationId();
+        return conversationalState.get(conversationId).intValue();
     }
     
     public void initializeCountCallback(int count){
@@ -88,10 +96,17 @@ public class ConversationalServiceStatefulImpl implements ConversationalService 
     }
     
     public void endConversation(){
-        count = 0;
+        String conversationId = getConversationId();
+        conversationalState.remove(conversationId);
     }
     
     public void endConversationCallback(){
         conversationalCallback.endConversation();
+    }
+    
+    private String getConversationId(){
+        ServiceReference<ConversationalService> serviceReference = componentContext.createSelfReference(ConversationalService.class);
+        return (String)serviceReference.getConversationID();
+
     }
 }
