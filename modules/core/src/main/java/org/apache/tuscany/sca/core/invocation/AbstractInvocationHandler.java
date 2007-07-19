@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public abstract class AbstractInvocationHandler {
     protected boolean conversational;
     private boolean conversationStarted;
+    private String conversationId;
     private MessageFactory messageFactory;
 
     protected AbstractInvocationHandler(MessageFactory messageFactory, boolean conversational) {
@@ -50,11 +51,10 @@ public abstract class AbstractInvocationHandler {
         Message msgContext = ThreadMessageContext.getMessageContext();
         Message msg = messageFactory.createMessage();
         if (conversational) {
-            String id = msgContext.getConversationID();
-            if (id == null) {
-                id = createConversationID();
+            if (conversationStarted == false) {
+                conversationId = createConversationID();
             }
-            msg.setConversationID(id);
+            msg.setConversationID(conversationId);
         }
 
         Invoker headInvoker = chain.getHeadInvoker();
