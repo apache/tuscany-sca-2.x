@@ -1,0 +1,153 @@
+Hello World Web Service References Sample
+=========================================
+This sample demonstrates an SCA reference that uses a web service binding. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens you need to run the server first 
+so open a command prompt, navigate to the helloworld-ws-service sample directory 
+and do 
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-service.jar helloworld.HelloWorldServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-service.jar helloworld.HelloWorldServer
+
+
+Once the server is running open a command prompt, navigate to this sample 
+directory and do:
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-reference.jar helloworld.HelloWorldClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-reference.jar helloworld.HelloWorldClient
+
+
+Sample Overview
+---------------
+The sample provides a single component that is wired to a reference with a 
+web service binding. The binding refers to WSDL that identifies the service
+exposed by the helloworld-ws-service sample. 
+
+helloworld-ws-reference/
+  src/
+    main/
+      java/
+        helloworld/
+          HelloWorldService.java          - interface description for 
+                                            HelloWorldServiceComponent
+          HelloWorldServiceComponent.java - component implementation
+          HelloWorldClient.java           - starts the SCA Runtime and 
+                                            deploys the helloworldwsclient
+                                            .composite. It then calls the 
+                                            HelloWorldServiceComponent
+      resources/
+        wsdl
+          helloworld.wsdl                 - the service description that the 
+                                            SCA reference uses to bind to 
+        helloworldwsclient.composite      - the SCA assembly for this sample
+        logging.properties                - log4j configuration file
+    test/
+      java/
+        helloworld/
+          HelloWorldClientTestCase.java   - JUnit test case
+          HelloWorldServerTest.java       - starts the Web service
+  helloworld-ws-reference.png             - a pictorial representation of the 
+                                            sample .composite file
+  build.xml                               - the Ant build file
+  pom.xml                                 - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant. Before
+you do this start up the service that the reference will talk to. To do this
+run up the helloworld-ws-service test. Take a look at the README in that sample
+and you will see you need the following commands
+
+cd helloworld-ws-service
+ant
+
+Once done you can now compile and run this sample using the following commands;
+
+cd helloworld-ws-reference
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Injected helloWorldService
+     [java] Called getGreetings
+     [java] Hello World
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. When using Maven you don't need to run the helloworld-
+ws-service sample first as Maven does this for you. 
+
+cd helloworld-ws-reference
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running helloworld.HelloWorldClientTestCase
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+10-May-2007 13:40:34 org.apache.catalina.core.StandardEngine start
+INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
+10-May-2007 13:40:35 org.apache.catalina.startup.ContextConfig defaultWebConfig
+INFO: No default web.xml
+10-May-2007 13:40:35 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/j2ee_1_4.xsd
+10-May-2007 13:40:35 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/xml.xsd
+10-May-2007 13:40:35 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.xsd
+10-May-2007 13:40:35 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_2_
+0.xsd
+10-May-2007 13:40:35 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/web-app_2_4.xsd
+10-May-2007 13:40:35 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_1_1.xs
+d
+10-May-2007 13:40:35 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_client
+_1_1.xsd
+10-May-2007 13:40:35 org.apache.coyote.http11.Http11Protocol init
+INFO: Initializing Coyote HTTP/1.1 on http-8080
+10-May-2007 13:40:35 org.apache.coyote.http11.Http11Protocol start
+INFO: Starting Coyote HTTP/1.1 on http-8080
+Injected helloWorldService
+Called getGreetings
+10-May-2007 13:40:36 org.apache.coyote.http11.Http11Protocol destroy
+INFO: Stopping Coyote HTTP/1.1 on http-8080
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.349 sec
+
+Results :
+
+
+This shows that the Junit test cases have run successfully. 
