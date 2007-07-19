@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 
 /**
  * This class encapsulates utility methods to deal with reference definitions
@@ -68,7 +68,7 @@ class ReferenceUtil {
                 if (count != 1) {
                     if (count == 0) {
                         for (Binding binding: bindings) {
-                            if (!(binding instanceof SCABinding) || binding.getURI()!=null) {
+                            if (!(binding instanceof WireableBinding) || binding.getURI()!=null) {
                                 return true;
                             }
                         }
@@ -80,7 +80,7 @@ class ReferenceUtil {
                 if (count < 1) {
                     if (count == 0) {
                         for (Binding binding: bindings) {
-                            if (!(binding instanceof SCABinding) || binding.getURI()!=null) {
+                            if (!(binding instanceof WireableBinding) || binding.getURI()!=null) {
                                 return true;
                             }
                         }

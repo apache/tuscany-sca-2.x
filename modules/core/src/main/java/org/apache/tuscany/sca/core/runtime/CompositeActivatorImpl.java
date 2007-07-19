@@ -23,13 +23,13 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
@@ -377,8 +377,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     }
                     if (service.getCallback() != null) {
                         for (Binding binding : service.getCallback().getBindings()) {
-                            if (binding instanceof SCABinding) {
-                                if (((SCABinding)binding).getTargetComponent() != null) {
+                            if (binding instanceof WireableBinding) {
+                                if (((WireableBinding)binding).getTargetComponent() != null) {
                                     continue;
                                 }
                             }
@@ -421,13 +421,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-        if ((!(binding instanceof SCABinding)) || binding.getURI() != null || isCallback) {
+        if ((!(binding instanceof WireableBinding)) || binding.getURI() != null || isCallback) {
             // create wire if binding has an endpoint
             Component targetComponent = null;
             ComponentService targetComponentService = null;
             Binding targetBinding = null;
-            if (binding instanceof SCABinding) {
-                SCABinding endpoint = (SCABinding)binding;
+            if (binding instanceof WireableBinding) {
+                WireableBinding endpoint = (WireableBinding)binding;
                 targetComponent = endpoint.getTargetComponent();
                 targetComponentService = endpoint.getTargetComponentService();
                 targetBinding = endpoint.getTargetBinding();

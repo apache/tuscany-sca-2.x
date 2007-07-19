@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -1391,7 +1392,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         bindings.addAll(reference.getBindings());
         promotedReference.getBindings().clear();
         for (Binding binding : bindings) {
-            if ((!(binding instanceof SCABinding)) || binding.getURI() != null) {
+            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
                 promotedReference.getBindings().add(binding);
             }
         }
@@ -1410,7 +1411,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
         promotedReference.setCallback(assemblyFactory.createCallback());
         for (Binding binding : callbackBindings) {
-            if ((!(binding instanceof SCABinding)) || binding.getURI() != null) {
+            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
                 promotedReference.getCallback().getBindings().add(binding);
             }
         }
@@ -1591,20 +1592,22 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             for (Binding serviceBinding : target) {
                 if (binding.getClass() == serviceBinding.getClass()) {
                     Binding cloned = binding;
-                    // TODO: We need to clone the reference binding
-                    try {
-                        cloned = (Binding)((SCABinding)binding).clone();
-                        SCABinding endpoint = ((SCABinding)cloned);
-                        // FIXME: This is a hack to get the target component
-                        SCABinding scaBinding = service.getBinding(SCABinding.class);
-                        if (scaBinding != null) {
-                            endpoint.setTargetComponent(scaBinding.getComponent());
+                    if (binding instanceof WireableBinding) {
+                        // TODO: We need to clone the reference binding
+                        try {
+                            cloned = (Binding)((WireableBinding)binding).clone();
+                            WireableBinding endpoint = ((WireableBinding)cloned);
+                            // FIXME: This is a hack to get the target component
+                            SCABinding scaBinding = service.getBinding(SCABinding.class);
+                            if (scaBinding != null) {
+                                endpoint.setTargetComponent(scaBinding.getComponent());
+                            }
+                            endpoint.setTargetComponentService(service);
+                            endpoint.setTargetBinding(serviceBinding);
+                            cloned.setURI(serviceBinding.getURI());
+                        } catch (Exception e) {
+                            // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
                         }
-                        endpoint.setTargetComponentService(service);
-                        endpoint.setTargetBinding(serviceBinding);
-                        cloned.setURI(serviceBinding.getURI());
-                    } catch (Exception e) {
-                        // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
                     }
                     matched.add(cloned);
                     break;
