@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -34,7 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, WireableBinding {
+public class SCABindingImpl implements SCABinding {
     private String name;
     private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();

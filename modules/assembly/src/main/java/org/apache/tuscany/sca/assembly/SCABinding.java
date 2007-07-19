@@ -23,7 +23,7 @@ package org.apache.tuscany.sca.assembly;
  * 
  * @version $Rev$ $Date$
  */
-public interface SCABinding extends WireableBinding {
+public interface SCABinding extends Binding, Cloneable {
     /**
      * This is a hack to navigate to the containing component
      * @return
@@ -36,4 +36,36 @@ public interface SCABinding extends WireableBinding {
      */
     @Deprecated
     void setComponent(Component component);
+    
+    /**
+     * Clone the binding endpoit
+     * @return
+     */
+    Object clone() throws CloneNotSupportedException;
+
+    /**
+     * @param component
+     */
+    void setTargetComponent(Component component);
+    /**
+     * @param service
+     */
+    void setTargetComponentService(ComponentService service);
+    /**
+     * @param binding
+     */
+    void setTargetBinding(Binding binding);
+    
+    /**
+     * @return
+     */
+    Binding getTargetBinding();
+    /**
+     * @return
+     */
+    Component getTargetComponent();
+    /**
+     * @return
+     */
+    ComponentService getTargetComponentService();    
 }
