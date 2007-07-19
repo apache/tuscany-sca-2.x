@@ -41,7 +41,7 @@ import org.osoa.sca.annotations.Service;
 
 @Service(interfaces={ConversationalClient.class})
 @Scope("CONVERSATION")
-@ConversationAttributes(maxAge="10 seconds",
+@ConversationAttributes(maxAge="10 minutes",
                         singlePrincipal=false)
 public class ConversationalClientStatefulImpl implements ConversationalClient, ConversationalCallback {
     
