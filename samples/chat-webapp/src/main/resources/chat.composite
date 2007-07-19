@@ -18,6 +18,8 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
            name="Chat">
 
     <service name="ChatService" promote="ChatComponent">
