@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.Conversation;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Context;
@@ -46,8 +47,8 @@ import org.osoa.sca.annotations.Service;
 @Service(ConversationalService.class)
 public class ConversationalServiceStatelessImpl implements ConversationalService {
     
-    @Context
-    protected ComponentContext componentContext;
+    @ConversationID
+    String conversationId;
     
     // @Callback - not working yet
     protected ConversationalCallback conversationalCallback; 
@@ -66,18 +67,15 @@ public class ConversationalServiceStatelessImpl implements ConversationalService
     
     public void initializeCount(int count){
         Integer conversationalCount = new Integer(count); 
-        String conversationId = getConversationId();
         conversationalState.put(conversationId, conversationalCount);
     }
     
     public void incrementCount(){
-        String conversationId = getConversationId();
         Integer conversationalCount = conversationalState.get(conversationId);
         conversationalCount++;
     }
     
     public int retrieveCount(){
-        String conversationId = getConversationId();
         return conversationalState.get(conversationId).intValue();
     }
     
@@ -96,17 +94,10 @@ public class ConversationalServiceStatelessImpl implements ConversationalService
     }
     
     public void endConversation(){
-        String conversationId = getConversationId();
         conversationalState.remove(conversationId);
     }
     
     public void endConversationCallback(){
         conversationalCallback.endConversation();
-    }
-    
-    private String getConversationId(){
-        ServiceReference<ConversationalService> serviceReference = componentContext.createSelfReference(ConversationalService.class);
-        return (String)serviceReference.getConversationID();
-
-    }
+    }   
 }

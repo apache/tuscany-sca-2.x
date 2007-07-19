@@ -74,10 +74,10 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
 	    
 	    ConversationalService callableReference = serviceReference.getService();
 	    
-	    conversationalService.initializeCount(1);
-	    conversationalService.incrementCount();
-	    int count = conversationalService.retrieveCount();
-	    conversationalService.endConversation();
+	    callableReference.initializeCount(1);
+	    callableReference.incrementCount();
+	    int count = callableReference.retrieveCount();
+	    callableReference.endConversation();
 	    
         return clientCount;
     }
