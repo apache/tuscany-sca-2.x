@@ -158,7 +158,7 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
        {
 	   try 
         {
-	     monitor.wait(20000L);
+	     monitor.wait(2000L);
         }
        catch (Exception ex) 
          {ex.printStackTrace();}
