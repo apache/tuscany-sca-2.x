@@ -57,12 +57,22 @@ public class ConversationalServiceStatelessImpl implements ConversationalService
     private static HashMap<String, Integer> conversationalState = new HashMap<String, Integer>();
 
 
+    // a member variable that records whether init processing happens
+    private static int initValue = 0;
+    
+    // lets us check the init value after class instances have gone
+    public static int getInitValue(){
+        return initValue;
+    }
+
+    @Init
     public void init(){
-        // does nothing - service is stateless
+        initValue = initValue - 5;
     }
     
+    @Destroy
     public void destroy(){
-        // does nothing - service is stateless
+        initValue = initValue + 10;
     }
     
     public void initializeCount(int count){

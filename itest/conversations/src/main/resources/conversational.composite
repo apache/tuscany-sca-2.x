@@ -21,13 +21,13 @@
 	targetNamespace="http://conversations"
 	name="ConversationalITest">
  	      
-    <component name="ConversationalClientStateless">
+    <component name="ConversationalStatelessClientStatelessService">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <!--reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/-->		
 		<reference name="conversationalService" target="ConversationalServiceStatelessSL"/>
     </component>   
     
-    <component name="ConversationalClientStateful">
+    <component name="ConversationalStatelessClientStatefulService">
         <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <!--reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/-->       
         <reference name="conversationalService" target="ConversationalServiceStateful"/>
