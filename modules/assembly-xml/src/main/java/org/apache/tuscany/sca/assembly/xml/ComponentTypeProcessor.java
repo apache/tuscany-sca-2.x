@@ -237,9 +237,23 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 }
                 
                 if (service.getCallback() != null) {
+                    Callback callback = service.getCallback();
                     writeStart(writer, CALLBACK);
+
+                    for (Binding binding: callback.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    for (Object extension: callback.getExtensions()) {
+                        extensionProcessor.write(extension, writer);
+                    }
+                    
                     writeEnd(writer);
                 }
+
+                for (Object extension: service.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
                 writeEnd(writer);
             }
     
@@ -257,17 +271,40 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 }
                 
                 if (reference.getCallback() != null) {
+                    Callback callback = reference.getCallback();
                     writeStart(writer, CALLBACK);
+
+                    for (Binding binding: callback.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    for (Object extension: callback.getExtensions()) {
+                        extensionProcessor.write(extension, writer);
+                    }
+                    
                     writeEnd(writer);
                 }
+
+                for (Object extension: reference.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
                 writeEnd(writer);
             }
     
             for (Property property : componentType.getProperties()) {
                 writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
+
+                for (Object extension: property.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
                 writeEnd(writer);
             }
     
+            for (Object extension: componentType.getExtensions()) {
+                extensionProcessor.write(extension, writer);
+            }
+            
             writeEndDocument(writer);
             
         } catch (XMLStreamException e) {
