@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
+import org.osoa.sca.Conversation;
 
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
@@ -39,6 +40,16 @@ public interface ProxyFactory {
      * @throws ProxyCreationException
      */
     <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException;
+
+    /**
+     * Creates a Java proxy for the given wire and accepts
+     * a conversation object to represent conversational state
+     *
+     * @param interfaze the interface the proxy implements
+     * @param wire      the wire to proxy @return the proxy
+     * @throws ProxyCreationException
+     */
+    <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the service contract callback

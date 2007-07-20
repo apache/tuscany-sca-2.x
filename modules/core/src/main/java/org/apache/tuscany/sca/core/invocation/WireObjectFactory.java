@@ -18,9 +18,14 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
+import org.apache.tuscany.sca.core.component.ConversationImpl;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.Conversation;
 
 /**
  * Uses a wire to return an object instance
@@ -32,6 +37,9 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     private RuntimeWire wire;
     private ProxyFactory proxyService;
     private boolean optimizable;
+    
+    // if the wire targets a conversational service this holds the conversation state 
+    private Conversation conversation = null;    
 
     /**
      * Constructor.
@@ -46,10 +54,24 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
         this.interfaze = interfaze;
         this.wire = wire;
         this.proxyService = proxyService;
+        
+        // look to see if the target is conversational and if so create 
+        // a conversation
+        EndpointReference wireTarget = wire.getTarget();
+        InterfaceContract contract = wireTarget.getInterfaceContract();
+        Interface contractInterface = contract.getInterface();
+       
+        if (contractInterface != null && contractInterface.isConversational()){
+            conversation = new ConversationImpl();          
+        }        
     }
 
     public T getInstance() throws ObjectCreationException {
-        return interfaze.cast(proxyService.createProxy(interfaze, wire));
+        return interfaze.cast(proxyService.createProxy(interfaze, wire, conversation));
+    }
+    
+    public Conversation getConversation() {
+        return conversation;
     }
 
 }

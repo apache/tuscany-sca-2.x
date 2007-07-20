@@ -56,7 +56,7 @@ public class ConversationalTest {
         
         // need to check that initialization and destruction run correctly
     } 
-    
+   
     @Test
     public void testStatelessConversation() {
         int count = conversationalClientStateless.runConversationFromReference();

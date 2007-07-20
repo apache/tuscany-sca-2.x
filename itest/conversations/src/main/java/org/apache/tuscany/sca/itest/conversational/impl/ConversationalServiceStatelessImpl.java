@@ -48,13 +48,13 @@ import org.osoa.sca.annotations.Service;
 public class ConversationalServiceStatelessImpl implements ConversationalService {
     
     @ConversationID
-    String conversationId;
+    protected String conversationId;
     
     // @Callback - not working yet
     protected ConversationalCallback conversationalCallback; 
     
     // static area in which to hold conversational data
-    private HashMap<String, Integer> conversationalState = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> conversationalState = new HashMap<String, Integer>();
 
 
     public void init(){
@@ -73,6 +73,7 @@ public class ConversationalServiceStatelessImpl implements ConversationalService
     public void incrementCount(){
         Integer conversationalCount = conversationalState.get(conversationId);
         conversationalCount++;
+        conversationalState.put(conversationId, conversationalCount);
     }
     
     public int retrieveCount(){

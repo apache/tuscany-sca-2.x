@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.UUID;
 
+import org.apache.tuscany.sca.core.component.ConversationImpl;
+import org.apache.tuscany.sca.core.runtime.RuntimeWireImpl;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -28,6 +30,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.Conversation;
 
 /**
  * Base class for performing invocations on a wire. Subclasses are responsible for retrieving and supplying the
@@ -37,8 +40,8 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public abstract class AbstractInvocationHandler {
     protected boolean conversational;
+    protected ConversationImpl conversation;
     private boolean conversationStarted;
-    private String conversationId;
     private MessageFactory messageFactory;
 
     protected AbstractInvocationHandler(MessageFactory messageFactory, boolean conversational) {
@@ -46,15 +49,34 @@ public abstract class AbstractInvocationHandler {
         this.messageFactory = messageFactory;
     }
 
+    public void setConversation(Conversation conversation){
+        this.conversation = (ConversationImpl)conversation;
+    }
+    
     protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
 
         Message msgContext = ThreadMessageContext.getMessageContext();
         Message msg = messageFactory.createMessage();
+               
         if (conversational) {
-            if (conversationStarted == false) {
-                conversationId = createConversationID();
+            if (conversation == null){
+                // the conversation info is not being shared 
+                // with a service reference object so create a
+                // new one here
+                conversation = new ConversationImpl();
             }
-            msg.setConversationID(conversationId);
+            Object conversationId = conversation.getConversationID();
+            
+            // create automatic conversation id if one doesn't exist 
+            // already. This could be because we are in the middle of a
+            // conversation or the conversation hasn't started but the
+            if ((conversationStarted == false) && (conversationId == null)) {
+                conversationId = createConversationID();
+                conversation.setConversationID(conversationId);
+            }
+            //TODO - assuming that the conversation ID is a strin here when
+            //       it can be any object that is serializable to XML
+            msg.setConversationID((String)conversationId);
         }
 
         Invoker headInvoker = chain.getHeadInvoker();
@@ -67,6 +89,9 @@ public abstract class AbstractInvocationHandler {
             if (sequence == ConversationSequence.CONVERSATION_END) {
                 msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;
+                if (conversation != null){
+                    conversation.setConversationID(null);
+                }
             } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
                 if (conversationStarted) {
                     msg.setConversationSequence(ConversationSequence.CONVERSATION_CONTINUE);
