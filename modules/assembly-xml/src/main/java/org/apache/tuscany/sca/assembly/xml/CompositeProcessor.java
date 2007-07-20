@@ -520,32 +520,42 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         
         // Resolve constraining type
         ConstrainingType constrainingType = composite.getConstrainingType(); 
-        constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType); 
-        composite.setConstrainingType(constrainingType);
+        if (constrainingType != null ) {
+            constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType); 
+            composite.setConstrainingType(constrainingType);
+        }
         
         // Resolve includes in the composite
         for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
             Composite include = composite.getIncludes().get(i);
-            include = resolver.resolveModel(Composite.class, include);
-            composite.getIncludes().set(i, include);
+            if (include != null) {
+                include = resolver.resolveModel(Composite.class, include);
+                composite.getIncludes().set(i, include);                
+            }
         }
 
         // resolve and extensions to the standard SCDL that appear in the 
         // SCDL. 
         for (int i = 0, n = composite.getExtensions().size(); i < n; i++) {
             Object model = composite.getExtensions().get(i);
-            extensionProcessor.resolve(model, resolver);
+            if (model != null) {
+                extensionProcessor.resolve(model, resolver);                
+            }
         }
         
         // Resolve component implementations, services and references 
         for (Component component: composite.getComponents()) {
             constrainingType = component.getConstrainingType(); 
-            constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType); 
-            component.setConstrainingType(constrainingType);
+            if (constrainingType != null) {
+                constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType); 
+                component.setConstrainingType(constrainingType);                
+            }
 
             Implementation implementation = component.getImplementation();
-            implementation = resolveImplementation(implementation, resolver);
-            component.setImplementation(implementation);
+            if (implementation != null) {
+                implementation = resolveImplementation(implementation, resolver);
+                component.setImplementation(implementation);                
+            }
             
             resolveContracts(component.getServices(), resolver);
             resolveContracts(component.getReferences(), resolver);
