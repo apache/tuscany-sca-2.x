@@ -54,6 +54,7 @@
                 <module>operation-overloading</module>
                 <module>properties</module>
                 <module>recursive</module>
+                <module>scopes</module>
                 <module>wsdl</module>
             </modules>
         </profile>
