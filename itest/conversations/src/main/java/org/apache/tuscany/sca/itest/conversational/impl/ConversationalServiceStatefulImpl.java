@@ -45,7 +45,7 @@ import org.osoa.sca.annotations.Service;
 public class ConversationalServiceStatefulImpl implements ConversationalService {
 
     @ConversationID
-    private String conversationId;
+    protected String conversationId;
     
    // @Callback - not working yet
     protected ConversationalCallback conversationalCallback; 

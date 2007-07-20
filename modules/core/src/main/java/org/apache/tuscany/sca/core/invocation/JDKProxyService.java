@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
+import org.osoa.sca.Conversation;
 
 /**
  * the default implementation of a wire service that uses JDK dynamic proxies
@@ -46,13 +47,22 @@ public class JDKProxyService implements ProxyFactory {
         this.messageFactory = messageFactory;
     }
 
+    /** 
+     * The original createProxy method assumes that the proxy doesn't want to 
+     * share conversation state so sets the conversaton object to null
+     */
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
+        return createProxy(interfaze, wire, null);
+    }
+    
+    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation) throws ProxyCreationException {
         assert interfaze != null;
         assert wire != null;
         JDKInvocationHandler handler = new JDKInvocationHandler(messageFactory, interfaze, wire);
+        handler.setConversation(conversation);
         ClassLoader cl = interfaze.getClassLoader();
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
-    }
+    }    
 
     public Object createCallbackProxy(Class<?> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
         ClassLoader cl = interfaze.getClassLoader();

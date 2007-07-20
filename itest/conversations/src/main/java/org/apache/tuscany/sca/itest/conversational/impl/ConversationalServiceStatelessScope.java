@@ -30,7 +30,7 @@ import org.osoa.sca.annotations.Service;
 public class ConversationalServiceStatelessScope implements ConversationalService {
 
     @ConversationID
-    String cid;
+    protected String cid;
 
     static Map<String, Integer> state = new HashMap<String, Integer>();
     
