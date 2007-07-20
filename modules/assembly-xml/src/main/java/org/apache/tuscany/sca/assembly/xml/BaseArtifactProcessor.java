@@ -461,6 +461,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @throws XMLStreamException
      */
     protected void writeStart(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
+        writeAttributePrefixes(writer, attrs);
         writer.writeStartElement(SCA10_NS, name);
         writeAttributes(writer, attrs);
     }
