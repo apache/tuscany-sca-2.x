@@ -91,14 +91,14 @@ public interface JavaImplementation extends BaseJavaImplementation {
      * 
      * @return
      */
-    public Member getConversationIDMember();
+    public List<Member> getConversationIDMembers();
 
     /**
      * Sets the Java member used to inject a conversation ID.
      * 
      * @param conversationIDMember
      */
-    public void setConversationIDMember(Member conversationIDMember);
+    public void addConversationIDMember(Member conversationIDMember);
 
     /**
      * Returns true if AllowsPassReference is set.
