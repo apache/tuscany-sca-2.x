@@ -175,6 +175,11 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
             for (AbstractService service : constrainingType.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
                 extensionProcessor.write(service.getInterfaceContract(), writer);
+
+                for (Object extension: service.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
                 writeEnd(writer);
             }
     
@@ -182,14 +187,28 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                 writeStart(writer, REFERENCE,
                       new XAttr(NAME, reference.getName()));
                 extensionProcessor.write(reference.getInterfaceContract(), writer);
+
+                for (Object extension: reference.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
                 writeEnd(writer);
             }
     
             for (AbstractProperty property : constrainingType.getProperties()) {
                 writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
+
+                for (Object extension: property.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
                 writeEnd(writer);
             }
     
+            for (Object extension: constrainingType.getExtensions()) {
+                extensionProcessor.write(extension, writer);
+            }
+            
             writeEndDocument(writer);
             
         } catch (XMLStreamException e) {
