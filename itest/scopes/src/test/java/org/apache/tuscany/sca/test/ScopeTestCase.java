@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.itest.scopes.StateVerifier;
 
-public class ScopeTest extends TestCase {
+public class ScopeTestCase extends TestCase {
 
     final static int numThreads = 4; // number of threads to drive each scope container
     final static int iterations = 200; // number of iterations per thread
