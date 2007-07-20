@@ -43,7 +43,9 @@ import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
@@ -73,6 +75,12 @@ public class ContributionServiceImpl implements ContributionService {
      */
 
     private URLArtifactProcessor artifactProcessor;
+    
+    /**
+     * Registry of available model resolvers
+     */
+    
+    private ModelResolverExtensionPoint modelResolverExtensionPoint;
     
     /**
      * Contribution post processor
@@ -109,6 +117,7 @@ public class ContributionServiceImpl implements ContributionService {
                                    PackageProcessor packageProcessor,
                                    URLArtifactProcessor artifactProcessor,
                                    ContributionPostProcessor postProcessor,
+                                   ModelResolverExtensionPoint modelResolverExtensionPoint,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory) {
@@ -117,12 +126,28 @@ public class ContributionServiceImpl implements ContributionService {
         this.packageProcessor = packageProcessor;
         this.artifactProcessor = artifactProcessor;
         this.postProcessor = postProcessor;
+        this.modelResolverExtensionPoint = modelResolverExtensionPoint;
         this.xmlFactory = xmlFactory;
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
         this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
 
+    public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)
+            throws ContributionException, IOException {
+        if (contributionURI == null) {
+            throw new IllegalArgumentException("URI for the contribution is null");
+        }
+        if (sourceURL == null) {
+            throw new IllegalArgumentException("Source URL for the contribution is null");
+        }
+
+        //FIXME get the right class loader
+        ModelResolver extensibleModelResolver = new ExtensibleModelResolver(this.modelResolverExtensionPoint, getClass().getClassLoader());
+        
+        return addContribution(contributionURI, sourceURL, null, extensibleModelResolver, storeInRepository);
+    }
+    
     public Contribution contribute(String contributionURI, URL sourceURL, ModelResolver modelResolver, boolean storeInRepository) throws ContributionException,
         IOException {
         if (contributionURI == null) {
@@ -135,6 +160,15 @@ public class ContributionServiceImpl implements ContributionService {
         return addContribution(contributionURI, sourceURL, null, modelResolver, storeInRepository);
     }
 
+    public Contribution contribute(String contributionURI, URL sourceURL, InputStream input)
+            throws ContributionException, IOException {
+
+        //FIXME get the right class loader
+        ModelResolver extensibleModelResolver = new ExtensibleModelResolver(this.modelResolverExtensionPoint, getClass().getClassLoader());
+
+        return addContribution(contributionURI, sourceURL, input, extensibleModelResolver, true);
+    }
+    
     public Contribution contribute(String contributionURI, URL sourceURL, InputStream input, ModelResolver modelResolver) 
         throws ContributionException, IOException {
         
@@ -228,9 +262,9 @@ public class ContributionServiceImpl implements ContributionService {
                                  boolean storeInRepository) throws IOException, ContributionException {
         
         if (contributionStream == null && sourceURL == null) {
-            throw new IllegalArgumentException("The content of the contribution is null");
+            throw new IllegalArgumentException("The content of the contribution is null.");
         }
-
+                
         // store the contribution in the contribution repository
         URL locationURL = sourceURL;
         if (contributionRepository != null && storeInRepository) {

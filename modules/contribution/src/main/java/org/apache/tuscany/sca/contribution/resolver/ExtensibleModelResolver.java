@@ -19,39 +19,67 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
-public class ExtensibleModelResolver implements ModelResolver {
-    private final ModelResolverExtensionPoint resolverRegistry;
-    private final ModelResolver defaultModelResolver;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-    public ExtensibleModelResolver(ModelResolverExtensionPoint resolverRegistry, ModelResolver defaultModelResolver) {
+public class ExtensibleModelResolver extends DefaultModelResolver implements ModelResolver {
+    private final ModelResolverExtensionPoint resolverRegistry;
+    private final Map<Class<?>, ModelResolver> resolverInstances = new HashMap<Class<?>, ModelResolver>();
+    
+
+    public ExtensibleModelResolver(ModelResolverExtensionPoint resolverRegistry, ClassLoader cl) {
+        super(cl);
         this.resolverRegistry = resolverRegistry; 
-        this.defaultModelResolver = defaultModelResolver;
+        initializeModelResolverInstances();
+    }
+    
+    private void initializeModelResolverInstances() {
+        for (Class<?> resolverType : resolverRegistry.getResolverTypes()) {
+            Class<? extends ModelResolver> resolverInstanceType = resolverRegistry.getResolver(resolverType);
+            
+            ModelResolver resolverInstance = null;
+            try {
+                Constructor constructor = resolverInstanceType.getConstructor(ClassLoader.class);
+                if (constructor != null) {
+                    resolverInstance = (ModelResolver) constructor.newInstance(this.classLoader);
+                } else {
+                    resolverInstance = (ModelResolver) resolverInstanceType.newInstance();
+                }
+            } catch(Exception ex) {
+                //ignore, will use default resolver
+            } 
+            
+            resolverInstances.put(resolverType,  resolverInstance);
+            
+        }
     }
     
     public void addModel(Object resolved) {
-        ModelResolver resolver = this.resolverRegistry.getResolver(resolved.getClass());
-        if (resolver == null) {
-            resolver = defaultModelResolver;
+        ModelResolver resolver = resolverInstances.get(resolved.getClass());
+        if (resolver != null) {
+            resolver.addModel(resolved);
+        } else {
+            super.addModel(resolved);
         }
-        
-        resolver.addModel(resolved);
     }
 
     public Object removeModel(Object resolved) {
-        ModelResolver resolver = this.resolverRegistry.getResolver(resolved.getClass());
-        if (resolver == null) {
-            resolver = defaultModelResolver;
-        } 
-        
-        return resolver.removeModel(resolved);
+        ModelResolver resolver = resolverInstances.get(resolved.getClass());
+        if (resolver != null) {
+            return resolver.removeModel(resolved);
+        } else {
+            return super.removeModel(resolved);
+        }
     }
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        ModelResolver resolver = this.resolverRegistry.getResolver(modelClass);
-        if (resolver == null) {
-            resolver = defaultModelResolver;
-        } 
-        
-        return resolver.resolveModel(modelClass, unresolved);
+        ModelResolver resolver = resolverInstances.get(modelClass);
+        if (resolver != null) {
+            return resolver.resolveModel(modelClass, unresolved);
+        } else {
+            return super.resolveModel(modelClass, unresolved);
+        }
     }
 }

@@ -44,6 +44,8 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
@@ -70,7 +72,8 @@ public class NodeRuntimeBuilder {
      * 
      * @throws ActivationException
      */
-    public static ContributionService createContributionService(ExtensionPointRegistry registry,
+    public static ContributionService createContributionService(ClassLoader classLoader,
+                                                          ExtensionPointRegistry registry,
                                                           ContributionFactory contributionFactory,
                                                           AssemblyFactory assemblyFactory,
                                                           PolicyFactory policyFactory,
@@ -108,13 +111,18 @@ public class NodeRuntimeBuilder {
         // Create contribution package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
         PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
-        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
         registry.addExtensionPoint(packageProcessors);
 
         // Register base package processors
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
         packageProcessors.addPackageProcessor(new FolderContributionProcessor());
 
+        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
+        
+        //Create Contribution Model Resolver extension point
+        ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
+        registry.addExtensionPoint(modelResolverExtensionPoint);
+        
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
         ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
@@ -133,6 +141,7 @@ public class NodeRuntimeBuilder {
                                                                               packageProcessor,
                                                                               documentProcessor, 
                                                                               postProcessor,
+                                                                              modelResolverExtensionPoint,
                                                                               assemblyFactory,
                                                                               contributionFactory, 
                                                                               xmlFactory);

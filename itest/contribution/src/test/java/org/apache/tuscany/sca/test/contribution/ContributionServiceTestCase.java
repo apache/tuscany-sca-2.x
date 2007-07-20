@@ -55,7 +55,9 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
@@ -122,6 +124,10 @@ public class ContributionServiceTestCase extends TestCase {
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
         packageProcessors.addPackageProcessor(new FolderContributionProcessor());
         
+        //Create Contribution Model Resolver extension point
+        ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
+        
+        
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
         ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
@@ -133,9 +139,9 @@ public class ContributionServiceTestCase extends TestCase {
 
         // Create an artifact resolver and contribution service
         this.contributionService = new ContributionServiceImpl(repository, packageProcessor, documentProcessor, 
-                                                               postProcessor, assemblyFactory,
-                                                               new ContributionFactoryImpl(), XMLInputFactory
-                                                                   .newInstance());
+                                                               postProcessor, modelResolverExtensionPoint, assemblyFactory,
+                                                               new ContributionFactoryImpl(),
+                                                               XMLInputFactory.newInstance());
     }
 
     public void testContributeJAR() throws Exception {

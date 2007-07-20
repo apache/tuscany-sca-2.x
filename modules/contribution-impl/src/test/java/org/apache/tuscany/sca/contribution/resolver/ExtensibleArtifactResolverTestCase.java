@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 
 /**
  * Test DefaultArtifactResolver.
@@ -33,20 +32,16 @@ import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
  */
 public class ExtensibleArtifactResolverTestCase extends TestCase {
     private ModelResolverExtensionPoint resolverExtensionPoint;
-    private ModelResolver defaultResolver;
-    
     private ExtensibleModelResolver resolver;
     
     private ContributionFactory factory;
     
     protected void setUp() throws Exception {
         
-        defaultResolver = new ModelResolverImpl(getClass().getClassLoader());
-        
         resolverExtensionPoint = new DefaultModelResolverExtensionPoint();
-        resolverExtensionPoint.addResolver(Model.class, defaultResolver);
+        resolverExtensionPoint.addResolver(Model.class, DefaultModelResolver.class);
         
-        resolver = new ExtensibleModelResolver(resolverExtensionPoint, defaultResolver);
+        resolver = new ExtensibleModelResolver(resolverExtensionPoint, getClass().getClassLoader());
 
         factory = new ContributionFactoryImpl();
     }
@@ -54,7 +49,6 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
     protected void tearDown() throws Exception {
         resolverExtensionPoint.removeResolver(Model.class);
         resolverExtensionPoint = null;
-        defaultResolver = null;
         resolver = null;
         factory = null;
     }

@@ -116,7 +116,8 @@ public class DistributedRuntime  {
         factories.addFactory(contributionFactory);        
         
         // Create a contribution service
-        contributionService = createContributionService(registry,
+        contributionService = createContributionService(classLoader, 
+                                                        registry,
                                                         contributionFactory,
                                                         assemblyFactory,
                                                         policyFactory,
@@ -164,13 +165,15 @@ public class DistributedRuntime  {
                                                       providerFactories);
     }
     
-    public  ContributionService createContributionService(ExtensionPointRegistry registry,
+    public  ContributionService createContributionService(ClassLoader classLoader,
+                                                          ExtensionPointRegistry registry,
                                                           ContributionFactory contributionFactory,
                                                           AssemblyFactory assemblyFactory,
                                                           PolicyFactory policyFactory,
                                                           InterfaceContractMapper mapper)
       throws ActivationException {        
-        return ReallySmallRuntimeBuilder.createContributionService(registry,
+        return ReallySmallRuntimeBuilder.createContributionService(classLoader,
+                                                                   registry,
                                                                    contributionFactory,
                                                                    assemblyFactory,
                                                                    policyFactory,
