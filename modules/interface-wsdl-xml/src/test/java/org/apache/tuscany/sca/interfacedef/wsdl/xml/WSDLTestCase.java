@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 import java.net.URI;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
@@ -62,6 +63,39 @@ public class WSDLTestCase extends TestCase {
         assertNotNull(definition);
         assertNotNull(definition.getDefinition());
         assertEquals(definition.getNamespace(), "http://www.example.org");
+    }
+    
+    public void testReadWSDLImports() throws Exception {
+        QName aBinding = new QName("http://helloworld", "HelloWorldSoapBinding");
+        QName aPortType = new QName("http://helloworld", "HelloWorld");
+        
+        URL url = getClass().getResource("test1.wsdl");
+        WSDLDefinition test1Defn = documentProcessor.read(null, new URI("test1.wsdl"), url, WSDLDefinition.class);
+        assertNotNull(test1Defn);
+        //binding is a part of test1.wsdl
+        assertNotNull(test1Defn.getDefinition().getBinding(aBinding));
+        //porttype is part of test2.wsdl
+        assertNotNull(test1Defn.getDefinition().getPortType(aPortType));
+    }
+    
+    public void testReadSameNamespaceWSDLDocument() throws Exception {
+        QName aBinding = new QName("http://helloworld", "HelloWorldSoapBinding");
+        QName aPortType = new QName("http://helloworld", "HelloWorld");
+        
+        URL url = getClass().getResource("test2.wsdl");
+        WSDLDefinition test2Defn = documentProcessor.read(null, new URI("test2.wsdl"), url, WSDLDefinition.class);
+        assertNotNull(test2Defn);
+        //bindigs are a part of test1.wsdl so should not be found
+        assertNull(test2Defn.getDefinition().getBinding(aBinding));
+        assertNotNull(test2Defn.getDefinition().getPortType(aPortType));
+        
+        url = getClass().getResource("test1.wsdl");
+        WSDLDefinition test1Defn = documentProcessor.read(null, new URI("test1.wsdl"), url, WSDLDefinition.class);
+        assertNotNull(test1Defn);
+        assertTrue(test1Defn == test2Defn);
+        //now test2Defn should have the binding as it must be merged with what was read in test1.wsdl
+        //since they belong to the same namespace
+        assertNotNull(test2Defn.getDefinition().getBinding(aBinding));
     }
 
 }
