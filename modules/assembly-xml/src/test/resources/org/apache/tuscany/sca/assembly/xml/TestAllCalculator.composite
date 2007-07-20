@@ -23,12 +23,15 @@
     xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0 "
+    xmlns:ext="http://extension"
     xmlns:cns="http://test/confidentiality" xmlns:sns="http://test/secure">
 
     <include name="tns:TestAllDivide"/>
+    <ext:testExtension/>
 
     <service name="CalculatorService" promote="CalculatorServiceComponent/CalculatorService" requires="cns:confidentiality"
         policySets="sns:secure">
+        <ext:testExtension/>
         <interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback" />
         <operation name="add" policySets="sns:secure" requires="cns:confidentiality" />
 
@@ -37,6 +40,7 @@
         </binding.ws>
 
         <callback policySets="sns:secure" requires="cns:confidentiality">
+	        <ext:testExtension/>
             <binding.ws name="CalculatorCallbackWS" policySets="" port="" requires="" uri="http://calc/callback/ws">
                 <operation name="addCallback" policySets="sns:secure" requires="cns:confidentiality" />
             </binding.ws>
@@ -45,12 +49,14 @@
 
     <component name="CalculatorServiceComponent" autowire="false" constrainingType="tns:CalculatorComponent"
         policySets="sns:secure" requires="cns:confidentiality">
+        <ext:testExtension/>
         <service name="CalculatorService" policySets="sns:secure" requires="cns:confidentiality">
             <interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback" />
         </service>
 
         <reference name="addService" target="AddServiceComponent/AddService" autowire="false" multiplicity="1..1"
             policySets="sns:secure" requires="cns:confidentiality" wiredByImpl="false">
+            <ext:testExtension/>
             <interface.java interface="calculator.AddService" callbackInterface="calculator.AddCallback" />
         </reference>
         <reference name="subtractService" target="SubtractServiceComponent" />
@@ -106,7 +112,8 @@
     </reference>
 
     <property name="prop1" xmlns:foo="http://foo">
-        <MyComplexPropertyValue1 xsi:type="foo:MyComplexType" attr="bar">
+    	<ext:testExtension/>
+   	    <MyComplexPropertyValue1 xsi:type="foo:MyComplexType" attr="bar">
             <foo:a>AValue</foo:a>
             <bar:b xmlns:bar="http://bar">InterestingURI</bar:b>
         </MyComplexPropertyValue1>

@@ -268,8 +268,18 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                                     component.setImplementation((Implementation)extension);
                                 } else {
                                     
-                                    // FIXME: We need to decide where to host the extensions
-                                    composite.getExtensions().add(extension);
+                                    // Add the extension element to the current element
+                                    if (callback != null) {
+                                        callback.getExtensions().add(extension);
+                                    } else if (contract != null) {
+                                        contract.getExtensions().add(extension);
+                                    } else if (property != null) {
+                                        property.getExtensions().add(extension);
+                                    } else if (component != null) {
+                                        component.getExtensions().add(extension);
+                                    } else {
+                                        composite.getExtensions().add(extension);
+                                    }
                                 }
                             }
                         }

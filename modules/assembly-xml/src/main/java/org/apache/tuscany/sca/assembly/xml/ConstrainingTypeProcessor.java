@@ -126,6 +126,15 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                                 
                                 // <service><interface> and <reference><interface>
                                 abstractContract.setInterfaceContract((InterfaceContract)extension);
+                            } else {
+
+                                // Add the extension element to the current element
+                                if (abstractContract != null) {
+                                    abstractContract.getExtensions().add(extension);
+                                } else {
+                                    constrainingType.getExtensions().add(extension);
+                                }
+                                
                             }
                         }
                         break;
