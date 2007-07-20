@@ -40,13 +40,13 @@ public final class EJBStubHelper {
      * @return
      */
 
-    public static Object lookup(NamingEndpoint endpoint) {
-        return getStub(endpoint);
+    public static Object lookup(NamingEndpoint endpoint, InterfaceInfo ejbInterface) {
+        return getStub(endpoint, ejbInterface);
     }
 
-    public static Object getStub(NamingEndpoint namingEndpoint) {
+    public static Object getStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) {
         try {
-            stub = EJBObjectFactory.createStub(namingEndpoint);
+            stub = EJBObjectFactory.createStub(namingEndpoint, ejbInterface);
         } catch (NamingException e) {
             exception = new ServiceUnavailableException(e);
             e.printStackTrace();

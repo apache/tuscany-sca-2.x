@@ -74,7 +74,7 @@ public class EJBHandler {
     // locates the stub
     public EJBHandler(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) {
         try {
-            this.ejbStub = EJBStubHelper.lookup(namingEndpoint);
+            this.ejbStub = EJBStubHelper.lookup(namingEndpoint, ejbInterface);
             this.interfaceInfo = ejbInterface;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
