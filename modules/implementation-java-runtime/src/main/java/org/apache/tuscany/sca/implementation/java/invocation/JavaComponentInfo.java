@@ -232,20 +232,21 @@ public class JavaComponentInfo implements ComponentContextProvider {
         configuration.setObjectFactory(resource.getElement(), factory);
     }
 
-    public void addConversationIDFactory(Member member) {
+    public void addConversationIDFactories(List<Member> names) {
         ObjectFactory<String> factory = new ConversationIDObjectFactory();
-
-        if (member instanceof Field) {
-            JavaElementImpl element = new JavaElementImpl((Field)member);
-            element.setClassifer(ConversationID.class);
-            configuration.setObjectFactory(element, factory);
-        } else if (member instanceof Method) {
-            JavaElementImpl element = new JavaElementImpl((Method)member, 0);
-            element.setName(JavaIntrospectionHelper.toPropertyName(member.getName()));
-            element.setClassifer(ConversationID.class);
-            configuration.setObjectFactory(element, factory);
-        } else {
-            throw new InvalidAccessorException("Member must be a field or method: " + member.getName());
+        for (Member name : names) {
+            if (name instanceof Field) {
+                JavaElementImpl element = new JavaElementImpl((Field)name);
+                element.setClassifer(ConversationID.class);
+                configuration.setObjectFactory(element, factory);
+            } else if (name instanceof Method) {
+                JavaElementImpl element = new JavaElementImpl((Method)name, 0);
+                element.setName(JavaIntrospectionHelper.toPropertyName(name.getName()));
+                element.setClassifer(ConversationID.class);
+                configuration.setObjectFactory(element, factory);
+            } else {
+                throw new InvalidAccessorException("Member must be a field or method: " + name.getName());
+            }
         }
     }
 
