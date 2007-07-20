@@ -231,7 +231,7 @@ public class ReallySmallRuntimeBuilder {
         ScopeContainerFactory[] factories = new ScopeContainerFactory[] {new CompositeScopeContainerFactory(),
                                                                          new StatelessScopeContainerFactory(),
                                                                          new RequestScopeContainerFactory(),
-         new ConversationalScopeContainerFactory(new MemoryStore(null)),
+         new ConversationalScopeContainerFactory(null),
         // new HttpSessionScopeContainer(monitor)
         };
         for (ScopeContainerFactory f : factories) {
