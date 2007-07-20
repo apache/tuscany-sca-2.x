@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
@@ -46,147 +47,59 @@ import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
 import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
-public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
+public class Axis2ServiceProvider {
 
     private RuntimeComponent component;
-    private RuntimeComponentService service;
+    private AbstractContract contract;
     private WebServiceBinding wsBinding;
     private ServletHost servletHost;
     private MessageFactory messageFactory;
-    private Axis2ServiceClient axisClient;
-    private Axis2ServiceProvider axisProvider;
-
-    //FIXME: following are only needed for the current tactical solutionn
-    private boolean tactical = true;
     private ConfigurationContext configContext;
-    private Axis2ServiceBindingProvider callbackProvider;
+
     // TODO: what to do about the base URI?
     private static final String BASE_URI = "http://localhost:8080/";
 
-    public Axis2ServiceBindingProvider(RuntimeComponent component,
-                                       RuntimeComponentService service,
-                                       WebServiceBinding wsBinding,
-                                       ServletHost servletHost,
-                                       MessageFactory messageFactory) {
+    public Axis2ServiceProvider(RuntimeComponent component,
+                                AbstractContract contract,
+                                WebServiceBinding wsBinding,
+                                ServletHost servletHost,
+                                MessageFactory messageFactory) {
 
         this.component = component;
-        this.service = service;
+        this.contract = contract;
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
 
-        if (tactical) {
-            try {
-                TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
-                configContext = tuscanyAxisConfigurator.getConfigurationContext();
-            } catch (AxisFault e) {
-                throw new RuntimeException(e); // TODO: better exception
-            }
+        try {
+            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
+            configContext = tuscanyAxisConfigurator.getConfigurationContext();
+        } catch (AxisFault e) {
+            throw new RuntimeException(e); // TODO: better exception
         }
 
-        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
-        if (contract == null) {
-            contract = service.getInterfaceContract().makeUnidirectional(wsBinding.isCallback());
-            wsBinding.setBindingInterfaceContract(contract);
-        }
-
-        // Set to use the Axiom data binding
-        if (contract.getInterface() != null) {
-            contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
-        }
-        if (contract.getCallbackInterface() != null) {
-            contract.getCallbackInterface().setDefaultDataBinding(OMElement.class.getName());
-        }
-
-        //FIXME: only needed for the current tactical solution
-        if (tactical) {
-            // connect forward providers with matching callback providers
-            if (!wsBinding.isCallback()) {
-                // this is a forward binding, so look for a matching callback binding
-                if (service.getCallback() != null) {
-                    for (Binding binding : service.getCallback().getBindings()) {
-                        if (service.getBindingProvider(binding) instanceof Axis2ServiceBindingProvider) {
-                            // use the first compatible callback binding provider for this service
-                            setCallbackProvider((Axis2ServiceBindingProvider)service.getBindingProvider(binding));
-                            continue;
-                        }
-                    }
-                }
-            } else {
-                // this is a callback binding, so look for all matching forward bindings
-                for (Binding binding : service.getBindings()) {
-                    if (service.getBindingProvider(binding) instanceof Axis2ServiceBindingProvider) {
-                        // set all compatible forward binding providers for this service
-                        ((Axis2ServiceBindingProvider)service.getBindingProvider(binding)).setCallbackProvider(this);
-                    }
-                }
-            }
-        } else {
-            if (!wsBinding.isCallback()) {
-                axisProvider = new Axis2ServiceProvider(component, service, wsBinding, servletHost,
-                                                        messageFactory);
-            } else {
-                // pass null as last parameter because SCDL doesn't allow a callback callback binding
-                // to be specified for a callback binding, i.e., can't have the following:
-                // <service>
-                //   <binding.x/>
-                //   <callback>
-                //     <binding.y/>
-                //     <callback>
-                //       <binding.z/>
-                //     </callback>
-                //   </callback>
-                // </service>
-                // This means that you can't do a callback from a callback (at least not
-                // in s spec-compliant way).
-                axisClient = new Axis2ServiceClient(component, service, wsBinding, servletHost,
-                                                    messageFactory, null);
-            }
-        }
-    }
-
-    //FIXME: only needed for the current tactical solution
-    protected void setCallbackProvider(Axis2ServiceBindingProvider callbackProvider) {
-        if (this.callbackProvider == null) {
-            this.callbackProvider = callbackProvider;
-        }
-    }
-
-    public void start() {
-        if (tactical) {
-            if (!wsBinding.isCallback()) {
-                startAxis2Service();
-            }
-        } else {
-            if (!wsBinding.isCallback()) {
-                axisProvider.start();                                          
-            } else {
-                axisClient.start();
-            }
-        }
-    }
-
-    //FIXME: only needed for the current tactical solution
-    private void startAxis2Service() {
-        String uri = computeActualURI(BASE_URI, component, service).normalize().toString();
+        String uri = computeActualURI(BASE_URI, component, contract).normalize().toString();
         if (uri.endsWith("/")) {
             uri = uri.substring(0, uri.length() - 1);
         }
         wsBinding.setURI(uri.toString());
+    }
+
+    protected void start() {
 
         // TODO: if <binding.ws> specifies the wsdl service then should create a
         // service for every port
@@ -201,25 +114,12 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         servlet.init(configContext);
         String servletURI = wsBinding.getURI();
         configContext.setContextRoot(servletURI);
+        System.out.println("adding servlet mapping for " + servletURI);
+        (new RuntimeException()).printStackTrace();
         servletHost.addServletMapping(servletURI, servlet);
     }
 
-    public void stop() {
-        if (tactical) {
-            if (!wsBinding.isCallback()) {
-                stopAxis2Service();
-            }
-        } else {
-            if (!wsBinding.isCallback()) {
-                axisProvider.stop();
-            } else {
-                axisClient.stop();
-            }
-        }
-    }
-
-    //FIXME: only needed for the current tactical solution
-    private void stopAxis2Service() {
+    protected void stop() {
         servletHost.removeServletMapping(wsBinding.getURI());
         try {
             configContext.getAxisConfiguration().removeService(wsBinding.getURI());
@@ -228,7 +128,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         }
     }
 
-    //FIXME: only needed for the current tactical solution
     /**
      * Compute the endpoint URI based on section 2.1.1 of the WS binding spec 1.
      * The URIs in the endpoint(s) of the referenced WSDL, which may be relative
@@ -238,10 +137,10 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
      * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec
      * If the <binding.ws> has no wsdlElement but does have a uri attribute then
      * the uri takes precidence over any implicitly used WSDL.
-     *
+     * 
      * @param parent
      */
-    protected URI computeActualURI(String baseURI, RuntimeComponent component, RuntimeComponentService service) {
+    protected URI computeActualURI(String baseURI, RuntimeComponent component, AbstractContract contract) {
 
         // TODO: support wsa:Address
 
@@ -295,7 +194,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
             if (wsBinding.getName() != null) {
                 bindingURI = URI.create(wsBinding.getName());
             } else {
-                bindingURI = URI.create(service.getName());
+                bindingURI = URI.create(contract.getName());
             }
         }
 
@@ -312,7 +211,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         return URI.create(actualURI);
     }
 
-    //FIXME: only needed for the current tactical solution
     /**
      * Returns the endpoint of a given port.
      */
@@ -328,7 +226,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         return null;
     }
 
-    //FIXME: only needed for the current tactical solution
     private AxisService createAxisService() throws AxisFault {
         AxisService axisService;
         if (wsBinding.getWSDLDefinition() != null) {
@@ -340,9 +237,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         return axisService;
     }
 
-    //FIXME: only needed for the current tactical solution
     /**
-     * Create an AxisService from the interface class from the SCA service interface
+     * Create an AxisService from the interface class from the SCA service
+     * interface
      */
     protected AxisService createJavaAxisService() throws AxisFault {
         AxisService axisService = new AxisService();
@@ -350,7 +247,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         axisService.setName(path);
         axisService.setServiceDescription("Tuscany configured AxisService for service: " + wsBinding.getURI());
         axisService.setClientSide(false);
-        Parameter classParam = new Parameter(Constants.SERVICE_CLASS, ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass().getName());
+        Parameter classParam =
+            new Parameter(Constants.SERVICE_CLASS, ((JavaInterface)contract.getInterfaceContract().getInterface())
+                .getJavaClass().getName());
         axisService.addParameter(classParam);
         try {
             Utils.fillAxisService(axisService, configContext.getAxisConfiguration(), null, null);
@@ -361,7 +260,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         return axisService;
     }
 
-    //FIXME: only needed for the current tactical solution
     /**
      * Create an AxisService from the WSDL doc used by ws binding
      */
@@ -372,8 +270,8 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         // An SCA service with binding.ws does not require a service or port so we may not have
         // these but ...
 
-        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, wsBinding.getServiceName(),
-                                                                          wsBinding.getPortName());
+        WSDLToAxisServiceBuilder builder =
+            new WSDL11ToAxisServiceBuilder(definition, wsBinding.getServiceName(), wsBinding.getPortName());
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
@@ -391,7 +289,6 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         return axisService;
     }
 
-    //FIXME: only needed for the current tactical solution
     protected void initAxisOperations(AxisService axisService) {
         for (Iterator i = axisService.getOperations(); i.hasNext();) {
             AxisOperation axisOp = (AxisOperation)i.next();
@@ -405,9 +302,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
                 }
 
                 MessageReceiver msgrec = null;
-                if (service.getInterfaceContract().getCallbackInterface() != null) {
-                    msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, callbackProvider, op);
-                } else if (op.isNonBlocking()) {
+                if (op.isNonBlocking()) {
                     msgrec = new Axis2ServiceInMessageReceiver(this, op);
                 } else {
                     msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
@@ -416,38 +311,19 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
             }
         }
     }
-    
-    //FIXME: only needed for the current tactical solution
+
     protected Operation getOperation(AxisOperation axisOp) {
         String operationName = axisOp.getName().getLocalPart();
-        for (Operation op : wsBinding.getBindingInterfaceContract().getInterface().getOperations()) {
+        Interface iface =
+            wsBinding.isCallback() ? wsBinding.getBindingInterfaceContract().getCallbackInterface() : wsBinding
+                .getBindingInterfaceContract().getInterface();
+        for (Operation op : iface.getOperations()) {
             if (op.getName().equalsIgnoreCase(operationName)) {
                 return op;
             }
         }
         return null;
     }
-
-    public InterfaceContract getBindingInterfaceContract() {
-        return wsBinding.getBindingInterfaceContract();
-    }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        if (!wsBinding.isCallback()) {
-            throw new RuntimeException("Cannot create callback invoker for a forward binding");
-        }
-        if (tactical) {
-            return new Axis2ServiceCallbackTargetInvoker(this);
-        } else {
-            return axisClient.createInvoker(operation);
-        }
-    }
-
-    public boolean supportsAsyncOneWayInvocation() {
-        return true;
-    }
-
-    //FIXME: remaining code only needed for the current tactical solution
 
     // methods for Axis2 message receivers
 
@@ -457,14 +333,16 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
      */
     protected static String getConversationID(MessageContext inMC) {
         String conversationID = null;
-        Iterator i = inMC.getEnvelope().getHeader()
-            .getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
+        Iterator i =
+            inMC.getEnvelope().getHeader()
+                .getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
         for (; i.hasNext();) {
             Object a = i.next();
             if (a instanceof OMElement) {
                 OMElement ao = (OMElement)a;
-                for (Iterator rpI = ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing",
-                                                                     "ReferenceParameters")); rpI.hasNext();) {
+                for (Iterator rpI =
+                    ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters")); rpI
+                    .hasNext();) {
                     OMElement rpE = (OMElement)rpI.next();
                     for (Iterator cidI = rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN); cidI
                         .hasNext();) {
@@ -479,8 +357,11 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         return conversationID;
     }
 
-    public Object invokeTarget(Operation op, Object[] args, Object messageId, String conversationID)
-        throws InvocationTargetException {
+    public Object invokeTarget(Operation op,
+                               Object[] args,
+                               Object messageId,
+                               String conversationID,
+                               String callbackAddress) throws InvocationTargetException {
 
         Message requestMsg = messageFactory.createMessage();
 
@@ -489,8 +370,13 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         }
         requestMsg.setBody(args);
 
-        //FIXME: need somewhere to store the callback URI 
-        requestMsg.setFrom(service.getRuntimeWire(wsBinding).getSource());
+        if (contract instanceof RuntimeComponentService)
+            requestMsg.setFrom(((RuntimeComponentService)contract).getRuntimeWire(wsBinding).getSource());
+        else
+            requestMsg.setFrom(((RuntimeComponentReference)contract).getRuntimeWire(wsBinding).getSource());
+        if (callbackAddress != null) {
+            requestMsg.setTo(new EndpointReferenceImpl(callbackAddress));
+        }
 
         Message workContext = ThreadMessageContext.getMessageContext();
 
@@ -502,7 +388,11 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
                 requestMsg.setConversationID(null);
             }
 
-            Message responseMsg = service.getInvoker(wsBinding, op).invoke(requestMsg);
+            Message responseMsg =
+                contract instanceof RuntimeComponentService ? ((RuntimeComponentService)contract).getInvoker(wsBinding,
+                                                                                                             op)
+                    .invoke(requestMsg) : ((RuntimeComponentReference)contract).getInvoker(wsBinding, op)
+                    .invoke(requestMsg);
 
             if (responseMsg.isFault()) {
                 throw new InvocationTargetException((Throwable)responseMsg.getBody());

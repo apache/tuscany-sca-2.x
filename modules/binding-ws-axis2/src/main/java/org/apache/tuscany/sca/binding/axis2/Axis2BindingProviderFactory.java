@@ -45,7 +45,7 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, WebServiceBinding binding) {
-        return new Axis2ReferenceBindingProvider(component, reference, binding, messageFactory);
+        return new Axis2ReferenceBindingProvider(component, reference, binding, servletHost, messageFactory);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, WebServiceBinding binding) {
