@@ -116,7 +116,8 @@ public class ReallySmallRuntime {
         factories.addFactory(contributionFactory);
         
         // Create a contribution service
-        contributionService = ReallySmallRuntimeBuilder.createContributionService(registry,
+        contributionService = ReallySmallRuntimeBuilder.createContributionService(classLoader,
+                                                                                  registry,
                                                                                   contributionFactory,
                                                                                   assemblyFactory,
                                                                                   policyFactory,

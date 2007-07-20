@@ -61,8 +61,9 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
@@ -156,7 +157,8 @@ public class ReallySmallRuntimeBuilder {
      * 
      * @throws ActivationException
      */
-    public static ContributionService createContributionService(ExtensionPointRegistry registry,
+    public static ContributionService createContributionService(ClassLoader classLoader, 
+                                                                ExtensionPointRegistry registry,
                                                                 ContributionFactory contributionFactory,
                                                                 AssemblyFactory assemblyFactory,
                                                                 PolicyFactory policyFactory,
@@ -201,9 +203,8 @@ public class ReallySmallRuntimeBuilder {
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
 
         //Create Contribution Model Resolver extension point
-        ModelResolverExtensionPoint resolverExtensionPoint = new DefaultModelResolverExtensionPoint();
-        
-        registry.addExtensionPoint(resolverExtensionPoint);
+        ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
+        registry.addExtensionPoint(modelResolverExtensionPoint);
         
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
@@ -221,7 +222,7 @@ public class ReallySmallRuntimeBuilder {
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
                                                                               documentProcessor, postProcessor, 
-                                                                              assemblyFactory,
+                                                                              modelResolverExtensionPoint, assemblyFactory,
                                                                               contributionFactory, xmlFactory);
         return contributionService;
     }

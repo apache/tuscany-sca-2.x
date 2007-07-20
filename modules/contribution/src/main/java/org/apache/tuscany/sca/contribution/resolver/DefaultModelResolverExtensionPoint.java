@@ -18,24 +18,29 @@
  */
 package org.apache.tuscany.sca.contribution.resolver;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
- * The default implementation of an model resolver registry.
+ * The default implementation of an model resolver Class registry.
  * 
  * @version $Rev: 539693 $ $Date: 2007-05-18 23:24:07 -0700 (Fri, 18 May 2007) $
  */
 public class DefaultModelResolverExtensionPoint implements ModelResolverExtensionPoint {
-    protected final Map<Class<?>, ModelResolver> resolversByModelType = new HashMap<Class<?>, ModelResolver>();
-
+    protected final Map<Class<?>, Class<? extends ModelResolver>> resolversByModelType = new HashMap<Class<?>, Class<? extends ModelResolver>>();
+    
     /**
      * Constructs a new model resolver registry.
      */
     public DefaultModelResolverExtensionPoint() {
     }
 
-    public void addResolver(Class<?> modelType, ModelResolver resolver) {
+    public void addResolver(Class<?> modelType, Class <? extends ModelResolver> resolver) {
+        
         resolversByModelType.put(modelType, resolver);
     }
     
@@ -43,14 +48,29 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         resolversByModelType.remove(modelType);
     }
 
-    public ModelResolver getResolver(Class<?> modelType) {
+    public Class <? extends ModelResolver> getResolver(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
         for (Class<?> c : classes) {
-            ModelResolver resolver = resolversByModelType.get(c);
+            Class <? extends ModelResolver> resolver = resolversByModelType.get(c);
             if (resolver != null) {
                 return resolver;
             }
         }
+        
         return resolversByModelType.get(modelType);
     }
+
+    @SuppressWarnings("unchecked")
+    public Collection<Class<?>> getResolverTypes() {
+        Collection<Class<?>> resolverTypes = new ArrayList<Class<?>>();
+        
+        Iterator typeIterator = resolversByModelType.keySet().iterator(); 
+        while (typeIterator.hasNext()) {
+            resolverTypes.add( (Class) typeIterator.next() );
+        }
+        
+        return resolverTypes;
+    }
+    
+    
 }

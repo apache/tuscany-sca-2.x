@@ -48,9 +48,47 @@ public interface ContributionService {
      * @throws DeploymentException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the resource
      */
+    Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
+        IOException;
+    
+    /**
+     * Contribute an artifact to the SCA Domain. The type of the contribution is
+     * determined by the Content-Type of the resource or, if that is undefined,
+     * by some implementation-specific means (such as mapping an extension in
+     * the URL's path).
+     * 
+     * @param contributionURI The URI that is used as the contribution unique ID. 
+     * @param sourceURL The location of the resource containing the artifact
+     * @param modelResolver The model resolver to use to resolve models in the
+     *             scope of this contribution
+     * @param storeInRepository Flag that identifies if you want to copy the
+     *            contribution to the repository
+     * @return The contribution model representing the contribution 
+     * @throws DeploymentException if there was a problem with the contribution
+     * @throws IOException if there was a problem reading the resource
+     */
     Contribution contribute(String contributionURI, URL sourceURL, ModelResolver modelResolver, boolean storeInRepository) throws ContributionException,
         IOException;
 
+    /**
+     * Contribute an artifact to the SCA Domain.
+     * 
+     * @param contributionURI The URI that is used as the contribution unique ID.
+     * @param sourceURL The location of the resource containing the artifact. 
+     *            This is used to identify what name should be used when storing
+     *            the contribution on the repository 
+     * @param modelResolver The model resolver to use to resolve models in the
+     *             scope of this contribution
+     * @param contributionContent A stream containing the resource being
+     *            contributed; the stream will not be closed but the read
+     *            position after the call is undefined
+     * @return The contribution model representing the contribution 
+     * @throws DeploymentException if there was a problem with the contribution
+     * @throws IOException if there was a problem reading the stream
+     */
+    Contribution contribute(String contributionURI, URL sourceURL, InputStream contributionContent)
+        throws ContributionException, IOException;
+    
     /**
      * Contribute an artifact to the SCA Domain.
      * 

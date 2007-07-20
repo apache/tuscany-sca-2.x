@@ -27,8 +27,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
@@ -50,18 +48,16 @@ public class HelloWorldServerTestCase extends TestCase{
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
         
-        ModelResolver compositeContributionResolver = new ModelResolverImpl(cl);
         File compositeContribLocation = new File("../contrib-composite/target/classes");
         URL compositeContribURL = compositeContribLocation.toURL();
-        Contribution compositeContribution = contributionService.contribute("http://import-export/contrib-composite", compositeContribURL, compositeContributionResolver, false);
+        Contribution compositeContribution = contributionService.contribute("http://import-export/contrib-composite", compositeContribURL, false);
         for (Composite deployable : compositeContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
         
-        ModelResolver helloWorldContributionResolver = new ModelResolverImpl(cl);
         File helloWorldContribLocation = new File("./target/classes/");
         URL helloWorldContribURL = helloWorldContribLocation.toURL();
-        Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, helloWorldContributionResolver, false);
+        Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : helloWorldContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }

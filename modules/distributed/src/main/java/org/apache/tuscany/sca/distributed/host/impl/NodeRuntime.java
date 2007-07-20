@@ -97,13 +97,15 @@ public class NodeRuntime extends DistributedRuntime  {
      *  that the .node document processor is added instead of .composite
      */
     @Override
-    public ContributionService createContributionService(ExtensionPointRegistry registry,
+    public ContributionService createContributionService(ClassLoader classLoader,
+                                                         ExtensionPointRegistry registry,
                                                          ContributionFactory contributionFactory,
                                                          AssemblyFactory assemblyFactory,
                                                          PolicyFactory policyFactory,
                                                          InterfaceContractMapper mapper)
       throws ActivationException {        
-        return NodeRuntimeBuilder.createContributionService(registry,
+        return NodeRuntimeBuilder.createContributionService(classLoader, 
+                                                            registry,
                                                             contributionFactory,
                                                             assemblyFactory,
                                                             policyFactory,

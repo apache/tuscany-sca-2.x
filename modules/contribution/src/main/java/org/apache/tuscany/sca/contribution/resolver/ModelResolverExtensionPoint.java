@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
+import java.util.Collection;
+
 /**
  * An extension point for Model Resolvers
  * 
@@ -27,25 +29,32 @@ package org.apache.tuscany.sca.contribution.resolver;
 public interface ModelResolverExtensionPoint {
 
     /**
-     * Register a Model Resolver using the Artifact Type as the key
+     * Register a Model Resolver Class using the Artifact Type as the key
      * 
      * @param modelType The model artifact type
-     * @param resolver The model resolver
+     * @param resolver The model resolver Class
      */
-    void addResolver(Class<?> modelType, ModelResolver resolver);
+    void addResolver(Class<?> modelType, Class <? extends ModelResolver> resolver);
     
     /**
-     * Remove the Model Resolver for a specific Artifact Type
+     * Remove the Model Resolver Class for a specific Artifact Type
      * 
      * @param modelType The model artifact type
      */
     void removeResolver(Class<?> modelType);
     
     /**
-     * Retrieve a Model Resolver for a specific Artifact Type
+     * Retrieve a Model Resolver Class for a specific Artifact Type
      * 
      * @param modelType The model artifact type
-     * @return The model resolver
+     * @return The model resolver Class
      */
-    ModelResolver getResolver(Class<?> modelType);
+    Class <? extends ModelResolver> getResolver(Class<?> modelType);
+    
+    /**
+     * Retrieve a list registered Model Resolvers Classes
+     * 
+     * @return The list of registered Model Resolvers Class
+     */
+    Collection<Class<?>> getResolverTypes();
 }
