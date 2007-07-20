@@ -50,7 +50,7 @@ public class BeanJavaImplementationImpl extends BeanBaseJavaImplementationImpl i
     private final Map<String, JavaElementImpl> propertyMembers = new HashMap<String, JavaElementImpl>();
     private final Map<String, JavaElementImpl> referenceMembers = new HashMap<String, JavaElementImpl>();
     private final Map<String, JavaElementImpl> callbackMembers = new HashMap<String, JavaElementImpl>();
-    private Member conversationIDMember;
+    private List<Member> conversationIDMember = new ArrayList<Member>();
     private boolean eagerInit;
     private boolean allowsPassByReference;
     private List<Method> allowsPassByReferenceMethods = new ArrayList<Method>();
@@ -90,12 +90,12 @@ public class BeanJavaImplementationImpl extends BeanBaseJavaImplementationImpl i
         return resources;
     }
 
-    public Member getConversationIDMember() {
+    public List<Member> getConversationIDMembers() {
         return this.conversationIDMember;
     }
 
-    public void setConversationIDMember(Member conversationIDMember) {
-        this.conversationIDMember = conversationIDMember;
+    public void addConversationIDMember(Member conversationIDMember) {
+        this.conversationIDMember.add(conversationIDMember);
     }
 
     public boolean isAllowsPassByReference() {
