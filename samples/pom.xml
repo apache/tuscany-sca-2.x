@@ -54,6 +54,7 @@
                 <module>helloworld-jsonrpc</module>
                 <module>helloworld-ws-service</module>
                 <module>helloworld-ws-reference</module>
+                <module>helloworld-ws-sdo</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
                 <module>implementation-crud2-extension</module>
