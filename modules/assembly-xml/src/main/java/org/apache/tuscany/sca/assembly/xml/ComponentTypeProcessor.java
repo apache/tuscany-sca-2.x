@@ -159,6 +159,18 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                                     } else {
                                         contract.getBindings().add((Binding)extension);
                                     }
+                                } else {
+                                    
+                                    // Add the extension element to the current element
+                                    if (callback != null) {
+                                        callback.getExtensions().add(extension);
+                                    } else if (contract != null) {
+                                        contract.getExtensions().add(extension);
+                                    } else if (property != null) {
+                                        property.getExtensions().add(extension);
+                                    } else {
+                                        componentType.getExtensions().add(extension);
+                                    }
                                 }
                             }
                         }
