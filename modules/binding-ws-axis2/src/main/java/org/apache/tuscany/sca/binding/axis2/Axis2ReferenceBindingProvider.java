@@ -1,20 +1,21 @@
-/**
- *
- * Copyright 2006 The Apache Software Foundation
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
  */
-
 package org.apache.tuscany.sca.binding.axis2;
 
 import java.util.List;
@@ -39,6 +40,7 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -51,67 +53,30 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 {
 
-    private MessageFactory messageFactory;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private WebServiceBinding wsBinding;
-    private ConfigurationContext configContext;
-    private ServiceClient serviceClient;
+    private ServletHost servletHost;
+    private MessageFactory messageFactory;
+    private Axis2ServiceClient axisClient;
+    private Axis2ServiceProvider axisProvider;
     private WebServiceBinding callbackBinding;
+
+    //FIXME: following are only needed for the current tactical solutionn
+    private boolean tactical = true;
+    private ServiceClient serviceClient;
 
     public Axis2ReferenceBindingProvider(RuntimeComponent component,
                                          RuntimeComponentReference reference,
                                          WebServiceBinding wsBinding,
+                                         ServletHost servletHost,
                                          MessageFactory messageFactory) {
 
         this.component = component;
         this.reference = reference;
         this.wsBinding = wsBinding;
+        this.servletHost = servletHost;
         this.messageFactory = messageFactory;
-
-        try {
-            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
-            configContext = tuscanyAxisConfigurator.getConfigurationContext();
-        } catch (AxisFault e) {
-            throw new RuntimeException(e); // TODO: better exception
-        }
-
-        initServiceClient();
-
-        // FIXME: only needed for the current tactical solution
-        // connect forward providers with matching callback providers
-        if (!wsBinding.isCallback()) {
-            // this is a forward binding, so look for a matching callback binding
-            if (reference.getCallback() != null) {
-                for (org.apache.tuscany.sca.assembly.Binding binding :
-                                          reference.getCallback().getBindings()) {
-                    if (binding instanceof WebServiceBinding) {
-                        // set the first compatible callback binding
-                        setCallbackBinding((WebServiceBinding)binding);
-                        continue;
-                    }
-                }
-            }
-        } else {
-            // this is a callback binding, so look for all matching forward bindings
-            for (org.apache.tuscany.sca.assembly.Binding binding : reference.getBindings()) {
-                if (reference.getBindingProvider(binding) instanceof Axis2ReferenceBindingProvider) {
-                    // set all compatible forward binding providers for this reference
-                    ((Axis2ReferenceBindingProvider)reference.getBindingProvider(binding)).
-                            setCallbackBinding(wsBinding);
-                }
-            }
-        }
-    }
-
-    // FIXME: only needed for the current tactical solution
-    public void setCallbackBinding(WebServiceBinding callbackBinding) {
-        if (this.callbackBinding == null) {
-            this.callbackBinding = callbackBinding;
-        }
-    }
-
-    public void initServiceClient() {
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
@@ -139,15 +104,55 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
 
         // wsBinding.setURI(component.getURI() + "#" + reference.getName());
 
-        // create an Axis2 ServiceClient
-        serviceClient = createServiceClient();
+        if (!wsBinding.isCallback()) {
+            // this is a forward binding, so look for a matching callback binding
+            if (reference.getCallback() != null) {
+                for (org.apache.tuscany.sca.assembly.Binding binding :
+                                          reference.getCallback().getBindings()) {
+                    if (binding instanceof WebServiceBinding) {
+                        // set the first compatible callback binding
+                        setCallbackBinding((WebServiceBinding)binding);
+                        continue;
+                    }
+                }
+            }
+        } else {
+            // this is a callback binding, so look for all matching forward bindings
+            for (org.apache.tuscany.sca.assembly.Binding binding : reference.getBindings()) {
+                if (reference.getBindingProvider(binding) instanceof Axis2ReferenceBindingProvider) {
+                    // set all compatible forward binding providers for this reference
+                    ((Axis2ReferenceBindingProvider)reference.getBindingProvider(binding)).
+                            setCallbackBinding(wsBinding);
+                }
+            }
+        }
+
+        if (tactical) {
+            if (!wsBinding.isCallback()) {
+                serviceClient = createServiceClient();
+            }
+        } else {
+            if (!wsBinding.isCallback()) {
+                axisClient = new Axis2ServiceClient(component, reference, wsBinding, servletHost,
+                                                    messageFactory, callbackBinding);
+            } else {
+                axisProvider = new Axis2ServiceProvider(component, reference, wsBinding, servletHost,
+                                                        messageFactory);
+            }
+        }
     }
 
-    /**
-     * Create an Axis2 ServiceClient
-     */
+    protected void setCallbackBinding(WebServiceBinding callbackBinding) {
+        if (this.callbackBinding == null) {
+            this.callbackBinding = callbackBinding;
+        }
+    }
+
+    //FIXME: only needed for the current tactical solution
     protected ServiceClient createServiceClient() {
         try {
+            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
+            ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
             QName serviceQName = wsBinding.getServiceName();
             String portName = wsBinding.getPortName();
             Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
@@ -163,25 +168,45 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
     }
 
     public void start() {
-        // FIXME: only needed for the current tactical solution
-        for (InvocationChain chain : reference.getRuntimeWire(wsBinding).getInvocationChains()) {
-            Invoker tailInvoker = chain.getTailInvoker();
-            if (tailInvoker instanceof Axis2AsyncBindingInvoker) {
-                RuntimeWire callbackWire = reference.getRuntimeWire(callbackBinding);
-                Operation callbackOperation = findCallbackOperation(callbackBinding.getBindingInterfaceContract());
-                Axis2CallbackInvocationHandler invocationHandler
-                    = new Axis2CallbackInvocationHandler(messageFactory, callbackWire);
-                Axis2ReferenceCallbackTargetInvoker callbackInvoker
-                    = new Axis2ReferenceCallbackTargetInvoker(callbackOperation, callbackWire, invocationHandler);
-                ((Axis2AsyncBindingInvoker)tailInvoker).setCallbackTargetInvoker(callbackInvoker);
+        if (tactical) {
+            //FIXME: only needed for the current tactical solution
+            for (InvocationChain chain : reference.getRuntimeWire(wsBinding).getInvocationChains()) {
+                Invoker tailInvoker = chain.getTailInvoker();
+                if (tailInvoker instanceof Axis2AsyncBindingInvoker) {
+                    RuntimeWire callbackWire = reference.getRuntimeWire(callbackBinding);
+                    Operation callbackOperation = findCallbackOperation(callbackBinding.getBindingInterfaceContract());
+                    Axis2CallbackInvocationHandler invocationHandler
+                        = new Axis2CallbackInvocationHandler(messageFactory, callbackWire);
+                    Axis2ReferenceCallbackTargetInvoker callbackInvoker
+                        = new Axis2ReferenceCallbackTargetInvoker(callbackOperation, callbackWire, invocationHandler);
+                    ((Axis2AsyncBindingInvoker)tailInvoker).setCallbackTargetInvoker(callbackInvoker);
+                }
+            }
+        } else {
+            if (!wsBinding.isCallback()) {
+                axisClient.start();
+            } else {
+                axisProvider.start();
             }
         }
     }
 
     public void stop() {
+        if (tactical) {
+            if (!wsBinding.isCallback()) {
+                closeAxis2Connections();
+            }
+        } else {
+            if (!wsBinding.isCallback()) {
+                axisClient.stop();
+            } else {
+                axisProvider.stop();
+            }
+        }
+    }
 
-        // close all connections that we have initiated, so that the jetty
-        // server
+    private void closeAxis2Connections() {
+        // close all connections that we have initiated, so that the jetty server
         // can be restarted without seeing ConnectExceptions
         HttpClient httpClient = (HttpClient)serviceClient.getServiceContext().getConfigurationContext()
             .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
@@ -207,7 +232,14 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
     }
 
     public Invoker createInvoker(Operation operation) {
+        if (wsBinding.isCallback()) {
+            throw new RuntimeException("Cannot create invoker for a callback binding");
+        }
+        if (!tactical) {
+            return axisClient.createInvoker(operation);
+        }
 
+        //FIXME: remainder of this method's code only needed for the current tactical solution
         Axis2BindingInvoker invoker;
 
         if (reference.getInterfaceContract().getCallbackInterface() == null) {
@@ -233,6 +265,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         return invoker;
     }
 
+    //FIXME: only needed for the current tactical solution
     private Operation findCallbackOperation(InterfaceContract contract) {
         List callbackOperations = contract.getCallbackInterface().getOperations();
         if (callbackOperations.size() != 1) {
@@ -242,6 +275,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         return callbackOperation;
     }
 
+    //FIXME: only needed for the current tactical solution
     /**
      * Create and configure an Axis2BindingInvoker for each operation
      */
@@ -278,6 +312,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         return invoker;
     }
 
+    //FIXME: only needed for the current tactical solution
     protected EndpointReference getPortLocationEPR() {
         String ep = wsBinding.getURI();
         if (ep == null && wsBinding.getPort() != null) {
@@ -292,6 +327,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         return new EndpointReference(ep);
     }
 
+    //FIXME: only needed for the current tactical solution
     protected String getSOAPAction(String operationName) {
         Binding binding = wsBinding.getBinding();
         if (binding != null) {

@@ -30,10 +30,19 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
 
     protected Operation operation;
 
-    private Axis2ServiceBindingProvider provider;
+    private Axis2ServiceProvider provider;
 
-    public Axis2ServiceInMessageReceiver(Axis2ServiceBindingProvider provider, Operation operation) {
+    public Axis2ServiceInMessageReceiver(Axis2ServiceProvider provider, Operation operation) {
         this.provider = provider;
+        this.operation = operation;
+    }
+
+    //FIXME: only needed for the current tactical solution
+    private Axis2ServiceBindingProvider bindingProvider;
+
+    //FIXME: only needed for the current tactical solution
+    public Axis2ServiceInMessageReceiver(Axis2ServiceBindingProvider bindingProvider, Operation operation) {
+        this.bindingProvider = bindingProvider;
         this.operation = operation;
     }
 
@@ -46,10 +55,17 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
-            String conversationID = provider.isConversational() ?  Axis2ServiceBindingProvider.getConversationID(inMC) : null;
-
-            provider.invokeTarget(operation, args, null, conversationID);
-
+            //FIXME: remove tactical code
+            if (bindingProvider != null) {
+                String conversationID = bindingProvider.isConversational() ?
+                                            Axis2ServiceBindingProvider.getConversationID(inMC) : null;
+                bindingProvider.invokeTarget(operation, args, null, conversationID);
+            } else {
+                String conversationID = provider.isConversational() ?
+                                            Axis2ServiceProvider.getConversationID(inMC) : null;
+                String callbackAddress = inMC.getFrom() != null ? inMC.getFrom().getAddress() : null;
+                provider.invokeTarget(operation, args, null, conversationID, callbackAddress);
+            }
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof Exception) {

@@ -32,14 +32,23 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
 
     protected Operation operation;
 
-    private Axis2ServiceBindingProvider provider;
+    private Axis2ServiceProvider provider;
 
-    public Axis2ServiceInOutSyncMessageReceiver() {
-    }
-
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBindingProvider provider, Operation operation) {
+    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceProvider provider, Operation operation) {
         this.provider = provider;
         this.operation = operation;
+    }
+
+    //FIXME: only needed for the current tactical solution
+    private Axis2ServiceBindingProvider bindingProvider;
+
+    //FIXME: only needed for the current tactical solution
+    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBindingProvider bindingProvider, Operation operation) {
+        this.bindingProvider = bindingProvider;
+        this.operation = operation;
+    }
+
+    public Axis2ServiceInOutSyncMessageReceiver() {
     }
 
     @Override
@@ -48,9 +57,19 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
             
-            String conversationID = provider.isConversational() ?  Axis2ServiceBindingProvider.getConversationID(inMC) : null;
-
-            OMElement responseOM = (OMElement) provider.invokeTarget(operation, args, null, conversationID);
+            //FIXME: remove tactical code
+            OMElement responseOM = null;
+            if (bindingProvider != null) {
+                String conversationID = bindingProvider.isConversational() ?
+                                            Axis2ServiceBindingProvider.getConversationID(inMC) : null;
+                responseOM = (OMElement)bindingProvider.invokeTarget(operation, args, null, conversationID);
+            } else {
+                String conversationID = provider.isConversational() ?
+                                            Axis2ServiceProvider.getConversationID(inMC) : null;
+                String callbackAddress = inMC.getFrom() != null ? inMC.getFrom().getAddress() : null;
+                responseOM = (OMElement)provider.invokeTarget(operation, args, null, conversationID,
+                                                              callbackAddress);
+            }
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if(null != responseOM ){
