@@ -27,8 +27,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
@@ -50,18 +48,16 @@ public class HelloWorldServerTestCase extends TestCase{
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
         
-        ModelResolver wsdlContributionResolver = new ModelResolverImpl(cl);
         File wsdlContribLocation = new File("../contrib-wsdl/target/classes");
         URL wsdlContribURL = wsdlContribLocation.toURL();
-        Contribution wsdlContribution = contributionService.contribute("http://import-export/contrib-wsdl", wsdlContribURL, wsdlContributionResolver, false);
+        Contribution wsdlContribution = contributionService.contribute("http://import-export/contrib-wsdl", wsdlContribURL, false);
         for (Composite deployable : wsdlContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
         
-        ModelResolver helloWorldContributionResolver = new ModelResolverImpl(cl);
         File helloWorldContribLocation = new File("./target/classes/");
         URL helloWorldContribURL = helloWorldContribLocation.toURL();
-        Contribution consumerContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, helloWorldContributionResolver, false);
+        Contribution consumerContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : consumerContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }

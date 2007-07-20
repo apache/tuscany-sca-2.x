@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class ExtensibleModelResolver extends DefaultModelResolver implements ModelResolver {
@@ -35,6 +34,18 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
         initializeModelResolverInstances();
     }
     
+    private ModelResolver getResolverInstance(Class<?> modelType) {
+        Class<?>[] classes = modelType.getInterfaces();
+        for (Class<?> c : classes) {
+            ModelResolver resolverInstance = resolverInstances.get(c);
+            if (resolverInstance != null) {
+                return resolverInstance;
+            }
+        }
+        
+        return resolverInstances.get(modelType);
+    }
+    
     private void initializeModelResolverInstances() {
         for (Class<?> resolverType : resolverRegistry.getResolverTypes()) {
             Class<? extends ModelResolver> resolverInstanceType = resolverRegistry.getResolver(resolverType);
@@ -43,7 +54,7 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
             try {
                 Constructor constructor = resolverInstanceType.getConstructor(ClassLoader.class);
                 if (constructor != null) {
-                    resolverInstance = (ModelResolver) constructor.newInstance(this.classLoader);
+                    resolverInstance = (ModelResolver) constructor.newInstance(this.classLoader.get());
                 } else {
                     resolverInstance = (ModelResolver) resolverInstanceType.newInstance();
                 }
@@ -57,7 +68,7 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
     }
     
     public void addModel(Object resolved) {
-        ModelResolver resolver = resolverInstances.get(resolved.getClass());
+        ModelResolver resolver = getResolverInstance(resolved.getClass());
         if (resolver != null) {
             resolver.addModel(resolved);
         } else {
@@ -66,7 +77,7 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
     }
 
     public Object removeModel(Object resolved) {
-        ModelResolver resolver = resolverInstances.get(resolved.getClass());
+        ModelResolver resolver = getResolverInstance(resolved.getClass());
         if (resolver != null) {
             return resolver.removeModel(resolved);
         } else {
@@ -75,7 +86,7 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
     }
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        ModelResolver resolver = resolverInstances.get(modelClass);
+        ModelResolver resolver = getResolverInstance(modelClass);
         if (resolver != null) {
             return resolver.resolveModel(modelClass, unresolved);
         } else {

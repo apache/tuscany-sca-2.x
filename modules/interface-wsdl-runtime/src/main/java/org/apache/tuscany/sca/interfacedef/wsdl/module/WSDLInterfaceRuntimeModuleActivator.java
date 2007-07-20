@@ -21,15 +21,18 @@ package org.apache.tuscany.sca.interfacedef.wsdl.module;
 
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 
 /**
  * @version $Rev$ $Date$
@@ -55,6 +58,9 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
         // Register .wsdl document processor 
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessors.addArtifactProcessor(new WSDLDocumentProcessor(wsdlFactory, null));
+        
+        ModelResolverExtensionPoint resolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
+        resolvers.addResolver(WSDLDefinition.class, WSDLModelResolver.class);
     }
 
     public void stop(ExtensionPointRegistry registry) {
