@@ -1189,6 +1189,13 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
                                 // FIXME: [rfeng] Set the service to promoted
                                 newComponentService.setService(promotedService.getService());
+                                
+                                // Create a self-reference for the promoted service
+                                ComponentReference selfRef = createSelfReference(promotedComponent, newComponentService);
+                                Binding binding = resolveBindings(selfRef, newComponentService);
+                                selfRef.getBindings().clear();
+                                selfRef.getBindings().add(binding);
+                                selfRef.getTargets().clear();
 
                                 // Change the composite service to now promote the newly
                                 // created component service directly
@@ -1553,20 +1560,33 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      */
     private void createSelfReferences(Component component) {
         for (ComponentService service : component.getServices()) {
-            ComponentReference componentReference = assemblyFactory.createComponentReference();
-            componentReference.setName("$self$." + service.getName());
-            componentReference.getBindings().addAll(service.getBindings());
-            componentReference.setCallback(service.getCallback());
-            ComponentService componentService = assemblyFactory.createComponentService();
-            componentService.setName(component.getName() + "/" + service.getName());
-            componentService.setUnresolved(true);
-            componentReference.getTargets().add(componentService);
-            componentReference.getPolicySets().addAll(service.getPolicySets());
-            componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
-            componentReference.setInterfaceContract(service.getInterfaceContract());
-            componentReference.setMultiplicity(Multiplicity.ONE_ONE);
-            component.getReferences().add(componentReference);
+            createSelfReference(component, service);
         }
+    }
+
+    /**
+     * Create a self-reference for a component service
+     * @param component
+     * @param service
+     */
+    private ComponentReference createSelfReference(Component component, ComponentService service) {
+        ComponentReference componentReference = assemblyFactory.createComponentReference();
+        componentReference.setName("$self$." + service.getName());
+        componentReference.getBindings().addAll(service.getBindings());
+        componentReference.setCallback(service.getCallback());
+        /*
+        ComponentService componentService = assemblyFactory.createComponentService();
+        componentService.setName(component.getName() + "/" + service.getName());
+        componentService.setUnresolved(true);
+        componentReference.getTargets().add(componentService);
+        */
+        componentReference.getTargets().add(service);
+        componentReference.getPolicySets().addAll(service.getPolicySets());
+        componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
+        componentReference.setInterfaceContract(service.getInterfaceContract());
+        componentReference.setMultiplicity(Multiplicity.ONE_ONE);
+        component.getReferences().add(componentReference);
+        return componentReference;
     }
 
     /**
