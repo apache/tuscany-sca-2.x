@@ -61,9 +61,6 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
             long maxIdleTime;
             String maxAgeVal = conversation.maxAge();
             String maxIdleTimeVal = conversation.maxIdleTime();
-            if (maxAgeVal.length() > 0 && maxIdleTimeVal.length() > 0) {
-                throw new InvalidConversationalImplementation("Max idle time and age both specified");
-            }
             try {
                 if (maxAgeVal.length() > 0) {
                     maxAge = convertTimeMillis(maxAgeVal);

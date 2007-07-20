@@ -52,16 +52,6 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(-1, type.getMaxIdleTime());
     }
 
-    public void testBadFooBoth() throws Exception {
-        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        try {
-            processor.visitClass(BadFooBoth.class, type);
-            fail();
-        } catch (InvalidConversationalImplementation e) {
-            // expected
-        }
-    }
-
     public void testImplicitScope() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(ImplicitFooScope.class, type);
