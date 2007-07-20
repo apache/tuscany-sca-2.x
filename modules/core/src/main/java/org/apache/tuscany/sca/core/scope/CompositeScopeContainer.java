@@ -41,7 +41,7 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         wrapper = null;
     }
 
-    public InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException {
+    public synchronized InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException {
         if (wrapper == null) {
             wrapper = createInstanceWrapper();
             wrapper.start();
