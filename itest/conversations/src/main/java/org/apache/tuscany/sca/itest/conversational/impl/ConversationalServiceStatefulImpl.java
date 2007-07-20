@@ -41,6 +41,7 @@ import org.osoa.sca.annotations.Service;
 @Service(ConversationalService.class)
 @Scope("CONVERSATION")
 @ConversationAttributes(maxAge="10 minutes",
+                        maxIdleTime="5 minutes",
                         singlePrincipal=false)
 public class ConversationalServiceStatefulImpl implements ConversationalService {
 
@@ -50,15 +51,25 @@ public class ConversationalServiceStatefulImpl implements ConversationalService 
    // @Callback - not working yet
     protected ConversationalCallback conversationalCallback; 
     
-    private int count;
+    // local count - accumulates during the conversation
+    private int count = 0;
+    
+    // a member variable that records whether init processing happens
+    private static int initValue = 0;
+    
+    // lets us check the init value after class instances have gone
+    public static int getInitValue(){
+        return initValue;
+    }
 
+    @Init
     public void init(){
-        count = 999;
+        initValue = initValue - 5;
     }
     
+    @Destroy
     public void destroy(){
-        // how do we know that destroy is called?
-        count = 0;
+        initValue = initValue + 10;
     }
     
     public void initializeCount(int count){

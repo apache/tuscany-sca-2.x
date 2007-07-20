@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalReferenceClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.Destroy;
@@ -42,6 +43,7 @@ import org.osoa.sca.annotations.Service;
 @Service(interfaces={ConversationalClient.class})
 @Scope("CONVERSATION")
 @ConversationAttributes(maxAge="10 minutes",
+                        maxIdleTime="5 minutes",
                         singlePrincipal=false)
 public class ConversationalClientStatefulImpl implements ConversationalClient, ConversationalCallback {
     
@@ -55,24 +57,58 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
     protected ConversationalReferenceClient conversationalReferenceClient;
     
     private int clientCount;
-    private int callbackCount;
+    private int callbackCount;  
 	
     // From ConversationalClient
-	public int runConversation(){
+	public int runConversationFromInjectedReference(){
 	    conversationalService.initializeCount(1);
 	    conversationalService.incrementCount();
-	    int count = conversationalService.retrieveCount();
+	    clientCount = conversationalService.retrieveCount();
 	    conversationalService.endConversation();
 	    
-	    return count;
+	    return clientCount;
 	}
-	public int runConversationCallback(){
+    public int runConversationFromServiceReference(){
+        ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
+                                                                                                        "conversationalService");
+        ConversationalService callableReference = serviceReference.getService();
+        
+        callableReference.initializeCount(1);
+        callableReference.incrementCount();
+        clientCount = callableReference.retrieveCount();
+        callableReference.endConversation();
+        
+        serviceReference.getConversation().end();
+        
+        return clientCount;
+    }	
+    public int runConversationWithUserDefinedConversationId(){
+        ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
+                                                                                                        "conversationalService");
+        serviceReference.setConversationID("MyConversation");
+        
+        ConversationalService callableReference = serviceReference.getService();
+        
+        callableReference.initializeCount(1);
+        callableReference.incrementCount();
+        clientCount = callableReference.retrieveCount();
+        callableReference.endConversation();
+        
+        serviceReference.getConversation().end();
+        
+        return clientCount;
+    }    
+    public int runConversationCheckingScope(){
+        // run a conversation
+        return runConversationFromInjectedReference();
+        
+        // test will then use a static method to find out how many times 
+        // init/destroy were called
+    }    
+	public int runConversationWithCallback(){
         return clientCount;
     } 
-	public int runConversationFromReference(){
-        return clientCount;
-    }
-	public int runConversationPassingReference(){
+	public int runConversationHavingPassedReference(){
         return clientCount;
     }
 	public int runConversationError(){

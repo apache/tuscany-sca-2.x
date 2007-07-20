@@ -30,10 +30,12 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface ConversationalClient { 
 	
-	public int runConversation(); 	
-	public int runConversationCallback(); 
-	public int runConversationFromReference();
-	public int runConversationPassingReference();
+	public int runConversationFromInjectedReference(); 	
+	public int runConversationFromServiceReference();
+	public int runConversationWithUserDefinedConversationId();
+	public int runConversationCheckingScope();
+	public int runConversationWithCallback(); 
+	public int runConversationHavingPassedReference();
 	public int runConversationError();
 	public int runConversationAgeTimeout();
 	public int runConversationIdleTimeout();
