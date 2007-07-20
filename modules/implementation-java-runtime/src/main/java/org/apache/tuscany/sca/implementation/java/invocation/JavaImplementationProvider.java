@@ -95,8 +95,8 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                 }
             }
 
-            if (implementation.getConversationIDMember() != null) {
-                componentInfo.addConversationIDFactory(implementation.getConversationIDMember());
+            if (implementation.getConversationIDMembers().size() > 0) {
+                componentInfo.addConversationIDFactories(implementation.getConversationIDMembers());
             }
 
             componentInfo.configureProperties(component.getProperties());
