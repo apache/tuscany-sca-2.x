@@ -87,7 +87,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         if (conversationID == null) {
             return;
         }
-        type.setConversationIDMember(method);
+        type.addConversationIDMember(method);
     }
 
     public void visitField(Field field,
@@ -96,7 +96,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         if (conversationID == null) {
             return;
         }
-        type.setConversationIDMember(field);
+        type.addConversationIDMember(field);
     }
 
     protected long convertTimeMillis(String expr) throws NumberFormatException {

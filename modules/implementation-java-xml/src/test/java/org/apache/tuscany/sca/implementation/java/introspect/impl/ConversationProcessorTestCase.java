@@ -81,16 +81,16 @@ public class ConversationProcessorTestCase extends TestCase {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Field field = FooWithConversationIDField.class.getDeclaredField("conversationID");
         processor.visitField(field, type);
-        assertNotNull(type.getConversationIDMember());
-        assertEquals(field, type.getConversationIDMember());
+        assertNotNull(type.getConversationIDMembers());
+        assertEquals(field, type.getConversationIDMembers().get(0));
     }
 
     public void testSetConversationIDMethod() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = FooWithConversationIDMethod.class.getDeclaredMethods()[0];
         processor.visitMethod(method, type);
-        assertNotNull(type.getConversationIDMember());
-        assertEquals(method, type.getConversationIDMember());
+        assertNotNull(type.getConversationIDMembers());
+        assertEquals(method, type.getConversationIDMembers().get(0));
     }
 
     @Scope("CONVERSATION")
