@@ -19,25 +19,24 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 
-           name="HelloWorldOM">
+           name="HelloWorldOM-Merged">
 
-    <service name="helloWorld" promote="HelloWorldService">
-        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
+    <service name="helloWorld" promote="HelloWorldMergedService">
+        <interface.wsdl interface="http://helloworld-om-merged#wsdl.interface(HelloWorld)" />
         <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
     </service>
-    
-    <component name="HelloWorldService">
+
+    <component name="HelloWorldMergedService">
 		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldOMService"/>
     </component>
-    
-    <component name="HelloWorldComponent">
+
+    <component name="HelloWorldWSDLMergedComponent">
 		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldOMComponent"/>
-        <reference name="helloWorldWS" />
     </component>
-    
-    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
-        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-om#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+ 
+    <reference name="mergedHelloWorldWS" promote="HelloWorldWSDLMergedComponent/helloWorldWS">
+        <interface.wsdl interface="http://helloworld-om-merged#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld-om-merged#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
                     uri="http://localhost:8085/HelloWorldService/helloWorld" />
     </reference>
 

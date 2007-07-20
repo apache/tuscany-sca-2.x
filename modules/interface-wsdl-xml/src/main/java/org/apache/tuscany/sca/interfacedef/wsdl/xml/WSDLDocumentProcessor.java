@@ -23,14 +23,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.wsdl.Definition;
+import javax.wsdl.Import;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -54,6 +61,8 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     private javax.wsdl.factory.WSDLFactory wsdlFactory;
     private ExtensionRegistry wsdlExtensionRegistry;
     private WSDLFactory factory;
+    
+    private Map<String, WSDLDefinition> loadedDefinitions = new Hashtable<String, WSDLDefinition>();
 
     /**
      * Implementation of a WSDL locator.
@@ -128,6 +137,42 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
         wsdlExtensionRegistry = this.wsdlFactory.newPopulatedExtensionRegistry();
     }
     
+    private void readInlineSchemas(Definition definition, WSDLDefinition wsdlDefinition) {
+        Types types = definition.getTypes();
+        if (types != null) {
+            wsdlDefinition.getInlinedSchemas().setSchemaResolver(new URIResolverImpl());
+            for (Object ext : types.getExtensibilityElements()) {
+                if (ext instanceof Schema) {
+                    Element element = ((Schema)ext).getElement();
+
+                    // TODO: fix to make includes in imported
+                    //       schema work. The XmlSchema library was crashing
+                    //       because the base uri was not set. This doesn't
+                    //       affect imports. Need to check that this
+                    //       is the right approach for XSDs included by a
+                    //       XSD which is itself imported inline in a WSDL
+                    XmlSchemaCollection schemaCollection = wsdlDefinition.getInlinedSchemas();            
+                    schemaCollection.setBaseUri(((Schema)ext).getDocumentBaseURI());
+
+                    wsdlDefinition.getInlinedSchemas().read(element, element.getBaseURI());
+                }
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void mergeDefinition(Definition existingDefn, Definition definition) {
+        if (existingDefn != null ) {
+            //merge into existing defn
+            existingDefn.getImports().putAll(definition.getImports());
+            existingDefn.getMessages().putAll(definition.getMessages());
+            existingDefn.getPortTypes().putAll(definition.getPortTypes());
+            existingDefn.getBindings().putAll(definition.getBindings());
+            existingDefn.getServices().putAll(definition.getServices());
+        } 
+    }
+    
+    @SuppressWarnings("unchecked")
     public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
 
@@ -140,30 +185,29 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
             WSDLLocatorImpl locator = new WSDLLocatorImpl(artifactURL, is);
             Definition definition = reader.readWSDL(locator);
             
-            WSDLDefinition wsdlDefinition = factory.createWSDLDefinition();
-            wsdlDefinition.setDefinition(definition);
+            WSDLDefinition wsdlDefinition = loadedDefinitions.get(definition.getTargetNamespace());
+            if ( wsdlDefinition != null ) {
+                mergeDefinition(wsdlDefinition.getDefinition(), definition);
+            } else {
+                wsdlDefinition = factory.createWSDLDefinition();
+                wsdlDefinition.setDefinition(definition);
+                loadedDefinitions.put(definition.getTargetNamespace(), wsdlDefinition);
+            }
             
-            // get base uri for any relative schema includes
-
-            
-            // Read inline schemas 
-            Types types = definition.getTypes();
-            if (types != null) {
-                wsdlDefinition.getInlinedSchemas().setSchemaResolver(new URIResolverImpl());
-                for (Object ext : types.getExtensibilityElements()) {
-                    if (ext instanceof Schema) {
-                        Element element = ((Schema)ext).getElement();
-
-                        // TODO: fix to make includes in imported
-                        //       schema work. The XmlSchema library was crashing
-                        //       because the base uri was not set. This doesn't
-                        //       affect imports. Need to check that this
-                        //       is the right approach for XSDs included by a
-                        //       XSD which is itself imported inline in a WSDL
-                        XmlSchemaCollection schemaCollection = wsdlDefinition.getInlinedSchemas();            
-                        schemaCollection.setBaseUri(((Schema)ext).getDocumentBaseURI());
-
-                        wsdlDefinition.getInlinedSchemas().read(element, element.getBaseURI());
+            //Read inline schemas 
+            readInlineSchemas(definition, wsdlDefinition);
+             
+            //read the inline schemas for wsdl imports
+            if ( definition.getImports().size() > 0 ) {
+                Iterator<Vector<Import>> importsIterator = definition.getImports().values().iterator();
+                Vector<Import> imports = null;
+                Import anImport = null;
+                while (importsIterator.hasNext()) {
+                    imports = importsIterator.next();
+                    for ( int count = 0 ; count < imports.size() ; ++count ) {
+                        anImport = imports.elementAt(count);
+//                      Read inline schemas 
+                        readInlineSchemas(anImport.getDefinition(), wsdlDefinition);
                     }
                 }
             }
