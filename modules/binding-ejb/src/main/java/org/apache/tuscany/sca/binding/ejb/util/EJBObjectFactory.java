@@ -52,7 +52,7 @@ public final class EJBObjectFactory {
      * of the pregenerated EJB stub classes be avaiable in the classpath.
      * <p>
      */
-    public static Object createStub(NamingEndpoint namingEndpoint) throws NamingException, RemoteException,
+    public static Object createStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) throws NamingException, RemoteException,
         CreateException {
 
         EJBLocator locator = namingEndpoint.getLocator();
@@ -63,7 +63,7 @@ public final class EJBObjectFactory {
          * type, otherwise, "org.omg.stub.java.rmi._Remote_Stub" or
          * "org.omg.stub.javax.ejb._EJBHome_Stub"
          */
-        Object stub = getEJBStub(homeObject);
+        Object stub = getEJBStub(homeObject, ejbInterface);
         // Cache dynamic stub only
         return stub;
     }
@@ -74,10 +74,26 @@ public final class EJBObjectFactory {
      * @return
      * @throws RemoteException
      */
-    protected static Object getEJBStub(Object homeObject) throws RemoteException, CreateException {
+    protected static Object getEJBStub(Object homeObject, InterfaceInfo ejbInterface) throws RemoteException, CreateException {
 
         Object stub = null;
-        if (homeObject instanceof EJBLocalHome) {
+
+        // Get the business interface of the EJB 
+        Class ejbInterfaceClass = null;
+        try
+        {
+            ejbInterfaceClass = Thread.currentThread().getContextClassLoader().loadClass(ejbInterface.getName());
+        }
+        catch (ClassNotFoundException e)
+        {
+            // ignore
+        }
+        
+        if (ejbInterfaceClass != null && ejbInterfaceClass.isInstance(homeObject))
+        {
+            // EJB 3
+            stub = homeObject;
+        } else if (homeObject instanceof EJBLocalHome) {
             // Local EJB
             stub = createEJBLocalObject(homeObject);
         } else {
