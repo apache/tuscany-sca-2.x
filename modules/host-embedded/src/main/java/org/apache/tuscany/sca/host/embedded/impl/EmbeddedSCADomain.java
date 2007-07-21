@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -121,6 +122,14 @@ public class EmbeddedSCADomain extends SCADomain {
          */
         public Component getComponent(String componentName){
             return (Component) components.get(componentName);
+        }
+        
+        /**
+         * Returns the list of components in the domain.
+         * @return
+         */
+        public List<Component> getComponents() {
+            return domainComposite.getComponents();
         }
         
         /**
