@@ -114,7 +114,7 @@ public class JavaTargetInvoker implements TargetInvoker {
             scopeContainer.returnWrapper(wrapper, contextId);
             if (sequence == ConversationSequence.CONVERSATION_END) {
                 // if end conversation, remove resource
-                scopeContainer.remove();
+                scopeContainer.remove(contextId);
             }
             return ret;
         } catch (InvocationTargetException e) {
