@@ -27,11 +27,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
+import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetResolutionException;
 import org.apache.tuscany.sca.store.Store;
 import org.osoa.sca.ConversationEndedException;
@@ -127,14 +130,30 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
 
     protected InstanceWrapper getInstanceWrapper(boolean create,Object contextId) throws TargetResolutionException {    
         
+        // we might get a null context if the target service has
+        // conversational scope but only its callback interface 
+        // is conversational. In this case we need to invent a 
+        // conversation Id here to store the service against
+        // and populate the thread context
+        if (contextId == null){
+            contextId = new String("1234");
+            Message msgContext = ThreadMessageContext.getMessageContext();
+            
+            if (msgContext != null){
+                msgContext.setConversationID(contextId.toString());
+            }
+            
+        }
+        
         InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(contextId);
+        
         if (anInstanceWrapper == null && !create)
                 return null;
         
         if (anInstanceWrapper == null) 
         {
-         anInstanceWrapper = new InstanceLifeCycleWrapper(contextId);  
-         this.instanceLifecycleCollection.put(contextId, anInstanceWrapper);
+            anInstanceWrapper = new InstanceLifeCycleWrapper(contextId);  
+            this.instanceLifecycleCollection.put(contextId, anInstanceWrapper);
         }
         // If an existing intsance is found return it only if its not expired and update its 
         // last referenced time. 
@@ -161,11 +180,11 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     public void remove() throws PersistenceException {
     }
     
-    // The remove is invoked when a conversation is explcitly ended.  This can occur by using the @EndsConversation or API.  
+    // The remove is invoked when a conversation is explicitly ended.  This can occur by using the @EndsConversation or API.  
     // In this case the instance is immediately removed.  A new conversation will be started on the next operation
     // associated with this conversationId's service reference. 
     //
-    public void remove(Object contextId) {
+    public void remove(Object contextId) throws TargetDestructionException {
         if (this.instanceLifecycleCollection.containsKey(contextId)) 
         {
          InstanceLifeCycleWrapper anInstanceLifeCycleWrapper = this.instanceLifecycleCollection.get(contextId);
@@ -173,9 +192,10 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
          anInstanceLifeCycleWrapper.removeInstanceWrapper();
         } 
     }  
+       
     
     /*
-     *  This ia an inner class that keeps track of the lifecycle of a conversation scoped
+     *  This is an inner class that keeps track of the lifecycle of a conversation scoped
      *  implementation instance.   
      * 
      */
@@ -223,12 +243,14 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
           return ctx;
         }
         
-        private void removeInstanceWrapper()
+        private void removeInstanceWrapper() throws TargetDestructionException 
         {
+          InstanceWrapper ctx =  getInstanceWrapper();
+          ctx.stop();
           wrappers.remove(this.instanceId);       
         }
         
-        private void createInstance()throws TargetResolutionException 
+        private void createInstance() throws TargetResolutionException 
         {
             InstanceWrapper instanceWrapper = createInstanceWrapper();
             instanceWrapper.start();
@@ -261,8 +283,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
             InstanceLifeCycleWrapper anInstanceLifeCycleWrapper = anEntry.getValue();
             if (anInstanceLifeCycleWrapper.isExpired())
             {
-              anInstanceLifeCycleWrapper.removeInstanceWrapper();
-              this.instanceLifecycleCollection.remove(anInstanceLifeCycleWrapper.instanceId);
+              try {
+                  anInstanceLifeCycleWrapper.removeInstanceWrapper();
+                  this.instanceLifecycleCollection.remove(anInstanceLifeCycleWrapper.instanceId);
+              } catch (Exception ex) {
+                  // TODO - what to do with any asynchronous exceptions?
+              }
             }
           }             
         }

@@ -22,7 +22,10 @@ package org.apache.tuscany.sca.itest.conversational;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulImpl;
+import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl;
+import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +35,8 @@ public class ConversationalTest {
     private SCADomain domain;
     private ConversationalClient conversationalStatelessClientStatelessService;
     private ConversationalClient conversationalStatelessClientStatefulService;
+    private ConversationalClient conversationalStatefulClientStatelessService;
+    private ConversationalClient conversationalStatefulClientStatefulService;    
 
     @Before
     public void setUp() throws Exception {
@@ -43,62 +48,151 @@ public class ConversationalTest {
         conversationalStatelessClientStatefulService  = domain.getService(ConversationalClient.class,
                                                                           "ConversationalStatelessClientStatefulService");
 
+        conversationalStatefulClientStatelessService  = domain.getService(ConversationalClient.class,
+                                                                          "ConversationalStatefulClientStatelessService");
+
+        conversationalStatefulClientStatefulService   = domain.getService(ConversationalClient.class,
+                                                                          "ConversationalStatefulClientStatefulService");
+
+
+        // reset the place where we record the sequence of calls passing
+        // through each component instance
+        ConversationalServiceStatelessImpl.calls = new StringBuffer();
+        ConversationalServiceStatefulImpl.calls  = new StringBuffer();
+        ConversationalClientStatelessImpl.calls  = new StringBuffer();         
+        ConversationalClientStatefulImpl.calls   = new StringBuffer();
+               
     }
 
     @After
     public void tearDown() throws Exception {
         domain.close();
     }
-   
-    // Stateful service tests
+  
+    // stateless client stateful service tests
+    // =======================================
     @Test
-    public void testStatefulConversationFromInjectedReference() {
+    public void testStatelessStatefulConversationFromInjectedReference() {
         int count = conversationalStatelessClientStatefulService.runConversationFromInjectedReference();
         Assert.assertEquals(2, count);
     } 
     
     @Test
-    public void testStatefulConversationFromServiceReference() {
+    public void testStatelessStatefulConversationFromServiceReference() {
         int count = conversationalStatelessClientStatefulService.runConversationFromServiceReference();
         Assert.assertEquals(2, count);
     }          
     
     @Test
-    public void testStatefulConversationWithUserDefinedConversationId() {
+    public void testStatelessStatefulConversationWithUserDefinedConversationId() {
         int count = conversationalStatelessClientStatefulService.runConversationWithUserDefinedConversationId();
         Assert.assertEquals(2, count);
     }    
     
     @Test
-    public void testStatefulConversationCheckingScope() {
+    public void testStatelessStatefulConversationCheckingScope() {
         int count = conversationalStatelessClientStatefulService.runConversationCheckingScope();
-        int initCount = ConversationalServiceStatefulImpl.getInitValue();
-        Assert.assertEquals(5, initCount);
-    }    
+        Assert.assertEquals("init,initializeCount,incrementCount,retrieveCount,endConversation,destroy,", 
+                            ConversationalServiceStatefulImpl.calls.toString());
+    }  
     
-    // Stateless service tests
     @Test
-    public void testStatelessConversationFromInjectedReference() {
+    public void testStatelessStatefulConversationWithCallback() {
+        int count = conversationalStatelessClientStatefulService.runConversationWithCallback();
+        Assert.assertEquals(0, count);
+               
+        Assert.assertEquals("init,runConversationWithCallback,init,initializeCount,destroy,init,incrementCount,destroy,init,retrieveCount,destroy,init,endConversation,destroy,destroy,", 
+                            ConversationalClientStatelessImpl.calls.toString());        
+    }         
+    
+    // stateless client stateless service tests
+    // ========================================
+    @Test
+    public void testStatelessStatelessConversationFromInjectedReference() {
         int count = conversationalStatelessClientStatelessService.runConversationFromInjectedReference();
         Assert.assertEquals(2, count);
     } 
     
     @Test
-    public void testStatelessConversationFromServiceReference() {
+    public void testStatelessStatelessConversationFromServiceReference() {
         int count = conversationalStatelessClientStatelessService.runConversationFromServiceReference();
         Assert.assertEquals(2, count);
     }    
     
     @Test
-    public void testStatelessConversationWithUserDefinedConversationId() {
+    public void testStatelessStatelessConversationWithUserDefinedConversationId() {
         int count = conversationalStatelessClientStatelessService.runConversationWithUserDefinedConversationId();
         Assert.assertEquals(2, count);
     }    
     
     @Test
-    public void testStatelessConversationCheckingScope() {
+    public void testStatelessStatelessConversationCheckingScope() {
         int count = conversationalStatelessClientStatelessService.runConversationCheckingScope();
-        int initCount = ConversationalServiceStatefulImpl.getInitValue();
-        Assert.assertEquals(15, initCount);
+        Assert.assertEquals("init,initializeCount,destroy,init,incrementCount,destroy,init,retrieveCount,destroy,init,endConversation,destroy,", 
+                            ConversationalServiceStatelessImpl.calls.toString());
     }       
+
+    // stateful client stateful service tests  
+    // ======================================
+    @Test
+    public void testStatefulStatefulConversationFromInjectedReference() {
+        int count = conversationalStatefulClientStatefulService.runConversationFromInjectedReference();
+        Assert.assertEquals(2, count);
+    } 
+    
+    @Test
+    public void testStatefulStatefulConversationFromServiceReference() {
+        int count = conversationalStatefulClientStatefulService.runConversationFromServiceReference();
+        Assert.assertEquals(2, count);
+    }          
+    
+    @Test
+    public void testStatefulStatefulConversationWithUserDefinedConversationId() {
+        int count = conversationalStatefulClientStatefulService.runConversationWithUserDefinedConversationId();
+        Assert.assertEquals(2, count);
+    }    
+    
+    @Test
+    public void testStatefulStatefulConversationCheckingScope() {
+        int count = conversationalStatefulClientStatefulService.runConversationCheckingScope();
+        Assert.assertEquals("init,initializeCount,incrementCount,retrieveCount,endConversation,destroy,", 
+                            ConversationalServiceStatefulImpl.calls.toString());
+    }  
+
+    @Test
+    public void testStatefulStatefulConversationWithCallback() {
+        int count = conversationalStatefulClientStatefulService.runConversationWithCallback();
+        Assert.assertEquals(4, count);
+               
+        Assert.assertEquals("init,runConversationWithCallback,initializeCount,incrementCount,retrieveCount,endConversation,destroy,", 
+                            ConversationalClientStatefulImpl.calls.toString());        
+    }      
+    
+    // stateful client stateless service tests  
+    // =======================================
+    @Test
+    public void testStatefulStatelessConversationFromInjectedReference() {
+        int count = conversationalStatefulClientStatelessService.runConversationFromInjectedReference();
+        Assert.assertEquals(2, count);
+    } 
+    
+    @Test
+    public void testStatefulStatelessConversationFromServiceReference() {
+        int count = conversationalStatefulClientStatelessService.runConversationFromServiceReference();
+        Assert.assertEquals(2, count);
+    }    
+    
+    @Test
+    public void testStatefulStatelessConversationWithUserDefinedConversationId() {
+        int count = conversationalStatefulClientStatelessService.runConversationWithUserDefinedConversationId();
+        Assert.assertEquals(2, count);
+    }    
+    
+    @Test
+    public void testStatefulStatelessConversationCheckingScope() {
+        int count = conversationalStatefulClientStatelessService.runConversationCheckingScope();
+        Assert.assertEquals("init,initializeCount,destroy,init,incrementCount,destroy,init,retrieveCount,destroy,init,endConversation,destroy,", 
+                            ConversationalServiceStatelessImpl.calls.toString());
+    }       
+        
 }
