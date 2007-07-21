@@ -34,10 +34,8 @@ import org.osoa.sca.annotations.Remotable;
 @Conversational
 public interface ConversationalCallback {
 	
-    @Init
     public void init();
     
-    @Destroy
     public void destroy();
     
     public void initializeCount(int count);

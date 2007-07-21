@@ -56,25 +56,51 @@ public abstract class AbstractInvocationHandler {
     protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
 
         Message msgContext = ThreadMessageContext.getMessageContext();
+        Object  msgContextConversationId = msgContext.getConversationID();
+        
         Message msg = messageFactory.createMessage();
                
+        // make sure that the conversation id is set so it can be put in the 
+        // outgoing messages. The id can come from one of three places
+        // 1 - Generated here (if the source is stateless)
+        // 2 - Specified by the application (through a service reference)
+        // 3 - from the message context (if the source is stateful)
+        //
+        // TODO - number 3 seems a little shaky as we end up propogating
+        //        a conversationId through the source component. If we don't
+        //        do this though we can't correlate the callback call with the
+        //        current target instance. Currently specifying an application
+        //        conversationId in this case also means that the callback
+        //        can't be correlated with the source component instance 
         if (conversational) {
             if (conversation == null){
-                // the conversation info is not being shared 
-                // with a service reference object so create a
-                // new one here
+                // this is a callback so create a conversation to 
+                // hold onto the conversation state for the lifetime of the
+                // stateful callback
                 conversation = new ConversationImpl();
             }
             Object conversationId = conversation.getConversationID();
             
-            // create automatic conversation id if one doesn't exist 
+            // create a conversation id if one doesn't exist 
             // already. This could be because we are in the middle of a
             // conversation or the conversation hasn't started but the
             if ((conversationStarted == false) && (conversationId == null)) {
-                conversationId = createConversationID();
+                
+                // It the current component is already in a conversation
+                // the use this just in case this message has a stateful 
+                // callback. In which case the callback will come back
+                // to the correct instance. 
+                // TODO - need a better mechanism for identifyng the 
+                //        stateful callback case
+                if (msgContextConversationId == null) {
+                    conversationId = createConversationID();
+                } else {
+                    conversationId = msgContextConversationId;
+                }
+
                 conversation.setConversationID(conversationId);
             }
-            //TODO - assuming that the conversation ID is a strin here when
+            //TODO - assuming that the conversation ID is a string here when
             //       it can be any object that is serializable to XML
             msg.setConversationID((String)conversationId);
         }

@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.conversational;
 
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EndsConversation;
@@ -32,6 +33,7 @@ import org.osoa.sca.annotations.Remotable;
  */
 @Remotable
 @Conversational
+@Callback(ConversationalCallback.class)
 public interface ConversationalService {
 	
     public void init();

@@ -50,65 +50,67 @@ public class ConversationalServiceStatelessImpl implements ConversationalService
     @ConversationID
     protected String conversationId;
     
-    // @Callback - not working yet
+    @Callback
     protected ConversationalCallback conversationalCallback; 
     
     // static area in which to hold conversational data
     private static HashMap<String, Integer> conversationalState = new HashMap<String, Integer>();
-
-
-    // a member variable that records whether init processing happens
-    private static int initValue = 0;
-    
-    // lets us check the init value after class instances have gone
-    public static int getInitValue(){
-        return initValue;
-    }
-
+   
+    // a static member variable that records the number of times this service is called
+    public static StringBuffer calls = new StringBuffer();
+   
     @Init
     public void init(){
-        initValue = initValue - 5;
+        calls.append("init,");
     }
     
     @Destroy
     public void destroy(){
-        initValue = initValue + 10;
+        calls.append("destroy,");
     }
     
     public void initializeCount(int count){
+        calls.append("initializeCount,");
         Integer conversationalCount = new Integer(count); 
         conversationalState.put(conversationId, conversationalCount);
     }
     
     public void incrementCount(){
+        calls.append("incrementCount,");
         Integer conversationalCount = conversationalState.get(conversationId);
         conversationalCount++;
         conversationalState.put(conversationId, conversationalCount);
     }
     
     public int retrieveCount(){
+        calls.append("retrieveCount,");
         return conversationalState.get(conversationId).intValue();
     }
     
     public void initializeCountCallback(int count){
+        calls.append("initializeCountCallback,");
         initializeCount(count);
         conversationalCallback.initializeCount(count);
     }
     
     public void incrementCountCallback(){
+        calls.append("incrementCountCallback,");
         incrementCount();
         conversationalCallback.incrementCount();
     }
     
     public int retrieveCountCallback(){
+        calls.append("retrieveCountCallback,");
         return conversationalCallback.retrieveCount();
     }
     
     public void endConversation(){
+        calls.append("endConversation,");
         conversationalState.remove(conversationId);
     }
     
     public void endConversationCallback(){
+        calls.append("endConversationCallback,");       
         conversationalCallback.endConversation();
     }   
 }

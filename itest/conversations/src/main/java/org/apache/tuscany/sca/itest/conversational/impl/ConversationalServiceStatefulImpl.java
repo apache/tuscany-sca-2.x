@@ -48,61 +48,64 @@ public class ConversationalServiceStatefulImpl implements ConversationalService 
     @ConversationID
     protected String conversationId;
     
-   // @Callback - not working yet
+    @Callback
     protected ConversationalCallback conversationalCallback; 
     
     // local count - accumulates during the conversation
     private int count = 0;
-    
-    // a member variable that records whether init processing happens
-    private static int initValue = 0;
-    
-    // lets us check the init value after class instances have gone
-    public static int getInitValue(){
-        return initValue;
-    }
-
+          
+    // a static member variable that records the number of times this service is called
+    public static StringBuffer calls = new StringBuffer();
+   
     @Init
     public void init(){
-        initValue = initValue - 5;
+        calls.append("init,");
     }
     
     @Destroy
     public void destroy(){
-        initValue = initValue + 10;
+        calls.append("destroy,");
     }
     
     public void initializeCount(int count){
+        calls.append("initializeCount,");       
         this.count = count;
     }
     
     public void incrementCount(){
+        calls.append("incrementCount,");        
         count++;
     }
     
     public int retrieveCount(){
+        calls.append("retrieveCount,"); 
         return count;
     }
     
     public void initializeCountCallback(int count){
-        initializeCount(count);
+        calls.append("initializeCountCallback,"); 
+        this.count = count;
         conversationalCallback.initializeCount(count);
     }
     
     public void incrementCountCallback(){
-        incrementCount();
+        calls.append("incrementCountCallback,"); 
+        count++;
         conversationalCallback.incrementCount();
     }
     
     public int retrieveCountCallback(){
+        calls.append("retrieveCountCallback,"); 
         return conversationalCallback.retrieveCount();
     }
     
     public void endConversation(){
+        calls.append("endConversation,"); 
         count = 0;
     }
     
     public void endConversationCallback(){
+        calls.append("endConversationCallback,"); 
         conversationalCallback.endConversation();
     }
 }
