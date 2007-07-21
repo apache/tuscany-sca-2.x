@@ -33,8 +33,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.resolver.URIResolver;
-import org.xml.sax.InputSource;
 
 /**
  * An ArtifactProcessor for XSD documents.
@@ -44,23 +42,6 @@ import org.xml.sax.InputSource;
 public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> {
 
     private WSDLFactory factory;
-
-    /**
-     * URI resolver implementation for xml schema
-     */
-    private class URIResolverImpl implements URIResolver {
-
-        public org.xml.sax.InputSource resolveEntity(java.lang.String targetNamespace,
-                                                     java.lang.String schemaLocation,
-                                                     java.lang.String baseUri) {
-            try {
-                URL url = new URL(new URL(baseUri), schemaLocation);
-                return new InputSource(url.openStream());
-            } catch (IOException e) {
-                return null;
-            }
-        }
-    }
 
     public XSDDocumentProcessor(WSDLFactory factory) {
         this.factory = factory;
@@ -74,7 +55,7 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
             try {
     
                 XmlSchemaCollection collection = new XmlSchemaCollection();
-                collection.setSchemaResolver(new URIResolverImpl());
+                collection.setSchemaResolver(new XMLDocumentHelper.URIResolverImpl());
                 XmlSchema schema = collection.read(new InputStreamReader(is), null);
     
                 XSDefinition xsDefinition = factory.createXSDefinition();
