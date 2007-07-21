@@ -25,7 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ConversationalJ2SETest {
+public class ConversationalJ2SETestCase {
 
     private SCADomain domain;
 

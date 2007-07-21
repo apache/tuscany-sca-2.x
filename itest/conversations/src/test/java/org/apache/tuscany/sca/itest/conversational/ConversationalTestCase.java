@@ -30,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ConversationalTest {
+public class ConversationalTestCase {
 
     private SCADomain domain;
     private ConversationalClient conversationalStatelessClientStatelessService;

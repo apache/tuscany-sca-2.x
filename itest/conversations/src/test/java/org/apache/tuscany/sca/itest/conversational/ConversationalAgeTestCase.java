@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osoa.sca.ConversationEndedException;
 
-public class ConversationalAgeTest {
+public class ConversationalAgeTestCase {
 
     private SCADomain domain;
 
