@@ -90,4 +90,14 @@ public interface ScopeContainer<KEY> extends Lifecycle, RuntimeEventListener {
      * @throws PersistenceException if there was a problem removing the instance
      */
      void remove() throws PersistenceException;
+     
+     /**
+      * Removes an identified component implementation instance associated with the current 
+      * context from persistent storage
+      *
+      * @param contextId the identifier of the context to remove. 
+      * @throws PersistenceException if there was a problem removing the instance
+      */
+      void remove(KEY contextId) 
+          throws TargetDestructionException;     
 }
