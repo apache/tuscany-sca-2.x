@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
@@ -1583,7 +1584,14 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         componentReference.getTargets().add(service);
         componentReference.getPolicySets().addAll(service.getPolicySets());
         componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
-        componentReference.setInterfaceContract(service.getInterfaceContract());
+        
+        // FIXME: What interface contract should be used?
+        InterfaceContract interfaceContract = service.getInterfaceContract();
+        Service componentTypeService = service.getService();
+        if (componentTypeService != null && componentTypeService.getInterfaceContract() != null) {
+            interfaceContract = componentTypeService.getInterfaceContract();
+        }
+        componentReference.setInterfaceContract(interfaceContract);
         componentReference.setMultiplicity(Multiplicity.ONE_ONE);
         component.getReferences().add(componentReference);
         return componentReference;
