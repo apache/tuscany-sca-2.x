@@ -93,6 +93,7 @@
         </resources>
 
         <plugins>
+            <!-- Temporarily Remove Javadoc -->
             <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -167,6 +168,7 @@
                 </executions>
             </plugin>
 
+	    <!-- Temporarily remove to avoid out of memory
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -200,11 +202,14 @@
 
                                 <echo file="${basedir}/target/srcbuild_env${output.ext}" message="${output.cp}" />
                                 <echo file="${basedir}/target/version.properties" message="tuscany.version=${pom.version}" />
-                                <!-- copy file="${basedir}/src/main/assembly/jbi.xml" tofile="${basedir}/target/jbi.xml" overwrite="yes">
+                                #########
+                                ### THIS WAS ALREADY COMMENTED
+                                <copy file="${basedir}/src/main/assembly/jbi.xml" tofile="${basedir}/target/jbi.xml" overwrite="yes">
                                     <filterset>
                                         <filter token="TUSCANY_VERSION" value="${pom.version}" />
                                     </filterset>
-                                </copy -->
+                                </copy>
+                                ###
                                 <delete file="build.xml" />
                             </tasks>
 
@@ -215,6 +220,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
 
     </build>
