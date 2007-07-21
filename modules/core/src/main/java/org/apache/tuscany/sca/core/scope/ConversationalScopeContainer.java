@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
@@ -90,9 +89,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
              
         // Check to see if the maxAge and/or maxIdleTime have been specified using @ConversationAttributes.  
         // Implementation annoated attributes are honored first.
-        if (this.getComponent().getImplementation() instanceof ScopedImplementationProvider) 
+        if (this.getComponent().getImplementationProvider() instanceof ScopedImplementationProvider) 
          {
-            ScopedImplementationProvider aScopedImpl = (ScopedImplementationProvider) this.getComponent().getImplementation();
+            ScopedImplementationProvider aScopedImpl = (ScopedImplementationProvider) this.getComponent().getImplementationProvider();
             
             long maxAge = aScopedImpl.getMaxAge();
             if (maxAge > 0) {
@@ -114,7 +113,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
 
         // Get a scheduler and scheduled a task to be run in the future indefinitely until its explicitly shutdown. 
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(new ConversationalInstanceReaper(this.instanceLifecycleCollection), 30, reaper_interval, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(new ConversationalInstanceReaper(this.instanceLifecycleCollection), 3, reaper_interval, TimeUnit.SECONDS);
         
         lifecycleState = RUNNING;        
        }
