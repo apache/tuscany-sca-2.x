@@ -100,6 +100,16 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
 
     public void returnWrapper(InstanceWrapper wrapper, KEY contextId) throws TargetDestructionException {
     }
+    
+    /**
+     * Default implmentation of remove which does nothing 
+     * 
+     * @param contextId the identifier of the context to remove. 
+     * @throws PersistenceException if there was a problem removing the instance 
+     */
+    public void remove(KEY contextId) 
+        throws TargetDestructionException {
+    }    
 
     public synchronized void start() {
         int lifecycleState = getLifecycleState();

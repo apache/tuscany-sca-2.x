@@ -173,12 +173,6 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         return getInstanceWrapper(true,contextId);
     } 
     
-    @Override
-    // Override the remove to make sure if this path ever gets enabled this 
-    // implementation gets updated.
-    //
-    public void remove() throws PersistenceException {
-    }
     
     // The remove is invoked when a conversation is explicitly ended.  This can occur by using the @EndsConversation or API.  
     // In this case the instance is immediately removed.  A new conversation will be started on the next operation
