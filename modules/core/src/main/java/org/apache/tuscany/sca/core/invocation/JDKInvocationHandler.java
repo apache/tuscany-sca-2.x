@@ -88,7 +88,7 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
         if (types.size() == params.length && method.getName().equals(operation.getName())) {
             for (int i = 0; i < params.length; i++) {
                 Class<?> clazz = params[i];
-                if (!clazz.equals(operation.getInputType().getLogical().get(i).getPhysical())) {
+                if (!operation.getInputType().getLogical().get(i).getPhysical().isAssignableFrom(clazz)) {
                     matched = false;
                 }
             }

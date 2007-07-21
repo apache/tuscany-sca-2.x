@@ -63,7 +63,8 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             return false;
         }
         if (sourceDataBinding == null || targetDataBinding == null) {
-            return true;
+            // TODO: If any of the databinding is null, then no transformation
+            return false;
         }
         return !sourceDataBinding.equals(targetDataBinding);
     }

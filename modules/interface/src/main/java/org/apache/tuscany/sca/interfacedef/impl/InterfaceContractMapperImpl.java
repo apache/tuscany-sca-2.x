@@ -42,7 +42,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                 return false;
             }
             // For local case
-            return target.getPhysical() == source.getPhysical();
+            return target.getPhysical().isAssignableFrom(source.getPhysical());
         } else {
             // FIXME: How to test if two remotable data type is compatible?
             // return target.getLogical().equals(source.getLogical());

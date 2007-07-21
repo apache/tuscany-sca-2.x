@@ -93,14 +93,15 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                             if (targetChain != null) {
                                 ((Interceptor)sourceChain.getTailInvoker()).setNext(targetChain.getHeadInvoker());
                                 if (!dynamicService) {
-                                    sourceChain.setTargetOperation(targetChain.getSourceOperation());
+                                    // FIXME: [rfeng] Change the target operation will impact the interceptors
+                                    sourceChain.setTargetOperation(targetChain.getTargetOperation());
                                 }
                             } else {
                                 throw new RuntimeException("Incompatible operations for source and target wires");
                             }
                         }
                         if (!dynamicService) {
-                            sourceWire.getTarget().setInterfaceContract(targetWire.getSource().getInterfaceContract());
+                            sourceWire.getTarget().setInterfaceContract(targetWire.getTarget().getInterfaceContract());
                         }
                     }
                 }
