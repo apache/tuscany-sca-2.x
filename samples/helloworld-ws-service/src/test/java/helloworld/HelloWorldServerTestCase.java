@@ -18,6 +18,9 @@
  */
 package helloworld;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -29,7 +32,7 @@ import org.junit.Test;
 /**
  * Tests that the helloworld server is available
  */
-public class HelloWorldServerTestCase {
+public class HelloWorldServerTestCase{
 
     private SCADomain scaDomain;
 
@@ -42,6 +45,14 @@ public class HelloWorldServerTestCase {
 	public void testPing() throws IOException {
 		new Socket("127.0.0.1", 8085);
 	}
+    
+    @Test
+    public void testServiceCall() throws IOException {
+        HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
+        assertNotNull(helloWorldService);
+        
+        assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
+    }
 
 	@After
 	public void stopServer() throws Exception {
