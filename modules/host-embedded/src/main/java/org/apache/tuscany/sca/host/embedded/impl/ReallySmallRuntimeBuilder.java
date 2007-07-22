@@ -37,10 +37,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
@@ -61,7 +63,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
@@ -83,7 +84,6 @@ import org.apache.tuscany.sca.core.scope.ConversationalScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
-import org.apache.tuscany.sca.core.store.MemoryStore;
 import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -205,6 +205,8 @@ public class ReallySmallRuntimeBuilder {
         //Create Contribution Model Resolver extension point
         ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
         registry.addExtensionPoint(modelResolverExtensionPoint);
+        
+        modelResolverExtensionPoint.addResolver(Composite.class, CompositeModelResolver.class);
         
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();

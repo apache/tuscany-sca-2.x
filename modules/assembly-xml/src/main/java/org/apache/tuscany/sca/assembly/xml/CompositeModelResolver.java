@@ -17,33 +17,33 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.wsdl.xml;
+package org.apache.tuscany.sca.assembly.xml;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 
 /**
- * An Model Resolver for WSDL artifact types.
+ * An Model Resolver for Composite artifact types.
  *
  * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
  */
-public class WSDLModelResolver extends DefaultModelResolver {
+public class CompositeModelResolver extends DefaultModelResolver {
 
-    public WSDLModelResolver(ClassLoader cl, Contribution contribution) {
+    public CompositeModelResolver(ClassLoader cl, Contribution contribution) {
         super(cl,contribution);
     }
 
-    private WSDLDefinition resolveImportedModel(WSDLDefinition unresolved) {
-        WSDLDefinition resolved = unresolved;
-        String namespace = unresolved.getNamespace();
+    private Composite resolveImportedModel(Composite unresolved) {
+        Composite resolved = unresolved;
+        String namespace = unresolved.getName().getNamespaceURI();
         if (namespace != null && namespace.length() > 0) {
             for (ContributionImport contributionImport : this.contribution.getImports()) {
                 if (contributionImport.getNamespace().equals(namespace)) {
                     
                     // Delegate the resolution to the import resolver
-                    resolved = contributionImport.getModelResolver().resolveModel(WSDLDefinition.class, unresolved);
+                    resolved = contributionImport.getModelResolver().resolveModel(Composite.class, unresolved);
                     
                     // If resolved... then we are done
                     if(unresolved.isUnresolved() == false) {
@@ -57,7 +57,7 @@ public class WSDLModelResolver extends DefaultModelResolver {
     
     @Override
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        WSDLDefinition resolved = (WSDLDefinition) super.resolveModel(modelClass, unresolved);
+        Composite resolved = (Composite) super.resolveModel(modelClass, unresolved);
 
         if (resolved.isUnresolved()) {
             resolved = resolveImportedModel(resolved);

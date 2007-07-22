@@ -17,11 +17,17 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.impl;
+package org.apache.tuscany.sca.contribution.resolver.impl;
 
 import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
+
+/**
+ * A model resolver implementation, that considers Contribution Exports.
+ *
+ * @version $Rev$ $Date$
+ */
 public class ContributionExportModelResolverImpl implements ModelResolver {
     
     private ContributionExport contributionExport;
@@ -41,7 +47,6 @@ public class ContributionExportModelResolverImpl implements ModelResolver {
     }
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        
         // Delegate to the model resolver of the contribution
         return targetModelResolver.resolveModel(modelClass, unresolved);
     }

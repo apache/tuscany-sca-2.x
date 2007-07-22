@@ -31,9 +31,13 @@
 
     <modules>
         <module>contrib-wsdl</module>
-        <module>contrib-composite</module>
         <module>test-import-wsdl</module>
+        <!--
+        <module>contrib-composite</module>
         <module>test-import-composite</module>
+        <module>contrib-java</module>
+        <module>test-import-java</module>
+        -->
     </modules>
     
     <dependencies>
