@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.impl.ContributionExportModelResolverImpl;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -210,9 +211,8 @@ public class ContributionServiceImpl implements ContributionService {
         if (contributionMetadata == null) {
             contributionMetadata = this.contributionFactory.createContribution();
         }
-
+        
         return contributionMetadata;
-
     }
 
     public Contribution getContribution(String id) {
@@ -282,6 +282,11 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(locationURL.toString());
         contribution.setModelResolver(modelResolver);
+        
+        // Initialize the contribution exports
+        for (ContributionExport contributionExport: contribution.getExports()) {
+            contributionExport.setModelResolver(new ContributionExportModelResolverImpl(contributionExport, modelResolver));
+        }
 
         List<URI> contributionArtifacts = null;
 
