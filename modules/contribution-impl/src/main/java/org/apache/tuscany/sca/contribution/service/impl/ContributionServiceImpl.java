@@ -301,6 +301,7 @@ public class ContributionServiceImpl implements ContributionService {
             for (ContributionExport contributionExport: targetContribution.getExports()) {
                 if (contributionImport.getNamespace().equals(contributionExport.getNamespace())) {
                     contributionImport.setModelResolver(new ContributionImportModelResolverImpl(contributionImport, contributionExport.getModelResolver()));
+                    break;
                 }
             }
         }
