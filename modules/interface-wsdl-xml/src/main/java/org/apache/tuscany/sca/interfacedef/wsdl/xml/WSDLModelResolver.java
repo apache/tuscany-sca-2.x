@@ -39,12 +39,12 @@ public class WSDLModelResolver extends DefaultModelResolver {
         String namespace = unresolved.getNamespace();
         if (namespace != null && namespace.length() > 0) {
             for (ContributionImport contributionImport : this.contribution.getImports()) {
-                if(namespace.equalsIgnoreCase(contributionImport.getNamespace())) {
-                    //find who exports it
+                if (contributionImport.getNamespace().equals(namespace)) {
                     
-                    //delegate the resolition to the import resolver
+                    // Delegate the resolution to the import resolver
                     contributionImport.getModelResolver().resolveModel(WSDLDefinition.class, unresolved);
-                    //if resolved... then we are done
+                    
+                    // If resolved... then we are done
                     if(unresolved.isUnresolved() == false) {
                         break;
                     }
@@ -56,16 +56,13 @@ public class WSDLModelResolver extends DefaultModelResolver {
     
     @Override
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        return super.resolveModel(modelClass, unresolved);
-        /*
         WSDLDefinition resolved = (WSDLDefinition) super.resolveModel(modelClass, unresolved);
 
         if (resolved.isUnresolved()) {
             resolved = resolveImportedModel(resolved);
         }
         
-        return null;
-        */
+        return (T)resolved;
     }
     
     
