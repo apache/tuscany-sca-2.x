@@ -38,6 +38,7 @@ import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
@@ -208,7 +209,7 @@ public class ReallySmallRuntimeBuilder {
         registry.addExtensionPoint(modelResolverExtensionPoint);
         
         modelResolverExtensionPoint.addResolver(Composite.class, CompositeModelResolver.class);
-        modelResolverExtensionPoint.addResolver(Composite.class, ConstrainingTypeModelResolver.class);
+        modelResolverExtensionPoint.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
         
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
