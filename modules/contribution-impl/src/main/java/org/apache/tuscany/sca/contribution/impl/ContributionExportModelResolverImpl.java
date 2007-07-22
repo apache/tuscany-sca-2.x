@@ -25,9 +25,11 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 public class ContributionExportModelResolverImpl implements ModelResolver {
     
     private ContributionExport contributionExport;
+    private ModelResolver targetModelResolver;
     
-    public ContributionExportModelResolverImpl(ContributionExport contributionExport) {
+    public ContributionExportModelResolverImpl(ContributionExport contributionExport, ModelResolver targetModelResolver) {
         this.contributionExport = contributionExport;
+        this.targetModelResolver = targetModelResolver;
     }
 
     public void addModel(Object resolved) {
@@ -40,9 +42,8 @@ public class ContributionExportModelResolverImpl implements ModelResolver {
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         
-        // This needs to delegate to the model resolver of the contribution owning
-        // the export.
-        return null;
+        // Delegate to the model resolver of the contribution
+        return targetModelResolver.resolveModel(modelClass, unresolved);
     }
 
 }
