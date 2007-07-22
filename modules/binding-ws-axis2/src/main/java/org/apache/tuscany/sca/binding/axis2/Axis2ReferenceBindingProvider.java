@@ -136,8 +136,14 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
                 axisClient = new Axis2ServiceClient(component, reference, wsBinding, servletHost,
                                                     messageFactory, callbackBinding);
             } else {
-                axisProvider = new Axis2ServiceProvider(component, reference, wsBinding, servletHost,
-                                                        messageFactory);
+                //FIXME: need to support callbacks through self-references
+                // For now, don't create a callback service provider for a self-reference
+                // because this modifies the binding URI.  This messes up the service callback
+                // wires because the self-reference has the same binding object as the service.
+                if (!reference.getName().startsWith("$self$.")) {
+                    axisProvider = new Axis2ServiceProvider(component, reference, wsBinding, servletHost,
+                                                            messageFactory);
+                }
             }
         }
     }
@@ -186,7 +192,10 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
             if (!wsBinding.isCallback()) {
                 axisClient.start();
             } else {
-                axisProvider.start();
+                //FIXME: need to support callbacks through self-references
+                if (!reference.getName().startsWith("$self$.")) {
+                    axisProvider.start();
+                }
             }
         }
     }
@@ -200,7 +209,10 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
             if (!wsBinding.isCallback()) {
                 axisClient.stop();
             } else {
-                axisProvider.stop();
+                //FIXME: need to support callbacks through self-references
+                if (!reference.getName().startsWith("$self$.")) {
+                    axisProvider.stop();
+                }
             }
         }
     }

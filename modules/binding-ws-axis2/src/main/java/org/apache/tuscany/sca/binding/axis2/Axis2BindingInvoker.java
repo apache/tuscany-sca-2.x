@@ -36,6 +36,7 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -78,7 +79,8 @@ public class Axis2BindingInvoker implements Invoker {
         return msg;
     }
 
-    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, String conversationId) throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, String conversationId)
+                             throws InvocationTargetException {
         try {
 
             Object[] args = (Object[]) payload;
@@ -138,6 +140,25 @@ public class Axis2BindingInvoker implements Invoker {
         }
 
         operationClient.setOptions(options);
+        if (options.getTo() == null) {
+            org.apache.tuscany.sca.runtime.EndpointReference ep = ThreadMessageContext.getMessageContext().getTo();
+            if (ep != null) {
+                System.out.println("Axis2BindingInvoker: dynamic endpoint URI is " + ep.getURI());
+                requestMC.setTo(new EndpointReference(ep.getURI()));
+            } else {
+                throw new RuntimeException("Unable to determine destination endpoint");
+            }
+        }
+        if (options.getFrom() != null) {
+            requestMC.setFrom(options.getFrom());
+            //FIXME: is there any way to use the Axis2 addressing support for this?
+            SOAPEnvelope sev = requestMC.getEnvelope();
+            SOAPHeader sh = sev.getHeader();
+            OMElement el = options.getFrom().toOM(AddressingConstants.Final.WSA_NAMESPACE,
+                                                  AddressingConstants.WSA_FROM,
+                                                  AddressingConstants.WSA_DEFAULT_PREFIX);
+            sh.addChild(el);
+        }
         operationClient.addMessageContext(requestMC);
 
         return operationClient;

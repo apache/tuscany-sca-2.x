@@ -63,7 +63,7 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
             } else {
                 String conversationID = provider.isConversational() ?
                                             Axis2ServiceProvider.getConversationID(inMC) : null;
-                String callbackAddress = inMC.getFrom() != null ? inMC.getFrom().getAddress() : null;
+                String callbackAddress = provider.getFromEPR(inMC);
                 provider.invokeTarget(operation, args, null, conversationID, callbackAddress);
             }
         } catch (InvocationTargetException e) {

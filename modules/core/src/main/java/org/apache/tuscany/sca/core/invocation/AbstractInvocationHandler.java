@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.Conversation;
 
@@ -57,6 +58,7 @@ public abstract class AbstractInvocationHandler {
 
         Message msgContext = ThreadMessageContext.getMessageContext();
         Object  msgContextConversationId = msgContext.getConversationID();
+        EndpointReference epTo = msgContext.getTo();   
         
         Message msg = messageFactory.createMessage();
                
@@ -129,7 +131,11 @@ public abstract class AbstractInvocationHandler {
         }
         msg.setBody(args);
         msg.setFrom(wire.getSource());
-        msg.setTo(wire.getTarget());
+        if (epTo != null) {
+            msg.setTo(epTo);
+        } else {
+            msg.setTo(wire.getTarget());
+        }
         ThreadMessageContext.setMessageContext(msg);
         try {
             // dispatch the wire down the chain and get the response

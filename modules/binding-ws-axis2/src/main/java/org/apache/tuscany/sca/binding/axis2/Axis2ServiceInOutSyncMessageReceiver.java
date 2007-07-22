@@ -66,7 +66,7 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             } else {
                 String conversationID = provider.isConversational() ?
                                             Axis2ServiceProvider.getConversationID(inMC) : null;
-                String callbackAddress = inMC.getFrom() != null ? inMC.getFrom().getAddress() : null;
+                String callbackAddress = provider.getFromEPR(inMC);
                 responseOM = (OMElement)provider.invokeTarget(operation, args, null, conversationID,
                                                               callbackAddress);
             }

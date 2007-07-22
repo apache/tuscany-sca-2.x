@@ -555,8 +555,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
         RuntimeWire wire = createServiceWire(service, component, binding, null, null, binding, isCallback);
 
-        //FIXME: need better way to create the source URI
-        wire.getSource().setURI(binding.getURI());
+        //FIXME: need to decide if this is the best way to create the source URI
+        // The source URI is used by JDKCallbackInvocationHandler to find the callback wire
+        // corresponding to the forward wire that was used to invoke the service.
+        // This only works if the source URI is the same for the matched pair of forward and
+        // callback wires.  The binding name seems a reasonable key to use for this match,
+        // as it allows the user to control which callback binding should be selected.
+        wire.getSource().setURI(binding.getName());
     }
 
     /**
