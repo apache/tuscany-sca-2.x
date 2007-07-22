@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.impl.ContributionExportModelResolverImpl;
+import org.apache.tuscany.sca.contribution.impl.ContributionImportModelResolverImpl;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -286,6 +287,22 @@ public class ContributionServiceImpl implements ContributionService {
         // Initialize the contribution exports
         for (ContributionExport contributionExport: contribution.getExports()) {
             contributionExport.setModelResolver(new ContributionExportModelResolverImpl(contributionExport, modelResolver));
+        }
+        
+        // Initialize the contribution imports
+        for (ContributionImport contributionImport: contribution.getImports()) {
+            
+            // Find a matching contribution
+            Contribution targetContribution = contributionRegistry.get(contribution.getURI());
+            if (targetContribution == null)
+                continue;
+            
+            // Find a matching contribution export
+            for (ContributionExport contributionExport: targetContribution.getExports()) {
+                if (contributionImport.getNamespace().equals(contributionExport.getNamespace())) {
+                    contributionImport.setModelResolver(new ContributionImportModelResolverImpl(contributionImport, contributionExport.getModelResolver()));
+                }
+            }
         }
 
         List<URI> contributionArtifacts = null;
