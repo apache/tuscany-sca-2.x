@@ -20,7 +20,6 @@ package helloworld;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
 
 import junit.framework.TestCase;
@@ -78,9 +77,27 @@ public class HelloWorldServerTestCase extends TestCase{
         assertNotNull(helloWorldService);
         assertEquals("Hello test", helloWorldService.getGreetings("test"));
 	}
+    
+    public void testServiceCall() throws IOException {
+        HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
+        assertNotNull(helloWorldService);
+        
+        assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
+    }    
 
 	public void tearDown() throws Exception {
-            domain.close();
+        ContributionService contributionService = domain.getContributionService();
+
+        // Remove the contribution from the in-memory repository
+        contributionService.remove("http://import-export/helloworld");
+        contributionService.remove("http://import-export/contrib-wsdl");
+        
+        //Stop Components from my composite
+        domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
+
+        domain.stop();
+        
+        domain.close();
 	}
 
 }
