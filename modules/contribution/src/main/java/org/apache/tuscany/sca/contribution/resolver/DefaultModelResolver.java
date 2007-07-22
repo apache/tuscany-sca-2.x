@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.contribution.resolver;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,10 +83,6 @@ public class DefaultModelResolver implements ModelResolver {
     
     public Object removeModel(Object resolved) {
         return map.remove(resolved);
-    }
-    
-    public Collection<Object> getModels() {
-        return map.values();
     }
     
 }
