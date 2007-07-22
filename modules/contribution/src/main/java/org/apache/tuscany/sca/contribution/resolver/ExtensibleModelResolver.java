@@ -36,6 +36,11 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
         initializeModelResolverInstances();
     }
     
+    /**
+     * Finds the proper resolver instance based on the interfaces of the model
+     * @param modelType
+     * @return
+     */
     private ModelResolver getResolverInstance(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
         for (Class<?> c : classes) {
@@ -44,6 +49,8 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
                 return resolverInstance;
             }
         }
+        
+        
         
         return resolverInstances.get(modelType);
     }
@@ -88,7 +95,7 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
     }
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        ModelResolver resolver = getResolverInstance(modelClass);
+        ModelResolver resolver = getResolverInstance(unresolved.getClass());
         if (resolver != null) {
             return resolver.resolveModel(modelClass, unresolved);
         } else {
