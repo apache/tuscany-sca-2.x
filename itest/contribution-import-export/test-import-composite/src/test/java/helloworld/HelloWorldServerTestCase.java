@@ -75,6 +75,14 @@ public class HelloWorldServerTestCase extends TestCase{
 		new Socket("127.0.0.1", 8085);
 	}
 
+//    public void testServiceCall() throws IOException {
+//        HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
+//        assertNotNull(helloWorldService);
+//        
+//        assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
+//    }
+
+    
 	public void tearDown() throws Exception {
             domain.close();
 	}

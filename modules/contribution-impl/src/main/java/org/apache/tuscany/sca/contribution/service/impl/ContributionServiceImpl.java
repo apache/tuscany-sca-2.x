@@ -40,14 +40,15 @@ import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
-import org.apache.tuscany.sca.contribution.impl.ContributionExportModelResolverImpl;
-import org.apache.tuscany.sca.contribution.impl.ContributionImportModelResolverImpl;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.impl.ContributionExportModelResolverImpl;
+import org.apache.tuscany.sca.contribution.resolver.impl.ContributionImportAnyModelResolverImpl;
+import org.apache.tuscany.sca.contribution.resolver.impl.ContributionImportModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
@@ -292,17 +293,24 @@ public class ContributionServiceImpl implements ContributionService {
         // Initialize the contribution imports
         for (ContributionImport contributionImport: contribution.getImports()) {
             
-            // Find a matching contribution
-            Contribution targetContribution = contributionRegistry.get(contribution.getURI());
-            if (targetContribution == null)
-                continue;
+            if (contributionImport.getLocation() != null && contribution.getLocation().length() > 0) {
+                // Find a matching contribution
+                Contribution targetContribution = contributionRegistry.get(contributionImport.getLocation());
+                if (targetContribution != null) {
+                    // Find a matching contribution export
+                    for (ContributionExport contributionExport: targetContribution.getExports()) {
+                        if (contributionImport.getNamespace().equals(contributionExport.getNamespace())) {
+                            contributionImport.setModelResolver(new ContributionImportModelResolverImpl(contributionImport, contributionExport.getModelResolver()));
+                            break;
+                        }
+                    }
+                }                
+            }
             
-            // Find a matching contribution export
-            for (ContributionExport contributionExport: targetContribution.getExports()) {
-                if (contributionImport.getNamespace().equals(contributionExport.getNamespace())) {
-                    contributionImport.setModelResolver(new ContributionImportModelResolverImpl(contributionImport, contributionExport.getModelResolver()));
-                    break;
-                }
+            if (contributionImport.getModelResolver() == null) {
+                // Find a matching in any contribution export
+                contributionImport.setModelResolver(new ContributionImportAnyModelResolverImpl(contributionImport, contributionRegistry));
+                
             }
         }
 
@@ -408,7 +416,7 @@ public class ContributionServiceImpl implements ContributionService {
             if (artifact.getModel() != null) {
                 this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
 
-                processResolveImportsPhase(contribution, artifact);                
+                //processResolveImportsPhase(contribution, artifact);                
             }
         }
         
@@ -417,9 +425,11 @@ public class ContributionServiceImpl implements ContributionService {
         for (Composite deployableComposite : contribution.getDeployables()) {
             Composite resolvedDeployable = contribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
             
+            /*
             if (resolvedDeployable.isUnresolved()) {
                 resolvedDeployable = processResolveImportsPhase(contribution, resolvedDeployable);
             }
+            */
             
             resolvedDeployables.add(resolvedDeployable);
         }
@@ -427,6 +437,7 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.getDeployables().addAll(resolvedDeployables);
     }
 
+    /*
     @SuppressWarnings("unchecked")
     private Object processResolveImportsPhase(Contribution contribution, DeployedArtifact artifact) throws ContributionException {
         for(ContributionImport contributionImport : contribution.getImports()) {
@@ -475,5 +486,6 @@ public class ContributionServiceImpl implements ContributionService {
         }
         
         return resolvedDeployable;
-    }    
+    } 
+    */   
 }

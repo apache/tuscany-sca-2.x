@@ -17,11 +17,16 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.impl;
+package org.apache.tuscany.sca.contribution.resolver.impl;
 
 import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
+/**
+ * A model resolver implementation, that considers Contribution Imports.
+ *
+ * @version $Rev$ $Date$
+ */
 public class ContributionImportModelResolverImpl implements ModelResolver {
     
     private ContributionImport contributionImport;
