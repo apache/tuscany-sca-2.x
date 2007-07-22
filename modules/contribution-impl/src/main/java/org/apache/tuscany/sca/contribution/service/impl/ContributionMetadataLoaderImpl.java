@@ -28,9 +28,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.NamespaceExport;
+import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoader;
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 
@@ -104,20 +104,20 @@ public class ContributionMetadataLoaderImpl implements ContributionMetadataLoade
                             throw new InvalidValueException("Attribute 'namespace' is missing");
                         }
                         String location = reader.getAttributeValue(null, "location");
-                        ContributionImport contributionImport = this.contributionFactory.createContributionImport();
+                        NamespaceImport namespaceImport = this.contributionFactory.createNamespaceImport();
                         if (location != null) {
-                            contributionImport.setLocation(location);
+                            namespaceImport.setLocation(location);
                         }
-                        contributionImport.setNamespace(ns);
-                        contribution.getImports().add(contributionImport);
+                        namespaceImport.setNamespace(ns);
+                        contribution.getImports().add(namespaceImport);
                     } else if (EXPORT.equals(element)) {
                         String ns = reader.getAttributeValue(null, "namespace");
                         if (ns == null) {
                             throw new InvalidValueException("Attribute 'namespace' is missing");
                         }
-                        ContributionExport contributionExport = this.contributionFactory.createContributionExport();
-                        contributionExport.setNamespace(ns);
-                        contribution.getExports().add(contributionExport);
+                        NamespaceExport namespaceExport = this.contributionFactory.createNamespaceExport();
+                        namespaceExport.setNamespace(ns);
+                        contribution.getExports().add(namespaceExport);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:

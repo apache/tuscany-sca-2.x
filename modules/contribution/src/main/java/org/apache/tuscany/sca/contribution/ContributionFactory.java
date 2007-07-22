@@ -41,15 +41,30 @@ public interface ContributionFactory {
     
     /**
      * Create a contribution import model
-     * 
+     * @deprecated 
      * @return The new ContributionImport model object
      */
     ContributionImport createContributionImport();
     
     /**
      * Create a contribution import model
-     * 
+     * @deprecated
      * @return The new ContributoinExport object
      */
     ContributionExport createContributionExport();
+
+    /**
+     * Create a namespace import model object
+     * 
+     * @return The new NamespaceImport model object
+     */
+    NamespaceImport createNamespaceImport();
+    
+    /**
+     * Create a namespace export model object
+     * 
+     * @return The new NamespaceExport model object
+     */
+    NamespaceExport createNamespaceExport();
+    
 }

@@ -17,15 +17,37 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
+package org.apache.tuscany.sca.contribution.impl;
 
+import org.apache.tuscany.sca.contribution.ContributionExport;
+import org.apache.tuscany.sca.contribution.NamespaceExport;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * The representation of an export for the contribution
- * @deprecated
- *  
+ * 
  * @version $Rev$ $Date$
  */
-public interface ContributionExport extends NamespaceExport {
+public class NamespaceExportImpl implements NamespaceExport, ContributionExport {
+    private String namespace; // The namespace to be imported
+    private ModelResolver modelResolver;
+    
+    protected NamespaceExportImpl() {
+    }
+    
+    public String getNamespace() {
+        return namespace;
+    }
 
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+    
+    public ModelResolver getModelResolver() {
+        return modelResolver;
+    }
+    
+    public void setModelResolver(ModelResolver modelResolver) {
+        this.modelResolver = modelResolver;
+    }
 }

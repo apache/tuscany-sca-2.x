@@ -36,24 +36,25 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.NamespaceExport;
+import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.impl.ContributionExportModelResolverImpl;
-import org.apache.tuscany.sca.contribution.resolver.impl.ContributionImportAnyModelResolverImpl;
-import org.apache.tuscany.sca.contribution.resolver.impl.ContributionImportModelResolverImpl;
+import org.apache.tuscany.sca.contribution.resolver.impl.NamespaceExportModelResolverImpl;
+import org.apache.tuscany.sca.contribution.resolver.impl.NamespaceImportAllModelResolverImpl;
+import org.apache.tuscany.sca.contribution.resolver.impl.NamespaceImportModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.contribution.service.util.ConcurrentHashList;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 /**
@@ -114,7 +115,6 @@ public class ContributionServiceImpl implements ContributionService {
      * Contribution registry This is a registry of processed Contributions indexed by URI
      */
     private Map<String, Contribution> contributionRegistry = new ConcurrentHashMap<String, Contribution>();
-    private ConcurrentHashList<String, Contribution> contributionByExportedNamespace = new ConcurrentHashList<String, Contribution>();
     
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
@@ -285,32 +285,43 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.setLocation(locationURL.toString());
         contribution.setModelResolver(modelResolver);
         
+        //TODO Move the following to the resolve method of the ArtifactProcessor
+        // responsible for handling <imports> and <exports>
+        
         // Initialize the contribution exports
-        for (ContributionExport contributionExport: contribution.getExports()) {
-            contributionExport.setModelResolver(new ContributionExportModelResolverImpl(contributionExport, modelResolver));
+        for (Export export: contribution.getExports()) {
+            if (export instanceof NamespaceExport) {
+                export.setModelResolver(new NamespaceExportModelResolverImpl((NamespaceExport)export, modelResolver));
+            }
         }
         
         // Initialize the contribution imports
-        for (ContributionImport contributionImport: contribution.getImports()) {
-            
-            if (contributionImport.getLocation() != null && contribution.getLocation().length() > 0) {
+        for (Import import_: contribution.getImports()) {
+            if (import_ instanceof NamespaceImport) {
+                NamespaceImport namespaceImport = (NamespaceImport)import_;
+                
                 // Find a matching contribution
-                Contribution targetContribution = contributionRegistry.get(contributionImport.getLocation());
-                if (targetContribution != null) {
-                    // Find a matching contribution export
-                    for (ContributionExport contributionExport: targetContribution.getExports()) {
-                        if (contributionImport.getNamespace().equals(contributionExport.getNamespace())) {
-                            contributionImport.setModelResolver(new ContributionImportModelResolverImpl(contributionImport, contributionExport.getModelResolver()));
-                            break;
+                if (namespaceImport.getLocation() != null) {
+                    Contribution targetContribution = contributionRegistry.get(namespaceImport.getLocation());
+                    if (targetContribution != null) {
+                    
+                        // Find a matching contribution export
+                        for (Export export: targetContribution.getExports()) {
+                            if (export instanceof NamespaceExport) {
+                                NamespaceExport namespaceExport = (NamespaceExport)export;
+                                if (namespaceImport.getNamespace().equals(namespaceExport.getNamespace())) {
+                                    namespaceImport.setModelResolver(new NamespaceImportModelResolverImpl(namespaceImport, namespaceExport.getModelResolver()));
+                                    break;
+                                }
+                            }
                         }
                     }
-                }                
-            }
-            
-            if (contributionImport.getModelResolver() == null) {
-                // Find a matching in any contribution export
-                contributionImport.setModelResolver(new ContributionImportAnyModelResolverImpl(contributionImport, contributionRegistry));
+                } else {
                 
+                    // Use a resolver that will consider all contributions
+                    namespaceImport.setModelResolver(new NamespaceImportAllModelResolverImpl(namespaceImport, contributionRegistry.values()));
+                    
+                }
             }
         }
 
@@ -357,11 +368,6 @@ public class ContributionServiceImpl implements ContributionService {
         
         // store the contribution on the registry
         this.contributionRegistry.put(contribution.getURI(), contribution);
-        
-        //store the contribution based on the namespaces being exported
-        for (ContributionExport export : contribution.getExports()) {
-            this.contributionByExportedNamespace.put(export.getNamespace(), contribution);
-        }
         
         return contribution;
     }

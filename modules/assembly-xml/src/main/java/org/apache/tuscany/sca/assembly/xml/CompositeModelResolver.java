@@ -21,7 +21,8 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 
 /**
@@ -38,15 +39,16 @@ public class CompositeModelResolver extends DefaultModelResolver {
     private Composite resolveImportedModel(Composite unresolved) {
         Composite resolved = unresolved;
         String namespace = unresolved.getName().getNamespaceURI();
-        if (namespace != null && namespace.length() > 0) {
-            for (ContributionImport contributionImport : this.contribution.getImports()) {
-                if (contributionImport.getNamespace().equals(namespace)) {
+        for (Import import_ : this.contribution.getImports()) {
+            if (import_ instanceof NamespaceImport) {
+                NamespaceImport namespaceImport = (NamespaceImport)import_;
+                if (namespaceImport.getNamespace().equals(namespace)) {
                     
                     // Delegate the resolution to the import resolver
-                    resolved = contributionImport.getModelResolver().resolveModel(Composite.class, unresolved);
+                    resolved = namespaceImport.getModelResolver().resolveModel(Composite.class, unresolved);
                     
                     // If resolved... then we are done
-                    if(unresolved.isUnresolved() == false) {
+                    if(resolved.isUnresolved() == false) {
                         break;
                     }
                 }

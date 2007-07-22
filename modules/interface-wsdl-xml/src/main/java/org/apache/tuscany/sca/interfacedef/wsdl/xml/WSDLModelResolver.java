@@ -20,7 +20,8 @@
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 
@@ -38,15 +39,16 @@ public class WSDLModelResolver extends DefaultModelResolver {
     private WSDLDefinition resolveImportedModel(WSDLDefinition unresolved) {
         WSDLDefinition resolved = unresolved;
         String namespace = unresolved.getNamespace();
-        if (namespace != null && namespace.length() > 0) {
-            for (ContributionImport contributionImport : this.contribution.getImports()) {
-                if (contributionImport.getNamespace().equals(namespace)) {
+        for (Import import_ : this.contribution.getImports()) {
+            if (import_ instanceof NamespaceImport) {
+                NamespaceImport namespaceImport = (NamespaceImport)import_;
+                if (namespaceImport.getNamespace().equals(namespace)) {
                     
                     // Delegate the resolution to the import resolver
-                    resolved = contributionImport.getModelResolver().resolveModel(WSDLDefinition.class, unresolved);
+                    resolved = namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class, unresolved);
                     
                     // If resolved... then we are done
-                    if(unresolved.isUnresolved() == false) {
+                    if(resolved.isUnresolved() == false) {
                         break;
                     }
                 }
@@ -65,6 +67,5 @@ public class WSDLModelResolver extends DefaultModelResolver {
         
         return (T)resolved;
     }
-    
     
 }

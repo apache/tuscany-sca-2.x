@@ -49,14 +49,14 @@ public interface Contribution extends Artifact {
      * 
      * @return The list of exported artifacts from this contribution
      */
-    List<ContributionExport> getExports();
+    List<Export> getExports();
 
     /**
      * Get a list of imports based on the Contribution metadata sidefile
      * 
      * @return The list of imported artifacts on this contribution
      */
-    List<ContributionImport> getImports();
+    List<Import> getImports();
     
     /**
      * Get a list of deployables for the contribution based on the contribution metadata sidefile 
