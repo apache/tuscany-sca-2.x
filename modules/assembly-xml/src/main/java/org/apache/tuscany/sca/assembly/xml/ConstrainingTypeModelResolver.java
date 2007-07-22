@@ -21,7 +21,8 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 
 /**
@@ -38,15 +39,16 @@ public class ConstrainingTypeModelResolver extends DefaultModelResolver {
     private ConstrainingType resolveImportedModel(ConstrainingType unresolved) {
         ConstrainingType resolved = unresolved;
         String namespace = unresolved.getName().getNamespaceURI();
-        if (namespace != null && namespace.length() > 0) {
-            for (ContributionImport contributionImport : this.contribution.getImports()) {
-                if (contributionImport.getNamespace().equals(namespace)) {
+        for (Import import_ : this.contribution.getImports()) {
+            if (import_ instanceof NamespaceImport) {
+                NamespaceImport namespaceImport = (NamespaceImport)import_;
+                if (namespaceImport.getNamespace().equals(namespace)) {
                     
                     // Delegate the resolution to the import resolver
-                    resolved = contributionImport.getModelResolver().resolveModel(ConstrainingType.class, unresolved);
+                    resolved = import_.getModelResolver().resolveModel(ConstrainingType.class, unresolved);
                     
                     // If resolved... then we are done
-                    if(unresolved.isUnresolved() == false) {
+                    if(resolved.isUnresolved() == false) {
                         break;
                     }
                 }

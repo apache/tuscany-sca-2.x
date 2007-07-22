@@ -19,13 +19,29 @@
 
 package org.apache.tuscany.sca.contribution;
 
-
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
- * The representation of an import for the contribution
- * @deprecated
+ * The representation of an export.
  * 
  * @version $Rev$ $Date$
  */
-public interface ContributionImport extends NamespaceImport {
+public interface Export {
+
+    /**
+     * Returns the model resolver for the models representing artifacts
+     * made available by this export.
+     * 
+     * @return The model resolver
+     */
+    ModelResolver getModelResolver();
+    
+    /**
+     * Sets the model resolver for the models representing artifacts
+     * made available by this export.
+     * 
+     * @param modelResolver
+     */
+    void setModelResolver(ModelResolver modelResolver);
+    
 }

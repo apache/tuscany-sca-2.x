@@ -20,12 +20,25 @@
 package org.apache.tuscany.sca.contribution;
 
 
-
 /**
- * The representation of an import for the contribution
- * @deprecated
+ * The representation of an XML namespace export.
  * 
  * @version $Rev$ $Date$
  */
-public interface ContributionImport extends NamespaceImport {
+public interface NamespaceExport extends Export {
+
+    /**
+     * Get Namespace that identifies the export
+     * 
+     * @return The exported namespace
+     */
+    String getNamespace();
+
+    /**
+     * Set Namespace that identifies the export
+     * 
+     * @param namespace The exported namespace
+     */
+    void setNamespace(String namespace);
+    
 }

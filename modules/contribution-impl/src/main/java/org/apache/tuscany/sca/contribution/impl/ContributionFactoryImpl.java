@@ -24,6 +24,8 @@ import org.apache.tuscany.sca.contribution.ContributionExport;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.NamespaceExport;
+import org.apache.tuscany.sca.contribution.NamespaceImport;
 
 
 /**
@@ -42,10 +44,18 @@ public class ContributionFactoryImpl implements ContributionFactory {
     }
 
     public ContributionImport createContributionImport() {
-        return new ContributionImportImpl();
+        return new NamespaceImportImpl();
     }
     
     public ContributionExport createContributionExport() {
-        return new ContributionExportImpl();
+        return new NamespaceExportImpl();
+    }
+    
+    public NamespaceImport createNamespaceImport() {
+        return new NamespaceImportImpl();
+    }
+    
+    public NamespaceExport createNamespaceExport() {
+        return new NamespaceExportImpl();
     }
 }

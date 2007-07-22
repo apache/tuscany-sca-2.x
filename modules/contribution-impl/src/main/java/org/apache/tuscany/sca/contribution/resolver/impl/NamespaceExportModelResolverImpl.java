@@ -19,21 +19,22 @@
 
 package org.apache.tuscany.sca.contribution.resolver.impl;
 
-import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.NamespaceExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
+
 /**
- * A model resolver implementation, that considers Contribution Imports.
+ * A model resolver implementation for a namespace export.
  *
  * @version $Rev$ $Date$
  */
-public class ContributionImportModelResolverImpl implements ModelResolver {
+public class NamespaceExportModelResolverImpl implements ModelResolver {
     
-    private ContributionImport contributionImport;
+    private NamespaceExport namespaceExport;
     private ModelResolver targetModelResolver;
     
-    public ContributionImportModelResolverImpl(ContributionImport contributionImport, ModelResolver targetModelResolver) {
-        this.contributionImport = contributionImport;
+    public NamespaceExportModelResolverImpl(NamespaceExport namespaceExport, ModelResolver targetModelResolver) {
+        this.namespaceExport = namespaceExport;
         this.targetModelResolver = targetModelResolver;
     }
 
@@ -47,9 +48,7 @@ public class ContributionImportModelResolverImpl implements ModelResolver {
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         
-        // This needs to delegate to the matching ContributionExportModelResolver
-        // from the contribution matching the import's location URI, or a ModelResolver
-        // that goes over all exports with a matching namespace if there is no URI
+        // Delegate to the model resolver of the contribution
         return targetModelResolver.resolveModel(modelClass, unresolved);
     }
 

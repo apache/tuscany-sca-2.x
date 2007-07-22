@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.contribution.impl;
 
 import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
@@ -27,12 +28,12 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  * 
  * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
  */
-public class ContributionImportImpl implements ContributionImport {
+public class NamespaceImportImpl implements NamespaceImport, ContributionImport {
     private String namespace; // The namespace to be imported
     private String location; // Optional location to hint the where it should be imported
     private ModelResolver modelResolver;
     
-    protected ContributionImportImpl() {
+    protected NamespaceImportImpl() {
     }
     
     public String getLocation() {
