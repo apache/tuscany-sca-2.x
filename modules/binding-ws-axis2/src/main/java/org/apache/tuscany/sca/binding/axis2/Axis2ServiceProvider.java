@@ -71,7 +71,9 @@ public class Axis2ServiceProvider {
     private ConfigurationContext configContext;
 
     // TODO: what to do about the base URI?
-    private static final String BASE_URI = "http://localhost:8080/";
+    //FIXME: changed from 8080 to 8085 as hack to work around current limitation that base URI
+    // must be the same for all servlet mappings in a single Tomcat or Jetty ServletHost 
+    private static final String BASE_URI = "http://localhost:8085/";
 
     public Axis2ServiceProvider(RuntimeComponent component,
                                 AbstractContract contract,
@@ -96,7 +98,7 @@ public class Axis2ServiceProvider {
         if (uri.endsWith("/")) {
             uri = uri.substring(0, uri.length() - 1);
         }
-        wsBinding.setURI(uri.toString());
+        wsBinding.setURI(uri);
     }
 
     protected void start() {
@@ -114,8 +116,7 @@ public class Axis2ServiceProvider {
         servlet.init(configContext);
         String servletURI = wsBinding.getURI();
         configContext.setContextRoot(servletURI);
-        System.out.println("adding servlet mapping for " + servletURI);
-        (new RuntimeException()).printStackTrace();
+        System.out.println("Axis2ServiceProvider: adding servlet mapping for " + servletURI);
         servletHost.addServletMapping(servletURI, servlet);
     }
 
@@ -187,14 +188,14 @@ public class Axis2ServiceProvider {
             actualURI = baseURI + "/" + componentURI;
         }
 
-        // with multiple services the default binding URI is the binding name
-        if (bindingURI == null && component.getServices().size() > 1) {
-            // if the binding doesn't have a name use the name of the service
-            // (assumption, not in spec)
-            if (wsBinding.getName() != null) {
+        // for service bindings with multiple services, the default binding URI is the binding name
+        // for callback reference bindings, add a prefix "$callback$." to ensure uniqueness
+        if (bindingURI == null && 
+            (wsBinding.isCallback() || component.getServices().size() > 1)) {
+            if (!wsBinding.isCallback()) {
                 bindingURI = URI.create(wsBinding.getName());
             } else {
-                bindingURI = URI.create(contract.getName());
+                bindingURI = URI.create("$callback$." + wsBinding.getName());
             }
         }
 
@@ -329,7 +330,7 @@ public class Axis2ServiceProvider {
 
     /**
      * @param inMC
-     * @return
+     * @return conversationID
      */
     protected static String getConversationID(MessageContext inMC) {
         String conversationID = null;
@@ -355,6 +356,35 @@ public class Axis2ServiceProvider {
 
         }
         return conversationID;
+    }
+
+    //FIXME: is there any way to use the Axis2 addressing support for this?
+     /**
+     * @param inMC
+     * @return fromEPR
+     */
+    protected String getFromEPR(MessageContext inMC) {
+        String fromEPR = null;
+        if (contract instanceof RuntimeComponentService &&
+            contract.getInterfaceContract().getCallbackInterface() != null) {
+            //FIXME: this code can get a NPE if WS-Addressing information is not present
+            Iterator i =
+                inMC.getEnvelope().getHeader()
+                    .getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
+            for (; i.hasNext();) {
+                Object a = i.next();
+                if (a instanceof OMElement) {
+                    OMElement ao = (OMElement)a;
+                    for (Iterator adI =
+                            ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "Address"));
+                            adI.hasNext();) {
+                        OMElement adE = (OMElement)adI.next();
+                        fromEPR = adE.getText();
+                    }
+                }
+            }
+        }
+        return fromEPR;
     }
 
     public Object invokeTarget(Operation op,

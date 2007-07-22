@@ -27,6 +27,10 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
@@ -38,11 +42,17 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    protected Object invokeTarget(final Object payload, final short sequence, String conversationId) throws InvocationTargetException {
+    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, String conversationId)
+                             throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
 
             OperationClient operationClient = createOperationClient(args, conversationId);
+
+            // ensure connections are tracked so that they can be closed by the reference binding
+            MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
+            requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+
             operationClient.execute(false);
 
             // REVIEW it seems ok to return null
@@ -50,8 +60,6 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
-        } catch (Throwable t) {
-            throw new InvocationTargetException(t);
         }
     }
 

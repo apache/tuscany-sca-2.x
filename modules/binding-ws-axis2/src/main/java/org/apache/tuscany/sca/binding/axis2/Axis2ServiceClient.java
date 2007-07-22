@@ -40,7 +40,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -109,18 +108,11 @@ public class Axis2ServiceClient {
      * Create and configure an Axis2BindingInvoker for each operation
      */
     protected Invoker createInvoker(Operation operation) {
-        EndpointReference epTo = getPortLocationEPR(wsBinding);
-        if (epTo == null) {
-            org.apache.tuscany.sca.runtime.EndpointReference epr = ThreadMessageContext.getMessageContext().getTo();
-            if (epr != null) {
-                epTo = new EndpointReference(epr.getURI());
-            } else {
-                throw new RuntimeException("Unable to determine destination endpoint");
-            }
-        }
-
         Options options = new Options();
-        options.setTo(epTo);
+        EndpointReference epTo = getPortLocationEPR(wsBinding);
+        if (epTo != null) {
+            options.setTo(epTo);
+        }
         if (callbackBinding != null) {
             options.setFrom(getPortLocationEPR(callbackBinding));
         }
