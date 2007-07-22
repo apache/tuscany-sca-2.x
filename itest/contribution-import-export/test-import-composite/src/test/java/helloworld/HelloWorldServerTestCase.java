@@ -75,15 +75,25 @@ public class HelloWorldServerTestCase extends TestCase{
 		new Socket("127.0.0.1", 8085);
 	}
 
-//    public void testServiceCall() throws IOException {
-//        HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
-//        assertNotNull(helloWorldService);
-//        
-//        assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
-//    }
+    public void testServiceCall() throws IOException {
+        HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
+        assertNotNull(helloWorldService);
+        
+        assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
+    }
 
     
 	public void tearDown() throws Exception {
+        ContributionService contributionService = domain.getContributionService();
+
+        // Remove the contribution from the in-memory repository
+        contributionService.remove("http://import-export/helloworld");
+        contributionService.remove("http://import-export/contrib-wsdl");
+        
+        //Stop Components from my composite
+        domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
+
+        domain.stop();        
             domain.close();
 	}
 
