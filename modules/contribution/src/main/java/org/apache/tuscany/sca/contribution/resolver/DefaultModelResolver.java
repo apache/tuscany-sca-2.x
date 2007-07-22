@@ -24,8 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.sca.contribution.resolver.ClassReference;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.Contribution;
 
 /**
  * A default implementation of an artifact resolver, based on a map.
@@ -38,9 +37,11 @@ public class DefaultModelResolver implements ModelResolver {
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
     protected WeakReference<ClassLoader> classLoader;
+    protected Contribution contribution;
     
-    public DefaultModelResolver(ClassLoader classLoader) {
+    public DefaultModelResolver(ClassLoader classLoader, Contribution contribution) {
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
+        this.contribution = contribution;
     }
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {

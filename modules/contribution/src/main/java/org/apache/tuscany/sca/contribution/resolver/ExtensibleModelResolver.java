@@ -23,13 +23,15 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+
 public class ExtensibleModelResolver extends DefaultModelResolver implements ModelResolver {
     private final ModelResolverExtensionPoint resolverRegistry;
     private final Map<Class<?>, ModelResolver> resolverInstances = new HashMap<Class<?>, ModelResolver>();
     
 
-    public ExtensibleModelResolver(ModelResolverExtensionPoint resolverRegistry, ClassLoader cl) {
-        super(cl);
+    public ExtensibleModelResolver(ModelResolverExtensionPoint resolverRegistry, ClassLoader cl, Contribution contribution) {
+        super(cl, contribution);
         this.resolverRegistry = resolverRegistry; 
         initializeModelResolverInstances();
     }
@@ -52,9 +54,9 @@ public class ExtensibleModelResolver extends DefaultModelResolver implements Mod
             
             ModelResolver resolverInstance = null;
             try {
-                Constructor constructor = resolverInstanceType.getConstructor(ClassLoader.class);
+                Constructor constructor = resolverInstanceType.getConstructor(new Class[]{ClassLoader.class, Contribution.class});
                 if (constructor != null) {
-                    resolverInstance = (ModelResolver) constructor.newInstance(this.classLoader.get());
+                    resolverInstance = (ModelResolver) constructor.newInstance(this.classLoader.get(), this.contribution);
                 } else {
                     resolverInstance = (ModelResolver) resolverInstanceType.newInstance();
                 }

@@ -141,11 +141,8 @@ public class ContributionServiceImpl implements ContributionService {
         if (sourceURL == null) {
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
-
-        //FIXME get the right class loader
-        ModelResolver extensibleModelResolver = new ExtensibleModelResolver(this.modelResolverExtensionPoint, getClass().getClassLoader());
         
-        return addContribution(contributionURI, sourceURL, null, extensibleModelResolver, storeInRepository);
+        return addContribution(contributionURI, sourceURL, null, null, storeInRepository);
     }
     
     public Contribution contribute(String contributionURI, URL sourceURL, ModelResolver modelResolver, boolean storeInRepository) throws ContributionException,
@@ -163,10 +160,7 @@ public class ContributionServiceImpl implements ContributionService {
     public Contribution contribute(String contributionURI, URL sourceURL, InputStream input)
             throws ContributionException, IOException {
 
-        //FIXME get the right class loader
-        ModelResolver extensibleModelResolver = new ExtensibleModelResolver(this.modelResolverExtensionPoint, getClass().getClassLoader());
-
-        return addContribution(contributionURI, sourceURL, input, extensibleModelResolver, true);
+        return addContribution(contributionURI, sourceURL, input, null, true);
     }
     
     public Contribution contribute(String contributionURI, URL sourceURL, InputStream input, ModelResolver modelResolver) 
@@ -227,6 +221,7 @@ public class ContributionServiceImpl implements ContributionService {
 
     public void remove(String contribution) throws ContributionException {
         this.contributionRegistry.remove(contribution);
+        //FIXME remove references from contributionByExportedNamespace
     }
 
     public void addDeploymentComposite(Contribution contribution, Composite composite) throws ContributionException {
@@ -275,7 +270,15 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
 
+        //initialize contribution based on it's metadata if available
         Contribution contribution = initializeContributionMetadata(locationURL, modelResolver);
+        
+        //create contribution model resolver
+        if (modelResolver == null) {
+            modelResolver = new ExtensibleModelResolver(this.modelResolverExtensionPoint, getClass().getClassLoader(), contribution);
+        }
+        
+        //set contribution initial information
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(locationURL.toString());
         contribution.setModelResolver(modelResolver);
@@ -364,7 +367,6 @@ public class ContributionServiceImpl implements ContributionService {
                 // Add the loaded model to the model resolver
                 modelResolver.addModel(model);
             }
-            
         }
     }
 
@@ -404,8 +406,8 @@ public class ContributionServiceImpl implements ContributionService {
 
     @SuppressWarnings("unchecked")
     private Object processResolveImportsPhase(Contribution contribution, DeployedArtifact artifact) throws ContributionException {
-        for(ContributionImport importedArtifact : contribution.getImports()) {
-            String importedContributionURI = importedArtifact.getLocation();
+        for(ContributionImport contributionImport : contribution.getImports()) {
+            String importedContributionURI = contributionImport.getLocation();
             if (importedContributionURI != null && importedContributionURI.length() > 0) {
                 //location provided (contribution uri)
                 Contribution importedContribution = this.getContribution(importedContributionURI);
@@ -414,7 +416,7 @@ public class ContributionServiceImpl implements ContributionService {
                 }
             } else {
                 //look into all the contributions that match exported uri
-                for(Contribution importedContribution : this.contributionByExportedNamespace.get(importedArtifact.getNamespace())) {
+                for(Contribution importedContribution : this.contributionByExportedNamespace.get(contributionImport.getNamespace())) {
                     this.artifactProcessor.resolve(artifact.getModel(), importedContribution.getModelResolver());
                 }
             }
@@ -429,8 +431,8 @@ public class ContributionServiceImpl implements ContributionService {
     private Composite processResolveImportsPhase(Contribution contribution, Composite deployableComposite) throws ContributionException {
         Composite resolvedDeployable = deployableComposite;
         
-        for(ContributionImport importedArtifact : contribution.getImports()) {
-            String importedContributionURI = importedArtifact.getLocation();
+        for(ContributionImport contributionImport : contribution.getImports()) {
+            String importedContributionURI = contributionImport.getLocation();
             if (importedContributionURI != null && importedContributionURI.length() > 0) {
                 //location provided (contribution uri)
                 Contribution importedContribution = this.getContribution(importedContributionURI);
@@ -439,7 +441,7 @@ public class ContributionServiceImpl implements ContributionService {
                 }
             } else {
                 //look into all the contributions that match exported uri
-                for(Contribution importedContribution : this.contributionByExportedNamespace.get(importedArtifact.getNamespace())) {
+                for(Contribution importedContribution : this.contributionByExportedNamespace.get(contributionImport.getNamespace())) {
                     Composite resolvingDeployable = importedContribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
                     if (resolvingDeployable != null && resolvingDeployable.isUnresolved() == false) {
                         resolvedDeployable = resolvingDeployable;

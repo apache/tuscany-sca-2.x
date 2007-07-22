@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionImport;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 
 /**
  * An Model Resolver for WSDL artifact types.
@@ -28,7 +31,42 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
  */
 public class WSDLModelResolver extends DefaultModelResolver {
 
-    public WSDLModelResolver(ClassLoader cl) {
-        super(cl);
+    public WSDLModelResolver(ClassLoader cl, Contribution contribution) {
+        super(cl,contribution);
     }
+
+    private WSDLDefinition resolveImportedModel(WSDLDefinition unresolved) {
+        String namespace = unresolved.getNamespace();
+        if (namespace != null && namespace.length() > 0) {
+            for (ContributionImport contributionImport : this.contribution.getImports()) {
+                if(namespace.equalsIgnoreCase(contributionImport.getNamespace())) {
+                    //find who exports it
+                    
+                    //delegate the resolition to the import resolver
+                    contributionImport.getModelResolver().resolveModel(WSDLDefinition.class, unresolved);
+                    //if resolved... then we are done
+                    if(unresolved.isUnresolved() == false) {
+                        break;
+                    }
+                }
+            }
+        }
+        return unresolved;
+    }
+    
+    @Override
+    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+        return super.resolveModel(modelClass, unresolved);
+        /*
+        WSDLDefinition resolved = (WSDLDefinition) super.resolveModel(modelClass, unresolved);
+
+        if (resolved.isUnresolved()) {
+            resolved = resolveImportedModel(resolved);
+        }
+        
+        return null;
+        */
+    }
+    
+    
 }
