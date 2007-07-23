@@ -505,6 +505,15 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 writeEnd(writer);
             }
     
+            for (Wire wire : composite.getWires()) {
+                writeStart(writer, WIRE, new XAttr(SOURCE, wire.getSource().getName()), new XAttr(TARGET, wire
+                    .getTarget().getName()));
+                for (Object extension : wire.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                writeEnd(writer);
+            }
+            
             for (Object extension: composite.getExtensions()) {
                 extensionProcessor.write(extension, writer);
             }
