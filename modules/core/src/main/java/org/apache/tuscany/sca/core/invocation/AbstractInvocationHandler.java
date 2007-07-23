@@ -68,7 +68,7 @@ public abstract class AbstractInvocationHandler {
         // 2 - Specified by the application (through a service reference)
         // 3 - from the message context (if the source is stateful)
         //
-        // TODO - number 3 seems a little shaky as we end up propogating
+        // TODO - number 3 seems a little shaky as we end up propagating
         //        a conversationId through the source component. If we don't
         //        do this though we can't correlate the callback call with the
         //        current target instance. Currently specifying an application
@@ -84,16 +84,17 @@ public abstract class AbstractInvocationHandler {
             Object conversationId = conversation.getConversationID();
             
             // create a conversation id if one doesn't exist 
-            // already. This could be because we are in the middle of a
-            // conversation or the conversation hasn't started but the
+            // already, i.e. the conversation is just starting
             if ((conversationStarted == false) && (conversationId == null)) {
                 
                 // It the current component is already in a conversation
                 // the use this just in case this message has a stateful 
                 // callback. In which case the callback will come back
                 // to the correct instance. 
-                // TODO - need a better mechanism for identifyng the 
-                //        stateful callback case
+                // TODO - we should always create a unique id here or
+                //        take the application defined conversation id. 
+                //        This implies we have to re-register the component 
+                //        instance against this 
                 if (msgContextConversationId == null) {
                     conversationId = createConversationID();
                 } else {

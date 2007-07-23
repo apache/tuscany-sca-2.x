@@ -46,15 +46,19 @@ public interface ConversationalService {
     
     public int retrieveCount();
     
+    public void businessException() throws Exception;        
+    
     public void initializeCountCallback(int count);
     
     public void incrementCountCallback();
     
     public int retrieveCountCallback();
     
-    @EndsConversation
-    public void endConversation();
+    public void businessExceptionCallback() throws Exception;    
     
-    public void endConversationCallback();
+    @EndsConversation
+    public String endConversation();
+    
+    public String endConversationCallback();
 
 }

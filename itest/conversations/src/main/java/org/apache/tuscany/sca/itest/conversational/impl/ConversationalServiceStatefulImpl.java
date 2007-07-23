@@ -82,6 +82,10 @@ public class ConversationalServiceStatefulImpl implements ConversationalService 
         return count;
     }
     
+    public void businessException() throws Exception {
+        throw new Exception("Business Exception");
+    }     
+    
     public void initializeCountCallback(int count){
         calls.append("initializeCountCallback,"); 
         this.count = count;
@@ -99,13 +103,19 @@ public class ConversationalServiceStatefulImpl implements ConversationalService 
         return conversationalCallback.retrieveCount();
     }
     
-    public void endConversation(){
+    public void businessExceptionCallback() throws Exception {
+        calls.append("businessExceptionCallback,");        
+        conversationalCallback.businessException();
+    }    
+    
+    public String endConversation(){
         calls.append("endConversation,"); 
         count = 0;
+        return conversationId;
     }
     
-    public void endConversationCallback(){
+    public String endConversationCallback(){
         calls.append("endConversationCallback,"); 
-        conversationalCallback.endConversation();
+        return conversationalCallback.endConversation();
     }
 }

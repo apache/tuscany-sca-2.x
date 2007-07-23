@@ -33,10 +33,14 @@ public interface ConversationalClient {
 	public int runConversationFromInjectedReference(); 	
 	public int runConversationFromServiceReference();
 	public int runConversationWithUserDefinedConversationId();
+	public String runConversationCheckUserDefinedConversationId();	
 	public int runConversationCheckingScope();
 	public int runConversationWithCallback(); 
 	public int runConversationHavingPassedReference();
-	public int runConversationError();
+	public String runConversationBusinessException();
+	public String runConversationBusinessExceptionCallback();
+	public int runConversationCallingEndedConversation();
+	public int runConversationCallingEndedConversationCallback();
 	public int runConversationAgeTimeout();
 	public int runConversationIdleTimeout();
 	public int runConversationPrincipleError();	
