@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -43,6 +42,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -111,6 +111,33 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         wireCompositeReferences(composite);
     }
 
+    public void incrementalBuild(Composite domainComposite) throws CompositeBuilderException {
+
+        // Collect and fuse includes
+        List<Composite> includes = new ArrayList<Composite>(domainComposite.getIncludes());
+        for (Composite composite: includes) {
+            fuseIncludes(composite);
+            
+            // Expand nested composites
+            expandComposites(composite);
+    
+            // Configure all components
+            configureComponents(composite);
+    
+            // Wire the composite
+            wireComposite(composite, domainComposite);
+    
+            // Activate composite services
+            activateCompositeServices(composite);
+    
+            // Wire composite references
+            wireCompositeReferences(composite);
+            
+            // Merge the composite into the domain composite
+            fuseIncludedComposite(composite, domainComposite);
+        }
+    }
+    
     /**
      * Collect all includes in a graph of includes.
      * 
@@ -155,6 +182,26 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
         // Clear the list of includes
         composite.getIncludes().clear();
+    }
+
+    /**
+     * Merge the contents of a composite into a domain composite.
+     * 
+     * @param composite
+     * @param includes
+     */
+    protected void fuseIncludedComposite(Composite composite, Composite domainComposite) {
+
+        domainComposite.getComponents().addAll(composite.getComponents());
+        domainComposite.getServices().addAll(composite.getServices());
+        domainComposite.getReferences().addAll(composite.getReferences());
+        domainComposite.getProperties().addAll(composite.getProperties());
+        domainComposite.getWires().addAll(composite.getWires());
+        domainComposite.getPolicySets().addAll(composite.getPolicySets());
+        domainComposite.getRequiredIntents().addAll(composite.getRequiredIntents());
+
+        // Clear the list of includes
+        domainComposite.getIncludes().clear();
     }
 
     /**
@@ -1489,6 +1536,93 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
     }
 
+    /**
+     * Wire component references to component services and connect promoted
+     * services/references to component services/references inside a composite.
+     * 
+     * @param composite
+     * @param problems
+     */
+    protected void wireComposite(Composite composite, Composite domainComposite) {
+
+        // Wire nested composites recursively
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                wireComposite((Composite)implementation);
+            }
+        }
+
+        // Index and bind all component services and references
+        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+
+        // Create SCA bindings on all component services and references
+        createSCABindings(composite, componentServices, componentReferences);
+
+        // Connect composite services and references to the component
+        // services and references that they promote
+        connectCompositeServices(composite, componentServices);
+        connectCompositeReferences(composite, componentReferences);
+        
+        // Add component services from the domain to the map of component services
+        // as they are possible targets for references
+        indexComponentServices(domainComposite, componentServices);
+
+        // Connect component references to their targets
+        connectComponentReferences(composite, componentServices, componentReferences);
+
+        // Connect component references as described in wires
+        connectWires(composite, componentServices, componentReferences);
+
+        // Resolve sourced properties
+        resolveSourcedProperties(composite, null);
+
+        // Validate that references are wired or promoted, according
+        // to their multiplicity
+        for (ComponentReference componentReference : componentReferences.values()) {
+            if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
+                .getTargets(), componentReference.getBindings())) {
+                if (componentReference.getTargets().isEmpty()) {
+
+                    // No warning if the reference is promoted out of the current composite
+                    boolean promoted = false;
+                    for (Reference reference : composite.getReferences()) {
+                        CompositeReference compositeReference = (CompositeReference)reference;
+                        if (compositeReference.getPromotedReferences().contains(componentReference)) {
+                            promoted = true;
+                            break;
+                        }
+                    }
+                    if (!promoted) {
+                        warning("No targets for reference: " + componentReference.getName(), composite);
+                    }
+                } else {
+                    warning("Too many targets on reference: " + componentReference.getName(), composite);
+                }
+            }
+        }
+    }
+
+    /**
+     * Index all component services inside a composite by component service URI.
+     * @param composite
+     * @param componentServices
+     */
+    private void indexComponentServices(Composite composite, Map<String, ComponentService> componentServices) {
+        for (Component component : composite.getComponents()) {
+            int i = 0;
+            for (ComponentService componentService : component.getServices()) {
+                String uri = component.getName() + '/' + componentService.getName();
+                componentServices.put(uri, componentService);
+                if (i == 0) {
+                    componentServices.put(component.getName(), componentService);
+                }
+                i++;
+            }
+        }
+    }
+    
     private ComponentProperty getComponentPropertyByName(String propertyName, List<ComponentProperty> properties) {
         if (properties != null) {
             for (ComponentProperty aProperty : properties) {
