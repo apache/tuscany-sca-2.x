@@ -44,6 +44,7 @@
                 <module>binding-ejb</module>
                 <module>binding-feed</module>
                 <module>binding-jsonrpc</module>
+                <module>binding-notification</module>
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
                 <module>binding-ws</module>
@@ -87,6 +88,7 @@
                 <module>implementation-java</module>
                 <module>implementation-java-xml</module>
                 <module>implementation-java-runtime</module>
+                <module>implementation-notification</module>
                 <module>implementation-osgi</module>
                 <module>implementation-resource</module>
                 <module>implementation-script</module>
