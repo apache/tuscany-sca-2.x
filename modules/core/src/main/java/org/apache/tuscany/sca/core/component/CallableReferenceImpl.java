@@ -49,7 +49,7 @@ public abstract class CallableReferenceImpl<B> implements CallableReference<B> {
     }
 
     public boolean isConversational() {
-        return false;
+        return ((WireObjectFactory<B>)factory).getConversation() != null;
     }
 
     public Conversation getConversation() {

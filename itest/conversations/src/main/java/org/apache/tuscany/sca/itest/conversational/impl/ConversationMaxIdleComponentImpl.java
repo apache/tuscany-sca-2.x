@@ -31,13 +31,21 @@ public class ConversationMaxIdleComponentImpl implements ConversationalService {
 
     private int count;
 
+    public void businessException() throws Exception {   
+    }
+    
+    public void businessExceptionCallback() throws Exception {   
+    }    
+    
     public void destroy() {
     }
 
-    public void endConversation() {
+    public String endConversation() {
+        return null;
     }
 
-    public void endConversationCallback() {
+    public String endConversationCallback() {
+        return null;
     }
 
     public void incrementCount() {

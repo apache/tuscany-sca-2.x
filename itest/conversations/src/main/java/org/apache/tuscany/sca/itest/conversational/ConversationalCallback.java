@@ -44,7 +44,9 @@ public interface ConversationalCallback {
     
     public int retrieveCount();
     
+    public void businessException() throws Exception;        
+    
     @EndsConversation
-    public void endConversation();
+    public String endConversation();
 
 }

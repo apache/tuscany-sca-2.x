@@ -39,12 +39,14 @@ public class ConversationalServiceStatelessScope implements ConversationalServic
         
     }
 
-    public void endConversation() {
+    public String endConversation() {
         state.remove(cid);
+        return cid;
     }
 
-    public void endConversationCallback() {
+    public String endConversationCallback() {
         // TODO Auto-generated method stub
+        return null;
         
     }
 
@@ -52,6 +54,10 @@ public class ConversationalServiceStatelessScope implements ConversationalServic
         state.put(cid, Integer.valueOf(state.get(cid)+1));
     }
 
+    public void businessException() throws Exception {
+        throw new Exception("Business Exception");
+    }
+    
     public void incrementCountCallback() {
         // TODO Auto-generated method stub
         
@@ -70,6 +76,10 @@ public class ConversationalServiceStatelessScope implements ConversationalServic
         // TODO Auto-generated method stub
         
     }
+    
+    public void businessExceptionCallback() throws Exception {
+        throw new Exception("Business Exception");
+    }    
 
     public int retrieveCount() {
         return state.get(cid);

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.core.scope;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -135,7 +136,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         // conversation Id here to store the service against
         // and populate the thread context
         if (contextId == null){
-            contextId = new String("1234");
+            contextId = UUID.randomUUID().toString();
             Message msgContext = ThreadMessageContext.getMessageContext();
             
             if (msgContext != null){
