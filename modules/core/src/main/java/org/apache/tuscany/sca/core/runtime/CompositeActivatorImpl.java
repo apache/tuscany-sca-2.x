@@ -780,7 +780,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         CompositeBuilderImpl builder =
             new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
 
-        builder.build(composite);
+        builder.incrementalBuild(composite);
 
         // if (!problems.isEmpty()) {
         // throw new VariantRuntimeException(new RuntimeException("Problems in
