@@ -31,7 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -44,6 +43,7 @@ import org.apache.tuscany.sca.contribution.NamespaceExport;
 import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.contribution.resolver.impl.NamespaceExportModelRes
 import org.apache.tuscany.sca.contribution.resolver.impl.NamespaceImportAllModelResolverImpl;
 import org.apache.tuscany.sca.contribution.resolver.impl.NamespaceImportModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
-import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
+import org.apache.tuscany.sca.contribution.service.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
@@ -61,6 +61,9 @@ import org.apache.tuscany.sca.contribution.service.util.IOHelper;
  * Service interface that manages artifacts contributed to a Tuscany runtime.
  * 
  * @version $Rev$ $Date$
+ */
+/**
+ * 
  */
 public class ContributionServiceImpl implements ContributionService {
 
@@ -79,6 +82,12 @@ public class ContributionServiceImpl implements ContributionService {
      */
 
     private URLArtifactProcessor artifactProcessor;
+    
+    /**
+     * Registry of available stax processors,
+     * used for loading contribution metadata in a extensible way
+     */
+    private StAXArtifactProcessor staxProcessor;
     
     /**
      * Registry of available model resolvers
@@ -106,10 +115,6 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private ContributionFactory contributionFactory;
 
-    /**
-     * contribution metadata loader
-     */
-    private ContributionMetadataLoaderImpl contributionLoader;
 
     /**
      * Contribution registry This is a registry of processed Contributions indexed by URI
@@ -118,7 +123,8 @@ public class ContributionServiceImpl implements ContributionService {
     
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
-                                   URLArtifactProcessor artifactProcessor,
+                                   URLArtifactProcessor documentProcessor,
+                                   StAXArtifactProcessor staxProcessor,
                                    ContributionPostProcessor postProcessor,
                                    ModelResolverExtensionPoint modelResolverExtensionPoint,
                                    AssemblyFactory assemblyFactory,
@@ -127,13 +133,13 @@ public class ContributionServiceImpl implements ContributionService {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
-        this.artifactProcessor = artifactProcessor;
+        this.artifactProcessor = documentProcessor;
+        this.staxProcessor = staxProcessor;
         this.postProcessor = postProcessor;
         this.modelResolverExtensionPoint = modelResolverExtensionPoint;
         this.xmlFactory = xmlFactory;
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
-        this.contributionLoader = new ContributionMetadataLoaderImpl(assemblyFactory, contributionFactory);
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)
@@ -172,46 +178,29 @@ public class ContributionServiceImpl implements ContributionService {
         return addContribution(contributionURI, sourceURL, input, modelResolver, true);
     }
 
-    private Contribution initializeContributionMetadata(URL sourceURL, ModelResolver modelResolver) throws ContributionException {
+    /**
+     * Perform read of the contribution metada loader (sca-contribution.xml and sca-contribution-generated.xml)
+     * When the two metadata files are available, the information provided are merged, and the sca-contribution has priorities
+     * 
+     * @param sourceURL
+     * @return Contribution
+     * @throws ContributionException
+     */
+    private Contribution readContributionMetadata(URL sourceURL) throws ContributionException {
         Contribution contributionMetadata = null;
-        URL contributionMetadataURL;
-        URL generatedContributionMetadataURL;
-        InputStream metadataStream = null;
 
         URL[] clUrls = {sourceURL};
         URLClassLoader cl = new URLClassLoader(clUrls, null);
-
-        contributionMetadataURL = cl.getResource(Contribution.SCA_CONTRIBUTION_META);
-        generatedContributionMetadataURL = cl.getResource(Contribution.SCA_CONTRIBUTION_GENERATED_META);
-
+        
+        
+        ContributionMetadataDocumentProcessor metadataDocumentProcessor = 
+            new ContributionMetadataDocumentProcessorImpl(cl, this.staxProcessor, this.assemblyFactory, this.contributionFactory, this.xmlFactory);
+        contributionMetadata = contributionFactory.createContribution();
         try {
-            contributionMetadata = this.contributionFactory.createContribution();
-            contributionMetadata.setModelResolver(modelResolver);
-            if (contributionMetadataURL != null || generatedContributionMetadataURL != null) {
-                URL metadataURL = contributionMetadataURL != null ? contributionMetadataURL
-                                                                 : generatedContributionMetadataURL;
+            metadataDocumentProcessor.read(contributionMetadata);
+        } catch (XMLStreamException e) {
+            throw new InvalidContributionMetadataException("Invalid contribution metadata for contribution.");
 
-                try {
-                    metadataStream = metadataURL.openStream();
-                    XMLStreamReader xmlReader = this.xmlFactory.createXMLStreamReader(metadataStream);
-                    this.contributionLoader.load(contributionMetadata, xmlReader);
-
-                } catch (IOException ioe) {
-                    throw new InvalidContributionMetadataException(ioe.getMessage(), metadataURL.toExternalForm(), ioe);
-                } catch (XMLStreamException xmle) {
-                    throw new InvalidContributionMetadataException(xmle.getMessage(), metadataURL.toExternalForm(),
-                                                                   xmle);
-                } catch (ContributionMetadataLoaderException le) {
-                    throw new InvalidContributionMetadataException(le.getMessage(), metadataURL.toExternalForm(), le);
-                }
-            }
-        } finally {
-            IOHelper.closeQuietly(metadataStream);
-            metadataStream = null;
-        }
-
-        if (contributionMetadata == null) {
-            contributionMetadata = this.contributionFactory.createContribution();
         }
         
         return contributionMetadata;
@@ -273,7 +262,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         //initialize contribution based on it's metadata if available
-        Contribution contribution = initializeContributionMetadata(locationURL, modelResolver);
+        Contribution contribution = readContributionMetadata(locationURL);
         
         //create contribution model resolver
         if (modelResolver == null) {
