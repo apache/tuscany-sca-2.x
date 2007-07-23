@@ -70,6 +70,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
+import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
@@ -174,14 +175,12 @@ public class ReallySmallRuntimeBuilder {
         registry.addExtensionPoint(staxProcessors);
 
         // Create and register STAX processors for SCA assembly XML
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory,
-                                                                                            XMLOutputFactory
-                                                                                                .newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper,
-                                                                   staxProcessor));
+        ExtensibleStAXArtifactProcessor staxProcessor = 
+            new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors
-            .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory,contributionFactory));
 
         // Create URL artifact processor extension point
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
@@ -225,8 +224,9 @@ public class ReallySmallRuntimeBuilder {
         }
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        
         ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
-                                                                              documentProcessor, postProcessor, 
+                                                                              documentProcessor, staxProcessor, postProcessor, 
                                                                               modelResolverExtensionPoint, assemblyFactory,
                                                                               contributionFactory, xmlFactory);
         return contributionService;
