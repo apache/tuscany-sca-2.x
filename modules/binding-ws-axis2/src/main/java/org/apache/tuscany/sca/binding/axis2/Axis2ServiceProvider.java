@@ -21,11 +21,8 @@ package org.apache.tuscany.sca.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
@@ -33,7 +30,7 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
@@ -71,8 +68,11 @@ public class Axis2ServiceProvider {
     private ConfigurationContext configContext;
 
     // TODO: what to do about the base URI?
-    //FIXME: changed from 8080 to 8085 as hack to work around current limitation that base URI
-    // must be the same for all servlet mappings in a single Tomcat or Jetty ServletHost 
+    //FIXME: changed from 8080 to 8085 as a hack to work around current limitation that
+    // the base URI must be the same for all servlet mappings in a single ServletHost.
+    // It appears that the code in both http-tomcat and http-jetty has this restriction.
+    // This port number may be used to construct callback URIs.  The value 8085 is used
+    // beacuse it matches the service port number used by the simple-callback-ws sample.
     private static final String BASE_URI = "http://localhost:8085/";
 
     public Axis2ServiceProvider(RuntimeComponent component,
@@ -116,7 +116,6 @@ public class Axis2ServiceProvider {
         servlet.init(configContext);
         String servletURI = wsBinding.getURI();
         configContext.setContextRoot(servletURI);
-        System.out.println("Axis2ServiceProvider: adding servlet mapping for " + servletURI);
         servletHost.addServletMapping(servletURI, servlet);
     }
 
@@ -190,8 +189,7 @@ public class Axis2ServiceProvider {
 
         // for service bindings with multiple services, the default binding URI is the binding name
         // for callback reference bindings, add a prefix "$callback$." to ensure uniqueness
-        if (bindingURI == null && 
-            (wsBinding.isCallback() || component.getServices().size() > 1)) {
+        if (bindingURI == null && (wsBinding.isCallback() || component.getServices().size() > 1)) {
             if (!wsBinding.isCallback()) {
                 bindingURI = URI.create(wsBinding.getName());
             } else {
@@ -271,8 +269,11 @@ public class Axis2ServiceProvider {
         // An SCA service with binding.ws does not require a service or port so we may not have
         // these but ...
 
-        WSDLToAxisServiceBuilder builder =
-            new WSDL11ToAxisServiceBuilder(definition, wsBinding.getServiceName(), wsBinding.getPortName());
+        Axis2ServiceClient.setServiceAndPort(wsBinding);
+        QName serviceQName = wsBinding.getServiceName();
+        String portName = wsBinding.getPortName();
+
+        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, serviceQName, portName);
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
@@ -328,58 +329,60 @@ public class Axis2ServiceProvider {
 
     // methods for Axis2 message receivers
 
+    //FIXME: can we use the Axis2 addressing support for this?
     /**
      * @param inMC
      * @return conversationID
      */
-    protected static String getConversationID(MessageContext inMC) {
+    protected String getConversationID(MessageContext inMC) {
         String conversationID = null;
-        Iterator i =
-            inMC.getEnvelope().getHeader()
-                .getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
-        for (; i.hasNext();) {
-            Object a = i.next();
-            if (a instanceof OMElement) {
-                OMElement ao = (OMElement)a;
-                for (Iterator rpI =
-                    ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters")); rpI
-                    .hasNext();) {
-                    OMElement rpE = (OMElement)rpI.next();
-                    for (Iterator cidI = rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN); cidI
-                        .hasNext();) {
-                        OMElement cidE = (OMElement)cidI.next();
-                        conversationID = cidE.getText();
+        if (isConversational()) {
+            SOAPHeader header = inMC.getEnvelope().getHeader();
+            if (header != null) {
+                Iterator i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
+                for (; i.hasNext();) {
+                    Object a = i.next();
+                    if (a instanceof OMElement) {
+                        OMElement ao = (OMElement)a;
+                        for (Iterator rpI =
+                            ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing",
+                                                             "ReferenceParameters")); rpI.hasNext();) {
+                            OMElement rpE = (OMElement)rpI.next();
+                            for (Iterator cidI =
+                                rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN); cidI.hasNext();) {
+                                OMElement cidE = (OMElement)cidI.next();
+                                conversationID = cidE.getText();
+                            }
+                        }
+
                     }
                 }
-
             }
-
         }
         return conversationID;
     }
 
-    //FIXME: is there any way to use the Axis2 addressing support for this?
-     /**
+    //FIXME: can we use the Axis2 addressing support for this?
+    /**
      * @param inMC
      * @return fromEPR
      */
     protected String getFromEPR(MessageContext inMC) {
         String fromEPR = null;
-        if (contract instanceof RuntimeComponentService &&
-            contract.getInterfaceContract().getCallbackInterface() != null) {
-            //FIXME: this code can get a NPE if WS-Addressing information is not present
-            Iterator i =
-                inMC.getEnvelope().getHeader()
-                    .getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
-            for (; i.hasNext();) {
-                Object a = i.next();
-                if (a instanceof OMElement) {
-                    OMElement ao = (OMElement)a;
-                    for (Iterator adI =
-                            ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "Address"));
-                            adI.hasNext();) {
-                        OMElement adE = (OMElement)adI.next();
-                        fromEPR = adE.getText();
+        if (contract instanceof RuntimeComponentService && contract.getInterfaceContract().getCallbackInterface() != null) {
+            SOAPHeader header = inMC.getEnvelope().getHeader();
+            if (header != null) {
+                Iterator i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
+                for (; i.hasNext();) {
+                    Object a = i.next();
+                    if (a instanceof OMElement) {
+                        OMElement ao = (OMElement)a;
+                        for (Iterator adI =
+                            ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "Address")); adI
+                            .hasNext();) {
+                            OMElement adE = (OMElement)adI.next();
+                            fromEPR = adE.getText();
+                        }
                     }
                 }
             }
@@ -421,8 +424,9 @@ public class Axis2ServiceProvider {
             Message responseMsg =
                 contract instanceof RuntimeComponentService ? ((RuntimeComponentService)contract).getInvoker(wsBinding,
                                                                                                              op)
-                    .invoke(requestMsg) : ((RuntimeComponentReference)contract).getInvoker(wsBinding, op)
-                    .invoke(requestMsg);
+                    .invoke(requestMsg) : ((RuntimeComponentReference)contract).getCallbackInvocationChain(wsBinding,
+                                                                                                           op)
+                    .getHeadInvoker().invoke(requestMsg);
 
             if (responseMsg.isFault()) {
                 throw new InvocationTargetException((Throwable)responseMsg.getBody());
@@ -435,42 +439,10 @@ public class Axis2ServiceProvider {
     }
 
     public boolean isConversational() {
-        return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
-    }
-
-    // methods for handling callbacks
-
-    private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
-
-    public void addMapping(Object msgId, InvocationContext invCtx) {
-        this.invCtxMap.put(msgId, invCtx);
-    }
-
-    public InvocationContext retrieveMapping(Object msgId) {
-        return this.invCtxMap.get(msgId);
-    }
-
-    public void removeMapping(Object msgId) {
-        this.invCtxMap.remove(msgId);
-    }
-
-    protected class InvocationContext {
-        public MessageContext inMessageContext;
-
-        public Operation operation;
-
-        public SOAPFactory soapFactory;
-
-        public CountDownLatch doneSignal;
-
-        public InvocationContext(MessageContext messageCtx,
-                                 Operation operation,
-                                 SOAPFactory soapFactory,
-                                 CountDownLatch doneSignal) {
-            this.inMessageContext = messageCtx;
-            this.operation = operation;
-            this.soapFactory = soapFactory;
-            this.doneSignal = doneSignal;
+        if (!wsBinding.isCallback()) {
+            return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
+        } else {
+            return wsBinding.getBindingInterfaceContract().getCallbackInterface().isConversational();
         }
     }
 

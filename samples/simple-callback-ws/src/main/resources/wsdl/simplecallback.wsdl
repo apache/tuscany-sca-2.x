@@ -31,10 +31,6 @@
                 </complexType>
             </element>
 
-            <element name="someMethodResponse">
-                <complexType/>
-            </element>
-
             <element name="receiveResult">
                 <complexType>
                     <sequence>
@@ -54,10 +50,6 @@
         <wsdl:part element="tns:someMethod" name="parameters"/>
     </wsdl:message>
 
-    <wsdl:message name="someMethodResponse">
-        <wsdl:part element="tns:someMethodResponse" name="parameters"/>
-    </wsdl:message>
-
     <wsdl:message name="receiveResultRequest">
         <wsdl:part element="tns:receiveResult" name="parameters"/>
     </wsdl:message>
@@ -69,9 +61,6 @@
     <wsdl:portType name="MyService">
         <wsdl:operation name="someMethod">
             <wsdl:input message="tns:someMethodRequest" name="someMethodRequest"/>
-            <!-- comment out the following for tactical==false -->
-            <wsdl:output message="tns:someMethodResponse" name="someMethodResponse"/>
-            <!-- end of commented out code -->
         </wsdl:operation>
     </wsdl:portType>
 
@@ -89,11 +78,6 @@
             <wsdl:input name="someMethodRequest">
                 <wsdlsoap:body use="literal"/>
             </wsdl:input>
-            <!-- comment out the following for tactical==false -->
-            <wsdl:output name="someMethodResponse">
-                <wsdlsoap:body use="literal"/>
-            </wsdl:output>
-            <!-- end of commented out code -->
         </wsdl:operation>
     </wsdl:binding>
 
@@ -113,13 +97,6 @@
     <wsdl:service name="MyServiceSoapService">
         <wsdl:port binding="tns:MyServiceSoapBinding" name="MyServiceSoapPort">
             <wsdlsoap:address location="http://localhost:8085/MyServiceComponent"/>
-        </wsdl:port>
-    </wsdl:service>
-
-    <!--FIXME: remove the need for this fake service in the WSDL -->
-    <wsdl:service name="MyServiceCallbackSoapService">
-        <wsdl:port binding="tns:MyServiceCallbackSoapBinding" name="MyServiceCallbackSoapPort">
-            <!-- callback address needs to be determined dynamically -->
         </wsdl:port>
     </wsdl:service>
 

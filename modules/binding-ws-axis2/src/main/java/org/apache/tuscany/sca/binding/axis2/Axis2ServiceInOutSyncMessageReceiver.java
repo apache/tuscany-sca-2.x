@@ -39,15 +39,6 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
         this.operation = operation;
     }
 
-    //FIXME: only needed for the current tactical solution
-    private Axis2ServiceBindingProvider bindingProvider;
-
-    //FIXME: only needed for the current tactical solution
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBindingProvider bindingProvider, Operation operation) {
-        this.bindingProvider = bindingProvider;
-        this.operation = operation;
-    }
-
     public Axis2ServiceInOutSyncMessageReceiver() {
     }
 
@@ -57,19 +48,10 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
             
-            //FIXME: remove tactical code
-            OMElement responseOM = null;
-            if (bindingProvider != null) {
-                String conversationID = bindingProvider.isConversational() ?
-                                            Axis2ServiceBindingProvider.getConversationID(inMC) : null;
-                responseOM = (OMElement)bindingProvider.invokeTarget(operation, args, null, conversationID);
-            } else {
-                String conversationID = provider.isConversational() ?
-                                            Axis2ServiceProvider.getConversationID(inMC) : null;
-                String callbackAddress = provider.getFromEPR(inMC);
-                responseOM = (OMElement)provider.invokeTarget(operation, args, null, conversationID,
-                                                              callbackAddress);
-            }
+            String conversationID = provider.getConversationID(inMC);
+            String callbackAddress = provider.getFromEPR(inMC);
+            OMElement responseOM = (OMElement)provider.invokeTarget(operation, args, null, conversationID,
+                                                                    callbackAddress);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if(null != responseOM ){
@@ -79,14 +61,12 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
             Throwable t = e.getCause();
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception)t);
             }
             throw new RuntimeException(e);
         } catch (Exception e) {
-            e.printStackTrace();
             throw AxisFault.makeFault(e);
         }
 

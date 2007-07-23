@@ -28,12 +28,7 @@
                 callbackInterface="simplecallback.MyServiceCallback" />
             <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceSoapService/MyServiceSoapPort)" />
             <callback>
-                <!-- comment out the following for tactical==false -->
                 <binding.ws wsdlElement="http://simplecallback#wsdl.binding(MyServiceCallbackSoapBinding)" />
-                <!-- end of commented out code -->
-                <!-- uncomment the following for tactical==false
-                <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceCallbackSoapService/MyServiceCallbackSoapPort)" />
-                ... end of commented out code -->
             </callback>
         </reference>
         <implementation.java class="simplecallback.MyClientImpl" />
@@ -45,12 +40,7 @@
                 callbackInterface="http://simplecallback#wsdl.interface(MyServiceCallback)" />
             <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceSoapService/MyServiceSoapPort)" />
             <callback>
-                <!-- comment out the following for tactical==false -->
                 <binding.ws wsdlElement="http://simplecallback#wsdl.binding(MyServiceCallbackSoapBinding)" />
-                <!-- end of commented out code -->
-                <!-- uncomment the following for tactical==false
-                <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceCallbackSoapService/MyServiceCallbackSoapPort)" />
-                ... end of commented out code -->
             </callback>
         </service>
         <implementation.java class="simplecallback.MyServiceImpl" />
