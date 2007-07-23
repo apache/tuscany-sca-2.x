@@ -52,7 +52,6 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensio
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
@@ -92,12 +91,14 @@ public class NodeRuntimeBuilder {
         registry.addExtensionPoint(staxProcessors);
 
         // Create and register STAX processors for SCA assembly XML
-        ExtensibleStAXArtifactProcessor staxProcessor = 
-            new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor));
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory,
+                                                                                            XMLOutputFactory
+                                                                                                .newInstance());
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper,
+                                                                   staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory));
+        staxProcessors
+            .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
 
         // Create URL artifact processor extension point
         // FIXME use the interface instead of the class
@@ -146,7 +147,6 @@ public class NodeRuntimeBuilder {
         ContributionService contributionService = new ContributionServiceImpl(repository, 
                                                                               packageProcessor,
                                                                               documentProcessor, 
-                                                                              staxProcessor,
                                                                               postProcessor,
                                                                               modelResolverExtensionPoint,
                                                                               assemblyFactory,

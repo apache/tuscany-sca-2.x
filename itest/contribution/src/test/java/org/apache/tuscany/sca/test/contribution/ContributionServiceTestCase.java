@@ -68,7 +68,6 @@ import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
@@ -83,20 +82,66 @@ public class ContributionServiceTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
     private static final String FOLDER_CONTRIBUTION = "target/classes/";
 
-    private ClassLoader cl;
-    private EmbeddedSCADomain domain;
     private ContributionService contributionService;
 
     protected void setUp() throws Exception {
-        //Create a test embedded SCA domain
-        cl = getClass().getClassLoader();
-        domain = new EmbeddedSCADomain(cl, "http://localhost");
-        
-        //Start the domain
-        domain.start();
 
-        //get a reference to the contribution service
-        contributionService = domain.getContributionService();
+        // Create default factories
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        PolicyFactory policyFactory = new DefaultPolicyFactory();
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+
+        // Create an extension point registry
+        ExtensionPointRegistry extensionRegistry = new DefaultExtensionPointRegistry();
+
+        // Add artifact processor extension points
+        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        extensionRegistry.addExtensionPoint(staxProcessors);
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
+        extensionRegistry.addExtensionPoint(documentProcessors);
+        ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+
+        // Register base artifact processors
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper,
+                                                                   staxProcessor));
+        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory,
+                                                                          staxProcessor));
+
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
+
+        // Create package processor extension point
+        PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
+        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
+        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
+        extensionRegistry.addExtensionPoint(packageProcessors);
+
+        // Register base package processors
+        packageProcessors.addPackageProcessor(new JarContributionProcessor());
+        packageProcessors.addPackageProcessor(new FolderContributionProcessor());
+        
+        //Create Contribution Model Resolver extension point
+        ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
+        
+        
+        //Create contribution postProcessor extension point
+        DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
+        ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
+        extensionRegistry.addExtensionPoint(contributionPostProcessors);
+
+
+        // Create a repository
+        ContributionRepository repository = new ContributionRepositoryImpl("target");
+
+        // Create an artifact resolver and contribution service
+        this.contributionService = new ContributionServiceImpl(repository, packageProcessor, documentProcessor, 
+                                                               postProcessor, modelResolverExtensionPoint, assemblyFactory,
+                                                               new ContributionFactoryImpl(),
+                                                               XMLInputFactory.newInstance());
     }
 
     public void testContributeJAR() throws Exception {
