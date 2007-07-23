@@ -37,17 +37,7 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
         this.operation = operation;
     }
 
-    //FIXME: only needed for the current tactical solution
-    private Axis2ServiceBindingProvider bindingProvider;
-
-    //FIXME: only needed for the current tactical solution
-    public Axis2ServiceInMessageReceiver(Axis2ServiceBindingProvider bindingProvider, Operation operation) {
-        this.bindingProvider = bindingProvider;
-        this.operation = operation;
-    }
-
     public Axis2ServiceInMessageReceiver() {
-
     }
 
     @Override
@@ -55,17 +45,11 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
-            //FIXME: remove tactical code
-            if (bindingProvider != null) {
-                String conversationID = bindingProvider.isConversational() ?
-                                            Axis2ServiceBindingProvider.getConversationID(inMC) : null;
-                bindingProvider.invokeTarget(operation, args, null, conversationID);
-            } else {
-                String conversationID = provider.isConversational() ?
-                                            Axis2ServiceProvider.getConversationID(inMC) : null;
-                String callbackAddress = provider.getFromEPR(inMC);
-                provider.invokeTarget(operation, args, null, conversationID, callbackAddress);
-            }
+
+            String conversationID = provider.getConversationID(inMC);
+            String callbackAddress = provider.getFromEPR(inMC);
+            provider.invokeTarget(operation, args, null, conversationID, callbackAddress);
+
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof Exception) {

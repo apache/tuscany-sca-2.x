@@ -43,7 +43,8 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.osoa.sca.Constants;
 
 /**
- * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
+ * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web
+ * service
  */
 public class Axis2BindingInvoker implements Invoker {
 
@@ -52,10 +53,12 @@ public class Axis2BindingInvoker implements Invoker {
     private Options options;
     private SOAPFactory soapFactory;
 
-    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA_NS,"conversationID");
-    
-    public Axis2BindingInvoker(ServiceClient serviceClient, QName wsdlOperationName,
-                               Options options, SOAPFactory soapFactory) {
+    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA_NS, "conversationID");
+
+    public Axis2BindingInvoker(ServiceClient serviceClient,
+                               QName wsdlOperationName,
+                               Options options,
+                               SOAPFactory soapFactory) {
         this.serviceClient = serviceClient;
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
@@ -80,21 +83,21 @@ public class Axis2BindingInvoker implements Invoker {
     }
 
     protected Object invokeTarget(final Object payload, final ConversationSequence sequence, String conversationId)
-                             throws InvocationTargetException {
+        throws InvocationTargetException {
         try {
 
-            Object[] args = (Object[]) payload;
+            Object[] args = (Object[])payload;
             OperationClient operationClient = createOperationClient(args, conversationId);
 
             // ensure connections are tracked so that they can be closed by the reference binding
             MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
             requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
             requestMC.getOptions().setTimeOutInMilliSeconds(120000L);
-                      
+
             operationClient.execute(true);
 
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
-            
+
             operationClient.complete(requestMC);
 
             return responseMC.getEnvelope().getBody().getFirstElement();
@@ -111,10 +114,10 @@ public class Axis2BindingInvoker implements Invoker {
             SOAPBody body = env.getBody();
             for (Object bc : args) {
                 if (bc instanceof OMElement) {
-                    body.addChild((OMElement) bc);
+                    body.addChild((OMElement)bc);
                 } else {
                     throw new IllegalArgumentException(
-                        "Can't handle mixed payloads betweem OMElements and other types.");
+                                                       "Can't handle mixed payloads betweem OMElements and other types.");
                 }
             }
         }
@@ -133,9 +136,10 @@ public class Axis2BindingInvoker implements Invoker {
             //For now do this the brute force method. Need to figure out how to do axis addressing .. configure mar in flow.
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
-            OMElement el = fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,
-                                        AddressingConstants.WSA_FROM,
-                                        AddressingConstants.WSA_DEFAULT_PREFIX);
+            OMElement el =
+                fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,
+                             AddressingConstants.WSA_FROM,
+                             AddressingConstants.WSA_DEFAULT_PREFIX);
             sh.addChild(el);
         }
 
@@ -143,7 +147,6 @@ public class Axis2BindingInvoker implements Invoker {
         if (options.getTo() == null) {
             org.apache.tuscany.sca.runtime.EndpointReference ep = ThreadMessageContext.getMessageContext().getTo();
             if (ep != null) {
-                System.out.println("Axis2BindingInvoker: dynamic endpoint URI is " + ep.getURI());
                 requestMC.setTo(new EndpointReference(ep.getURI()));
             } else {
                 throw new RuntimeException("Unable to determine destination endpoint");
@@ -154,9 +157,10 @@ public class Axis2BindingInvoker implements Invoker {
             //FIXME: is there any way to use the Axis2 addressing support for this?
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
-            OMElement el = options.getFrom().toOM(AddressingConstants.Final.WSA_NAMESPACE,
-                                                  AddressingConstants.WSA_FROM,
-                                                  AddressingConstants.WSA_DEFAULT_PREFIX);
+            OMElement el =
+                options.getFrom().toOM(AddressingConstants.Final.WSA_NAMESPACE,
+                                       AddressingConstants.WSA_FROM,
+                                       AddressingConstants.WSA_DEFAULT_PREFIX);
             sh.addChild(el);
         }
         operationClient.addMessageContext(requestMC);

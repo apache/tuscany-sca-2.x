@@ -23,6 +23,8 @@ import java.util.List;
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
+import javax.wsdl.Port;
+import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.xml.namespace.QName;
@@ -82,15 +84,46 @@ public class Axis2ServiceClient {
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
+
+            Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
+            setServiceAndPort(wsBinding);
             QName serviceQName = wsBinding.getServiceName();
             String portName = wsBinding.getPortName();
-            Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
             AxisService axisService =
                 AxisService.createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
 
             return new ServiceClient(configContext, axisService);
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
+        }
+    }
+
+    /**
+     * Ensure the WSDL definition contains a suitable service and port
+     */
+    protected static void setServiceAndPort(WebServiceBinding wsBinding) {
+        Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
+        QName serviceQName = wsBinding.getServiceName();
+        String portName = wsBinding.getPortName();
+
+        // If no service is specified in the binding element and this is a callback
+        // binding, allow for WSDL that only contains a portType for the callback and
+        // not a service and port.  Synthesize a service and port using WSDL4J and
+        // add them to the wsdlDefinition to keep Axis happy.
+        if (serviceQName == null && wsBinding.isCallback()) {
+            QName bindingQName = wsBinding.getBindingName();
+            Port port = wsdlDefinition.createPort();
+            portName = "$port$." + bindingQName.getLocalPart();
+            port.setName(portName);
+            wsBinding.setPortName(portName);
+            port.setBinding(wsBinding.getBinding());
+            Service service = wsdlDefinition.createService();
+            serviceQName = new QName(bindingQName.getNamespaceURI(),
+                                     "$service$." + bindingQName.getLocalPart());
+            service.setQName(serviceQName);
+            wsBinding.setServiceName(serviceQName);
+            service.addPort(port);
+            wsdlDefinition.addService(service);
         }
     }
 

@@ -43,8 +43,9 @@ public class SimpleCallbackTestCase extends TestCase {
         System.out.println("Main thread " + Thread.currentThread());
         myClient.aClientMethod();
         System.out.println("Sleeping ...");
-        Thread.sleep(300);
+        Thread.sleep(1000);
         assertEquals("-> someMethod -> receiveResult", MyClientImpl.result);
     }
 }
+
 

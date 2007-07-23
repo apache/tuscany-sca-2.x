@@ -105,8 +105,6 @@
                          class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
-                         class="org.apache.tuscany.sca.binding.axis2.Axis2ServiceInOutAsyncMessageReceiver"/>
-        <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
                          class="org.apache.tuscany.sca.binding.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-only"
@@ -116,8 +114,6 @@
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-out"
                          class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
        <!-- Added by Tuscany -->
-        <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-out"
-                         class="org.apache.tuscany.sca.binding.axis2.Axis2ServiceInOutAsyncMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-out"
                          class="org.apache.tuscany.sca.binding.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
     </messageReceivers>
@@ -408,4 +404,5 @@
         <phase name="MessageOut"/>
     </phaseOrder>
 </axisconfig>
+
 

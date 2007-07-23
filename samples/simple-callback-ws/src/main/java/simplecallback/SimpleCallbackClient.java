@@ -31,7 +31,7 @@ public class SimpleCallbackClient {
         
         System.out.println("Main thread " + Thread.currentThread());
         myClient.aClientMethod();
-        Thread.sleep(500);
+        Thread.sleep(1000);
         
         scaDomain.close();
     }
