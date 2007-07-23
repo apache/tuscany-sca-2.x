@@ -204,25 +204,24 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
         }
     }
 
-    private ComponentType getComponentType(ModelResolver resolver, Implementation impl) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        for (Object o :((ModelResolverImpl)resolver).getModels()) {
-            if (o instanceof ComponentType) {
-                ComponentType ct = (ComponentType)o;
-                String uri = ct.getURI();
-                if (uri != null && uri.endsWith(".componentType")) {
-                    String name = uri.substring(0, uri.lastIndexOf('.'));
-                    for (Method m : getGetters()) {
-                        Object io;
-                        if (impl instanceof PojoImplementation) {
-                            io = ((PojoImplementation)impl).getUserImpl();
-                        } else {
-                            io = impl;
-                        }
-                        String value = (String) m.invoke(io, new Object[]{});
-                        if (value != null && name.endsWith(value.substring(0, value.lastIndexOf('.')))) {
-                            return ct;
-                        }
-                    }
+    ComponentType getComponentType(ModelResolver resolver, Implementation impl) throws IllegalArgumentException, IllegalAccessException,
+            InvocationTargetException {
+        for (Method m : getGetters()) {
+            Object io;
+            if (impl instanceof PojoImplementation) {
+                io = ((PojoImplementation) impl).getUserImpl();
+            } else {
+                io = impl;
+            }
+            String value = (String) m.invoke(io, new Object[] {});
+            if (value != null) {
+                value = value.substring(0, value.lastIndexOf('.'));
+                ComponentType componentType = assemblyFactory.createComponentType();
+                componentType.setUnresolved(true);
+                componentType.setURI(value + ".componentType");
+                componentType = resolver.resolveModel(ComponentType.class, componentType);
+                if (!componentType.isUnresolved()) {
+                    return componentType;
                 }
             }
         }
