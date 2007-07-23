@@ -31,12 +31,12 @@ import org.w3c.dom.Node;
  */
 public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node> implements
     PullTransformer<XMLStreamReader, Node> {
-    private SAX2DOMPipe pipe = new SAX2DOMPipe();
 
     private XMLStreamReader2SAX stax2sax = new XMLStreamReader2SAX();
 
     public Node transform(XMLStreamReader source, TransformationContext context) {
         try {
+            SAX2DOMPipe pipe = new SAX2DOMPipe();
             stax2sax.transform(source, pipe.getSink(), context);
             Node node = pipe.getResult();
             source.close();
