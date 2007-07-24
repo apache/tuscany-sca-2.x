@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class CalculatorServer {
     public static void main(String[] args) throws Exception {
-        System.out.println("Starting the SCA Calculator Application exposed as RMI Services...");
+        System.out.println("Starting of the SCA Calculator Application exposed as RMI Services...");
         SCADomain scaDomain = SCADomain.newInstance("CalculatorRMIServer.composite");
         System.out.println("... Press Enter to Exit...");
         System.in.read();
