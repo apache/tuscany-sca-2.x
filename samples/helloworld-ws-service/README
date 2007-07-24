@@ -118,11 +118,11 @@ WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_2_
 WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_1_1.xs
 d
 10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol init
-INFO: Initializing Coyote HTTP/1.1 on http-8080
+INFO: Initializing Coyote HTTP/1.1 on http-8085
 10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol start
-INFO: Starting Coyote HTTP/1.1 on http-8080
+INFO: Starting Coyote HTTP/1.1 on http-8085
 10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol destroy
-INFO: Stopping Coyote HTTP/1.1 on http-8080
+INFO: Stopping Coyote HTTP/1.1 on http-8085
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.857 sec
 
 Results :
