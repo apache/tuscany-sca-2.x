@@ -65,7 +65,7 @@ Building And Running The Sample Using Ant
 With the binary distribution the sample can be built using Ant as 
 follows
 
-cd calculator-web
+cd calculator-webapp
 ant package
 
 This should result in a war file (sample-calculator-webapp.war) in the target 
@@ -95,8 +95,21 @@ Building And Running The Sample Using Maven
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
-cd calculator-web 
+cd calculator-webapp
 mvn
+
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running calculator.CalculatorTestCase
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.852 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0 
 
 Again this should result in a war file (sample-calculator-webapp.war) in the target 
 directory. Follow the steps described in the previous section for running the web 
