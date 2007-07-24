@@ -9,23 +9,23 @@ first.
 
 As this sample provides a web app there is a manual step where the WAR file
 that contains the sample is copied to your web app container. If you just want 
-to give this sample a go deploy the WAR file (target/sample-helloworldjsonrpc.war)
+to give this sample a go deploy the WAR file (target/sample-helloworld-jsonrpc.war)
 to you web application server. 
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-helloworldjsonrpc
+http://localhost:8080/sample-helloworld-jsonrpc
 
 The port and hostname will of course vary depending on your local installation. 
 
 Sample Overview
 ---------------
-The sample provides a single service which with an operation that reflects 
-a greeting back to the called. The service is exposed using the JSONRPC
-binding. The web app provided shows how the service can be called either via 
-via the SCA provided JSON client or by using the DOJO toolkit. 
+The sample provides a single service with an operation that reflects
+a greeting back to the caller. The service is exposed using the JSONRPC
+binding. The web app provided shows how the SCA-provided JSON client can be 
+used to invoke the SCA service. 
 
-helloworl-jsonrpc/
+helloworld-jsonrpc/
   src/
     main/
       java/
@@ -35,7 +35,6 @@ helloworl-jsonrpc/
       resources/
         jsonrpc.composite             - the SCA assembly for this sample
       webapp
-        dojo/                         - the Dojo toolkit
         META-INF/
           sca-contribution.xml        - specifies the composite to be deployed
         WEB-INF/
@@ -59,7 +58,7 @@ follows
 cd helloworld-jsonrpc
 ant package
 
-This should result in a war file (sample-helloworldjsonrpc.war) in the target 
+This should result in a war file (sample-helloworld-jsonrpc.war) in the target 
 directory. Copy this war file to your web app deployment directory in your
 web app container. 
 
@@ -69,7 +68,7 @@ of copying the WAR file to the webapps directory.
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-helloworldjsonrpc
+http://localhost:8080/sample-helloworld-jsonrpc
 
 The port and hostname will of course vary depending on your local installation. 
 
@@ -84,7 +83,7 @@ using Maven as follows.
 cd helloworld-jsonrpc 
 mvn
 
-Again this should result in a war file (sample-calculator-web.war) in the target 
+Again this should result in a war file (sample-helloworld-jsonrpc.war) in the target 
 directory. Follow the steps described in the previous section for running the web 
 app and for the expected results.
 
