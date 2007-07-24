@@ -38,36 +38,37 @@
     </target>	
 	
     <target name="package" depends="compile">
-        <war destfile="target/sample-calculator-web.war" 
+        <war destfile="target/sample-calculator-webapp.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>
             <zipfileset dir="../../modules" prefix="WEB-INF/lib">
-                <include name="sca-api-0.90-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-assembly-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-assembly-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-contribution-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-contribution-impl-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-core-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-core-databinding-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-core-spi-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-databinding-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-host-embedded-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-host-http-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-host-webapp-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-implementation-java-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-implementation-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-implementation-java-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-runtime-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-xml-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-policy-1.0-incubating-SNAPSHOT.jar"/>
+                <include name="sca-api-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-assembly-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-assembly-xml-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-contribution-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-contribution-impl-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-core-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-core-databinding-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-core-spi-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-databinding-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-extension-helper-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-host-embedded-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-host-http-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-host-webapp-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-implementation-java-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-implementation-java-runtime-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-implementation-java-xml-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-java-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-java-runtime-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-java-xml-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-wsdl-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-wsdl-runtime-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-interface-wsdl-xml-0.91-incubating-SNAPSHOT.jar"/>
+                <include name="tuscany-policy-0.91-incubating-SNAPSHOT.jar"/>
             </zipfileset>
             <lib dir="../../lib">
-                <include name="commonj-api-1.0-incubating-SNAPSHOT.jar"/>
+                <include name="commonj-api-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="stax-api-1.0.1.jar"/>
                 <include name="wsdl4j-1.6.2.jar"/>
                 <include name="wstx-asl-3.2.0.jar"/>
