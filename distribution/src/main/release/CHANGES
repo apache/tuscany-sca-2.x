@@ -1,0 +1,107 @@
+Changes With Apache Tuscany SCA 0.91 (incubating) July 2007 
+===========================================================
+
+The following are the significant additions to release 0.91 
+over and above all of what was offered in release 0.90.
+
+
+- Enhancements to support multiple contributions to the SCA Domain
+
+- The inclusion of a alternative simplified extensions-helper
+SPI layer to faciliate rapid development of extensions
+
+- More Implementation Extenstions
+        Spring
+        WebResource
+
+- More Binding Extensions
+        AJAX
+        EJB
+        RSS/ATOM Feeds
+        
+- Demos that demonstrate the use of a mix of extensions
+         alert-aggregator
+         bigbank-account
+         bigbank-calculator
+         bigbank-stockquote
+
+
+- Samples
+        Samples to demostrate use of Spring, Resource, AJAX extensions
+
+
+
+-----------------------------------------------------------
+
+Changed With Apache Tuscany SCA 0.90 (incubating) June 2007 
+===========================================================
+
+- Implementations for all of the Java Annotations and API Specification V1.0 found at
+  (http://www.osoa.org/display/Main/Service+Component+Architecture+Specifications) 
+  apart from the following.
+    @ComponentName
+    Conversation
+    RequestContext
+    
+- New assembly model implementation taking into account SCA 1.0 artifacts 
+  Data duplication between assembly model and runtime removed
+
+- Simple single process domain support
+  Contribution support to scope items being deployed into the runtime
+
+- Improved Package/Class naming consistency across modules
+
+- Extensions now loaded via Java service mechanism
+  Refactored extensions to use new SPIs (see below)
+
+- Maven and Ant based sample builds in the binary distribution
+
+- Implementation Extensions
+    Java
+    Script supporting (Ruby, Python, Groovy, JavaScript)
+
+- Binding Extensions
+    Axis2
+    RMI
+    JSONRPC
+
+-Databinding Extensions
+    Axiom
+    JAXB
+    SDO
+
+- Host environments
+    Embedded
+    Tomcat
+    Jetty
+    RMI
+
+- A clear set of SPIs intended to be stable over future releases
+    SCA assembly model
+      org.apache.tuscany.sca.assembly
+      org.apache.tuscany.sca.interfacedef
+      org.apache.tuscany.sca.interfacedef.java
+      org.apache.tuscany.sca.interfacedef.wsdl
+      org.apache.tuscany.sca.policy
+
+    SCA contribution model
+      org.apache.tuscany.sca.contribution
+
+    Runtime extensions
+      org.apache.tuscany.sca.core
+      org.apache.tuscany.sca.invocation
+      org.apache.tuscany.sca.provider
+      org.apache.tuscany.sca.runtime
+      org.apache.tuscany.sca.work
+
+    Data binding support
+      org.apache.tuscany.sca.databinding
+
+    Embedding Tuscany
+      org.apache.tuscany.sca.host.embedded
+
+    Servlet container integration
+      org.apache.tuscany.sca.http
+
+- For this point release a partial set of JavaDoc is provided to 
+  be filled out as we close on release 1.0

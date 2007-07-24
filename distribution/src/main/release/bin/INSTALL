@@ -1,22 +1,26 @@
-Installing the Apache Tuscany SCA 0.90 (incubating) June 2007 Release binary distribution
+Installing the Apache Tuscany SCA 0.91 (incubating) July 2007 Release binary distribution
 =========================================================================================
 
 Unzip Tuscany binary distribution archive and you get the following:
 
-tuscany-sca-0.90-incubating        
-   DISCLAIMER - the ASF incubation disclaimer
-   INSTALL    - this help file
-   LICENSE    - the Apache License and any dependecy licenses
-   NOTICE     - attribution notices associated with the licenses
-   CHANGES    - A note of the major changes in this version
+tuscany-sca-0.91-incubating        
+   DISCLAIMER    - the ASF incubation disclaimer
+   INSTALL       - this help file
+   LICENSE       - the Apache License and any dependecy licenses
+   NOTICE        - attribution notices associated with the licenses
+   README        - readme for the release
+   RELEASE_NOTES - description of this release 
+   CHANGES       - A note of the major changes in this release
 
-   /doc       - Javadoc for the SCA APIs and the Tuscany SPIs
+   /demos        - Demo applications showcasing the use of Apache Tuscany 
 
-   /lib       - The tuscany-sca-all and tuscany-sca-manifest jars and all their dependencies
+   /doc          - Javadoc for the SCA APIs and the Tuscany SPIs
 
-   /modules   - all of the individual Tuscany jars
+   /lib          - The tuscany-sca-all and tuscany-sca-manifest jars and all their dependencies
 
-   /samples   - all the Tuscany samples, see the README in that directory
+   /modules      - all of the individual Tuscany jars
+
+   /samples      - all the Tuscany samples, see the README in that directory
 
 
 
