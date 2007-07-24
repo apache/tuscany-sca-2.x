@@ -54,6 +54,21 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-ajax</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-ejb</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-feed</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-binding-jsonrpc</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -224,6 +239,11 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-spring</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-policy</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -232,33 +252,31 @@
             <artifactId>sca-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
-
-<!-- don't want the tools in the bundle jar? 
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-wsdl2java</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-java2wsdl</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-maven-java2wsdl</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-maven-wsdl2java</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
--->
-
+        <!-- don't want the tools in the bundle jar? 
+                <dependency>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-wsdl2java</artifactId>
+                    <version>${pom.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-java2wsdl</artifactId>
+                    <version>${pom.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-maven-java2wsdl</artifactId>
+                    <version>${pom.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-maven-wsdl2java</artifactId>
+                    <version>${pom.version}</version>
+                </dependency>
+        -->
     </dependencies>
 
-	<build>
+    <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -268,39 +286,45 @@
             </resource>
         </resources>
 
-		<plugins>
+        <plugins>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>shade-maven-plugin</artifactId>
-				<version>1.0-alpha-7</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-                                        <goal>shade</goal>
-						</goals>
-						<configuration>
-						    <shadedGroupFilter>org.apache.tuscany</shadedGroupFilter>
-						    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                        
-                                        <artifactSet>
-                                           <excludes>
-                                              <exclude>org.apache.tuscany.sdo:tuscany-sdo-impl</exclude>
-                                           </excludes>
-                                        </artifactSet>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>shade-maven-plugin</artifactId>
+                <version>1.0-alpha-7</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedGroupFilter>org.apache.tuscany</shadedGroupFilter>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
 
-                                        <transformers>
-                                           <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
-                                              <resource>META-INF/services/org.apache.tuscany.sca.core.ModuleActivator</resource>
-                                           </transformer>
-                                        </transformers>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.apache.tuscany.sdo:tuscany-sdo-impl</exclude>
+                                </excludes>
+                            </artifactSet>
 
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                            <transformers>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.core.ModuleActivator</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.spi.ImplementationActivator</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.spi.BindingActivator</resource>
+                                </transformer>
+                            </transformers>
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
