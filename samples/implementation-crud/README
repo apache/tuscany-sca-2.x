@@ -95,19 +95,16 @@ You should see the following output from the test phase.
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running crudClient.CRUDTestCase
+Running crud.client.CRUDTestCase
 Starting CRUDServiceComponent
 create(ABC) in tmp
 retrieve(0)
-Result from create: ABC
 update(0)
 retrieve(0)
-Result from update: EFG
 delete(0)
 retrieve(0)
-Result from delete: null
 Stopping CRUDServiceComponent
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.212 sec
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.641 sec
 
 Results :
 
