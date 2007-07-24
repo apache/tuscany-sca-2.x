@@ -1,152 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	* Licensed to the Apache Software Foundation (ASF) under one
-	* or more contributor license agreements.  See the NOTICE file
-	* distributed with this work for additional information
-	* regarding copyright ownership.  The ASF licenses this file
-	* to you under the Apache License, Version 2.0 (the
-	* "License"); you may not use this file except in compliance
-	* with the License.  You may obtain a copy of the License at
-	*
-	*   http://www.apache.org/licenses/LICENSE-2.0
-	*
-	* Unless required by applicable law or agreed to in writing,
-	* software distributed under the License is distributed on an
-	* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	* KIND, either express or implied.  See the License for the
-	* specific language governing permissions and limitations
-	* under the License.
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
 -->
 <assembly>
-	<!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-	<id></id>
-	<includeBaseDirectory>false</includeBaseDirectory>
-	<formats>
-          <format>dir</format>
-          <format>tar.gz</format>
-          <format>zip</format>
-	</formats>
+    <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
+    <id></id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>dir</format>
+        <format>tar.gz</format>
+        <format>zip</format>
+    </formats>
 
-	<fileSets>
+    <fileSets>
+        <!-- Add the text files to the top-level directroy -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
+            <includes>
+                <include>CHANGES</include>
+                <include>DISCLAIMER</include>
+                <include>README</include>
+                <include>RELEASE_NOTES</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/release/bin</directory>
+            <outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
+            <includes>
+                <include>INSTALL</include>
+                <include>LICENSE</include>
+                <include>NOTICE</include>
+            </includes>
+        </fileSet>
+        <!-- Add javadoc to the doc directory -->
+        <fileSet>
+            <directory>target/javadoc</directory>
+            <outputDirectory>tuscany-sca-${tuscany.version}/docs/javadoc</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <!-- Add all the samples to the samples directory -->
+        <fileSet>
+            <directory>../samples</directory>
+            <outputDirectory>tuscany-sca-${tuscany.version}/samples</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>pom.xml</exclude>
+                <exclude>bigbank</exclude>
+                <exclude>bigbank/**/*</exclude>
+                <exclude>das-service</exclude>
+                <exclude>das-service/**/*</exclude>
+                <exclude>das-service-web</exclude>
+                <exclude>das-service-web/**/*</exclude>
+                <exclude>helloworld-dojo/src/main/webapp/dojo</exclude>
+                <exclude>helloworld-dojo/src/main/webapp/dojo/**/*</exclude>
+                <exclude>helloworld-ws-reference/work</exclude>
+                <exclude>helloworld-ws-reference/work/**/*</exclude>
+                <exclude>helloworld-ws-service/work</exclude>
+                <exclude>helloworld-ws-service/work/**/*</exclude>
+                <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
+                <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
+                <exclude>chat-webapp/target/sample-chat-webapp</exclude>
+                <exclude>chat-webapp/target/sample-chat-webapp/**/*</exclude>
+                <exclude>helloworld-dojo/target/sample-helloworld-dojo</exclude>
+                <exclude>helloworld-dojo/target/sample-helloworld-dojo/**/*</exclude>
+                <exclude>helloworld-jsonrpc/target/sample-helloworld-jsonrpc</exclude>
+                <exclude>helloworld-jsonrpc/target/sample-helloworld-jsonrpc/**/*</exclude>
+                <exclude>loanapplication</exclude>
+                <exclude>loanapplication/**/*</exclude>
+                <exclude>*/.classpath</exclude>
+                <exclude>*/.project</exclude>
+                <exclude>*/target/classes</exclude>
+                <exclude>*/target/classes/**/*</exclude>
+                <exclude>*/target/test-classes</exclude>
+                <exclude>*/target/test-classes/**/*</exclude>
+                <exclude>*/target/surefire-reports</exclude>
+                <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>*/**/*.svg</exclude>
+            </excludes>
+        </fileSet>
+        <!-- Add all the demos to the demos directory -->
+        <fileSet>
+            <directory>../demos</directory>
 
-            <!-- Add the text files to the top-level directroy -->
-		<fileSet>
-			<directory>src/main/release</directory>
-			<outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
-			<includes>
-       				<include>CHANGES</include>
-				<include>DISCLAIMER</include>
-				<include>README</include>
-				<include>RELEASE_NOTES</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>src/main/release/bin</directory>
-			<outputDirectory>tuscany-sca-${tuscany.version}</outputDirectory>
-			<includes>
-				<include>INSTALL</include>
-				<include>LICENSE</include>
-				<include>NOTICE</include>
-			</includes>
-		</fileSet>
+            <outputDirectory>tuscany-sca-${tuscany.version}/demos</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>alert-aggregator/src/main/webapp/dojo</exclude>
+                <exclude>alert-aggregator/src/main/webapp/dojo/**/*</exclude>
+                <exclude>alert-aggregator/target/demo-alert-aggregator</exclude>
+                <exclude>alert-aggregator/target/demo-alert-aggregator/**/*</exclude>
+                <exclude>alert-aggregator/target/sdo-source</exclude>
+                <exclude>alert-aggregator/target/sdo-source/**/*</exclude>
+                <exclude>bigbank-account/src/main/resources/web/dojo</exclude> 
+                <exclude>bigbank-account/src/main/resources/web/dojo/**/*</exclude>
+                <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck</exclude>
+                <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck/**/*</exclude>
+                <exclude>*/.classpath</exclude>
+                <exclude>*/.project</exclude>
+                <exclude>*/target/classes</exclude>
+                <exclude>*/target/classes/**/*</exclude>
+                <exclude>*/target/test-classes</exclude>
+                <exclude>*/target/test-classes/**/*</exclude>
+                <exclude>*/target/surefire-reports</exclude>
+                <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>*/**/*.svg</exclude>
+                <exclude>*/**/*.ruleset</exclude>
+            </excludes>
+        </fileSet>
+        <!-- Add the generated tuscany manifest classpath jar to the lib directory -->
+        <fileSet>
+            <directory>manifest/target</directory>
+            <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+            <includes>
+                <include>tuscany-sca-manifest.jar</include>
+            </includes>
+        </fileSet>
 
-            <!-- Add javadoc to the doc directory -->
-		<fileSet>
-			<directory>target/javadoc</directory>
-			<outputDirectory>tuscany-sca-${tuscany.version}/docs/javadoc</outputDirectory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-		</fileSet>
+    </fileSets>
 
-            <!-- Add all the samples to the samples directory -->
-		<fileSet>
-			<directory>../samples</directory>
-			<outputDirectory>tuscany-sca-${tuscany.version}/samples</outputDirectory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-			<excludes>
-				<exclude>pom.xml</exclude>
-				<exclude>bigbank</exclude>
-				<exclude>bigbank/**/*</exclude>
-				<exclude>das-service</exclude>
-				<exclude>das-service/**/*</exclude>
-				<exclude>das-service-web</exclude>
-				<exclude>das-service-web/**/*</exclude>
-				<exclude>helloworld-jsonrpc/src/main/webapp/dojo</exclude>
-				<exclude>helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
-				<exclude>helloworld-ws-reference/work</exclude>
-				<exclude>helloworld-ws-reference/work/**/*</exclude>
-				<exclude>helloworld-ws-service/work</exclude>
-				<exclude>helloworld-ws-service/work/**/*</exclude>
-				<exclude>calculator-web/target/sample-calculator-web</exclude>
-				<exclude>calculator-web/target/sample-calculator-web/**/*</exclude>
-				<exclude>helloworld-jsonrpc/target/sample-helloworldjsonrpc</exclude>
-				<exclude>helloworld-jsonrpc/target/sample-helloworldjsonrpc/**/*</exclude>
-                        <exclude>helloworld-jsonrpc/target/dojo-download</exclude>
-                        <exclude>helloworld-jsonrpc/target/dojo-download/**/*</exclude>
-				<exclude>loanapplication</exclude>
-				<exclude>loanapplication/**/*</exclude>
-				<exclude>*/.classpath</exclude>
-				<exclude>*/.project</exclude>
-				<exclude>*/target/classes</exclude>
-				<exclude>*/target/classes/**/*</exclude>
-				<exclude>*/target/test-classes</exclude>
-				<exclude>*/target/test-classes/**/*</exclude>
-				<exclude>*/target/surefire-reports</exclude>
-				<exclude>*/target/surefire-reports/**/*</exclude>
-			</excludes>
-		</fileSet>
+    <dependencySets>
+        <!-- Add all the Tuscany modules to the modules directory -->
+        <dependencySet>
+            <outputDirectory>tuscany-sca-${tuscany.version}/modules</outputDirectory>
+            <unpack>false</unpack>
+            <includes>
+                <include>org.apache.tuscany.sca:*</include>
+            </includes>
+            <!-- exclude the tuscany bundle jar from the modules directory -->
+            <excludes>
+                <exclude>org.apache.tuscany.sca:tuscany-bundle</exclude>
+            </excludes>
+            <scope>runtime</scope>
+        </dependencySet>
+        <!-- Add all the dependent jars to the lib directory -->
+        <dependencySet>
+            <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+            <unpack>false</unpack>
+            <excludes>
+                <exclude>org.apache.tuscany.sca:*</exclude>
+            </excludes>
+            <scope>runtime</scope>
+        </dependencySet>
+        <!-- Add the Tuscany bundle jar to the lib directory renaming it to nicer name -->
+        <dependencySet>
+            <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+            <unpack>false</unpack>
+            <includes>
+                <include>org.apache.tuscany.sca:tuscany-bundle</include>
+            </includes>
+            <scope>runtime</scope>
+            <outputFileNameMapping>tuscany-sca-all-${version}.${extension}</outputFileNameMapping>
+        </dependencySet>
 
-            <!-- Add the generated tuscany manifest classpath jar to the lib directory -->
-		<fileSet>
-			<directory>manifest/target</directory>
-			<outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
-			<includes>
-				<include>tuscany-sca-manifest.jar</include>
-			</includes>
-		</fileSet>
+    </dependencySets>
 
-	</fileSets>
-
-	<dependencySets>
-
-            <!-- Add all the Tuscany modules to the modules directory -->
-            <dependencySet>
-                <outputDirectory>tuscany-sca-${tuscany.version}/modules</outputDirectory>
-		    <unpack>false</unpack>
-		    <includes>
-		        <include>org.apache.tuscany.sca:*</include>
-		    </includes>
-                <!-- exclude the tuscany bundle jar from the modules directory -->
-                <excludes>
-                   <exclude>org.apache.tuscany.sca:tuscany-bundle</exclude>
-                </excludes>
-		    <scope>runtime</scope>
-		</dependencySet>
-
-            <!-- Add all the dependent jars to the lib directory -->
-		<dependencySet>
-		    <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
-		    <unpack>false</unpack>
-			<excludes>
-		        <exclude>org.apache.tuscany.sca:*</exclude>
-                  </excludes>
-                  <scope>runtime</scope>
-		</dependencySet>
-
-            <!-- Add the Tuscany bundle jar to the lib directory renaming it to nicer name -->
-		<dependencySet>
-		    <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
-		    <unpack>false</unpack>
-		    <includes>
-		        <include>org.apache.tuscany.sca:tuscany-bundle</include>
-		    </includes>
-		    <scope>runtime</scope>
-		    <outputFileNameMapping>tuscany-sca-all-${version}.${extension}</outputFileNameMapping>
-		</dependencySet>
-
-	</dependencySets>
-	
 </assembly>

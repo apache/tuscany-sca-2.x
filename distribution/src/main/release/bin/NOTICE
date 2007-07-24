@@ -29,10 +29,24 @@ This product includes/uses JSON-RPC-Java (http://oss.metaparadigm.com/jsonrpc/)
 
 This product includes software from the GlassFish project (https://glassfish.dev.java.net/)
     Copyright (c) 2006, Sun Microsystems, Inc.
+    
+This product includes software from the Rome project (https://rome.dev.java.net/)
+    Copyright (c) 2006, Sun Microsystems, Inc.
 
 This product also includes software developed by:
 - the Eclipse Modeling Framework project (http://www.eclipse.org/emf/)
 - the Mozilla Rhino project (http://www.mozilla.org/rhino/)
+
+This product includes/uses JDOM (http://www.jdom.org/)
+ Copyright (C) 2000-2004 Jason Hunter & Brett McLaughlin. All rights reserved.
+ 
+This product includes/uses DWR (http://getahead.org/dwr)
+ Copyright 2005 Joe Walker. All rights reserved.
+ 
+This product includes/uses dojotoolkit (http://dojotoolkit.org/)
+ Copyright (c) 2005, The Dojo Foundation. All rights reserved.
+
+
 
 Please see the LICENSE file present in the root directory of this
 distribution.

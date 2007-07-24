@@ -1,36 +1,28 @@
-Apache Tuscany SCA 0.90 (incubating) June 2007 Release Notes
+Apache Tuscany SCA 0.91 (incubating) July 2007 Release Notes
 ============================================================
+
+Apache Tuscany provides a runtime based on the Service Component
+Architecture. SCA is a set of specifications aimed at simplifying SOA
+Application Development which are being standardized at OASIS as part
+of Open Composite Services Architecture (Open CSA).
 
 Overview
 --------
 
-This 0.90 release of Apache Tuscany SCA represents a significant
-milestone on the road to 1.0.
-
-This release includes a substantial redesign and rewrite of parts
-of the Tuscany SCA runtime which has significantly improved usability
-compared with previous releases. 
+        This 0.91 release of Apache Tuscany SCA builds further on 
+        the stability and modularity established with the 
+        previous release by including a few more binding and 
+        implementation extensions.  Another significant addition
+        to this release are the demos.
 
 Key features include:
 
-- now based on the final OSOA (http://www.osoa.org) 1.0 specifications;
-
-- clear, simple and stable SPI's to aid embedding and extending the runtime;
-
-- lightweight and modular, allowing users to pick and choose Tuscany modules
-  as required for their particular environments.
-
-The result of these improvements is that the Tuscany SCA runtime can now be
-used easily in any environment - standalone, within webapps, embedded in any
-application server, or even running inside an IDE.
- 
-No special tools, packaging, or plugins are required to create SCA
-applications using Tuscany SCA. The standard Ant or Maven build tools,
-or the simple JDK command line tools, are all that is required to
-develop and use Tuscany SCA applications.
-
-The modular nature of Tuscany now enables a complete runtime for SCA assembly 
-to be put together with less than 1MB of Tuscany code.
+- support for multiple contributions to the SCA Domain
+- an alternative simplified SPI helper extensions for rapid exetension 
+development
+- implementation extension for Spring Framework (implementation.spring) and
+Web Resources.
+- binding extensions for ajax, ejb and integrating RSS/ATOM feeds, 
 
 See the CHANGES file for a detailed list of the features in this release.
 
@@ -53,6 +45,14 @@ using the mailing lists or in the JIRA issue tracker.
 
        http://issues.apache.org/jira/browse/TUSCANY
 
+To find out more about OASIS Open CSA go to: 
+
+    http://www.oasis-opencsa.org.
+
+Apache Tuscany welcomes your help. Any contribution, including code,
+testing, improving the documentation, or bug reporting is always
+appreciated. 
+
 Thank you for using Apache Tuscany!
 
-The Tuscany Team.
+- The Tuscany Team.

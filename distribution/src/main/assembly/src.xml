@@ -83,20 +83,28 @@
     		 <exclude>itest/databindings/jaxbgen/velocity.log</exclude>
              <exclude>modules/http-tomcat/work</exclude>
              <exclude>modules/http-tomcat/work/**/*</exclude>
-             <exclude>modules/implementation-spring</exclude>
-             <exclude>modules/implementation-spring/**/*</exclude>
              <exclude>samples/das-service</exclude>
              <exclude>samples/das-service/**/*</exclude>
              <exclude>samples/das-service-web</exclude>
              <exclude>samples/das-service-web/**/*</exclude>
              <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo</exclude>
              <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
+             <exclude>samples/helloworld-dojo/src/main/webapp/dojo</exclude>
+             <exclude>samples/helloworld-dojo/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-ws-reference/work</exclude>
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service/work</exclude>
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
              <exclude>samples/bigbank</exclude>
              <exclude>samples/bigbank/**/*</exclude>
+             <exclude>demos/alert-aggregator/src/main/webapp/dojo</exclude>
+             <exclude>demos/alert-aggregator/src/main/webapp/dojo/**/*</exclude>
+             <exclude>demos/bigbank-account/src/main/resources/web/dojo</exclude> 
+             <exclude>demos/bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
+             <exclude>*/**/*.svg</exclude>
+             <exclude>*/**/*.ruleset</exclude>
+             <exclude>*/**/*.pmd</exclude>
+             <exclude>*/**/*.checkstyle</exclude>
          </excludes>
 	 </fileSet>
      </fileSets>
