@@ -38,22 +38,22 @@ binding-echo/
     main/
       java/
         echo/
-          Echo.java              - interface definition for the sample  
-                                   reference and service
-          EchoComponentImpl.java - sample component implementation with 
-                                   echo binding reference
-          EchoBindingClient.java - sample client
+          Echo.java                     - interface definition for the sample  
+                                          reference and service
+          EchoComponentImpl.java        - sample component implementation with 
+                                          echo binding reference
+          EchoBindingClient.java        - sample client
       resources/
-        EchoBinding.composite    - the SCA assembly for this sample
+        EchoBinding.composite           - the SCA assembly for this sample
     test/
       java/ 
         echo
-          EchoTestCase.java      - sample JUnit test case for the sample 
-                                   client
-  binding-echo.png               - pictorial representation of the sample 
-                                   .composite file
-  build.xml                      - the Ant build file
-  pom.xml                        - the Maven build file
+          EchoBindingTestCase.java      - sample JUnit test case for the sample 
+                                          client
+  binding-echo.png                      - pictorial representation of the sample 
+                                          .composite file
+  build.xml                             - the Ant build file
+  pom.xml                               - the Maven build file
   
 
 Building And Running The Sample Using Ant
@@ -87,13 +87,13 @@ You should see the following output from the test phase.
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running echoAppl.EchoApplTestCase
+Running echo.EchoBindingTestCase
 Returned message: foo
 Returned message: bar
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.111 sec
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.811 sec
 
 Results :
 
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0 
 
 This shows that the Junit test cases have run successfully. 
