@@ -77,7 +77,7 @@ run up the helloworld-ws-service test. Take a look at the README in that sample
 and you will see you need the following commands
 
 cd helloworld-ws-service
-ant
+ant run
 
 Once done you can now compile and run this sample using the following commands;
 
@@ -138,13 +138,13 @@ d
 WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_client
 _1_1.xsd
 10-May-2007 13:40:35 org.apache.coyote.http11.Http11Protocol init
-INFO: Initializing Coyote HTTP/1.1 on http-8080
+INFO: Initializing Coyote HTTP/1.1 on http-8085
 10-May-2007 13:40:35 org.apache.coyote.http11.Http11Protocol start
-INFO: Starting Coyote HTTP/1.1 on http-8080
+INFO: Starting Coyote HTTP/1.1 on http-8085
 Injected helloWorldService
 Called getGreetings
 10-May-2007 13:40:36 org.apache.coyote.http11.Http11Protocol destroy
-INFO: Stopping Coyote HTTP/1.1 on http-8080
+INFO: Stopping Coyote HTTP/1.1 on http-8085
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.349 sec
 
 Results :
