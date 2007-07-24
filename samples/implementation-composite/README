@@ -71,14 +71,17 @@ ant run
 You should see the following output from the run target.
 
 run:
-     [java] Main thread Thread[main,5,main]
-     [java] Source: Client.main -> Source.clientMethod
-     [java] Source: Client.main => Source.clientMethod2
-     [java] Sleeping ...
-     [java] Target: Client.main -> Source.clientMethod
-     [java] Work thread Thread[pool-1-thread-1,5,main]
-     [java] Result: Client.main -> Source.clientMethod -> Target.someMethod
-     [java] Target: Client.main => Source.clientMethod2
+      [java] Main thread Thread[main,5,main]
+      [java] Source: Client.main -> Source.clientMethod
+      [java] Source: Client.main => Source.clientMethod2
+      [java] Sleeping ...
+      [java] Target: Client.main -> Source.clientMethod
+      [java] Work thread Thread[pool-1-thread-1,5,main]
+      [java] Result: Client.main -> Source.clientMethod -> Target.someMethod
+      [java] Target: Client.main => Source.clientMethod2
+      [java] Work thread Thread[pool-1-thread-2,5,main]
+      [java] Result: Client.main => Source.clientMethod2 -> Target.someMethod
+      
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
@@ -98,11 +101,13 @@ Main thread Thread[main,5,main]
 Source: Client.main -> Source.clientMethod
 Source: Client.main => Source.clientMethod2
 Sleeping ...
+Target: Client.main => Source.clientMethod2
+Work thread Thread[pool-1-thread-2,5,main]
+Result: Client.main => Source.clientMethod2 -> Target.someMethod
 Target: Client.main -> Source.clientMethod
 Work thread Thread[pool-1-thread-1,5,main]
 Result: Client.main -> Source.clientMethod -> Target.someMethod
-Target: Client.main => Source.clientMethod2
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.374 sec
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.973 sec
 
 Results :
 
