@@ -18,12 +18,12 @@
 -->
 <project name="databinding-echo" default="compile">
     <property name="test.class" value="dbecho.EchoDataBindingClient" />
-	<property name="test.jar"   value="sample-databinding-echo.jar" />
-	
+    <property name="test.jar"   value="sample-databinding-echo.jar" />
+
     <target name="init">
         <mkdir dir="target/classes"/>
     </target>
-	
+
     <target name="compile" depends="init">
         <javac srcdir="src/main/java"
                destdir="target/classes"
@@ -31,45 +31,45 @@
                source="1.5"
                target="1.5">
             <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
+                <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar"/>
             </classpath>
-        </javac> 
-        <copy todir="target/classes">
-            <fileset dir="src/main/resources"/>
-        </copy>    	
-        <jar destfile="target/${test.jar}" basedir="target/classes">
-            <manifest>
-                <attribute name="Main-Class" value="${test.class}" /> 
-            </manifest>
-        </jar>    	
-    </target>	
-	
-    <target name="run-classes">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/classes"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
-            </classpath>
-        </java>
+        </javac>
+                    <copy todir="target/classes">
+                        <fileset dir="src/main/resources"/>
+                    </copy>
+                    <jar destfile="target/${test.jar}" basedir="target/classes">
+                        <manifest>
+                            <attribute name="Main-Class" value="${test.class}" />
+                        </manifest>
+                    </jar>
     </target>
-	
-    <target name="run">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-                <pathelement location="../binding-echo/target/sample-binding-echo.jar"/>
-            </classpath>
-        </java>    	
-    </target>	
-	
-    <target name="clean">
-        <delete quiet="true" includeemptydirs="true">
-            <fileset dir="target"/>
-        </delete>
-    </target>
+
+                    <target name="run-classes">
+                        <java classname="${test.class}"
+                              fork="true">
+                            <classpath>
+                                <pathelement path="target/classes"/>
+                                <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar"/> 
+                        </classpath>
+                        </java>
+                    </target>
+
+                    <target name="run">
+                        <java classname="${test.class}"
+                              fork="true">
+                            <classpath>
+                                <pathelement path="target/${test.jar}"/>
+                                <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar "/> 
+                            </classpath>
+                        </java>
+                    </target>
+
+                    <target name="clean">
+                        <delete quiet="true" includeemptydirs="true">
+                            <fileset dir="target"/>
+                        </delete>
+                    </target>
 </project>
