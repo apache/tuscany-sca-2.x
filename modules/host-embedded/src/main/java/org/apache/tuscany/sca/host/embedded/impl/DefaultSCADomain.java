@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
@@ -64,7 +63,6 @@ import org.osoa.sca.ServiceRuntimeException;
 public class DefaultSCADomain extends SCADomain {
 
     private String uri;
-    private String location;
     private String[] composites;
     private Composite domainComposite;
     private Contribution contribution;
@@ -85,7 +83,6 @@ public class DefaultSCADomain extends SCADomain {
                             String contributionLocation,
                             String... composites) {
         this.uri = domainURI;
-        this.location = contributionLocation;
         this.composites = composites;
 
         // Create and start the runtime
@@ -101,8 +98,12 @@ public class DefaultSCADomain extends SCADomain {
         ContributionService contributionService = runtime.getContributionService();
         URL contributionURL;
         try {
-            contributionURL = getContributionLocation(applicationClassLoader, location, this.composites);
-        } catch (MalformedURLException e) {
+            contributionURL = getContributionLocation(applicationClassLoader, contributionLocation, this.composites);
+            if (contributionURL != null) {
+                // Make sure the URL is correctly encoded (for example, escape the space characters) 
+                contributionURL = contributionURL.toURI().toURL();
+            }
+        } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
 
