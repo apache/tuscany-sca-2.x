@@ -48,7 +48,7 @@ public class WSDLModelResolver extends DefaultModelResolver {
                     resolved = namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class, unresolved);
                     
                     // If resolved... then we are done
-                    if(resolved.isUnresolved() == false) {
+                    if (resolved.isUnresolved() == false) {
                         break;
                     }
                 }
