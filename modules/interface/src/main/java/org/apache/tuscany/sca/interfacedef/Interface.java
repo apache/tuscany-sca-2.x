@@ -25,7 +25,7 @@ import java.util.List;
  * support concrete interface type systems, such as Java interfaces, WSDL 1.1
  * portTypes and WSDL 2.0 interfaces.
  */
-public interface Interface extends Cloneable {
+public interface Interface extends Base, Cloneable {
 
     /**
      * Returns true if the interface is a remotable interface..
@@ -62,20 +62,6 @@ public interface Interface extends Cloneable {
      */
     List<Operation> getOperations();
 
-    /**
-     * Returns true if the model element is unresolved.
-     * 
-     * @return true if the model element is unresolved.
-     */
-    boolean isUnresolved();
-
-    /**
-     * Sets whether the model element is unresolved.
-     * 
-     * @param unresolved whether the model element is unresolved
-     */
-    void setUnresolved(boolean unresolved);
-    
     // TODO: [rfeng] We might need to have a better way
     /**
      * Set the databinding for the interface
@@ -84,7 +70,7 @@ public interface Interface extends Cloneable {
     void setDefaultDataBinding(String dataBinding);
 
     /**
-     * Returns true if the Interaface is dynamic.
+     * Returns true if the Interface is dynamic.
      * 
      * @return true if the Interface is dynamic.
      */

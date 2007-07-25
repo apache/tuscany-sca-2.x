@@ -55,32 +55,35 @@ public class NamespaceImportAllModelResolverImpl implements ModelResolver {
         //TODO optimize and cache results of the resolution later
         
         // Go over all available contributions
-        Object resolved = null;
         for (Contribution contribution : contributions) {
             
             // Go over all exports in the contribution
             for (Export export : contribution.getExports()) {
                 if (export instanceof NamespaceExport) {
                     NamespaceExport namespaceExport = (NamespaceExport)export;
+                    
+                    // If the export matches our namespace, try to the resolve the model object
                     if (namespaceImport.getNamespace().equals(namespaceExport.getNamespace())) {
-                        Object r = namespaceExport.getModelResolver().resolveModel(modelClass, unresolved);
-                        if (r != null) {
-                            //FIXME we should test the unresolved flag instead
-                            resolved = r;
-                            break;
+                        Object resolved = namespaceExport.getModelResolver().resolveModel(modelClass, unresolved);
+                        
+                        // Return the resolved model object
+                        if (resolved instanceof org.apache.tuscany.sca.interfacedef.Base) {
+                            if (!((org.apache.tuscany.sca.interfacedef.Base)resolved).isUnresolved()) {
+                                return modelClass.cast(resolved);
+                            }
+                        }
+                        else if (resolved instanceof org.apache.tuscany.sca.assembly.Base) {
+                            if (!((org.apache.tuscany.sca.assembly.Base)resolved).isUnresolved()) {
+                                return modelClass.cast(resolved);
+                            }
                         }
                     }
                 }
             }
-            if (resolved != null)
-                break;
         }
-        
-        if (resolved != null) {
-            return modelClass.cast(resolved);
-        } else {
-            return unresolved;
-        }
+
+        // Model object was not resolved
+        return unresolved;
     }
 
 }

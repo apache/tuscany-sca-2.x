@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
+import org.apache.tuscany.sca.interfacedef.Base;
 import org.apache.ws.commons.schema.XmlSchema;
 
 /**
@@ -26,7 +27,7 @@ import org.apache.ws.commons.schema.XmlSchema;
  *
  * @version $Rev$ $Date$
  */
-public interface XSDefinition {
+public interface XSDefinition extends Base {
     
     /**
      * Returns the XmlSchema definition model
@@ -51,19 +52,5 @@ public interface XSDefinition {
      * @param namespace the namespace of this XmlSchema definition
      */
     void setNamespace(String namespace);
-
-    /**
-     * Returns true if the model element is unresolved.
-     * 
-     * @return true if the model element is unresolved.
-     */
-    boolean isUnresolved();
-
-    /**
-     * Sets whether the model element is unresolved.
-     * 
-     * @param unresolved whether the model element is unresolved
-     */
-    void setUnresolved(boolean unresolved);
 
 }
