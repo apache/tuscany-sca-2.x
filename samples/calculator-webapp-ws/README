@@ -1,0 +1,117 @@
+Calculator Sample Exposing Web Services In A WebApp
+===================================================
+This sample uses the same code as the calculator sample, it deploys the
+sample wrapped in a web app and exposes the AddService as a web service. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+As this sample provides a web app there is a manual step where the WAR file
+that contains the sample is copied to your web app container. If you just want 
+to give this sample a go deploy the WAR file (target/sample-calculator-webapp.war)
+to you web application server. 
+
+The war file that is build here contains a Tuscany JETTY binding to allow the
+sample to be tested as part of the main maven build. This needs to be removed.
+Once the war has been expanded remove.
+
+  tuscnay-host-jetty-*.jar file from WEB-INF/lib
+  
+You may also find that you need to remove the servlet-api jars in WEB-INF/lib
+depending on which app server you are using. 
+
+Once the web app is deployed use your browser to visit the following URL;
+
+http://localhost:8080/sample-calculator-webapp-ws/calc.jsp
+
+The port and hostname will of course vary depending on your local installation. 
+
+Sample Overview
+---------------
+The sample provides a single calculator service with a default SCA (java) 
+binding. The CalculatorClient exercises this interface by calling add, 
+subtract, multiply and divide operations. This results in messages passing to 
+the appropriate components in the composite across the local wires.
+
+calculator-webapp/
+  src/
+    main/
+      java/
+        calculator/
+          CalculatorService.java  - As calculator sample
+          CalculatorServiceImpl.java
+          AddService.java         - As calculator sample
+          AddServiceImpl.java
+          SubtractService.java    - As calculator sample
+          SubtractServiceImpl.java
+          MultiplyService.java    - As calculator sample
+          MultiplyServiceImpl.java
+          DivideService.java      - As calculator sample
+          DivideServiceImpl.java
+          CalculatorClient.java   - As calculator sample
+      resources/
+        Calculator.composite      - As calculator sample except that the 
+                                    connection between the CalculatorService
+                                    and the AddService is web services
+      webapp
+        META-INF/
+          sca-contribution.xml    - specifies the composite to be deployed
+        WEB-INF/
+          web.xml                 - defines the listener that starts up the 
+                                    Tuscany SCA runtime and maps service
+                                    calls to the TuscanyServlet
+        calc.jsp                  - the web application that makes use of the
+                                    SCA application 
+    test/
+      java/
+        calculator/
+          CalculatorTestCase.java - JUnit test case 
+           
+  calculator.png - a pictorial representation of the sample .composite file
+  build.xml      - the Ant build file
+  pom.xml        - the Maven build file  
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built using Ant as 
+follows
+
+cd calculator-web
+ant package
+
+This should result in a war file (sample-calculator-webapp.war) in the target 
+directory. Copy this war file to your web app deployment directory in you
+web app container. 
+
+The process for getting the web app running will depend on which web app container
+you are using. For example, if you are using Tomcat then it is simply a matter
+of copying the WAR file to the webapps directory. 
+
+Once the web app is deployed use your browser to visit the following URL;
+
+http://localhost:8080/sample-calculator-webapp/calc.jsp
+
+The port and hostname will of course vary depending on your local installation. 
+
+You should see the following output.
+
+Expression	Result
+2 + 3	5.0
+3 - 2	1.0
+3 * 2	6.0
+3 / 2	1.5
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd calculator-web 
+mvn
+
+Again this should result in a war file (sample-calculator-webapp.war) in the target 
+directory. Follow the steps described in the previous section for running the web 
+app and for the expected results.
+
+
