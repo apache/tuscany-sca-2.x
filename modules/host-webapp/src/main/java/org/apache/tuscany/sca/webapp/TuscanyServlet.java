@@ -54,7 +54,12 @@ public class TuscanyServlet extends HttpServlet {
         String path = ((HttpServletRequest)req).getPathInfo();
         Servlet servlet = servletHost.getServlet(path);
         if (servlet == null) {
-            throw new IllegalStateException("No servlet registered for path: " + path);
+            path = ((HttpServletRequest)req).getRequestURI();
+            servlet = servletHost.getServlet(path);
+            
+            if (servlet == null) {
+                throw new IllegalStateException("No servlet registered for path: " + path);
+            }
         }
 
         servlet.service(req, res);
