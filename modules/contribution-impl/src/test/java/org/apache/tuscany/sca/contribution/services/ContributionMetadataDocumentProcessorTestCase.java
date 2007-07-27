@@ -19,20 +19,9 @@
 
 package org.apache.tuscany.sca.contribution.services;
 
-import java.io.StringReader;
-
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
-import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataLoaderImpl;
-import org.apache.tuscany.sca.contribution.service.impl.InvalidValueException;
 
 /**
  * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
