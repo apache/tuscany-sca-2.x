@@ -34,7 +34,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>databinding-sdo</artifactId>
+            <artifactId>tuscany-databinding-sdo</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
