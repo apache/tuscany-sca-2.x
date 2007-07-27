@@ -47,13 +47,6 @@
             <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <!-- exclude servlet api, bug in axis2 binding pom -->
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
