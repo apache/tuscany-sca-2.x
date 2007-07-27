@@ -64,6 +64,7 @@ public class WebAppServletHost implements ServletHost {
             
         // For webapps just use the path and ignore the host and port
         servlets.put(pathURI.getPath(), servlet);
+        System.out.println("addServletMapping: " + pathURI.getPath());
     }
 
     public Servlet removeServletMapping(String path) throws ServletMappingException {
