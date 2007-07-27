@@ -40,8 +40,8 @@
         </dependency>
 
         <dependency>
-            <groupId>commonj</groupId>
-            <artifactId>sdo-api-r2.1</artifactId>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-api-r2.1</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
