@@ -31,11 +31,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
 
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
     private WebServiceBinding wsBinding;
-    private ServletHost servletHost;
-    private MessageFactory messageFactory;
     private Axis2ServiceClient axisClient;
     private Axis2ServiceProvider axisProvider;
 
@@ -45,11 +41,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
                                        ServletHost servletHost,
                                        MessageFactory messageFactory) {
 
-        this.component = component;
-        this.service = service;
         this.wsBinding = wsBinding;
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {

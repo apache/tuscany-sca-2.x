@@ -112,6 +112,7 @@ public class Axis2ServiceServlet extends AxisServlet {
                         return null;
                     }
 
+                    @SuppressWarnings("unused") // it's on the servlet 2.5 api so we need it
                     public String getContextPath() {
                         return null;
                     }

@@ -26,8 +26,7 @@ import org.apache.axis2.engine.AxisConfigurator;
 
 /**
  * Helps configure Axis2 from a resource in binding.axis2 instead of Axis2.xml 
- * <p/> TODO: Review: should there be a single global Axis
- * ConfigurationContext
+ * <p/> TODO: Review: should there be a single global Axis ConfigurationContext
  */
 public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements AxisConfigurator {
 
@@ -36,8 +35,9 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
     }
 
     public ConfigurationContext getConfigurationContext() throws AxisFault {
-        if (configContext == null)
+        if (configContext == null) {
             configContext = ConfigurationContextFactory.createConfigurationContext(this);
+        }
         return configContext;
     }
 
