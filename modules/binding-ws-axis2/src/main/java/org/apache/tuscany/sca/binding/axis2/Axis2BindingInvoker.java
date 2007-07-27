@@ -43,8 +43,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.osoa.sca.Constants;
 
 /**
- * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web
- * service
+ * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
  */
 public class Axis2BindingInvoker implements Invoker {
 
@@ -67,18 +66,16 @@ public class Axis2BindingInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
-            // getCallbackUris() has been removed from the Message interface 
-            // LinkedList<URI> callbackRoutingChain = msg.getCallbackUris();
-            // if (callbackRoutingChain != null) {
-            //     workContext.setCallbackUris(callbackRoutingChain);
-            // }
+
             Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), msg.getConversationID());
             msg.setBody(resp);
+
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
         } catch (Throwable e) {
             msg.setFaultBody(e);
         }
+
         return msg;
     }
 

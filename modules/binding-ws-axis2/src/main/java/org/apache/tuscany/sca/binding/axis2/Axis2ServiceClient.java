@@ -50,11 +50,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 public class Axis2ServiceClient {
 
-    private RuntimeComponent component;
-    private AbstractContract contract; // not used currently
     private WebServiceBinding wsBinding;
-    private ServletHost servletHost;
-    private MessageFactory messageFactory;
     private ServiceClient serviceClient;
     private WebServiceBinding callbackBinding;
 
@@ -64,14 +60,10 @@ public class Axis2ServiceClient {
                               ServletHost servletHost,
                               MessageFactory messageFactory,
                               WebServiceBinding callbackBinding) {
-        this.component = component;
-        this.contract = contract;
-        this.wsBinding = wsBinding;
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
-        this.callbackBinding = callbackBinding;
 
-        serviceClient = createServiceClient();
+        this.wsBinding = wsBinding;
+        this.callbackBinding = callbackBinding;
+        this.serviceClient = createServiceClient();
     }
 
     protected void start() {

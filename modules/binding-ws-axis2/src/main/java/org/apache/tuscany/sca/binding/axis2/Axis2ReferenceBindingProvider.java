@@ -32,11 +32,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 {
 
-    private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private WebServiceBinding wsBinding;
-    private ServletHost servletHost;
-    private MessageFactory messageFactory;
     private Axis2ServiceClient axisClient;
     private Axis2ServiceProvider axisProvider;
     private WebServiceBinding callbackBinding;
@@ -47,11 +44,8 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
                                          ServletHost servletHost,
                                          MessageFactory messageFactory) {
 
-        this.component = component;
         this.reference = reference;
         this.wsBinding = wsBinding;
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
@@ -67,18 +61,6 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
             contract.getCallbackInterface().setDefaultDataBinding(OMElement.class.getName());
         }
 
-        // ??? following line was in Axis2BindingBuilder before the SPI changes
-        // and code reorg
-        //
-        // URI targetURI = wsBinding.getURI() != null ?
-        // URI.create(wsBinding.getURI()) : URI.create("foo");
-        //
-        // targetURI was passed to the ReferenceBindingExtension constructor and
-        // apparently was unused
-        // Do we still need a targetURI?
-
-        // wsBinding.setURI(component.getURI() + "#" + reference.getName());
-
         if (!wsBinding.isCallback()) {
             // this is a forward binding, so look for a matching callback binding
             if (reference.getCallback() != null) {
@@ -91,7 +73,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
                 }
             }
         } else {
-            // this is a callback binding, so look for all matching forward bindings
+            // this is a callback binding, so look for all matching forward binding
             for (Binding binding : reference.getBindings()) {
                 if (reference.getBindingProvider(binding) instanceof Axis2ReferenceBindingProvider) {
                     // set all compatible forward binding providers for this reference
@@ -105,9 +87,9 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
             axisClient =
                 new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory, callbackBinding);
         } else {
-            //FIXME: need to support callbacks through self-references
+            // FIXME: need to support callbacks through self-references
             // For now, don't create a callback service provider for a self-reference
-            // because this modifies the binding URI.  This messes up the service callback
+            // because this modifies the binding URI. This messes up the service callback
             // wires because the self-reference has the same binding object as the service.
             if (!reference.getName().startsWith("$self$.")) {
                 axisProvider = new Axis2ServiceProvider(component, reference, wsBinding, servletHost, messageFactory);
@@ -125,7 +107,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         if (!wsBinding.isCallback()) {
             axisClient.start();
         } else {
-            //FIXME: need to support callbacks through self-references
+            // FIXME: need to support callbacks through self-references
             if (!reference.getName().startsWith("$self$.")) {
                 axisProvider.start();
             }
@@ -136,7 +118,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         if (!wsBinding.isCallback()) {
             axisClient.stop();
         } else {
-            //FIXME: need to support callbacks through self-references
+            // FIXME: need to support callbacks through self-references
             if (!reference.getName().startsWith("$self$.")) {
                 axisProvider.stop();
             }
