@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.axis2;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.Iterator;
@@ -37,11 +36,8 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.deployment.util.Utils;
-import org.apache.axis2.description.AxisDescription;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.AxisService2OM;
-import org.apache.axis2.description.AxisServiceGroup;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
@@ -255,22 +251,6 @@ public class Axis2ServiceProvider {
             throw new RuntimeException(e);
         }
         
-        AxisDescription parent = new AxisServiceGroup();
-        parent.setParent(configContext.getAxisConfiguration());
-        axisService.setParent(parent);
-        
-        AxisService2OM axisService2WOM = new AxisService2OM(axisService,
-                                             new String[] {"foo"}, "document", "literal",
-                                             "");
-        try {
-            OMElement wsdlElement = axisService2WOM.generateOM();
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            wsdlElement.serialize(os);
-            System.out.println(os.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         return axisService;
     }
 
