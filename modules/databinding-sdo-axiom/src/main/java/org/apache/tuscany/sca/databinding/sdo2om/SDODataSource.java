@@ -57,7 +57,7 @@ public class SDODataSource implements OMDataSource {
     }
 
     public XMLStreamReader getReader() throws XMLStreamException {
-        XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
+        XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext);
         return streamHelper.createXMLStreamReader(sourceDocument);
     }
 
