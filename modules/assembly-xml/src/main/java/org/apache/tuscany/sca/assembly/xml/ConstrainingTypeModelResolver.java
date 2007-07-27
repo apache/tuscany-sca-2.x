@@ -19,54 +19,64 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.NamespaceImport;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
- * An Model Resolver for ConstrainigType artifact types.
+ * A Model Resolver for ConstrainingType models.
  *
  * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
  */
-public class ConstrainingTypeModelResolver extends DefaultModelResolver {
+public class ConstrainingTypeModelResolver implements ModelResolver {
 
-    public ConstrainingTypeModelResolver(ClassLoader cl, Contribution contribution) {
-        super(cl,contribution);
+    private Contribution contribution;
+    private Map<QName, ConstrainingType> map = new HashMap<QName, ConstrainingType>();
+    
+    public ConstrainingTypeModelResolver(Contribution contribution) {
+        this.contribution = contribution;
     }
 
-    private ConstrainingType resolveImportedModel(ConstrainingType unresolved) {
-        ConstrainingType resolved = unresolved;
-        String namespace = unresolved.getName().getNamespaceURI();
+    public void addModel(Object resolved) {
+        ConstrainingType composite = (ConstrainingType)resolved;
+        map.put(composite.getName(), composite);
+    }
+    
+    public Object removeModel(Object resolved) {
+        return map.remove(((ConstrainingType)resolved).getName());
+    }
+    
+    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+        
+        // Lookup a definition for the given namespace
+        QName qname = ((ConstrainingType)unresolved).getName();
+        ConstrainingType resolved = (ConstrainingType) map.get(qname);
+        if (resolved != null) {
+            return (T)resolved;
+        }
+        
+        // No definition found, delegate the resolution to the imports
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof NamespaceImport) {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
-                if (namespaceImport.getNamespace().equals(namespace)) {
+                if (namespaceImport.getNamespace().equals(qname.getNamespaceURI())) {
                     
                     // Delegate the resolution to the import resolver
-                    resolved = import_.getModelResolver().resolveModel(ConstrainingType.class, unresolved);
-                    
-                    // If resolved... then we are done
-                    if(resolved.isUnresolved() == false) {
-                        break;
+                    resolved = namespaceImport.getModelResolver().resolveModel(ConstrainingType.class, (ConstrainingType)unresolved);
+                    if (!resolved.isUnresolved()) {
+                        return (T)resolved;
                     }
                 }
             }
         }
-        return resolved;
+        return (T)unresolved;
     }
-    
-    @Override
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        ConstrainingType resolved = (ConstrainingType) super.resolveModel(modelClass, unresolved);
-
-        if (resolved.isUnresolved()) {
-            resolved = resolveImportedModel(resolved);
-        }
-        
-        return (T)resolved;
-    }
-    
     
 }

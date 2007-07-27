@@ -61,7 +61,7 @@ public class WireTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        resolver = new TestModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver();
         assemblyFactory = new DefaultAssemblyFactory();
         scaBindingFactory = new DefaultSCABindingFactory();
         policyFactory = new DefaultPolicyFactory();

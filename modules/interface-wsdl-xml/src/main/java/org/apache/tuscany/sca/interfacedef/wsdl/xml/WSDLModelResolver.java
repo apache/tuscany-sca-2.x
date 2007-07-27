@@ -19,53 +19,61 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.NamespaceImport;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 
 /**
- * An Model Resolver for WSDL artifact types.
+ * A Model Resolver for WSDL models.
  *
  * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
  */
-public class WSDLModelResolver extends DefaultModelResolver {
-
-    public WSDLModelResolver(ClassLoader cl, Contribution contribution) {
-        super(cl,contribution);
+public class WSDLModelResolver implements ModelResolver {
+    private Contribution contribution;
+    private Map<String, WSDLDefinition> map = new HashMap<String, WSDLDefinition>();
+    
+    public WSDLModelResolver(Contribution contribution) {
+        this.contribution = contribution;
     }
 
-    private WSDLDefinition resolveImportedModel(WSDLDefinition unresolved) {
-        WSDLDefinition resolved = unresolved;
-        String namespace = unresolved.getNamespace();
+    public void addModel(Object resolved) {
+        WSDLDefinition definition = (WSDLDefinition)resolved;
+        map.put(definition.getNamespace(), definition);
+    }
+    
+    public Object removeModel(Object resolved) {
+        return map.remove(((WSDLDefinition)resolved).getNamespace());
+    }
+    
+    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+        
+        // Lookup a definition for the given namespace
+        String namespace = ((WSDLDefinition)unresolved).getNamespace();
+        WSDLDefinition resolved = (WSDLDefinition) map.get(namespace);
+        if (resolved != null) {
+            return (T)resolved;
+        }
+        
+        // No definition found, delegate the resolution to the imports
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof NamespaceImport) {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
                 if (namespaceImport.getNamespace().equals(namespace)) {
                     
                     // Delegate the resolution to the import resolver
-                    resolved = namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class, unresolved);
-                    
-                    // If resolved... then we are done
-                    if (resolved.isUnresolved() == false) {
-                        break;
+                    resolved = namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class, (WSDLDefinition)unresolved);
+                    if (!resolved.isUnresolved()) {
+                        return (T)resolved;
                     }
                 }
             }
         }
-        return resolved;
-    }
-    
-    @Override
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        WSDLDefinition resolved = (WSDLDefinition) super.resolveModel(modelClass, unresolved);
-
-        if (resolved.isUnresolved()) {
-            resolved = resolveImportedModel(resolved);
-        }
-        
-        return (T)resolved;
+        return (T)unresolved;
     }
     
 }

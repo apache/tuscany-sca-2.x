@@ -60,7 +60,7 @@ public class ResolveTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        resolver = new TestModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver();
     }
 
     public void tearDown() throws Exception {

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
-import java.util.Collection;
 
 /**
  * An extension point for Model Resolvers
@@ -50,11 +49,4 @@ public interface ModelResolverExtensionPoint {
      * @return The model resolver Class
      */
     Class <? extends ModelResolver> getResolver(Class<?> modelType);
-    
-    /**
-     * Retrieve a list registered Model Resolvers Classes
-     * 
-     * @return The list of registered Model Resolvers Class
-     */
-    Collection<Class<?>> getResolverTypes();
 }

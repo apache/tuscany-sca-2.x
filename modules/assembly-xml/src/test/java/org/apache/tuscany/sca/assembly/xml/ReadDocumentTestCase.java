@@ -72,7 +72,7 @@ public class ReadDocumentTestCase extends TestCase {
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
 
-        resolver = new TestModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver();
     }
 
     public void tearDown() throws Exception {

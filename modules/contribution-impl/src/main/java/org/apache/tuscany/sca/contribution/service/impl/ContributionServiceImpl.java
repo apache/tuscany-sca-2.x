@@ -264,9 +264,9 @@ public class ContributionServiceImpl implements ContributionService {
         //initialize contribution based on it's metadata if available
         Contribution contribution = readContributionMetadata(locationURL);
         
-        //create contribution model resolver
+        // Create contribution model resolver
         if (modelResolver == null) {
-            modelResolver = new ExtensibleModelResolver(this.modelResolverExtensionPoint, getClass().getClassLoader(), contribution);
+            modelResolver = new ExtensibleModelResolver(contribution, modelResolverExtensionPoint);
         }
         
         //set contribution initial information
