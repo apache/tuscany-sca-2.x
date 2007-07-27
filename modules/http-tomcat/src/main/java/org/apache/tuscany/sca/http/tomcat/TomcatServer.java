@@ -216,6 +216,8 @@ public class TomcatServer implements ServletHost {
         context.addServletMapping(mapping, mapping);
         connector.getMapper().addWrapper("localhost", "", mapping, wrapper);
 
+        System.out.println("addServletMapping port: " + port + " path: " + mapping);
+
         // Initialize the servlet
         try {
             wrapper.initServlet();
