@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.contribution.NamespaceExport;
 import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.service.ContributionMetadataLoaderException;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
@@ -157,11 +156,6 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
 
     public void resolve(Contribution model, ModelResolver resolver) throws ContributionResolveException {
         // TODO Auto-generated method stub
-        
-    }
-
-
-    public void load(Contribution contribution, XMLStreamReader reader) throws XMLStreamException, ContributionMetadataLoaderException {
         
     }
 }
