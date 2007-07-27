@@ -58,7 +58,7 @@ public class ImportSDOProcessorTestCase extends TestCase {
         assertFalse(inited);
         ImportSDO importSDO = loader.read(reader);
         assertNotNull(importSDO);
-        loader.resolve(importSDO, new TestModelResolver(getClass().getClassLoader()));
+        loader.resolve(importSDO, new TestModelResolver());
         assertTrue(inited);
     }
 

@@ -35,7 +35,7 @@ public class TestModelResolver implements ModelResolver {
     
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
-    public TestModelResolver(ClassLoader classLoader) {
+    public TestModelResolver() {
     }
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {

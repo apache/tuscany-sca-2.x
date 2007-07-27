@@ -27,26 +27,17 @@ import javax.xml.stream.XMLOutputFactory;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.topology.Component;
 import org.apache.tuscany.sca.topology.DefaultTopologyFactory;
 import org.apache.tuscany.sca.topology.Node;
 import org.apache.tuscany.sca.topology.Runtime;
 import org.apache.tuscany.sca.topology.Scheme;
-import org.apache.tuscany.sca.topology.Component;
 import org.apache.tuscany.sca.topology.TopologyFactory;
 
 /**
@@ -75,7 +66,7 @@ public class ReadDocumentTestCase extends TestCase {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
         documentProcessors.addArtifactProcessor(new TopologyDocumentProcessor(staxProcessor, inputFactory));
 
-        resolver = new TestModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver();
     }
 
     public void tearDown() throws Exception {

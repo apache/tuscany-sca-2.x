@@ -69,7 +69,7 @@ public class WriteAllTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        resolver = new TestModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver();
     }
 
     public void tearDown() throws Exception {

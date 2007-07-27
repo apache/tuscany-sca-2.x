@@ -55,7 +55,7 @@ public class WSDLOperationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         processor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
-        resolver = new TestModelResolver(getClass().getClassLoader());
+        resolver = new TestModelResolver();
         wsdlFactory = new DefaultWSDLFactory();
     }
 

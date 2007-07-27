@@ -25,81 +25,133 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 
-public class ExtensibleModelResolver extends DefaultModelResolver implements ModelResolver {
-    private final ModelResolverExtensionPoint resolverRegistry;
+/**
+ * An implementation of an extensible model resolver which delegates to the
+ * proper resolver extension based on the class of the model to resolve.
+ *
+ * @version $Rev: $ $Date: $
+ */
+public class ExtensibleModelResolver implements ModelResolver {
+    private final ModelResolverExtensionPoint resolvers;
+    private final Contribution contribution;
     private final Map<Class<?>, ModelResolver> resolverInstances = new HashMap<Class<?>, ModelResolver>();
-    
+    private Map<Object, Object> map = new HashMap<Object, Object>();
 
-    public ExtensibleModelResolver(ModelResolverExtensionPoint resolverRegistry, ClassLoader cl, Contribution contribution) {
-        super(cl, contribution);
-        this.resolverRegistry = resolverRegistry; 
-        initializeModelResolverInstances();
+    /**
+     * Constructs an extensible model resolver
+     * @param resolvers
+     * @param contribution
+     */
+    public ExtensibleModelResolver(Contribution contribution, ModelResolverExtensionPoint resolvers) {
+        this.contribution = contribution;
+        this.resolvers = resolvers;
     }
     
     /**
-     * Finds the proper resolver instance based on the interfaces of the model
+     * Returns the proper resolver instance based on the interfaces of the model
      * @param modelType
      * @return
      */
-    private ModelResolver getResolverInstance(Class<?> modelType) {
+    private ModelResolver getModelResolverInstance(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
         for (Class<?> c : classes) {
+            
+            // Look up a model resolver instance for the model class
             ModelResolver resolverInstance = resolverInstances.get(c);
             if (resolverInstance != null) {
                 return resolverInstance;
             }
+            
+            // We don't have an instance, lookup a model resolver class
+            // and instantiate it
+            Class<? extends ModelResolver> resolverClass = resolvers.getResolver(c);
+            if (resolverClass != null) {
+                try {
+                    Constructor<? extends ModelResolver> constructor = resolverClass.getConstructor(new Class[]{Contribution.class});
+                    if (constructor != null) {
+                        
+                        // Construct the model resolver instance and cache it
+                        resolverInstance = constructor.newInstance(this.contribution);
+                        resolverInstances.put(c, resolverInstance);
+                        return resolverInstance;
+                    }
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                } 
+            }
         }
-        
-        
-        
-        return resolverInstances.get(modelType);
-    }
-    
-    private void initializeModelResolverInstances() {
-        for (Class<?> resolverType : resolverRegistry.getResolverTypes()) {
-            Class<? extends ModelResolver> resolverInstanceType = resolverRegistry.getResolver(resolverType);
-            
-            ModelResolver resolverInstance = null;
-            try {
-                Constructor constructor = resolverInstanceType.getConstructor(new Class[]{ClassLoader.class, Contribution.class});
-                if (constructor != null) {
-                    resolverInstance = (ModelResolver) constructor.newInstance(this.classLoader.get(), this.contribution);
-                } else {
-                    resolverInstance = (ModelResolver) resolverInstanceType.newInstance();
-                }
-            } catch(Exception ex) {
-                //ignore, will use default resolver
-            } 
-            
-            resolverInstances.put(resolverType,  resolverInstance);
-            
-        }
+        return null;
     }
     
     public void addModel(Object resolved) {
-        ModelResolver resolver = getResolverInstance(resolved.getClass());
+        ModelResolver resolver = getModelResolverInstance(resolved.getClass());
         if (resolver != null) {
             resolver.addModel(resolved);
         } else {
-            super.addModel(resolved);
+            map.put(resolved, resolved);
         }
     }
 
     public Object removeModel(Object resolved) {
-        ModelResolver resolver = getResolverInstance(resolved.getClass());
+        ModelResolver resolver = getModelResolverInstance(resolved.getClass());
         if (resolver != null) {
             return resolver.removeModel(resolved);
         } else {
-            return super.removeModel(resolved);
+            return map.remove(resolved);
         }
     }
     
+    //FIXME Replace this by a simple map lookup when the
+    // Java resolver is in place
+    public <T> T tempResolveModel(Class<T> modelClass, T unresolved) {
+        Object resolved = map.get(unresolved);
+        if (resolved != null) {
+            
+            // Return the resolved object
+            return modelClass.cast(resolved);
+            
+        } else if (unresolved instanceof ClassReference) {
+            
+            // Load a class on demand
+            ClassReference classReference = (ClassReference)unresolved;
+            Class clazz;
+            try {
+                clazz = Class.forName(classReference.getClassName(), true, Thread.currentThread().getContextClassLoader());
+            } catch (ClassNotFoundException e) {
+                
+                // Return the unresolved object
+                return unresolved;
+            }
+            
+            // Store a new ClassReference wrappering the loaded class
+            resolved = new ClassReference(clazz);
+            map.put(resolved, resolved);
+            
+            // Return the resolved ClassReference
+            return modelClass.cast(resolved);
+                
+        } else {
+            
+            // Return the unresolved object
+            return unresolved;
+        }
+    }
+
+    
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        ModelResolver resolver = getResolverInstance(unresolved.getClass());
+        ModelResolver resolver = getModelResolverInstance(unresolved.getClass());
         if (resolver != null) {
             return resolver.resolveModel(modelClass, unresolved);
         } else {
-            return super.resolveModel(modelClass, unresolved);
+            //FIXME Replace this by a simple map lookup when the
+            // Java resolver is in place
+            Object resolved = tempResolveModel(modelClass, unresolved);
+            if (resolved != null) {
+                // Return the resolved object
+                return modelClass.cast(resolved);
+            } else {
+                return unresolved;
+            }
         }
     }
 }
