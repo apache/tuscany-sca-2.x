@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.contribution.service;
 /**
  * Base class for exceptions raised by contribution services.
  *
- * @version $Rev: 519710 $ $Date: 2007-03-18 15:19:16 -0700 (Sun, 18 Mar 2007) $
+ * @version $Rev$ $Date$
  */
 public class ContributionException extends AbstractContributionException {
     /**

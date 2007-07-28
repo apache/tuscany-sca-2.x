@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 /**
  * The root checked exception for the Contribution Service.
  *
- * @version $Rev: 508877 $ $Date: 2007-02-17 22:22:48 -0800 (Sat, 17 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractContributionException extends Exception {
     private static final long serialVersionUID = -7847121698339635268L;

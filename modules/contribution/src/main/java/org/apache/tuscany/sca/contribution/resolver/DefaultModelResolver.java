@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 /**
  * A default implementation of an artifact resolver, based on a map.
  *
- * @version $Rev: 548560 $ $Date: 2007-06-18 19:25:19 -0700 (Mon, 18 Jun 2007) $
+ * @version $Rev$ $Date$
  */
 public class DefaultModelResolver implements ModelResolver {
     private static final long serialVersionUID = -7826976465762296634L;

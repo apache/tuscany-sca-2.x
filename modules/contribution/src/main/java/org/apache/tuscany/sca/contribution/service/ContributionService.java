@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
  *
- * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public interface ContributionService {
     /**
