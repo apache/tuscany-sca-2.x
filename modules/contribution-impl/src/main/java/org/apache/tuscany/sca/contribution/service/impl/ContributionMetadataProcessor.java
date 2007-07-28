@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 /**
  * Loader that handles contribution metadata files
  * 
- * @version $Rev: 515261 $ $Date: 2007-03-06 11:22:46 -0800 (Tue, 06 Mar 2007) $
+ * @version $Rev$ $Date$
  */
 public class ContributionMetadataProcessor implements StAXArtifactProcessor<Contribution> {
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";

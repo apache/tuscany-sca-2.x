@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 /**
  * The representation of a deployed contribution
  *
- * @version $Rev: 531146 $ $Date: 2007-04-21 22:40:50 -0700 (Sat, 21 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public class ContributionImpl extends ArtifactImpl implements Contribution {
     private List<Export> exports = new ArrayList<Export>();

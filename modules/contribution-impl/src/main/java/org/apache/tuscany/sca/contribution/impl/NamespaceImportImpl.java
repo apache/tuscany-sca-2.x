@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 /**
  * The representation of an import for the contribution
  * 
- * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public class NamespaceImportImpl implements NamespaceImport, ContributionImport {
     private String namespace; // The namespace to be imported

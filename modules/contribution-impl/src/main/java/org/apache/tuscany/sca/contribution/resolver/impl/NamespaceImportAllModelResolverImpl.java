@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 /**
  * A model resolver implementation that considers Exports in any available contribution
  *
- * @version $Rev: 548560 $ $Date: 2007-06-18 19:25:19 -0700 (Mon, 18 Jun 2007) $
+ * @version $Rev$ $Date$
  */
 public class NamespaceImportAllModelResolverImpl implements ModelResolver {
     

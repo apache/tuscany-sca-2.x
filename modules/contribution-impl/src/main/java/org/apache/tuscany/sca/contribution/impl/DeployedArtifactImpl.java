@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.contribution.DeployedArtifact;
 /**
  * Representation of a deployed artifact
  *
- * @version $Rev: 527398 $ $Date: 2007-04-10 23:43:31 -0700 (Tue, 10 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public class DeployedArtifactImpl extends ArtifactImpl implements DeployedArtifact {
     private Object modelObject;
