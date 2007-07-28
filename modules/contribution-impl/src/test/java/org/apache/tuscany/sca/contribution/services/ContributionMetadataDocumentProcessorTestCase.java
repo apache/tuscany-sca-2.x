@@ -24,7 +24,7 @@ import javax.xml.stream.XMLInputFactory;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
+ * @version $Rev$ $Date$
  */
 public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
 

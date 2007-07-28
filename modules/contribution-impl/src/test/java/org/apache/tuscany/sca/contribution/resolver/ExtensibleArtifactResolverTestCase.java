@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 /**
  * Test DefaultArtifactResolver.
  *
- * @version $Rev: 548560 $ $Date: 2007-06-18 19:25:19 -0700 (Mon, 18 Jun 2007) $
+ * @version $Rev$ $Date$
  */
 public class ExtensibleArtifactResolverTestCase extends TestCase {
     private ModelResolverExtensionPoint resolverExtensionPoint;
