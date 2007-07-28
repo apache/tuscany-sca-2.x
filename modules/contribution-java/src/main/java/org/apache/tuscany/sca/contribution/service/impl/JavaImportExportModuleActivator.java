@@ -24,17 +24,17 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 
 
-public class ContributionMetadataImporJavaModuleActivator implements ModuleActivator{
-    JavaImportMetadataProcessor importProcessor;
-    JavaExportMetadataProcessor exportProcessor;
+public class JavaImportExportModuleActivator implements ModuleActivator{
+    JavaImportProcessor importProcessor;
+    JavaExportProcessor exportProcessor;
 
     public Object[] getExtensionPoints() {
         return null;
     }
 
     public void start(ExtensionPointRegistry registry) {
-        importProcessor = new JavaImportMetadataProcessor();
-        exportProcessor = new JavaExportMetadataProcessor();
+        importProcessor = new JavaImportProcessor();
+        exportProcessor = new JavaExportProcessor();
         
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         processors.addArtifactProcessor(importProcessor);
