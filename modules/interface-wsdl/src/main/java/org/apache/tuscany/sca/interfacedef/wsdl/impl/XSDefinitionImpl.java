@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
+import java.net.URI;
+
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 
@@ -31,6 +33,7 @@ public class XSDefinitionImpl implements XSDefinition {
     
     private XmlSchema definition;
     private String namespace;
+    private URI location;
     private boolean unresolved;
     
     protected XSDefinitionImpl() {
@@ -88,5 +91,19 @@ public class XSDefinitionImpl implements XSDefinition {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @return the location
+     */
+    public URI getLocation() {
+        return location;
+    }
+
+    /**
+     * @param location the location to set
+     */
+    public void setLocation(URI location) {
+        this.location = location;
     }
 }

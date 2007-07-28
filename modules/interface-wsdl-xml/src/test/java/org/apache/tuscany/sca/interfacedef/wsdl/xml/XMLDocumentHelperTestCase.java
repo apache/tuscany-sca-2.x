@@ -44,9 +44,9 @@ public class XMLDocumentHelperTestCase {
 
     @Test
     public void testReadTNS() throws Exception {
-        String tns = XMLDocumentHelper.readTargetNamespace(wsdl, XMLDocumentHelper.WSDL11, "targetNamespace");
+        String tns = XMLDocumentHelper.readTargetNamespace(wsdl, XMLDocumentHelper.WSDL11, true, "targetNamespace");
         Assert.assertEquals("http://helloworld", tns);
-        String tns2 = XMLDocumentHelper.readTargetNamespace(xsd, XMLDocumentHelper.XSD, null);
+        String tns2 = XMLDocumentHelper.readTargetNamespace(xsd, XMLDocumentHelper.XSD, true, null);
         Assert.assertEquals("http://greeting", tns2);
     }
 

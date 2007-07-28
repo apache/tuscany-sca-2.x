@@ -21,10 +21,10 @@
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="helloworld">
 
+    <wsdl:import location="helloworld-interface.wsdl" namespace="http://helloworld"></wsdl:import>
     <!-- 
-    <wsdl:import location="/wsdl/helloworld-interface.wsdl" namespace="http://helloworld"></wsdl:import>
-     -->
     <wsdl:import namespace="http://helloworld"></wsdl:import>
+     -->
 
     <wsdl:binding name="HelloWorldSoapBinding" type="tns:HelloWorld">
         <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />

@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
+import java.net.URI;
+import java.util.List;
+
 import javax.wsdl.Definition;
 
 import org.apache.tuscany.sca.interfacedef.Base;
@@ -61,5 +64,12 @@ public interface WSDLDefinition extends Base {
      * @param namespace the namespace of this WSDL definition
      */
     void setNamespace(String namespace);
-
+    
+    /**
+     * @return
+     */
+    List<XSDefinition> getXmlSchemas();
+    
+    URI getLocation();
+    void setLocation(URI url);
 }

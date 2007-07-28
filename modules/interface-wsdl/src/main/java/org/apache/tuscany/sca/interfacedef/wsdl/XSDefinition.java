@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
+import java.net.URI;
+
 import org.apache.tuscany.sca.interfacedef.Base;
 import org.apache.ws.commons.schema.XmlSchema;
 
@@ -52,5 +54,7 @@ public interface XSDefinition extends Base {
      * @param namespace the namespace of this XmlSchema definition
      */
     void setNamespace(String namespace);
-
+    
+    URI getLocation();
+    void setLocation(URI uri);
 }

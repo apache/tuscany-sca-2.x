@@ -19,9 +19,14 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.wsdl.Definition;
 
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
@@ -33,7 +38,9 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     
     private Definition definition;
     private String namespace;
+    private URI location;
     private XmlSchemaCollection inlineSchemas = new XmlSchemaCollection();
+    private List<XSDefinition> schemas = new ArrayList<XSDefinition>();
     private boolean unresolved;
     
     protected WSDLDefinitionImpl() {
@@ -65,7 +72,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
         } else if (definition != null) {
             return definition.getTargetNamespace();
         } else {
-            return null;
+            return namespace;
         }
     }
     
@@ -77,6 +84,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
         }
     }
     
+    /*
     @Override
     public int hashCode() {
         return String.valueOf(getNamespace()).hashCode();
@@ -87,13 +95,73 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
         if (obj == this) {
             return true;
         } else if (obj instanceof WSDLDefinition) {
+            WSDLDefinition def = (WSDLDefinition)obj;
             if (getNamespace() != null) {
-                return getNamespace().equals(((WSDLDefinition)obj).getNamespace());
+                return getNamespace().equals(def.getNamespace());
             } else {
-                return ((WSDLDefinition)obj).getNamespace() == null;
+                return def.getNamespace() == null;
             }
         } else {
             return false;
         }
+    }
+    */
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#getXmlSchemas()
+     */
+    public List<XSDefinition> getXmlSchemas() {
+        return schemas;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#getLocation()
+     */
+    public URI getLocation() {
+        return location;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#setLocation(java.net.URI)
+     */
+    public void setLocation(URI url) {
+        this.location = url;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getLocation() == null) ? 0 : getLocation().hashCode());
+        result = prime * result + ((getNamespace() == null) ? 0 : getNamespace().hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof WSDLDefinitionImpl))
+            return false;
+        final WSDLDefinitionImpl other = (WSDLDefinitionImpl)obj;
+        if (getLocation() == null) {
+            if (other.getLocation() != null)
+                return false;
+        } else if (!getLocation().equals(other.getLocation()))
+            return false;
+        if (getNamespace() == null) {
+            if (other.getNamespace() != null)
+                return false;
+        } else if (!getNamespace().equals(other.getNamespace()))
+            return false;
+        return true;
     }
 }

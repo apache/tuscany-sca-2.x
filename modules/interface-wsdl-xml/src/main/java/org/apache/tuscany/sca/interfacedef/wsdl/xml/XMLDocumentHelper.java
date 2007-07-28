@@ -150,8 +150,8 @@ public class XMLDocumentHelper {
 
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
-    public static String readTargetNamespace(URL doc, QName element, String attribute) throws IOException,
-        XMLStreamException {
+    public static String readTargetNamespace(URL doc, QName element, boolean rootOnly, String attribute)
+        throws IOException, XMLStreamException {
         if (attribute == null) {
             attribute = "targetNamespace";
         }
@@ -160,8 +160,12 @@ public class XMLDocumentHelper {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
             int eventType = reader.getEventType();
             while (true) {
-                if (eventType == XMLStreamConstants.START_ELEMENT && element.equals(reader.getName())) {
-                    return reader.getAttributeValue(null, attribute);
+                if (eventType == XMLStreamConstants.START_ELEMENT) {
+                    if (element.equals(reader.getName())) {
+                        return reader.getAttributeValue(null, attribute);
+                    } else if (rootOnly) {
+                        return null;
+                    }
                 }
                 if (reader.hasNext()) {
                     eventType = reader.next();
