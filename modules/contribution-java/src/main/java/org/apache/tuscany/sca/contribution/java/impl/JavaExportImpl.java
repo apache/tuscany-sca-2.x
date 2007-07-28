@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 public class JavaExportImpl implements JavaExport {
+    private ModelResolver modelResolver;
     private String packageName;
 
     public JavaExportImpl() {
@@ -38,13 +39,11 @@ public class JavaExportImpl implements JavaExport {
     }
 
     public ModelResolver getModelResolver() {
-        // TODO Auto-generated method stub
-        return null;
+        return modelResolver;
     }
 
     public void setModelResolver(ModelResolver modelResolver) {
-        // TODO Auto-generated method stub
-
+        this.modelResolver = modelResolver;
     }
 
 }

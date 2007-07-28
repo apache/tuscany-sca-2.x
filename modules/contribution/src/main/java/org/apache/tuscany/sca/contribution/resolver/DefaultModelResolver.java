@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,46 +34,20 @@ public class DefaultModelResolver implements ModelResolver {
     
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
-    protected WeakReference<ClassLoader> classLoader;
     protected Contribution contribution;
     
-    public DefaultModelResolver(ClassLoader classLoader, Contribution contribution) {
-        this.classLoader = new WeakReference<ClassLoader>(classLoader);
+    public DefaultModelResolver(Contribution contribution) {
         this.contribution = contribution;
     }
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
-            
             // Return the resolved object
             return modelClass.cast(resolved);
-            
-        } else if (unresolved instanceof ClassReference) {
-            
-            // Load a class on demand
-            ClassReference classReference = (ClassReference)unresolved;
-            Class clazz;
-            try {
-                clazz = Class.forName(classReference.getClassName(), true, classLoader.get());
-            } catch (ClassNotFoundException e) {
-                
-                // Return the unresolved object
-                return unresolved;
-            }
-            
-            // Store a new ClassReference wrappering the loaded class
-            resolved = new ClassReference(clazz);
-            map.put(resolved, resolved);
-            
-            // Return the resolved ClassReference
-            return modelClass.cast(resolved);
-                
-        } else {
-            
-            // Return the unresolved object
-            return unresolved;
-        }
+        } 
+        // Return the unresolved object
+        return unresolved;
     }
     
     public void addModel(Object resolved) {

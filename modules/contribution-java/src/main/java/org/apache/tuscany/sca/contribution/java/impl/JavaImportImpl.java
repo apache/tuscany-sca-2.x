@@ -23,8 +23,10 @@ import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 public class JavaImportImpl implements JavaImport {
+    private ModelResolver modelResolver;
     private String packageName;
     private String location;
+
 
     
     public JavaImportImpl() {
@@ -48,13 +50,11 @@ public class JavaImportImpl implements JavaImport {
     }
 
     public ModelResolver getModelResolver() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.modelResolver;
     }
 
     public void setModelResolver(ModelResolver modelResolver) {
-        // TODO Auto-generated method stub
-
+        this.modelResolver = modelResolver;
     }
 
 }

@@ -81,19 +81,6 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
         assertTrue(x == y);
     }
     
-    public void testResolveClass() {
-        ClassReference ref = new ClassReference(getClass().getName());
-        ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
-        assertTrue(clazz.getJavaClass() == getClass());
-    }
-    
-    public void testUnresolvedClass() {
-        ClassReference ref = new ClassReference("NonExistentClass");
-        ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
-        assertTrue(clazz.isUnresolved());
-        assertTrue(clazz.getJavaClass() == null);
-    }
-    
     public void testResolvedArtifact() {
         DeployedArtifact artifact = factory.createDeployedArtifact();
         artifact.setURI("foo/bar");

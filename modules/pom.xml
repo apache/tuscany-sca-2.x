@@ -53,6 +53,7 @@
                 <module>commonj-api</module>
                 <module>contribution</module>
                 <module>contribution-impl</module>
+                <module>contribution-java</module>
                 <module>core</module>
                 <module>core-databinding</module>
                 <module>core-spi</module>

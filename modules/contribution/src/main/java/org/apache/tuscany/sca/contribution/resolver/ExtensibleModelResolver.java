@@ -49,22 +49,50 @@ public class ExtensibleModelResolver implements ModelResolver {
     
     /**
      * Returns the proper resolver instance based on the interfaces of the model
+     * If one is not available on the registry, instantiate on demand
      * @param modelType
      * @return
      */
     private ModelResolver getModelResolverInstance(Class<?> modelType) {
         Class<?>[] classes = modelType.getInterfaces();
-        for (Class<?> c : classes) {
-            
+        if(classes.length > 0) {
+            for (Class<?> c : classes) {
+                
+                // Look up a model resolver instance for the model class
+                ModelResolver resolverInstance = resolverInstances.get(c);
+                if (resolverInstance != null) {
+                    return resolverInstance;
+                }
+                
+                // We don't have an instance, lookup a model resolver class
+                // and instantiate it
+                Class<? extends ModelResolver> resolverClass = resolvers.getResolver(c);
+                if (resolverClass != null) {
+                    try {
+                        Constructor<? extends ModelResolver> constructor = resolverClass.getConstructor(new Class[]{Contribution.class});
+                        if (constructor != null) {
+                            
+                            // Construct the model resolver instance and cache it
+                            resolverInstance = constructor.newInstance(this.contribution);
+                            resolverInstances.put(c, resolverInstance);
+                            return resolverInstance;
+                        }
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
+                    } 
+                }
+            }            
+        } else {
+            //simple pojo that does not implements any interface
             // Look up a model resolver instance for the model class
-            ModelResolver resolverInstance = resolverInstances.get(c);
+            ModelResolver resolverInstance = resolverInstances.get(modelType);
             if (resolverInstance != null) {
                 return resolverInstance;
             }
             
             // We don't have an instance, lookup a model resolver class
             // and instantiate it
-            Class<? extends ModelResolver> resolverClass = resolvers.getResolver(c);
+            Class<? extends ModelResolver> resolverClass = resolvers.getResolver(modelType);
             if (resolverClass != null) {
                 try {
                     Constructor<? extends ModelResolver> constructor = resolverClass.getConstructor(new Class[]{Contribution.class});
@@ -72,7 +100,7 @@ public class ExtensibleModelResolver implements ModelResolver {
                         
                         // Construct the model resolver instance and cache it
                         resolverInstance = constructor.newInstance(this.contribution);
-                        resolverInstances.put(c, resolverInstance);
+                        resolverInstances.put(modelType, resolverInstance);
                         return resolverInstance;
                     }
                 } catch (Exception e) {
@@ -80,6 +108,7 @@ public class ExtensibleModelResolver implements ModelResolver {
                 } 
             }
         }
+
         return null;
     }
     
@@ -101,57 +130,18 @@ public class ExtensibleModelResolver implements ModelResolver {
         }
     }
     
-    //FIXME Replace this by a simple map lookup when the
-    // Java resolver is in place
-    public <T> T tempResolveModel(Class<T> modelClass, T unresolved) {
-        Object resolved = map.get(unresolved);
-        if (resolved != null) {
-            
-            // Return the resolved object
-            return modelClass.cast(resolved);
-            
-        } else if (unresolved instanceof ClassReference) {
-            
-            // Load a class on demand
-            ClassReference classReference = (ClassReference)unresolved;
-            Class clazz;
-            try {
-                clazz = Class.forName(classReference.getClassName(), true, Thread.currentThread().getContextClassLoader());
-            } catch (ClassNotFoundException e) {
-                
-                // Return the unresolved object
-                return unresolved;
-            }
-            
-            // Store a new ClassReference wrappering the loaded class
-            resolved = new ClassReference(clazz);
-            map.put(resolved, resolved);
-            
-            // Return the resolved ClassReference
-            return modelClass.cast(resolved);
-                
-        } else {
-            
-            // Return the unresolved object
-            return unresolved;
-        }
-    }
-
-    
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         ModelResolver resolver = getModelResolverInstance(unresolved.getClass());
         if (resolver != null) {
             return resolver.resolveModel(modelClass, unresolved);
         } else {
-            //FIXME Replace this by a simple map lookup when the
-            // Java resolver is in place
-            Object resolved = tempResolveModel(modelClass, unresolved);
+            Object resolved = map.get(unresolved);
             if (resolved != null) {
                 // Return the resolved object
                 return modelClass.cast(resolved);
-            } else {
-                return unresolved;
             }
         }
+        
+        return unresolved;
     }
 }
