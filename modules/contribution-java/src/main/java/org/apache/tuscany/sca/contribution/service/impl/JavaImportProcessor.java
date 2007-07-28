@@ -27,38 +27,37 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.contribution.java.JavaExport;
-import org.apache.tuscany.sca.contribution.java.impl.JavaExportImpl;
+import org.apache.tuscany.sca.contribution.java.JavaImport;
+import org.apache.tuscany.sca.contribution.java.impl.JavaImportImpl;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-public class JavaExportMetadataProcessor implements StAXArtifactProcessor<JavaExport> {
+public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     
-    private static final QName EXPORT_JAVA = new QName(SCA10_NS, "export.java");
-    
+    private static final QName IMPORT_JAVA = new QName(SCA10_NS, "import.java");
+
     private static final String PACKAGE = "package";
+    private static final String LOCATION = "location";
     
-    public JavaExportMetadataProcessor() {
+    public JavaImportProcessor() {
         super();
     }
-
+    
     public QName getArtifactType() {
-        return EXPORT_JAVA;
+        return IMPORT_JAVA;
     }
     
-    public Class<JavaExport> getModelType() {
-        return JavaExport.class;
+    public Class<JavaImport> getModelType() {
+        return JavaImport.class;
     }
-    
-    
-    public JavaExport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        JavaExport javaExport = new JavaExportImpl();
-        QName element = null;
 
+    public JavaImport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        JavaImport javaImport = new JavaImportImpl();
+        QName element = null;
         
         while (reader.hasNext()) {
             int event = reader.getEventType();
@@ -66,18 +65,20 @@ public class JavaExportMetadataProcessor implements StAXArtifactProcessor<JavaEx
                 case START_ELEMENT:
                     element = reader.getName();
                     
-                    if (EXPORT_JAVA.equals(element)) {
+                    if (IMPORT_JAVA.equals(element)) {
                         String packageName = reader.getAttributeValue(null, PACKAGE);
                         if (packageName == null) {
                             throw new ContributionReadException("Attribute 'package' is missing");
                         }
                         
-                        javaExport.setPackage(packageName);
+                        String location = reader.getAttributeValue(null, LOCATION);
+                        javaImport.setPackage(packageName);
+                        javaImport.setLocation(location);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
-                    if (EXPORT_JAVA.equals(reader.getName())) {
-                        return javaExport;
+                    if (IMPORT_JAVA.equals(reader.getName())) {
+                        return javaImport;
                     }
                     break;        
             }
@@ -88,15 +89,16 @@ public class JavaExportMetadataProcessor implements StAXArtifactProcessor<JavaEx
             }
         }
         
-        return javaExport;
+        return javaImport;
     }
 
-    public void write(JavaExport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(JavaImport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
         // TODO Auto-generated method stub
         
     }
 
-    public void resolve(JavaExport model, ModelResolver resolver) throws ContributionResolveException {
+
+    public void resolve(JavaImport model, ModelResolver resolver) throws ContributionResolveException {
         // TODO Auto-generated method stub
         
     }

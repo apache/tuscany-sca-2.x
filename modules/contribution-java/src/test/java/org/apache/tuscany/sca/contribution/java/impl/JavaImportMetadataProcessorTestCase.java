@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.impl.JavaImportMetadataProcessor;
+import org.apache.tuscany.sca.contribution.service.impl.JavaImportProcessor;
 
 /**
  * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
@@ -39,7 +39,7 @@ public class JavaImportMetadataProcessorTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
-        JavaImportMetadataProcessor importProcessor = new JavaImportMetadataProcessor();
+        JavaImportProcessor importProcessor = new JavaImportProcessor();
         JavaImport javaImport = importProcessor.read(reader);
         
         assertEquals("org.apache.tuscany.sca.contribution.java", javaImport.getPackage());
@@ -49,7 +49,7 @@ public class JavaImportMetadataProcessorTestCase extends TestCase {
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
 
-        JavaImportMetadataProcessor importProcessor = new JavaImportMetadataProcessor();
+        JavaImportProcessor importProcessor = new JavaImportProcessor();
         try {
             importProcessor.read(reader);
             fail("readerException should have been thrown");
