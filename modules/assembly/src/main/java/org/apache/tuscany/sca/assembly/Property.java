@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Property extends AbstractProperty, PolicySetAttachPoint {
+public interface Property extends AbstractProperty, PolicySetAttachPoint, Cloneable {
     
     /**
      * Returns a clone of the property.

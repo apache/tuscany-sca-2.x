@@ -24,20 +24,17 @@ package org.apache.tuscany.sca.assembly;
  * @version $Rev$ $Date$
  */
 public interface WireableBinding extends Binding, Cloneable {
-    /**
-     * Clone the binding endpoit
-     * @return
-     */
-    Object clone() throws CloneNotSupportedException;
 
     /**
      * @param component
      */
     void setTargetComponent(Component component);
+    
     /**
      * @param service
      */
     void setTargetComponentService(ComponentService service);
+    
     /**
      * @param binding
      */
@@ -47,13 +44,21 @@ public interface WireableBinding extends Binding, Cloneable {
      * @return
      */
     Binding getTargetBinding();
+    
     /**
      * @return
      */
     Component getTargetComponent();
+    
     /**
      * @return
      */
     ComponentService getTargetComponentService();
+
+    /**
+     * Clone the binding
+     * @return
+     */
+    Object clone() throws CloneNotSupportedException;
 
 }

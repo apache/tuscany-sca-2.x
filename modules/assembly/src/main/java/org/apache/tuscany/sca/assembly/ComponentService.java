@@ -40,10 +40,4 @@ public interface ComponentService extends Service {
      */
     void setService(Service service);
 
-    /**
-     * Clone the component service.
-     * 
-     * @return a clone of the component service
-     */
-    Object clone() throws CloneNotSupportedException;
 }

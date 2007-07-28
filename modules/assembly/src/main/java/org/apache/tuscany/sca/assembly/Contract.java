@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Contract extends AbstractContract, PolicySetAttachPoint {
+public interface Contract extends AbstractContract, PolicySetAttachPoint, Cloneable {
 
     /**
      * Returns the bindings supported by this contract.
@@ -69,5 +69,13 @@ public interface Contract extends AbstractContract, PolicySetAttachPoint {
      * @param callback a definition of the bindings to use for callbacks
      */
     void setCallback(Callback callback);
+
+    /**
+     * Returns a clone of the contract.
+     * 
+     * @return a clone of the reference
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
 
 }
