@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.impl.JavaExportProcessor;
 
 /**
  * @version $Rev$ $Date$

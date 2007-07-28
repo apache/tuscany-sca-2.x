@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.NamespaceExport;
 import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -54,11 +56,14 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
     
     private final AssemblyFactory assemblyFactory;
     private final ContributionFactory contributionFactory;
+    
+    private final StAXArtifactProcessor extensionProcessor;
 
-    public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory) {
+    public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, StAXArtifactProcessor extensionProcessor) {
         super();
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
+        this.extensionProcessor = extensionProcessor;
     }
     
     
@@ -131,6 +136,16 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
                         NamespaceExport namespaceExport = this.contributionFactory.createNamespaceExport();
                         namespaceExport.setNamespace(ns);
                         contribution.getExports().add(namespaceExport);
+                    } else{
+                        //process extension
+                        Object extension = extensionProcessor.read(reader);
+                        if (extension != null) {
+                            if (extension instanceof Import) {
+                                contribution.getImports().add((Import)extension);
+                            }else if (extension instanceof Export) {
+                                contribution.getExports().add((Export)extension);
+                            }
+                        }
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.service.impl;
+package org.apache.tuscany.sca.contribution.java.impl;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.java.JavaImport;
-import org.apache.tuscany.sca.contribution.java.impl.JavaImportImpl;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;

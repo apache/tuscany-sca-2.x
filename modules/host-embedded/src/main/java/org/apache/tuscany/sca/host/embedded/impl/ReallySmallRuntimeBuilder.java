@@ -50,6 +50,8 @@ import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.SCABindingProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.java.impl.JavaExportProcessor;
+import org.apache.tuscany.sca.contribution.java.impl.JavaImportProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
@@ -65,6 +67,8 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ClassReferenceModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
@@ -180,7 +184,11 @@ public class ReallySmallRuntimeBuilder {
         staxProcessors.addArtifactProcessor(new CompositeProcessor(assemblyFactory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory,contributionFactory));
+        //Register STAX processors for Contribution Metadata 
+        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory,contributionFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new JavaImportProcessor());
+        staxProcessors.addArtifactProcessor(new JavaExportProcessor());        
+
 
         // Create URL artifact processor extension point
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
@@ -209,6 +217,7 @@ public class ReallySmallRuntimeBuilder {
         
         modelResolverExtensionPoint.addResolver(Composite.class, CompositeModelResolver.class);
         modelResolverExtensionPoint.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
+        modelResolverExtensionPoint.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
         
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
