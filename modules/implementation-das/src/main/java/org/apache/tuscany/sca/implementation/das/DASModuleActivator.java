@@ -47,21 +47,21 @@ public class DASModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        // Create the CRUD implementation factory
+        // Create the DAS implementation factory
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceIntrospectorExtensionPoint visitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
-        DASImplementationFactory crudFactory = new DefaultDASImplementationFactory(assemblyFactory, javaFactory, introspector);
+        DASImplementationFactory dasFactory = new DefaultDASImplementationFactory(assemblyFactory, javaFactory, introspector);
 
-        // Add the CRUD implementation extension to the StAXArtifactProcessor
+        // Add the DAS implementation extension to the StAXArtifactProcessor
         // extension point
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        DASArtifactProcessor implementationArtifactProcessor = new DASArtifactProcessor(crudFactory);
+        DASArtifactProcessor implementationArtifactProcessor = new DASArtifactProcessor(dasFactory);
         processors.addArtifactProcessor(implementationArtifactProcessor);
         
-        // Add the CRUD provider factory to the ProviderFactory extension point
+        // Add the DAS provider factory to the ProviderFactory extension point
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(new DASImplementationProviderFactory());
     }

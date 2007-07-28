@@ -21,10 +21,6 @@ package org.apache.tuscany.sca.implementation.das.company;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
-import commonj.sdo.DataObject;
-
 /**
  * Tests the DAS service
  */
