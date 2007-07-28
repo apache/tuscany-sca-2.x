@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 
 /**
  * Test case for InterfaceWSDLIntrospectorImpl
@@ -59,7 +60,9 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
         resolver = new TestModelResolver();
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         definition = registry.read(null, new URI("stockquote.wsdl"), url);
-        portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
+        WSDLModelResolver wsdlResolver = new WSDLModelResolver(null);
+        wsdlResolver.addModel(definition);
+        definition = wsdlResolver.resolveModel(WSDLDefinition.class, definition);        portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
     @SuppressWarnings("unchecked")

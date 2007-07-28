@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 
 /**
  * Test case for WSDLOperation
@@ -44,6 +45,7 @@ public class WrapperStyleOperationTestCase extends TestCase {
     private WSDLDocumentProcessor registry;
     private ModelResolver resolver;
     private WSDLFactory wsdlFactory;
+    private WSDLModelResolver wsdlResolver;
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -53,11 +55,14 @@ public class WrapperStyleOperationTestCase extends TestCase {
         registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
         resolver = new TestModelResolver();
         wsdlFactory = new DefaultWSDLFactory();
+        wsdlResolver = new WSDLModelResolver(null);
     }
 
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         WSDLDefinition definition = registry.read(null, new URI("stockquote.wsdl"), url);
+        wsdlResolver.addModel(definition);
+        definition = wsdlResolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
         WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
@@ -69,6 +74,8 @@ public class WrapperStyleOperationTestCase extends TestCase {
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
         WSDLDefinition definition = registry.read(null, new URI("unwrapped-stockquote.wsdl"), url);
+        wsdlResolver.addModel(definition);
+        definition = wsdlResolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
         WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
