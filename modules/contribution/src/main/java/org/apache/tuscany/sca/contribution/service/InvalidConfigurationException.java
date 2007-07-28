@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.contribution.service;
 /**
  * Denotes an invalid configuration artifact
  * 
- * @version $Rev: 525638 $ $Date: 2007-04-04 16:36:03 -0700 (Wed, 04 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public class InvalidConfigurationException extends ContributionReadException {
     private static final long serialVersionUID = -4312958640212000366L;

@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Default implementation of ContributionPostProcessor Extension Point
  * 
- * @version $Rev: 539693 $ $Date: 2007-05-18 23:24:07 -0700 (Fri, 18 May 2007) $
+ * @version $Rev$ $Date$
  */
 public class DefaultContributionPostProcessorExtensionPoint implements ContributionPostProcessorExtensionPoint {
 

@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * The default implementation of an model resolver Class registry.
  * 
- * @version $Rev: 539693 $ $Date: 2007-05-18 23:24:07 -0700 (Fri, 18 May 2007) $
+ * @version $Rev$ $Date$
  */
 public class DefaultModelResolverExtensionPoint implements ModelResolverExtensionPoint {
     protected final Map<Class<?>, Class<? extends ModelResolver>> resolversByModelType = new HashMap<Class<?>, Class<? extends ModelResolver>>();

@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.contribution.service;
 /**
  * Denotes an exception while writing artifacts inside an SCA contribution.
  *
- * @version $Rev: 526268 $ $Date: 2007-04-06 13:13:26 -0700 (Fri, 06 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public class ContributionWriteException extends ContributionException {
     private static final long serialVersionUID = -7459051598906813461L;

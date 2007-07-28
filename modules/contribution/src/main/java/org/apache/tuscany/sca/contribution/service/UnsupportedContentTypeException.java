@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.contribution.service;
  * Exception thrown to indicate that a Content-Type is not supported by this SCA Domain.
  * The Content-Type value supplied will be returned as the message text for this exception.
  *
- * @version $Rev: 522653 $ $Date: 2007-03-26 15:30:21 -0700 (Mon, 26 Mar 2007) $
+ * @version $Rev$ $Date$
  */
 public class UnsupportedContentTypeException extends ContributionException {
     private static final long serialVersionUID = -1831797280021355672L;

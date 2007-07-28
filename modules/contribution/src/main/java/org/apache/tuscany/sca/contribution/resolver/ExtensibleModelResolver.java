@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
  * An implementation of an extensible model resolver which delegates to the
  * proper resolver extension based on the class of the model to resolve.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ExtensibleModelResolver implements ModelResolver {
     private final ModelResolverExtensionPoint resolvers;

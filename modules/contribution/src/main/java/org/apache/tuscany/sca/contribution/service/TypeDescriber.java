@@ -24,7 +24,7 @@ import java.net.URL;
 /**
  * Provide content type for a given resource
  *
- * @version $Rev: 526079 $ $Date: 2007-04-06 00:17:44 -0700 (Fri, 06 Apr 2007) $
+ * @version $Rev$ $Date$
  */
 public interface TypeDescriber {
     /**
