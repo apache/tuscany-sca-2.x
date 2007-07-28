@@ -23,7 +23,7 @@ package org.apache.tuscany.sca.assembly;
  * 
  * @version $Rev$ $Date$
  */
-public interface ComponentProperty extends Property, Cloneable {
+public interface ComponentProperty extends Property {
 
     /**
      * Returns the property defined by the component implementation.
@@ -71,10 +71,4 @@ public interface ComponentProperty extends Property, Cloneable {
      */
     void setFile(String file);
     
-    /**
-     * Clone the component property.
-     * 
-     * @return a clone of the component property
-     */
-    Object clone() throws CloneNotSupportedException;
 }

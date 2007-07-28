@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
  * 
  * @version $Rev$ $Date$
  */
-public interface Composite extends Implementation, Visitable {
+public interface Composite extends Implementation, Visitable, Cloneable {
 
     /**
      * Returns the name of the composite.

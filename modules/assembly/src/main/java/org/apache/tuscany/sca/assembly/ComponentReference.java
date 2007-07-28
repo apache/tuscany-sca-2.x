@@ -54,11 +54,4 @@ public interface ComponentReference extends Reference {
      */
     void setAutowire(boolean autowire);
 
-
-    /**
-     * Clone the component reference.
-     * 
-     * @return a clone of the component reference
-     */
-    Object clone() throws CloneNotSupportedException;
 }
