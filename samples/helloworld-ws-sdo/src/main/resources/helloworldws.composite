@@ -21,7 +21,7 @@
     xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" xmlns:hw="http://helloworld"
     name="helloworldws">
     
-    <dbsdo:import.sdo factory="helloworld.HelloworldFactory" />
+    <!-- dbsdo:import.sdo factory="helloworld.HelloworldFactory" / -->
     
     <component name="HelloWorldServiceComponent">
         <service name="HelloWorldService">
