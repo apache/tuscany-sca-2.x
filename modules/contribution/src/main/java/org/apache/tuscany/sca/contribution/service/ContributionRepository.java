@@ -25,12 +25,15 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+
 /**
  * Contribution repository 
  * 
  * @version $Rev$ $Date$
  */
 public interface ContributionRepository {
+    
     /**
      * Get the URI of the SCA domain 
      * 
@@ -90,4 +93,36 @@ public interface ContributionRepository {
      * @return A list of contribution URIs
      */
     List<String> list();
+    
+    /**
+     * Returns the contributions available in the repository.
+     * @return The list of contributions.
+     */
+    List<Contribution> getContributions();
+    
+    /**
+     * Adds a contribution to the repository.
+     * @param contribution The new contribution.
+     */
+    void addContribution(Contribution contribution);
+    
+    /**
+     * Removes a contribution from the repository.
+     * @param contribution The contribution to remove
+     */
+    void removeContribution(Contribution contribution);
+    
+    /**
+     * Updates a contribution in the repository
+     * @param contribution The contribution to update
+     */
+    void updateContribution(Contribution contribution);
+    
+    /**
+     * Returns the contribution with the given URI.
+     * @param uri the URI of the contribution
+     * @return The contribution
+     */
+    Contribution getContribution(String uri);
+
 }

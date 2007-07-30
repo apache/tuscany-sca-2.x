@@ -17,35 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.processor;
+package org.apache.tuscany.sca.contribution.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An extension point for contribution post processor extensions.
- * @deprecated Please use ContributionListenerExtensionPoint instead
- * 
+ * Default implementation of a contribution listener extension point.
+ *
  * @version $Rev$ $Date$
  */
-public interface ContributionPostProcessorExtensionPoint {
+public class DefaultContributionListenerExtensionPoint implements ContributionListenerExtensionPoint {
     
-    /**
-     * Add a ContributionPostProcessor
-     * 
-     * @param postProcessor The post processor
-     */
-    void addPostProcessor(ContributionPostProcessor postProcessor);
-    
-    /**
-     * Remove a ContributionPostProcessor
-     * 
-     * @param postProcessor The post processor
-     */
-    void removePostProcessor(ContributionPostProcessor postProcessor);
-    
-    /**
-     * Get a list of postProcessors
-     * @return The list of postProcessors
-     */
-    List <ContributionPostProcessor> getPostProcessors();
+    private List<ContributionListener> listeners = new ArrayList<ContributionListener>();
+
+    public void addContributionListener(ContributionListener listener) {
+        listeners.add(listener);
+    }
+
+    public List<ContributionListener> getContributionListeners() {
+        return listeners;
+    }
+
+    public void removeContributionListener(ContributionListener listener) {
+        listeners.remove(listener);
+    }
+
 }

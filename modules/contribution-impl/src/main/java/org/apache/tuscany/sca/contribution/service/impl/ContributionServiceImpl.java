@@ -26,8 +26,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -52,7 +50,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.impl.ImportAllModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
-import org.apache.tuscany.sca.contribution.service.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
@@ -116,11 +113,6 @@ public class ContributionServiceImpl implements ContributionService {
     private ContributionFactory contributionFactory;
 
 
-    /**
-     * Contribution registry This is a registry of processed Contributions indexed by URI
-     */
-    private Map<String, Contribution> contributionRegistry = new ConcurrentHashMap<String, Contribution>();
-    
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
                                    URLArtifactProcessor documentProcessor,
@@ -178,12 +170,13 @@ public class ContributionServiceImpl implements ContributionService {
         return addContribution(contributionURI, sourceURL, input, modelResolver, true);
     }
 
-    public Contribution getContribution(String id) {
-        return this.contributionRegistry.get(id);
+    public Contribution getContribution(String uri) {
+        return this.contributionRepository.getContribution(uri);
     }
 
-    public void remove(String contribution) throws ContributionException {
-        this.contributionRegistry.remove(contribution);
+    public void remove(String uri) throws ContributionException {
+        Contribution contribution = contributionRepository.getContribution(uri);
+        this.contributionRepository.removeContribution(contribution);
     }
 
     public void addDeploymentComposite(Contribution contribution, Composite composite) throws ContributionException {
@@ -216,7 +209,7 @@ public class ContributionServiceImpl implements ContributionService {
         
         
         ContributionMetadataDocumentProcessor metadataDocumentProcessor = 
-            new ContributionMetadataDocumentProcessorImpl(cl, this.staxProcessor, this.assemblyFactory, this.contributionFactory, this.xmlFactory);
+            new ContributionMetadataDocumentProcessor(cl, this.staxProcessor, this.assemblyFactory, this.contributionFactory, this.xmlFactory);
         contributionMetadata = contributionFactory.createContribution();
         try {
             metadataDocumentProcessor.read(contributionMetadata);
@@ -290,7 +283,7 @@ public class ContributionServiceImpl implements ContributionService {
                 
                 // Find a matching contribution
                 if (namespaceImport.getLocation() != null) {
-                    Contribution targetContribution = contributionRegistry.get(namespaceImport.getLocation());
+                    Contribution targetContribution = contributionRepository.getContribution(namespaceImport.getLocation());
                     if (targetContribution != null) {
                     
                         // Find a matching contribution export
@@ -311,7 +304,7 @@ public class ContributionServiceImpl implements ContributionService {
                 
                 //Find a matching contribution
                 if(javaImport.getLocation() != null) {
-                    Contribution targetContribution = contributionRegistry.get(javaImport.getLocation());
+                    Contribution targetContribution = contributionRepository.getContribution(javaImport.getLocation());
                     if (targetContribution != null) {
                     
                         // Find a matching contribution export
@@ -332,7 +325,7 @@ public class ContributionServiceImpl implements ContributionService {
             //if no location was specified, try to resolve with any contribution            
             if( !initialized ) {
                 // Use a resolver that will consider all contributions
-                import_.setModelResolver(new ImportAllModelResolverImpl(import_, contributionRegistry.values()));
+                import_.setModelResolver(new ImportAllModelResolverImpl(import_, contributionRepository.getContributions()));
             }
             
         }
@@ -379,7 +372,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.postProcessor.visit(contribution);
         
         // store the contribution on the registry
-        this.contributionRegistry.put(contribution.getURI(), contribution);
+        this.contributionRepository.addContribution(contribution);
         
         return contribution;
     }

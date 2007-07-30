@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.service.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
@@ -42,14 +41,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionMetadataDocumentProcessorImpl  implements ContributionMetadataDocumentProcessor {
+public class ContributionMetadataDocumentProcessor {
     protected final URLClassLoader classLoader;
     protected final StAXArtifactProcessor staxProcessor;
     protected final AssemblyFactory assemblyFactory;
     protected final ContributionFactory contributionFactory;
     protected final XMLInputFactory inputFactory;
 
-    public ContributionMetadataDocumentProcessorImpl(URLClassLoader classLoader, StAXArtifactProcessor staxProcessor, AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, XMLInputFactory inputFactory) {
+    public ContributionMetadataDocumentProcessor(URLClassLoader classLoader, StAXArtifactProcessor staxProcessor, AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, XMLInputFactory inputFactory) {
         super();
         this.classLoader = classLoader;
         this.staxProcessor = staxProcessor; 

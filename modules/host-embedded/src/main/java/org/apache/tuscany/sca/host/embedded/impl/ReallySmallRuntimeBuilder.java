@@ -71,8 +71,10 @@ import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcess
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.contribution.service.DefaultContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
@@ -219,15 +221,20 @@ public class ReallySmallRuntimeBuilder {
         modelResolverExtensionPoint.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
         modelResolverExtensionPoint.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
         
+        //FIXME Deprecate and remove this
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
         ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
         registry.addExtensionPoint(contributionPostProcessors);
 
+        // Create contribution listener extension point
+        ContributionListenerExtensionPoint contributionListeners = new DefaultContributionListenerExtensionPoint();
+        registry.addExtensionPoint(contributionListeners);
+
         // Create a contribution repository
         ContributionRepository repository;
         try {
-            repository = new ContributionRepositoryImpl("target");
+            repository = new ContributionRepositoryImpl(contributionListeners, "target");
         } catch (IOException e) {
             throw new ActivationException(e);
         }

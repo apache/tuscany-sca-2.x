@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 
 /**
  * A processor invoked after the contribution is loaded 
+ * @deprecated Please use ContributionListener instead
  * 
  * @version $Rev$ $Date$
  */
