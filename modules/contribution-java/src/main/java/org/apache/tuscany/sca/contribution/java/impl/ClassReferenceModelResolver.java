@@ -17,13 +17,17 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.resolver;
+package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.java.JavaImport;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * A Model Resolver for WSDL models.
@@ -49,29 +53,58 @@ public class ClassReferenceModelResolver implements ModelResolver {
         return map.remove(((ClassReference)resolved).getClassName());
     }
     
+    
+    private ClassReference resolveImportedModel(ClassReference unresolved) {
+        ClassReference resolved = unresolved;
+
+        if( this.contribution != null) {
+            for (Import import_ : this.contribution.getImports()) {
+                if (import_ instanceof JavaImport) {
+                    JavaImport javaImport = (JavaImport) import_;
+                    String packageName = javaImport.getPackage();
+                    if (javaImport.getPackage().equals(packageName)) {
+                        // Delegate the resolution to the import resolver
+                        resolved = import_.getModelResolver().resolveModel(ClassReference.class, unresolved);
+                    }
+                }
+            }
+            
+        }
+        return resolved;
+    }
+    
+    
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
         
         if (resolved != null ){
-            return (T)resolved;
+            return modelClass.cast(resolved);
         } 
         
         //Load a class on demand
-        Class clazz;
+        Class clazz = null;
         try {
             clazz = Class.forName(((ClassReference)unresolved).getClassName(), true, classLoader.get());
         } catch (ClassNotFoundException e) {
+            //we will later try to delegate to imported model resolvers
+        }
+
+
+        if (clazz != null) {
+            //if we load the class            
+            // Store a new ClassReference wrappering the loaded class
+            ClassReference classReference = new ClassReference(clazz);
+            map.put(getPackageName(classReference), classReference);
             
-            // Return the unresolved object
-            return unresolved;
+            // Return the resolved ClassReference
+            return modelClass.cast(classReference);            
+        } else {
+            //delegate resolution of the class
+            resolved = this.resolveImportedModel((ClassReference)unresolved);
+            return modelClass.cast(resolved);
         }
         
-        // Store a new ClassReference wrappering the loaded class
-        ClassReference classReference = new ClassReference(clazz);
-        map.put(getPackageName(classReference), classReference);
-        
-        // Return the resolved ClassReference
-        return (T)classReference;
+
     }
     
     /***************

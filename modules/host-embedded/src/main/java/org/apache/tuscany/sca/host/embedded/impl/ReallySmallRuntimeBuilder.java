@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.SCABindingProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.java.impl.ClassReferenceModelResolver;
 import org.apache.tuscany.sca.contribution.java.impl.JavaExportProcessor;
 import org.apache.tuscany.sca.contribution.java.impl.JavaImportProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
@@ -68,7 +69,6 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
-import org.apache.tuscany.sca.contribution.resolver.ClassReferenceModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;

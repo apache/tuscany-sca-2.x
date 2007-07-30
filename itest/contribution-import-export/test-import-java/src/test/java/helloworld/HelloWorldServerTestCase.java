@@ -26,8 +26,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
@@ -49,18 +47,16 @@ public class HelloWorldServerTestCase extends TestCase{
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
         
-        ModelResolver compositeJavaResolver = new ModelResolverImpl(cl);
         File javaContribLocation = new File("../contrib-java/target/classes");
         URL javaContribURL = javaContribLocation.toURL();
-        Contribution javaContribution = contributionService.contribute("http://import-export/contrib-java", javaContribURL, compositeJavaResolver, false);
+        Contribution javaContribution = contributionService.contribute("http://import-export/contrib-java", javaContribURL, false);
         for (Composite deployable : javaContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
         
-        ModelResolver helloWorldContributionResolver = new ModelResolverImpl(cl);
         File helloWorldContribLocation = new File("./target/classes/");
         URL helloWorldContribURL = helloWorldContribLocation.toURL();
-        Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, helloWorldContributionResolver, false);
+        Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : helloWorldContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
@@ -90,7 +86,7 @@ public class HelloWorldServerTestCase extends TestCase{
 
         // Remove the contribution from the in-memory repository
         contributionService.remove("http://import-export/helloworld");
-        contributionService.remove("http://import-export/contrib-wsdl");
+        contributionService.remove("http://import-export/contrib-java");
         
         //Stop Components from my composite
         domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));

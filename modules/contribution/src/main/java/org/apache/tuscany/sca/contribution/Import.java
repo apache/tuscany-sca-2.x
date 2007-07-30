@@ -43,5 +43,12 @@ public interface Import {
      * 
      * @param modelResolver The model resolver
      */
-    void setModelResolver(ModelResolver modelResolver);   
+    void setModelResolver(ModelResolver modelResolver);
+    
+    /**
+     * Verify is a specific export is provider of what is being imported
+     * @param export The Exported being verified
+     * @return true/false
+     */
+    boolean match(Export export);
 }

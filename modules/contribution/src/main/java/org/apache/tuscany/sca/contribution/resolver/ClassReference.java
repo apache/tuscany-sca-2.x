@@ -78,7 +78,7 @@ public class ClassReference {
      * 
      * @return Wether or not the class has been resolved
      */
-    boolean isUnresolved() {
+    public boolean isUnresolved() {
         return clazz == null;
     }
 

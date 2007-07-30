@@ -17,9 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.resolver;
+package org.apache.tuscany.sca.contribution.java.impl;
 
 import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 
 /**
  * Test ClassReferenceArtifactResolver.
