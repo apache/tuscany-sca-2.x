@@ -19,14 +19,10 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -34,8 +30,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
-import org.apache.ws.commons.schema.XmlSchema;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * An ArtifactProcessor for XSD documents.
@@ -52,24 +46,8 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
 
     public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
-
-            // Read an XSD document
-            InputStream is = artifactURL.openStream();
-            try {
-
-                XmlSchemaCollection collection = new XmlSchemaCollection();
-                collection.setSchemaResolver(new XMLDocumentHelper.URIResolverImpl());
-                XmlSchema schema = collection.read(new InputStreamReader(is), null);
-
-                XSDefinition xsDefinition = factory.createXSDefinition();
-                xsDefinition.setSchema(schema);
-
-                return xsDefinition;
-            } finally {
-                is.close();
-            }
-
-        } catch (IOException e) {
+            return indexRead(artifactURL);
+        } catch (Exception e) {
             throw new ContributionReadException(e);
         }
     }
@@ -87,10 +65,12 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
 
     public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
 
-    protected XSDefinition indexRead(URL doc) throws IOException, XMLStreamException {
+    protected XSDefinition indexRead(URL doc) throws Exception {
         XSDefinition xsd = factory.createXSDefinition();
-        xsd.setNamespace(XMLDocumentHelper.readTargetNamespace(doc, XSD, true, "targetNamespace"));
         xsd.setUnresolved(true);
+        xsd.setNamespace(XMLDocumentHelper.readTargetNamespace(doc, XSD, true, "targetNamespace"));
+        xsd.setLocation(doc.toURI());
+        xsd.setUnresolved(false);
         return xsd;
     }
 }

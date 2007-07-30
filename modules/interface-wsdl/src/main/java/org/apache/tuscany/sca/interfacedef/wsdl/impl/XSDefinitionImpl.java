@@ -61,7 +61,7 @@ public class XSDefinitionImpl implements XSDefinition {
         } else if (definition != null) {
             return definition.getTargetNamespace();
         } else {
-            return null;
+            return namespace;
         }
     }
     
@@ -73,24 +73,41 @@ public class XSDefinitionImpl implements XSDefinition {
         }
     }
     
+    /**
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
-        return String.valueOf(getNamespace()).hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getLocation() == null) ? 0 : getLocation().hashCode());
+        result = prime * result + ((getNamespace() == null) ? 0 : getNamespace().hashCode());
+        return result;
     }
-    
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if (this == obj)
             return true;
-        } else if (obj instanceof XSDefinition) {
-            if (getNamespace() != null) {
-                return getNamespace().equals(((XSDefinition)obj).getNamespace());
-            } else {
-                return ((XSDefinition)obj).getNamespace() == null;
-            }
-        } else {
+        if (obj == null)
             return false;
-        }
+        if (!(obj instanceof XSDefinitionImpl))
+            return false;
+        final XSDefinitionImpl other = (XSDefinitionImpl)obj;
+        if (getLocation() == null) {
+            if (other.getLocation() != null)
+                return false;
+        } else if (!getLocation().equals(other.getLocation()))
+            return false;
+        if (getNamespace() == null) {
+            if (other.getNamespace() != null)
+                return false;
+        } else if (!getNamespace().equals(other.getNamespace()))
+            return false;
+        return true;
     }
 
     /**
