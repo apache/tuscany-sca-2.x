@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
-import org.apache.tuscany.sca.assembly.Visitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -53,10 +52,4 @@ public class CallbackImpl extends BaseImpl implements Callback {
         return requiredIntents;
     }
 
-    public boolean accept(Visitor visitor) {
-        if (!super.accept(visitor)) {
-            return false;
-        }
-        return true;
-    }
 }

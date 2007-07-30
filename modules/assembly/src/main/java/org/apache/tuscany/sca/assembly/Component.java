@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Component extends Base, IntentAttachPoint, PolicySetAttachPoint, Visitable, Cloneable {
+public interface Component extends Base, IntentAttachPoint, PolicySetAttachPoint, Cloneable {
     
     /**
      * Returns the URI of the component.

@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Visitor;
+
 import org.apache.tuscany.sca.assembly.Wire;
 
 public class CompositeImpl extends ComponentTypeImpl implements Composite, Cloneable {
@@ -92,26 +92,6 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite, Clone
 
     public void setName(QName name) {
         this.name = name;
-    }
-    
-    @Override
-    public boolean accept(Visitor visitor) {
-        boolean result = super.accept(visitor);
-        if (!result) {
-            return false;
-        }
-        
-        for (Component component: components) {
-            if (!component.accept(visitor)) {
-                return false;
-            }
-        }
-        
-        for (Wire wire: wires) {
-            if (!visitor.visit(wire))
-                return false;
-        }
-        return true;
     }
     
     @Override

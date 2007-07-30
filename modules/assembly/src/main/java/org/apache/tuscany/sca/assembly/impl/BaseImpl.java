@@ -22,15 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Base;
-import org.apache.tuscany.sca.assembly.Visitable;
-import org.apache.tuscany.sca.assembly.Visitor;
 
 /**
  * Convenience base class for assembly model objects.
  * 
  * @version $Rev$ $Date$
  */
-public abstract class BaseImpl implements Base, Visitable {
+public abstract class BaseImpl implements Base {
     private List<Object> extensions = new ArrayList<Object>();
     private boolean unresolved;
 
@@ -52,7 +50,4 @@ public abstract class BaseImpl implements Base, Visitable {
         this.unresolved = undefined;
     }
 
-    public boolean accept(Visitor visitor) {
-        return visitor.visit(this);
-    }
 }

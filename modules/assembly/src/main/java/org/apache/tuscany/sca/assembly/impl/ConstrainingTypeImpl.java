@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.Visitor;
+
 import org.apache.tuscany.sca.policy.Intent;
 
 /**
@@ -70,28 +70,6 @@ public class ConstrainingTypeImpl extends BaseImpl implements ConstrainingType {
 
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
-    }
-
-    public boolean accept(Visitor visitor) {
-        if (!super.accept(visitor)) {
-            return false;
-        }
-        for (AbstractProperty property : properties) {
-            if (!visitor.visit(property)) {
-                return false;
-            }
-        }
-        for (AbstractReference reference : references) {
-            if (!visitor.visit(reference)) {
-                return false;
-            }
-        }
-        for (AbstractService service : services) {
-            if (!visitor.visit(service)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
