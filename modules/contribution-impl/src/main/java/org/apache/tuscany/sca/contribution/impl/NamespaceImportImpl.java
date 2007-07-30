@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.contribution.impl;
 
 import org.apache.tuscany.sca.contribution.ContributionImport;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.NamespaceExport;
 import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -58,5 +60,17 @@ public class NamespaceImportImpl implements NamespaceImport, ContributionImport 
     
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
+    }
+    
+    public boolean match(Export export) {
+        if (export instanceof NamespaceExport) {
+            if (this.getLocation() == null || this.getLocation().length() == 0) {
+                if (this.getNamespace().equals(((NamespaceExport)export).getNamespace())) {
+                    return true;
+                }
+            }
+            
+        }
+        return false;
     }
 }

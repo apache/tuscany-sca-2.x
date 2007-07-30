@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.contribution.java.impl;
 
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -57,4 +59,15 @@ public class JavaImportImpl implements JavaImport {
         this.modelResolver = modelResolver;
     }
 
+    public boolean match(Export export) {
+        if(export instanceof JavaExport) {
+            if(this.getLocation() == null || this.getLocation().length() == 0) {
+                if (this.getPackage().equals(((JavaExport)export).getPackage())) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
 }
