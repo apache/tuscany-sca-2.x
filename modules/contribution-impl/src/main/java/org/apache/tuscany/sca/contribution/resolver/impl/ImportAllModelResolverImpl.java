@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.resolver.impl;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
@@ -34,9 +34,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 public class ImportAllModelResolverImpl implements ModelResolver {
     
     private Import import_;
-    private Collection<Contribution> contributions;
+    private List<Contribution> contributions;
     
-    public ImportAllModelResolverImpl(Import import_, Collection<Contribution> contributions) {
+    public ImportAllModelResolverImpl(Import import_, List<Contribution> contributions) {
         this.import_ = import_;
         this.contributions = contributions;
     }

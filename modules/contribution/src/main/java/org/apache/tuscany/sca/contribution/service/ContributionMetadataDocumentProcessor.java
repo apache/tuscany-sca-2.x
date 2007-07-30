@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 
 /**
  * Document processor responsible to process the contribution metadata 
+ * @deprecated
  * 
  * @version $Rev$ $Date$
  */

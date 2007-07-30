@@ -87,8 +87,8 @@ public class HelloWorldServerTestCase extends TestCase{
         ContributionService contributionService = domain.getContributionService();
 
         // Remove the contribution from the in-memory repository
+        contributionService.remove("http://import-export/contrib-composite");
         contributionService.remove("http://import-export/helloworld");
-        contributionService.remove("http://import-export/contrib-wsdl");
         
         //Stop Components from my composite
         domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));

@@ -24,6 +24,7 @@ import java.util.List;
 
 /**
  * Default implementation of ContributionPostProcessor Extension Point
+ * @deprecated Please use DefaultContributionListenerExtensionPoint instead
  * 
  * @version $Rev$ $Date$
  */
