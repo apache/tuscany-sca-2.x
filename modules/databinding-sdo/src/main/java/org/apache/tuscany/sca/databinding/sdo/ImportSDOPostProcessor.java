@@ -32,16 +32,17 @@ import commonj.sdo.helper.HelperContext;
 import commonj.sdo.impl.HelperProvider;
 
 /**
- * PostProcessor resposible for identifying SDO Factories and register them with SDO Helper Context
+ * PostProcessor resposible for identifying SDO Factories and register them with
+ * SDO Helper Context
  * 
  * @version $Rev$ $Date$
  */
 public class ImportSDOPostProcessor implements ContributionPostProcessor {
     private static final String URI_SEPARATOR = "/";
     private static final String JAVA_SEPARATOR = ".";
-    
+
     private HelperContextRegistry helperContextRegistry;
-    
+
     public ImportSDOPostProcessor(HelperContextRegistry helperContextRegistry) {
         super();
         this.helperContextRegistry = helperContextRegistry;
@@ -58,10 +59,10 @@ public class ImportSDOPostProcessor implements ContributionPostProcessor {
                 if (clazz.getClass() != null) {
                     try {
                         //check if it's a SDO factory by introspecting INSTANCE field
-                        if(isSDOFactory(clazz.getJavaClass())) {
-                            register(clazz.getJavaClass(), this.getHelperContext());
+                        if (isSDOFactory(clazz.getJavaClass())) {
+                            register(clazz.getJavaClass(), this.getHelperContext(contribution));
                         }
-                        
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -71,7 +72,9 @@ public class ImportSDOPostProcessor implements ContributionPostProcessor {
     }
 
     /**
-     * Transform class artifact URI into a java class name for proper loading by the class loader
+     * Transform class artifact URI into a java class name for proper loading by
+     * the class loader
+     * 
      * @param factoryURI
      * @return
      */
@@ -80,39 +83,37 @@ public class ImportSDOPostProcessor implements ContributionPostProcessor {
         int pos = factoryURI.lastIndexOf(JAVA_SEPARATOR);
         return factoryURI.substring(0, pos);
     }
-    
+
     /**
      * Check if a specific class is a SDO Factory by checking INSTANCE field
+     * 
      * @param factoryClass
      * @return
      */
     private boolean isSDOFactory(Class factoryClass) {
-        Field field = null;
         try {
-            field = factoryClass.getField("INSTANCE");
-        } catch (Exception e) {
-            // ignore any exception
-        }
-
-        if (field != null) {
+            // The factory interface has a constant "INSTANCE" field
+            Field field = factoryClass.getField("INSTANCE");
+            // A public method: register(HelperContext scope)
+            Method method = factoryClass.getMethod("register", HelperContext.class);
             return true;
-        } else {
+        } catch (NoSuchMethodException e) {
+            return false;
+        } catch (NoSuchFieldException e) {
             return false;
         }
-
     }
-    
+
     /**
      * Get a SDO HelperContext reference
+     * 
      * @return
      */
-    private HelperContext getHelperContext() {
+    private HelperContext getHelperContext(Contribution contribution) {
         HelperContext helperContext = null;
 
-        // FIXME: [rfeng] How to get the enclosing composite?
-        int id = System.identityHashCode(getClass());
-        // FIXME: [rfeng] How to associate the TypeHelper with deployment
-        // context?
+        // FIXME: [rfeng] Should we scope the HelperContext by contribution URI?
+        String id = contribution.getURI();
         synchronized (helperContextRegistry) {
             helperContext = helperContextRegistry.getHelperContext(id);
             if (helperContext == null) {
@@ -120,12 +121,13 @@ public class ImportSDOPostProcessor implements ContributionPostProcessor {
                 helperContextRegistry.register(id, helperContext);
             }
         }
-        
+
         return helperContext;
     }
-    
+
     /**
      * Register an SDO Factory with the helper context
+     * 
      * @param factoryClass
      * @param helperContext
      * @throws Exception
