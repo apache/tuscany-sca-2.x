@@ -21,14 +21,12 @@ package org.apache.tuscany.sca.policy;
 import java.net.URI;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 
 /**
  * Represents SCA Definitions.
  * 
  */
-public interface SCADefinitions /*extends Visitable*/ {
+public interface SCADefinitions {
     /**
      * Returns the target namespace for this SCA Definition
      * @return the target namespace

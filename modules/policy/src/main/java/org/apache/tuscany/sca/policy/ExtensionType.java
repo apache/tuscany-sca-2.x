@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
  * and its support of various QoS policies
  * 
  */
-public interface ExtensionType /*extends Visitable*/ {
+public interface ExtensionType {
     /**
      * Returns the name of the extension type defined by this instance e.g. implementation.java, binding.ws
      * @return the extension type QName
