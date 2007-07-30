@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.resolver;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,10 +54,6 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         }
 
         return resolversByModelType.get(modelType);
-    }
-
-    public Collection<Class<?>> getResolverTypes() {
-        return resolversByModelType.keySet();
     }
 
 }
