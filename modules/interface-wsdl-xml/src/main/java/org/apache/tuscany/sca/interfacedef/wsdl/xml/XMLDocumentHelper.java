@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
 /**
@@ -176,26 +175,6 @@ public class XMLDocumentHelper {
             return null;
         } finally {
             is.close();
-        }
-    }
-
-    /**
-     * URI resolver implementation for xml schema
-     */
-    public static class URIResolverImpl implements URIResolver {
-
-        public org.xml.sax.InputSource resolveEntity(java.lang.String targetNamespace,
-                                                     java.lang.String schemaLocation,
-                                                     java.lang.String baseUri) {
-            try {
-                if (schemaLocation == null || schemaLocation.startsWith("/")) {
-                    return null;
-                }
-                URL url = new URL(new URL(baseUri), schemaLocation);
-                return getInputSource(url);
-            } catch (IOException e) {
-                return null;
-            }
         }
     }
 

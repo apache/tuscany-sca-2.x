@@ -50,7 +50,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper.URIResolverImpl;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -346,7 +345,7 @@ public class WSDLModelResolver implements ModelResolver {
     private void readInlineSchemas(Definition definition, XmlSchemaCollection schemaCollection) {
         Types types = definition.getTypes();
         if (types != null) {
-            schemaCollection.setSchemaResolver(new URIResolverImpl());
+            schemaCollection.setSchemaResolver(new XSDModelResolver.URIResolverImpl(contribution));
             for (Object ext : types.getExtensibilityElements()) {
                 if (ext instanceof Schema) {
                     Element element = ((Schema)ext).getElement();

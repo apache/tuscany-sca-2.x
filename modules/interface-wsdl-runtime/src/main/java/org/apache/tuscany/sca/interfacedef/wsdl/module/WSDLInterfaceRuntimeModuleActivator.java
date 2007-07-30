@@ -61,7 +61,7 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
         // Register .wsdl document processor  and .xsd document processor
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessors.addArtifactProcessor(new WSDLDocumentProcessor(wsdlFactory, null));
-        //documentProcessors.addArtifactProcessor(new XSDDocumentProcessor(wsdlFactory));
+        documentProcessors.addArtifactProcessor(new XSDDocumentProcessor(wsdlFactory));
         
         ModelResolverExtensionPoint resolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
         resolvers.addResolver(WSDLDefinition.class, WSDLModelResolver.class);
