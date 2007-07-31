@@ -79,7 +79,6 @@ public class JettyServerTestCase extends TestCase {
      */
     public void testRegisterServletMapping() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
@@ -87,13 +86,12 @@ public class JettyServerTestCase extends TestCase {
         os.write(REQUEST1.getBytes());
         os.flush();
         read(client);
-        service.destroy();
+        service.stop();
         assertTrue(servlet.invoked);
     }
 
     public void testUnregisterMapping() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        service.init();
         TestServlet servlet = new TestServlet();
         String uri = "http://127.0.0.1:" + HTTP_PORT + "/foo";
         service.addServletMapping(uri, servlet);
@@ -103,14 +101,12 @@ public class JettyServerTestCase extends TestCase {
         os.write(REQUEST1.getBytes());
         os.flush();
         read(client);
-        service.destroy();
+        service.stop();
         assertFalse(servlet.invoked);
     }
 
     public void testRequestSession() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        service.setDebug(true);
-        service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
@@ -118,22 +114,19 @@ public class JettyServerTestCase extends TestCase {
         os.write(REQUEST1.getBytes());
         os.flush();
         read(client);
-        service.destroy();
+        service.stop();
         assertTrue(servlet.invoked);
         assertNotNull(servlet.sessionId);
     }
 
     public void testRestart() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        service.init();
-        service.destroy();
-        service.init();
-        service.destroy();
+        service.stop();
+        service.stop();
     }
 
     public void testNoMappings() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        service.init();
         Exception ex = null;
         try {
             new Socket("127.0.0.1", HTTP_PORT);
@@ -141,12 +134,11 @@ public class JettyServerTestCase extends TestCase {
             ex = e;
         }
         assertNotNull(ex);
-        service.destroy();
+        service.stop();
     }
     
     public void testResourceServlet() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        service.init();
         
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
@@ -162,12 +154,11 @@ public class JettyServerTestCase extends TestCase {
         String document = read(client);
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);
         
-        service.destroy();
+        service.stop();
     }
 
     public void testDefaultServlet() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        service.init();
         
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
@@ -182,7 +173,7 @@ public class JettyServerTestCase extends TestCase {
         String document = read(client);
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);
         
-        service.destroy();
+        service.stop();
     }
 
     private static String read(Socket socket) throws IOException {

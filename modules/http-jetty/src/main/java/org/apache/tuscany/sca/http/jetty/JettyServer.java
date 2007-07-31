@@ -21,7 +21,12 @@ package org.apache.tuscany.sca.http.jetty;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -40,8 +45,6 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.jetty.servlet.SessionHandler;
-import org.mortbay.log.Log;
-import org.mortbay.log.Logger;
 import org.mortbay.thread.ThreadPool;
 
 /**
@@ -53,53 +56,49 @@ import org.mortbay.thread.ThreadPool;
 public class JettyServer implements ServletHost {
 
     private static final String ROOT = "/";
-    private static final int ERROR = 0;
-    private static final int UNINITIALIZED = 0;
-    private static final int STARTING = 1;
-    private static final int STARTED = 2;
-    private static final int STOPPING = 3;
-    private static final int STOPPED = 4;
     private static final int DEFAULT_PORT = 8080;
 
     private final Object joinLock = new Object();
-    private int state = UNINITIALIZED;
     private String keystore;
     private String certPassword;
     private String keyPassword;
     private boolean sendServerVersion;
-    private boolean https;
-    private int httpsPort = 8484;
-    private boolean debug;
-    private Server server;
-    private Connector connector;
-    private ServletHandler servletHandler;
     private WorkScheduler workScheduler;
 
-    static {
-        // hack to replace the static Jetty logger
-        System.setProperty("org.mortbay.log.class", JettyLogger.class.getName());
+    /**
+     * Represents a port and the server that serves it.
+     */
+    private class Port {
+        private Server server;
+        private ServletHandler servletHandler;
+        
+        private Port(Server server, ServletHandler servletHandler) {
+            this.server = server;
+            this.servletHandler = servletHandler;
+        }
 
+        public Server getServer() {
+            return server;
+        }
+        
+        public ServletHandler getServletHandler() {
+            return servletHandler;
+        }
+    }
+    
+    private Map<Integer, Port> ports = new HashMap<Integer, Port>();
+
+    static {
+        // Hack to replace the static Jetty logger
+        System.setProperty("org.mortbay.log.class", JettyLogger.class.getName());
     }
 
     public JettyServer(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
-
-        // Configure the Jetty logger
-        Logger logger = Log.getLogger(null);
-        if (logger instanceof JettyLogger) {
-            JettyLogger jettyLogger = (JettyLogger)logger;
-            if (debug) {
-                jettyLogger.setDebugEnabled(true);
-            }
-        }
     }
 
     public void setSendServerVersion(boolean sendServerVersion) {
         this.sendServerVersion = sendServerVersion;
-    }
-
-    public void setHttps(boolean https) {
-        this.https = https;
     }
 
     public void setKeystore(String keystore) {
@@ -114,83 +113,83 @@ public class JettyServer implements ServletHost {
         this.keyPassword = keyPassword;
     }
 
-    public void setDebug(boolean val) {
-        debug = val;
-    }
-
-    public void init() {
-        state = STARTING;
-    }
-
-    public void destroy() {
-        if (state == STARTED) {
-            state = STOPPING;
+    /**
+     * Stop all the started servers.
+     */
+    public void stop() {
+        if (!ports.isEmpty()) {
             synchronized (joinLock) {
                 joinLock.notifyAll();
             }
             try {
-                server.stop();
+                Set<Entry<Integer, Port>> entries = new HashSet<Entry<Integer, Port>>(ports.entrySet());
+                for (Entry<Integer, Port> entry: entries) {
+                    entry.getValue().getServer().stop();
+                    ports.remove(entry.getKey());
+                }
             } catch (Exception e) {
                 throw new ServletMappingException(e);
             }
-            state = STOPPED;
         }
     }
 
     public void addServletMapping(String uriStr, Servlet servlet) throws ServletMappingException {
         URI uri = URI.create(uriStr);
-        int port = uri.getPort();
-        if (state == STARTING) {
+        
+        // Get the URI port
+        int portNumber = uri.getPort();
+        if (portNumber == -1) {
+            portNumber = DEFAULT_PORT;
+        }
 
-            if (port == -1) {
-                port = DEFAULT_PORT;
-            }
+        // Get the port object associated with the given port number
+        Port port = ports.get(portNumber);
+        if (port == null) {
 
+            // Create an start a new server
             try {
-                server = new Server();
+                Server server = new Server();
                 server.setThreadPool(new WorkSchedulerThreadPool());
-                if (connector == null) {
-                    if (https) {
-                        Connector httpConnector = new SelectChannelConnector();
-                        httpConnector.setPort(port);
-                        SslSocketConnector sslConnector = new SslSocketConnector();
-                        sslConnector.setPort(httpsPort);
-                        sslConnector.setKeystore(keystore);
-                        sslConnector.setPassword(certPassword);
-                        sslConnector.setKeyPassword(keyPassword);
-                        server.setConnectors(new Connector[] {httpConnector, sslConnector});
-                    } else {
-                        SelectChannelConnector selectConnector = new SelectChannelConnector();
-                        selectConnector.setPort(port);
-                        server.setConnectors(new Connector[] {selectConnector});
-                    }
+                if ("https".equals(uri.getScheme())) {
+                    Connector httpConnector = new SelectChannelConnector();
+                    httpConnector.setPort(portNumber);
+                    SslSocketConnector sslConnector = new SslSocketConnector();
+                    sslConnector.setPort(portNumber);
+                    sslConnector.setKeystore(keystore);
+                    sslConnector.setPassword(certPassword);
+                    sslConnector.setKeyPassword(keyPassword);
+                    server.setConnectors(new Connector[] {httpConnector, sslConnector});
                 } else {
-                    connector.setPort(port);
-                    server.setConnectors(new Connector[] {connector});
+                    SelectChannelConnector selectConnector = new SelectChannelConnector();
+                    selectConnector.setPort(portNumber);
+                    server.setConnectors(new Connector[] {selectConnector});
                 }
-
+    
                 ContextHandler contextHandler = new ContextHandler();
                 contextHandler.setContextPath(ROOT);
                 server.setHandler(contextHandler);
-
+    
                 SessionHandler sessionHandler = new SessionHandler();
-                servletHandler = new ServletHandler();
+                ServletHandler servletHandler = new ServletHandler();
                 sessionHandler.addHandler(servletHandler);
-
+    
                 contextHandler.setHandler(sessionHandler);
-
+    
                 server.setStopAtShutdown(true);
                 server.setSendServerVersion(sendServerVersion);
-                // monitor.started();
                 server.start();
-                state = STARTED;
+                
+                // Keep track of the new server and servlet handler 
+                port = new Port(server, servletHandler);
+                ports.put(portNumber, port);
+                
             } catch (Exception e) {
-                state = ERROR;
                 throw new ServletMappingException(e);
             }
         }
 
         // Register the servlet mapping
+        ServletHandler servletHandler = port.getServletHandler();
         ServletHolder holder;
         if (servlet instanceof DefaultResourceServlet) {
             
@@ -216,14 +215,31 @@ public class JettyServer implements ServletHost {
         String path = uri.getPath();
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
-        System.out.println("addServletMapping port: " + port + " path: " + path);
+        
+        System.out.println("addServletMapping port: " + portNumber + " path: " + path);
     }
 
-    public Servlet removeServletMapping(String uri) {
+    public Servlet removeServletMapping(String uriStr) {
+        URI uri = URI.create(uriStr);
+        
+        // Get the URI port
+        int portNumber = uri.getPort();
+        if (portNumber == -1) {
+            portNumber = DEFAULT_PORT;
+        }
+
+        // Get the port object associated with the given port number
+        Port port = ports.get(portNumber);
+        if (port == null) {
+            throw new IllegalStateException("No servlet registered at this URI: " + uriStr);
+        }
+        
+        // Remove the servlet mapping for the given servlet 
+        ServletHandler servletHandler = port.getServletHandler();
         Servlet removedServlet = null;
         List<ServletMapping> mappings =
             new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
-        String path = URI.create(uri).getPath();
+        String path = uri.getPath();
         for (ServletMapping mapping : mappings) {
             if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
                 try {
@@ -242,7 +258,7 @@ public class JettyServer implements ServletHost {
     }
 
     /**
-     * An integration wrapper to enable use of a {@link WorkScheduler} with Jetty
+     * A wrapper to enable use of a WorkScheduler with Jetty
      */
     private class WorkSchedulerThreadPool implements ThreadPool {
 
@@ -266,34 +282,7 @@ public class JettyServer implements ServletHost {
         }
 
         public boolean isLowOnThreads() {
-            // TODO FIXME
             return false;
-        }
-
-        public void start() throws Exception {
-        }
-
-        public void stop() throws Exception {
-        }
-
-        public boolean isRunning() {
-            return state == STARTING || state == STARTED;
-        }
-
-        public boolean isStarted() {
-            return state == STARTED;
-        }
-
-        public boolean isStarting() {
-            return state == STARTING;
-        }
-
-        public boolean isStopping() {
-            return state == STOPPING;
-        }
-
-        public boolean isFailed() {
-            return state == ERROR;
         }
     }
 

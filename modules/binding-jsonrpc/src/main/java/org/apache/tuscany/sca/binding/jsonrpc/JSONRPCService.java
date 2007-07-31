@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
+import java.net.URI;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -68,19 +70,26 @@ public class JSONRPCService implements ComponentLifecycle {
         Class<?> serviceInterface = getTargetJavaClass(service.getInterfaceContract().getInterface());
         Object instance = component.createSelfReference(serviceInterface).getService();
         JSONRPCServiceServlet serviceServlet = new JSONRPCServiceServlet(binding.getName(), serviceInterface, instance);
+        int port;
         if (binding.getURI() != null) {
             servletHost.addServletMapping(binding.getURI(), serviceServlet);
+            URI uri = URI.create(binding.getURI());
+            port = uri.getPort();
+            if (port == -1)
+                port = 8080;
         } else {
             servletHost.addServletMapping(SERVICE_PREFIX + binding.getName(), serviceServlet);
+            port = 8080;
         }
 
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
         // this uses removeServletMapping / addServletMapping as theres no getServletMapping facility
-        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.removeServletMapping(SCA_DOMAIN_SCRIPT);
+        URI domainURI = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT);
+        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.removeServletMapping(domainURI.toString());
         if (scaDomainServlet == null) {
             scaDomainServlet = new ScaDomainScriptServlet();
         }
-        servletHost.addServletMapping(SCA_DOMAIN_SCRIPT, scaDomainServlet);
+        servletHost.addServletMapping(domainURI.toString(), scaDomainServlet);
         
         // Add this service to the scadomain script servlet
         scaDomainServlet.addService(binding.getName());
@@ -90,20 +99,27 @@ public class JSONRPCService implements ComponentLifecycle {
     public void stop() {
 
         // Unregister from the service servlet mapping
+        int port;
         if (binding.getURI() != null) {
             servletHost.removeServletMapping(binding.getURI());
+            URI uri = URI.create(binding.getURI());
+            port = uri.getPort();
+            if (port == -1)
+                port = 8080;
         } else {
             servletHost.removeServletMapping(SERVICE_PREFIX + binding.getName());
+            port = 8080;
         }
 
         // Unregister the service from the scaDomain script servlet
         // don't unregister the scaDomain script servlet if it still has other service names
-        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.removeServletMapping(SCA_DOMAIN_SCRIPT);
+        URI domainURI = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT);
+        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.removeServletMapping(domainURI.toString());
         if (scaDomainServlet != null) {
             scaDomainServlet.removeService(binding.getName());
             // put it back if there are still other services registered with the servlet
             if (scaDomainServlet.getServiceNames().size() > 0) {
-                servletHost.addServletMapping(SCA_DOMAIN_SCRIPT, scaDomainServlet);
+                servletHost.addServletMapping(domainURI.toString(), scaDomainServlet);
             }
         }
     }
