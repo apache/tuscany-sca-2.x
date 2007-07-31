@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-contribution-import-export-contrib-wsdl</artifactId>
+    <artifactId>tuscany-itest-contribution-export-wsdl</artifactId>
     <name>Apache Tuscany Contribution Export WSDL</name>
 
 </project>
