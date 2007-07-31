@@ -82,9 +82,18 @@ public class WebServiceBindingProcessor implements
 
             // Read policies
             readPolicies(wsBinding, reader);
+            
+            // Read the binding name
+            String name = reader.getAttributeValue(null, NAME);
+            if (name != null) {
+                wsBinding.setName(name);
+            }
 
             // Read URI
-            wsBinding.setURI(reader.getAttributeValue(null, Constants.URI));
+            String uri = reader.getAttributeValue(null, URI);
+            if (uri != null) {
+                wsBinding.setURI(uri);
+            }
 
             // Read a qname in the form:
             // namespace#wsdl.???(name)
@@ -97,42 +106,42 @@ public class WebServiceBindingProcessor implements
                 }
                 String namespace = wsdlElement.substring(0, index);
                 wsBinding.setNamespace(namespace);
-                String name = wsdlElement.substring(index + 1);
-                if (name.startsWith("wsdl.service")) {
+                String localName = wsdlElement.substring(index + 1);
+                if (localName.startsWith("wsdl.service")) {
 
                     // Read a wsdl.service
-                    name = name.substring("wsdl.service(".length(), name.length() - 1);
-                    wsBinding.setServiceName(new QName(namespace, name));
+                    localName = localName.substring("wsdl.service(".length(), localName.length() - 1);
+                    wsBinding.setServiceName(new QName(namespace, localName));
 
-                } else if (name.startsWith("wsdl.port")) {
+                } else if (localName.startsWith("wsdl.port")) {
 
                     // Read a wsdl.port
-                    name = name.substring("wsdl.port(".length(), name.length() - 1);
-                    int s = name.indexOf('/');
+                    localName = localName.substring("wsdl.port(".length(), localName.length() - 1);
+                    int s = localName.indexOf('/');
                     if (s == -1) {
                         throw new ContributionReadException(
                                                             "Invalid WebService binding wsdlElement attribute: " + wsdlElement);
                     }
-                    wsBinding.setServiceName(new QName(namespace, name.substring(0, s)));
-                    wsBinding.setPortName(name.substring(s + 1));
+                    wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
+                    wsBinding.setPortName(localName.substring(s + 1));
 
-                } else if (name.startsWith("wsdl.endpoint")) {
+                } else if (localName.startsWith("wsdl.endpoint")) {
 
                     // Read a wsdl.endpoint
-                    name = name.substring("wsdl.endpoint(".length(), name.length() - 1);
-                    int s = name.indexOf('/');
+                    localName = localName.substring("wsdl.endpoint(".length(), localName.length() - 1);
+                    int s = localName.indexOf('/');
                     if (s == -1) {
                         throw new ContributionReadException(
                                                             "Invalid WebService binding wsdlElement attribute: " + wsdlElement);
                     }
-                    wsBinding.setServiceName(new QName(namespace, name.substring(0, s)));
-                    wsBinding.setEndpointName(name.substring(s + 1));
+                    wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
+                    wsBinding.setEndpointName(localName.substring(s + 1));
 
-                } else if (name.startsWith("wsdl.binding")) {
+                } else if (localName.startsWith("wsdl.binding")) {
 
                     // Read a wsdl.service
-                    name = name.substring("wsdl.binding(".length(), name.length() - 1);
-                    wsBinding.setBindingName(new QName(namespace, name));
+                    localName = localName.substring("wsdl.binding(".length(), localName.length() - 1);
+                    wsBinding.setBindingName(new QName(namespace, localName));
 
                 } else {
                     throw new ContributionReadException(

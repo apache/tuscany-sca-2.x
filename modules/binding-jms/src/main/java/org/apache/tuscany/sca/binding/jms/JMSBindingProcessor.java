@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.jms;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -133,12 +132,18 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         try {
             JMSBinding jmsBinding = jmsBindingFactory.createJMSBinding();
             
-            //Read policies
+            // Read policies
             readPolicies(jmsBinding, reader);
 
+            // Read binding name
+            String name = reader.getAttributeValue(null, "name");
+            if (name != null) {
+                jmsBinding.setName(name);
+            }
+            
             // Read binding URI
             String uri = reader.getAttributeValue(null, "uri");
-            if (uri != null && uri.length() > 0) {
+            if (uri != null) {
                 jmsBinding.setURI(uri);
                 System.err.println("JMS Binding doesn't process uri yet");
             }

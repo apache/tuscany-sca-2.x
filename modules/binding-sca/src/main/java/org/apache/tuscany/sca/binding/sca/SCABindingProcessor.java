@@ -39,6 +39,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
 
     private static final QName BINDING_SCA = new QName(Constants.SCA10_NS, "binding.sca");
+    private final static String NAME = "name"; 
+    private final static String URI = "uri"; 
 
     private final SCABindingFactory factory;
 
@@ -55,10 +57,14 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
     }
 
     public SCABinding read(XMLStreamReader reader) throws ContributionReadException {
-        String uri = reader.getAttributeValue(null, "uri");
         SCABinding scaBinding = factory.createSCABinding();
+        String name = reader.getAttributeValue(null, NAME);
+        if (name != null) {
+            scaBinding.setName(name);
+        }
+        String uri = reader.getAttributeValue(null, URI);
         if (uri != null) {
-            scaBinding.setURI(uri.trim());
+            scaBinding.setURI(uri);
         }
         return scaBinding;
     }

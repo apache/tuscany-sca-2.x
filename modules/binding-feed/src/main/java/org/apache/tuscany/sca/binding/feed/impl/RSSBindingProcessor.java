@@ -39,6 +39,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 public class RSSBindingProcessor implements StAXArtifactProcessor<RSSBinding> {
 
     private final static QName BINDING_RSS = new QName(SCA_NS, "binding.rss");
+    private final static String NAME = "name"; 
+    private final static String URI = "uri"; 
 
     private final RSSBindingFactory factory;
 
@@ -62,10 +64,14 @@ public class RSSBindingProcessor implements StAXArtifactProcessor<RSSBinding> {
     public RSSBinding read(XMLStreamReader reader) throws ContributionReadException {
 
         // Read the <binding.rss> element
-        String uri = reader.getAttributeValue(null, "uri");
         RSSBinding binding = factory.createRSSBinding();
+        String name = reader.getAttributeValue(null, NAME);
+        if (name != null) {
+            binding.setName(name);
+        }
+        String uri = reader.getAttributeValue(null, URI);
         if (uri != null) {
-            binding.setURI(uri.trim());
+            binding.setURI(uri);
         }
         return binding;
     }

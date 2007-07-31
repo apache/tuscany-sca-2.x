@@ -68,10 +68,16 @@ public class SCABindingProcessor extends BaseArtifactProcessor implements StAXAr
             
             // Read policies
             readPolicies(scaBinding, reader);
+            
+            // Read binding name
+            String name = reader.getAttributeValue(null, NAME);
+            if (name != null) {
+                scaBinding.setName(name);
+            }
 
             // Read binding URI
             String uri = reader.getAttributeValue(null, URI);
-            if (uri != null && uri.length() > 0) {
+            if (uri != null) {
                 scaBinding.setURI(uri);
             }
 
