@@ -57,6 +57,8 @@ public class ImplementationsActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
+        
+        //FIXME Pass this factory differently as it's not an extension point
         PropertyValueObjectFactory propertyFactory = new DefaultPropertyValueObjectFactory(mediator);
         registry.addExtensionPoint(propertyFactory);
 

@@ -115,7 +115,7 @@ public class ReallySmallRuntimeBuilder {
         // Create a proxy factory
         ProxyFactory proxyFactory = new JDKProxyService(messageFactory, mapper);
 
-        // FIXME remove this
+        // FIXME Pass these around differently as they are not extension points
         registry.addExtensionPoint(proxyFactory);
         registry.addExtensionPoint(mapper);
 
@@ -130,6 +130,7 @@ public class ReallySmallRuntimeBuilder {
                                                               WorkManager workManager) {
 
         // Create a work scheduler
+        //FIXME Pass the work scheduler differently as it's not an extension point
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
         registry.addExtensionPoint(workScheduler);
 
@@ -213,7 +214,7 @@ public class ReallySmallRuntimeBuilder {
 
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
 
-        //Create Contribution Model Resolver extension point
+        // Create Contribution Model Resolver extension point
         ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
         registry.addExtensionPoint(modelResolverExtensionPoint);
         
@@ -260,6 +261,7 @@ public class ReallySmallRuntimeBuilder {
             scopeRegistry.register(f);
         }
 
+        //FIXME Pass the scope container differently as it's not an extension point
         registry.addExtensionPoint(scopeRegistry);
 
         return scopeRegistry;
