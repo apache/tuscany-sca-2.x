@@ -28,15 +28,29 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     <listener-class>org.apache.tuscany.sca.webapp.HotUpdateContextListener</listener-class>
   </listener>
 
+  <listener>
+    <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+  </listener>
+
   <servlet>
      <servlet-name>TuscanyServlet</servlet-name>
      <servlet-class>org.apache.tuscany.sca.webapp.TuscanyServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+     <servlet-name>ContributionUploaderServlet</servlet-name>
+     <servlet-class>org.apache.tuscany.sca.webapp.ContributionUploaderServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
      <servlet-name>TuscanyServlet</servlet-name>
      <url-pattern>/sca/*</url-pattern>
   </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ContributionUploaderServlet</servlet-name>
+        <url-pattern>/ContributionUploader</url-pattern>
+    </servlet-mapping>
 
   <welcome-file-list id="WelcomeFileList">
     <welcome-file>scaDomainInfo.jsp</welcome-file>
