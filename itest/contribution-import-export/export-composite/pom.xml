@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-contribution-import-export-contrib-composite</artifactId>
+    <artifactId>tuscany-itest-contribution-export-composite</artifactId>
     <name>Apache Tuscany Contribution Export Composite</name>
 
 <dependencies>

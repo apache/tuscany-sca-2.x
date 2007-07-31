@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-contribution-import-export-contrib-java</artifactId>
+    <artifactId>tuscany-itest-contribution-export-java</artifactId>
     <name>Apache Tuscany Contribution Export Java</name>
 
 <dependencies>
