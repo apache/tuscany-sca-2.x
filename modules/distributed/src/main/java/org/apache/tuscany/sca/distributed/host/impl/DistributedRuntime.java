@@ -86,6 +86,7 @@ public class DistributedRuntime  {
         registry = new DefaultExtensionPointRegistry();
         
         // Add the current domain to the extension point registry
+        //FIXME Pass the domain around differently as it's not an extension point
         if (domain != null ){
             registry.addExtensionPoint(domain);
         }
@@ -127,6 +128,7 @@ public class DistributedRuntime  {
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry);
         
         // Create a work scheduler
+        //FIXME Pass this around differently as it's not an extension point
         WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
         registry.addExtensionPoint(workScheduler);
 
