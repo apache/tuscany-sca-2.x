@@ -40,6 +40,7 @@ import commonj.sdo.impl.HelperProvider;
 public class ImportSDOPostProcessor implements ContributionPostProcessor {
     private static final String URI_SEPARATOR = "/";
     private static final String JAVA_SEPARATOR = ".";
+    private static final String WEB_INF_PREFIX = "WEB-INF/classes/";
 
     private HelperContextRegistry helperContextRegistry;
 
@@ -79,8 +80,13 @@ public class ImportSDOPostProcessor implements ContributionPostProcessor {
      * @return
      */
     private String getFactoryClassName(String factoryURI) {
+        //clean up "WEB-INF/classes" references
+        factoryURI = factoryURI.replace(WEB_INF_PREFIX , "");
+        //convert from uri separator to package separator
         factoryURI = factoryURI.replace(URI_SEPARATOR, JAVA_SEPARATOR);
+        //remove class suffix from class file name
         int pos = factoryURI.lastIndexOf(JAVA_SEPARATOR);
+        //return clean class name
         return factoryURI.substring(0, pos);
     }
 
