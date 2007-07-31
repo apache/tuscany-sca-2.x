@@ -54,10 +54,15 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
     }
 
     public EchoBinding read(XMLStreamReader reader) throws ContributionReadException {
-        String uri = reader.getAttributeValue(null, "uri");
         EchoBinding echoBinding = factory.createEchoBinding();
+
+        String name = reader.getAttributeValue(null, "name");
+        if (name != null) {
+            echoBinding.setName(name);
+        }
+        String uri = reader.getAttributeValue(null, "uri");
         if (uri != null) {
-            echoBinding.setURI(uri.trim());
+            echoBinding.setURI(uri);
         }
         return echoBinding;
     }
