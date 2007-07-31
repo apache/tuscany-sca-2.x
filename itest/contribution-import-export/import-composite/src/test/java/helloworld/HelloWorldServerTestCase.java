@@ -44,33 +44,33 @@ public class HelloWorldServerTestCase extends TestCase{
 
         //Start the domain
         domain.start();
-        
+
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
-        
-        File compositeContribLocation = new File("../contrib-composite/target/classes");
+
+        File compositeContribLocation = new File("../export-composite/target/classes");
         URL compositeContribURL = compositeContribLocation.toURL();
-        Contribution compositeContribution = contributionService.contribute("http://import-export/contrib-composite", compositeContribURL, false);
+        Contribution compositeContribution = contributionService.contribute("http://import-export/export-composite", compositeContribURL, false);
         for (Composite deployable : compositeContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
-        
+
         File helloWorldContribLocation = new File("./target/classes/");
         URL helloWorldContribURL = helloWorldContribLocation.toURL();
         Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : helloWorldContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
-        
+
         //activate SCA Domain
         domain.getDomainCompositeHelper().activateDomain();
-        
+
         //Start Components from my composite
         domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloServiceComponent"));
         domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("SourceHelloServiceComponent"));
         domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
     }
-    
+
 	public void testPing() throws IOException {
 		new Socket("127.0.0.1", 8085);
 	}
@@ -78,22 +78,22 @@ public class HelloWorldServerTestCase extends TestCase{
     public void testServiceCall() throws IOException {
         HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
         assertNotNull(helloWorldService);
-        
+
         assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
     }
 
-    
+
 	public void tearDown() throws Exception {
         ContributionService contributionService = domain.getContributionService();
 
         // Remove the contribution from the in-memory repository
-        contributionService.remove("http://import-export/contrib-composite");
         contributionService.remove("http://import-export/helloworld");
-        
+        contributionService.remove("http://import-export/import-composite");
+
         //Stop Components from my composite
         domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
 
-        domain.stop();        
+        domain.stop();
             domain.close();
 	}
 

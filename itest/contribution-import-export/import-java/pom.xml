@@ -25,10 +25,16 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-contribution-import-export-test-import-wsdl</artifactId>
-    <name>Apache Tuscany Contribution Import/Export - WSDL import test</name>
+    <artifactId>tuscany-itest-contribution-import-export-test-import-java</artifactId>
+    <name>Apache Tuscany Contribution Import Java Test</name>
 
 <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-itest-contribution-import-export-contrib-java</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>

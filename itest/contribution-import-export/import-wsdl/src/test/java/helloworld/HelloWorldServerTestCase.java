@@ -44,31 +44,31 @@ public class HelloWorldServerTestCase extends TestCase{
 
         //Start the domain
         domain.start();
-        
+
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
-        
-        File wsdlContribLocation = new File("../contrib-wsdl/target/classes");
+
+        File wsdlContribLocation = new File("../export-wsdl/target/classes");
         URL wsdlContribURL = wsdlContribLocation.toURL();
-        Contribution wsdlContribution = contributionService.contribute("http://import-export/contrib-wsdl", wsdlContribURL, false);
+        Contribution wsdlContribution = contributionService.contribute("http://import-export/export-wsdl", wsdlContribURL, false);
         for (Composite deployable : wsdlContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
-        
+
         File helloWorldContribLocation = new File("./target/classes/");
         URL helloWorldContribURL = helloWorldContribLocation.toURL();
         Contribution consumerContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : consumerContribution.getDeployables() ) {
             domain.getDomainCompositeHelper().addComposite(deployable);
         }
-        
+
         //activate SCA Domain
         domain.getDomainCompositeHelper().activateDomain();
 
         //Start Components from my composite
         domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
     }
-    
+
 	public void testPing() throws IOException {
 		new Socket("127.0.0.1", 8085);
 	}
@@ -76,7 +76,7 @@ public class HelloWorldServerTestCase extends TestCase{
     public void testServiceCall() throws IOException {
         HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
         assertNotNull(helloWorldService);
-        
+
         assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
     }
 
@@ -85,13 +85,13 @@ public class HelloWorldServerTestCase extends TestCase{
 
         // Remove the contribution from the in-memory repository
         contributionService.remove("http://import-export/helloworld");
-        contributionService.remove("http://import-export/contrib-wsdl");
-        
+        contributionService.remove("http://import-export/import-wsdl");
+
         //Stop Components from my composite
         domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
 
         domain.stop();
-        
+
         domain.close();
     }
 
