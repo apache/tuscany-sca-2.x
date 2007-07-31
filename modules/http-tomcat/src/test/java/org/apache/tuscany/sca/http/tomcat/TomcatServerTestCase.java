@@ -78,7 +78,6 @@ public class TomcatServerTestCase extends TestCase {
      */
     public void testRegisterServletMapping() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
-        service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
@@ -86,13 +85,41 @@ public class TomcatServerTestCase extends TestCase {
         os.write(REQUEST1.getBytes());
         os.flush();
         read(client);
-        service.destroy();
+        service.stop();
         assertTrue(servlet.invoked);
+    }
+
+    /**
+     * Verifies that servlets can be registered with multiple ports
+     */
+    public void testRegisterMultiplePorts() throws Exception {
+        TomcatServer service = new TomcatServer(workScheduler);
+        TestServlet servlet = new TestServlet();
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
+        TestServlet servlet2 = new TestServlet();
+        service.addServletMapping("http://127.0.0.1:" + (HTTP_PORT + 1) + "/", servlet2);
+        {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);
+        }
+        {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT + 1);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);
+        }
+        
+        service.stop();
+        assertTrue(servlet.invoked);
+        assertTrue(servlet2.invoked);
     }
 
     public void testUnregisterMapping() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
-        service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
         service.removeServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo");
@@ -101,13 +128,12 @@ public class TomcatServerTestCase extends TestCase {
         os.write(REQUEST1.getBytes());
         os.flush();
         read(client);
-        service.destroy();
+        service.stop();
         assertFalse(servlet.invoked);
     }
 
     public void testRequestSession() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
-        service.init();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
@@ -115,22 +141,19 @@ public class TomcatServerTestCase extends TestCase {
         os.write(REQUEST1.getBytes());
         os.flush();
         read(client);
-        service.destroy();
+        service.stop();
         assertTrue(servlet.invoked);
         assertNotNull(servlet.sessionId);
     }
 
     public void testRestart() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
-        service.init();
-        service.destroy();
-        service.init();
-        service.destroy();
+        service.stop();
+        service.stop();
     }
 
     public void testNoMappings() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
-        service.init();
         Exception ex = null;
         try {
             Socket client = new Socket("127.0.0.1", HTTP_PORT);
@@ -141,12 +164,11 @@ public class TomcatServerTestCase extends TestCase {
             ex = e;
         }
         assertNotNull(ex);
-        service.destroy();
+        service.stop();
     }
 
     public void testResourceServlet() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
-        service.init();
         
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
@@ -162,12 +184,11 @@ public class TomcatServerTestCase extends TestCase {
         String document = read(client);
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);
         
-        service.destroy();
+        service.stop();
     }
 
     public void testDefaultServlet() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
-        service.init();
         
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
@@ -182,7 +203,7 @@ public class TomcatServerTestCase extends TestCase {
         String document = read(client);
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);
         
-        service.destroy();
+        service.stop();
     }
 
     private static String read(Socket socket) throws IOException {

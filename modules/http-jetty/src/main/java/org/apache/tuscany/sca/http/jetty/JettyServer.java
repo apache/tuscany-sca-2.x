@@ -146,7 +146,7 @@ public class JettyServer implements ServletHost {
         Port port = ports.get(portNumber);
         if (port == null) {
 
-            // Create an start a new server
+            // Create and start a new server
             try {
                 Server server = new Server();
                 server.setThreadPool(new WorkSchedulerThreadPool());

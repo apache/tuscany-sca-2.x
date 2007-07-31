@@ -90,6 +90,35 @@ public class JettyServerTestCase extends TestCase {
         assertTrue(servlet.invoked);
     }
 
+    /**
+     * Verifies that servlets can be registered with multiple ports
+     */
+    public void testRegisterMultiplePorts() throws Exception {
+        JettyServer service = new JettyServer(workScheduler);
+        TestServlet servlet = new TestServlet();
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
+        TestServlet servlet2 = new TestServlet();
+        service.addServletMapping("http://127.0.0.1:" + (HTTP_PORT + 1) + "/", servlet2);
+        {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);
+        }
+        {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT + 1);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);
+        }
+        
+        service.stop();
+        assertTrue(servlet.invoked);
+        assertTrue(servlet2.invoked);
+    }
+
     public void testUnregisterMapping() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
         TestServlet servlet = new TestServlet();
