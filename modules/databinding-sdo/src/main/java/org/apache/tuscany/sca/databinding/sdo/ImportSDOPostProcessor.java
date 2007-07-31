@@ -56,7 +56,7 @@ public class ImportSDOPostProcessor implements ContributionPostProcessor {
                 String factoryName = getFactoryClassName(artifactURI);
                 ClassReference clazz = new ClassReference(factoryName);
                 clazz = contribution.getModelResolver().resolveModel(ClassReference.class, clazz);
-                if (clazz.getClass() != null) {
+                if (clazz.getJavaClass() != null) {
                     try {
                         //check if it's a SDO factory by introspecting INSTANCE field
                         if (isSDOFactory(clazz.getJavaClass())) {
