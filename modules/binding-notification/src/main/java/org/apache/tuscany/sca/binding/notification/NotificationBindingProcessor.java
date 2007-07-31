@@ -63,10 +63,14 @@ public class NotificationBindingProcessor implements StAXArtifactProcessor<Notif
     public NotificationBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert BINDING_NOTIFICATION.equals(reader.getName());
         String bindingUri = reader.getAttributeValue(null, "uri");
+        String name = reader.getAttributeValue(null, "name");
         String ntm = reader.getAttributeValue(null, "ntm");
         String notificationType = reader.getAttributeValue(null, "notificationType");
 
         NotificationBinding binding = bindingFactory.createNotificationBinding();
+        if (name != null) {
+            binding.setName(name);
+        }
         if (bindingUri != null) {
             binding.setURI(bindingUri);
         }

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.resolver.impl;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
@@ -35,9 +35,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 public class NamespaceImportAllModelResolverImpl implements ModelResolver {
     
     private NamespaceImport namespaceImport;
-    private Collection<Contribution> contributions;
+    private List<Contribution> contributions;
     
-    public NamespaceImportAllModelResolverImpl(NamespaceImport namespaceImport, Collection<Contribution> contributions) {
+    public NamespaceImportAllModelResolverImpl(NamespaceImport namespaceImport, List<Contribution> contributions) {
         this.namespaceImport = namespaceImport;
         this.contributions = contributions;
     }

@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class TestBinding implements Binding {
 
     public TestBinding(AssemblyFactory factory) {
-        setURI("http://test");
     }
 
     public String getName() {

@@ -39,7 +39,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  */
 public class HTTPResourceBindingProcessor implements StAXArtifactProcessor<HTTPResourceBinding> {
 
-    private QName BINDING_RESOURCE = new QName(SCA_NS, "binding.resource");
+    private final static QName BINDING_RESOURCE = new QName(SCA_NS, "binding.resource");
+    private final static String NAME = "name"; 
+    private final static String URI = "uri"; 
     
     private final HTTPResourceBindingFactory factory;
 
@@ -56,10 +58,14 @@ public class HTTPResourceBindingProcessor implements StAXArtifactProcessor<HTTPR
     }
 
     public HTTPResourceBinding read(XMLStreamReader reader) throws ContributionReadException {
-        String uri = reader.getAttributeValue(null, "uri");
         HTTPResourceBinding resourceBinding = factory.createHTTPResourceBinding();
+        String name = reader.getAttributeValue(null, NAME);
+        if (name != null) {
+            resourceBinding.setName(name);
+        }
+        String uri = reader.getAttributeValue(null, URI);
         if (uri != null) {
-            resourceBinding.setURI(uri.trim());
+            resourceBinding.setURI(uri);
         }
         return resourceBinding;
     }

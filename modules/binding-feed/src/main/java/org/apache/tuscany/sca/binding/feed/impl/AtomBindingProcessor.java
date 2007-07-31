@@ -38,7 +38,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  */
 public class AtomBindingProcessor implements StAXArtifactProcessor<AtomBinding> {
 
-    private QName BINDING_ATOM = new QName(SCA_NS, "binding.atom");
+    private static final QName BINDING_ATOM = new QName(SCA_NS, "binding.atom");
+    private final static String NAME = "name"; 
+    private final static String URI = "uri"; 
 
     private final AtomBindingFactory factory;
 
@@ -55,10 +57,14 @@ public class AtomBindingProcessor implements StAXArtifactProcessor<AtomBinding> 
     }
 
     public AtomBinding read(XMLStreamReader reader) throws ContributionReadException {
-        String uri = reader.getAttributeValue(null, "uri");
         AtomBinding binding = factory.createAtomBinding();
+        String name = reader.getAttributeValue(null, NAME);
+        if (name != null) {
+            binding.setName(name);
+        }
+        String uri = reader.getAttributeValue(null, URI);
         if (uri != null) {
-            binding.setURI(uri.trim());
+            binding.setURI(uri);
         }
         return binding;
     }
