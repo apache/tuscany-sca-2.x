@@ -60,6 +60,15 @@ Components in SCA Domain:
    %>
 <br>
 
+<hr>
+You can fill in a composite file to upload
+
+<form method='POST' enctype='multipart/form-data' action='/tuscany/ContributionUploader'>
+Composite file to upload: <input type=file name=upfile><br>
+<br>
+<input type=submit value=Press> to upload the composite file
+</form>
+
 </body>
 </html>
 
