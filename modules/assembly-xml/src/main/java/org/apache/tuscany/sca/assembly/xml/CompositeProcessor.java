@@ -48,6 +48,8 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -67,15 +69,29 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
     /**
      * Construct a new composite processor
+     * @param contributionFactory
      * @param assemblyFactory
      * @param policyFactory
      * @param extensionProcessor 
      */
+    public CompositeProcessor(ContributionFactory contributionFactory,
+                              AssemblyFactory factory, PolicyFactory policyFactory,
+                              InterfaceContractMapper interfaceContractMapper,
+                              StAXArtifactProcessor extensionProcessor) {
+        super(contributionFactory, factory, policyFactory, extensionProcessor);
+    }
+    
+    /**
+     * Construct a new composite processor
+     * @param assemblyFactory
+     * @param policyFactory
+     * @param extensionProcessor 
+     
     public CompositeProcessor(AssemblyFactory factory, PolicyFactory policyFactory,
                               InterfaceContractMapper interfaceContractMapper,
                               StAXArtifactProcessor extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
-    }
+    }*/
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException {
         Composite composite = null;
@@ -564,6 +580,17 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
             if (implementation != null) {
                 implementation = resolveImplementation(implementation, resolver);
                 component.setImplementation(implementation);                
+            }
+            
+            for (ComponentProperty componentProperty : component.getProperties()) {
+                if ( componentProperty.getFile() != null ) {
+                    DeployedArtifact deployedArtifact = contributionFactory.createDeployedArtifact();
+                    deployedArtifact.setURI(componentProperty.getFile());
+                    deployedArtifact = resolver.resolveModel(DeployedArtifact.class, deployedArtifact);
+                    if ( deployedArtifact.getLocation() != null ) {
+                        componentProperty.setFile(deployedArtifact.getLocation());
+                    }
+                }
             }
             
             resolveContracts(component.getServices(), resolver);
