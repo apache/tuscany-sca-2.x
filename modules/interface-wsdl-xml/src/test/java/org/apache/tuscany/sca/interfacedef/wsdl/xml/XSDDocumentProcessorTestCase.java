@@ -78,9 +78,11 @@ public class XSDDocumentProcessorTestCase {
         resolved = resolver.resolveModel(XSDefinition.class, definition);
         collection = resolved.getSchema().getIncludes();
         Assert.assertTrue(collection.getCount() == 2);
-        type =
+        XmlSchemaType type1 =
+            ((XmlSchemaInclude)collection.getItem(0)).getSchema().getTypeByName(new QName("http://greeting", "Name"));
+        XmlSchemaType type2 =
             ((XmlSchemaInclude)collection.getItem(1)).getSchema().getTypeByName(new QName("http://greeting", "Name"));
-        Assert.assertNotNull(type);
+        Assert.assertTrue(type1 != null || type2 != null);
     }
 
 }
