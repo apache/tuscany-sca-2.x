@@ -44,11 +44,10 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
         WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
         server = new JettyServer(workScheduler);
         servletHosts.addServletHost(server);
-        server.init();
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        server.destroy();
+        server.stop();
     }
 
 }
