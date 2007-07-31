@@ -19,11 +19,15 @@
 
 package org.apache.tuscany.sca.databinding.sdo2om;
 
+import java.io.StringWriter;
+
 import javax.xml.stream.XMLStreamException;
 
 import junit.framework.Assert;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -49,9 +53,25 @@ public class DataObject2OMElementTestCase extends SDOTransformerTestCaseBase {
         OMElement element = new DataObject2OMElement().transform(dataObject, context);
         Assert.assertEquals(ORDER_QNAME.getNamespaceURI(), element.getNamespace().getNamespaceURI());
         Assert.assertEquals(ORDER_QNAME.getLocalPart(), element.getLocalName());
-//      TODO: This fails with Axiom 1.2.4        
-//        StringWriter writer = new StringWriter();
-//        element.serialize(writer);
+        // TODO: See https://issues.apache.org/jira/browse/WSCOMMONS-226
+        // element.getBuilder().setCache(false);
+        StringWriter writer = new StringWriter();
+        element.serialize(writer);
+    }
+
+    public final void testTransformWrapper() throws XMLStreamException {
+        OMElement element = new DataObject2OMElement().transform(dataObject, context);
+        Assert.assertEquals(ORDER_QNAME.getNamespaceURI(), element.getNamespace().getNamespaceURI());
+        Assert.assertEquals(ORDER_QNAME.getLocalPart(), element.getLocalName());
+
+        OMNamespace ns = OMAbstractFactory.getOMFactory().createOMNamespace("http://ns1", "ns1");
+        element.setNamespace(ns);
+        element.setLocalName("dummy");
+        // TODO: See https://issues.apache.org/jira/browse/WSCOMMONS-226
+        // element.getBuilder().setCache(true);
+        StringWriter writer = new StringWriter();
+        element.serializeAndConsume(writer);
+        // System.out.println(writer);
     }
 
 }
