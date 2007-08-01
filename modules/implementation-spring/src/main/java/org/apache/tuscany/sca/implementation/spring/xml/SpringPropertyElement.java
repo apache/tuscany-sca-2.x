@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.spring.xml;
 
-
 /**
  * Represents a <property> element in a Spring application-context
  * - this has name and ref attributes
@@ -29,18 +28,18 @@ public class SpringPropertyElement {
 
     private String name;
     private String ref;
-    
-    public SpringPropertyElement( String name, String ref ) {
-    	this.name = name;
-    	this.ref = ref;
+
+    public SpringPropertyElement(String name, String ref) {
+        this.name = name;
+        this.ref = ref;
     }
-    
+
     public String getName() {
-    	return name;
+        return name;
     }
-    
+
     public String getRef() {
-    	return ref;
+        return ref;
     }
-    
+
 } // end class SpringPropertyElement

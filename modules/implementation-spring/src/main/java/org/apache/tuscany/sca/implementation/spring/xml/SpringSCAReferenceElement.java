@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.spring.xml;
 
-
 /**
  * Represents a <sca:reference> element in a Spring application-context
  * - this has id and className attributes
@@ -30,18 +29,18 @@ public class SpringSCAReferenceElement {
 
     private String name;
     private String type;
-    
-    public SpringSCAReferenceElement( String name, String type ) {
-    	this.name = name;
-    	this.type = type;
+
+    public SpringSCAReferenceElement(String name, String type) {
+        this.name = name;
+        this.type = type;
     }
-    
+
     public String getName() {
-    	return name;
+        return name;
     }
-    
+
     public String getType() {
-    	return type;
+        return type;
     }
-    
+
 } // end class SpringSCAReferenceElement

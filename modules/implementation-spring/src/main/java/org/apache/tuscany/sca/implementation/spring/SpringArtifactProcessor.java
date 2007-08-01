@@ -28,55 +28,50 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWireException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringXMLComponentTypeLoader;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
-
-/*
+/**
  * SpringArtifactProcessor is responsible for processing the XML of an <implementation.spring.../>
  * element in an SCA SCDL file.
+ * 
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
 public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImplementation> {
 
     private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_SPRING = "implementation.spring";
-    private static final QName IMPLEMENTATION_SPRING_QNAME = 
-    	new QName(Constants.SCA10_NS, IMPLEMENTATION_SPRING);
+    private static final QName IMPLEMENTATION_SPRING_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_SPRING);
     private static final String MSG_LOCATION_MISSING = "Reading implementation.spring - location attribute missing";
-    
-    private AssemblyFactory 		assemblyFactory;
-    private JavaInterfaceFactory	javaFactory;
-    private JavaInterfaceIntrospector 	interfaceIntrospector;
-    private PolicyFactory 			policyFactory;
+
+    private AssemblyFactory assemblyFactory;
+    private JavaInterfaceFactory javaFactory;
+    private JavaInterfaceIntrospector interfaceIntrospector;
+    private PolicyFactory policyFactory;
     // TODO: runtime needs to provide a better way to get the PropertyValueObjectFactory
     private JavaPropertyValueObjectFactory propertyFactory;
 
-
-    public SpringArtifactProcessor( AssemblyFactory 			assemblyFactory,
-    								JavaInterfaceFactory 		javaFactory,
-    								JavaInterfaceIntrospector 	interfaceIntrospector,
-    								PolicyFactory 				policyFactory,
-    		                        JavaPropertyValueObjectFactory 	propertyFactory ) {
-        this.assemblyFactory 	= assemblyFactory;
-        this.javaFactory 		= javaFactory;
+    public SpringArtifactProcessor(AssemblyFactory assemblyFactory,
+                                   JavaInterfaceFactory javaFactory,
+                                   JavaInterfaceIntrospector interfaceIntrospector,
+                                   PolicyFactory policyFactory,
+                                   JavaPropertyValueObjectFactory propertyFactory) {
+        this.assemblyFactory = assemblyFactory;
+        this.javaFactory = javaFactory;
         this.interfaceIntrospector = interfaceIntrospector;
-        this.policyFactory	 	= policyFactory;
-        this.propertyFactory 	= propertyFactory;
-        
+        this.policyFactory = policyFactory;
+        this.propertyFactory = propertyFactory;
+
     }
 
     /*
@@ -101,14 +96,14 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
     public SpringImplementation read(XMLStreamReader reader) throws ContributionReadException {
 
         try {
-        	/* Read the location attribute for the spring implementation  */
+            /* Read the location attribute for the spring implementation  */
             String springLocation = reader.getAttributeValue(null, LOCATION);
             if (springLocation == null) {
-                throw new ContributionReadException( MSG_LOCATION_MISSING );
+                throw new ContributionReadException(MSG_LOCATION_MISSING);
             }
             /* Create the Spring implementation and set the location into it */
             SpringImplementation springImplementation = new SpringImplementation();
-            springImplementation.setSpringLocation( springLocation );
+            springImplementation.setSpringLocation(springLocation);
 
             // Skip to end element
             while (reader.hasNext()) {
@@ -133,7 +128,7 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
      *  
      */
     private void processComponentType(SpringImplementation springImplementation) {
-        
+
         // Create a ComponentType and mark it unresolved
         ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setUnresolved(true);
@@ -144,7 +139,8 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
      * Write out the XML representation of the Spring implementation
      * <implementation.spring location="..." />
      */
-    public void write(SpringImplementation springImplementation, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(SpringImplementation springImplementation, XMLStreamWriter writer)
+        throws ContributionWriteException {
         try {
 
             writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_SPRING);
@@ -162,30 +158,30 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
      * Resolves the Spring implementation - loads the Spring application-context XML and
      * derives the spring implementation componentType from it
      */
-    public void resolve(SpringImplementation springImplementation, ModelResolver resolver) 
+    public void resolve(SpringImplementation springImplementation, ModelResolver resolver)
         throws ContributionResolveException {
 
-    	/* Load the Spring component type by reading the Spring application context */
-    	SpringXMLComponentTypeLoader springLoader = 
-    		new SpringXMLComponentTypeLoader( assemblyFactory, interfaceIntrospector, 
-    										  javaFactory, policyFactory );
-    	try {
-    		// Load the Spring Implementation information from its application context file...
-    	    springLoader.load( springImplementation );
-    	} catch ( ContributionReadException e ) {
-    		throw new ContributionResolveException( e );
-    	}
-    	
+        /* Load the Spring component type by reading the Spring application context */
+        SpringXMLComponentTypeLoader springLoader =
+            new SpringXMLComponentTypeLoader(assemblyFactory, interfaceIntrospector, javaFactory, policyFactory);
+        try {
+            // Load the Spring Implementation information from its application context file...
+            springLoader.load(springImplementation);
+        } catch (ContributionReadException e) {
+            throw new ContributionResolveException(e);
+        }
+
         ComponentType ct = springImplementation.getComponentType();
-        if( ct.isUnresolved() ) {
-        	// If the introspection fails to resolve, try to find a side file...
-        	ComponentType componentType = resolver.resolveModel(ComponentType.class, ct);
-	        if (componentType.isUnresolved()) {
-	            throw new ContributionResolveException("SpringArtifactProcessor: unable to resolve componentType for Spring component");
-	        } 
-	        springImplementation.setComponentType(componentType);
-	        
-	        springImplementation.setUnresolved(false);
+        if (ct.isUnresolved()) {
+            // If the introspection fails to resolve, try to find a side file...
+            ComponentType componentType = resolver.resolveModel(ComponentType.class, ct);
+            if (componentType.isUnresolved()) {
+                throw new ContributionResolveException(
+                                                       "SpringArtifactProcessor: unable to resolve componentType for Spring component");
+            }
+            springImplementation.setComponentType(componentType);
+
+            springImplementation.setUnresolved(false);
         } // end if
 
     } // end method resolve

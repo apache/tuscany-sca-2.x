@@ -31,12 +31,13 @@ import org.apache.tuscany.sca.databinding.Mediator;
  * implementation from the base implementation-java-runtime package of Tuscany SCA Java, since the
  * same properties are going to be rendered in the same way to simple Tuscany POJOs and to Spring
  * Bean POJOs.  Mike Edwards
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
 public class SpringPropertyValueObjectFactory extends JavaPropertyValueObjectFactory {
 
-	/**
-	 * Constructor simply defers to the superclass, along with the complete implementation...
-	 */
+    /**
+     * Constructor simply defers to the superclass, along with the complete implementation...
+     */
     public SpringPropertyValueObjectFactory(Mediator mediator) {
         super(mediator);
     } // end constructor JavaPropertyValueObjectFactory(Mediator mediator)

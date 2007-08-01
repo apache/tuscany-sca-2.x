@@ -28,13 +28,13 @@ import org.osoa.sca.annotations.Reference;
  */
 public class HelloWorldProxy implements HelloWorld {
 
-	// Here is the reference "delegate" - it implements the HelloWorld interface...
+    // Here is the reference "delegate" - it implements the HelloWorld interface...
     @Reference
     public HelloWorld delegate;
 
     public String sayHello(String s) {
-    	// Simply call the reference to satisfy the service request...
-    	System.out.println("HelloWorldProxy - calling sayHello");
+        // Simply call the reference to satisfy the service request...
+        System.out.println("HelloWorldProxy - calling sayHello");
         return delegate.sayHello(s);
     }
 

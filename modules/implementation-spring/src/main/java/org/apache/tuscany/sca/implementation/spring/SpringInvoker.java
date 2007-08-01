@@ -18,60 +18,54 @@
  */
 package org.apache.tuscany.sca.implementation.spring;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringBeanElement;
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.scope.InstanceWrapper;
-
-
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.beans.BeansException;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Initial implementation of a Spring bean invoker
- *
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
 public class SpringInvoker implements Invoker {
 
-	private Method					theMethod = null;
-	private Object					bean;
-	private SpringBeanElement		beanElement;
-	private boolean					badInvoker = false;
+    private Method theMethod = null;
+    private Object bean;
+    private SpringBeanElement beanElement;
+    private boolean badInvoker = false;
 
-	private AbstractApplicationContext springContext;
-	private Operation operation;
+    private AbstractApplicationContext springContext;
+    private Operation operation;
 
-	/**
-	 * SpringInvoker constructor
-	 * @param component - the Spring component to invoke
-	 * @param service - the service to invoke
-	 * @param operation - the operation to invoke
-	 */
-    public SpringInvoker( RuntimeComponent component,
-    					  AbstractApplicationContext springContext,
-    					  RuntimeComponentService service,
-    					  Operation operation) {
+    /**
+     * SpringInvoker constructor
+     * @param component - the Spring component to invoke
+     * @param service - the service to invoke
+     * @param operation - the operation to invoke
+     */
+    public SpringInvoker(RuntimeComponent component,
+                         AbstractApplicationContext springContext,
+                         RuntimeComponentService service,
+                         Operation operation) {
 
-    	this.springContext 	= springContext;
-    	this.operation 		= operation;
+        this.springContext = springContext;
+        this.operation = operation;
 
         // From the component and the service, identify the Spring Bean which is the target
-        SpringImplementation theImplementation = (SpringImplementation) component.getImplementation();
-        beanElement = theImplementation.getBeanFromService( service.getService() );
+        SpringImplementation theImplementation = (SpringImplementation)component.getImplementation();
+        beanElement = theImplementation.getBeanFromService(service.getService());
 
-        if( beanElement == null ) {
-        	badInvoker = true;
-        	return;
+        if (beanElement == null) {
+            badInvoker = true;
+            return;
         }
 
     } // end constructor SpringInvoker
@@ -79,22 +73,24 @@ public class SpringInvoker implements Invoker {
     // Lazy-load the method to avoid timing problems with the Spring Context
     private void setupMethod() {
         try {
-        	bean = springContext.getBean( beanElement.getId() );
+            bean = springContext.getBean(beanElement.getId());
             Class<?> beanClass = bean.getClass();
-            theMethod = JavaInterfaceUtil.findMethod( beanClass, operation );
+            theMethod = JavaInterfaceUtil.findMethod(beanClass, operation);
             //System.out.println("SpringInvoker - found method " + theMethod.getName() );
-        } catch ( BeansException e ) {
-        	badInvoker = true;
-        } catch ( NoSuchMethodException e ) {
-        	badInvoker = true;
+        } catch (BeansException e) {
+            badInvoker = true;
+        } catch (NoSuchMethodException e) {
+            badInvoker = true;
         }
     }
 
     private Object doInvoke(Object payload) throws SpringInvocationException {
-    	if( theMethod == null ) setupMethod();
+        if (theMethod == null)
+            setupMethod();
 
-    	if( badInvoker ) throw new SpringInvocationException("Spring invoker incorrectly configured");
-    	// Invoke the method on the Spring bean using the payload, returning the results
+        if (badInvoker)
+            throw new SpringInvocationException("Spring invoker incorrectly configured");
+        // Invoke the method on the Spring bean using the payload, returning the results
         try {
             Object ret;
 
@@ -105,9 +101,9 @@ public class SpringInvoker implements Invoker {
             }
             return ret;
         } catch (InvocationTargetException e) {
-            throw new SpringInvocationException( e.getMessage() );
+            throw new SpringInvocationException(e.getMessage());
         } catch (Exception e) {
-            throw new SpringInvocationException( e.getMessage() );
+            throw new SpringInvocationException(e.getMessage());
         }
 
     } // end method doInvoke
@@ -125,6 +121,5 @@ public class SpringInvoker implements Invoker {
         //System.out.println("Spring Invoker - invoke called");
         return msg;
     } // end method invoke
-
 
 } // end class SpringInvoker

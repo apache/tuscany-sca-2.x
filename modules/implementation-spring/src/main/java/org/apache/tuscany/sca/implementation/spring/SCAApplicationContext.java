@@ -24,10 +24,11 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.core.io.Resource;
 
 /**
- * An <code>ApplicationContext</code> specialization that registers namespace handlers for 
- * SCA elements - in particular the <service/>, <reference/> and <property/> elements which
- * are provided as SCA extensions to the Spring application context schema
- *
+ * An <code>ApplicationContext</code> specialization that registers namespace
+ * handlers for SCA elements - in particular the <service/>, <reference/> and
+ * <property/> elements which are provided as SCA extensions to the Spring
+ * application context schema
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
  */
 public class SCAApplicationContext extends AbstractXmlApplicationContext {
     public static final String APP_CONTEXT_PROP = "org.springframework.sca.application.context";
@@ -45,6 +46,6 @@ public class SCAApplicationContext extends AbstractXmlApplicationContext {
     }
 
     protected Resource[] getConfigResources() {
-        return new Resource[]{appXml};
+        return new Resource[] {appXml};
     }
 }

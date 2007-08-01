@@ -30,25 +30,25 @@ import org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorld
 
 public class TestSCAPropertyBean implements HelloWorld {
 
-	private String hello = "Go away";
+    private String hello = "Go away";
 
-	/**
-	 * Provides the operation of the "HelloWorld" interface - a simple string response
-	 * to a string input message, where the response is a greeting followed by the original
-	 * input message.
-	 */
-	public String sayHello( String message ) {
-		System.out.println("TestHelloWorldBean - sayHello called");
-		return( hello + " " + message );
-	}
+    /**
+     * Provides the operation of the "HelloWorld" interface - a simple string response
+     * to a string input message, where the response is a greeting followed by the original
+     * input message.
+     */
+    public String sayHello(String message) {
+        System.out.println("TestHelloWorldBean - sayHello called");
+        return (hello + " " + message);
+    }
 
-	/**
-	 * Public setter for the (unannotated) field "hello" which constitutes an SCA
-	 * property
-	 * @param message - the message to use for the response to "sayHello"
-	 */
-	public void setHello( String message ) {
-		hello = message;
-	}
+    /**
+     * Public setter for the (unannotated) field "hello" which constitutes an SCA
+     * property
+     * @param message - the message to use for the response to "sayHello"
+     */
+    public void setHello(String message) {
+        hello = message;
+    }
 
 } // end class TestSCAPropertyBean

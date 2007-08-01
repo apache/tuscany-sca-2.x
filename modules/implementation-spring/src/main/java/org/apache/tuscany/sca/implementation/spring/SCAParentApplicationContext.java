@@ -23,22 +23,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -58,26 +55,27 @@ import org.springframework.core.io.Resource;
  * context that must provide Spring beans that correspond to the property or reference, as derived
  * from the SCA composite in which the Spring application context is an implementation.
  *
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
  */
 class SCAParentApplicationContext implements ApplicationContext {
 
-	// The Spring implementation for which this is the parent application context
-	private SpringImplementation 	implementation;
-	private RuntimeComponent 		component;
-	private ProxyFactory 			proxyService;
-	private JavaPropertyValueObjectFactory propertyFactory;
+    // The Spring implementation for which this is the parent application context
+    private SpringImplementation implementation;
+    private RuntimeComponent component;
+    private ProxyFactory proxyService;
+    private JavaPropertyValueObjectFactory propertyFactory;
 
     private static final String[] EMPTY_ARRAY = new String[0];
 
-	public SCAParentApplicationContext( 	RuntimeComponent component,
-											SpringImplementation implementation,
-											ProxyFactory proxyService,
-											JavaPropertyValueObjectFactory propertyValueObjectFactory) {
-		this.implementation = implementation;
-		this.component		= component;
-		this.proxyService 	= proxyService;
-		this.propertyFactory = propertyValueObjectFactory;
-	} // end constructor
+    public SCAParentApplicationContext(RuntimeComponent component,
+                                       SpringImplementation implementation,
+                                       ProxyFactory proxyService,
+                                       JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+        this.implementation = implementation;
+        this.component = component;
+        this.proxyService = proxyService;
+        this.propertyFactory = propertyValueObjectFactory;
+    } // end constructor
 
     public Object getBean(String name) throws BeansException {
         return getBean(name, null);
@@ -90,41 +88,39 @@ class SCAParentApplicationContext implements ApplicationContext {
      * @return Object - a Bean which matches the requested bean
      */
     public Object getBean(String name, Class requiredType) throws BeansException {
-    	System.out.println("Spring parent context - getBean called for name: " + name );
-    	// The expectation is that the requested Bean is either a reference or a property
-    	// from the Spring context
-    	for ( Reference reference : implementation.getReferences() ) {
-    		if( reference.getName().equals(name) ) {
-    			// Extract the Java interface for the reference (it can't be any other interface type
-    	    	// for a Spring application context)
-    	    	if( requiredType == null ) {
-    	    		JavaInterface javaInterface =
-    	    			(JavaInterface) reference.getInterfaceContract().getInterface();
-    	    		requiredType = javaInterface.getJavaClass();
-    	    	}
-    	    	// Create and return eturn the proxy for the reference
-    	    	return getService( requiredType, reference.getName() );
-    		} // end if
-    	} // end for
+        System.out.println("Spring parent context - getBean called for name: " + name);
+        // The expectation is that the requested Bean is either a reference or a property
+        // from the Spring context
+        for (Reference reference : implementation.getReferences()) {
+            if (reference.getName().equals(name)) {
+                // Extract the Java interface for the reference (it can't be any other interface type
+                // for a Spring application context)
+                if (requiredType == null) {
+                    JavaInterface javaInterface = (JavaInterface)reference.getInterfaceContract().getInterface();
+                    requiredType = javaInterface.getJavaClass();
+                }
+                // Create and return eturn the proxy for the reference
+                return getService(requiredType, reference.getName());
+            } // end if
+        } // end for
 
-    	// For a property, get the name and the required Java type and create a Bean
-    	// of that type with the value inserted.
-    	for ( Property property : implementation.getProperties() ) {
-    		if( property.getName().equals(name) ) {
-    			if( requiredType == null ) {
-    				// The following code only deals with a subset of types and was superceded
-    				// by the information from the implementation (which uses Classes as found
-    				// in the Spring implementation itself.
-    				//requiredType = JavaXMLMapper.getJavaType( property.getXSDType() );
-    				requiredType = implementation.getPropertyClass( name );
-    			}
-    			return getPropertyBean( requiredType, property.getName() );
-    		} // end if
-    	} // end for
-    	throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name );
+        // For a property, get the name and the required Java type and create a Bean
+        // of that type with the value inserted.
+        for (Property property : implementation.getProperties()) {
+            if (property.getName().equals(name)) {
+                if (requiredType == null) {
+                    // The following code only deals with a subset of types and was superceded
+                    // by the information from the implementation (which uses Classes as found
+                    // in the Spring implementation itself.
+                    //requiredType = JavaXMLMapper.getJavaType( property.getXSDType() );
+                    requiredType = implementation.getPropertyClass(name);
+                }
+                return getPropertyBean(requiredType, property.getName());
+            } // end if
+        } // end for
+        throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name);
 
     } // end method getBean( String, Class )
-
 
     /**
      * Creates a proxy Bean for a reference
@@ -152,32 +148,30 @@ class SCAParentApplicationContext implements ApplicationContext {
      * @param name - the Property name
      * @return - a Bean of the specified property, with value set
      */
-    private <B> B getPropertyBean( Class requiredType, String name) {
-    	B propertyObject = null;
-    	// Get the component's list of properties
-    	List<ComponentProperty> props = component.getProperties();
-    	for ( ComponentProperty prop : props ) {
-    		if ( prop.getName().equals(name) ) {
-    			// On finding the property, create a factory for it and create a Bean using
-    			// the factory
-    			ObjectFactory factory = propertyFactory.createValueFactory( prop,
-    					                                                    prop.getValue(),
-    					                                                    requiredType );
-    			propertyObject = (B)factory.getInstance();
-    		} // end if
-    	} // end for
+    private <B> B getPropertyBean(Class requiredType, String name) {
+        B propertyObject = null;
+        // Get the component's list of properties
+        List<ComponentProperty> props = component.getProperties();
+        for (ComponentProperty prop : props) {
+            if (prop.getName().equals(name)) {
+                // On finding the property, create a factory for it and create a Bean using
+                // the factory
+                ObjectFactory factory = propertyFactory.createValueFactory(prop, prop.getValue(), requiredType);
+                propertyObject = (B)factory.getInstance();
+            } // end if
+        } // end for
 
-    	return propertyObject;
+        return propertyObject;
     }
 
     public boolean containsBean(String name) {
-    	// TODO
-    	System.out.println("Spring parent context - containsBean called for name: " + name );
+        // TODO
+        System.out.println("Spring parent context - containsBean called for name: " + name);
         return false;
     }
 
     public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
-    	// TODO
+        // TODO
         return false;
     }
 
@@ -233,13 +227,12 @@ class SCAParentApplicationContext implements ApplicationContext {
         return null;
     }
 
-    public Map getBeansOfType(Class type, boolean includePrototypes, boolean includeFactoryBeans)
-        throws BeansException {
+    public Map getBeansOfType(Class type, boolean includePrototypes, boolean includeFactoryBeans) throws BeansException {
         return null;
     }
 
-    public boolean isPrototype( String theString ) {
-    	return false;
+    public boolean isPrototype(String theString) {
+        return false;
     }
 
     public BeanFactory getParentBeanFactory() {

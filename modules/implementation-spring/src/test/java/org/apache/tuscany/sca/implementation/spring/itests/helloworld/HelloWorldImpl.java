@@ -26,11 +26,11 @@ package org.apache.tuscany.sca.implementation.spring.itests.helloworld;
  */
 public class HelloWorldImpl implements HelloWorld {
 
-	static String hello = "Hello ";
+    static String hello = "Hello ";
 
     public String sayHello(String s) {
-    	// Simply call the reference to satisfy the service request...
-    	System.out.println("HelloWorldImpl - sayHello called");
+        // Simply call the reference to satisfy the service request...
+        System.out.println("HelloWorldImpl - sayHello called");
         return (hello + s);
     }
 

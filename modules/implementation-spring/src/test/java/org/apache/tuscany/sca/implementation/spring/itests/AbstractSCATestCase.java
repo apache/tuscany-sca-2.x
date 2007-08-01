@@ -30,9 +30,9 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
 
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance(getCompositeName());
-        service = (T) domain.getService(getServiceClass(), "ClientComponent");
+        service = (T)domain.getService(getServiceClass(), "ClientComponent");
     }
-    
+
     abstract protected Class getServiceClass();
 
     protected void tearDown() throws Exception {
@@ -42,8 +42,8 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     protected String getCompositeName() {
         String className = this.getClass().getName();
         String compositeName = className.substring(0, className.length() - 8).replace('.', '/') + ".composite";
-        System.out.println( "Using composite: " + compositeName );
-        return compositeName; 
+        System.out.println("Using composite: " + compositeName);
+        return compositeName;
     }
 
 }

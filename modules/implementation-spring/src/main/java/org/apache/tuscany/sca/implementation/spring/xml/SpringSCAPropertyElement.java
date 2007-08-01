@@ -18,28 +18,27 @@
  */
 package org.apache.tuscany.sca.implementation.spring.xml;
 
-
 /**
  * Represents an <sca:property> element in a Spring application-context
  * - this has name and type attributes
- * 
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
 public class SpringSCAPropertyElement {
 
     private String name;
     private String type;
-    
-    public SpringSCAPropertyElement( String name, String type ) {
-    	this.name = name;
-    	this.type = type;
+
+    public SpringSCAPropertyElement(String name, String type) {
+        this.name = name;
+        this.type = type;
     }
-    
+
     public String getName() {
-    	return name;
+        return name;
     }
-    
+
     public String getType() {
-    	return type;
+        return type;
     }
-    
+
 } // end class SpringPropertyElement
