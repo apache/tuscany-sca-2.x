@@ -108,9 +108,11 @@ public class DefaultSCADomain extends SCADomain {
         }
 
         try {
-            //ModelResolverImpl modelResolver = new ModelResolverImpl(applicationClassLoader);
             String contributionURI = FileHelper.getName(contributionURL.getPath());
-            contribution = contributionService.contribute(contributionURI, contributionURL/*, modelResolver*/, false);
+            if(contributionURI == null || contributionURI.length() == 0) {
+                contributionURI = contributionURL.toString();
+            }
+            contribution = contributionService.contribute(contributionURI, contributionURL, false);
         } catch (ContributionException e) {
             throw new ServiceRuntimeException(e);
         } catch (IOException e) {
