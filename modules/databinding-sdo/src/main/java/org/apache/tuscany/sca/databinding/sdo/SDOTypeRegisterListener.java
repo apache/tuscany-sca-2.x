@@ -24,8 +24,9 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
-import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.service.ContributionListener;
+import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.helper.HelperContext;
@@ -37,19 +38,25 @@ import commonj.sdo.impl.HelperProvider;
  * 
  * @version $Rev$ $Date$
  */
-public class ImportSDOPostProcessor implements ContributionPostProcessor {
+public class SDOTypeRegisterListener implements ContributionListener {
     private static final String URI_SEPARATOR = "/";
     private static final String JAVA_SEPARATOR = ".";
     private static final String WEB_INF_PREFIX = "WEB-INF/classes/";
 
     private HelperContextRegistry helperContextRegistry;
 
-    public ImportSDOPostProcessor(HelperContextRegistry helperContextRegistry) {
+    public SDOTypeRegisterListener(HelperContextRegistry helperContextRegistry) {
         super();
         this.helperContextRegistry = helperContextRegistry;
     }
 
-    public void visit(Contribution contribution) {
+
+
+    /**
+     * Scan the contribution for available SDO Static Types and register them
+     * with the appropriate SDO HelperContext
+     */
+    public void contributionAdded(ContributionRepository repository, Contribution contribution) {
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
             String artifactURI = artifact.getURI();
             if (artifactURI.endsWith("Factory.class")) {
@@ -70,6 +77,20 @@ public class ImportSDOPostProcessor implements ContributionPostProcessor {
                 }
             }
         }
+    }
+    
+    /**
+     * When a contribution gets removed, remove the helper context associated with the contribution
+     */
+    public void contributionRemoved(ContributionRepository repository, Contribution contribution) {
+        helperContextRegistry.unregister(contribution.getURI());
+    }
+
+    /**
+     * 
+     */
+    public void contributionUpdated(ContributionRepository repository, Contribution oldContribution, Contribution contribution) {
+        // Should we do something here ?
     }
 
     /**
