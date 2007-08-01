@@ -19,15 +19,17 @@
 
 package org.apache.tuscany.sca.core;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-
+import java.util.Set;
 
 /**
- * Default implementation of a registry to hold all the Tuscany core extension 
- * points. As the point of contact for all extension artifacts this registry 
- * allows loaded extensions to find all other parts of the system and 
- * register themselves appropriately. 
+ * Default implementation of a registry to hold all the Tuscany core extension
+ * points. As the point of contact for all extension artifacts this registry
+ * allows loaded extensions to find all other parts of the system and register
+ * themselves appropriately.
  * 
  * @version $Rev$ $Date$
  */
@@ -37,17 +39,19 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     /**
      * Add an extension point to the registry. This default implementation
      * stores extensions against the interfaces that they implement.
+     * 
      * @param extensionPoint The instance of the extension point
-     */    
+     */
     public void addExtensionPoint(Object extensionPoint) {
-        Class[] interfaces = extensionPoint.getClass().getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-            extensionPoints.put(interfaces[i], extensionPoint);
+        Set<Class> interfaces = getAllInterfaces(extensionPoint.getClass());
+        for (Class i : interfaces) {
+            extensionPoints.put(i, extensionPoint);
         }
     }
 
     /**
      * Get the extension point by the interface that it implements
+     * 
      * @param extensionPointType The lookup key (extension point interface)
      * @return The instance of the extension point
      */
@@ -57,12 +61,41 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
 
     /**
      * Remove an extension point based on the interface that it implements
+     * 
      * @param extensionPoint The extension point to remove
      */
     public void removeExtensionPoint(Object extensionPoint) {
-        Class[] interfaces = extensionPoint.getClass().getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-            extensionPoints.remove(interfaces[i]);
+        Set<Class> interfaces = getAllInterfaces(extensionPoint.getClass());
+        for (Class i : interfaces) {
+            extensionPoints.remove(i);
+        }
+    }
+
+    /**
+     * Returns the set of interfaces implemented by the given class and its
+     * ancestors or a blank set if none
+     */
+    private static Set<Class> getAllInterfaces(Class clazz) {
+        Set<Class> implemented = new HashSet<Class>();
+        getAllInterfaces(clazz, implemented);
+        return implemented;
+    }
+
+    private static void getAllInterfaces(Class clazz, Set<Class> implemented) {
+        Class[] interfaces = clazz.getInterfaces();
+        for (Class interfaze : interfaces) {
+            String name = interfaze.getName();
+            if (name.startsWith("java.") || name.startsWith("javax.")) {
+                continue;
+            }
+            if (Modifier.isPublic(interfaze.getModifiers())) {
+                implemented.add(interfaze);
+            }
+        }
+        Class<?> superClass = clazz.getSuperclass();
+        // Object has no superclass so check for null
+        if (superClass != null && !superClass.equals(Object.class)) {
+            getAllInterfaces(superClass, implemented);
         }
     }
 

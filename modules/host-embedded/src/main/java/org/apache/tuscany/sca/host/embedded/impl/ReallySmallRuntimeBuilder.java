@@ -82,8 +82,8 @@ import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
-import org.apache.tuscany.sca.core.invocation.JDKProxyService;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.DefaultProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
@@ -110,10 +110,11 @@ import commonj.work.WorkManager;
 
 public class ReallySmallRuntimeBuilder {
 
-    public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry, InterfaceContractMapper mapper, MessageFactory messageFactory) {
+    public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry,
+                                                  InterfaceContractMapper mapper,
+                                                  MessageFactory messageFactory) {
 
-        // Create a proxy factory
-        ProxyFactory proxyFactory = new JDKProxyService(messageFactory, mapper);
+        ProxyFactory proxyFactory = new DefaultProxyFactoryExtensionPoint(messageFactory, mapper);
 
         // FIXME Pass these around differently as they are not extension points
         registry.addExtensionPoint(proxyFactory);
@@ -141,11 +142,11 @@ public class ReallySmallRuntimeBuilder {
 
         // Add the SCABindingProcessor extension
         PolicyFactory policyFactory = registry.getExtensionPoint(PolicyFactory.class);
-        SCABindingProcessor scaBindingProcessor = new SCABindingProcessor(assemblyFactory,
-                                                                          policyFactory,
-                                                                          scaBindingFactory);
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        processors.addArtifactProcessor(scaBindingProcessor);       
+        SCABindingProcessor scaBindingProcessor =
+            new SCABindingProcessor(assemblyFactory, policyFactory, scaBindingFactory);
+        StAXArtifactProcessorExtensionPoint processors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        processors.addArtifactProcessor(scaBindingProcessor);
 
         // Create a provider factory extension point
         ProviderFactoryExtensionPoint providerFactories = new DefaultProviderFactoryExtensionPoint();
@@ -153,11 +154,9 @@ public class ReallySmallRuntimeBuilder {
         providerFactories.addProviderFactory(new RuntimeSCABindingProviderFactory());
 
         // Create the composite activator
-        CompositeActivator compositeActivator = new CompositeActivatorImpl(
-                                                                           assemblyFactory, scaBindingFactory,
-                                                                           mapper, scopeRegistry,
-                                                                           workScheduler, wireProcessor,
-                                                                           providerFactories);
+        CompositeActivator compositeActivator =
+            new CompositeActivatorImpl(assemblyFactory, scaBindingFactory, mapper, scopeRegistry, workScheduler,
+                                       wireProcessor, providerFactories);
 
         return compositeActivator;
     }
@@ -167,7 +166,7 @@ public class ReallySmallRuntimeBuilder {
      * 
      * @throws ActivationException
      */
-    public static ContributionService createContributionService(ClassLoader classLoader, 
+    public static ContributionService createContributionService(ClassLoader classLoader,
                                                                 ExtensionPointRegistry registry,
                                                                 ContributionFactory contributionFactory,
                                                                 AssemblyFactory assemblyFactory,
@@ -182,16 +181,18 @@ public class ReallySmallRuntimeBuilder {
         registry.addExtensionPoint(staxProcessors);
 
         // Create and register STAX processors for SCA assembly XML
-        ExtensibleStAXArtifactProcessor staxProcessor = 
+        ExtensibleStAXArtifactProcessor staxProcessor =
             new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory,
+                                                                   mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors
+            .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         //Register STAX processors for Contribution Metadata 
-        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory,contributionFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory,
+                                                                              staxProcessor));
         staxProcessors.addArtifactProcessor(new JavaImportProcessor());
-        staxProcessors.addArtifactProcessor(new JavaExportProcessor());        
-
+        staxProcessors.addArtifactProcessor(new JavaExportProcessor());
 
         // Create URL artifact processor extension point
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
@@ -217,14 +218,15 @@ public class ReallySmallRuntimeBuilder {
         // Create Contribution Model Resolver extension point
         ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
         registry.addExtensionPoint(modelResolverExtensionPoint);
-        
+
         modelResolverExtensionPoint.addResolver(Composite.class, CompositeModelResolver.class);
         modelResolverExtensionPoint.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
         modelResolverExtensionPoint.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
-        
+
         //FIXME Deprecate and remove this
         //Create contribution postProcessor extension point
-        DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
+        DefaultContributionPostProcessorExtensionPoint contributionPostProcessors =
+            new DefaultContributionPostProcessorExtensionPoint();
         ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
         registry.addExtensionPoint(contributionPostProcessors);
 
@@ -241,22 +243,21 @@ public class ReallySmallRuntimeBuilder {
         }
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
-        
-        ContributionService contributionService = new ContributionServiceImpl(repository, packageProcessor,
-                                                                              documentProcessor, staxProcessor, postProcessor, 
-                                                                              modelResolverExtensionPoint, assemblyFactory,
-                                                                              contributionFactory, xmlFactory);
+
+        ContributionService contributionService =
+            new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor, postProcessor,
+                                        modelResolverExtensionPoint, assemblyFactory, contributionFactory, xmlFactory);
         return contributionService;
     }
 
     public static ScopeRegistry createScopeRegistry(ExtensionPointRegistry registry) {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
-        ScopeContainerFactory[] factories = new ScopeContainerFactory[] {new CompositeScopeContainerFactory(),
-                                                                         new StatelessScopeContainerFactory(),
-                                                                         new RequestScopeContainerFactory(),
-         new ConversationalScopeContainerFactory(null),
-        // new HttpSessionScopeContainer(monitor)
-        };
+        ScopeContainerFactory[] factories =
+            new ScopeContainerFactory[] {new CompositeScopeContainerFactory(), new StatelessScopeContainerFactory(),
+                                         new RequestScopeContainerFactory(),
+                                         new ConversationalScopeContainerFactory(null),
+            // new HttpSessionScopeContainer(monitor)
+            };
         for (ScopeContainerFactory f : factories) {
             scopeRegistry.register(f);
         }
@@ -309,11 +310,11 @@ public class ReallySmallRuntimeBuilder {
             if (reader != null) {
                 reader.close();
             }
-            
-            if (is != null){
+
+            if (is != null) {
                 try {
                     is.close();
-                } catch( IOException ioe) {
+                } catch (IOException ioe) {
                     //ignore
                 }
             }
@@ -338,11 +339,12 @@ public class ReallySmallRuntimeBuilder {
     /**
      * Parse a service declaration in the form class;attr=value,attr=value and
      * return a map of attributes
+     * 
      * @param declaration
      * @return a map of attributes
      */
     public static Map<String, String> parseServiceDeclaration(String declaration) {
-        Map<String, String> attributes = new HashMap<String, String>(); 
+        Map<String, String> attributes = new HashMap<String, String>();
         StringTokenizer tokens = new StringTokenizer(declaration);
         String className = tokens.nextToken(";");
         if (className != null) {
