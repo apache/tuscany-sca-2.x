@@ -104,9 +104,7 @@
         <wsdl:port binding="tns:HelloWorldSoapBinding"
             name="HelloWorldSoapPort">
             <wsdlsoap:address
-                location="http://localhost:8080/HelloWorld/services/HelloWorldService" />
-            <!-- wsdlsoap:address
-                location="http://localhost:8080/sample-helloworld-ws-sdo-webapp/services/HelloWorld/services/HelloWorldService" / -->
+                location="http://localhost:8080/sample-helloworld-ws-sdo-webapp/services/HelloWorld/services/HelloWorldService" />
         </wsdl:port>
     </wsdl:service>
 
