@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.databinding.sdo.module;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextProcessor;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistry;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistryImpl;
-import org.apache.tuscany.sca.databinding.sdo.ImportSDOPostProcessor;
+import org.apache.tuscany.sca.databinding.sdo.SDOTypeRegisterListener;
 import org.apache.tuscany.sca.databinding.sdo.ImportSDOProcessor;
 import org.apache.tuscany.sca.databinding.sdo.SDODataBinding;
 import org.apache.tuscany.sca.databinding.sdo.String2DataObject;
@@ -62,8 +62,8 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         HelperContextRegistry contextRegistry = new HelperContextRegistryImpl();
         processors.addArtifactProcessor(new ImportSDOProcessor(contextRegistry));
 
-        ContributionPostProcessorExtensionPoint postProcessors = registry.getExtensionPoint(ContributionPostProcessorExtensionPoint.class);
-        postProcessors.addPostProcessor(new ImportSDOPostProcessor(contextRegistry));
+        ContributionListenerExtensionPoint listeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class);
+        listeners.addContributionListener(new SDOTypeRegisterListener(contextRegistry));
         
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         transformers.addTransformer(new DataObject2String());
