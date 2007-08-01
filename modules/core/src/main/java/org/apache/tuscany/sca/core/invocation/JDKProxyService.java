@@ -85,4 +85,11 @@ public class JDKProxyService implements ProxyFactory {
         //        }
 
     }
+
+    /**
+     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#isProxyClass(java.lang.Class)
+     */
+    public boolean isProxyClass(Class<?> clazz) {
+        return Proxy.isProxyClass(clazz);
+    }
 }

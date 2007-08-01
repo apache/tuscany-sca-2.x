@@ -68,5 +68,12 @@ public interface ProxyFactory {
      * @throws IllegalArgumentException if the object supplied is not a proxy
      */
     <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
+    
+    /**
+     * Test if a given class is a generated proxy class by this factory
+     * @param clazz A java class or interface
+     * @return true if the class is a generated proxy class by this factory 
+     */
+    boolean isProxyClass(Class<?> clazz);
 
 }

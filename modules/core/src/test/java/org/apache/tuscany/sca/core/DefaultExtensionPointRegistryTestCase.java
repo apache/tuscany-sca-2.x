@@ -37,7 +37,7 @@ public class DefaultExtensionPointRegistryTestCase extends TestCase {
         assertNull(registry.getExtensionPoint(MyRegistry.class));
     }
 
-    private static interface MyRegistry {
+    public static interface MyRegistry {
         void doSomething();
     }
 
