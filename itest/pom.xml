@@ -63,6 +63,7 @@
                 <module>spec-api</module>
                 -->
                 <module>wsdl</module>
+                <module>references</module>
             </modules>
         </profile>
 
