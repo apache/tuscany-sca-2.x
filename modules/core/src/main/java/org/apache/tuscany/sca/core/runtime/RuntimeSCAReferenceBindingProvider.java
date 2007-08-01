@@ -53,7 +53,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public boolean supportsAsyncOneWayInvocation() {
-        return true;
+        return false;
     }
 
     public Invoker createInvoker(Operation operation) {

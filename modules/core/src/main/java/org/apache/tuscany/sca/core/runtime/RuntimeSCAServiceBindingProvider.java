@@ -52,7 +52,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
     }
 
     public boolean supportsAsyncOneWayInvocation() {
-        return true;
+        return false;
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
