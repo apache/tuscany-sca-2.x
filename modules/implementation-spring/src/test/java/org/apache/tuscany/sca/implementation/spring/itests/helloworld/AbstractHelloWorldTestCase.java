@@ -27,9 +27,9 @@ import org.apache.tuscany.sca.implementation.spring.itests.AbstractSCATestCase;
  */
 public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<HelloWorld> {
 
-	/**
-	 * Calls the hello world service and checks that it gives the right response...
-	 */
+    /**
+     * Calls the hello world service and checks that it gives the right response...
+     */
     public void testCalculator() throws Exception {
         assertEquals("Hello petra", service.sayHello("petra"));
     }

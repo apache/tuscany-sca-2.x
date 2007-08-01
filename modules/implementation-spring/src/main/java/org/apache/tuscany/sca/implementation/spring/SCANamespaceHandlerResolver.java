@@ -22,9 +22,10 @@ import org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver;
 import org.springframework.beans.factory.xml.NamespaceHandler;
 
 /**
- * Overrides the default Spring namespace resolver to automatically register {@link ScaNamespaceHandler} instead of
- * requiring a value to be supplied in a Spring configuration
- *
+ * Overrides the default Spring namespace resolver to automatically register
+ * {@link ScaNamespaceHandler} instead of requiring a value to be supplied in a
+ * Spring configuration
+ * 
  * @version $$Rev: 511195 $$ $$Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $$
  */
 public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver {

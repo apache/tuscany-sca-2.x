@@ -26,22 +26,23 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * ImplementationProviderFactory for Spring implementation type
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  *
  */
 public class SpringImplementationProviderFactory implements ImplementationProviderFactory<SpringImplementation> {
 
-	private ProxyFactory proxyService;
-	private JavaPropertyValueObjectFactory propertyFactory;
+    private ProxyFactory proxyService;
+    private JavaPropertyValueObjectFactory propertyFactory;
 
-	/**
-	 * Simple constructor
-	 *
-	 */
-    public SpringImplementationProviderFactory( ProxyFactory proxyService,
-    		JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+    /**
+     * Simple constructor
+     *
+     */
+    public SpringImplementationProviderFactory(ProxyFactory proxyService,
+                                               JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
-        this.proxyService 		= proxyService;
-        this.propertyFactory 	= propertyValueObjectFactory;
+        this.proxyService = proxyService;
+        this.propertyFactory = propertyValueObjectFactory;
     }
 
     /**
@@ -53,8 +54,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        return new SpringImplementationProvider( component, implementation,
-        										 proxyService, propertyFactory );
+        return new SpringImplementationProvider(component, implementation, proxyService, propertyFactory);
     }
 
     /**

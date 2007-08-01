@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.spring.xml;
 
-
 /**
  * Represents a <sca:service> element in a Spring application-context
  * - this has id and className attributes
@@ -31,23 +30,23 @@ public class SpringSCAServiceElement {
     private String name;
     private String type;
     private String target;
-    
-    public SpringSCAServiceElement( String name, String type, String target ) {
-    	this.name = name;
-    	this.type = type;
-    	this.target = target;
+
+    public SpringSCAServiceElement(String name, String type, String target) {
+        this.name = name;
+        this.type = type;
+        this.target = target;
     }
-    
+
     public String getName() {
-    	return name;
+        return name;
     }
-    
+
     public String getType() {
-    	return type;
+        return type;
     }
-    
+
     public String getTarget() {
-    	return target;
+        return target;
     }
-    
+
 } // end class SpringSCAServiceElement

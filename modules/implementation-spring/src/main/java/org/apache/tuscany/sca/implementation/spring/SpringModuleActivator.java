@@ -40,30 +40,30 @@ import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
-/*
+/**
  * ModuleActivator class for the Spring module
  * - this class is invoked by the Tuscany SCA core when the Spring module is included in the
  * runtime package
  * - it registers a series of extension points which the core will use when dealing with
  * components which use <implementation.spring.../>
- * 
+ * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
 public class SpringModuleActivator implements ModuleActivator {
 
     private SpringArtifactProcessor springArtifactProcessor;
-    private AssemblyFactory 		assemblyFactory;
-    private JavaInterfaceFactory 	javaFactory;
-    private PolicyFactory 			policyFactory;
+    private AssemblyFactory assemblyFactory;
+    private JavaInterfaceFactory javaFactory;
+    private PolicyFactory policyFactory;
     private JavaInterfaceIntrospector interfaceIntrospector;
     private JavaClassIntrospectorExtensionPoint classVisitors;
-    
+
     public SpringModuleActivator() {
         assemblyFactory = new DefaultAssemblyFactory();
         javaFactory = new DefaultJavaInterfaceFactory();
         policyFactory = new DefaultPolicyFactory();
-        
+
     } // end constructor
-    
+
     /*
      * start() is called when the Tuscany core starts the Spring module
      * 
@@ -78,27 +78,30 @@ public class SpringModuleActivator implements ModuleActivator {
 
         // TODO: could the runtime have a default PropertyValueObjectFactory in the registry
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class); 
+        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         JavaPropertyValueObjectFactory propertyFactory = new JavaPropertyValueObjectFactory(mediator);
-               
+
         // Tools for Java interface handling
-        JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = 
-        	registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
+        JavaInterfaceIntrospectorExtensionPoint interfaceVisitors =
+            registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
         interfaceIntrospector = new ExtensibleJavaInterfaceIntrospector(javaFactory, interfaceVisitors);
 
         // Create the artifact processor for Spring artifacts and add to artifact processors
-        springArtifactProcessor = new SpringArtifactProcessor( assemblyFactory, javaFactory,
-        		interfaceIntrospector, policyFactory, propertyFactory );
-        
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        springArtifactProcessor =
+            new SpringArtifactProcessor(assemblyFactory, javaFactory, interfaceIntrospector, policyFactory,
+                                        propertyFactory);
+
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(springArtifactProcessor);
-        
+
         // Create SpringImplementationFactory and add to provider factories 
         SpringImplementationProviderFactory springImplementationProviderFactory =
-            new SpringImplementationProviderFactory( proxyFactory, propertyFactory );
-        
-        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+            new SpringImplementationProviderFactory(proxyFactory, propertyFactory);
+
+        ProviderFactoryExtensionPoint providerFactories =
+            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(springImplementationProviderFactory);
     }
 
@@ -107,17 +110,18 @@ public class SpringModuleActivator implements ModuleActivator {
      * At present, no action is taken
      */
     public void stop(ExtensionPointRegistry registry) {
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessors.removeArtifactProcessor(springArtifactProcessor);    	
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessors.removeArtifactProcessor(springArtifactProcessor);
     }
-    
+
     /*
      * Return a map of the extension points for the Spring module.
      * Not implemented at present (the core does not seem to require it)
      */
     public Object[] getExtensionPoints() {
         classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
-        return new Object[] { classVisitors };
+        return new Object[] {classVisitors};
     }
 
 }

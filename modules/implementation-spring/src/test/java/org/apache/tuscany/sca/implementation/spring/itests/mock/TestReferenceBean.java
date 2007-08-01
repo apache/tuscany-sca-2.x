@@ -28,29 +28,29 @@ import org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorld
 
 public class TestReferenceBean implements HelloWorld {
 
-	// The reference
-	private HelloWorld bean;
+    // The reference
+    private HelloWorld bean;
 
-	// Classic "Hello xxx" response to any input message
-	public String sayHello( String message ) {
-		System.out.println("TestReferenceBean - sayHello called");
-		return( bean.sayHello( message ) );
-	}
+    // Classic "Hello xxx" response to any input message
+    public String sayHello(String message) {
+        System.out.println("TestReferenceBean - sayHello called");
+        return (bean.sayHello(message));
+    }
 
-	/**
-	 * Setter for the bean reference
-	 * @param theBean
-	 */
-	public void setBean( HelloWorld theBean ) {
-		this.bean = theBean;
-	}
+    /**
+     * Setter for the bean reference
+     * @param theBean
+     */
+    public void setBean(HelloWorld theBean) {
+        this.bean = theBean;
+    }
 
-	/**
-	 * Getter for the reference
-	 * @return
-	 */
-	public HelloWorld getBean( ) {
-		return this.bean;
-	}
+    /**
+     * Getter for the reference
+     * @return
+     */
+    public HelloWorld getBean() {
+        return this.bean;
+    }
 
 } // end class TestReferenceBean

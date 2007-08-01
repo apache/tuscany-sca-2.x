@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.spring.xml;
 import java.util.List;
 import java.util.ArrayList;
 
-
 /**
  * Represents a <bean> element in a Spring application-context
  * - this has id and className attributes
@@ -35,26 +34,25 @@ public class SpringBeanElement {
     private String className;
     private List<SpringPropertyElement> properties = new ArrayList<SpringPropertyElement>();
 
-    public SpringBeanElement( String id, String className ) {
-    	this.id = id;
-    	this.className = className;
+    public SpringBeanElement(String id, String className) {
+        this.id = id;
+        this.className = className;
     }
-    
+
     public String getClassName() {
-    	return className;
+        return className;
     }
-    
+
     public String getId() {
-    	return id;
+        return id;
     }
-    
+
     public List<SpringPropertyElement> getProperties() {
-    	return properties;
+        return properties;
     }
-    
-    public void addProperty( SpringPropertyElement property ) {
-    	properties.add( property );
+
+    public void addProperty(SpringPropertyElement property) {
+        properties.add(property);
     }
-    
-    
+
 } // end class SpringBeanElement
