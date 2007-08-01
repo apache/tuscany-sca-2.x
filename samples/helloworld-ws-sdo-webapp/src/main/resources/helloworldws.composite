@@ -23,8 +23,6 @@
             xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
             name="helloworldws">
             
-    <!-- dbsdo:import.sdo factory="helloworld.HelloworldFactory"/ -->
-
     <service name="HelloWorld" promote="HelloWorldImpl">
         <interface.java interface="helloworld.HelloWorld" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
