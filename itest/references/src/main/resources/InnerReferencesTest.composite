@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:foo="http://foo" targetNamespace="http://foo"
+    name="InnerReferencesTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <service name="AComponent" promote="AComponent">
+        <interface.java interface="org.apache.tuscany.sca.itest.references.AComponent" />
+    </service>
+
+    <component name="AComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.AComponentImpl" />
+        <reference name="bReference" target="BComponent" />
+        <reference name="cReference" target="CComponent" />
+        <reference name="dReference1" target="DComponent" />
+        <reference name="DReference2" target="DComponent" />
+    </component>
+
+    <component name="BComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.BComponentImpl" />
+        <reference name="cReference" target="CComponent" />
+    </component>
+
+    <component name="CComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.CComponentImpl" />
+    </component>
+
+    <component name="DComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.DComponentImpl" />
+    </component>
+</composite>
