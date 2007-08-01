@@ -17,8 +17,11 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://sample" xmlns:sample="http://sample"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Composite3">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+           name="Composite3">
 
     <component name="ComponentE">
         <implementation.java class="sample.ComponentEImpl" />
