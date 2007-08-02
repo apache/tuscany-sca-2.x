@@ -50,7 +50,7 @@
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>2.1_3</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -85,11 +85,16 @@
         <!-- yuk. all the exclusions are necessary as otherwise just about every geronimo
             jar gets downloaded, and also there's a problem with one of the pom's causing
             the build to always fail -->
-
         <dependency>
-            <groupId>openejb</groupId>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-client</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core</artifactId>
-            <version>2.1.1</version>
+            <version>3.0.0-SNAPSHOT</version>
             <scope>test</scope>
 
             <exclusions>
@@ -181,18 +186,22 @@
                     <groupId>org.apache.geronimo.specs</groupId>
                     <artifactId>geronimo-servlet_2.4_spec</artifactId>
                 </exclusion>
-                <exclusion>
+                <!-- 
+                    <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
                     <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-                </exclusion>
+                    </exclusion>
+                -->
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
                     <artifactId>geronimo-j2ee-jacc_1.0_spec</artifactId>
                 </exclusion>
+                <!-- 
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
                     <artifactId>geronimo-jms_1.1_spec</artifactId>
                 </exclusion>
+                 -->
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
                     <artifactId>geronimo-j2ee-management_1.0_spec</artifactId>
@@ -249,10 +258,12 @@
                     <groupId>concurrent</groupId>
                     <artifactId>concurrent</artifactId>
                 </exclusion>
-                <exclusion>
+                <!-- 
+                    <exclusion>
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
-                </exclusion>
+                    </exclusion>
+                -->
                 <exclusion>
                     <groupId>mx4j</groupId>
                     <artifactId>mx4j</artifactId>
@@ -273,10 +284,12 @@
                     <groupId>commons-cli</groupId>
                     <artifactId>commons-cli</artifactId>
                 </exclusion>
-                <exclusion>
+                <!-- 
+                    <exclusion>
                     <groupId>asm</groupId>
                     <artifactId>asm</artifactId>
-                </exclusion>
+                    </exclusion>
+                -->
                 <exclusion>
                     <groupId>axis</groupId>
                     <artifactId>axis</artifactId>

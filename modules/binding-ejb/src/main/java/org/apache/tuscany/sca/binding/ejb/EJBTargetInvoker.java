@@ -45,7 +45,7 @@ public class EJBTargetInvoker implements Invoker {
             msg.setBody(resp);
         } catch (Throwable e) {
             e.printStackTrace();
-            msg.setBody(e);
+            msg.setFaultBody(e);
         }
         return msg;
     }

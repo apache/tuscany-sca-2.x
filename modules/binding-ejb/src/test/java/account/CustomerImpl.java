@@ -22,17 +22,19 @@ import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+import calculator.AddService;
+
 @Service(Customer.class)
 public class CustomerImpl implements Customer {
 
-    private BankManagerFacade extEJBService = null;
+    private AddService extEJBService = null;
 
-    public BankManagerFacade getExtEJBService() {
+    public AddService getExtEJBService() {
         return extEJBService;
     }
 
     @Reference
-    public void setExtEJBService(BankManagerFacade extEJBService) {
+    public void setExtEJBService(AddService extEJBService) {
         this.extEJBService = extEJBService;
     }
 
@@ -44,7 +46,7 @@ public class CustomerImpl implements Customer {
         System.out.println("In component implementation. Invoking external EJB through EJB reference binding  ");
 
         try {
-            Double balance = extEJBService.getAccountBalance(accountNo); //invoke external ejb through ejb reference binding 
+            Double balance = extEJBService.add(amount.doubleValue(), 1000); //invoke external ejb through ejb reference binding 
             total =  balance + amount; 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

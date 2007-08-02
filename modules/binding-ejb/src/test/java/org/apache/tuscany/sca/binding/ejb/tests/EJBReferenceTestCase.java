@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.binding.ejb.tests;
 
+import java.util.Properties;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
@@ -28,17 +33,33 @@ import account.Customer;
  * Invokes the component which calls the reference using the EJB binding 
  */
 public class EJBReferenceTestCase extends TestCase {
-
+    private static final int MOCK_PORT = 8085;
+    private static final int OPENEJB_PORT = 4201;
     private SCADomain scaDomain;
 
     protected void setUp() throws Exception {
+        System.setProperty("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
+        System.setProperty("java.naming.provider.url", "ejbd://localhost:" + MOCK_PORT);
         System.setProperty("managed", "false");
-        System.setProperty("java.naming.factory.initial", "org.openejb.client.RemoteInitialContextFactory");
-        System.setProperty("java.naming.provider.url", "localhost:4321");
+
         scaDomain = SCADomain.newInstance("account/account.composite");
-        
-//        new Thread(new SocketTracer(4321, 4201)).start();
-        new Thread(new MockServer(4321)).start();
+
+        // To capture the network traffice for the MockServer, uncomment the next line
+        // new Thread(new SocketTracer(MOCK_PORT, OPENEJB_PORT)).start();
+
+        // Start the mock server to simulate the remote EJB
+        new Thread(new MockServer(MOCK_PORT)).start();
+    }
+
+    private InitialContext getRemoteInitialContext() throws NamingException {
+        Properties properties = new Properties();
+
+        properties.setProperty("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
+        properties.setProperty("java.naming.provider.url", "ejbd://localhost:" + OPENEJB_PORT);
+
+        InitialContext context = new InitialContext(properties);
+        // System.out.println(context.lookup("hello-addservice/AddServiceBean/calculator.AddService"));        
+        return context;
     }
 
     protected void tearDown() throws Exception {
@@ -48,9 +69,9 @@ public class EJBReferenceTestCase extends TestCase {
     public void testCalculator() throws Exception {
         Customer customer = scaDomain.getService(Customer.class, "CustomerComponent");
         // This is one of the customer numbers in bank application running on Geronimo
-        String accountNo = "1234567890"; 
+        String accountNo = "1234567890";
         Double balance = customer.depositAmount(accountNo, new Double(100));
-        System.out.println("Balance amount for account " + accountNo + " is $" + balance);
-        assertEquals(1105.35, balance);
+        // System.out.println("Balance amount for account " + accountNo + " is $" + balance);
+        assertEquals(1200.0, balance);
     }
 }
