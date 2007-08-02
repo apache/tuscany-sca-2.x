@@ -18,12 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.ejb.util;
 
-import java.io.Externalizable;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
-import java.rmi.UnexpectedException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
@@ -32,8 +29,6 @@ import java.util.Map;
 import javax.ejb.EJBObject;
 import javax.rmi.CORBA.Util;
 
-import org.apache.tuscany.sca.binding.ejb.java2idl.ExceptionType;
-import org.apache.tuscany.sca.binding.ejb.java2idl.Java2IDLUtil;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
 import org.omg.CORBA.portable.ApplicationException;
@@ -306,25 +301,12 @@ public class EJBHandler {
 
             } catch (ApplicationException ex) {
                 in = (InputStream)ex.getInputStream();
-                String id = in.read_string();
-                // Check if the id matches to any declared exceptions for the
-                // method
-                String[] exceptionTypes = methodInfo.getExceptionTypes();
-                for (int i = 0; i < exceptionTypes.length; i++) {
-                    Class exceptionType = loadClass(exceptionTypes[i]);
-                    String exceptionId = ExceptionType.getExceptionType(exceptionType).getExceptionRepositoryId();
-                    if (id.equals(exceptionId)) {
-                        Throwable t = (Throwable)in.read_value(exceptionType);
-                        throw new ServiceRuntimeException(t); // FIXME should
-                        // be
-                        // ServcieBusinessException?
-                        // no support by
-                        // Tuscany core
-                        // for
-                        // ServcieBusinessException.
-                    }
+                try {
+                    org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil.throwException(methodInfo.getMethod(), in);
+                    return null;
+                } catch (Throwable e) {
+                    throw new RemoteException(e.getMessage(), e);
                 }
-                throw new UnexpectedException(id);
             } catch (RemarshalException ex) {
                 return invokeRemoteCORBACall(stub, methodName, args);
             } finally {
@@ -341,39 +323,7 @@ public class EJBHandler {
      * @param type
      */
     protected void writeValue(OutputStream out, Object value, Class type) {
-        if (type == null)
-            out.write_value((Serializable)value);
-        else if (type == Object.class || type == Serializable.class || type == Externalizable.class) {
-            // Any
-            Util.writeAny(out, value);
-        } else if (type == Integer.TYPE) {
-            // java int maps to CORBA long
-            out.write_long(((Integer)value).intValue());
-        } else if (type == Short.TYPE) {
-            out.write_short(((Short)value).shortValue());
-        } else if (type == Boolean.TYPE) {
-            out.write_boolean(((Boolean)value).booleanValue());
-        } else if (type == Byte.TYPE) {
-            out.write_octet(((Byte)value).byteValue());
-        } else if (type == Long.TYPE) {
-            out.write_longlong(((Long)value).longValue());
-        } else if (type == Double.TYPE) {
-            out.write_double(((Double)value).doubleValue());
-        } else if (type == Float.TYPE) {
-            out.write_float(((Float)value).floatValue());
-        } else if (type == Character.TYPE) {
-            out.write_wchar(((Character)value).charValue());
-        } else if (type.isArray()) {
-            out.write_value((Serializable)value, type);
-        } else if (Java2IDLUtil.isRemoteInterface(type)) {
-            // Remote interface
-            Util.writeRemoteObject(out, value);
-        } else if (Java2IDLUtil.isAbstractInterface(type)) {
-            // Non-remote Interface
-            Util.writeAbstractObject(out, value);
-        } else {
-            out.write_value((Serializable)value, type);
-        }
+        org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil.writeObject(type, value, out);
     }
 
     /**
@@ -382,40 +332,6 @@ public class EJBHandler {
      * @return
      */
     protected Object readValue(InputStream in, Class type) {
-        Object value = null;
-        if (type == null) {
-            value = in.read_value();
-        } else if (type == Object.class || type == Serializable.class || type == Externalizable.class) {
-            value = Util.readAny(in);
-        } else if (type == Integer.TYPE) {
-            value = Integer.valueOf(in.read_long());
-        } else if (type == Short.TYPE) {
-            value = new Short(in.read_short());
-        } else if (type == Boolean.TYPE) {
-            value = Boolean.valueOf(in.read_boolean());
-        } else if (type == Byte.TYPE) {
-            value = new Byte(in.read_octet());
-        } else if (type == Long.TYPE) {
-            value = new Long(in.read_longlong());
-        } else if (type == Float.TYPE) {
-            value = new Float(in.read_float());
-        } else if (type == Double.TYPE) {
-            value = new Double(in.read_double());
-        } else if (type == Character.TYPE) {
-            value = new Character(in.read_wchar());
-        } else if (type.isArray()) {
-            // []
-            value = in.read_value(type);
-        } else if (Java2IDLUtil.isRemoteInterface(type)) {
-            // java.rmi.Remote
-            value = in.read_Object(type);
-        } else if (Java2IDLUtil.isAbstractInterface(type)) {
-            // Non-remote Interface
-            value = in.read_abstract_interface(type);
-        } else {
-            // java.io.Serializable
-            value = in.read_value(type);
-        }
-        return value;
+        return org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil.readObject(type, in);
     }
 }

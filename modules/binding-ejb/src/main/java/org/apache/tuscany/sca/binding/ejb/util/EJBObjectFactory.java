@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.ejb.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.UnexpectedException;
 
@@ -184,7 +185,8 @@ public final class EJBObjectFactory {
             try {
                 org.omg.CORBA.portable.OutputStream out = ejbHomeObject._request("create", true);
                 in = (org.omg.CORBA_2_3.portable.InputStream)ejbHomeObject._invoke(out);
-                return (Object)in.read_Object(Object.class);
+                // The Remote stub should be available in JDK
+                return in.read_Object(Remote.class);
             } catch (ApplicationException ex) {
                 in = (org.omg.CORBA_2_3.portable.InputStream)ex.getInputStream();
                 String id = in.read_string();

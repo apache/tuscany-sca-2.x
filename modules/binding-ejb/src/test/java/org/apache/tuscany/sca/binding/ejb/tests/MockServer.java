@@ -28,48 +28,122 @@ import java.net.Socket;
 public class MockServer implements Runnable {
 
     private int listen;
+    byte seq[][] =
+        {
+         {79, 69, 74, 80, 47, 51, 46, 48, 1, -84, -19, 0, 5, 119, 58, 1, 27, 0, 54, 47, 104, 101, 108, 108, 111, 45,
+          97, 100, 100, 115, 101, 114, 118, 105, 99, 101, 47, 65, 100, 100, 83, 101, 114, 118, 105, 99, 101, 66, 101,
+          97, 110, 47, 99, 97, 108, 99, 117, 108, 97, 116, 111, 114, 46, 65, 100, 100, 83, 101, 114, 118, 105, 99, 101,
+          112},
 
-    private int[] r1 = new int[] {79, 69, 74, 80, 47, 50, 46, 48, 172, 237, 0, 5, 119, 1, 1, 116, 0, 5, 71, 85, 69, 83, 84};
-    private int[] r2 = new int[] {79, 69, 74, 80, 47, 50, 46, 48, 172, 237, 0, 5, 119, 1, 13, 118, 114, 0, 58, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 103, 101, 114, 111, 110, 105, 109, 111, 46, 115, 97, 109, 112, 108, 101, 115, 46, 98, 97, 110, 107, 46, 101, 106, 98, 46, 66, 97, 110, 107, 77, 97, 110, 97, 103, 101, 114, 70, 97, 99, 97, 100, 101, 72, 111, 109, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 112, 118, 114, 0, 54, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 103, 101, 114, 111, 110, 105, 109, 111, 46, 115, 97, 109, 112, 108, 101, 115, 46, 98, 97, 110, 107, 46, 101, 106, 98, 46, 66, 97, 110, 107, 77, 97, 110, 97, 103, 101, 114, 70, 97, 99, 97, 100, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 112, 112, 112, 119, 185, 1, 0, 180, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 103, 101, 114, 111, 110, 105, 109, 111, 46, 115, 97, 109, 112, 108, 101, 115, 47, 66, 97, 110, 107, 47, 49, 46, 49, 46, 49, 47, 99, 97, 114, 63, 69, 74, 66, 77, 111, 100, 117, 108, 101, 61, 66, 97, 110, 107, 69, 74, 66, 46, 106, 97, 114, 44, 74, 50, 69, 69, 65, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 61, 111, 114, 103, 46, 97, 112, 97, 99, 104, 101, 46, 103, 101, 114, 111, 110, 105, 109, 111, 46, 115, 97, 109, 112, 108, 101, 115, 47, 66, 97, 110, 107, 47, 49, 46, 49, 46, 49, 47, 99, 97, 114, 44, 106, 50, 101, 101, 84, 121, 112, 101, 61, 83, 116, 97, 116, 101, 108, 101, 115, 115, 83, 101, 115, 115, 105, 111, 110, 66, 101, 97, 110, 44, 110, 97, 109, 101, 61, 66, 97, 110, 107, 77, 97, 110, 97, 103, 101, 114, 70, 97, 99, 97, 100, 101, 66, 101, 97, 110, 0, 1};
-    private int[] r3 = new int[] {79, 69, 74, 80, 47, 50, 46, 48, 172, 237, 0, 5, 119, 1, 4, 112};
-    private int[] r4 = new int[] {79, 69, 74, 80, 47, 50, 46, 48, 172, 237, 0, 5, 119, 1, 4, 115, 114, 0, 16, 106, 97, 118, 97, 46, 108, 97, 110, 103, 46, 68, 111, 117, 98, 108, 101, 128, 179, 194, 74, 41, 107, 251, 4, 2, 0, 1, 68, 0, 5, 118, 97, 108, 117, 101, 120, 114, 0, 16, 106, 97, 118, 97, 46, 108, 97, 110, 103, 46, 78, 117, 109, 98, 101, 114, 134, 172, 149, 29, 11, 148, 224, 139, 2, 0, 0, 120, 112, 64, 143, 106, 204, 204, 204, 204, 205};
+         {79, 69, 74, 80, 47, 50, 46, 48, -84, -19, 0, 5, 119, 3, 1, 13, 1, 118, 114, 0, 25, 99, 97, 108, 99, 117, 108,
+          97, 116, 111, 114, 46, 65, 100, 100, 83, 101, 114, 118, 105, 99, 101, 72, 111, 109, 101, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 120, 112, 118, 114, 0, 21, 99, 97, 108, 99, 117, 108, 97, 116, 111, 114, 46, 65, 100, 100, 83,
+          101, 114, 118, 105, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 112, 112, 112, 119, 38, 7, 0, 31, 104,
+          101, 108, 108, 111, 45, 97, 100, 100, 115, 101, 114, 118, 105, 99, 101, 47, 65, 100, 100, 83, 101, 114, 118,
+          105, 99, 101, 66, 101, 97, 110, -1, -1, 0, 0},
+
+         {79, 69, 74, 80, 47, 51, 46, 48, 0, -84, -19, 0, 5, 119, 1, 10, 116, 0, 31, 104, 101, 108, 108, 111, 45, 97,
+          100, 100, 115, 101, 114, 118, 105, 99, 101, 47, 65, 100, 100, 83, 101, 114, 118, 105, 99, 101, 66, 101, 97,
+          110, 119, 2, -1, -1, 112, 119, 1, 1, 112, 118, 114, 0, 25, 99, 97, 108, 99, 117, 108, 97, 116, 111, 114, 46,
+          65, 100, 100, 83, 101, 114, 118, 105, 99, 101, 72, 111, 109, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 112,
+          119, 9, 0, 6, 99, 114, 101, 97, 116, 101, 0},
+         {79, 69, 74, 80, 47, 50, 46, 48, -84, -19, 0, 5, 119, 2, 1, 4, 112},
+
+         {79, 69, 74, 80, 47, 51, 46, 48, 0, -84, -19, 0, 5, 119, 1, 23, 116, 0, 31, 104, 101, 108, 108, 111, 45, 97,
+          100, 100, 115, 101, 114, 118, 105, 99, 101, 47, 65, 100, 100, 83, 101, 114, 118, 105, 99, 101, 66, 101, 97,
+          110, 119, 2, -1, -1, 112, 119, 1, 1, 112, 118, 114, 0, 21, 99, 97, 108, 99, 117, 108, 97, 116, 111, 114, 46,
+          65, 100, 100, 83, 101, 114, 118, 105, 99, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 112, 119, 24, 0, 3, 97,
+          100, 100, 2, 4, 64, 89, 0, 0, 0, 0, 0, 0, 4, 64, -113, 64, 0, 0, 0, 0, 0},
+         {79, 69, 74, 80, 47, 50, 46, 48, -84, -19, 0, 5, 119, 2, 1, 4, 115, 114, 0, 16, 106, 97, 118, 97, 46, 108, 97,
+          110, 103, 46, 68, 111, 117, 98, 108, 101, -128, -77, -62, 74, 41, 107, -5, 4, 2, 0, 1, 68, 0, 5, 118, 97,
+          108, 117, 101, 120, 114, 0, 16, 106, 97, 118, 97, 46, 108, 97, 110, 103, 46, 78, 117, 109, 98, 101, 114,
+          -122, -84, -107, 29, 11, -108, -32, -117, 2, 0, 0, 120, 112, 64, -111, 48, 0, 0, 0, 0, 0}
+
+        };
 
     public MockServer(int listen) {
         this.listen = listen;
     }
-    
+
     public void run() {
         try {
             ServerSocket ss = new ServerSocket(listen);
-
-            doExchange(ss.accept(), 15, r1);
-            doExchange(ss.accept(), 80, r2);
-            doExchange(ss.accept(), 109, r3);
-            doExchange(ss.accept(), 163, r4);
+            for (int i = 0; i < seq.length; i += 2) {
+                // System.out.println("Processing request[" + i/2 + "]");
+                doExchange(ss.accept(), seq[i], seq[i + 1]);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void doExchange(Socket sin, int readCount, int[] write) throws IOException, InterruptedException {
-        InputStream is = sin.getInputStream();
-        OutputStream os = sin.getOutputStream();
-        readBytes(is, readCount);
-        writeBytes(os, write);
-        sin.close();
+    private void doExchange(Socket socket, byte[] read, byte[] write) throws IOException, InterruptedException {
+        Thread t2 = readBytes(socket, read.length);
+        Thread t1 = writeBytes(socket, write);
+        t1.join();
+        t2.join();
+        socket.close();
     }
 
-    private void readBytes(InputStream is, int x) throws IOException, InterruptedException {
-        for (int i = 0; i < x; i++) {
-            is.read();
-        }
+    private Thread readBytes(Socket socket, int x) throws IOException, InterruptedException {
+        byte[] buf = new byte[x];
+        Thread t = new Reader(socket, buf);
+        t.start();
+        return t;
     }
 
-    private void writeBytes(OutputStream os, int[] bs) throws IOException, InterruptedException {
-        for (int i = 0; i < bs.length; i++) {
-            os.write(bs[i]);
+    private Thread writeBytes(Socket socket, byte[] bs) throws IOException, InterruptedException {
+        Thread t = new Writer(socket, bs);
+        t.start();
+        return t;
+    }
+
+    private static class Reader extends Thread {
+
+        private InputStream is;
+        private byte[] buf;
+
+        Reader(Socket socket, byte[] buf) throws IOException {
+            this.is = socket.getInputStream();
+            this.buf = buf;
         }
+
+        public void run() {
+            try {
+                int totalSize = buf.length;
+                int readSize = 0;
+                int offset = 0;
+                while (totalSize > 0 && (readSize = is.read(buf, offset, totalSize)) != -1) {
+                    offset += readSize;
+                    totalSize -= readSize;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private static class Writer extends Thread {
+
+        private OutputStream os;
+        private byte[] buf;
+
+        Writer(Socket socket, byte[] buf) throws IOException {
+            this.os = socket.getOutputStream();
+            this.buf = buf;
+        }
+
+        public void run() {
+            try {
+                os.write(buf);
+                os.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }

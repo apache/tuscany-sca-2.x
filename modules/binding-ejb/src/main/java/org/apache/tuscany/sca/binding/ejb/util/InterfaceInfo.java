@@ -28,8 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.apache.tuscany.sca.binding.ejb.java2idl.Java2IDL;
-import org.apache.tuscany.sca.binding.ejb.java2idl.OperationType;
+import org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil;
 
 // import commonj.sdo.DataObject;
 
@@ -59,16 +58,15 @@ public class InterfaceInfo implements Serializable {
          */
         Map idlNames = AccessController.doPrivileged(new PrivilegedAction<Map>() {
             public Map run() {
-                return Java2IDL.getIDLMapping(iface);
+                return Java2IDLUtil.mapMethodToOperation(iface);
             }
         });
         Iterator i = idlNames.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry)i.next();
             Method method = (Method)entry.getKey();
-            OperationType operationType = (OperationType)entry.getValue();
             MethodInfo methodInfo = new MethodInfo(method);
-            methodInfo.setIDLName(operationType.getIDLName());
+            methodInfo.setIDLName((String) entry.getValue());
             methods.put(method.getName(), methodInfo);
         }
     }

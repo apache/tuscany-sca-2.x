@@ -36,6 +36,8 @@ public class MethodInfo implements Serializable {
     private String[] exceptionTypes;
 
     private String IDLName;
+    
+    private transient Method method;
 
     /**
      * Type Signature Java Type -------------- --------- Z boolean B byte C char
@@ -172,5 +174,12 @@ public class MethodInfo implements Serializable {
      */
     public void setIDLName(String name) {
         IDLName = name;
+    }
+
+    /**
+     * @return the method
+     */
+    public Method getMethod() {
+        return method;
     }
 }

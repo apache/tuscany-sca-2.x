@@ -45,23 +45,39 @@ public class SocketTracer implements Runnable {
                 Socket sin = ss.accept();
 
                 Socket sout = new Socket("localhost", send);
-                
+
                 Thread st = new Thread(new Send(sin, sout));
                 st.start();
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+     * @param buf
+     * @param count
+     */
+    static synchronized void dump(String str, byte[] buf, int count) {
+        // System.out.println(Thread.currentThread());
+        System.out.print(str+"{");
+        for (int j = 0; j < count; j++) {
+            if (j == count - 1) {
+                System.out.println(buf[j] + "}, ");
+            } else {
+                System.out.print(buf[j] + ", ");
+            }
+        }
+    }
 }
+
 
 class Send implements Runnable {
 
     Socket sin;
     Socket sout;
-    
+
     Send(Socket sin, Socket sout) {
         this.sin = sin;
         this.sout = sout;
@@ -75,17 +91,21 @@ class Send implements Runnable {
             rt.start();
 
             OutputStream outout = sout.getOutputStream();
-
             InputStream is = sin.getInputStream();
+            byte[] buf = new byte[4096];
             int i = 0;
+            int count = 0;
             while ((i = is.read()) != -1) {
-                System.out.println("out: " + i);
+                buf[count++] = (byte)i;
                 outout.write(i);
             }
+            SocketTracer.dump("Req: ", buf, count);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }
 
 class Reply implements Runnable {
@@ -100,11 +120,14 @@ class Reply implements Runnable {
 
     public void run() {
         try {
+            byte[] buf = new byte[4096];
             int i = 0;
+            int count = 0;
             while ((i = is.read()) != -1) {
-                System.out.println("reply: " + i);
+                buf[count++] = (byte)i;
                 outout.write(i);
             }
+            SocketTracer.dump("Res: ", buf, count);
         } catch (Exception e) {
             e.printStackTrace();
         }

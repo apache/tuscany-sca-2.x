@@ -60,7 +60,7 @@ public class NamingEndpoint {
                 throw new IllegalArgumentException("Invalid corbaname: " + name);
             }    
 
-            this.jndiName = parts[1]; // The logical jndi name
+            this.jndiName = name; // The logical jndi name
             this.locator = new EJBLocator(parts[0], managed);
 
         } else {
