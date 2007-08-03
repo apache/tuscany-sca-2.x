@@ -17,26 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.resolver.impl;
+package org.apache.tuscany.sca.contribution.resolver;
 
 import java.util.List;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * A model resolver implementation that considers Exports in any available contribution
  *
  * @version $Rev: 560435 $ $Date: 2007-07-27 18:26:55 -0700 (Fri, 27 Jul 2007) $
  */
-public class ImportAllModelResolverImpl implements ModelResolver {
+public class DefaultImportAllModelResolver implements ModelResolver {
     
     private Import import_;
     private List<Contribution> contributions;
     
-    public ImportAllModelResolverImpl(Import import_, List<Contribution> contributions) {
+    public DefaultImportAllModelResolver(Import import_, List<Contribution> contributions) {
         this.import_ = import_;
         this.contributions = contributions;
     }

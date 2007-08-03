@@ -17,9 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
+package org.apache.tuscany.sca.contribution.namespace;
 
-
+import org.apache.tuscany.sca.contribution.Import;
 
 /**
  * The representation of an XML namespace import.

@@ -17,15 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
+package org.apache.tuscany.sca.contribution.namespace;
+
+import org.apache.tuscany.sca.contribution.Export;
 
 
 /**
- * The representation of an export for the contribution
- * @deprecated
- *  
+ * The representation of an XML namespace export.
+ * 
  * @version $Rev$ $Date$
  */
-public interface ContributionExport extends NamespaceExport {
+public interface NamespaceExport extends Export {
 
+    /**
+     * Get Namespace that identifies the export
+     * 
+     * @return The exported namespace
+     */
+    String getNamespace();
+
+    /**
+     * Set Namespace that identifies the export
+     * 
+     * @param namespace The exported namespace
+     */
+    void setNamespace(String namespace);
+    
 }

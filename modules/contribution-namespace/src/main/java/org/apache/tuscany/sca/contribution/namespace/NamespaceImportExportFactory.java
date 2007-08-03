@@ -17,28 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
-
+package org.apache.tuscany.sca.contribution.namespace;
 
 /**
- * The representation of an XML namespace export.
+ * Base Namespace import/export model factory
  * 
  * @version $Rev$ $Date$
  */
-public interface NamespaceExport extends Export {
+public interface NamespaceImportExportFactory {
 
     /**
-     * Get Namespace that identifies the export
+     * Create a namespace import model object
      * 
-     * @return The exported namespace
+     * @return The new NamespaceImport model object
      */
-    String getNamespace();
-
-    /**
-     * Set Namespace that identifies the export
-     * 
-     * @param namespace The exported namespace
-     */
-    void setNamespace(String namespace);
+    NamespaceImport createNamespaceImport();
     
+    /**
+     * Create a namespace export model object
+     * 
+     * @return The new NamespaceExport model object
+     */
+    NamespaceExport createNamespaceExport();
 }

@@ -32,8 +32,6 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.NamespaceExport;
-import org.apache.tuscany.sca.contribution.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -51,8 +49,6 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
     
     private static final QName CONTRIBUTION = new QName(SCA10_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA10_NS, "deployable");
-    private static final QName IMPORT = new QName(SCA10_NS, "import");
-    private static final QName EXPORT = new QName(SCA10_NS, "export");
     
     private final AssemblyFactory assemblyFactory;
     private final ContributionFactory contributionFactory;
@@ -116,26 +112,6 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
                         composite.setUnresolved(true);
                         
                         contribution.getDeployables().add(composite);
-                    } else if (IMPORT.equals(element)) {
-                        String ns = reader.getAttributeValue(null, "namespace");
-                        if (ns == null) {
-                            throw new ContributionReadException("Attribute 'namespace' is missing");
-                        }
-                        String location = reader.getAttributeValue(null, "location");
-                        NamespaceImport namespaceImport = this.contributionFactory.createNamespaceImport();
-                        if (location != null) {
-                            namespaceImport.setLocation(location);
-                        }
-                        namespaceImport.setNamespace(ns);
-                        contribution.getImports().add(namespaceImport);
-                    } else if (EXPORT.equals(element)) {
-                        String ns = reader.getAttributeValue(null, "namespace");
-                        if (ns == null) {
-                            throw new ContributionReadException("Attribute 'namespace' is missing");
-                        }
-                        NamespaceExport namespaceExport = this.contributionFactory.createNamespaceExport();
-                        namespaceExport.setNamespace(ns);
-                        contribution.getExports().add(namespaceExport);
                     } else{
                         //process extension
                         Object extension = extensionProcessor.read(reader);

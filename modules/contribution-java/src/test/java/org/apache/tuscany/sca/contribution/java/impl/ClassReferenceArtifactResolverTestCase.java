@@ -49,13 +49,21 @@ public class ClassReferenceArtifactResolverTestCase extends TestCase {
         resolver = null;
     }
     
-    
+    /**
+     * Test ClassReference resolution
+     * 
+     */
     public void testResolveClass() {
         ClassReference ref = new ClassReference(getClass().getName());
         ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
+        assertFalse(clazz.isUnresolved());
         assertTrue(clazz.getJavaClass() == getClass());
     }
     
+    /**
+     * Test ClassReference resolution of inexistent class
+     *
+     */
     public void testUnresolvedClass() {
         ClassReference ref = new ClassReference("NonExistentClass");
         ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);

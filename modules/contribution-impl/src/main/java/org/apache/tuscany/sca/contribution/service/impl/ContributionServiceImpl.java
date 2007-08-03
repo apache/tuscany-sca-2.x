@@ -35,12 +35,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
-import org.apache.tuscany.sca.contribution.Export;
-import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.NamespaceExport;
-import org.apache.tuscany.sca.contribution.NamespaceImport;
-import org.apache.tuscany.sca.contribution.java.JavaExport;
-import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -48,10 +42,10 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.impl.ImportAllModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
 /**
@@ -87,6 +81,11 @@ public class ContributionServiceImpl implements ContributionService {
     private StAXArtifactProcessor staxProcessor;
     
     /**
+     * Event listener for contribution operations
+     */
+    private ExtensibleContributionListener contributionListener;
+    
+    /**
      * Registry of available model resolvers
      */
     
@@ -117,6 +116,7 @@ public class ContributionServiceImpl implements ContributionService {
                                    PackageProcessor packageProcessor,
                                    URLArtifactProcessor documentProcessor,
                                    StAXArtifactProcessor staxProcessor,
+                                   ExtensibleContributionListener contributionListener,
                                    ContributionPostProcessor postProcessor,
                                    ModelResolverExtensionPoint modelResolverExtensionPoint,
                                    AssemblyFactory assemblyFactory,
@@ -127,6 +127,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.packageProcessor = packageProcessor;
         this.artifactProcessor = documentProcessor;
         this.staxProcessor = staxProcessor;
+        this.contributionListener = contributionListener;
         this.postProcessor = postProcessor;
         this.modelResolverExtensionPoint = modelResolverExtensionPoint;
         this.xmlFactory = xmlFactory;
@@ -174,11 +175,18 @@ public class ContributionServiceImpl implements ContributionService {
         return this.contributionRepository.getContribution(uri);
     }
 
+    /**
+     * Remove a contribution and notify listener that contribution was removed
+     */
     public void remove(String uri) throws ContributionException {
         Contribution contribution = contributionRepository.getContribution(uri);
         this.contributionRepository.removeContribution(contribution);
+        this.contributionListener.contributionRemoved(this.contributionRepository, contribution);
     }
 
+    /**
+     * Add a composite model to the contribution
+     */
     public void addDeploymentComposite(Contribution contribution, Composite composite) throws ContributionException {
         DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
         artifact.setURI(composite.getURI());
@@ -266,70 +274,6 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.setLocation(locationURL.toString());
         contribution.setModelResolver(modelResolver);
         
-        //TODO Move the following to the resolve method of the ArtifactProcessor
-        // responsible for handling <imports> and <exports>
-        
-        // Initialize the contribution exports
-        for (Export export: contribution.getExports()) {
-            export.setModelResolver(modelResolver);
-        }
-        
-        // Initialize the contribution imports
-        for (Import import_: contribution.getImports()) {
-            boolean initialized = false;
-            
-            if (import_ instanceof NamespaceImport) {
-                NamespaceImport namespaceImport = (NamespaceImport)import_;
-                
-                // Find a matching contribution
-                if (namespaceImport.getLocation() != null) {
-                    Contribution targetContribution = contributionRepository.getContribution(namespaceImport.getLocation());
-                    if (targetContribution != null) {
-                    
-                        // Find a matching contribution export
-                        for (Export export: targetContribution.getExports()) {
-                            if (export instanceof NamespaceExport) {
-                                NamespaceExport namespaceExport = (NamespaceExport)export;
-                                if (namespaceImport.getNamespace().equals(namespaceExport.getNamespace())) {
-                                    namespaceImport.setModelResolver(namespaceExport.getModelResolver());
-                                    initialized = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                } 
-            } else if(import_ instanceof JavaImport) {
-                JavaImport javaImport = (JavaImport) import_;
-                
-                //Find a matching contribution
-                if(javaImport.getLocation() != null) {
-                    Contribution targetContribution = contributionRepository.getContribution(javaImport.getLocation());
-                    if (targetContribution != null) {
-                    
-                        // Find a matching contribution export
-                        for (Export export: targetContribution.getExports()) {
-                            if (export instanceof JavaExport) {
-                                JavaExport javaExport = (JavaExport)export;
-                                if (javaImport.getPackage().equals(javaExport.getPackage())) {
-                                    javaImport.setModelResolver(javaExport.getModelResolver());
-                                    initialized = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }                    
-                }
-            }
-            
-            //if no location was specified, try to resolve with any contribution            
-            if( !initialized ) {
-                // Use a resolver that will consider all contributions
-                import_.setModelResolver(new ImportAllModelResolverImpl(import_, contributionRepository.getContributions()));
-            }
-            
-        }
-
         List<URI> contributionArtifacts = null;
 
         //NOTE: if a contribution is stored on the repository
@@ -350,6 +294,9 @@ public class ContributionServiceImpl implements ContributionService {
 
         // Read all artifacts in the contribution
         processReadPhase(contribution, contributionArtifacts);
+        
+        //
+        this.contributionListener.contributionAdded(this.contributionRepository, contribution);
         
         // Resolve them
         processResolvePhase(contribution);

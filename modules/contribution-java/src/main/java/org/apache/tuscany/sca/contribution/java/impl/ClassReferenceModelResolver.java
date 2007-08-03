@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
- * A Model Resolver for WSDL models.
+ * A Model Resolver for ClassReferences.
  *
  * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
  */
@@ -53,7 +53,11 @@ public class ClassReferenceModelResolver implements ModelResolver {
         return map.remove(((ClassReference)resolved).getClassName());
     }
     
-    
+    /**
+     * Handle artifact resolution when the specific class reference is imported from another contribution
+     * @param unresolved
+     * @return
+     */
     private ClassReference resolveImportedModel(ClassReference unresolved) {
         ClassReference resolved = unresolved;
 
