@@ -102,7 +102,7 @@
                     <bottom>Apache Tuscany is an effort undergoing incubation at the Apache Software Foundation(ASF) and sponsored by the Apache WS PMC.</bottom>
                     <header>Apache Tuscany SCA Core SPI</header>
                     <footer>Apache Tuscany SCA Core SPI</footer>
-                    <sourcepath>${basedir}/src/main/java${path.separator}${basedir}/target/generated/src/main/java</sourcepath>
+                    <sourcepath>${basedir}/src/main/java</sourcepath>
                 </configuration>
             </plugin>
         </plugins>
