@@ -33,13 +33,18 @@ import org.apache.tuscany.sca.policy.Intent;
  */
 public class IntentImpl implements Intent {
 
+    private static final String QUALIFIED_SEPARATOR = ".";
+    private static final String DOMAIN_SEPARATOR = ".";
     private QName name;
     private List<Operation> operations = new ArrayList<Operation>();
-    private List<QName> constrains = new ArrayList<QName>();
+    private List<QName> constrains;
     private String description;
-    //private List<Intent> qualifiedIntents;
-    private boolean unresolved = true;
-    
+    private List<Intent> qualifiedIntents;
+    private List<Intent> requiredIntents;
+    private boolean unresolved;
+    private String domain;
+    private String[] qualifiedNames;
+
     protected IntentImpl() {
     }
 
@@ -49,6 +54,25 @@ public class IntentImpl implements Intent {
 
     public void setName(QName name) {
         this.name = name;
+        String iname = name.getLocalPart();
+        int domainIdx = iname.indexOf(DOMAIN_SEPARATOR);
+        if (domainIdx > -1) {
+            domain = iname.substring(0, domainIdx);
+            String qualifNamesStr = iname.substring(domainIdx + 1);
+            String pattern = "\\" + QUALIFIED_SEPARATOR;
+            qualifiedNames = qualifNamesStr.split(pattern);
+        } else
+            domain = iname;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public String[] getQualifiedNames() {
+        String[] results = new String[qualifiedNames.length];
+        System.arraycopy(qualifiedNames, 0, results, 0, qualifiedNames.length);
+        return results;
     }
 
     public List<Operation> getOperations() {
@@ -67,9 +91,13 @@ public class IntentImpl implements Intent {
         this.description = description;
     }
 
-    /*public List<Intent> getQualifiedIntents() {
+    public List<Intent> getQualifiedIntents() {
         return qualifiedIntents;
-    }*/
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
     public boolean isUnresolved() {
         return unresolved;
@@ -78,24 +106,20 @@ public class IntentImpl implements Intent {
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
     }
-    
-    @Override
-    public int hashCode() {
-        return String.valueOf(getName()).hashCode();
-    }
-    
-    @Override
+
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj instanceof Intent) {
-            if (getName() != null) {
-                return getName().equals(((Intent)obj).getName());
-            } else {
-                return ((Intent)obj).getName() == null;
-            }
         } else {
-            return false;
+            if (obj instanceof IntentImpl) {
+                if (getName() != null) {
+                    return getName().equals(((IntentImpl)obj).getName());
+                } else {
+                    return ((IntentImpl)obj).getName() == null;
+                }
+            } else {
+                return false;
+            }
         }
     }
 }
