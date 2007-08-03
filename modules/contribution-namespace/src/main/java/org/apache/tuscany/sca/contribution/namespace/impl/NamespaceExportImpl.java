@@ -17,35 +17,27 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.impl;
+package org.apache.tuscany.sca.contribution.namespace.impl;
 
-import org.apache.tuscany.sca.contribution.ContributionImport;
-import org.apache.tuscany.sca.contribution.Export;
-import org.apache.tuscany.sca.contribution.NamespaceExport;
-import org.apache.tuscany.sca.contribution.NamespaceImport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
- * The representation of an import for the contribution
+ * The representation of an export for the contribution
  * 
  * @version $Rev$ $Date$
  */
-public class NamespaceImportImpl implements NamespaceImport, ContributionImport {
-    private String namespace; // The namespace to be imported
-    private String location; // Optional location to hint the where it should be imported
+public class NamespaceExportImpl implements NamespaceExport {
+    /**
+     * The namespace to be exported
+     */
+    private String namespace; 
     private ModelResolver modelResolver;
     
-    protected NamespaceImportImpl() {
+    protected NamespaceExportImpl() {
+        super();
     }
     
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getNamespace() {
         return namespace;
     }
@@ -60,17 +52,5 @@ public class NamespaceImportImpl implements NamespaceImport, ContributionImport 
     
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
-    }
-    
-    public boolean match(Export export) {
-        if (export instanceof NamespaceExport) {
-            if (this.getLocation() == null || this.getLocation().length() == 0) {
-                if (this.getNamespace().equals(((NamespaceExport)export).getNamespace())) {
-                    return true;
-                }
-            }
-            
-        }
-        return false;
     }
 }

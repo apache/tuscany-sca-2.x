@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.contribution.java;
 
 import org.apache.tuscany.sca.contribution.Import;
 
+/**
+ * Base Java Import model interface
+ * 
+ * @version $Rev$ $Date$
+ */
 public interface JavaImport extends Import {
 
     /**

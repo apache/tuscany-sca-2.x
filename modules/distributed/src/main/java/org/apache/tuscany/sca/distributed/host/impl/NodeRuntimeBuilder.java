@@ -25,19 +25,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.java.impl.ClassReferenceModelResolver;
-import org.apache.tuscany.sca.contribution.java.impl.JavaExportProcessor;
-import org.apache.tuscany.sca.contribution.java.impl.JavaImportProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
@@ -51,13 +44,13 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
-import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.DefaultContributionListenerExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
@@ -105,9 +98,6 @@ public class NodeRuntimeBuilder {
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         //Register STAX processors for Contribution Metadata 
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory,contributionFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new JavaImportProcessor());
-        staxProcessors.addArtifactProcessor(new JavaExportProcessor());        
-
 
         // Create URL artifact processor extension point
         // FIXME use the interface instead of the class
@@ -136,10 +126,6 @@ public class NodeRuntimeBuilder {
         ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
         registry.addExtensionPoint(modelResolverExtensionPoint);
         
-        modelResolverExtensionPoint.addResolver(Composite.class, CompositeModelResolver.class);
-        modelResolverExtensionPoint.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
-        modelResolverExtensionPoint.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
-
         //FIXME Deprecate and remove this
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
@@ -149,11 +135,14 @@ public class NodeRuntimeBuilder {
         // Create contribution listener extension point
         ContributionListenerExtensionPoint contributionListeners = new DefaultContributionListenerExtensionPoint();
         registry.addExtensionPoint(contributionListeners);
+        
+        ExtensibleContributionListener contributionListener = new ExtensibleContributionListener(contributionListeners);
+        
 
         // Create a contribution repository
         ContributionRepository repository;
         try {
-            repository = new ContributionRepositoryImpl(contributionListeners, "target");
+            repository = new ContributionRepositoryImpl("target");
         } catch (IOException e) {
             throw new ActivationException(e);
         }
@@ -163,6 +152,7 @@ public class NodeRuntimeBuilder {
                                                                               packageProcessor,
                                                                               documentProcessor, 
                                                                               staxProcessor,
+                                                                              contributionListener,
                                                                               postProcessor,
                                                                               modelResolverExtensionPoint,
                                                                               assemblyFactory,

@@ -22,8 +22,16 @@ package org.apache.tuscany.sca.contribution.java.impl;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
+/**
+ * Implementation of a Java Import model
+ * 
+ * @version $Rev$ $Date$
+ */
 public class JavaExportImpl implements JavaExport {
     private ModelResolver modelResolver;
+    /**
+     * Java package being exported
+     */
     private String packageName;
 
     public JavaExportImpl() {

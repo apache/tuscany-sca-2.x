@@ -46,9 +46,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
-import org.apache.tuscany.sca.contribution.service.ContributionListener;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
@@ -65,7 +63,6 @@ public class ContributionRepositoryImpl implements ContributionRepository {
     
     private Map<String, Contribution> contributionMap = new HashMap<String, Contribution>();
     private List<Contribution> contributions = new ArrayList<Contribution>();
-    private ContributionListenerExtensionPoint listeners;
 
     private URI domain;
     private XMLInputFactory factory;
@@ -75,7 +72,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      * 
      * @param repository
      */
-    public ContributionRepositoryImpl(ContributionListenerExtensionPoint listeners, final String repository) throws IOException {
+    public ContributionRepositoryImpl(final String repository) throws IOException {
         String root = repository;
         if (repository == null) {
             root = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -94,8 +91,6 @@ public class ContributionRepositoryImpl implements ContributionRepository {
             throw new IOException("The root is not a directory: " + repository);
         }
         factory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
-        
-        this.listeners = listeners;
     }
 
     public URI getDomain() {
@@ -276,17 +271,11 @@ public class ContributionRepositoryImpl implements ContributionRepository {
     public void addContribution(Contribution contribution) {
         contributionMap.put(contribution.getURI(), contribution);
         contributions.add(contribution);
-        for (ContributionListener listener: listeners.getContributionListeners()) {
-            listener.contributionAdded(this, contribution);
-        }
     }
     
     public void removeContribution(Contribution contribution) {
         contributionMap.remove(contribution.getURI());
         contributions.remove(contribution);
-        for (ContributionListener listener: listeners.getContributionListeners()) {
-            listener.contributionRemoved(this, contribution);
-        }
     }
     
     public void updateContribution(Contribution contribution) {
@@ -294,9 +283,6 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         contributions.remove(oldContribution);
         contributionMap.put(contribution.getURI(), contribution);
         contributions.add(contribution);
-        for (ContributionListener listener: listeners.getContributionListeners()) {
-            listener.contributionUpdated(this, oldContribution, contribution);
-        }
     }
     
     public Contribution getContribution(String uri) {

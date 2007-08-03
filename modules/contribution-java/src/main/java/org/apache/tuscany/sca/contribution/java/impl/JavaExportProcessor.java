@@ -28,12 +28,18 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.java.JavaExport;
+import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
+/**
+ * Artifact processor for Java Export
+ * 
+ * @version $Rev$ $Date$
+ */
 public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     
@@ -41,8 +47,11 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     
     private static final String PACKAGE = "package";
     
-    public JavaExportProcessor() {
+    private final JavaImportExportFactory factory;
+    
+    public JavaExportProcessor(JavaImportExportFactory factory) {
         super();
+        this.factory = factory;
     }
 
     public QName getArtifactType() {
@@ -53,9 +62,11 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
         return JavaExport.class;
     }
     
-    
+    /**
+     * Process <export package=""/>
+     */
     public JavaExport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        JavaExport javaExport = new JavaExportImpl();
+        JavaExport javaExport = this.factory.createJavaExport();
         QName element = null;
 
         
@@ -91,12 +102,10 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     }
 
     public void write(JavaExport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
-        // TODO Auto-generated method stub
         
     }
 
     public void resolve(JavaExport model, ModelResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
         
     }
 }

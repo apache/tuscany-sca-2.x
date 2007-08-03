@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.contribution.java;
 
 import org.apache.tuscany.sca.contribution.Export;
 
+/**
+ * Base Java Export model interface
+ * 
+ * @version $Rev$ $Date$
+ */
 public interface JavaExport extends Export {
     /**
      * Get java package that identifies the import

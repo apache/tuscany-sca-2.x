@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.java.impl;
+package org.apache.tuscany.sca.contribution.namespace.impl;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -27,8 +27,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.contribution.java.JavaImport;
-import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -36,38 +36,38 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 /**
- * Artifact Processor for Java Imports
+ * Artifact processor for Namespace import
  * 
  * @version $Rev$ $Date$
  */
-public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
+public class NamespaceImportProcessor  implements StAXArtifactProcessor<NamespaceImport> {
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     
-    private static final QName IMPORT_JAVA = new QName(SCA10_NS, "import.java");
+    private static final QName IMPORT = new QName(SCA10_NS, "import");
 
-    private static final String PACKAGE = "package";
+    private static final String NAMESPACE = "namespace";
     private static final String LOCATION = "location";
     
-    private final JavaImportExportFactory factory;
+    private final NamespaceImportExportFactory factory;
     
-    public JavaImportProcessor(JavaImportExportFactory factory) {
+    public NamespaceImportProcessor(NamespaceImportExportFactory factory) {
         super();
         this.factory = factory;
     }
     
     public QName getArtifactType() {
-        return IMPORT_JAVA;
+        return IMPORT;
     }
     
-    public Class<JavaImport> getModelType() {
-        return JavaImport.class;
+    public Class<NamespaceImport> getModelType() {
+        return NamespaceImport.class;
     }
 
     /**
-     * Process <import.java package="" location=""/>
+     * Process <import namespace="" location=""/>
      */
-    public JavaImport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        JavaImport javaImport = this.factory.createJavaImport();
+    public NamespaceImport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        NamespaceImport namespaceImport = this.factory.createNamespaceImport();
         QName element = null;
         
         while (reader.hasNext()) {
@@ -76,20 +76,21 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
                 case START_ELEMENT:
                     element = reader.getName();
                     
-                    if (IMPORT_JAVA.equals(element)) {
-                        String packageName = reader.getAttributeValue(null, PACKAGE);
-                        if (packageName == null) {
-                            throw new ContributionReadException("Attribute 'package' is missing");
+                    if (IMPORT.equals(element)) {
+                        String ns = reader.getAttributeValue(null, NAMESPACE);
+                        if (ns == null) {
+                            throw new ContributionReadException("Attribute 'namespace' is missing");
                         }
-                        
                         String location = reader.getAttributeValue(null, LOCATION);
-                        javaImport.setPackage(packageName);
-                        javaImport.setLocation(location);
+                        if (location != null) {
+                            namespaceImport.setLocation(location);
+                        }
+                        namespaceImport.setNamespace(ns);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
-                    if (IMPORT_JAVA.equals(reader.getName())) {
-                        return javaImport;
+                    if (IMPORT.equals(reader.getName())) {
+                        return namespaceImport;
                     }
                     break;        
             }
@@ -100,15 +101,15 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
             }
         }
         
-        return javaImport;
+        return namespaceImport;
     }
 
-    public void write(JavaImport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(NamespaceImport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
         
     }
 
 
-    public void resolve(JavaImport model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(NamespaceImport model, ModelResolver resolver) throws ContributionResolveException {
         
     }
 }

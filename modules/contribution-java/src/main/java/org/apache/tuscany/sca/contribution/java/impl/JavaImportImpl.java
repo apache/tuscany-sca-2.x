@@ -24,12 +24,21 @@ import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
+/**
+ * Implementation of a Java Import model
+ * 
+ * @version $Rev$ $Date$
+ */
 public class JavaImportImpl implements JavaImport {
     private ModelResolver modelResolver;
+    /**
+     * Java package name being imported
+     */
     private String packageName;
+    /**
+     * Contribution URI where the artifact is imported from
+     */
     private String location;
-
-
     
     public JavaImportImpl() {
         super();
@@ -59,6 +68,11 @@ public class JavaImportImpl implements JavaImport {
         this.modelResolver = modelResolver;
     }
 
+    /**
+     * Match a JavaImport to a given JavaExport based on :
+     *    location is not provided
+     *    import and export packages match
+     */
     public boolean match(Export export) {
         if(export instanceof JavaExport) {
             if(this.getLocation() == null || this.getLocation().length() == 0) {

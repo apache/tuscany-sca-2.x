@@ -17,15 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
+package org.apache.tuscany.sca.contribution.namespace.impl;
 
-
+import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactory;
 
 /**
- * The representation of an import for the contribution
- * @deprecated
+ * Namespace Import/Export model factory implementation
  * 
  * @version $Rev$ $Date$
  */
-public interface ContributionImport extends NamespaceImport {
+public class NamespaceImportExportFactoryImpl implements NamespaceImportExportFactory {
+
+    public NamespaceImport createNamespaceImport() {
+        return new NamespaceImportImpl();
+    }
+    
+    public NamespaceExport createNamespaceExport() {
+        return new NamespaceExportImpl();
+    }
+
 }
