@@ -21,9 +21,11 @@ package org.apache.tuscany.sca.core.databinding.processor;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -125,11 +127,63 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 if (d.getDataBinding() == null) {
                     d.setDataBinding(dataBindingId);
                 }
-                dataBindingRegistry.introspectType(d, method.getAnnotations());
+                // TODO: Handle exceptions
+                dataBindingRegistry.introspectType(d, method.getAnnotations(), true);
             }
+
+            // JIRA: TUSCANY-842
+            if(operation.getDataBinding() == null) {
+                assignOperationDataBinding(operation);
+            }  
 
             // FIXME: Do we want to heuristically check the wrapper style?
             // introspectWrapperStyle(operation);
         }
     }
+
+    /*
+     *  Assigns an operation DB if one of the input types, output type, fault types has a non-default DB.
+     *  However, if two of the input types, output type, fault types have two different non-default DBs 
+     *  ( e.g. SDO and JAXB), then we do nothing to the operation DB.
+     *  
+     *  The method logic assumes the JavaBeans DataBinding is the default 
+     */
+    private void assignOperationDataBinding(Operation operation) {
+        
+        String nonDefaultDataBindingName = null;
+
+        // Can't use DataType<?> since operation.getInputType() returns: DataType<List<DataType>> 
+        List<DataType> opDataTypes = new LinkedList<DataType>();     
+        
+        opDataTypes.addAll(operation.getInputType().getLogical());
+        opDataTypes.add(operation.getOutputType());
+        opDataTypes.addAll(operation.getFaultTypes());
+        
+        for (DataType<?> d : opDataTypes) {
+            if (d != null) {
+                String dataBinding = d.getDataBinding();
+                // Assumes JavaBeans DB is default
+                if (dataBinding != null && !dataBinding.equals(JavaBeansDataBinding.NAME)) {
+                    if (nonDefaultDataBindingName != null) {
+                        if (nonDefaultDataBindingName != dataBinding) {
+                            // We've seen two different non-default DBs, e.g. SDO and JAXB
+                            // so unset the string and break out of the loop 
+                            nonDefaultDataBindingName = null;
+                            break;
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        nonDefaultDataBindingName = dataBinding;
+                    }
+                }
+            }
+        }
+        
+        // We have a DB worthy of promoting to operation level.
+        if (nonDefaultDataBindingName != null) {
+            operation.setDataBinding(nonDefaultDataBindingName);
+        }        
+    }
 }
+
