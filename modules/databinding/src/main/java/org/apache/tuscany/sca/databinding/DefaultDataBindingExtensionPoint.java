@@ -17,6 +17,22 @@
  * under the License.    
  */
 
+/**
+ * %Z% %I% %W% %G% %U% [%H% %T%]
+ *
+ * IBM Confidential OCO Source Material
+ * 5724-J08, 5724-I63, 5724-H88, 5655-N01, 5733-W61 (C) COPYRIGHT International Business Machines Corp. 2007
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ *
+ * HISTORY
+ * CMVC Ref        Date      Who       Description
+ * --------------- --------- --------- --------------------------------------------
+ * 446019          06/14/07  skurz     Exploit the SOAFP extension for special handling of exceptions.
+ *                                     We may or may not get Tuscany to pick this up.  We'll have to discuss
+ */
+
 package org.apache.tuscany.sca.databinding;
 
 import java.lang.annotation.Annotation;
@@ -74,7 +90,16 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         return new HashSet<DataBinding>(bindings.values());
     }
 
+    // 446019 - SOAFP -  Keep the old signature
     public boolean introspectType(DataType dataType, Annotation[] annotations) {
+        return introspectType(dataType, annotations, false);
+    }
+
+    // 446019 - SOAFP-specific
+    //
+    // Leverage the DataBinding ExceptionHandler to calculate the DataType of an exception DataType
+    //
+    public boolean introspectType(DataType dataType, Annotation[] annotations, boolean isException) {
         for (DataBinding binding : getDataBindings()) {
             // don't introspect for JavaBeansDatabinding as all javatypes will
             // anyways match to its basetype
@@ -83,6 +108,16 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             if (!binding.getName().equals(JavaBeansDataBinding.NAME)) {
                 if (binding.introspect(dataType, annotations)) {
                     return true;
+                }
+                if (isException) {
+                    // Next look to see if the DB's exceptionHandler handles this exception
+                    ExceptionHandler excHandler = binding.getExceptionHandler();
+                    if (excHandler !=null &&  excHandler.getFaultType(dataType) != null) {
+                        // Assymetric to have the introspect() methods set the DataBindings themselves
+                        // whereas we're setting it ourselves here.   
+                        dataType.setDataBinding(binding.getName()); 
+                        return true;
+                    }
                 }
             }
         }
@@ -96,6 +131,9 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         return false;
     }
 
+    //
+    // 446019 - Didn't bother to provide special exc-handling support for this method
+    //
     public DataType introspectType(Object value) {
         DataType dataType = null;
         for (DataBinding binding : getDataBindings()) {
@@ -112,5 +150,4 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         }
         return new DataTypeImpl<Class>(JavaBeansDataBinding.NAME, value.getClass(), value.getClass());
     }
-
 }

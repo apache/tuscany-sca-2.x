@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.core.databinding.transformers;
 
 import java.util.List;
@@ -160,8 +159,9 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                     ElementInfo wrapperElement = sourceOp.getWrapper().getOutputWrapperElement();
                     // Object targetWrapper =
                     // targetWrapperHandler.create(wrapperElement, context);
-                    DataType<XMLType> targetWrapperType = new DataTypeImpl<XMLType>(targetType.getLogical()
-                        .getDataBinding(), Object.class, new XMLType(wrapperElement));
+                    
+                    // use operation DB not output type DB
+                    DataType<XMLType> targetWrapperType = new DataTypeImpl<XMLType>(getDataBinding(targetOp), Object.class, new XMLType(wrapperElement));
                     Object targetWrapper = mediator.mediate(sourceWrapper,
                                                             sourceType.getLogical(),
                                                             targetWrapperType,
