@@ -489,6 +489,22 @@ public class EJBLocator {
         private Context context;
 
         private JndiLocator() throws NamingException {
+            /*
+            final Properties props = AccessController.doPrivileged(new PrivilegedAction<Properties>() {
+                public Properties run() {
+                    return System.getProperties();
+                }
+            });
+            Properties properties = new Properties();
+            for (Map.Entry e : props.entrySet()) {
+                String name = (String)e.getKey();
+                if (name.startsWith("java.naming.")) {
+                    properties.setProperty(name, (String)e.getValue());
+                }
+            }
+            // System.out.println(properties);
+            this.context = new InitialContext(properties);
+            */
             this.context = new InitialContext();
         }
 

@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.binding.ejb.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.UnexpectedException;
 
@@ -33,6 +32,7 @@ import org.omg.CORBA.SystemException;
 import org.omg.CORBA.portable.ApplicationException;
 import org.omg.CORBA.portable.ObjectImpl;
 import org.omg.CORBA.portable.RemarshalException;
+import org.omg.stub.java.rmi._Remote_Stub;
 import org.osoa.sca.ServiceRuntimeException;
 
 public final class EJBObjectFactory {
@@ -53,8 +53,8 @@ public final class EJBObjectFactory {
      * of the pregenerated EJB stub classes be avaiable in the classpath.
      * <p>
      */
-    public static Object createStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) throws NamingException, RemoteException,
-        CreateException {
+    public static Object createStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) throws NamingException,
+        RemoteException, CreateException {
 
         EJBLocator locator = namingEndpoint.getLocator();
         Object homeObject = locator.locate(namingEndpoint.getJndiName());
@@ -75,23 +75,20 @@ public final class EJBObjectFactory {
      * @return
      * @throws RemoteException
      */
-    protected static Object getEJBStub(Object homeObject, InterfaceInfo ejbInterface) throws RemoteException, CreateException {
+    protected static Object getEJBStub(Object homeObject, InterfaceInfo ejbInterface) throws RemoteException,
+        CreateException {
 
         Object stub = null;
 
         // Get the business interface of the EJB 
         Class ejbInterfaceClass = null;
-        try
-        {
+        try {
             ejbInterfaceClass = Thread.currentThread().getContextClassLoader().loadClass(ejbInterface.getName());
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             // ignore
         }
-        
-        if (ejbInterfaceClass != null && ejbInterfaceClass.isInstance(homeObject))
-        {
+
+        if (ejbInterfaceClass != null && ejbInterfaceClass.isInstance(homeObject)) {
             // EJB 3
             stub = homeObject;
         } else if (homeObject instanceof EJBLocalHome) {
@@ -102,20 +99,20 @@ public final class EJBObjectFactory {
             if (homeObject instanceof ObjectImpl) {
                 ObjectImpl objectImpl = (ObjectImpl)homeObject;
                 stub = createEJBObject(objectImpl);
-            } /**
-            	* Above checks will be satisfied if Bean is running on servers like Websphere. With this 
-            	* logic, client (SCA composite with EJB ref binding) doesn't need to include home class or 
-            	* client stubs.
-            	* 
-            	* Below check is needed SCA composite with EJB ref binding is accessing openEJB implementation. 
-            	* For e.g if the bean is running on Geronimo. 
-            	*/
-            else if ((javax.rmi.PortableRemoteObject.narrow(homeObject, javax.ejb.EJBHome.class)) instanceof javax.ejb.EJBHome) { 
+            }/**
+                       	* Above checks will be satisfied if Bean is running on servers like Websphere. With this 
+                       	* logic, client (SCA composite with EJB ref binding) doesn't need to include home class or 
+                       	* client stubs.
+                       	* 
+                       	* Below check is needed SCA composite with EJB ref binding is accessing openEJB implementation. 
+                       	* For e.g if the bean is running on Geronimo. 
+                       	*/
+            else if ((javax.rmi.PortableRemoteObject.narrow(homeObject, javax.ejb.EJBHome.class)) instanceof javax.ejb.EJBHome) {
                 stub = createEJBObjectFromHome(homeObject);
             } else
                 throw new ServiceRuntimeException("Invalid stub type: " + homeObject.getClass());
-            }
-        	return stub;
+        }
+        return stub;
     }
 
     /**
@@ -169,7 +166,7 @@ public final class EJBObjectFactory {
         }
         return stub;
     }
-    
+
     /**
      * Create an EJBObject using RMI/IIOP APIs
      * 
@@ -186,7 +183,8 @@ public final class EJBObjectFactory {
                 org.omg.CORBA.portable.OutputStream out = ejbHomeObject._request("create", true);
                 in = (org.omg.CORBA_2_3.portable.InputStream)ejbHomeObject._invoke(out);
                 // The Remote stub should be available in JDK
-                return in.read_Object(Remote.class);
+                // TODO: [rfeng] Work around an issue in Apache Yoko which doesn't understand the org.omg.stub.*
+                return in.read_Object(_Remote_Stub.class);
             } catch (ApplicationException ex) {
                 in = (org.omg.CORBA_2_3.portable.InputStream)ex.getInputStream();
                 String id = in.read_string();
