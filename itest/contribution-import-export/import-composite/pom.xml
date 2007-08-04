@@ -31,7 +31,7 @@
 <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-itest-contribution-import-export-contrib-composite</artifactId>
+            <artifactId>tuscany-itest-contribution-export-composite</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
