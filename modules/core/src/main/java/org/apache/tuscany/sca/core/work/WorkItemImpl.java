@@ -78,7 +78,7 @@ class WorkItemImpl implements WorkItem {
      * @return Work.
      * @throws WorkException If the work completed with an exception.
      */
-    public Work getResult() throws WorkException {
+    public Work getResult() {
         return result;
     }
 

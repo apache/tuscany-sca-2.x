@@ -35,7 +35,6 @@ import commonj.work.WorkException;
 import commonj.work.WorkItem;
 import commonj.work.WorkListener;
 import commonj.work.WorkManager;
-import commonj.work.WorkRejectedException;
 
 /**
  * A thread-pool based implementation for the JSR-237 work manager.
@@ -68,7 +67,7 @@ public class ThreadPoolWorkManager implements WorkManager {
      * @param work Work that needs to be scheduled.
      * @return Work Work item representing the asynchronous work
      */
-    public WorkItem schedule(Work work) throws WorkException {
+    public WorkItem schedule(Work work) throws IllegalArgumentException {
         return schedule(work, null);
     }
 
@@ -79,7 +78,7 @@ public class ThreadPoolWorkManager implements WorkManager {
      * @param workListener Work listener for callbacks.
      * @return Work Work item representing the asynchronous work
      */
-    public WorkItem schedule(Work work, WorkListener workListener) throws WorkRejectedException {
+    public WorkItem schedule(Work work, WorkListener workListener) throws IllegalArgumentException {
 
         WorkItemImpl workItem = new WorkItemImpl(new UID().toString(), work);
         if (workListener != null) {
@@ -93,7 +92,7 @@ public class ThreadPoolWorkManager implements WorkManager {
             if (workListener != null) {
                 workListener.workRejected(new WorkEventImpl(workItem));
             }
-            throw new WorkRejectedException("Unable to schedule work");
+            throw new IllegalArgumentException("Unable to schedule work");
         }
     }
 
