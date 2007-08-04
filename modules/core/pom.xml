@@ -54,9 +54,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>commonj-api</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-commonj_1.1_spec</artifactId>
+            <version>1.0</version>
         </dependency>
         
         <dependency>
