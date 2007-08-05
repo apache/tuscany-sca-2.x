@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -52,8 +51,7 @@ public class DATAImplementation implements Implementation {
      * Constructs a new DAS implementation.
      */
     public DATAImplementation(AssemblyFactory assemblyFactory,
-                              JavaInterfaceFactory javaFactory,
-                              JavaInterfaceIntrospector introspector) {
+                              JavaInterfaceFactory javaFactory) {
 
         // DATA implementation always provide a single service exposing
         // the DATA interface, and have no references and properties
@@ -61,7 +59,7 @@ public class DATAImplementation implements Implementation {
         dataService.setName("DATA");
         JavaInterface javaInterface;
         try {
-            javaInterface = introspector.introspect(DATA.class);
+            javaInterface = javaFactory.createJavaInterface(DATA.class);
         } catch (InvalidInterfaceException e) {
             throw new IllegalArgumentException(e);
         }

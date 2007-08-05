@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.data;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -32,7 +33,7 @@ public class DATAImplementationProviderFactory implements ImplementationProvider
     /**
      * Constructs a new DATA implementation.
      */
-    public DATAImplementationProviderFactory() {
+    public DATAImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, DATAImplementation implementation) {

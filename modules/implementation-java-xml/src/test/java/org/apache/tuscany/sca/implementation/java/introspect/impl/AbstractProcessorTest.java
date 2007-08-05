@@ -51,13 +51,12 @@ public class AbstractProcessorTest extends TestCase {
 
     protected AbstractProcessorTest() {
         factory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaInterfaceFactory();
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        referenceProcessor = new ReferenceProcessor(factory, javaFactory, new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors));
+        javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        referenceProcessor = new ReferenceProcessor(factory, javaFactory);
         propertyProcessor = new PropertyProcessor(factory);
         resourceProcessor = new ResourceProcessor(factory);
         constructorProcessor = new ConstructorProcessor(factory);
-        referenceProcessor = new ReferenceProcessor(factory, javaFactory, new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors));
+        referenceProcessor = new ReferenceProcessor(factory, javaFactory);
         propertyProcessor = new PropertyProcessor(factory);
     }
 

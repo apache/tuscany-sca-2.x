@@ -50,7 +50,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Context;
@@ -73,13 +72,10 @@ import org.osoa.sca.annotations.Service;
  */
 public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector interfaceIntrospector;
 
     public HeuristicPojoProcessor(AssemblyFactory assemblyFactory,
-                                  JavaInterfaceFactory javaFactory,
-                                  JavaInterfaceIntrospector interfaceIntrospector) {
+                                  JavaInterfaceFactory javaFactory) {
         super(assemblyFactory);
-        this.interfaceIntrospector = interfaceIntrospector;
         this.javaFactory = javaFactory;
     }
 
@@ -538,10 +534,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
         try {
-            JavaInterface callInterface = interfaceIntrospector.introspect(paramType);
+            JavaInterface callInterface = javaFactory.createJavaInterface(paramType);
             reference.getInterfaceContract().setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
-                JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+                JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
             reference.setMultiplicity(Multiplicity.ZERO_ONE);
@@ -563,10 +559,10 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
 
-        JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);
+        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
 

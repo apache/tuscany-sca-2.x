@@ -16,32 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.interfacedef.java.introspect;
 
-package crud;
-
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-
-import crud.impl.CRUDImplementationImpl;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceIntrospectorImpl;
 
 /**
- * A default factory for the CRUD implementation model.
- *
+ * Default implementation of a Java interface introspector.
+ * @deprecated Please use DefaultJavaInterfaceFactory instead.
+ * 
  * @version $Rev$ $Date$
  */
-public class DefaultCRUDImplementationFactory implements CRUDImplementationFactory {
-    
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    
-    public DefaultCRUDImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
-    }
+public class ExtensibleJavaInterfaceIntrospector extends JavaInterfaceIntrospectorImpl implements JavaInterfaceIntrospector {
 
-    public CRUDImplementation createCRUDImplementation() {
-        return new CRUDImplementationImpl(assemblyFactory, javaFactory);
+    public ExtensibleJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
+        super(javaFactory, visitors);
     }
 
 }

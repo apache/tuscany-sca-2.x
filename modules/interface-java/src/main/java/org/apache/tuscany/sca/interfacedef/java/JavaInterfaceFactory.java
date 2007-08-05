@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.interfacedef.java;
 
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+
 /**
  * Factory for the Java interface model
  * 
@@ -26,11 +28,18 @@ package org.apache.tuscany.sca.interfacedef.java;
 public interface JavaInterfaceFactory {
 
     /**
-     * Creates a new Java interface.
+     * Creates a new Java interface model.
      * 
      * @return
      */
     JavaInterface createJavaInterface();
+    
+    /**
+     * Creates a new Java interface model from an interface class.
+     * @param interfaceClass the interface class to introspect.
+     * @return
+     */
+    JavaInterface createJavaInterface(Class<?> interfaceClass) throws InvalidInterfaceException;
     
     /**
      * Creates a new Java interface contract.

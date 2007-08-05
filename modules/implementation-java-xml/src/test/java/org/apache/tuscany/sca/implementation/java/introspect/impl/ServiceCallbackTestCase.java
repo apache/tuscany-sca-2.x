@@ -33,8 +33,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionExcept
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
 
@@ -47,8 +45,7 @@ public class ServiceCallbackTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors));
+        processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint()));
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 

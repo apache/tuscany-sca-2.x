@@ -18,9 +18,12 @@
  */
 package org.apache.tuscany.sca.core.spring.implementation.java.impl;
 
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceIntrospectorImpl;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * An alternate implementation of the SCA Java assembly model factory that creates SCA
@@ -30,12 +33,19 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  */
 public class BeanJavaInterfaceFactory implements JavaInterfaceFactory {
 	
-	public BeanJavaInterfaceFactory() {
-	}
+    private JavaInterfaceIntrospectorImpl introspector;
+    
+        public BeanJavaInterfaceFactory(JavaInterfaceIntrospectorExtensionPoint visitors) {
+            introspector = new JavaInterfaceIntrospectorImpl(this, visitors);
+        }
 
 	public JavaInterface createJavaInterface() {
 		return new BeanJavaInterfaceImpl();
 	}
+        
+        public JavaInterface createJavaInterface(Class<?> interfaceClass) throws InvalidInterfaceException {
+            return introspector.introspect(interfaceClass);
+        }
         
         public JavaInterfaceContract createJavaInterfaceContract() {
             return new BeanJavaInterfaceContractImpl();

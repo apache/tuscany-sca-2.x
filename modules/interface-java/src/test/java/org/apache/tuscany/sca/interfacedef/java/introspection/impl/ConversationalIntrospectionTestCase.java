@@ -27,8 +27,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
@@ -37,12 +35,9 @@ import org.osoa.sca.annotations.EndsConversation;
  */
 public class ConversationalIntrospectionTestCase extends TestCase {
     private JavaInterfaceFactory javaFactory;
-    private ExtensibleJavaInterfaceIntrospector introspector;
     
     protected void setUp() throws Exception {
-        javaFactory = new DefaultJavaInterfaceFactory();
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
+        javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
     }
 
     private Operation getOperation(Interface i, String name) {
@@ -55,7 +50,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     }
 
     public void testServiceContractConversationalInformationIntrospection() throws Exception {
-        Interface i = introspector.introspect(Foo.class);
+        Interface i = javaFactory.createJavaInterface(Foo.class);
         assertNotNull(i);
         assertTrue(i.isConversational());
         ConversationSequence seq = getOperation(i, "operation").getConversationSequence();
@@ -66,7 +61,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
 
     public void testBadServiceContract() throws Exception {
         try {
-            introspector.introspect(BadFoo.class);
+            javaFactory.createJavaInterface(BadFoo.class);
             fail();
         } catch (InvalidOperationException e) {
             // expected
@@ -74,7 +69,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
     }
 
     public void testNonConversationalInformationIntrospection() throws Exception {
-        Interface i = introspector.introspect(NonConversationalFoo.class);
+        Interface i = javaFactory.createJavaInterface(NonConversationalFoo.class);
         assertFalse(i.isConversational());
         ConversationSequence seq = getOperation(i, "operation")
             .getConversationSequence();

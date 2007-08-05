@@ -40,8 +40,8 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
     private JavaInterfaceIntrospectorExtensionPoint visitors;
     
     public JavaInterfaceRuntimeModuleActivator() {
-        javaFactory = new DefaultJavaInterfaceFactory();
         visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        javaFactory = new DefaultJavaInterfaceFactory(visitors);
     }
 
     public Object[] getExtensionPoints() {
@@ -56,8 +56,7 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
         
         // Register <interface.java> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
-        JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
+        JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory);
         processors.addArtifactProcessor(javaInterfaceProcessor);
         
     }

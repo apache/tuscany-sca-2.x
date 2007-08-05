@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -52,8 +51,7 @@ public class ResourceImplementation implements Implementation {
      * Constructs a new resource implementation.
      */
     public ResourceImplementation(AssemblyFactory assemblyFactory,
-                                  JavaInterfaceFactory javaFactory,
-                                  JavaInterfaceIntrospector introspector) {
+                                  JavaInterfaceFactory javaFactory) {
 
         // Resource implementation always provide a single service exposing
         // the Resource interface, and have no references and properties
@@ -63,7 +61,7 @@ public class ResourceImplementation implements Implementation {
         // Create the Java interface contract for the Resource service
         JavaInterface javaInterface;
         try {
-            javaInterface = introspector.introspect(Resource.class);
+            javaInterface = javaFactory.createJavaInterface(Resource.class);
         } catch (InvalidInterfaceException e) {
             throw new IllegalArgumentException(e);
         }

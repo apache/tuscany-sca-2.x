@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 
@@ -53,7 +54,7 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
     public final void testVisitInterface() throws InvalidInterfaceException {
         DataBindingExtensionPoint registry = new DefaultDataBindingExtensionPoint();
         DataBindingJavaInterfaceProcessor processor = new DataBindingJavaInterfaceProcessor(registry);
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
         
         JavaInterface contract = javaFactory.createJavaInterface();
         contract.setJavaClass(MockInterface.class);

@@ -37,16 +37,13 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
 
     private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector introspector;
 
-    public JavaInterfaceProcessor(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector introspector) {
+    public JavaInterfaceProcessor(JavaInterfaceFactory javaFactory) {
         this.javaFactory = javaFactory;
-        this.introspector = introspector;
     }
     
     private JavaInterface createJavaInterface(String interfaceName) {
@@ -123,7 +120,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                         
                     // Introspect the Java interface and populate the interface and
                     // operations
-                    javaInterface = introspector.introspect(javaClass);
+                    javaInterface = javaFactory.createJavaInterface(javaClass);
                 
                 } catch (InvalidInterfaceException e) {
                     throw new ContributionResolveException(e);

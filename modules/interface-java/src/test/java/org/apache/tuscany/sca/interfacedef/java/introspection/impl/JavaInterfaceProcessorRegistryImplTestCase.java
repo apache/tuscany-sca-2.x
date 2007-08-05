@@ -34,8 +34,8 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.easymock.EasyMock;
 
@@ -43,12 +43,12 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
-    private ExtensibleJavaInterfaceIntrospector impl;
     private DefaultJavaInterfaceIntrospectorExtensionPoint visitors;
+    private JavaInterfaceFactory factory;
 
     @SuppressWarnings("unchecked")
     public void testSimpleInterface() throws InvalidInterfaceException {
-        JavaInterface intf = (JavaInterface)impl.introspect(Simple.class);
+        JavaInterface intf = (JavaInterface)factory.createJavaInterface(Simple.class);
 
         assertEquals(Simple.class, intf.getJavaClass());
         List<Operation> operations = intf.getOperations();
@@ -79,16 +79,16 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         expectLastCall().once();
         replay(extension);
         visitors.addInterfaceVisitor(extension);
-        impl.introspect(Base.class);
+        factory.createJavaInterface(Base.class);
         visitors.removeInterfaceVisitor(extension);
-        impl.introspect(Base.class);
+        factory.createJavaInterface(Base.class);
         verify(extension);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        impl = new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
+        factory = new DefaultJavaInterfaceFactory(visitors);
 
     }
 

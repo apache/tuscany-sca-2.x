@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -46,13 +45,11 @@ import org.osoa.sca.annotations.Reference;
  * @version $Rev$ $Date$
  */
 public class ReferenceProcessor extends BaseJavaClassVisitor {
-    private JavaInterfaceIntrospector interfaceIntrospector;
     private JavaInterfaceFactory javaFactory;
     
-    public ReferenceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector interfaceIntrospector) {
+    public ReferenceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         super(assemblyFactory);
         this.javaFactory = javaFactory;
-        this.interfaceIntrospector = interfaceIntrospector;
     }
 
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
@@ -157,10 +154,10 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         Type genericType = element.getGenericType();
         Class<?> baseType = getBaseType(rawType, genericType);
         try {
-            JavaInterface callInterface = interfaceIntrospector.introspect(baseType);
+            JavaInterface callInterface = javaFactory.createJavaInterface(baseType);
             reference.getInterfaceContract().setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
-                JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+                JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
         } catch (InvalidInterfaceException e) {

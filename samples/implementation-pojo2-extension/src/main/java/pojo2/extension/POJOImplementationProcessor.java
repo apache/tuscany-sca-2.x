@@ -39,9 +39,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 /**
  * Implements a STAX based artifact processor for POJO implementations.
@@ -56,7 +53,6 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
     
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector javaIntrospector;
     
     public POJOImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         
@@ -64,11 +60,6 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
         // create model objects 
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
-        
-        // Create an instance of the Java interface introspector utility class, as
-        // we may need it to introspect the POJO, if there's no componentType file
-        // describing it
-        javaIntrospector = new ExtensibleJavaInterfaceIntrospector(javaFactory, new DefaultJavaInterfaceIntrospectorExtensionPoint());
     }
 
     public QName getArtifactType() {
@@ -140,7 +131,7 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
             service.setName(pojoClass.getSimpleName());
             JavaInterface javaInterface;
             try {
-                javaInterface = javaIntrospector.introspect(pojoClass);
+                javaInterface = javaFactory.createJavaInterface(pojoClass);
             } catch (InvalidInterfaceException e) {
                 throw new ContributionResolveException(e);
             }

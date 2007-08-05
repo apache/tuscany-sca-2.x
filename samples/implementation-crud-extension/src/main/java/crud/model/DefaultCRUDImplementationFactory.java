@@ -21,7 +21,6 @@ package crud.model;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 import crud.impl.CRUDImplementationImpl;
 
@@ -32,18 +31,15 @@ public class DefaultCRUDImplementationFactory implements CRUDImplementationFacto
     
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector introspector;
     
     public DefaultCRUDImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory,
-                                            JavaInterfaceIntrospector introspector) {
+                                            JavaInterfaceFactory javaFactory) {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
-        this.introspector = introspector;
     }
 
     public CRUDImplementation createCRUDImplementation() {
-        return new CRUDImplementationImpl(assemblyFactory, javaFactory, introspector);
+        return new CRUDImplementationImpl(assemblyFactory, javaFactory);
     }
 
 }
