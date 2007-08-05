@@ -68,12 +68,6 @@ public class NamespaceImportExportModuleActivator implements ModuleActivator {
         processors.addArtifactProcessor(importProcessor);
         processors.addArtifactProcessor(exportProcessor);
         
-        //register artifact model resolvers for composites and constraining types supporting import/export
-        ModelResolverExtensionPoint resolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
-        resolvers.addResolver(Composite.class, CompositeModelResolver.class);
-        resolvers.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
-
-        
         //register contribution listener responsible for initializing import/export model resolvers
         ContributionListenerExtensionPoint listeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class);
         listeners.addContributionListener(new NamespaceImportExportListener());

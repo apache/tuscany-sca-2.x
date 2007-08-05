@@ -37,12 +37,16 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.SCABindingProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -180,6 +184,7 @@ public class ReallySmallRuntimeBuilder {
         staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+
         // Register STAX processors for Contribution Metadata
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
 
@@ -192,6 +197,14 @@ public class ReallySmallRuntimeBuilder {
         documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
+        
+        // Create Model Resolver extension point
+        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
+        registry.addExtensionPoint(modelResolvers);
+
+        // Create and register model resolvers for SCA assembly XML
+        modelResolvers.addResolver(Composite.class, CompositeModelResolver.class);
+        modelResolvers.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
 
         // Create contribution package processor extension point
         TypeDescriber describer = new PackageTypeDescriberImpl();
@@ -203,10 +216,6 @@ public class ReallySmallRuntimeBuilder {
         packageProcessors.addPackageProcessor(new FolderContributionProcessor());
 
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
-
-        // Create Contribution Model Resolver extension point
-        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
-        registry.addExtensionPoint(modelResolvers);
 
         // Get the model factory extension point
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
