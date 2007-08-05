@@ -57,4 +57,11 @@ public interface PolicyFactory {
      * @return a QualifiedIntent instance
      */
     QualifiedIntent createQualifiedIntent();
+    
+    /**
+     * create a new PolicySetReference
+     * 
+     * @return a PolicySetReference instance
+     */
+    PolicySetReference createPolicySetReference();
 }

@@ -122,4 +122,8 @@ public class IntentImpl implements Intent {
             }
         }
     }
+    
+    public String toString() {
+        return name.toString();
+    }
 }

@@ -19,12 +19,15 @@
 package org.apache.tuscany.sca.policy.impl;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -36,11 +39,13 @@ public class PolicySetImpl implements PolicySet {
 
     private QName name;
     private List<Operation> operations = new ArrayList<Operation>();
-    private List<QName> appliesTo;
-    private List<Intent> providedIntents;
-    private List<PolicySet> referencedPolicySets;
-    private List<Object> policies;
-    private boolean unresolved;
+    //private List<QName> appliesTo;
+    private String appliesTo;
+    private List<Intent> providedIntents = new ArrayList<Intent>();
+    private List<PolicySet> referencedPolicySets = new ArrayList<PolicySet>();
+    private List<Object> policies = new ArrayList<Object>();
+    Map<Intent, List<Policy>>  mappedPolicies = new Hashtable<Intent, List<Policy>>();
+    private boolean unresolved = true;
     
     protected PolicySetImpl() {
     }
@@ -57,8 +62,12 @@ public class PolicySetImpl implements PolicySet {
         return operations;
     }
 
-    public List<QName> getAppliesTo() {
+    public String getAppliesTo() {
         return appliesTo;
+    }
+
+    public void setAppliesTo(String appliesTo) {
+        this.appliesTo = appliesTo;
     }
 
     public List<Intent> getProvidedIntents() {
@@ -79,5 +88,33 @@ public class PolicySetImpl implements PolicySet {
 
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
+    }
+
+    public Map<Intent, List<Policy>> getMappedPolicies() {
+        return mappedPolicies;
+    }
+    
+    @Override
+    public int hashCode() {
+        return String.valueOf(getName()).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof PolicySet) {
+            if (getName() != null) {
+                return getName().equals(((PolicySet)obj).getName());
+            } else {
+                return ((PolicySet)obj).getName() == null;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    public String toString() {
+        return getName().toString();
     }
 }
