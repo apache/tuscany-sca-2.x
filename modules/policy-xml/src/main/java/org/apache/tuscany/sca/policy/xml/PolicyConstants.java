@@ -25,8 +25,11 @@ import javax.xml.namespace.QName;
  *
  */
 public interface PolicyConstants {
+    String COLON = ":";
     String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     String INTENT = "intent";
+    String POLICY_SET = "policySet";
+    String POLICY_SET_REFERENCE = "policySetReference";
     String INTENT_MAP = "intentMap";
     String NAME = "name";
     String TARGET_NAMESPACE = "targetNamespace";
@@ -36,15 +39,18 @@ public interface PolicyConstants {
     String PROVIDES = "provides";
     String APPLIES_TO = "appliesTo";
     String QUALIFIER = ".";
+    String INTENT_MAP_QUALIFIER = "qualifier";
     String REQUIRES = "requires";
+    String DEFAULT = "default";
     
     
     QName POLICY_INTENT_QNAME = new QName(SCA10_NS, INTENT);
-    QName POLICY_SET_QNAME = new QName(SCA10_NS, "policySet");
+    QName POLICY_SET_QNAME = new QName(SCA10_NS, POLICY_SET);
     QName POLICY_INTENT_MAP_QNAME = new QName(SCA10_NS, INTENT_MAP); 
     QName SCA_DEFNS_QNAME = new QName(SCA10_NS, SCA_DEFINITIONS);
     QName DESCRIPTION_QNAME = new QName(SCA10_NS, DESCRIPTION);
-    QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA10_NS, QUALIFIER);
+    QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA10_NS, INTENT_MAP_QUALIFIER);
+    QName POLICY_SET_REFERENCE_QNAME = new QName(SCA10_NS, POLICY_SET_REFERENCE);
     
     String QUALIFIED_INTENT_CONSTRAINS_ERROR = " - Qualified Intents must not specify 'constrains' attribute";
     

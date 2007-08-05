@@ -3,6 +3,132 @@
  			targetNamespace="http://test"
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
 
+ <!-- qualified intents -->
+ <intent name="confidentiality.transport" />
+ <intent name="confidentiality.message" />
+ <intent name="confidentiality.message.whole" />
+ <intent name="confidentiality.message.body" /> 
+ 
+ <!-- POLICY SETS -->
+  <policySet name="SecureReliablePolicy"
+ 	provides="confidentiality.transport integrity"
+ 	appliesTo="sca:binding.ws"
+ 	xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+ 		<wsp:PolicyAttachment>
+ 			<!-- policy expression and policy subject for
+				 "basic authentication" -->
+		</wsp:PolicyAttachment>
+     	<wsp:PolicyAttachment>
+		 	<!-- policy expression and policy subject for
+		 		"reliability" -->
+		</wsp:PolicyAttachment>
+ </policySet>
+ 
+ <policySet name="SecureMessagingPolicies"
+	 provides="confidentiality"
+	 appliesTo="binding.ws"
+	 xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 	 xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+     <intentMap provides="confidentiality" default="transport">
+        <qualifier name="transport">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "transport" alternative -->
+                </wsp:PolicyAttachment>
+            <wsp:PolicyAttachment>...</wsp:PolicyAttachment>
+        </qualifier>
+        <qualifier name="message">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "message" alternative" -->
+            </wsp:PolicyAttachment>
+        </qualifier>
+    </intentMap>
+</policySet>
+
+<policySet name="SecurityPolicy" provides="confidentiality"
+	xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
+    <intentMap provides="confidentiality" default="message">
+        <qualifier name="message">
+            <intentMap provides="message" default="whole">
+                <qualifier name="body">
+                	<wsp:PolicyAttachment>
+                		<!-- policy attachment for body encryption --> 
+               		</wsp:PolicyAttachment>
+           		</qualifier>
+                <qualifier name="whole">
+                	<wsp:PolicyAttachment>
+                		<!-- policy attachment for whole message encryption --> 
+               		</wsp:PolicyAttachment>
+             	</qualifier>
+            </intentMap>
+        </qualifier>
+        <qualifier name="transport">
+        	<wsp:PolicyAttachment>
+        		<!-- policy attachment for transport encryption --> 
+       		</wsp:PolicyAttachment>
+        </qualifier>
+    </intentMap>
+</policySet>
+
+<policySet name="BasicAuthMsgProtSecurity"
+     provides="authentication confidentiality"
+     appliesTo="binding.ws"
+ 		xmlns="http://www.osoa.org/xmlns/sca/1.0">
+    <policySetReference name="AuthenticationPolicies"/>
+    <policySetReference name="ConfidentialityPolicies"/>
+</policySet>
+
+<policySet name="AuthenticationPolicies"
+	provides="authentication"
+	appliesTo="binding.ws"
+	xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    <wsp:PolicyAttachment>
+        <!-- policy expression and policy subject for "basic
+        authentication" -->
+    </wsp:PolicyAttachment>
+</policySet>
+
+<policySet name="ConfidentialityPolicies"
+ provides="confidentiality"
+ bindings="binding.ws"
+ xmlns="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    <intentMap provides="confidentiality"  default="transport">
+        <qualifier name="transport">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "transport"
+                alternative -->
+            </wsp:PolicyAttachment>
+            <wsp:PolicyAttachment>...</wsp:PolicyAttachment>
+        </qualifier>
+        <qualifier name="message">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "message"
+                alternative" -->...
+            </wsp:PolicyAttachment>
+        </qualifier>
+    </intentMap>
+</policySet>
+
+<!-- profile intent -->
+ <intent name="reliableMessageProtection" 
+ 			 constrains="sca:binding"
+ 			 requires="messageProtection">
+ 			 <description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </description>
+ </intent>
+ 
+ <intent name="messageProtection" 
+ 			 constrains="sca:binding"
+ 			 requires="confidentiality integrity">
+ 			 <description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </description>
+ </intent>
+
 <!-- simple intent -->
  <intent name="confidentiality" 
  			 constrains="sca:binding">
@@ -20,16 +146,12 @@
  			 </description>
  </intent>
  
- <!-- profile intent -->
- <intent name="messageProtection" 
- 			 constrains="sca:binding"
- 			 requires="confidentiality integrity">
+ <intent name="authentication" 
+ 			 constrains="sca:binding">
  			 <description>
- 			 	Protect messages from unauthorized reading or modification
+ 			 Communitcation thro this binding required
+ 			 Authentication.
  			 </description>
  </intent>
  
- <!-- qualified intents -->
- <intent name="confidentiality.transport" />
- <intent name="confidentiality.message" />
 </definitions>
