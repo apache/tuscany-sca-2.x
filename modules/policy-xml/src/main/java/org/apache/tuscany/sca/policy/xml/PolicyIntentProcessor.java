@@ -67,6 +67,7 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
                 
                 int qualifierIndex = policyIntentName.lastIndexOf(QUALIFIER);
                 Intent qualifiableIntent = policyFactory.createIntent();
+                qualifiableIntent.setUnresolved(true);
                 qualifiableIntent.setName(getQNameValue(reader, 
                                                         policyIntentName.substring(0, qualifierIndex)));
                 
@@ -245,6 +246,7 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 Intent intent = policyFactory.createIntent();
                 intent.setName(qname);
+                intent.setUnresolved(true);
                 requiredIntents.add(intent);
             }
         }
