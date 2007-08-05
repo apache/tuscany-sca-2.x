@@ -16,30 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.resource.provider;
+package pojo2.extension;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * The model representing a resource implementation in an SCA assembly model.
+ * The model representing a sample POJO implementation in an SCA assembly model.
  */
-public class ResourceImplementationProviderFactory implements ImplementationProviderFactory<ResourceImplementation> {
-
-    /**
-     * Constructs a resource implementation.
-     */
-    public ResourceImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
+public class POJOImplementationProviderFactory implements ImplementationProviderFactory<POJOImplementation> {
+    
+    public POJOImplementationProviderFactory(ExtensionPointRegistry registry) {
     }
 
-    public ImplementationProvider createImplementationProvider(RuntimeComponent component, ResourceImplementation implementation) {
-        return new ResourceImplementationProvider(component, implementation);
+    public Class<POJOImplementation> getModelType() {
+        // Returns the type of model processed by this processor
+        return POJOImplementation.class;
+    }
+
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, POJOImplementation implementation) {
+        return new POJOImplementationProvider(component, implementation);
     }
     
-    public Class<ResourceImplementation> getModelType() {
-        return ResourceImplementation.class;
-    }
 }

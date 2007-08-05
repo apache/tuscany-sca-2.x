@@ -16,30 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.resource.provider;
+package crud2.extension;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * The model representing a resource implementation in an SCA assembly model.
+ * The model representing a sample CRUD implementation in an SCA assembly model.
+ * The sample CRUD implementation is not a full blown implementation, it only
+ * supports a subset of what a component implementation can support: - a single
+ * fixed service (as opposed to a list of services typed by different
+ * interfaces) - a directory attribute used to specify where a CRUD component is
+ * going to persist resources - no references or properties - no policy intents
+ * or policy sets
  */
-public class ResourceImplementationProviderFactory implements ImplementationProviderFactory<ResourceImplementation> {
-
-    /**
-     * Constructs a resource implementation.
-     */
-    public ResourceImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
+public class CRUDImplementationProviderFactory implements ImplementationProviderFactory<CRUDImplementation> {
+    
+    public CRUDImplementationProviderFactory(ExtensionPointRegistry registry) {
     }
 
-    public ImplementationProvider createImplementationProvider(RuntimeComponent component, ResourceImplementation implementation) {
-        return new ResourceImplementationProvider(component, implementation);
+    public Class<CRUDImplementation> getModelType() {
+        // Returns the type of model processed by this processor
+        return CRUDImplementation.class;
+    }
+
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
+        return new CRUDImplementationProvider(component, implementation);
     }
     
-    public Class<ResourceImplementation> getModelType() {
-        return ResourceImplementation.class;
-    }
 }

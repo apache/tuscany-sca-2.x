@@ -19,11 +19,58 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
- * A model for the RSS binding.
+ * Implementation of the Feed binding model.
  */
-public interface RSSBinding extends Binding {
+public class RSSBinding implements Binding {
+
+    private String name;
+    private String uri;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        // The sample binding does not support policies
+        return Collections.emptyList();
+    }
+
+    public List<Intent> getRequiredIntents() {
+        // The binding does not support policies
+        return Collections.emptyList();
+    }
+
+    public List<Object> getExtensions() {
+        // The binding does not support extensions
+        return Collections.emptyList();
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        // The binding is always resolved
+    }
 
 }

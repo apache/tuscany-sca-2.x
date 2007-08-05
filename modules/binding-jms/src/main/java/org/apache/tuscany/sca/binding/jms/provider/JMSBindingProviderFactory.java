@@ -17,12 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.resource.provider;
+package org.apache.tuscany.sca.binding.jms.provider;
 
-import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -31,27 +29,26 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 
+
 /**
- * Implementation of the Echo binding model.
+ * A factory from creating the JMS binding provider.
+ *
+ * @version $Rev$ $Date$
  */
-public class HTTPResourceBindingProviderFactory implements BindingProviderFactory<HTTPResourceBinding> {
+public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBinding> {
     
-    private ServletHost servletHost;
-    
-    public HTTPResourceBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        this.servletHost = servletHosts.getServletHosts().get(0);
+    public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {        
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, HTTPResourceBinding binding) {
-        return null;
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding) {
+        return new JMSBindingReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, HTTPResourceBinding binding) {
-        return new HTTPResourceServiceBindingProvider(component, service, binding, servletHost);
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding) {
+        return new JMSBindingServiceBindingProvider(component, service, binding);
     }
     
-    public Class<HTTPResourceBinding> getModelType() {
-        return HTTPResourceBinding.class;
+    public Class<JMSBinding> getModelType() {
+        return JMSBinding.class;
     }
 }

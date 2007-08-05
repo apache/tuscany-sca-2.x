@@ -20,7 +20,10 @@
 package org.apache.tuscany.sca.binding.feed.provider;
 
 import org.apache.tuscany.sca.binding.feed.RSSBinding;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -37,9 +40,11 @@ public class RSSBindingProviderFactory implements BindingProviderFactory<RSSBind
     MessageFactory messageFactory;
     ServletHost servletHost;
 
-    public RSSBindingProviderFactory(ServletHost servletHost, MessageFactory messageFactory) {
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
+    public RSSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
+        this.servletHost = servletHosts.getServletHosts().get(0);
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,

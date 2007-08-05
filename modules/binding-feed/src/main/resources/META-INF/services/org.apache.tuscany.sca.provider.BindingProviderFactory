@@ -15,5 +15,6 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-# Implementation class for the implementation extension
-crud2.extension.CRUDImplementationProviderFactory;model=crud2.extension.CRUDImplementation
+# Implementation class for the binding extension
+org.apache.tuscany.sca.binding.feed.provider.AtomBindingProviderFactory;model=org.apache.tuscany.sca.binding.feed.AtomBinding
+org.apache.tuscany.sca.binding.feed.provider.RSSBindingProviderFactory;model=org.apache.tuscany.sca.binding.feed.RSSBinding
