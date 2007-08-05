@@ -22,17 +22,12 @@ package org.apache.tuscany.sca.binding.sca;
 
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
-import org.apache.tuscany.sca.binding.jms.JMSBindingFactory;
-import org.apache.tuscany.sca.binding.jms.JMSBindingFactoryImpl;
-import org.apache.tuscany.sca.binding.jms.JMSBindingProviderFactory;
-import org.apache.tuscany.sca.binding.jms.JMSBindingServiceBindingProvider;
+import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.node.ComponentRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;

@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -59,8 +58,7 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
     private JavaInterfaceFactory javaFactory;
     private JavaInterfaceIntrospector javaIntrospector;
     
-    public POJOImplementationProcessor(ExtensionPointRegistry registry) {
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+    public POJOImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         
         // Get the assembly and Java interface factories as we'll need them to
         // create model objects 

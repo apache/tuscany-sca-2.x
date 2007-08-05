@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-echo2.extension.EchoBindingFactory;model=echo2.extension.EchoBinding
+echo2.extension.EchoBindingProviderFactory;model=echo2.extension.EchoBinding

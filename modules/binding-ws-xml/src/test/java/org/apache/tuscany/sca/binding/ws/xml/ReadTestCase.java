@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -45,8 +47,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -64,36 +64,30 @@ public class ReadTestCase extends TestCase {
     private SCABindingFactory scaBindingFactory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
-    private WebServiceBindingFactory wsFactory;
-    private WSDLInterfaceIntrospector introspector;
-    private WSDLFactory wsdlFactory;
 
     public void setUp() throws Exception {
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = new DefaultAssemblyFactory();
+        factories.addFactory(assemblyFactory);
         scaBindingFactory = new DefaultSCABindingFactory();
+        factories.addFactory(scaBindingFactory);
         policyFactory = new DefaultPolicyFactory();
+        factories.addFactory(policyFactory);
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        wsFactory = new DefaultWebServiceBindingFactory();
-        wsdlFactory = new DefaultWSDLFactory();
         
-        introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
-
-        WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor(
-                                                                                  assemblyFactory, policyFactory, wsFactory,
-                                                                                  wsdlFactory, introspector);
+        WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
+        factories.addFactory(wsFactory);
+        WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        factories.addFactory(wsdlFactory);
+        
+        WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor(factories);
         staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
     public void tearDown() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        staxProcessor = null;
-        policyFactory = null;
-        assemblyFactory = null;
-        mapper = null;
     }
 
     public void testReadComponentType() throws Exception {

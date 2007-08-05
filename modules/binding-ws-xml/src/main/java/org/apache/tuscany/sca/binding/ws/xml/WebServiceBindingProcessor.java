@@ -34,10 +34,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -48,6 +49,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -62,15 +64,11 @@ public class WebServiceBindingProcessor implements
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
 
-    public WebServiceBindingProcessor(AssemblyFactory assemblyFactory,
-                                      PolicyFactory policyFactory,
-                                      WebServiceBindingFactory wsFactory,
-                                      WSDLFactory wsdlFactory,
-                                      WSDLInterfaceIntrospector introspector) {
-        this.policyFactory = policyFactory;
-        this.wsFactory = wsFactory;
-        this.introspector = introspector;
-        this.wsdlFactory = wsdlFactory;
+    public WebServiceBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.wsFactory = new DefaultWebServiceBindingFactory();
+        this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        this.introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
     }
 
     public WebServiceBinding read(XMLStreamReader reader) throws ContributionReadException {

@@ -20,7 +20,10 @@
 package org.apache.tuscany.sca.binding.feed.provider;
 
 import org.apache.tuscany.sca.binding.feed.AtomBinding;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -34,12 +37,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBinding> {
 
-    MessageFactory messageFactory;
-    ServletHost servletHost;
+    private MessageFactory messageFactory;
+    private ServletHost servletHost;
 
-    public AtomBindingProviderFactory(ServletHost servletHost, MessageFactory messageFactory) {
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
+    public AtomBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
+        this.servletHost = servletHosts.getServletHosts().get(0);
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,

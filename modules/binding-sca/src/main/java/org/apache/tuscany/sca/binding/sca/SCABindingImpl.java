@@ -28,8 +28,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
-import org.apache.tuscany.sca.binding.jms.JMSBindingFactory;
-import org.apache.tuscany.sca.binding.jms.JMSBindingFactoryImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
@@ -142,8 +140,7 @@ public class SCABindingImpl implements DistributedSCABinding {
                                              ComponentService service) {
         
         // invent a model on the fly
-        JMSBindingFactory jmsBindingFactory = new JMSBindingFactoryImpl();
-        JMSBinding jmsBinding = jmsBindingFactory.createJMSBinding();  
+        JMSBinding jmsBinding = new JMSBinding();  
       
         // it's at this point with a point to point binding we 
         // would go and get the base URLs etc. I'm just using the
@@ -190,8 +187,7 @@ public class SCABindingImpl implements DistributedSCABinding {
                                            ComponentService service) {
     
         // first invent a model on the fly
-        JMSBindingFactory jmsBindingFactory = new JMSBindingFactoryImpl();
-        JMSBinding jmsBinding = jmsBindingFactory.createJMSBinding();  
+        JMSBinding jmsBinding = new JMSBinding();  
       
         // it's at this point with a point to point binding we 
         // would go and get the base URLs etc. I'm just using the

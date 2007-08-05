@@ -30,8 +30,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -106,17 +106,11 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
     
-    private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;    
-    private JMSBindingFactory jmsBindingFactory;
 
 
-    public JMSBindingProcessor(AssemblyFactory assemblyFactory,
-                               PolicyFactory policyFactory,
-                               JMSBindingFactory jmsBindingFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.policyFactory = policyFactory;
-        this.jmsBindingFactory = jmsBindingFactory;
+    public JMSBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
     }
 
     public QName getArtifactType() {
@@ -130,7 +124,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
     public JMSBinding read(XMLStreamReader reader) 
       throws ContributionReadException {
         try {
-            JMSBinding jmsBinding = jmsBindingFactory.createJMSBinding();
+            JMSBinding jmsBinding = new JMSBinding();
             
             // Read policies
             readPolicies(jmsBinding, reader);
@@ -414,10 +408,5 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
     protected void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         System.err.println("JMS Binding doesn't process operationProperties yet");
     }
-
-
-
-    
-    
 
 }

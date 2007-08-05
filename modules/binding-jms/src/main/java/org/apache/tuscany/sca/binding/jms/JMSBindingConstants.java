@@ -25,6 +25,8 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorImpl;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryActiveMQImpl;
 
 public interface JMSBindingConstants {
 

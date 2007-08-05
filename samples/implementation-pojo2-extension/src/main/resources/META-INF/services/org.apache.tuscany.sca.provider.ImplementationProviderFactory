@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the implementation extension
-pojo2.extension.POJOImplementationFactory;model=pojo2.extension.POJOImplementation
+pojo2.extension.POJOImplementationProviderFactory;model=pojo2.extension.POJOImplementation

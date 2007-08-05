@@ -217,6 +217,7 @@ public class ReallySmallRuntime {
         // Get the target extension points
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         URLArtifactProcessorExtensionPoint urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         List<ArtifactProcessor> processors = new ArrayList<ArtifactProcessor>();
         
         for (String processorDeclaration: processorDeclarations) {
@@ -239,7 +240,7 @@ public class ReallySmallRuntime {
                 String modelTypeName = attributes.get("model");
                 
                 // Create a processor wrapper and register it
-                StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(registry, artifactType, modelTypeName, classLoader, className);
+                StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, classLoader, className);
                 staxProcessors.addArtifactProcessor(processor);
                 processors.add(processor);
 
@@ -249,7 +250,7 @@ public class ReallySmallRuntime {
                 String modelTypeName = attributes.get("model");
                 
                 // Create a processor wrapper and register it
-                URLArtifactProcessor processor = new LazyURLArtifactProcessor(registry, artifactType, modelTypeName, classLoader, className);
+                URLArtifactProcessor processor = new LazyURLArtifactProcessor(modelFactories, artifactType, modelTypeName, classLoader, className);
                 urlProcessors.addArtifactProcessor(processor);
                 processors.add(processor);
 

@@ -19,40 +19,128 @@
 package org.apache.tuscany.sca.implementation.resource;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+
 
 /**
  * The model representing a resource implementation in an SCA assembly model.
  */
-public interface ResourceImplementation extends Implementation {
+public class ResourceImplementation implements Implementation {
+
+    private Service resourceService;
+    
+    private String location;
+    private URL url;
+    private boolean unresolved;
 
     /**
-     * Returns the location of the directory containing the resources.
-     * 
-     * @return the location of the directory containing the resources
+     * Constructs a new resource implementation.
      */
-    public String getLocation();
+    public ResourceImplementation(AssemblyFactory assemblyFactory,
+                                  JavaInterfaceFactory javaFactory,
+                                  JavaInterfaceIntrospector introspector) {
 
-    /**
-     * Sets the location of the directory containing the resources.
-     * 
-     * @param location the location of the directory containing the resources
-     */
-    public void setLocation(String location);
+        // Resource implementation always provide a single service exposing
+        // the Resource interface, and have no references and properties
+        resourceService = assemblyFactory.createService();
+        resourceService.setName("Resource");
+        
+        // Create the Java interface contract for the Resource service
+        JavaInterface javaInterface;
+        try {
+            javaInterface = introspector.introspect(Resource.class);
+        } catch (InvalidInterfaceException e) {
+            throw new IllegalArgumentException(e);
+        }
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        interfaceContract.setInterface(javaInterface);
+        resourceService.setInterfaceContract(interfaceContract);
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public URL getLocationURL() {
+        return url;
+    }
     
-    /**
-     * Returns the resource location URL.
-     * 
-     * @return the location URL
-     */
-    public URL getLocationURL();
+    public void setLocationURL(URL url) {
+        this.url = url;
+    }
     
-    /**
-     * Sets the resource location URL.
-     * 
-     * @param url the resource location URL
-     */
-    public void setLocationURL(URL url);
+    public ConstrainingType getConstrainingType() {
+        // The resource implementation does not support constrainingTypes
+        return null;
+    }
+
+    public List<Property> getProperties() {
+        // The resource implementation does not support properties
+        return Collections.emptyList();
+    }
+
+    public List<Service> getServices() {
+        // The resource implementation does not support services
+        return Collections.singletonList(resourceService);
+    }
+    
+    public List<Reference> getReferences() {
+        // The resource implementation does not support properties
+        return Collections.emptyList();
+    }
+
+    public String getURI() {
+        return location;
+    }
+
+    public void setConstrainingType(ConstrainingType constrainingType) {
+        // The resource implementation does not support constrainingTypes
+    }
+
+    public void setURI(String uri) {
+        this.location = uri;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        // The resource implementation does not support policy sets
+        return Collections.emptyList();
+    }
+
+    public List<Intent> getRequiredIntents() {
+        // The resource implementation does not support intents
+        return Collections.emptyList();
+    }
+
+    public List<Object> getExtensions() {
+        // The resource implementation does not support extensions
+        return Collections.emptyList();
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
+    }
 
 }

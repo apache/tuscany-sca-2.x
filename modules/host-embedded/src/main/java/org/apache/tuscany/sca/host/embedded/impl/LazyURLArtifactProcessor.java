@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -38,7 +39,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
  */
 class LazyURLArtifactProcessor implements URLArtifactProcessor {
 
-    private ExtensionPointRegistry registry;
+    private ModelFactoryExtensionPoint modelFactories;
     private String artifactType;
     private String modelTypeName;
     private WeakReference<ClassLoader> classLoader;
@@ -46,8 +47,8 @@ class LazyURLArtifactProcessor implements URLArtifactProcessor {
     private URLArtifactProcessor processor;
     private Class modelType;
     
-    LazyURLArtifactProcessor(ExtensionPointRegistry registry, String artifactType, String modelTypeName, ClassLoader classLoader, String className) {
-        this.registry = registry;
+    LazyURLArtifactProcessor(ModelFactoryExtensionPoint modelFactories, String artifactType, String modelTypeName, ClassLoader classLoader, String className) {
+        this.modelFactories = modelFactories;
         this.artifactType = artifactType;
         this.modelTypeName = modelTypeName;
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
@@ -64,7 +65,7 @@ class LazyURLArtifactProcessor implements URLArtifactProcessor {
             try {
                 Class<URLArtifactProcessor> processorClass = (Class<URLArtifactProcessor>)Class.forName(className, true, classLoader.get());
                 Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ExtensionPointRegistry.class);
-                processor = constructor.newInstance(registry);
+                processor = constructor.newInstance(modelFactories);
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }

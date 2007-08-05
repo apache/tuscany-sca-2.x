@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -46,7 +45,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 class LazyStAXArtifactProcessor implements StAXArtifactProcessor {
 
-    private ExtensionPointRegistry registry;
+    private ModelFactoryExtensionPoint modelFactories;
     private QName artifactType;
     private String modelTypeName;
     private WeakReference<ClassLoader> classLoader;
@@ -54,8 +53,8 @@ class LazyStAXArtifactProcessor implements StAXArtifactProcessor {
     private StAXArtifactProcessor processor;
     private Class modelType;
     
-    LazyStAXArtifactProcessor(ExtensionPointRegistry registry, QName artifactType, String modelTypeName, ClassLoader classLoader, String className) {
-        this.registry = registry;
+    LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, QName artifactType, String modelTypeName, ClassLoader classLoader, String className) {
+        this.modelFactories = modelFactories;
         this.artifactType = artifactType;
         this.modelTypeName = modelTypeName;
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
@@ -73,7 +72,6 @@ class LazyStAXArtifactProcessor implements StAXArtifactProcessor {
             if (className.equals(DefaultBeanModelProcessor.class.getName())) {
                 
                 // Specific initialization for the DefaultBeanModelProcessor
-                ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
                 AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
                 PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
                 processor = new DefaultBeanModelProcessor(assemblyFactory, policyFactory, artifactType, getModelType());
@@ -82,8 +80,8 @@ class LazyStAXArtifactProcessor implements StAXArtifactProcessor {
                 // Load and instanciate the processor class
                 try {
                     Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader.get());
-                    Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(ExtensionPointRegistry.class);
-                    processor = constructor.newInstance(registry);
+                    Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class);
+                    processor = constructor.newInstance(modelFactories);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

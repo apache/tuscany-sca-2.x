@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the implementation extension
-crud2.extension.CRUDImplementationProviderFactory;model=crud2.extension.CRUDImplementation
+org.apache.tuscany.sca.implementation.resource.provider.ResourceImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.resource.ResourceImplementation
