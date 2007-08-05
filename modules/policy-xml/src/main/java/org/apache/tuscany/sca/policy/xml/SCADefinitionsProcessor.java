@@ -52,11 +52,12 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
     
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
+    protected ModelResolver definitionsResolver;
+    
     protected PolicyIntentProcessor policyIntentResolver;
     
     /**
      * Construct a new (sca) definitions processor
-     * @param assemblyFactory
      * @param policyFactory
      * @param extensionProcessor 
      */
@@ -64,7 +65,22 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
                               StAXArtifactProcessor extensionProcessor) {
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
-        this.policyIntentResolver = new PolicyIntentProcessor(null);
+        this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
+    }
+    
+    /**
+     * Construct a new (sca) definitions processor
+     * @param policyFactory
+     * @param extensionProcessor 
+     * @param modelResolver 
+     */
+    public SCADefinitionsProcessor(PolicyFactory policyFactory,
+                              StAXArtifactProcessor extensionProcessor,
+                              ModelResolver modelResolver) {
+        this.policyFactory = policyFactory;
+        this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
+        this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
+        this.definitionsResolver = modelResolver;
     }
 
     /**
@@ -127,6 +143,10 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
                                     scaDefns.getBindingTypes().add((BindingType)extension);
                                 } else if ( extension instanceof ImplementationType ) {
                                     scaDefns.getImplementationTypes().add((ImplementationType)extension);
+                                }
+                                
+                                if ( getDefinitionsResolver() != null ) {
+                                    getDefinitionsResolver().addModel(extension);
                                 }
                             }
                             break;
@@ -242,17 +262,9 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
     }
     
     public void resolve(SCADefinitions scaDefns, ModelResolver resolver) throws ContributionResolveException {
-        
-        for (int count = 0, size = scaDefns.getPolicyIntents().size(); count < size; count++) {
-            Intent policyIntent = scaDefns.getPolicyIntents().get(count);
-            policyIntentResolver.resolve(policyIntent, resolver);
-            //extensionProcessor.resolve(policyIntent, resolver);
-        }
-        
         for (int count = 0, size = scaDefns.getPolicySets().size(); count < size; count++) {
             PolicySet policySet = scaDefns.getPolicySets().get(count);
-            policySet = resolver.resolveModel(PolicySet.class, policySet);
-            scaDefns.getPolicySets().set(count, policySet);
+            extensionProcessor.resolve(policySet, resolver);
         }
         
         for (int count = 0, size = scaDefns.getBindingTypes().size(); count < size; count++) {
@@ -267,12 +279,20 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
             scaDefns.getImplementationTypes().set(count, implType);
         }
     }
-
+    
     public QName getArtifactType() {
         return SCA_DEFNS_QNAME;
     }
     
     public Class<SCADefinitions> getModelType() {
         return SCADefinitions.class;
+    }
+
+    public ModelResolver getDefinitionsResolver() {
+        return definitionsResolver;
+    }
+
+    public void setDefinitionsResolver(ModelResolver definitionsResolver) {
+        this.definitionsResolver = definitionsResolver;
     }
 }

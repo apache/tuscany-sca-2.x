@@ -41,12 +41,18 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 
+/* 
+ * Processor for handling xml models of PolicyIntent definitions
+ */
+
 public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, PolicyConstants {
 
     private PolicyFactory policyFactory;
+    protected StAXArtifactProcessor<Object> extensionProcessor;
 
-    public PolicyIntentProcessor(PolicyFactory policyFactory) {
+    public PolicyIntentProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
+        this.extensionProcessor = extensionProcessor;
     }
 
     public Intent read(XMLStreamReader reader) throws ContributionReadException {
@@ -109,6 +115,9 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
         try {
             // Write an <sca:intent>
             writer.writeStartElement(PolicyConstants.SCA10_NS, INTENT);
+            writer.writeNamespace(policyIntent.getName().getPrefix(), policyIntent.getName().getNamespaceURI());
+            writer.writeAttribute(PolicyConstants.NAME, 
+                                  policyIntent.getName().getPrefix() + COLON + policyIntent.getName().getLocalPart());
             if (policyIntent instanceof ProfileIntent) {
                 ProfileIntent profileIntent = (ProfileIntent)policyIntent;
                 if (profileIntent.getRequiredIntents() != null && 
@@ -196,14 +205,6 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
     }
     
     public void resolve(Intent policyIntent, ModelResolver resolver) throws ContributionResolveException {
-        if ( policyIntent instanceof ProfileIntent ) {
-            resolveRequiredIntents((ProfileIntent)policyIntent, resolver);
-        } 
-        
-        if ( policyIntent instanceof QualifiedIntent ) {
-            resolveQualifiableIntent((QualifiedIntent)policyIntent, resolver);
-        }
-        
         resolveContrainedArtifacts(policyIntent, resolver);
         
         if ( !policyIntent.isUnresolved() ) {
