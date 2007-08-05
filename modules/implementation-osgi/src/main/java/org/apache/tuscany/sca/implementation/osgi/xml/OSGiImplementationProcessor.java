@@ -211,9 +211,11 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             
             String bundleName = impl.getBundleName();
             String ctURI = bundleName.replaceAll("\\.", "/") + ".componentType";
-            
-            impl.setURI(ctURI);
-            ComponentType componentType = resolver.resolveModel(ComponentType.class, impl);
+
+            ComponentType componentType = assemblyFactory.createComponentType();
+            componentType.setURI(ctURI);
+            componentType.setUnresolved(true);
+            componentType = resolver.resolveModel(ComponentType.class, componentType);
             if (componentType.isUnresolved()) {
                 throw new ContributionResolveException("missing .componentType side file");
             }

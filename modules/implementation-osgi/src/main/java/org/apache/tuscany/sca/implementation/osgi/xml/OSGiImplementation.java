@@ -64,6 +64,7 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
         super();
         this.bundleName = bundleName;
         this.bundleLocation = bundleLocation;
+        setURI(bundleName);
         this.imports = imports;
         this.scope = new Scope(scopeName == null?"COMPOSITE":scopeName);
         this.isEagerInit = isEagerInit;
