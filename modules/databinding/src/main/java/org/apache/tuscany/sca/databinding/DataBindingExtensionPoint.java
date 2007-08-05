@@ -16,23 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-/**
- * %Z% %I% %W% %G% %U% [%H% %T%]
- *
- * IBM Confidential OCO Source Material
- * 5724-J08, 5724-I63, 5724-H88, 5655-N01, 5733-W61 (C) COPYRIGHT International Business Machines Corp. 2007
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- *
- * HISTORY
- * CMVC Ref        Date      Who       Description
- * --------------- --------- --------- --------------------------------------------
- * 446019          06/14/07  skurz     Exploit the SOAFP extension for special handling of exceptions.
- *                                     We may or may not get Tuscany to pick this up.  We'll have to discuss
- */
-
 package org.apache.tuscany.sca.databinding;
 
 import java.lang.annotation.Annotation;
@@ -43,7 +26,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
  * An extension point for data binding extensions.
  */
 public interface DataBindingExtensionPoint {
-    
+
     /**
      * Register a data binding
      * 
