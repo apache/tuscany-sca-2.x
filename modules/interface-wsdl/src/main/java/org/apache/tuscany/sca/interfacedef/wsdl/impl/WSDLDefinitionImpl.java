@@ -128,40 +128,4 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
         this.location = url;
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getLocation() == null) ? 0 : getLocation().hashCode());
-        result = prime * result + ((getNamespace() == null) ? 0 : getNamespace().hashCode());
-        return result;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof WSDLDefinitionImpl))
-            return false;
-        final WSDLDefinitionImpl other = (WSDLDefinitionImpl)obj;
-        if (getLocation() == null) {
-            if (other.getLocation() != null)
-                return false;
-        } else if (!getLocation().equals(other.getLocation()))
-            return false;
-        if (getNamespace() == null) {
-            if (other.getNamespace() != null)
-                return false;
-        } else if (!getNamespace().equals(other.getNamespace()))
-            return false;
-        return true;
-    }
 }

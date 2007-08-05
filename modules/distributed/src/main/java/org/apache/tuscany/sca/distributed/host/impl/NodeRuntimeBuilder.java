@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
@@ -122,12 +123,15 @@ public class NodeRuntimeBuilder {
 
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
         
-        //Create Contribution Model Resolver extension point
-        ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
-        registry.addExtensionPoint(modelResolverExtensionPoint);
+        // Create Contribution Model Resolver extension point
+        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
+        registry.addExtensionPoint(modelResolvers);
+        
+        // Get the model factory extension point
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         
         //FIXME Deprecate and remove this
-        //Create contribution postProcessor extension point
+        // Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
         ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
         registry.addExtensionPoint(contributionPostProcessors);        
@@ -154,7 +158,8 @@ public class NodeRuntimeBuilder {
                                                                               staxProcessor,
                                                                               contributionListener,
                                                                               postProcessor,
-                                                                              modelResolverExtensionPoint,
+                                                                              modelResolvers,
+                                                                              modelFactories,
                                                                               assemblyFactory,
                                                                               contributionFactory, 
                                                                               xmlFactory);

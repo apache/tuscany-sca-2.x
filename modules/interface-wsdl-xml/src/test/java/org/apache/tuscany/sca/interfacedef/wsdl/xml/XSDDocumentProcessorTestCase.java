@@ -26,7 +26,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
@@ -40,13 +43,15 @@ import org.junit.Test;
  */
 public class XSDDocumentProcessorTestCase {
     private XSDDocumentProcessor processor;
+    private WSDLFactory wsdlFactory;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        processor = new XSDDocumentProcessor(new DefaultWSDLFactory());
+        wsdlFactory = new DefaultWSDLFactory();
+        processor = new XSDDocumentProcessor(wsdlFactory);
     }
 
     /**
@@ -66,7 +71,9 @@ public class XSDDocumentProcessorTestCase {
         XSDefinition definition1 = processor.read(null, URI.create("xsd/name.xsd"), url1);
         Assert.assertNull(definition1.getSchema());
         Assert.assertEquals("http://greeting", definition1.getNamespace());
-        XSDModelResolver resolver = new XSDModelResolver(null);
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(wsdlFactory);
+        XSDModelResolver resolver = new XSDModelResolver(null, factories);
         resolver.addModel(definition);
         XSDefinition resolved = resolver.resolveModel(XSDefinition.class, definition);
         XmlSchemaObjectCollection collection = resolved.getSchema().getIncludes();

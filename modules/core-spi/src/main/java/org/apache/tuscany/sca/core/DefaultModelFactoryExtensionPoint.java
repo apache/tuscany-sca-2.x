@@ -19,49 +19,11 @@
 
 package org.apache.tuscany.sca.core;
 
-import java.util.HashMap;
-
 /**
  * Default implementation of a model factory extension point.
+ * @deprecated Please use org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint 
  *
  * @version $Rev$ $Date$
  */
-public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionPoint {
-    
-    private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
-
-    /**
-     * Add a model factory extension.
-     * 
-     * @param factory The factory to add
-     */
-    public void addFactory(Object factory) {
-        Class[] interfaces = factory.getClass().getInterfaces();
-        for (int i = 0; i<interfaces.length; i++) {
-            factories.put(interfaces[i], factory);
-        }
-    }
-
-    /**
-     * Remove a model factory extension.
-     *  
-     * @param factory The factory to remove
-     */
-    public void removeFactory(Object factory) {
-        Class[] interfaces = factory.getClass().getInterfaces();
-        for (int i = 0; i<interfaces.length; i++) {
-            factories.remove(interfaces[i]);
-        }
-    }
-    
-    /**
-     * Get a factory implementing the given interface.
-     * @param factoryInterface The lookup key (factory interface)
-     * @return The factory
-     */    
-    public <T> T getFactory(Class<T> factoryInterface) {
-        Object factory = factories.get(factoryInterface);
-        return factoryInterface.cast(factory);
-    }
-
+public class DefaultModelFactoryExtensionPoint extends org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionPoint {
 }

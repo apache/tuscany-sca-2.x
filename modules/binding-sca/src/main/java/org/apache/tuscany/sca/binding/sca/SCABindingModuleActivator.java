@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.binding.sca;
 
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.distributed.core.DistributedSCADomainExtensionPoint;

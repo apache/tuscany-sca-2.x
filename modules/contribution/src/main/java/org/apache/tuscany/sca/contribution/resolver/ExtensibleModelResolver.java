@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 
 /**
  * An implementation of an extensible model resolver which delegates to the
@@ -33,6 +34,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
  */
 public class ExtensibleModelResolver implements ModelResolver {
     private final ModelResolverExtensionPoint resolvers;
+    private final ModelFactoryExtensionPoint factories;
     private final Contribution contribution;
     private final Map<Class<?>, ModelResolver> resolverInstances = new HashMap<Class<?>, ModelResolver>();
     private Map<Object, Object> map = new HashMap<Object, Object>();
@@ -42,9 +44,10 @@ public class ExtensibleModelResolver implements ModelResolver {
      * @param resolvers
      * @param contribution
      */
-    public ExtensibleModelResolver(Contribution contribution, ModelResolverExtensionPoint resolvers) {
+    public ExtensibleModelResolver(Contribution contribution, ModelResolverExtensionPoint resolvers, ModelFactoryExtensionPoint factories) {
         this.contribution = contribution;
         this.resolvers = resolvers;
+        this.factories = factories;
     }
     
     /**
@@ -54,60 +57,42 @@ public class ExtensibleModelResolver implements ModelResolver {
      * @return
      */
     private ModelResolver getModelResolverInstance(Class<?> modelType) {
-        Class<?>[] classes = modelType.getInterfaces();
-        if(classes.length > 0) {
-            for (Class<?> c : classes) {
-                
-                // Look up a model resolver instance for the model class
-                ModelResolver resolverInstance = resolverInstances.get(c);
-                if (resolverInstance != null) {
-                    return resolverInstance;
-                }
-                
-                // We don't have an instance, lookup a model resolver class
-                // and instantiate it
-                Class<? extends ModelResolver> resolverClass = resolvers.getResolver(c);
-                if (resolverClass != null) {
-                    try {
-                        Constructor<? extends ModelResolver> constructor = resolverClass.getConstructor(new Class[]{Contribution.class});
-                        if (constructor != null) {
-                            
-                            // Construct the model resolver instance and cache it
-                            resolverInstance = constructor.newInstance(this.contribution);
-                            resolverInstances.put(c, resolverInstance);
-                            return resolverInstance;
-                        }
-                    } catch (Exception e) {
-                        throw new IllegalStateException(e);
-                    } 
-                }
-            }            
-        } else {
-            //simple pojo that does not implements any interface
-            // Look up a model resolver instance for the model class
-            ModelResolver resolverInstance = resolverInstances.get(modelType);
+
+        // Look up a model resolver instance for the model class or
+        // each implemented interface
+        Class<?>[] interfaces = modelType.getInterfaces();
+        Class<?>[] classes = new Class<?>[interfaces.length +1];
+        classes[0] = modelType;
+        if (interfaces.length !=0) {
+            System.arraycopy(interfaces, 0, classes, 1, interfaces.length);
+        }
+        for (Class<?> c : classes) {
+            
+            // Look up an existing model resolver instance 
+            ModelResolver resolverInstance = resolverInstances.get(c);
             if (resolverInstance != null) {
                 return resolverInstance;
             }
             
             // We don't have an instance, lookup a model resolver class
             // and instantiate it
-            Class<? extends ModelResolver> resolverClass = resolvers.getResolver(modelType);
+            Class<? extends ModelResolver> resolverClass = resolvers.getResolver(c);
             if (resolverClass != null) {
                 try {
-                    Constructor<? extends ModelResolver> constructor = resolverClass.getConstructor(new Class[]{Contribution.class});
+                    Constructor<? extends ModelResolver> constructor = resolverClass.getConstructor(
+                                                                                                    new Class[]{Contribution.class, ModelFactoryExtensionPoint.class});
                     if (constructor != null) {
                         
                         // Construct the model resolver instance and cache it
-                        resolverInstance = constructor.newInstance(this.contribution);
-                        resolverInstances.put(modelType, resolverInstance);
+                        resolverInstance = constructor.newInstance(contribution, factories);
+                        resolverInstances.put(c, resolverInstance);
                         return resolverInstance;
                     }
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 } 
             }
-        }
+        }            
 
         return null;
     }

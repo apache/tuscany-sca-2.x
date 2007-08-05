@@ -24,14 +24,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.wsdl.Binding;
 import javax.wsdl.Definition;
-import javax.wsdl.Message;
-import javax.wsdl.PortType;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionRegistry;
@@ -43,11 +39,11 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
-import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
@@ -62,17 +58,15 @@ import org.xml.sax.InputSource;
 public class WSDLModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<String, List<WSDLDefinition>> map = new HashMap<String, List<WSDLDefinition>>();
+    private javax.wsdl.factory.WSDLFactory wsdl4jFactory;
+    private ExtensionRegistry wsdlExtensionRegistry;
+    private WSDLFactory wsdlFactory;
 
-    public WSDLModelResolver(Contribution contribution) {
+    public WSDLModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
-        // FIXME: [rfeng] To avoid the hard-coded factories
-        try {
-            this.factory = new DefaultWSDLFactory();
-            this.wsdlFactory = javax.wsdl.factory.WSDLFactory.newInstance();
-            wsdlExtensionRegistry = this.wsdlFactory.newPopulatedExtensionRegistry();
-        } catch (WSDLException e) {
-            throw new ContributionRuntimeException(e);
-        }
+        this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        this.wsdl4jFactory = modelFactories.getFactory(javax.wsdl.factory.WSDLFactory.class);
+        wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
     }
 
     /**
@@ -143,10 +137,6 @@ public class WSDLModelResolver implements ModelResolver {
 
     }
 
-    private javax.wsdl.factory.WSDLFactory wsdlFactory;
-    private ExtensionRegistry wsdlExtensionRegistry;
-    private WSDLFactory factory;
-
     public void addModel(Object resolved) {
         WSDLDefinition definition = (WSDLDefinition)resolved;
         List<WSDLDefinition> list = map.get(definition.getNamespace());
@@ -182,11 +172,11 @@ public class WSDLModelResolver implements ModelResolver {
             loadOnDemand(d, d.getInlinedSchemas());
             return d;
         }
-        WSDLDefinition aggregated = factory.createWSDLDefinition();
+        WSDLDefinition aggregated = wsdlFactory.createWSDLDefinition();
         for (WSDLDefinition d : definitions) {
             loadOnDemand(d, aggregated.getInlinedSchemas());
         }
-        Definition facade = wsdlFactory.newDefinition();
+        Definition facade = wsdl4jFactory.newDefinition();
         String ns = definitions.get(0).getNamespace();
         facade.setQName(new QName(ns, "$aggregated$"));
         facade.setTargetNamespace(ns);
@@ -254,53 +244,6 @@ public class WSDLModelResolver implements ModelResolver {
     // private Map<String, WSDLDefinition> loadedDefinitions = new Hashtable<String, WSDLDefinition>();
 
     /**
-     * Merge a set of WSDLs into a facade Definition
-     * 
-     * @param definitions
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private Definition merge(Definition target, Definition source) {
-        for (Iterator j = source.getImports().values().iterator(); j.hasNext();) {
-            List list = (List)j.next();
-            for (Iterator k = list.iterator(); k.hasNext();)
-                target.addImport((javax.wsdl.Import)k.next());
-        }
-
-        for (Iterator k = source.getBindings().values().iterator(); k.hasNext();) {
-            Binding binding = (Binding)k.next();
-            if (!binding.isUndefined())
-                target.getBindings().put(binding.getQName(), binding);
-        }
-
-        target.getExtensibilityElements().addAll(source.getExtensibilityElements());
-
-        for (Iterator k = source.getMessages().values().iterator(); k.hasNext();) {
-            Message msg = (Message)k.next();
-            if (!msg.isUndefined())
-                target.getMessages().put(msg.getQName(), msg);
-        }
-
-        target.getNamespaces().putAll(source.getNamespaces());
-
-        for (Iterator k = source.getPortTypes().values().iterator(); k.hasNext();) {
-            PortType portType = (PortType)k.next();
-            if (!portType.isUndefined())
-                target.getPortTypes().put(portType.getQName(), portType);
-        }
-
-        target.getServices().putAll(source.getServices());
-
-        if (target.getTypes() == null) {
-            target.setTypes(target.createTypes());
-        }
-        if (source.getTypes() != null)
-            target.getTypes().getExtensibilityElements().addAll(source.getTypes().getExtensibilityElements());
-        return target;
-
-    }
-
-    /**
      * Load the WSDL definition and inline schemas
      * 
      * @param wsdlDef
@@ -316,7 +259,7 @@ public class WSDLModelResolver implements ModelResolver {
             URL artifactURL = wsdlDef.getLocation().toURL();
             // Read a WSDL document
             InputStream is = artifactURL.openStream();
-            WSDLReader reader = wsdlFactory.newWSDLReader();
+            WSDLReader reader = wsdl4jFactory.newWSDLReader();
             reader.setFeature("javax.wsdl.verbose", false);
             reader.setFeature("javax.wsdl.importDocuments", true);
             // FIXME: We need to decide if we should disable the import processing by WSDL4J

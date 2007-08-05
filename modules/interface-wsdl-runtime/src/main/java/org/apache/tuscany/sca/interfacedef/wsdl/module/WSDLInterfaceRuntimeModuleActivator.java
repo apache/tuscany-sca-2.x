@@ -19,11 +19,13 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.module;
 
+import javax.wsdl.WSDLException;
+
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
@@ -52,6 +54,13 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class); 
         modelFactories.addFactory(wsdlFactory);
+        javax.wsdl.factory.WSDLFactory wsdl4jFactory;
+        try {
+            wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
+        } catch (WSDLException e) {
+            throw new IllegalStateException(e);
+        }
+        modelFactories.addFactory(wsdl4jFactory);
         
         // Register <interface.wsdl> processor
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -60,7 +69,7 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
         
         // Register .wsdl document processor  and .xsd document processor
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessors.addArtifactProcessor(new WSDLDocumentProcessor(wsdlFactory, null));
+        documentProcessors.addArtifactProcessor(new WSDLDocumentProcessor(wsdlFactory, wsdl4jFactory));
         documentProcessors.addArtifactProcessor(new XSDDocumentProcessor(wsdlFactory));
         
         ModelResolverExtensionPoint resolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);

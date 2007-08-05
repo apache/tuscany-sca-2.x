@@ -23,9 +23,9 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.xml.WebServiceBindingProcessor;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
@@ -45,8 +45,12 @@ public class Axis2ModuleActivator implements ModuleActivator {
         PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
         
-        WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
+        //FIXME Get the WSDL factory from the model factories extension point
+        //WSDLFactory wsdlFactory = factories.getFactory(WSDLFactory.class);
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        
+        WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
+        factories.addFactory(wsFactory);
         
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);

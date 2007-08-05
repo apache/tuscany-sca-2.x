@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.SCABindingProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
@@ -204,9 +205,12 @@ public class ReallySmallRuntimeBuilder {
         PackageProcessor packageProcessor = new ExtensiblePackageProcessor(packageProcessors, describer);
 
         // Create Contribution Model Resolver extension point
-        ModelResolverExtensionPoint modelResolverExtensionPoint = new DefaultModelResolverExtensionPoint();
-        registry.addExtensionPoint(modelResolverExtensionPoint);
+        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
+        registry.addExtensionPoint(modelResolvers);
 
+        // Get the model factory extension point
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        
         //FIXME Deprecate and remove this
         //Create contribution postProcessor extension point
         DefaultContributionPostProcessorExtensionPoint contributionPostProcessors =
@@ -232,7 +236,7 @@ public class ReallySmallRuntimeBuilder {
 
         ContributionService contributionService =
             new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor, contributionListener,
-                    postProcessor, modelResolverExtensionPoint, assemblyFactory, contributionFactory, xmlFactory);
+                    postProcessor, modelResolvers, modelFactories, assemblyFactory, contributionFactory, xmlFactory);
         return contributionService;
     }
 
