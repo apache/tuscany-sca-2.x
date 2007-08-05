@@ -18,20 +18,26 @@
  */
 package loanapplication;
 
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Scope;
 
-@Scope("CONVERSATION")
+@Conversational
 @Remotable
 public interface LoanService {
+    
     void apply(LoanApplication application);
+    
     void lockCurrentRate(int termInYears);
+    
     @OneWay
     void cancelApplication();
+    
     String getLoanStatus();
+    
     String display();
+    
     @EndsConversation
     void close();
 }

@@ -65,9 +65,7 @@
                 <module>implementation-crud-extension</module>
                 <module>implementation-notification</module>
                 <module>implementation-pojo2-extension</module>
-                <!--
                 <module>loanapplication</module>
-                -->
                 <module>osgi-supplychain</module>
                 <module>simple-bigbank</module>
                 <module>simple-bigbank-spring</module>
