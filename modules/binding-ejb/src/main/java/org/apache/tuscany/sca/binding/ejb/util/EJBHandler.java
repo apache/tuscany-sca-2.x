@@ -21,14 +21,13 @@ package org.apache.tuscany.sca.binding.ejb.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJBObject;
 import javax.rmi.CORBA.Util;
 
+import org.apache.tuscany.sca.binding.ejb.corba.ClassLoadingUtil;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
 import org.omg.CORBA.portable.ApplicationException;
@@ -77,20 +76,11 @@ public class EJBHandler {
     }
 
     private static Class loadClass(final String name) {
-        Class type = (Class)PRIMITIVE_TYPES.get(name);
-        if (type != null) {
-            return type;
+        try {
+            return ClassLoadingUtil.loadClass(name, Thread.currentThread().getContextClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new ServiceRuntimeException(e);
         }
-        return AccessController.doPrivileged(new PrivilegedAction<Class>() {
-            public Class run() {
-                try {
-                    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                    return Class.forName(name, true, classLoader);
-                } catch (ClassNotFoundException e) {
-                    return null;
-                }
-            }
-        });
     }
 
     // invokes EJB method
@@ -233,7 +223,9 @@ public class EJBHandler {
             MethodInfo methodInfo = interfaceInfo.getMethod(methodName);
             String[] exceptionTypes = methodInfo.getExceptionTypes();
             for (int i = 0; i < exceptionTypes.length; i++) {
-                Class exceptionType = loadClass(exceptionTypes[i]);
+                Class exceptionType =
+                    methodInfo.getMethod() != null ? methodInfo.getMethod().getExceptionTypes()[i]
+                        : loadClass(exceptionTypes[i]);
                 if (exceptionType.isAssignableFrom(exCopy.getClass()))
                     throw new ServiceRuntimeException(exCopy); // FIXME should
                 // be business
@@ -267,24 +259,31 @@ public class EJBHandler {
             if (methodInfo == null) {
                 throw new ServiceRuntimeException("Invalid Method " + methodName);
             }
-            String[] types = methodInfo.getParameterTypes();
-            if (args != null) {
-                if (types.length != args.length)
-                    throw new ServiceRuntimeException(
-                                                      "The argument list doesn't match the method signature of " + methodName);
-            }
+            Class[] parameterTypes = null;
+            Class returnType = null;
+            if (methodInfo.getMethod() != null) {
+                parameterTypes = methodInfo.getMethod().getParameterTypes();
+                returnType = methodInfo.getMethod().getReturnType();
+            } else {
+                String[] types = methodInfo.getParameterTypes();
+                if (args != null) {
+                    if (types.length != args.length)
+                        throw new ServiceRuntimeException(
+                                                          "The argument list doesn't match the method signature of " + methodName);
+                }
 
-            Class[] parameterTypes = new Class[types.length];
-            for (int i = 0; i < types.length; i++) {
-                parameterTypes[i] = loadClass(types[i]);
+                parameterTypes = new Class[types.length];
+                for (int i = 0; i < types.length; i++) {
+                    parameterTypes[i] = loadClass(types[i]);
+                }
+                returnType = loadClass(methodInfo.getReturnType());
             }
-            Class returnType = loadClass(methodInfo.getReturnType());
 
             InputStream in = null;
             try {
                 OutputStream out = (OutputStream)stub._request(operation, true);
 
-                for (int i = 0; i < types.length; i++) {
+                for (int i = 0; i < parameterTypes.length; i++) {
                     // Object arg = (args.length < i) ? null : args[i];
                     writeValue(out, args[i], parameterTypes[i]);
                 }
