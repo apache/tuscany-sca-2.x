@@ -38,152 +38,171 @@ import org.apache.tuscany.sca.policy.SCADefinitions;
  *
  */
 public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
-    
+
     public void build(SCADefinitions scaDefns) throws SCADefinitionsBuilderException {
         Map<QName, Intent> definedIntents = new HashMap<QName, Intent>();
-        for ( Intent intent : scaDefns.getPolicyIntents() ) {
+        for (Intent intent : scaDefns.getPolicyIntents()) {
             definedIntents.put(intent.getName(), intent);
         }
-        
+
         Map<QName, PolicySet> definedPolicySets = new HashMap<QName, PolicySet>();
-        for ( PolicySet policySet : scaDefns.getPolicySets() ) {
+        for (PolicySet policySet : scaDefns.getPolicySets()) {
             definedPolicySets.put(policySet.getName(), policySet);
         }
         buildPolicyIntents(scaDefns, definedIntents);
         buildPolicySets(scaDefns, definedPolicySets, definedIntents);
     }
-    
-    private void buildPolicyIntents(SCADefinitions scaDefns, Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+
+    private void buildPolicyIntents(SCADefinitions scaDefns, Map<QName, Intent> definedIntents)
+        throws SCADefinitionsBuilderException {
         for (Intent policyIntent : scaDefns.getPolicyIntents()) {
-            if ( policyIntent instanceof ProfileIntent ) {
+            if (policyIntent instanceof ProfileIntent) {
                 buildProfileIntent((ProfileIntent)policyIntent, definedIntents);
-            } 
-        
-            if ( policyIntent instanceof QualifiedIntent ) {
+            }
+
+            if (policyIntent instanceof QualifiedIntent) {
                 buildQualifiedIntent((QualifiedIntent)policyIntent, definedIntents);
             }
         }
     }
-    
-    private void buildPolicySets(SCADefinitions scaDefns, 
-                                 Map<QName, PolicySet> definedPolicySets, 
+
+    private void buildPolicySets(SCADefinitions scaDefns,
+                                 Map<QName, PolicySet> definedPolicySets,
                                  Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
-        
-        for ( PolicySet policySet : scaDefns.getPolicySets() ) {
+
+        for (PolicySet policySet : scaDefns.getPolicySets()) {
             buildProvidedIntents(policySet, definedIntents);
             buildIntentsInMappedPolicies(policySet, definedIntents);
             buildReferredPolicySets(policySet, definedPolicySets);
         }
-        
-        for ( PolicySet policySet : scaDefns.getPolicySets() ) {
-            for ( PolicySet referredPolicySet : policySet.getReferencedPolicySets() ) {
+
+        for (PolicySet policySet : scaDefns.getPolicySets()) {
+            for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
                 includeReferredPolicySets(policySet, referredPolicySet);
             }
         }
     }
-    
-    private void buildProfileIntent(ProfileIntent policyIntent, Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+
+    private void buildProfileIntent(ProfileIntent policyIntent, Map<QName, Intent> definedIntents)
+        throws SCADefinitionsBuilderException {
         //FIXME: Need to check for cyclic references first i.e an A requiring B and then B requiring A... 
-        if (policyIntent != null ) {
+        if (policyIntent != null) {
             //resolve all required intents
-            List<Intent> requiredIntents = new ArrayList<Intent>(); 
+            List<Intent> requiredIntents = new ArrayList<Intent>();
             for (Intent requiredIntent : policyIntent.getRequiredIntents()) {
-                if ( requiredIntent.isUnresolved() ) {
+                if (requiredIntent.isUnresolved()) {
                     Intent resolvedRequiredIntent = definedIntents.get(requiredIntent.getName());
-                    if ( resolvedRequiredIntent != null ) {
-                        requiredIntents.add(resolvedRequiredIntent); 
+                    if (resolvedRequiredIntent != null) {
+                        requiredIntents.add(resolvedRequiredIntent);
                     } else {
-                        throw new SCADefinitionsBuilderException("Required Intent - " + requiredIntent + 
-                                                             " not found for ProfileIntent " + policyIntent);
-                        
+                        throw new SCADefinitionsBuilderException("Required Intent - " + requiredIntent
+                            + " not found for ProfileIntent "
+                            + policyIntent);
+
                     }
+                } else {
+                    requiredIntents.add(requiredIntent);
                 }
             }
             policyIntent.getRequiredIntents().clear();
             policyIntent.getRequiredIntents().addAll(requiredIntents);
         }
     }
-    
-    private void buildQualifiedIntent(QualifiedIntent policyIntent, Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+
+    private void buildQualifiedIntent(QualifiedIntent policyIntent, Map<QName, Intent> definedIntents)
+        throws SCADefinitionsBuilderException {
         if (policyIntent != null) {
             //resolve the qualifiable intent
             Intent qualifiableIntent = policyIntent.getQualifiableIntent();
-            if ( qualifiableIntent.isUnresolved() ) {
+            if (qualifiableIntent.isUnresolved()) {
                 Intent resolvedQualifiableIntent = definedIntents.get(qualifiableIntent.getName());
-                
-                if ( resolvedQualifiableIntent != null ) {
+
+                if (resolvedQualifiableIntent != null) {
                     policyIntent.setQualifiableIntent(resolvedQualifiableIntent);
                 } else {
-                    throw new SCADefinitionsBuilderException("Qualifiable Intent - " + qualifiableIntent + 
-                                                             " not found for QualifiedIntent " + policyIntent);
+                    throw new SCADefinitionsBuilderException("Qualifiable Intent - " + qualifiableIntent
+                        + " not found for QualifiedIntent "
+                        + policyIntent);
                 }
-                    
+
             }
         }
     }
-    
-    private void buildProvidedIntents(PolicySet policySet, Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
-        if (policySet != null ) {
+
+    private void buildProvidedIntents(PolicySet policySet, Map<QName, Intent> definedIntents)
+        throws SCADefinitionsBuilderException {
+        if (policySet != null) {
             //resolve all provided intents
-            List<Intent> providedIntents = new ArrayList<Intent>(); 
+            List<Intent> providedIntents = new ArrayList<Intent>();
             for (Intent providedIntent : policySet.getProvidedIntents()) {
-                if ( providedIntent.isUnresolved() ) {
+                if (providedIntent.isUnresolved()) {
                     Intent resolvedProvidedIntent = definedIntents.get(providedIntent.getName());
-                        if ( resolvedProvidedIntent != null ) {
-                            providedIntents.add(resolvedProvidedIntent); 
-                        } else {
-                            throw new SCADefinitionsBuilderException("Provided Intent - " + providedIntent + 
-                                                                     " not found for PolicySet " + policySet);
-                                
-                        }
+                    if (resolvedProvidedIntent != null) {
+                        providedIntents.add(resolvedProvidedIntent);
+                    } else {
+                        throw new SCADefinitionsBuilderException("Provided Intent - " + providedIntent
+                            + " not found for PolicySet "
+                            + policySet);
+
+                    }
+                } else {
+                    providedIntents.add(providedIntent);
                 }
             }
             policySet.getProvidedIntents().clear();
             policySet.getProvidedIntents().addAll(providedIntents);
         }
     }
-    
-    private void buildIntentsInMappedPolicies(PolicySet policySet, Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
-        Map<Intent, List<Policy>> mappedPolicies = new Hashtable<Intent, List<Policy>>();   
-        for ( Intent mappedIntent : policySet.getMappedPolicies().keySet() ) {
-            if ( mappedIntent.isUnresolved() ) {
+
+    private void buildIntentsInMappedPolicies(PolicySet policySet, Map<QName, Intent> definedIntents)
+        throws SCADefinitionsBuilderException {
+        Map<Intent, List<Policy>> mappedPolicies = new Hashtable<Intent, List<Policy>>();
+        for (Map.Entry<Intent, List<Policy>> entry : policySet.getMappedPolicies().entrySet()) {
+            Intent mappedIntent = entry.getKey();
+            if (mappedIntent.isUnresolved()) {
                 Intent resolvedMappedIntent = definedIntents.get(mappedIntent.getName());
-                
-                if ( resolvedMappedIntent != null ) {
-                    mappedPolicies.put(resolvedMappedIntent, policySet.getMappedPolicies().get(mappedIntent));
+
+                if (resolvedMappedIntent != null) {
+                    mappedPolicies.put(resolvedMappedIntent, entry.getValue());
                 } else {
-                    throw new SCADefinitionsBuilderException("Mapped Intent - " + mappedIntent + 
-                                                             " not found for PolicySet " + policySet);
-                        
+                    throw new SCADefinitionsBuilderException("Mapped Intent - " + mappedIntent
+                        + " not found for PolicySet "
+                        + policySet);
+
                 }
+            } else {
+                mappedPolicies.put(mappedIntent, entry.getValue());
             }
         }
-        
+
         policySet.getMappedPolicies().clear();
         policySet.getMappedPolicies().putAll(mappedPolicies);
     }
-    
-    
-    private void buildReferredPolicySets(PolicySet policySet, Map<QName, PolicySet> definedPolicySets) throws SCADefinitionsBuilderException {
 
-        List<PolicySet> referredPolicySets = new ArrayList<PolicySet>(); 
-        for ( PolicySet referredPolicySet : policySet.getReferencedPolicySets() ) {
-            if ( referredPolicySet.isUnresolved() ) {
+    private void buildReferredPolicySets(PolicySet policySet, Map<QName, PolicySet> definedPolicySets)
+        throws SCADefinitionsBuilderException {
+
+        List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
+        for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
+            if (referredPolicySet.isUnresolved()) {
                 PolicySet resolvedReferredPolicySet = definedPolicySets.get(referredPolicySet.getName());
-                if ( resolvedReferredPolicySet != null ) {
+                if (resolvedReferredPolicySet != null) {
                     referredPolicySets.add(resolvedReferredPolicySet);
                 } else {
-                    throw new SCADefinitionsBuilderException("Referred PolicySet - " + referredPolicySet +
-                                                             "not found for PolicySet - " + policySet);
+                    throw new SCADefinitionsBuilderException("Referred PolicySet - " + referredPolicySet
+                        + "not found for PolicySet - "
+                        + policySet);
                 }
+            } else {
+                referredPolicySets.add(referredPolicySet);
             }
         }
         policySet.getReferencedPolicySets().clear();
         policySet.getReferencedPolicySets().addAll(referredPolicySets);
     }
-    
+
     private void includeReferredPolicySets(PolicySet policySet, PolicySet referredPolicySet) {
-        for ( PolicySet furtherReferredPolicySet : referredPolicySet.getReferencedPolicySets() ) {
+        for (PolicySet furtherReferredPolicySet : referredPolicySet.getReferencedPolicySets()) {
             includeReferredPolicySets(referredPolicySet, furtherReferredPolicySet);
         }
         policySet.getPolicies().addAll(referredPolicySet.getPolicies());

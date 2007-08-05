@@ -37,11 +37,11 @@ public class IntentImpl implements Intent {
     private static final String DOMAIN_SEPARATOR = ".";
     private QName name;
     private List<Operation> operations = new ArrayList<Operation>();
-    private List<QName> constrains;
+    private List<QName> constrains = new ArrayList<QName>();
     private String description;
-    private List<Intent> qualifiedIntents;
-    private List<Intent> requiredIntents;
-    private boolean unresolved;
+    private List<Intent> qualifiedIntents = new ArrayList<Intent>();;
+    // private List<Intent> requiredIntents = new ArrayList<Intent>();;
+    private boolean unresolved = true;
     private String domain;
     private String[] qualifiedNames;
 
@@ -95,10 +95,6 @@ public class IntentImpl implements Intent {
         return qualifiedIntents;
     }
 
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
     public boolean isUnresolved() {
         return unresolved;
     }
@@ -107,23 +103,44 @@ public class IntentImpl implements Intent {
         this.unresolved = unresolved;
     }
 
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        QName intentName = getName();
+        result = prime * result + ((intentName == null) ? 0 : intentName.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if (this == obj) {
             return true;
-        } else {
-            if (obj instanceof IntentImpl) {
-                if (getName() != null) {
-                    return getName().equals(((IntentImpl)obj).getName());
-                } else {
-                    return ((IntentImpl)obj).getName() == null;
-                }
-            } else {
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof IntentImpl)) {
+            return false;
+        }
+        final IntentImpl other = (IntentImpl)obj;
+        if (getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
+        } else if (!getName().equals(other.getName())) {
+            return false;
         }
+        return true;
     }
-    
+
     public String toString() {
-        return name.toString();
+        return String.valueOf(getName());
     }
 }
