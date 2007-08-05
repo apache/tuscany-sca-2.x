@@ -58,6 +58,7 @@ public class MethodInfo implements Serializable {
     }
 
     public MethodInfo(Method method) {
+        this.method = method;
         this.name = method.getName();
         // this.declaringClass = method.getDeclaringClass().getName();
         this.returnType = method.getReturnType().getName();
