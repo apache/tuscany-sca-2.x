@@ -29,7 +29,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
 
-
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,6 +43,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -55,8 +55,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -86,25 +84,18 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private static final QName PROPERTIES_QNAME    = new QName(SCA_NS, "properties");
     private static final QName PROPERTY_QNAME      = new QName(SCA_NS, "property");
     
-    private JavaInterfaceIntrospector interfaceIntrospector;
     private JavaInterfaceFactory javaInterfaceFactory;
     private AssemblyFactory assemblyFactory;
-    //private PolicyFactory policyFactory;
     
     private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     static {
         domFactory.setNamespaceAware(true);
     }
 
-    public OSGiImplementationProcessor(JavaInterfaceIntrospector interfaceIntrospector,
-            JavaInterfaceFactory javaInterfaceFactory,
-            AssemblyFactory assemblyFactory,
-            PolicyFactory policyFactory) {
+    public OSGiImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         
-        this.interfaceIntrospector = interfaceIntrospector;
-        this.assemblyFactory = assemblyFactory;
-        this.javaInterfaceFactory = javaInterfaceFactory;
-        //this.policyFactory = policyFactory;
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
     
     public QName getArtifactType() {
@@ -289,15 +280,15 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         // create a relative URI
         service.setName(serv.getName());
 
-        JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);
+        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         
         if (callbackInterfaze != null) {
-            JavaInterface callbackInterface = interfaceIntrospector.introspect(callbackInterfaze);
+            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callbackInterfaze);
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
         else if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
         return service;
@@ -311,10 +302,10 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         reference.setName(ref.getName());
         reference.setMultiplicity(ref.getMultiplicity());
 
-        JavaInterface callInterface = interfaceIntrospector.introspect(clazz);
+        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(clazz);
         reference.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
             reference.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
        

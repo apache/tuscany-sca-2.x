@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.interfacedef.java.introspect;
+package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.OneWay;
@@ -45,7 +47,7 @@ import org.osoa.sca.annotations.Remotable;
  * 
  * @version $Rev$ $Date$
  */
-public class ExtensibleJavaInterfaceIntrospector implements JavaInterfaceIntrospector {
+public class JavaInterfaceIntrospectorImpl {
     public static final String IDL_INPUT = "idl:input";
 
     private static final String UNKNOWN_DATABINDING = null;
@@ -53,7 +55,7 @@ public class ExtensibleJavaInterfaceIntrospector implements JavaInterfaceIntrosp
     private JavaInterfaceFactory javaFactory;
     private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
 
-    public ExtensibleJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
+    public JavaInterfaceIntrospectorImpl(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
         this.javaFactory = javaFactory;
         this.visitors = visitors.getInterfaceVisitors();
     }

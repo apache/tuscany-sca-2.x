@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 
 /**
  * Processor for creating JavaServiceContract definitions from Java Classes.
+ * @deprecated Please use JavaInterfaceFactory instead.
  *
  * @version $Rev$ $Date$
  */

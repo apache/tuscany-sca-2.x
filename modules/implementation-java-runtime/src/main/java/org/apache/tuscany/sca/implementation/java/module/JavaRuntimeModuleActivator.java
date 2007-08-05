@@ -61,8 +61,6 @@ import org.apache.tuscany.sca.implementation.java.invocation.JavaImplementationP
 import org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -90,14 +88,13 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
         
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
         ProxyFactoryExtensionPoint proxyFactory = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
         proxyFactory.setClassProxyFactory(new CglibProxyFactory(messageFactory, proxyFactory.getInterfaceContractMapper()));
         
         JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        JavaInterfaceIntrospector interfaceIntrospector = new ExtensibleJavaInterfaceIntrospector(javaFactory, interfaceVisitors);
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(interfaceVisitors);
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
             new AllowsPassByReferenceProcessor(assemblyFactory),
@@ -109,11 +106,11 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             new EagerInitProcessor(assemblyFactory),
             new InitProcessor(assemblyFactory),
             new PropertyProcessor(assemblyFactory),
-            new ReferenceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+            new ReferenceProcessor(assemblyFactory, javaFactory),
             new ResourceProcessor(assemblyFactory),
             new ScopeProcessor(assemblyFactory),
-            new ServiceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
-            new HeuristicPojoProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+            new ServiceProcessor(assemblyFactory, javaFactory),
+            new HeuristicPojoProcessor(assemblyFactory, javaFactory),
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
         for (JavaClassVisitor extension : extensions) {

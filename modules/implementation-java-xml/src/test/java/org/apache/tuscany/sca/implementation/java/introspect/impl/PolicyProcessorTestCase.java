@@ -32,8 +32,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.osoa.sca.annotations.Requires;
@@ -221,9 +219,7 @@ public class PolicyProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        ExtensibleJavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
-        serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), introspector);
+        serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint()));
         policyProcessor = new PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();

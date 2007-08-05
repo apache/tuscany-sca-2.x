@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -42,16 +44,11 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
-import org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementation;
-import org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementationProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.scope.Scope;
@@ -72,24 +69,19 @@ public class OSGiReadImplTestCase extends TestCase {
     private OSGiImplementationProcessor osgiProcessor;
     
     public void setUp() throws Exception {
+        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = new DefaultAssemblyFactory();
+        modelFactories.addFactory(assemblyFactory);
         scaBindingFactory = new DefaultSCABindingFactory();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        JavaInterfaceFactory javaInterfaceFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceFactory javaInterfaceFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        modelFactories.addFactory(javaInterfaceFactory);
         
-        JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        JavaInterfaceIntrospector interfaceIntrospector =             
-            new ExtensibleJavaInterfaceIntrospector(javaInterfaceFactory, interfaceVisitors);
-
-        osgiProcessor = new OSGiImplementationProcessor(
-                interfaceIntrospector, 
-                javaInterfaceFactory, 
-                assemblyFactory,
-                policyFactory);
+        osgiProcessor = new OSGiImplementationProcessor(modelFactories);
         staxProcessors.addArtifactProcessor(osgiProcessor);
         
         OSGiTestBundles.createBundle("target/OSGiTestService.jar", OSGiTestInterface.class, OSGiTestImpl.class);        

@@ -19,13 +19,23 @@
 package org.apache.tuscany.sca.interfacedef.java;
 
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
+import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * A factory for the Java interface model.
  */
 public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
-
+    
+    /**
+     * @deprecated Please use the constructor that takes a JavaInterfaceIntrospectorExtensionPoint.
+     */
     public DefaultJavaInterfaceFactory() {
+        super(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+    }
+
+    public DefaultJavaInterfaceFactory(JavaInterfaceIntrospectorExtensionPoint visitors) {
+        super(visitors);
     }
 
 }

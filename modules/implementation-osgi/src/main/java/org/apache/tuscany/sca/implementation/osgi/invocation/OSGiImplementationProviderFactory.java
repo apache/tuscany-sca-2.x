@@ -19,7 +19,10 @@
 package org.apache.tuscany.sca.implementation.osgi.invocation;
 
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
 import org.apache.tuscany.sca.implementation.osgi.context.OSGiPropertyValueObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -34,14 +37,14 @@ import org.osgi.framework.BundleException;
  */
 public class OSGiImplementationProviderFactory implements ImplementationProviderFactory<OSGiImplementationInterface> {
     
+    DataBindingExtensionPoint dataBindings;
     
-    DataBindingExtensionPoint dataBindingRegistry;
-    
-    public OSGiImplementationProviderFactory(DataBindingExtensionPoint dataBindings,
-            OSGiPropertyValueObjectFactory factory) {
+    public OSGiImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
         
-        dataBindingRegistry = dataBindings;
-        
+        dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
+        TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
+        MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
+        OSGiPropertyValueObjectFactory factory = new OSGiPropertyValueObjectFactory(mediator);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
@@ -49,7 +52,7 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
                 
         try {
                 
-            return new OSGiImplementationProvider(component, implementation, dataBindingRegistry);
+            return new OSGiImplementationProvider(component, implementation, dataBindings);
                 
         } catch (BundleException e) {
             throw new RuntimeException(e);

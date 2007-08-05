@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
@@ -45,13 +44,11 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends BaseJavaClassVisitor {
-    private JavaInterfaceIntrospector interfaceIntrospector;
     private JavaInterfaceFactory javaFactory;
     
-    public ServiceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, JavaInterfaceIntrospector interfaceIntrospector) {
+    public ServiceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         super(assemblyFactory);
         this.javaFactory = javaFactory;
-        this.interfaceIntrospector = interfaceIntrospector;
     }
 
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
@@ -147,10 +144,10 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         // create a relative URI
         service.setName(interfaze.getSimpleName());
 
-        JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);
+        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
         return service;

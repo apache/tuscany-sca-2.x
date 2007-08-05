@@ -30,8 +30,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Property;
 
 /**
@@ -60,10 +58,8 @@ public class HeuristicAndPropertyTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        ExtensibleJavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(new DefaultJavaInterfaceFactory(), visitors);
         propertyProcessor = new PropertyProcessor(assemblyFactory);
-        heuristicProcessor = new HeuristicPojoProcessor(assemblyFactory, new DefaultJavaInterfaceFactory(), introspector);
+        heuristicProcessor = new HeuristicPojoProcessor(assemblyFactory, new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint()));
     }
 
     public static class Foo {

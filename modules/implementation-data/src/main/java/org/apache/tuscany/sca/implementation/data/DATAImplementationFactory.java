@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.data;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 
 
 /**
@@ -33,18 +32,15 @@ public class DATAImplementationFactory {
     
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
-    private JavaInterfaceIntrospector introspector;
     
     public DATAImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory,
-                                            JavaInterfaceIntrospector introspector) {
+                                            JavaInterfaceFactory javaFactory) {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
-        this.introspector = introspector;
     }
 
     public DATAImplementation createDASImplementation() {
-        return new DATAImplementation(assemblyFactory, javaFactory, introspector);
+        return new DATAImplementation(assemblyFactory, javaFactory);
     }
 
 }

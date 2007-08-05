@@ -43,9 +43,6 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -71,15 +68,13 @@ public class WriteTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        javaFactory = new DefaultJavaInterfaceFactory();
+        javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
 
         staxProcessors.addArtifactProcessor(new CompositeProcessor(new ContributionFactoryImpl(), factory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
 
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
-        JavaInterfaceProcessor javaProcessor = new JavaInterfaceProcessor(javaFactory, introspector);
+        JavaInterfaceProcessor javaProcessor = new JavaInterfaceProcessor(javaFactory);
         staxProcessors.addArtifactProcessor(javaProcessor);
     }
 

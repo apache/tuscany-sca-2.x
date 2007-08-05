@@ -28,19 +28,16 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.implementation.data.DATAImplementation;
-import org.apache.tuscany.sca.implementation.data.DATAImplementationFactory;
-import org.apache.tuscany.sca.implementation.data.DATAArtifactProcessor;
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.data.config.ConnectionInfo;
 import org.apache.tuscany.sca.implementation.data.config.ConnectionProperties;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
@@ -73,25 +70,23 @@ public class DATAImplementationProcessorTestCase extends TestCase {
             + "</component>";
 
     private XMLInputFactory xmlFactory;
-    private DATAImplementationFactory dataFactory;
+    private ModelFactoryExtensionPoint modelFactories;
 
     protected void setUp() throws Exception {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
         
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        JavaInterfaceIntrospector introspector = new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors);
-
-        dataFactory = new DATAImplementationFactory(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(), introspector);
-        
+        modelFactories = new DefaultModelFactoryExtensionPoint();
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        modelFactories.addFactory(assemblyFactory);
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        modelFactories.addFactory(javaFactory);
     }
 
     public void testLoadCompositeUsingDatasource() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_DATASOURCE));
         
-        DATAArtifactProcessor dataProcessor = 
-            new DATAArtifactProcessor(dataFactory);
+        DATAArtifactProcessor dataProcessor = new DATAArtifactProcessor(modelFactories);
         
         while(true) {
             int event = reader.next();
@@ -116,8 +111,7 @@ public class DATAImplementationProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingConnectionProperties() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_CONNECTION_PROPERTIES));
 
-        DATAArtifactProcessor dataProcessor = 
-            new DATAArtifactProcessor(dataFactory);
+        DATAArtifactProcessor dataProcessor = new DATAArtifactProcessor(modelFactories);
         
         while(true) {
             int event = reader.next();

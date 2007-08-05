@@ -92,9 +92,8 @@ public class ConstructorProcessorTestCase extends TestCase {
         processor.visitConstructor(ctor1, type);
 
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors));
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {
@@ -167,9 +166,8 @@ public class ConstructorProcessorTestCase extends TestCase {
                                                                     String[].class);
         processor.visitConstructor(ctor1, type);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
-        JavaInterfaceIntrospectorExtensionPoint visitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory, new ExtensibleJavaInterfaceIntrospector(javaFactory, visitors));
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {

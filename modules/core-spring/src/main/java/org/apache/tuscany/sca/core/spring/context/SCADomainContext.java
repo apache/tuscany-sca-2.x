@@ -72,8 +72,6 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
@@ -101,12 +99,10 @@ public class SCADomainContext {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         ContributionFactory contributionFactory = new ContributionFactoryImpl();
         InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(interfaceVisitors);
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
         JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
-        
-        JavaInterfaceIntrospector interfaceIntrospector = new ExtensibleJavaInterfaceIntrospector(javaFactory, interfaceVisitors);
         
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
@@ -118,11 +114,11 @@ public class SCADomainContext {
             new EagerInitProcessor(assemblyFactory),
             new InitProcessor(assemblyFactory),
             new PropertyProcessor(assemblyFactory),
-            new ReferenceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+            new ReferenceProcessor(assemblyFactory, javaFactory),
             new ResourceProcessor(assemblyFactory),
             new ScopeProcessor(assemblyFactory),
-            new ServiceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
-            new HeuristicPojoProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+            new ServiceProcessor(assemblyFactory, javaFactory),
+            new HeuristicPojoProcessor(assemblyFactory, javaFactory),
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
         for (JavaClassVisitor e : extensions) {
@@ -138,7 +134,7 @@ public class SCADomainContext {
         staxProcessors.addArtifactProcessor(compositeProcessor);
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new JavaInterfaceProcessor(javaFactory, interfaceIntrospector));
+        staxProcessors.addArtifactProcessor(new JavaInterfaceProcessor(javaFactory));
         staxProcessors.addArtifactProcessor(new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector));
         
         // Create a resolver

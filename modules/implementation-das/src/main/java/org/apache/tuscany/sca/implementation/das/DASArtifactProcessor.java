@@ -25,12 +25,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 
 /**
@@ -48,8 +51,10 @@ public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementa
     
     private DASImplementationFactory dasFactory;
     
-    public DASArtifactProcessor(DASImplementationFactory crudFactory) {
-        this.dasFactory = crudFactory;
+    public DASArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        this.dasFactory = new DefaultDASImplementationFactory(assemblyFactory, javaFactory);
     }
 
     public QName getArtifactType() {

@@ -53,7 +53,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.springframework.core.io.Resource;
@@ -78,7 +77,6 @@ public class SpringXMLComponentTypeLoader {
     private static final String APPLICATION_CONTEXT = "application-context.xml";
 
     private AssemblyFactory assemblyFactory;
-    private JavaInterfaceIntrospector interfaceIntrospector;
     private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
     private ClassLoader cl;
@@ -86,16 +84,14 @@ public class SpringXMLComponentTypeLoader {
     private SpringBeanIntrospector beanIntrospector;
 
     public SpringXMLComponentTypeLoader(AssemblyFactory assemblyFactory,
-                                        JavaInterfaceIntrospector interfaceIntrospector,
                                         JavaInterfaceFactory javaFactory,
                                         PolicyFactory policyFactory) {
         super();
         this.assemblyFactory = assemblyFactory;
-        this.interfaceIntrospector = interfaceIntrospector;
         this.javaFactory = javaFactory;
         this.policyFactory = policyFactory;
         beanIntrospector =
-            new SpringBeanIntrospector(assemblyFactory, interfaceIntrospector, javaFactory, policyFactory);
+            new SpringBeanIntrospector(assemblyFactory, javaFactory, policyFactory);
     }
 
     protected Class<SpringImplementation> getImplementationClass() {
@@ -532,10 +528,10 @@ public class SpringXMLComponentTypeLoader {
         service.setName(name);
 
         // Set the call interface and, if present, the callback interface
-        JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);
+        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
         return service;
@@ -556,10 +552,10 @@ public class SpringXMLComponentTypeLoader {
         reference.setMultiplicity(Multiplicity.ONE_ONE);
 
         // Set the call interface and, if present, the callback interface
-        JavaInterface callInterface = interfaceIntrospector.introspect(interfaze);
+        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
         reference.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = interfaceIntrospector.introspect(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
             reference.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
 

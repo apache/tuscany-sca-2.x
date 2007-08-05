@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.das.provider;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.das.DASImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -33,7 +34,7 @@ public class DASImplementationProviderFactory implements ImplementationProviderF
     /**
      * Constructs a new DAS implementation.
      */
-    public DASImplementationProviderFactory() {
+    public DASImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, DASImplementation implementation) {

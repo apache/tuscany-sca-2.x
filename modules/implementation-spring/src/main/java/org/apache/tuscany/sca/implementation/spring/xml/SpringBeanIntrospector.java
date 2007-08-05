@@ -75,7 +75,6 @@ public class SpringBeanIntrospector {
      * @param javaFactory - a Java Interface Factory
      */
     public SpringBeanIntrospector(AssemblyFactory assemblyFactory,
-                                  JavaInterfaceIntrospector interfaceIntrospector,
                                   JavaInterfaceFactory javaFactory,
                                   PolicyFactory policyFactory) {
 
@@ -91,11 +90,11 @@ public class SpringBeanIntrospector {
                                         new EagerInitProcessor(assemblyFactory),
                                         new InitProcessor(assemblyFactory),
                                         new PropertyProcessor(assemblyFactory),
-                                        new ReferenceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+                                        new ReferenceProcessor(assemblyFactory, javaFactory),
                                         new ResourceProcessor(assemblyFactory),
                                         new ScopeProcessor(assemblyFactory),
-                                        new ServiceProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
-                                        new HeuristicPojoProcessor(assemblyFactory, javaFactory, interfaceIntrospector),
+                                        new ServiceProcessor(assemblyFactory, javaFactory),
+                                        new HeuristicPojoProcessor(assemblyFactory, javaFactory),
                                         new PolicyProcessor(assemblyFactory, policyFactory)};
         for (JavaClassVisitor extension : extensions) {
             classVisitors.addClassVisitor(extension);

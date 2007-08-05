@@ -13,6 +13,7 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License.
-# Implementation class for the ExtensionActivator for Spring module
-org.apache.tuscany.sca.implementation.spring.SpringModuleActivator
+# under the License. 
+
+# Implementation class for the implementation extension
+org.apache.tuscany.sca.implementation.spring.SpringImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.spring.SpringImplementation
