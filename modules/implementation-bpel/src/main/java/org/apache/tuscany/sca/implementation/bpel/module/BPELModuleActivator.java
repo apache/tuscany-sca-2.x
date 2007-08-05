@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.implementation.bpel.module;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELImplementationFactory;

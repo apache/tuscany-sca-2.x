@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.contribution.java.impl;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
@@ -32,21 +34,19 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
  * @version $Rev: 560435 $ $Date: 2007-07-27 18:26:55 -0700 (Fri, 27 Jul 2007) $
  */
 public class ClassReferenceArtifactResolverTestCase extends TestCase {
-    private ModelResolverExtensionPoint resolverExtensionPoint;
     private ExtensibleModelResolver resolver;
     
     protected void setUp() throws Exception {
         
-        resolverExtensionPoint = new DefaultModelResolverExtensionPoint();
-        resolverExtensionPoint.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
+        ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint();
+        resolvers.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
         
-        resolver = new ExtensibleModelResolver(null, resolverExtensionPoint);
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        
+        resolver = new ExtensibleModelResolver(null, resolvers, factories);
     }
     
     protected void tearDown() throws Exception {
-        resolverExtensionPoint.removeResolver(ClassReference.class);
-        resolverExtensionPoint = null;
-        resolver = null;
     }
     
     /**

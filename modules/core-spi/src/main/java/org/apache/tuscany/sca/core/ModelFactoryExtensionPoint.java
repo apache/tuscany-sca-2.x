@@ -20,35 +20,10 @@
 package org.apache.tuscany.sca.core;
 
 /**
- * An extension point for model factories. Model factories are provided to 
- * abstract the classes that represent artifacts in the assembly model away
- * from their creation mechanism. When the runtime needs to extend the model
- * as it reads in contributed artifacts it looks up the factory for the 
- * artifact required in this registry
+ * An extension point for model factories.
+ * @deprecated Please use org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint 
  *
  * @version $Rev$ $Date$
  */
-public interface ModelFactoryExtensionPoint {
-    
-    /**
-     * Add a model factory extension.
-     * 
-     * @param factory The factory to add
-     */
-    void addFactory(Object factory);
-    
-    /**
-     * Remove a model factory extension.
-     *  
-     * @param factory The factory to remove
-     */
-    void removeFactory(Object factory); 
-    
-    /**
-     * Get a factory implementing the given interface.
-     * @param factoryInterface the lookup key (factory interface)
-     * @return The factory
-     */
-    <T> T getFactory(Class<T> factoryInterface);
-
+public interface ModelFactoryExtensionPoint extends org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint {
 }

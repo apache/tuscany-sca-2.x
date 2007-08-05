@@ -28,8 +28,11 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,13 +42,17 @@ import org.junit.Test;
  */
 public class WSDLDocumentProcessorTestCase {
     private WSDLDocumentProcessor processor;
+    private WSDLFactory wsdlFactory;
+    private javax.wsdl.factory.WSDLFactory wsdl4jFactory;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        processor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
+        wsdlFactory = new DefaultWSDLFactory();
+        wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
+        processor = new WSDLDocumentProcessor(wsdlFactory, wsdl4jFactory);
     }
 
     /**
@@ -65,7 +72,10 @@ public class WSDLDocumentProcessorTestCase {
         WSDLDefinition definition1 = processor.read(null, URI.create("wsdl/helloworld-interface.wsdl"), url1);
         Assert.assertNull(definition1.getDefinition());
         Assert.assertEquals("http://helloworld", definition1.getNamespace());
-        WSDLModelResolver resolver = new WSDLModelResolver(null);
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(wsdlFactory);
+        factories.addFactory(wsdl4jFactory);
+        WSDLModelResolver resolver = new WSDLModelResolver(null, factories);
         resolver.addModel(definition);
         resolver.addModel(definition1);
         WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, definition);

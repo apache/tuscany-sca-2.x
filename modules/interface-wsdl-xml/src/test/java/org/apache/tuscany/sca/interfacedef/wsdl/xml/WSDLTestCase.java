@@ -23,14 +23,16 @@ import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
  * Test reading WSDL interfaces.
@@ -39,23 +41,25 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
  */
 public class WSDLTestCase extends TestCase {
 
-    private XMLInputFactory inputFactory;
     private DefaultURLArtifactProcessorExtensionPoint documentProcessors;
     private ExtensibleURLArtifactProcessor documentProcessor;
     private WSDLModelResolver wsdlResolver;
 
     public void setUp() throws Exception {
-        inputFactory = XMLInputFactory.newInstance();
         documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
-        WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
+        WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(wsdlFactory);
+        javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
+        factories.addFactory(wsdl4jFactory);
+        WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(wsdlFactory, wsdl4jFactory);
         documentProcessors.addArtifactProcessor(wsdlProcessor);
-        wsdlResolver = new WSDLModelResolver(null);
+        wsdlResolver = new WSDLModelResolver(null, factories);
     }
 
     public void tearDown() throws Exception {
-        inputFactory = null;
         documentProcessors = null;
     }
 

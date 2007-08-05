@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -89,7 +90,13 @@ public class ContributionServiceImpl implements ContributionService {
      * Registry of available model resolvers
      */
     
-    private ModelResolverExtensionPoint modelResolverExtensionPoint;
+    private ModelResolverExtensionPoint modelResolvers;
+    
+    /**
+     * Model factory extension point
+     */
+    
+    private ModelFactoryExtensionPoint modelFactories;
     
     /**
      * Contribution post processor
@@ -118,7 +125,8 @@ public class ContributionServiceImpl implements ContributionService {
                                    StAXArtifactProcessor staxProcessor,
                                    ExtensibleContributionListener contributionListener,
                                    ContributionPostProcessor postProcessor,
-                                   ModelResolverExtensionPoint modelResolverExtensionPoint,
+                                   ModelResolverExtensionPoint modelResolvers,
+                                   ModelFactoryExtensionPoint modelFactories,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory) {
@@ -129,7 +137,8 @@ public class ContributionServiceImpl implements ContributionService {
         this.staxProcessor = staxProcessor;
         this.contributionListener = contributionListener;
         this.postProcessor = postProcessor;
-        this.modelResolverExtensionPoint = modelResolverExtensionPoint;
+        this.modelResolvers = modelResolvers;
+        this.modelFactories = modelFactories;
         this.xmlFactory = xmlFactory;
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
@@ -266,7 +275,7 @@ public class ContributionServiceImpl implements ContributionService {
         
         // Create contribution model resolver
         if (modelResolver == null) {
-            modelResolver = new ExtensibleModelResolver(contribution, modelResolverExtensionPoint);
+            modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         }
         
         //set contribution initial information

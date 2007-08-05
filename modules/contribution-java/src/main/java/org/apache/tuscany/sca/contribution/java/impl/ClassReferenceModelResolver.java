@@ -25,9 +25,11 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * A Model Resolver for ClassReferences.
@@ -39,7 +41,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
     protected WeakReference<ClassLoader> classLoader;
     private Map<String, ClassReference> map = new HashMap<String, ClassReference>();
     
-    public ClassReferenceModelResolver(Contribution contribution) {
+    public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         this.classLoader = new WeakReference<ClassLoader>(Thread.currentThread().getContextClassLoader());
     }

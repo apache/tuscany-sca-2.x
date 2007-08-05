@@ -29,6 +29,8 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
@@ -52,10 +54,14 @@ public class WrapperStyleOperationTestCase extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), null);
+        javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
+        registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), wsdl4jFactory);
         resolver = new TestModelResolver();
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint(); 
         wsdlFactory = new DefaultWSDLFactory();
-        wsdlResolver = new WSDLModelResolver(null);
+        factories.addFactory(wsdlFactory); 
+        factories.addFactory(wsdl4jFactory);
+        wsdlResolver = new WSDLModelResolver(null, factories);
     }
 
     public final void testWrappedOperation() throws Exception {

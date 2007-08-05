@@ -27,26 +27,17 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 
 /**
  * A default implementation of an artifact resolver, based on a map.
- * @deprecated Please use ExtensibleModelResolver instead.
- *
+ * 
  * @version $Rev$ $Date$
  */
-public class DefaultModelResolver implements ModelResolver {
+public class TestModelResolver implements ModelResolver {
     private static final long serialVersionUID = -7826976465762296634L;
     
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
     protected Contribution contribution;
     
-    /**
-     * @deprecated Please use the other constructor.
-     * @param contribution
-     */
-    public DefaultModelResolver(Contribution contribution) {
-        this.contribution = contribution;
-    }
-    
-    public DefaultModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public TestModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
     }
     
