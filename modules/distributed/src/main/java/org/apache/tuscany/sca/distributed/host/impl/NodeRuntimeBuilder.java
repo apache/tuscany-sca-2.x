@@ -25,9 +25,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.ComponentTypeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
@@ -120,9 +122,10 @@ public class NodeRuntimeBuilder {
         ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
         registry.addExtensionPoint(modelResolvers);
         
-        // Create and register model resolvers for SCA assembly XML
+        // Register model resolvers for SCA assembly XML
         modelResolvers.addResolver(Composite.class, CompositeModelResolver.class);
         modelResolvers.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
+        modelResolvers.addResolver(ComponentType.class, ComponentTypeModelResolver.class);
 
         // Create contribution package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
