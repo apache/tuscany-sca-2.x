@@ -40,6 +40,7 @@
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
                 <module>callback-id</module>
+                <module>callback-multiple-wires</module>
                 <module>callback-set-callback</module>
                 <module>callback-set-conversation</module>
                 <module>contribution</module>
@@ -54,11 +55,11 @@
                 <module>extended-api</module>
                 <module>operation-overloading</module>
                 <!--
-                    <module>osgi-implementation</module>
+                <module>osgi-implementation</module>
                 -->
                 <module>properties</module>
-                <module>references</module>
                 <module>recursive</module>
+                <module>references</module>
                 <module>scopes</module>
                 <!--
                 <module>spec-api</module>
