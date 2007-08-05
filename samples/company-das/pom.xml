@@ -26,8 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     
-    <artifactId>samples-das-service</artifactId>
-    <name>Apache Tuscany DAS Pojo Service Sample - Service</name>
+    <artifactId>sample-company-das</artifactId>
+    <name>Apache Tuscany Company Data Access Service Sample</name>
     <packaging>jar</packaging>
 
 
