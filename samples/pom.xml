@@ -51,6 +51,8 @@
                 <module>calculator-script</module>
                 <module>calculator-webapp</module>
                 <module>chat-webapp</module>
+                <module>company-das</module>
+                <module>company-das-webapp</module>
                 <module>databinding-echo</module>
                 <module>feed-aggregator</module>
                 <module>helloworld-dojo</module>
