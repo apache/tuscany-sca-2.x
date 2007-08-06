@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -52,12 +53,10 @@ public class JavaImplementationProcessor implements
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
 
-    public JavaImplementationProcessor(AssemblyFactory assemblyFactory,
-                                       PolicyFactory policyFactory,
-                                       JavaImplementationFactory javaFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.policyFactory = policyFactory;
-        this.javaFactory = javaFactory;
+    public JavaImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
     }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException {

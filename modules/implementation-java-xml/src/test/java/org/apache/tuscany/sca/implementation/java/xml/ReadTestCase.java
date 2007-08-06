@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -62,20 +64,24 @@ public class ReadTestCase extends TestCase {
     private InterfaceContractMapper mapper;
     
     public void setUp() throws Exception {
+        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = new DefaultAssemblyFactory();
+        modelFactories.addFactory(assemblyFactory);
         scaBindingFactory = new DefaultSCABindingFactory();
         policyFactory = new DefaultPolicyFactory();
+        modelFactories.addFactory(policyFactory);
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultJavaClassIntrospectorExtensionPoint());
+        modelFactories.addFactory(javaImplementationFactory);
         
         CompositeProcessor compositeProcessor = new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor);
         staxProcessors.addArtifactProcessor(compositeProcessor);
 
-        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory);
+        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(modelFactories);
         staxProcessors.addArtifactProcessor(javaProcessor); 
     }
 

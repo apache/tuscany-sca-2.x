@@ -24,7 +24,6 @@ import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
@@ -35,8 +34,6 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
@@ -58,7 +55,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.implementation.java.invocation.CglibProxyFactory;
 import org.apache.tuscany.sca.implementation.java.invocation.JavaImplementationProviderFactory;
-import org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
@@ -87,7 +83,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
-        
         
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
         ProxyFactoryExtensionPoint proxyFactory = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
@@ -122,12 +117,8 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
 
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(classVisitors);
-        JavaImplementationProcessor javaImplementationProcessor =
-            new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory);
-        processors.addArtifactProcessor(javaImplementationProcessor);
+        factories.addFactory(javaImplementationFactory);
 
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
