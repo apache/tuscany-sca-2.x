@@ -56,8 +56,6 @@ public class DataBindingExtensionTestCase extends TestCase {
         EasyMock.expect(registry.getDataBinding(Node.class.getName())).andReturn(binding1);
         EasyMock.replay(registry);
         
-        binding1.setDataBindingRegistry(registry);
-        binding1.init();
         assertNotNull(registry.getDataBinding(Node.class.getName()));
 
         DataBinding1 binding2 = new DataBinding1("dom", Node.class);
