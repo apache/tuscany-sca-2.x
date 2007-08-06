@@ -34,17 +34,19 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 
 /**
  * Test case for WSDLOperation
  */
-public class WSDLOperationTestCase extends TestCase {
+public class WSDLOperationIntrospectorTestCase extends TestCase {
     private static final QName PORTTYPE_NAME =
         new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
@@ -63,7 +65,7 @@ public class WSDLOperationTestCase extends TestCase {
         factories.addFactory(wsdlFactory);
         javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
         factories.addFactory(wsdl4jFactory);
-        processor = new WSDLDocumentProcessor(wsdlFactory, wsdl4jFactory);
+        processor = new WSDLDocumentProcessor(factories);
         wsdlResolver = new WSDLModelResolver(null, factories);
         resolver = new TestModelResolver();
     }
@@ -77,7 +79,7 @@ public class WSDLOperationTestCase extends TestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
 
-        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
 
         DataType<List<DataType>> inputType = op.getInputType();
         Assert.assertEquals(1, inputType.getLogical().size());
@@ -107,12 +109,12 @@ public class WSDLOperationTestCase extends TestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
-        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(1, op.getInputType().getLogical().size());
 
         operation = portType.getOperation("getLastTradePrice2", null, null);
-        op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        op = new WSDLOperationIntrospectorImpl(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(2, op.getInputType().getLogical().size());
     }
@@ -125,12 +127,12 @@ public class WSDLOperationTestCase extends TestCase {
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
-        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
 
         try {
             op.isWrapperStyle();
             fail("InvalidWSDLException should have been thrown");
-        } catch (InvalidWSDLException e) {
+        } catch (InvalidInterfaceException e) {
             // Expected
         }
 

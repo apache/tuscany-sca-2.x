@@ -27,10 +27,10 @@ import java.util.Collection;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;

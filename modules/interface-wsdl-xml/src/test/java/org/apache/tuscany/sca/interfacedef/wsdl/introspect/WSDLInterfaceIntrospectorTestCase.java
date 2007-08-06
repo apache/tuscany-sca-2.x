@@ -46,10 +46,11 @@ import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 /**
  * Test case for InterfaceWSDLIntrospectorImpl
  */
-public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
+public class WSDLInterfaceIntrospectorTestCase extends TestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
     private WSDLDocumentProcessor registry;
+    private WSDLFactory wsdlFactory;
     private PortType portType;
     private ModelResolver resolver;
     private WSDLDefinition definition;
@@ -60,11 +61,11 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        wsdlFactory = new DefaultWSDLFactory();
         factories.addFactory(wsdlFactory);
         javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
         factories.addFactory(wsdl4jFactory);
-        registry = new WSDLDocumentProcessor(wsdlFactory, wsdl4jFactory);
+        registry = new WSDLDocumentProcessor(factories);
         resolver = new TestModelResolver();
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         definition = registry.read(null, new URI("stockquote.wsdl"), url);
@@ -75,8 +76,7 @@ public class DefaultWSDLInterfaceIntrospectorTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public final void testIntrospectPortType() throws InvalidInterfaceException {
-        DefaultWSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(new DefaultWSDLFactory());
-        WSDLInterface contract = introspector.introspect(portType, definition.getInlinedSchemas(), resolver);
+        WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition.getInlinedSchemas(), resolver);
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
         List<Operation> operations = contract.getOperations();
         Assert.assertEquals(1, operations.size());

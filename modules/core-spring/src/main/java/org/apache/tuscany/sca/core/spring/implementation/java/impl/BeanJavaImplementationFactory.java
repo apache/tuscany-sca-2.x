@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.sca.core.spring.implementation.java.impl;
 
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaClassIntrospectorImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 

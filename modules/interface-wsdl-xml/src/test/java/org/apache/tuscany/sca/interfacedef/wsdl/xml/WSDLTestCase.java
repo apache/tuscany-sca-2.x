@@ -54,7 +54,7 @@ public class WSDLTestCase extends TestCase {
         factories.addFactory(wsdlFactory);
         javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
         factories.addFactory(wsdl4jFactory);
-        WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(wsdlFactory, wsdl4jFactory);
+        WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(factories);
         documentProcessors.addArtifactProcessor(wsdlProcessor);
         wsdlResolver = new WSDLModelResolver(null, factories);
     }

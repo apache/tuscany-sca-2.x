@@ -49,8 +49,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -60,7 +58,6 @@ public class WebServiceBindingProcessor implements
     StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
     private WSDLFactory wsdlFactory;
-    private WSDLInterfaceIntrospector introspector;
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
 
@@ -68,7 +65,6 @@ public class WebServiceBindingProcessor implements
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.wsFactory = new DefaultWebServiceBindingFactory();
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        this.introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
     }
 
     public WebServiceBinding read(XMLStreamReader reader) throws ContributionReadException {
@@ -249,7 +245,7 @@ public class WebServiceBindingProcessor implements
                 WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
                 WSDLInterface wsdlInterface;
                 try {
-                    wsdlInterface = introspector.introspect(portType,
+                    wsdlInterface = wsdlFactory.createWSDLInterface(portType,
                                                                           wsdlDefinition.getInlinedSchemas(),
                                                                           resolver);
                 } catch (InvalidInterfaceException e) {

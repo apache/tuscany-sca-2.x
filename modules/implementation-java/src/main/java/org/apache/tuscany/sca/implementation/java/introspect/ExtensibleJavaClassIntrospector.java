@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect;
 
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaClassIntrospectorImpl;
 

@@ -24,8 +24,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;

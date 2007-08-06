@@ -24,6 +24,7 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -40,8 +41,8 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
 
     private WSDLFactory factory;
 
-    public XSDDocumentProcessor(WSDLFactory factory) {
-        this.factory = factory;
+    public XSDDocumentProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.factory = modelFactories.getFactory(WSDLFactory.class);
     }
 
     public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {

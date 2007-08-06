@@ -50,8 +50,10 @@ public class XSDDocumentProcessorTestCase {
      */
     @Before
     public void setUp() throws Exception {
+        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         wsdlFactory = new DefaultWSDLFactory();
-        processor = new XSDDocumentProcessor(wsdlFactory);
+        modelFactories.addFactory(wsdlFactory);
+        processor = new XSDDocumentProcessor(modelFactories);
     }
 
     /**

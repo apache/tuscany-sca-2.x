@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.java;
 
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 
 /**
  * Factory for the Java model

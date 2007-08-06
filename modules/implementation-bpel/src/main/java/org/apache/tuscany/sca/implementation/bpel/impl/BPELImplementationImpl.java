@@ -18,37 +18,32 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Date;
-import java.util.Map;
-import java.io.InputStream;
-import java.io.File;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+import javax.wsdl.Definition;
+import javax.xml.namespace.QName;
+
+import org.apache.ode.bpel.evt.BpelEvent;
+import org.apache.ode.bpel.iapi.Endpoint;
+import org.apache.ode.bpel.iapi.ProcessConf;
+import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.implementation.bpel.BPEL;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
-import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.ode.bpel.iapi.ProcessConf;
-import org.apache.ode.bpel.iapi.ProcessState;
-import org.apache.ode.bpel.iapi.Endpoint;
-import org.apache.ode.bpel.evt.BpelEvent;
 import org.w3c.dom.Node;
-
-import javax.xml.namespace.QName;
-import javax.wsdl.Definition;
 
 /**
  * The model representing a BPEL implementation in an SCA assembly model.
@@ -66,8 +61,7 @@ public class BPELImplementationImpl implements BPELImplementation {
      * Constructs a new BPEL implementation.
      */
     public BPELImplementationImpl(AssemblyFactory assemblyFactory,
-                              WSDLFactory wsdlFactory,
-                              WSDLInterfaceIntrospector introspector) {
+                              WSDLFactory wsdlFactory) {
 
         _bpelService = assemblyFactory.createService();
         _bpelService.setName("BPEL");

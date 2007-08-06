@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
  * Thrown when more than one component implementation constructor is annotated with {@link

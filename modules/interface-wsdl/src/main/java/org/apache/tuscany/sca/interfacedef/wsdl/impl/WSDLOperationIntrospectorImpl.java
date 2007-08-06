@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
+package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +34,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
@@ -60,15 +59,15 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  * 
  * @version $Rev$ $Date$
  */
-public class WSDLOperation {
+public class WSDLOperationIntrospectorImpl {
     private WSDLFactory wsdlFactory;
-    protected ModelResolver resolver;
-    protected XmlSchemaCollection inlineSchemas;
-    protected javax.wsdl.Operation operation;
-    protected Operation operationModel;
-    protected DataType<List<DataType>> inputType;
-    protected DataType outputType;
-    protected List<DataType> faultTypes;
+    private ModelResolver resolver;
+    private XmlSchemaCollection inlineSchemas;
+    private javax.wsdl.Operation operation;
+    private Operation operationModel;
+    private DataType<List<DataType>> inputType;
+    private DataType outputType;
+    private List<DataType> faultTypes;
     private String dataBinding;
 
     /**
@@ -76,7 +75,7 @@ public class WSDLOperation {
      * @param dataBinding The default databinding
      * @param schemaRegistry The XML Schema registry
      */
-    public WSDLOperation(
+    public WSDLOperationIntrospectorImpl(
                          WSDLFactory wsdlFactory,
                          javax.wsdl.Operation operation,
                          XmlSchemaCollection inlineSchemas,
@@ -110,7 +109,7 @@ public class WSDLOperation {
         return wrapperStyle;
     }
 
-    public Wrapper getWrapper() throws InvalidInterfaceException {
+    public Wrapper getWrapper() throws InvalidWSDLException {
         if (!isWrapperStyle()) {
             throw new IllegalStateException("The operation is not wrapper style.");
         } else {
@@ -196,7 +195,7 @@ public class WSDLOperation {
      * @return
      * @throws NotSupportedWSDLException
      */
-    public Operation getOperation() throws InvalidInterfaceException {
+    public Operation getOperation() throws InvalidWSDLException {
         if (operationModel == null) {
             boolean oneway = (operation.getOutput() == null);
             operationModel = new OperationImpl();
@@ -258,7 +257,7 @@ public class WSDLOperation {
             this.part = part;
             QName elementName = part.getElementName();
             if (elementName != null) {
-                element = WSDLOperation.this.getElement(elementName);
+                element = WSDLOperationIntrospectorImpl.this.getElement(elementName);
                 if (element == null) {
                     throw new InvalidWSDLException("Element cannot be resolved: " + elementName.toString());
                 }
@@ -269,7 +268,7 @@ public class WSDLOperation {
                 element.setQName(new QName(null, part.getName()));
                 QName typeName = part.getTypeName();
                 if (typeName != null) {
-                    XmlSchemaType type = WSDLOperation.this.getType(typeName);
+                    XmlSchemaType type = WSDLOperationIntrospectorImpl.this.getType(typeName);
                     if (type == null) {
                         throw new InvalidWSDLException("Type cannot be resolved: " + typeName.toString());
                     }
@@ -450,7 +449,7 @@ public class WSDLOperation {
                 if (elementName == null) {
                     throw new InvalidWSDLException("The element is not declared in the XML schema: " + part.getName());
                 }
-                outputWrapperElement = WSDLOperation.this.getElement(elementName);
+                outputWrapperElement = WSDLOperationIntrospectorImpl.this.getElement(elementName);
                 if (outputWrapperElement == null) {
                     return null;
                 }

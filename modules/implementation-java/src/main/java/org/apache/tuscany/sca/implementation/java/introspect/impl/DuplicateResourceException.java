@@ -18,7 +18,7 @@
  */ 
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
  * Thrown when an implementation has more than one resource injection site with the same name

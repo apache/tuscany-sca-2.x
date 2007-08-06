@@ -26,18 +26,11 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELImplementationFactory;
-import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.impl.BPELArtifactProcessor;
+import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.provider.BPELImplementationProviderFactory;
-import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.DefaultWSDLInterfaceIntrospector;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
 /**
@@ -64,10 +57,9 @@ public class BPELModuleActivator implements ModuleActivator {
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
 
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
-        WSDLInterfaceIntrospector introspector = new DefaultWSDLInterfaceIntrospector(wsdlFactory);
 
         BPELImplementationFactory bpelFactory =
-                new DefaultBPELImplementationFactory(assemblyFactory, wsdlFactory, introspector);
+                new DefaultBPELImplementationFactory(assemblyFactory, wsdlFactory);
 
         // Add the CRUD implementation extension to the StAXArtifactProcessor
         // extension point

@@ -23,10 +23,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.easymock.EasyMock;
 
 /**

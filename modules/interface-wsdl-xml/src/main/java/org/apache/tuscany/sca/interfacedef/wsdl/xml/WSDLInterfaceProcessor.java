@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -38,16 +39,13 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
-    private WSDLInterfaceIntrospector wsdlIntrospector;
 
-    public WSDLInterfaceProcessor(WSDLFactory wsdlFactory, WSDLInterfaceIntrospector wsdlIntrospector) {
-        this.wsdlFactory = wsdlFactory;
-        this.wsdlIntrospector = wsdlIntrospector;
+    public WSDLInterfaceProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
     }
     
     /**
@@ -162,7 +160,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         // Introspect the WSDL portType and add the resulting
                         // WSDLInterface to the resolver
                         try {
-                            wsdlInterface = wsdlIntrospector.introspect(portType, wsdlDefinition.getInlinedSchemas(), resolver);
+                            wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition.getInlinedSchemas(), resolver);
                         } catch (InvalidInterfaceException e) {
                             throw new ContributionResolveException(e);
                         }

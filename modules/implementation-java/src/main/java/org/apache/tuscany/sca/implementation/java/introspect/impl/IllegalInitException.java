@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
  * Denotes an illegal signature for a method decorated with {@link @org.osoa.sca.annotations.Init}

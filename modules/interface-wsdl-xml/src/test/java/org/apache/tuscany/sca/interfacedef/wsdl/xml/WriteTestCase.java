@@ -35,12 +35,15 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -59,6 +62,7 @@ public class WriteTestCase extends TestCase {
     private InterfaceContractMapper mapper;
 
     public void setUp() throws Exception {
+        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
@@ -70,7 +74,9 @@ public class WriteTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
 
-        WSDLInterfaceProcessor wsdlProcessor = new WSDLInterfaceProcessor(new DefaultWSDLFactory(), null);
+        WSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        modelFactories.addFactory(wsdlFactory);
+        WSDLInterfaceProcessor wsdlProcessor = new WSDLInterfaceProcessor(modelFactories);
         staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
