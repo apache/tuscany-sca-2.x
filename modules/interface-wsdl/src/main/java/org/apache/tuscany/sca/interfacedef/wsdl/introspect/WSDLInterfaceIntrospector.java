@@ -27,7 +27,7 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
- * @deprecated Please us WSDLInterfaceFactory instead.
+ * @deprecated Please use WSDLInterfaceFactory instead.
  *
  * @version $Rev$ $Date$
  */
