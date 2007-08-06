@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.provider;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -35,8 +36,8 @@ public class BPELImplementationProviderFactory implements ImplementationProvider
      * Constructs a new CRUD implementation.
      * @param odeServer the server instance passed to the implementation provider
      */
-    public BPELImplementationProviderFactory(EmbeddedODEServer odeServer) {
-        this.odeServer = odeServer;
+    public BPELImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
+        this.odeServer = new EmbeddedODEServer();
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, BPELImplementation implementation) {

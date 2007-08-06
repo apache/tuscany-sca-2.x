@@ -31,6 +31,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.ode.bpel.compiler.BpelC;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -38,6 +40,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
+import org.apache.tuscany.sca.implementation.bpel.DefaultBPELImplementationFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.osoa.sca.Constants;
 
 /**
@@ -55,8 +59,10 @@ public class BPELArtifactProcessor implements StAXArtifactProcessor<BPELImplemen
     
     private BPELImplementationFactory bpelFactory;
     
-    public BPELArtifactProcessor(BPELImplementationFactory crudFactory) {
-        this.bpelFactory = crudFactory;
+    public BPELArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        this.bpelFactory = new DefaultBPELImplementationFactory(assemblyFactory, wsdlFactory);
     }
 
     public QName getArtifactType() {

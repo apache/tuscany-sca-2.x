@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.implementation.bpel;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.introspect.WSDLInterfaceIntrospector;
 
 /**
  * A default factory for the BPEL implementation model.
