@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.osoa.sca.annotations.Conversational;
@@ -52,16 +51,13 @@ public class JavaInterfaceIntrospectorImpl {
 
     private static final String UNKNOWN_DATABINDING = null;
 
-    private JavaInterfaceFactory javaFactory;
     private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
 
-    public JavaInterfaceIntrospectorImpl(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
-        this.javaFactory = javaFactory;
+    public JavaInterfaceIntrospectorImpl(JavaInterfaceIntrospectorExtensionPoint visitors) {
         this.visitors = visitors.getInterfaceVisitors();
     }
 
-    public JavaInterface introspect(Class<?> type) throws InvalidInterfaceException {
-        JavaInterface javaInterface = javaFactory.createJavaInterface();
+    public void introspectInterface(JavaInterface javaInterface, Class<?> type) throws InvalidInterfaceException {
         javaInterface.setJavaClass(type);
 
         boolean remotable = type.isAnnotationPresent(Remotable.class);
@@ -84,7 +80,6 @@ public class JavaInterfaceIntrospectorImpl {
         for (JavaInterfaceVisitor extension : visitors) {
             extension.visitInterface(javaInterface);
         }
-        return javaInterface;
     }
 
     private <T> List<Operation> getOperations(Class<T> type, boolean remotable, boolean conversational)

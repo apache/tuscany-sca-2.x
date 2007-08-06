@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.introspect;
+package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -27,12 +27,14 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DefaultJavaClassIntrospectorTestCase extends TestCase {
+public class JavaClassIntrospectorImplTestCase extends TestCase {
 
     public void testRegister() throws Exception {
         DefaultJavaClassIntrospectorExtensionPoint visitors = new DefaultJavaClassIntrospectorExtensionPoint();
@@ -66,9 +68,8 @@ public class DefaultJavaClassIntrospectorTestCase extends TestCase {
         // mock.expects(once()).method("visitEnd");
         EasyMock.replay(extension);
         visitors.addClassVisitor(extension);
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
-        ExtensibleJavaClassIntrospector introspector = new ExtensibleJavaClassIntrospector(visitors);
-        introspector.introspect(Bar.class, javaImplementationFactory.createJavaImplementation());
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(visitors);
+        javaImplementationFactory.createJavaImplementation(javaImplementationFactory.createJavaImplementation(), Bar.class);
         EasyMock.verify(extension);
     }
 

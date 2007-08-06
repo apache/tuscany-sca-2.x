@@ -22,7 +22,9 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 
 /**
  * Implementations are responsible for walking a component implementation class,
- * adding additional component type information as appropriate
+ * adding additional component type information as appropriate.
+ * 
+ * @deprecated Use JavaImplementationFactory instead.
  * 
  * @version $Rev$ $Date$
  */

@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -50,18 +49,15 @@ public class JavaImplementationProcessor implements
     StAXArtifactProcessor<JavaImplementation>, JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
-    private JavaClassIntrospector introspector;
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
 
     public JavaImplementationProcessor(AssemblyFactory assemblyFactory,
                                        PolicyFactory policyFactory,
-                                       JavaImplementationFactory javaFactory,
-                                       JavaClassIntrospector introspector) {
+                                       JavaImplementationFactory javaFactory) {
         this.assemblyFactory = assemblyFactory;
         this.policyFactory = policyFactory;
         this.javaFactory = javaFactory;
-        this.introspector = introspector;
     }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException {
@@ -116,7 +112,7 @@ public class JavaImplementationProcessor implements
         javaImplementation.setUnresolved(false);
 
         try {
-            introspector.introspect(javaImplementation.getJavaClass(), javaImplementation);
+            javaFactory.createJavaImplementation(javaImplementation, javaImplementation.getJavaClass());
         } catch (IntrospectionException e) {
             throw new ContributionResolveException(e);
         }

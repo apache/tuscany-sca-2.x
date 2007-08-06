@@ -16,26 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java;
+package org.apache.tuscany.sca.implementation.java.introspect;
+
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.impl.JavaClassIntrospectorImpl;
 
 /**
- * A factory for the Java model.
+ * An extensible Java class introspector implementation.
+ * @deprecated Use JavaImplementationFactory instead.
+ * 
+ * @version $Rev$ $Date$
  */
-import org.apache.tuscany.sca.implementation.java.impl.JavaImplementationFactoryImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
-
-public class DefaultJavaImplementationFactory extends JavaImplementationFactoryImpl implements JavaImplementationFactory {
-
-    /**
-     * @deprecated Please use the constructor that takes a JavaClassIntrospectorExtensionPoint.
-     */
-    public DefaultJavaImplementationFactory() {
-        super(new DefaultJavaClassIntrospectorExtensionPoint());
+public class ExtensibleJavaClassIntrospector extends JavaClassIntrospectorImpl implements JavaClassIntrospector {
+    
+    public ExtensibleJavaClassIntrospector(JavaClassIntrospectorExtensionPoint visitors) {
+        super(visitors);
     }
     
-    public DefaultJavaImplementationFactory(JavaClassIntrospectorExtensionPoint visitors) {
-        super(visitors);
+    public JavaImplementation introspect(Class<?> clazz, JavaImplementation type) throws IntrospectionException {
+        super.introspectClass(type, clazz);
+        return type;
     }
 
 }

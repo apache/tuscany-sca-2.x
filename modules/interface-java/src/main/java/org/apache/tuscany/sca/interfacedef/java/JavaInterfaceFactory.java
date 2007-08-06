@@ -42,6 +42,14 @@ public interface JavaInterfaceFactory {
     JavaInterface createJavaInterface(Class<?> interfaceClass) throws InvalidInterfaceException;
     
     /**
+     * Creates the contents of a Java interface model from an interface class.
+     * @param javaInterface the Java interface model
+     * @param interfaceClass the interface class to introspect.
+     * @return
+     */
+    void createJavaInterface(JavaInterface javaInterface, Class<?> interfaceClass) throws InvalidInterfaceException;
+    
+    /**
      * Creates a new Java interface contract.
      * 
      * @return

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.introspect;
+package org.apache.tuscany.sca.implementation.java.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 /**
@@ -34,11 +35,11 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospect
  * 
  * @version $Rev$ $Date$
  */
-public class ExtensibleJavaClassIntrospector implements JavaClassIntrospector {
+public class JavaClassIntrospectorImpl {
     
     private List<JavaClassVisitor> visitors;
 
-    public ExtensibleJavaClassIntrospector(JavaClassIntrospectorExtensionPoint visitors) {
+    public JavaClassIntrospectorImpl(JavaClassIntrospectorExtensionPoint visitors) {
         this.visitors = visitors.getClassVisitors();
     }
 
@@ -66,7 +67,7 @@ public class ExtensibleJavaClassIntrospector implements JavaClassIntrospector {
      * ignored.
      * </ol>
      */
-    public JavaImplementation introspect(Class<?> clazz, JavaImplementation type)
+    public void introspectClass(JavaImplementation type, Class<?> clazz)
         throws IntrospectionException {
         for (JavaClassVisitor extension : visitors) {
             extension.visitClass(clazz, type);
@@ -108,7 +109,6 @@ public class ExtensibleJavaClassIntrospector implements JavaClassIntrospector {
         for (JavaClassVisitor extension : visitors) {
             extension.visitEnd(clazz, type);
         }
-        return type;
     }
 
     private void visitSuperClass(Class<?> clazz, JavaImplementation type) throws IntrospectionException {
