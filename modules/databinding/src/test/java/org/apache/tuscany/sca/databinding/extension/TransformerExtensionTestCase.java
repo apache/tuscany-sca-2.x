@@ -52,8 +52,7 @@ public class TransformerExtensionTestCase extends TestCase {
                 .expect(registry.getTransformer(transformer.getSourceDataBinding(), transformer.getTargetDataBinding()))
                 .andReturn(transformer);
         EasyMock.replay(registry);
-        transformer.setTransformerRegistry(registry);
-        transformer.init();
+        registry.addTransformer(transformer);
         assertSame(transformer, registry.getTransformer(transformer.getSourceDataBinding(), transformer
                 .getTargetDataBinding()));
     }

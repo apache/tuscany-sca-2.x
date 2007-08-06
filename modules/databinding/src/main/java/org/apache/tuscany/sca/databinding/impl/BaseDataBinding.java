@@ -23,7 +23,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
@@ -37,12 +36,10 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  */
 public abstract class BaseDataBinding implements DataBinding {
 
-    protected DataBindingExtensionPoint registry;
+    private Class<?> baseType;
 
-    protected Class<?> baseType;
-
-    protected String name;
-    protected String[] aliases; 
+    private String name;
+    private String[] aliases; 
 
     /**
      * Create a databinding with the base java type whose name will be used as
@@ -79,14 +76,6 @@ public abstract class BaseDataBinding implements DataBinding {
         this.baseType = baseType;
         this.aliases = aliases;
     }    
-
-    public void setDataBindingRegistry(DataBindingExtensionPoint registry) {
-        this.registry = registry;
-    }
-
-    public void init() {
-        registry.addDataBinding(this);
-    }
 
     @SuppressWarnings("unchecked")
     public boolean introspect(DataType type, Annotation[] annotations) {

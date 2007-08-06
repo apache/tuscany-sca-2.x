@@ -30,8 +30,8 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
@@ -104,20 +104,15 @@ public class DataBindingModuleActivator implements ModuleActivator {
         }
 
         DOMDataBinding domDataBinding = new DOMDataBinding();
-        domDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(domDataBinding);
         XMLStringDataBinding xmlStringDataBinding = new XMLStringDataBinding();
-        xmlStringDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(xmlStringDataBinding);
         XMLGroupDataBinding xmlGroupDataBinding = new XMLGroupDataBinding();
-        xmlGroupDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(xmlGroupDataBinding);
         JavaBeansDataBinding javaBeansDataBinding = new JavaBeansDataBinding();
-        javaBeansDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(javaBeansDataBinding);
         
         SimpleJavaDataBinding simpleJavaDataBinding = new SimpleJavaDataBinding();
-        simpleJavaDataBinding.setDataBindingRegistry(dataBindings);
         dataBindings.addDataBinding(simpleJavaDataBinding);
 
         Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
