@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -42,8 +43,8 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
 
     private JavaInterfaceFactory javaFactory;
 
-    public JavaInterfaceProcessor(JavaInterfaceFactory javaFactory) {
-        this.javaFactory = javaFactory;
+    public JavaInterfaceProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
     
     private JavaInterface createJavaInterface(String interfaceName) {
@@ -120,7 +121,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                         
                     // Introspect the Java interface and populate the interface and
                     // operations
-                    javaInterface = javaFactory.createJavaInterface(javaClass);
+                    javaFactory.createJavaInterface(javaInterface, javaClass);
                 
                 } catch (InvalidInterfaceException e) {
                     throw new ContributionResolveException(e);

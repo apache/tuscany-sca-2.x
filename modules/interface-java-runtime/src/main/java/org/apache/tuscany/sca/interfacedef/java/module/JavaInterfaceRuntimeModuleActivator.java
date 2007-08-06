@@ -20,16 +20,12 @@
 package org.apache.tuscany.sca.interfacedef.java.module;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.xml.JavaInterfaceProcessor;
 
 /**
  * @version $Rev$ $Date$
@@ -53,12 +49,6 @@ public class JavaInterfaceRuntimeModuleActivator implements ModuleActivator {
         // Register the Java interface factory
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class); 
         modelFactories.addFactory(javaFactory);
-        
-        // Register <interface.java> processor
-        StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        JavaInterfaceProcessor javaInterfaceProcessor = new JavaInterfaceProcessor(javaFactory);
-        processors.addArtifactProcessor(javaInterfaceProcessor);
-        
     }
 
     public void stop(ExtensionPointRegistry registry) {
