@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
  * Thrown when constructor parameters cannot be unambiguously resolved to a property or reference

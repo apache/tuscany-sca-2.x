@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * A wrapper around an Artifact processor class allowing lazy loading and
@@ -64,7 +63,7 @@ class LazyURLArtifactProcessor implements URLArtifactProcessor {
         if (processor == null) {
             try {
                 Class<URLArtifactProcessor> processorClass = (Class<URLArtifactProcessor>)Class.forName(className, true, classLoader.get());
-                Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ExtensionPointRegistry.class);
+                Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class);
                 processor = constructor.newInstance(modelFactories);
             } catch (Exception e) {
                 throw new IllegalStateException(e);

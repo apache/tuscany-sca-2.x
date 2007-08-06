@@ -16,33 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.introspect.impl;
+package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
 
-import org.apache.tuscany.sca.implementation.java.IntrospectionException;
+import javax.wsdl.PortType;
+
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
- * Thrown when a service type specified by an {@link org.osoa.sca.annotations.Service} annotation is invalid, e.g. it is
- * not an interface
+ * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
+ * @deprecated Please us WSDLInterfaceFactory instead.
  *
  * @version $Rev$ $Date$
  */
-public class InvalidServiceType extends IntrospectionException {
-    private static final long serialVersionUID = -1076466639416644386L;
-    private Class<?> serviceType;
-
-    public InvalidServiceType(String message) {
-        super(message);
-    }
-    
-    public InvalidServiceType(String message, Class<?> clazz) {
-        super(message);
-        this.serviceType = clazz;
-    }
+public interface WSDLInterfaceIntrospector {
 
     /**
-     * @return the serviceType
+     * Introspect a WSDL portType and return a WSDL interface definition.
+     *
+     * @param type the portType to inspect
+     * @return a WSDLInterface corresponding to the WSDL portType
      */
-    public Class<?> getServiceType() {
-        return serviceType;
-    }    
+    WSDLInterface introspect(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException;
+
 }

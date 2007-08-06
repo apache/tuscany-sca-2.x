@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.implementation.java.impl;
 /**
  * A factory for the Java model.
  */
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 
 public abstract class JavaImplementationFactoryImpl implements JavaImplementationFactory {

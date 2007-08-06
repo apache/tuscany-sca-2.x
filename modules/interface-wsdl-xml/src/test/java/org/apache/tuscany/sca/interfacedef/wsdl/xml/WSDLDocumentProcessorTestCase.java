@@ -50,9 +50,12 @@ public class WSDLDocumentProcessorTestCase {
      */
     @Before
     public void setUp() throws Exception {
+        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         wsdlFactory = new DefaultWSDLFactory();
+        modelFactories.addFactory(wsdlFactory);
         wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
-        processor = new WSDLDocumentProcessor(wsdlFactory, wsdl4jFactory);
+        modelFactories.addFactory(wsdl4jFactory);
+        processor = new WSDLDocumentProcessor(modelFactories);
     }
 
     /**

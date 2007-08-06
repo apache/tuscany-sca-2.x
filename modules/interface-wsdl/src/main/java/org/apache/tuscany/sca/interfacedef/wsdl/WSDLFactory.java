@@ -18,6 +18,12 @@
  */
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
+import javax.wsdl.PortType;
+
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
+
 /**
  * Factory for the WSDL model.
  * 
@@ -32,6 +38,22 @@ public interface WSDLFactory {
      */
     WSDLInterface createWSDLInterface();
     
+    /**
+     * Creates a new WSDL interface from a WSDL portType.
+     *
+     * @param portType the portType to inspect
+     * @return a WSDLInterface corresponding to the WSDL portType
+     */
+    WSDLInterface createWSDLInterface(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException;
+
+    /**
+     * Creates the contents of a WSDL interface from a WSDL portType.
+     *
+     * @param portType the portType to inspect
+     * @return a WSDLInterface corresponding to the WSDL portType
+     */
+    void createWSDLInterface(WSDLInterface wsdlInterface, PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException;
+
     /**
      * Creates a new WSDL definition.
      * 

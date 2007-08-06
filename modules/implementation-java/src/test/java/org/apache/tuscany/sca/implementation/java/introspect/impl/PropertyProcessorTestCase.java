@@ -30,8 +30,6 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.DuplicatePropertyException;
-import org.apache.tuscany.sca.implementation.java.introspect.IllegalPropertyException;
 import org.osoa.sca.annotations.Property;
 
 /**

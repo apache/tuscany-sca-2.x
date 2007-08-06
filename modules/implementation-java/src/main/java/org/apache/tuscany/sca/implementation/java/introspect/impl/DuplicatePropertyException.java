@@ -16,45 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.introspect;
+package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import java.lang.reflect.Member;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
- * Denotes a problem processing annotations on a POJO implementation
- * 
+ * Thrown when an implementation has more than one property injection site with the same name
+ *
  * @version $Rev$ $Date$
  */
-public class IntrospectionException extends Exception {
-    private static final long serialVersionUID = -361025119035104470L;
-    private Member member;
+public class DuplicatePropertyException extends IntrospectionException {
+    private static final long serialVersionUID = 5536415875694904037L;
 
-    public IntrospectionException() {
-    }
-
-    public IntrospectionException(String message) {
+    public DuplicatePropertyException(String message) {
         super(message);
     }
-
-    public IntrospectionException(String message, Member member) {
-        super(message);
-        this.member = member;
-    }
-
-    public IntrospectionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IntrospectionException(Throwable cause) {
-        super(cause);
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
 }

@@ -16,20 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.implementation.java;
 
-package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
-
-import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import java.lang.reflect.Member;
 
 /**
- * An exception to indicate the WSDL definition is invalid
- *
+ * Denotes a problem processing annotations on a POJO implementation
+ * 
  * @version $Rev$ $Date$
  */
-public class InvalidWSDLException extends InvalidInterfaceException {
-    private static final long serialVersionUID = 3742887584293256519L;
+public class IntrospectionException extends Exception {
+    private static final long serialVersionUID = -361025119035104470L;
+    private Member member;
 
-    public InvalidWSDLException(String message) {
+    public IntrospectionException() {
+    }
+
+    public IntrospectionException(String message) {
         super(message);
     }
+
+    public IntrospectionException(String message, Member member) {
+        super(message);
+        this.member = member;
+    }
+
+    public IntrospectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public IntrospectionException(Throwable cause) {
+        super(cause);
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
 }

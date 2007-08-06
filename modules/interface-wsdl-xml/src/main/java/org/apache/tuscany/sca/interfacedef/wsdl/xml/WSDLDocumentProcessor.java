@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -55,8 +56,8 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
 
     private WSDLFactory factory;
 
-    public WSDLDocumentProcessor(WSDLFactory factory, javax.wsdl.factory.WSDLFactory wsdlFactory) {
-        this.factory = factory;
+    public WSDLDocumentProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.factory = modelFactories.getFactory(WSDLFactory.class);
     }
 
     public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {

@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Member;
 
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
  * Denotes an invalid usage of {@link @org.apache.tuscany.api.annotation.Resource}

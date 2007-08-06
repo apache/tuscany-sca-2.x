@@ -20,11 +20,17 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.ode.bpel.compiler.BpelC;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -32,14 +38,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
-import org.apache.ode.bpel.compiler.BpelC;
 import org.osoa.sca.Constants;
-
-import java.net.URL;
-import java.io.File;
-import java.io.IOException;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 
 /**
  * Implements a STAX artifact processor for BPEL implementations.

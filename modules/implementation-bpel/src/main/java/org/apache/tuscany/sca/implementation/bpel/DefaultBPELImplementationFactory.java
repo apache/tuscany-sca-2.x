@@ -33,18 +33,15 @@ public class DefaultBPELImplementationFactory implements BPELImplementationFacto
     
     private AssemblyFactory assemblyFactory;
     private WSDLFactory wsdlFactory;
-    private WSDLInterfaceIntrospector introspector;
     
     public DefaultBPELImplementationFactory(AssemblyFactory assemblyFactory,
-                                            WSDLFactory wsdlFactory,
-                                            WSDLInterfaceIntrospector introspector) {
+                                            WSDLFactory wsdlFactory) {
         this.assemblyFactory = assemblyFactory;
         this.wsdlFactory = wsdlFactory;
-        this.introspector = introspector;
     }
 
     public BPELImplementation createBPELImplementation() {
-        return new BPELImplementationImpl(assemblyFactory, wsdlFactory, introspector);
+        return new BPELImplementationImpl(assemblyFactory, wsdlFactory);
     }
 
 }

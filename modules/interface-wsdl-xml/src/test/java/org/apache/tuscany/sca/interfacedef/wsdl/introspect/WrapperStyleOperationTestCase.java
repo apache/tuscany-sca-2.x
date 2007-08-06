@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 
@@ -54,13 +55,13 @@ public class WrapperStyleOperationTestCase extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
-        registry = new WSDLDocumentProcessor(new DefaultWSDLFactory(), wsdl4jFactory);
-        resolver = new TestModelResolver();
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint(); 
         wsdlFactory = new DefaultWSDLFactory();
         factories.addFactory(wsdlFactory); 
+        javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
         factories.addFactory(wsdl4jFactory);
+        registry = new WSDLDocumentProcessor(factories);
+        resolver = new TestModelResolver();
         wsdlResolver = new WSDLModelResolver(null, factories);
     }
 
@@ -71,7 +72,7 @@ public class WrapperStyleOperationTestCase extends TestCase {
         definition = wsdlResolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
-        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertTrue(op.isWrapperStyle());
         Assert.assertEquals(1, op.getWrapper().getInputChildElements().size());
         Assert.assertEquals(1, op.getWrapper().getOutputChildElements().size());
@@ -84,10 +85,10 @@ public class WrapperStyleOperationTestCase extends TestCase {
         definition = wsdlResolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
-        WSDLOperation op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
         operation = portType.getOperation("getLastTradePrice2", null, null);
-        op = new WSDLOperation(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
+        op = new WSDLOperationIntrospectorImpl(wsdlFactory, operation, definition.getInlinedSchemas(), "org.w3c.dom.Node", resolver);
         Assert.assertFalse(op.isWrapperStyle());
     }
 

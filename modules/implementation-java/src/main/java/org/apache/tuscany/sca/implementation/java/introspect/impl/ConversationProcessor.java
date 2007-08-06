@@ -22,8 +22,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;

@@ -35,8 +35,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.DuplicatePropertyException;
-import org.apache.tuscany.sca.implementation.java.introspect.IllegalPropertyException;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 
 

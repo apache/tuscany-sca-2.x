@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
 
 /**
  * Processes the {@link JavaScopeImpl} annotation and updates the component type with the corresponding implmentation scope
