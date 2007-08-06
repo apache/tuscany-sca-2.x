@@ -46,8 +46,6 @@ import org.apache.tuscany.sca.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.sca.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
@@ -101,7 +99,6 @@ public class SCADomainContext {
         InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
         JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(interfaceVisitors);
-        JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
         JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
         
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
@@ -124,7 +121,7 @@ public class SCADomainContext {
         for (JavaClassVisitor e : extensions) {
             classVisitors.addClassVisitor(e);
         }
-        JavaClassIntrospector classIntrospector = new ExtensibleJavaClassIntrospector(classVisitors);
+        JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory, classVisitors);
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
@@ -135,7 +132,7 @@ public class SCADomainContext {
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new JavaInterfaceProcessor(javaFactory));
-        staxProcessors.addArtifactProcessor(new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector));
+        staxProcessors.addArtifactProcessor(new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory));
         
         // Create a resolver
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

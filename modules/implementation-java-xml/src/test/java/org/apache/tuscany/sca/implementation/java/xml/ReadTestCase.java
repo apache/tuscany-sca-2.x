@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -42,8 +41,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
@@ -73,13 +70,12 @@ public class ReadTestCase extends TestCase {
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
-        JavaClassIntrospector classIntrospector = new ExtensibleJavaClassIntrospector(new DefaultJavaClassIntrospectorExtensionPoint());
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultJavaClassIntrospectorExtensionPoint());
         
         CompositeProcessor compositeProcessor = new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor);
         staxProcessors.addArtifactProcessor(compositeProcessor);
 
-        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
+        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory);
         staxProcessors.addArtifactProcessor(javaProcessor); 
     }
 

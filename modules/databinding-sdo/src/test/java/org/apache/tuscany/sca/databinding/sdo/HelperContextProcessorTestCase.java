@@ -21,18 +21,15 @@ package org.apache.tuscany.sca.databinding.sdo;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URI;
-
-import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 
 import commonj.sdo.helper.HelperContext;
 
@@ -45,11 +42,8 @@ public class HelperContextProcessorTestCase extends TestCase {
     public void testProcessor() throws Exception {
         HelperContextRegistry registry = new HelperContextRegistryImpl();
         HelperContextProcessor processor = new HelperContextProcessor(new DefaultAssemblyFactory(), registry);
-        URI id = URI.create("/composite1/");
-        XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
         
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultJavaClassIntrospectorExtensionPoint());
         JavaImplementation componentType = javaImplementationFactory.createJavaImplementation();
         componentType.setJavaClass(FooImpl.class);
         for (Field f : FooImpl.class.getDeclaredFields()) {

@@ -30,9 +30,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.ExtensibleJavaClassIntrospector;
 import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospector;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
@@ -52,7 +50,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProces
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospector;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -63,7 +60,6 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class SpringBeanIntrospector {
 
-    private JavaClassIntrospector classIntrospector;
     private JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
     private JavaImplementationFactory javaImplementationFactory;
 
@@ -99,9 +95,8 @@ public class SpringBeanIntrospector {
         for (JavaClassVisitor extension : extensions) {
             classVisitors.addClassVisitor(extension);
         }
-        this.classIntrospector = new ExtensibleJavaClassIntrospector(classVisitors);
 
-        javaImplementationFactory = new DefaultJavaImplementationFactory();
+        javaImplementationFactory = new DefaultJavaImplementationFactory(classVisitors);
 
     } // end constructor 
 
@@ -126,7 +121,7 @@ public class SpringBeanIntrospector {
 
         try {
             // Introspect the bean...the results of the introspection are placed into the Java implementation
-            classIntrospector.introspect(beanClass, javaImplementation);
+            javaImplementationFactory.createJavaImplementation(javaImplementation, beanClass);
 
             // Extract the services, references & properties found through introspection
             // put the services, references and properties into the component type

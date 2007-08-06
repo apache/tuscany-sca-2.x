@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.introspect;
 
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceIntrospectorImpl;
 
@@ -28,9 +30,18 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceIntrospectorIm
  * @version $Rev$ $Date$
  */
 public class ExtensibleJavaInterfaceIntrospector extends JavaInterfaceIntrospectorImpl implements JavaInterfaceIntrospector {
+    
+    private JavaInterfaceFactory javaFactory;
 
     public ExtensibleJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
-        super(javaFactory, visitors);
+        super(visitors);
+        this.javaFactory = javaFactory;
+    }
+    
+    public JavaInterface introspect(Class<?> type) throws InvalidInterfaceException {
+        JavaInterface javaInterface = javaFactory.createJavaInterface();
+        super.introspectInterface(javaInterface, type);
+        return javaInterface;
     }
 
 }

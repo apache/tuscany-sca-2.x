@@ -116,7 +116,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         for (JavaClassVisitor extension : extensions) {
             classVisitors.addClassVisitor(extension);
         }
-        JavaClassIntrospector classIntrospector = new ExtensibleJavaClassIntrospector(classVisitors);
         
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
@@ -125,9 +124,9 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(classVisitors);
         JavaImplementationProcessor javaImplementationProcessor =
-            new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory, classIntrospector);
+            new JavaImplementationProcessor(assemblyFactory, policyFactory, javaImplementationFactory);
         processors.addArtifactProcessor(javaImplementationProcessor);
 
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);

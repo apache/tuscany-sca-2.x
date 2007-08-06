@@ -36,7 +36,7 @@ public class BeanJavaInterfaceFactory implements JavaInterfaceFactory {
     private JavaInterfaceIntrospectorImpl introspector;
     
         public BeanJavaInterfaceFactory(JavaInterfaceIntrospectorExtensionPoint visitors) {
-            introspector = new JavaInterfaceIntrospectorImpl(this, visitors);
+            introspector = new JavaInterfaceIntrospectorImpl(visitors);
         }
 
 	public JavaInterface createJavaInterface() {
@@ -44,7 +44,13 @@ public class BeanJavaInterfaceFactory implements JavaInterfaceFactory {
 	}
         
         public JavaInterface createJavaInterface(Class<?> interfaceClass) throws InvalidInterfaceException {
-            return introspector.introspect(interfaceClass);
+            JavaInterface javaInterface = createJavaInterface();
+            introspector.introspectInterface(javaInterface, interfaceClass);
+            return javaInterface;
+        }
+        
+        public void createJavaInterface(JavaInterface javaInterface, Class<?> interfaceClass) throws InvalidInterfaceException {
+            introspector.introspectInterface(javaInterface, interfaceClass);
         }
         
         public JavaInterfaceContract createJavaInterfaceContract() {

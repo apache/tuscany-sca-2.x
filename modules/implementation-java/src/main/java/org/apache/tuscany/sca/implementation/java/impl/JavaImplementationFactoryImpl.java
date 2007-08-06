@@ -23,12 +23,30 @@ package org.apache.tuscany.sca.implementation.java.impl;
  */
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.introspect.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 
 public abstract class JavaImplementationFactoryImpl implements JavaImplementationFactory {
+    
+    private JavaClassIntrospectorImpl introspector;
+    
+    public JavaImplementationFactoryImpl(JavaClassIntrospectorExtensionPoint visitors) {
+        introspector = new JavaClassIntrospectorImpl(visitors);
+    }
 
     public JavaImplementation createJavaImplementation() {
         JavaImplementation javaImplementation = new JavaImplementationImpl();
         return javaImplementation;
+    }
+    
+    public JavaImplementation createJavaImplementation(Class<?> implementationClass) throws IntrospectionException {
+        JavaImplementation javaImplementation = createJavaImplementation();
+        introspector.introspectClass(javaImplementation, implementationClass);
+        return javaImplementation;
+    }
+    
+    public void createJavaImplementation(JavaImplementation javaImplementation, Class<?> implementationClass) throws IntrospectionException {
+        introspector.introspectClass(javaImplementation, implementationClass);
     }
 
 }
