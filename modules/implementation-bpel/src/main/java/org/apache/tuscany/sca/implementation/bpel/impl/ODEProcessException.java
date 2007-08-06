@@ -5,6 +5,8 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
  * are invalid.
  */
 public class ODEProcessException extends RuntimeException {
+    private static final long serialVersionUID = 1047893235216756186L;
+
     public ODEProcessException(String message) {
         super(message);
     }
