@@ -19,11 +19,8 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -34,7 +31,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
@@ -56,91 +52,8 @@ public class EmbeddedSCADomain extends SCADomain {
     private String uri;
     private Composite domainComposite;
     private ReallySmallRuntime runtime;
-    private Map<String, Component> components = new HashMap<String, Component>();
-    private DomainCompositeHelper domainCompositeHelper;
     private ComponentManagerImpl componentManager = new ComponentManagerImpl(this);
     
-    public class DomainCompositeHelper {
-        
-        /**
-         * Add a composite to the domain
-         * @param composite
-         * @return
-         */
-        public Composite addComposite(Composite composite) throws ActivationException {
-            domainComposite.getIncludes().add(composite);
-            CompositeBuilder compositeBuilder = runtime.getCompositeBuilder();
-            try {
-                compositeBuilder.build(composite);
-            } catch (CompositeBuilderException e) {
-                throw new ActivationException(e);
-            }
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.activate(composite);
-            for (Component component : composite.getComponents()) {
-                components.put(component.getName(), component);
-            }
-            return composite;
-        }
-
-        /**
-         * Remove a composite from the domain
-         * @param composite
-         * @throws ActivationException
-         */
-        public void removeComposite(Composite composite) throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.deactivate(composite);
-            domainComposite.getIncludes().remove(composite);
-            for (Component component : composite.getComponents()) {
-                components.remove(component.getName());
-            }
-        }
-        
-        public Set<String> getComponentNames(){
-            return  Collections.unmodifiableSet(components.keySet());
-        }
-
-        /**
-         * Get a reference to a component by name
-         * @param componentName
-         * @return
-         */
-        public Component getComponent(String componentName){
-            return (Component) components.get(componentName);
-        }
-        
-        /**
-         * Returns the list of components in the domain.
-         * @return
-         */
-        public List<Component> getComponents() {
-            return domainComposite.getComponents();
-        }
-        
-        /**
-         * Start a component
-         * @param component
-         * @throws ActivationException
-         */
-        public void startComponent(Component component) throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.start(component);
-            componentManager.notifyComponentStarted(component.getName());
-        }
-        
-        /**
-         * Stop a component
-         * @param component
-         * @throws ActivationException
-         */
-        public void stopComponent(Component component) throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.stop(component);
-            componentManager.notifyComponentStopped(component.getName());
-        }        
-    }
-
     /**
      * Constructs a new domain facade.
      *
@@ -165,9 +78,6 @@ public class EmbeddedSCADomain extends SCADomain {
         domainComposite = assemblyFactory.createComposite();
         domainComposite.setName(new QName(Constants.SCA_NS, "domain"));
         domainComposite.setURI(uri);
-
-        // Create a domain composite helper
-        domainCompositeHelper = new DomainCompositeHelper();
     }
 
     public void stop() throws ActivationException {
@@ -177,18 +87,22 @@ public class EmbeddedSCADomain extends SCADomain {
         
         // Cleanup
         domainComposite = null;
-        domainCompositeHelper = null;
     }
 
     public ContributionService getContributionService() {
         return runtime.getContributionService();
     }
     
-    public DomainCompositeHelper getDomainCompositeHelper() {
-        if (domainCompositeHelper == null) {
-            throw new IllegalStateException("domain not started");
-        }
-        return domainCompositeHelper;
+    public CompositeBuilder getCompositeBuilder() {
+        return runtime.getCompositeBuilder();
+    }
+    
+    public CompositeActivator getCompositeActivator() {
+        return runtime.getCompositeActivator();
+    }
+    
+    public Composite getDomainComposite() {
+        return domainComposite;
     }
     
     @Override
@@ -233,7 +147,17 @@ public class EmbeddedSCADomain extends SCADomain {
         }
 
         // Lookup the component in the domain
-        Component component = components.get(componentName);
+        Component component = null;
+        for (Composite composite: domainComposite.getIncludes()) {
+            for (Component c: composite.getComponents()) {
+                if (c.getName().equals(componentName)) {
+                    component = c;
+                    break;
+                }
+            }
+            if (component != null)
+                break;
+        }
         if (component == null) {
             throw new ServiceRuntimeException("Component not found: " + componentName);
         }

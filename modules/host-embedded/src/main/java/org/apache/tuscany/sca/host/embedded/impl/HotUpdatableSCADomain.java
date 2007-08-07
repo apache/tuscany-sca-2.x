@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
@@ -184,29 +185,27 @@ public class HotUpdatableSCADomain extends SCADomain {
             }
         }
         
-        EmbeddedSCADomain.DomainCompositeHelper domainHelper = scaDomain.getDomainCompositeHelper();
-
         try {
 
             for (Object m : modelResolver.getModels()) {
                 if (m instanceof Composite) {
-                    domainHelper.addComposite((Composite)m);
+                    Composite composite = (Composite)m;
+                    scaDomain.getDomainComposite().getIncludes().add(composite);
+                    scaDomain.getCompositeBuilder().build(composite);
+                    scaDomain.getCompositeActivator().activate(composite);
                 }
             }
 
             for (Object m : modelResolver.getModels()) {
                 if (m instanceof Composite) {
-                    for (Component component: ((Composite)m).getComponents()) {
-                        domainHelper.startComponent(component);
-                    }
+                    Composite composite = (Composite)m;
+                    scaDomain.getCompositeActivator().start(composite);
                 }
             }
 
-            for (String componentName : domainHelper.getComponentNames()) {
-                domainHelper.startComponent(domainHelper.getComponent(componentName));
-            }
-
         } catch (ActivationException e) {
+            throw new RuntimeException(e);
+        } catch (CompositeBuilderException e) {
             throw new RuntimeException(e);
         }
         

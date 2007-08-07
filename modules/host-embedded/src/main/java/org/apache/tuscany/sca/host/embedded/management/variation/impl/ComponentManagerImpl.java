@@ -19,10 +19,12 @@
 
 package org.apache.tuscany.sca.host.embedded.management.variation.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.RuntimeComponentImpl;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
@@ -47,19 +49,32 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public Component getComponent(String componentName) {
-        return domain.getDomainCompositeHelper().getComponent(componentName);
+        for (Composite composite: domain.getDomainComposite().getIncludes()) {
+            for (Component component: composite.getComponents()) {
+                if (component.getName().equals(componentName)) {
+                    return component;
+                }
+            }
+        }
+        return null;
     }
     
     public List<Component> getComponents() {
-        return domain.getDomainCompositeHelper().getComponents();
+        List<Component> components = new ArrayList<Component>();
+        for (Composite composite: domain.getDomainComposite().getIncludes()) {
+            components.addAll(composite.getComponents());
+        }
+        return components;
     }
 
     public void startComponent(Component component) throws ActivationException {
-        domain.getDomainCompositeHelper().startComponent(component);
+        domain.getCompositeActivator().start(component);
+        notifyComponentStarted(component);
     }
 
     public void stopComponent(Component component) throws ActivationException {
-        domain.getDomainCompositeHelper().stopComponent(component);
+        domain.getCompositeActivator().stop(component);
+        notifyComponentStopped(component);
     }
 
     public void notifyComponentStarted(Component component) {

@@ -48,9 +48,21 @@ public interface CompositeActivator {
     void start(Component component) throws ActivationException;
 
     /**
-     * Stop a composite
-     * @param composite
+     * Stop a component
+     * @param component
      */
     void stop(Component component) throws ActivationException;
+
+    /**
+     * Start components in a composite
+     * @param composite
+     */
+    void start(Composite composite) throws ActivationException;
+
+    /**
+     * Stop components in a composite
+     * @param composite
+     */
+    void stop(Composite composite) throws ActivationException;
 
 }

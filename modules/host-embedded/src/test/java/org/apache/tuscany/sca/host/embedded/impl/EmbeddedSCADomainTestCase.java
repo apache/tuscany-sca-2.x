@@ -68,11 +68,12 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         Composite myComposite = myResolver.getComposite(new QName("http://sample/crud", "crud"));
         
         // Add the deployable composite to the domain
-        EmbeddedSCADomain.DomainCompositeHelper domainHelper = domain.getDomainCompositeHelper();
-        domainHelper.addComposite(myComposite);
+        domain.getDomainComposite().getIncludes().add(myComposite);
+        domain.getCompositeBuilder().build(myComposite);
 
-        // Start my component
-        domainHelper.startComponent(domainHelper.getComponent("CRUDServiceComponent"));
+        // Start the composite
+        domain.getCompositeActivator().activate(myComposite);
+        domain.getCompositeActivator().start(myComposite);
         
         // At this point the domain contains my contribution, my composite and
         // it's started, my application code can start using it
@@ -91,11 +92,12 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         result = service.retrieve(id);
         assertNull(result);
         
-        // Stop my component
-        domainHelper.stopComponent(domainHelper.getComponent("CRUDServiceComponent"));
+        // Stop my composite
+        domain.getCompositeActivator().stop(myComposite);
+        domain.getCompositeActivator().deactivate(myComposite);
         
         // Remove my composite
-        domainHelper.removeComposite(myComposite);
+        domain.getDomainComposite().getIncludes().remove(myComposite);
         
         // Remove my contribution
         contributionService.remove("http://test/contribution");
@@ -123,12 +125,13 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         Composite myComposite = myResolver.getComposite(new QName("http://sample/crud", "crud"));
         
         // Add the deployable composite to the domain
-        EmbeddedSCADomain.DomainCompositeHelper domainHelper = domain.getDomainCompositeHelper();
-        domainHelper.addComposite(myComposite);
+        domain.getDomainComposite().getIncludes().add(myComposite);
+        domain.getCompositeBuilder().build(myComposite);
 
-        // Start my component
-        domainHelper.startComponent(domainHelper.getComponent("CRUDServiceComponent"));
-
+        // Start the composite
+        domain.getCompositeActivator().activate(myComposite);
+        domain.getCompositeActivator().start(myComposite);
+        
         // At this point the domain contains my contribution, my composite and
         // it's started, my application code can start using it
 
@@ -155,11 +158,12 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         assertTrue(cl.startCalled);
         assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
 
-        // Stop my component
-        domainHelper.stopComponent(domainHelper.getComponent("CRUDServiceComponent"));
-
+        // Stop my composite
+        domain.getCompositeActivator().stop(myComposite);
+        domain.getCompositeActivator().deactivate(myComposite);
+        
         // Remove my composite
-        domainHelper.removeComposite(myComposite);
+        domain.getDomainComposite().getIncludes().remove(myComposite);
         
         // Remove my contribution
         contributionService.remove("http://test/contribution");

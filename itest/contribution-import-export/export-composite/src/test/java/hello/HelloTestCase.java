@@ -34,40 +34,43 @@ import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 /**
  * Tests that the helloworld server is available
  */
-public class HelloTestCase extends TestCase{
+public class HelloTestCase extends TestCase {
     private ClassLoader cl;
     private EmbeddedSCADomain domain;
 
     protected void setUp() throws Exception {
-        //Create a test embedded SCA domain
+        // Create a test embedded SCA domain
         cl = getClass().getClassLoader();
         domain = new EmbeddedSCADomain(cl, "http://localhost");
 
-        //Start the domain
+        // Start the domain
         domain.start();
-        
+
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
-        
+
         ModelResolver helloResolver = new ModelResolverImpl(cl);
         File helloContrib = new File("./target/classes/");
         URL helloURL = helloContrib.toURL();
-        Contribution consumerContribution = contributionService.contribute("http://import-export/hello", helloURL, helloResolver, false);
+        Contribution consumerContribution =
+            contributionService.contribute("http://import-export/hello", helloURL, helloResolver, false);
         Composite consumerComposite = consumerContribution.getDeployables().get(0);
-        domain.getDomainCompositeHelper().addComposite(consumerComposite);
-        
-        //Start Components from my composite
-        domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloServiceComponent"));
+        domain.getDomainComposite().getIncludes().add(consumerComposite);
+        domain.getCompositeBuilder().build(consumerComposite);
+
+        // Start Components from my composite
+        domain.getCompositeActivator().activate(consumerComposite);
+        domain.getCompositeActivator().start(consumerComposite);
     }
-    
-	public void testHello() throws IOException {
+
+    public void testHello() throws IOException {
         Hello hello = domain.getService(Hello.class, "HelloServiceComponent");
         assertNotNull(hello);
         assertEquals(hello.getGreetings("lresende"), "Hello lresende");
-	}
+    }
 
-	public void tearDown() throws Exception {
-            domain.close();
-	}
+    public void tearDown() throws Exception {
+        domain.close();
+    }
 
 }
