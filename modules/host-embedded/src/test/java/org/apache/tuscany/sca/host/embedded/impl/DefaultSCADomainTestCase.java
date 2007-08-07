@@ -53,8 +53,8 @@ public class DefaultSCADomainTestCase extends TestCase {
         // to use a duplicate instance of the component, the original instance having already been started by
         // new DefaultSCADomain()...
         
-        //assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
-        //componentManager.startComponent("CRUDServiceComponent");
+        assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
+        componentManager.startComponent("CRUDServiceComponent");
         assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
         componentManager.stopComponent("CRUDServiceComponent");
         assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));

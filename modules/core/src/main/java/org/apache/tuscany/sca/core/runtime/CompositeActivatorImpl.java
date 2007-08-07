@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -31,6 +30,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
@@ -780,7 +780,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         CompositeBuilderImpl builder =
             new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
 
-        builder.incrementalBuild(composite);
+        builder.build(composite);
 
         // if (!problems.isEmpty()) {
         // throw new VariantRuntimeException(new RuntimeException("Problems in
