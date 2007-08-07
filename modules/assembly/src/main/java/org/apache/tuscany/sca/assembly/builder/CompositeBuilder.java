@@ -37,12 +37,4 @@ public interface CompositeBuilder {
      */
     void build(Composite composite) throws CompositeBuilderException;
     
-    /**
-     * Incrementally build, configure and wire a composite within a domain composite.
-     * 
-     * @param composite
-     * @throws CompositeBuilderException
-     */
-    void incrementalBuild(Composite composite) throws CompositeBuilderException;
-    
 }
