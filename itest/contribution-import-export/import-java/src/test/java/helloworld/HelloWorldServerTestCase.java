@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 public class HelloWorldServerTestCase extends TestCase{
     private ClassLoader cl;
     private EmbeddedSCADomain domain;
+    private Contribution helloWorldContribution;
+    private Contribution javaContribution;
 
     protected void setUp() throws Exception {
         //Create a test embedded SCA domain
@@ -49,20 +51,25 @@ public class HelloWorldServerTestCase extends TestCase{
 
         File javaContribLocation = new File("../export-java/target/classes");
         URL javaContribURL = javaContribLocation.toURL();
-        Contribution javaContribution = contributionService.contribute("http://import-export/export-java", javaContribURL, false);
+        javaContribution = contributionService.contribute("http://import-export/export-java", javaContribURL, false);
         for (Composite deployable : javaContribution.getDeployables() ) {
-            domain.getDomainCompositeHelper().addComposite(deployable);
+            domain.getDomainComposite().getIncludes().add(deployable);
+            domain.getCompositeBuilder().build(deployable);
         }
 
         File helloWorldContribLocation = new File("./target/classes/");
         URL helloWorldContribURL = helloWorldContribLocation.toURL();
-        Contribution helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
+        helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : helloWorldContribution.getDeployables() ) {
-            domain.getDomainCompositeHelper().addComposite(deployable);
+            domain.getDomainComposite().getIncludes().add(deployable);
+            domain.getCompositeBuilder().build(deployable);
         }
 
-        //Start Components from my composite
-        domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
+        // Start Components from my composite
+        for (Composite deployable : helloWorldContribution.getDeployables() ) {
+            domain.getCompositeActivator().activate(deployable);
+            domain.getCompositeActivator().start(deployable);
+        }
     }
 
 	public void testPing() throws IOException {
@@ -85,8 +92,11 @@ public class HelloWorldServerTestCase extends TestCase{
         contributionService.remove("http://import-export/helloworld");
         contributionService.remove("http://import-export/export-java");
 
-        //Stop Components from my composite
-        domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("HelloWorldServiceComponent"));
+        // Stop Components from my composite
+        for (Composite deployable : helloWorldContribution.getDeployables() ) {
+            domain.getCompositeActivator().stop(deployable);
+            domain.getCompositeActivator().deactivate(deployable);
+        }
 
         domain.stop();
 

@@ -25,7 +25,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
@@ -38,6 +37,7 @@ public class HelloWorldServerTestCase extends TestCase{
     private ClassLoader cl;
     private EmbeddedSCADomain domain;
     private Contribution helloWorldContribution;
+    private Contribution compositeContribution;
 
     protected void setUp() throws Exception {
         //Create a test embedded SCA domain
@@ -52,23 +52,24 @@ public class HelloWorldServerTestCase extends TestCase{
 
         File compositeContribLocation = new File("../export-composite/target/classes");
         URL compositeContribURL = compositeContribLocation.toURL();
-        Contribution compositeContribution = contributionService.contribute("http://import-export/export-composite", compositeContribURL, false);
+        compositeContribution = contributionService.contribute("http://import-export/export-composite", compositeContribURL, false);
         for (Composite deployable : compositeContribution.getDeployables() ) {
-            domain.getDomainCompositeHelper().addComposite(deployable);
+            domain.getDomainComposite().getIncludes().add(deployable);
+            domain.getCompositeBuilder().build(deployable);
         }
 
         File helloWorldContribLocation = new File("./target/classes/");
         URL helloWorldContribURL = helloWorldContribLocation.toURL();
         helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : helloWorldContribution.getDeployables() ) {
-            domain.getDomainCompositeHelper().addComposite(deployable);
+            domain.getDomainComposite().getIncludes().add(deployable);
+            domain.getCompositeBuilder().build(deployable);
         }
 
-        //Start Components from my composite
+        // Start Components from my composite
         for (Composite deployable : helloWorldContribution.getDeployables() ) {
-            for (Component component: deployable.getComponents()) {
-                domain.getDomainCompositeHelper().startComponent(component);
-            }
+            domain.getCompositeActivator().activate(deployable);
+            domain.getCompositeActivator().start(deployable);
         }
     }
 
@@ -93,9 +94,8 @@ public class HelloWorldServerTestCase extends TestCase{
 
         //Stop Components from my composite
         for (Composite deployable : helloWorldContribution.getDeployables() ) {
-            for (Component component: deployable.getComponents()) {
-                domain.getDomainCompositeHelper().stopComponent(component);
-            }
+            domain.getCompositeActivator().stop(deployable);
+            domain.getCompositeActivator().deactivate(deployable);
         }
 
         domain.stop();

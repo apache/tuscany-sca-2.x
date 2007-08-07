@@ -29,31 +29,35 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
-public class LocateServiceEmbeddedSCADomainTestCase extends TestCase{
+public class LocateServiceEmbeddedSCADomainTestCase extends TestCase {
     private ClassLoader cl;
     private EmbeddedSCADomain domain;
+    private Contribution contribution;
 
     protected void setUp() throws Exception {
-        //Create a test embedded SCA domain
+        // Create a test embedded SCA domain
         cl = getClass().getClassLoader();
         domain = new EmbeddedSCADomain(cl, "http://localhost");
 
-        //Start the domain
+        // Start the domain
         domain.start();
 
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
 
-        
         File contribLocation = new File("./target/classes/");
         URL contributionURL = contribLocation.toURL();
-        Contribution contribution = contributionService.contribute("http://contribution", contributionURL, false);
-        for (Composite deployable : contribution.getDeployables() ) {
-            domain.getDomainCompositeHelper().addComposite(deployable);
+        contribution = contributionService.contribute("http://contribution", contributionURL, false);
+        for (Composite deployable : contribution.getDeployables()) {
+            domain.getDomainComposite().getIncludes().add(deployable);
+            domain.getCompositeBuilder().build(deployable);
         }
 
-        //Start Components from my composite
-        domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("SourceComponent"));
+        // Start Components from my composite
+        for (Composite deployable : contribution.getDeployables() ) {
+            domain.getCompositeActivator().activate(deployable);
+            domain.getCompositeActivator().start(deployable);
+        }
     }
 
     public void testValidLocateService() throws Exception {
@@ -77,15 +81,17 @@ public class LocateServiceEmbeddedSCADomainTestCase extends TestCase{
         }
     }
 
-
     public void tearDown() throws Exception {
         ContributionService contributionService = domain.getContributionService();
 
         // Remove the contribution from the in-memory repository
         contributionService.remove("http://contribution");
 
-        //Stop Components from my composite
-        domain.getDomainCompositeHelper().stopComponent(domain.getDomainCompositeHelper().getComponent("SourceComponent"));
+        // Stop Components from my composite
+        for (Composite deployable : contribution.getDeployables() ) {
+            domain.getCompositeActivator().stop(deployable);
+            domain.getCompositeActivator().deactivate(deployable);
+        }
 
         domain.stop();
         domain.close();

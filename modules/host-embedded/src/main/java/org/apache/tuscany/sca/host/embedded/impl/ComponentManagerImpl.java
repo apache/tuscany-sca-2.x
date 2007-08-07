@@ -19,11 +19,13 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.RuntimeComponentImpl;
 import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
@@ -47,27 +49,42 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public Set<String> getComponentNames() {
-        return domain.getDomainCompositeHelper().getComponentNames();
+        Set<String> names = new HashSet<String>();
+        for (Composite composite: domain.getDomainComposite().getIncludes()) {
+            for (Component component: composite.getComponents()) {
+                names.add(component.getName());
+            }
+        }
+        return names;
     }
 
     public Component getComponent(String componentName) {
-        return domain.getDomainCompositeHelper().getComponent(componentName);
+        for (Composite composite: domain.getDomainComposite().getIncludes()) {
+            for (Component component: composite.getComponents()) {
+                if (component.getName().equals(componentName)) {
+                    return component;
+                }
+            }
+        }
+        return null;
     }
 
     public void startComponent(String componentName) throws ActivationException {
-        Component component = domain.getDomainCompositeHelper().getComponent(componentName);
+        Component component = getComponent(componentName);
         if (component == null) {
             throw new IllegalArgumentException("no component: " + componentName);
         }
-        domain.getDomainCompositeHelper().startComponent(component);
+        domain.getCompositeActivator().start(component);
+        notifyComponentStarted(componentName);
     }
 
     public void stopComponent(String componentName) throws ActivationException {
-        Component component = domain.getDomainCompositeHelper().getComponent(componentName);
+        Component component = getComponent(componentName);
         if (component == null) {
             throw new IllegalArgumentException("no component: " + componentName);
         }
-        domain.getDomainCompositeHelper().stopComponent(component);
+        domain.getCompositeActivator().stop(component);
+        notifyComponentStopped(componentName);
     }
 
     public void notifyComponentStarted(String componentName) {
