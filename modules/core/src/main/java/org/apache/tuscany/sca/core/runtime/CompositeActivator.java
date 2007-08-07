@@ -42,20 +42,6 @@ public interface CompositeActivator {
     void deactivate(Composite composite) throws ActivationException;
 
     /**
-     * Start a composite
-     * @deprecated
-     * @param composite
-     */
-    void start(Composite composite) throws ActivationException;
-
-    /**
-     * Stop a composite
-     * @deprecated
-     * @param composite
-     */
-    void stop(Composite composite) throws ActivationException;
-
-    /**
      * Start a component
      * @param component
      */

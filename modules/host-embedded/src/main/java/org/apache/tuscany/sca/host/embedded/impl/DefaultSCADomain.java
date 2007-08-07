@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
@@ -148,20 +150,41 @@ public class DefaultSCADomain extends SCADomain {
             }
             
         }
+        
+        // Build the SCA composites
+        CompositeBuilder compositeBuilder = runtime.getCompositeBuilder();
+        for (Composite composite: domainComposite.getIncludes()) {
+            try {
+                compositeBuilder.build(composite);
+            } catch (CompositeBuilderException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
 
-
-        // Activate and start the SCA domain composite
+        // Activate and start composites
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
-        try {
-            compositeActivator.activate(domainComposite);
-            compositeActivator.start(domainComposite);
-        } catch (ActivationException e) {
-            throw new ServiceRuntimeException(e);
+        for (Composite composite: domainComposite.getIncludes()) {
+            try {
+                compositeActivator.activate(composite);
+            } catch (ActivationException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+        for (Composite composite: domainComposite.getIncludes()) {
+            try {
+                for (Component component : composite.getComponents()) {
+                    compositeActivator.start(component);
+                }
+            } catch (ActivationException e) {
+                throw new ServiceRuntimeException(e);
+            }
         }
 
         // Index the top level components
-        for (Component component : domainComposite.getComponents()) {
-            components.put(component.getName(), component);
+        for (Composite composite: domainComposite.getIncludes()) {
+            for (Component component : composite.getComponents()) {
+                components.put(component.getName(), component);
+            }
         }
         
         this.componentManager = new DefaultSCADomainComponentManager(this);
@@ -172,6 +195,25 @@ public class DefaultSCADomain extends SCADomain {
         
         super.close();
 
+        // Stop and deactivate composites
+        CompositeActivator compositeActivator = runtime.getCompositeActivator();
+        for (Composite composite: domainComposite.getIncludes()) {
+            try {
+                compositeActivator.deactivate(composite);
+            } catch (ActivationException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+        for (Composite composite: domainComposite.getIncludes()) {
+            try {
+                for (Component component : composite.getComponents()) {
+                    compositeActivator.stop(component);
+                }
+            } catch (ActivationException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+
         // Remove the contribution from the in-memory repository
         ContributionService contributionService = runtime.getContributionService();
         try {
@@ -180,15 +222,6 @@ public class DefaultSCADomain extends SCADomain {
             throw new ServiceRuntimeException(e);
         }
         
-        // Stop the SCA domain composite
-        CompositeActivator compositeActivator = runtime.getCompositeActivator();
-        try {
-            compositeActivator.stop(domainComposite);
-        } catch (ActivationException e) {
-            throw new ServiceRuntimeException(e);
-
-        }
-
         // Stop the runtime
         try {
             runtime.stop();

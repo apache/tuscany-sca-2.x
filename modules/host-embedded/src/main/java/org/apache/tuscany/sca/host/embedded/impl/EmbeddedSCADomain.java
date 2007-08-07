@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
@@ -67,11 +69,17 @@ public class EmbeddedSCADomain extends SCADomain {
          */
         public Composite addComposite(Composite composite) throws ActivationException {
             domainComposite.getIncludes().add(composite);
-            //CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            //compositeActivator.activate(composite);
-            //for (Component component : composite.getComponents()) {
-            //    components.put(component.getName(), component);
-            //}
+            CompositeBuilder compositeBuilder = runtime.getCompositeBuilder();
+            try {
+                compositeBuilder.build(composite);
+            } catch (CompositeBuilderException e) {
+                throw new ActivationException(e);
+            }
+            CompositeActivator compositeActivator = runtime.getCompositeActivator();
+            compositeActivator.activate(composite);
+            for (Component component : composite.getComponents()) {
+                components.put(component.getName(), component);
+            }
             return composite;
         }
 
@@ -89,28 +97,6 @@ public class EmbeddedSCADomain extends SCADomain {
             }
         }
         
-        /**
-         * Start a composite
-         * @deprecated
-         * @param composite
-         * @throws ActivationException
-         */
-        public void startComposite(Composite composite) throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.start(composite);
-        }
-        
-        /**
-         * Stop a composite
-         * @deprecated
-         * @param composite
-         * @throws ActivationException
-         */
-        public void stopComposite(Composite composite) throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.stop(composite);
-        }
-
         public Set<String> getComponentNames(){
             return  Collections.unmodifiableSet(components.keySet());
         }
@@ -153,19 +139,6 @@ public class EmbeddedSCADomain extends SCADomain {
             compositeActivator.stop(component);
             componentManager.notifyComponentStopped(component.getName());
         }        
-        
-        /**
-         * Activate SCA Domain
-         * @throws ActivationException
-         */
-        public void activateDomain() throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.activate(domainComposite);
-            for (Component component : domainComposite.getComponents()) {
-                components.put(component.getName(), component);
-            }
-
-        }
     }
 
     /**

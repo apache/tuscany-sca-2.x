@@ -49,16 +49,11 @@ public class DefaultSCADomainTestCase extends TestCase {
         assertEquals("CRUDServiceComponent", componentManager.getComponentNames().iterator().next());
         assertNotNull(componentManager.getComponent("CRUDServiceComponent"));
         
-        //FIXME this used to work because of a bug in the compositebuilder/activator, causing componentManager
-        // to use a duplicate instance of the component, the original instance having already been started by
-        // new DefaultSCADomain()...
-        
-        assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
-        componentManager.startComponent("CRUDServiceComponent");
         assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
         componentManager.stopComponent("CRUDServiceComponent");
         assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
     }
+    
     /**
      * @throws java.lang.Exception
      */

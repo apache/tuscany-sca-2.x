@@ -41,6 +41,8 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
@@ -159,6 +161,10 @@ public class ReallySmallRuntimeBuilder {
                                        wireProcessor, providerFactories);
 
         return compositeActivator;
+    }
+    
+    public static CompositeBuilder createCompositeBuilder(AssemblyFactory assemblyFactory, SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper) {
+        return new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, null);
     }
 
     /**

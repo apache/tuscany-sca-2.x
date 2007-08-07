@@ -100,28 +100,6 @@ public class DistributedSCADomainImpl extends DistributedSCADomain implements Di
         }
         
         /**
-         * Start a composite
-         * @deprecated
-         * @param composite
-         * @throws ActivationException
-         */
-        public void startComposite(Composite composite) throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.start(composite);
-        }
-        
-        /**
-         * Stop a composite
-         * @deprecated
-         * @param composite
-         * @throws ActivationException
-         */
-        public void stopComposite(Composite composite) throws ActivationException {
-            CompositeActivator compositeActivator = runtime.getCompositeActivator();
-            compositeActivator.stop(composite);
-        }
-
-        /**
          * Get a reference to a component by name
          * @param componentName
          * @return

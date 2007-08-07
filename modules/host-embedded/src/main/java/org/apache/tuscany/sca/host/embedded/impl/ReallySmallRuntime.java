@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
@@ -72,6 +73,7 @@ public class ReallySmallRuntime {
     private AssemblyFactory assemblyFactory;
     private ContributionService contributionService;
     private CompositeActivator compositeActivator;
+    private CompositeBuilder compositeBuilder;
     private ThreadPoolWorkManager workManager;
     private ScopeRegistry scopeRegistry;
 
@@ -125,6 +127,11 @@ public class ReallySmallRuntime {
 
         // Create the ScopeRegistry
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry);
+        
+        // Create a composite builder
+        compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
+                                                                            scaBindingFactory,
+                                                                            mapper);
 
         // Create a composite activator
         compositeActivator = ReallySmallRuntimeBuilder.createCompositeActivator(registry,
@@ -174,6 +181,10 @@ public class ReallySmallRuntime {
 
     public CompositeActivator getCompositeActivator() {
         return compositeActivator;
+    }
+    
+    public CompositeBuilder getCompositeBuilder() {
+        return compositeBuilder;
     }
 
     public AssemblyFactory getAssemblyFactory() {

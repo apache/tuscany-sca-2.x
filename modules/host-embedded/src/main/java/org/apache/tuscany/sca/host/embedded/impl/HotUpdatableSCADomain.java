@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
@@ -193,13 +194,13 @@ public class HotUpdatableSCADomain extends SCADomain {
                 }
             }
 
-            domainHelper.activateDomain();
-
-//            for (Object m : modelResolver.getModels()) {
-//                if (m instanceof Composite) {
-//                    domainHelper.startComposite((Composite)m);
-//                }
-//            }
+            for (Object m : modelResolver.getModels()) {
+                if (m instanceof Composite) {
+                    for (Component component: ((Composite)m).getComponents()) {
+                        domainHelper.startComponent(component);
+                    }
+                }
+            }
 
             for (String componentName : domainHelper.getComponentNames()) {
                 domainHelper.startComponent(domainHelper.getComponent(componentName));
