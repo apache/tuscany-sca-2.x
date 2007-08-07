@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
 import org.apache.tuscany.sca.distributed.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
@@ -89,7 +90,7 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
         }      
         
     }
-
+    
     /**
      * Take the composite and use the super class to build it. Once done 
      * work out which components run in this node and create appropriate
@@ -98,14 +99,14 @@ public class DistributedCompositeActivatorImpl extends CompositeActivatorImpl {
      * 
      * @param composite
      */
-    protected void buildComposite(Composite composite) throws CompositeBuilderException {
-        super.buildComposite(composite);
-        
-        // now we have a built composite look at which SCABindings
-        // need updating based on which components are present
-        // in this node
-        assignComponentsToNode(composite);
+    public void activate(Composite composite) throws ActivationException {
+        try {
+            assignComponentsToNode(composite);
+        } catch (CompositeBuilderException e) {
+            throw new ActivationException(e);
+        }
 
+        super.activate(composite);
     }
     
     /**

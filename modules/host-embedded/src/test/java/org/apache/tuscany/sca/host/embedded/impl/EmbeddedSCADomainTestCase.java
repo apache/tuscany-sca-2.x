@@ -71,10 +71,7 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         EmbeddedSCADomain.DomainCompositeHelper domainHelper = domain.getDomainCompositeHelper();
         domainHelper.addComposite(myComposite);
 
-        // Activate the SCA Domain
-        domainHelper.activateDomain();
-
-        // Start the components in my composite
+        // Start my component
         domainHelper.startComponent(domainHelper.getComponent("CRUDServiceComponent"));
         
         // At this point the domain contains my contribution, my composite and
@@ -94,8 +91,8 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         result = service.retrieve(id);
         assertNull(result);
         
-        // Stop my composite
-        domainHelper.stopComposite(myComposite);
+        // Stop my component
+        domainHelper.stopComponent(domainHelper.getComponent("CRUDServiceComponent"));
         
         // Remove my composite
         domainHelper.removeComposite(myComposite);
@@ -129,12 +126,9 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         EmbeddedSCADomain.DomainCompositeHelper domainHelper = domain.getDomainCompositeHelper();
         domainHelper.addComposite(myComposite);
 
-        // Activate the SCA Domain
-        domainHelper.activateDomain();
-
-        // Start the components in my composite
+        // Start my component
         domainHelper.startComponent(domainHelper.getComponent("CRUDServiceComponent"));
-        
+
         // At this point the domain contains my contribution, my composite and
         // it's started, my application code can start using it
 
@@ -161,9 +155,9 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         assertTrue(cl.startCalled);
         assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
 
-        // Stop my composite
-        domainHelper.stopComposite(myComposite);
-        
+        // Stop my component
+        domainHelper.stopComponent(domainHelper.getComponent("CRUDServiceComponent"));
+
         // Remove my composite
         domainHelper.removeComposite(myComposite);
         

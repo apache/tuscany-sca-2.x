@@ -31,10 +31,6 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.WireableBinding;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
@@ -66,8 +62,6 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 public class CompositeActivatorImpl implements CompositeActivator {
 
-    private final AssemblyFactory assemblyFactory;
-    private final SCABindingFactory scaBindingFactory;
     private final InterfaceContractMapper interfaceContractMapper;
     private final ScopeRegistry scopeRegistry;
     private final WorkScheduler workScheduler;
@@ -88,9 +82,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                   WorkScheduler workScheduler,
                                   RuntimeWireProcessor wireProcessor,
                                   ProviderFactoryExtensionPoint providerFactories) {
-        super();
-        this.assemblyFactory = assemblyFactory;
-        this.scaBindingFactory = scaBindingFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.scopeRegistry = scopeRegistry;
         this.workScheduler = workScheduler;
@@ -104,8 +95,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param composite
      * @throws IncompatibleInterfaceContractException
      */
-    @SuppressWarnings("unchecked")
-    protected void configureComposite(Composite composite) throws IncompatibleInterfaceContractException {
+    private void createProviders(Composite composite) throws IncompatibleInterfaceContractException {
         for (Component component : composite.getComponents()) {
 
             for (ComponentService service : component.getServices()) {
@@ -131,22 +121,26 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                configureComposite((Composite)implementation);
+                createProviders((Composite)implementation);
             } else if (implementation != null) {
-                ImplementationProviderFactory providerFactory =
-                    (ImplementationProviderFactory)providerFactories.getProviderFactory(implementation.getClass());
-                if (providerFactory != null) {
-                    ImplementationProvider implementationProvider =
-                        providerFactory.createImplementationProvider((RuntimeComponent)component, implementation);
-                    if (implementationProvider != null) {
-                        ((RuntimeComponent)component).setImplementationProvider(implementationProvider);
-                    }
-                } else {
-                    throw new IllegalStateException("Provider factory not found for class: " + implementation
-                        .getClass().getName());
-                }
+                createImplementationProvider((RuntimeComponent)component, implementation);
                 setScopeContainer(component);
             }
+        }
+    }
+
+    private void createImplementationProvider(RuntimeComponent component, Implementation implementation) {
+        ImplementationProviderFactory providerFactory =
+            (ImplementationProviderFactory)providerFactories.getProviderFactory(implementation.getClass());
+        if (providerFactory != null) {
+            @SuppressWarnings("unchecked")
+            ImplementationProvider implementationProvider =
+                providerFactory.createImplementationProvider(component, implementation);
+            if (implementationProvider != null) {
+                component.setImplementationProvider(implementationProvider);
+            }
+        } else {
+            throw new IllegalStateException("Provider factory not found for class: " + implementation.getClass().getName());
         }
     }
 
@@ -157,6 +151,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             BindingProviderFactory providerFactory =
                 (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
             if (providerFactory != null) {
+                @SuppressWarnings("unchecked")
                 ServiceBindingProvider bindingProvider =
                     providerFactory.createServiceBindingProvider((RuntimeComponent)component,
                                                                  (RuntimeComponentService)service,
@@ -177,6 +172,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             BindingProviderFactory providerFactory =
                 (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
             if (providerFactory != null) {
+                @SuppressWarnings("unchecked")
                 ReferenceBindingProvider bindingProvider =
                     providerFactory.createReferenceBindingProvider((RuntimeComponent)component,
                                                                    (RuntimeComponentReference)reference,
@@ -193,7 +189,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     /**
      * Start a composite
      */
-    protected void startComposite(Composite composite) {
+    private void startComposite(Composite composite) {
         for (Component component : composite.getComponents()) {
             startComponent(component);
         }
@@ -202,7 +198,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     /**
      * Stop a composite
      */
-    public void stopComposite(Composite composite) {
+    private void stopComposite(Composite composite) {
         for (Component component : composite.getComponents()) {
             stopComponent(component);
 
@@ -213,7 +209,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     /**
      * Start a component
      */
-    public void startComponent(Component component) {
+    private void startComponent(Component component) {
 
         for (ComponentService service : component.getServices()) {
             for (Binding binding : service.getBindings()) {
@@ -290,7 +286,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     /**
      * Stop a component
      */
-    public void stopComponent(Component component) {
+    private void stopComponent(Component component) {
         for (ComponentService service : component.getServices()) {
             for (Binding binding : service.getBindings()) {
                 ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(binding);
@@ -352,7 +348,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param composite
      * @throws IncompatibleInterfaceContractException
      */
-    protected void createRuntimeWires(Composite composite) throws IncompatibleInterfaceContractException {
+    private void createRuntimeWires(Composite composite) throws IncompatibleInterfaceContractException {
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
@@ -764,57 +760,16 @@ public class CompositeActivatorImpl implements CompositeActivator {
         runtimeComponent.setScopeContainer(scopeRegistry.getScopeContainer(runtimeComponent));
     }
 
-    protected void buildComposite(Composite composite) throws CompositeBuilderException {
-
-        CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
-
-            public void problem(Problem problem) {
-                // Uncommenting the following two lines can be useful to detect
-                // and troubleshoot SCA assembly XML composite configuration
-                // problems.
-
-                System.out.println("Composite assembly problem: " + problem.getMessage());
-            }
-        };
-
-        CompositeBuilderImpl builder =
-            new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
-
-        builder.build(composite);
-
-        // if (!problems.isEmpty()) {
-        // throw new VariantRuntimeException(new RuntimeException("Problems in
-        // the composite..."));
-        // }
-    }
-
     public void activate(Composite composite) throws ActivationException {
         try {
-            buildComposite(composite);
-            configureComposite(composite);
+            createProviders(composite);
             createRuntimeWires(composite);
         } catch (Exception e) {
             throw new ActivationException(e);
         }
     }
-
+    
     public void deactivate(Composite composite) throws ActivationException {
-    }
-
-    public void start(Composite composite) throws ActivationException {
-        try {
-            startComposite(composite);
-        } catch (Exception e) {
-            throw new ActivationException(e);
-        }
-    }
-
-    public void stop(Composite composite) throws ActivationException {
-        try {
-            stopComposite(composite);
-        } catch (Exception e) {
-            throw new ActivationException(e);
-        }
     }
 
     public void start(Component component) throws ActivationException {

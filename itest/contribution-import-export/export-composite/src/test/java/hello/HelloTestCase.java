@@ -56,8 +56,6 @@ public class HelloTestCase extends TestCase{
         Composite consumerComposite = consumerContribution.getDeployables().get(0);
         domain.getDomainCompositeHelper().addComposite(consumerComposite);
         
-        //activate SCA Domain
-        domain.getDomainCompositeHelper().activateDomain();
         //Start Components from my composite
         domain.getDomainCompositeHelper().startComponent(domain.getDomainCompositeHelper().getComponent("HelloServiceComponent"));
     }
