@@ -31,10 +31,7 @@ import org.w3c.dom.Node;
  * Helper for DOM
  */
 public final class DOMHelper {
-    private static final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();
-    static {
-        FACTORY.setNamespaceAware(true);
-    }
+    private static DocumentBuilderFactory FACTORY;
 
     private DOMHelper() {
     }
@@ -44,7 +41,18 @@ public final class DOMHelper {
     }
 
     public static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
+        init();
         return FACTORY.newDocumentBuilder();
+    }
+
+    /**
+     * 
+     */
+    private synchronized static void init() {
+        if (FACTORY == null) {
+            FACTORY = DocumentBuilderFactory.newInstance();
+            FACTORY.setNamespaceAware(true);
+        }
     }
 
     public static QName getQName(Node node) {
@@ -61,8 +69,7 @@ public final class DOMHelper {
     public static Element createElement(Document document, QName name) {
         String prefix = name.getPrefix();
         String qname =
-            (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name
-                .getLocalPart();
+            (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name.getLocalPart();
         return document.createElementNS(name.getNamespaceURI(), qname);
     }
 
