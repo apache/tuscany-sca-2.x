@@ -53,5 +53,12 @@
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-sca</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>        
     </dependencies>
 </project>

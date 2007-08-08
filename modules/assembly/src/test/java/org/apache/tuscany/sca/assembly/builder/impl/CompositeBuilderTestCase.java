@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 
@@ -41,7 +40,7 @@ public class CompositeBuilderTestCase extends TestCase {
     
     protected void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
-        scaBindingFactory = new DefaultSCABindingFactory();
+        scaBindingFactory = null;
         
         compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new InterfaceContractMapperImpl(), null);
     }

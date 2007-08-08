@@ -17,31 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca;
+package org.apache.tuscany.sca.assembly.xml;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.host.impl.DistributedSCADomainImpl;
 
 /**
  * A factory for the SCA binding model.
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingFactoryImpl implements SCABindingFactory {
-    private DistributedSCADomain domain;
-    private ExtensionPointRegistry registry;
-    
-    public SCABindingFactoryImpl(DistributedSCADomain domain,
-                                 ExtensionPointRegistry registry) {
-        this.domain = domain;
-        this.registry = registry;
+public class TestSCABindingFactoryImpl implements SCABindingFactory {
+    public SCABinding createSCABinding() {
+        return new TestSCABindingImpl();
     }
-    public SCABinding createSCABinding() {     
-        return new SCABindingImpl(domain,
-                                  registry);
-    }
-    
+
 }

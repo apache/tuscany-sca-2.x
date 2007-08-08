@@ -78,6 +78,8 @@ public class NodeImpl {
         //Start the node domain
         nodeDomain.start();  
         
+        // load the node composite
+        
         // get the component registry 
         componentRegistry = nodeDomain.getService(ComponentRegistry.class, "ComponentRegistry");        
         

@@ -39,7 +39,7 @@ import org.osoa.sca.ServiceRuntimeException;
 /**
  * An SCA domain that holds components used for managing a node. The components
  * are read from a ".node" file to differentiate them from any other ".composite" 
- * file that migh appear in a contribution. Other than that the ".node" file
+ * file that might appear in a contribution. Other than that the ".node" file
  * is like any other SCA assembly. 
  * 
  * @version $Rev$ $Date$
@@ -106,9 +106,9 @@ public class NodeSCADomainImpl extends DistributedSCADomain {
         
             // start up the node services
             
-            // Start the node service runtime. Null is passed in here
-            // to stop the SCAbinding in this runtime trying to look 
-            // back into the domain node model
+            // Start the node service runtime. A null domain is passed in here
+            // to stop the SCABinding in this runtime trying to look 
+            // back into this domain for topology information 
             nodeRuntime.start(null);
             
             // get the node service configuration model

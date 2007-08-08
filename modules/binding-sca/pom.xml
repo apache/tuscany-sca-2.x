@@ -31,24 +31,36 @@
     <name>Apache Tuscany Default SCA Binding</name>
 
     <dependencies>
-
-        <dependency>
+      
+         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-extension-helper</artifactId>
+            <artifactId>tuscany-assembly</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
+        </dependency>  
+        
+         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>    
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distributed</artifactId>
+            <artifactId>tuscany-core-spi</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
+        </dependency> 
         
-        <dependency>
+         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jms</artifactId>
+            <artifactId>tuscany-core</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
+        </dependency>       
+        
+         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>              
 
         <dependency>
             <groupId>org.easymock</groupId>

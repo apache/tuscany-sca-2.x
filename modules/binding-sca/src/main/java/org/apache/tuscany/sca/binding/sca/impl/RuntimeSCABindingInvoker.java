@@ -16,21 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.binding.sca.impl;
 
-package org.apache.tuscany.sca.assembly.impl;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
+public class RuntimeSCABindingInvoker implements Interceptor {
 
-/**
- * A factory for the SCA binding model.
- * 
- * @version $Rev$ $Date$
- */
-public abstract class SCABindingFactoryImpl implements SCABindingFactory {
-
-    public SCABinding createSCABinding() {
-        return new SCABindingImpl();
-    }
+    private Invoker next;
     
+    public RuntimeSCABindingInvoker() {
+    }
+
+    public void setNext(Invoker next) {
+        this.next = next;
+    }
+
+    public Invoker getNext() {
+        return next;
+    }
+
+    public Message invoke(Message msg) {
+        return next.invoke(msg);
+    }
+
 }

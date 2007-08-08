@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.implementation.notification.NotificationComponentInvoker;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -57,7 +57,7 @@ public class NotificationComponentTestCase extends TestCase {
         EasyMock.replay(sub1Chain);
         List<InvocationChain> sub1Chains = new ArrayList<InvocationChain>();
         sub1Chains.add(sub1Chain);
-        SCABinding b1 = new DefaultSCABindingFactory().createSCABinding();
+        SCABinding b1 = new SCABindingFactoryImpl().createSCABinding();
         EndpointReference epr1 = EasyMock.createNiceMock(EndpointReference.class);
         EasyMock.expect(epr1.getURI()).andReturn("wire1Target");
         EasyMock.expect(epr1.getBinding()).andReturn(b1);
@@ -79,7 +79,7 @@ public class NotificationComponentTestCase extends TestCase {
         EasyMock.replay(sub2Chain);
         List<InvocationChain> sub2Chains = new ArrayList<InvocationChain>();
         sub2Chains.add(sub2Chain);
-        SCABinding b2 = new DefaultSCABindingFactory().createSCABinding();
+        SCABinding b2 = new SCABindingFactoryImpl().createSCABinding();
         EndpointReference epr2 = EasyMock.createNiceMock(EndpointReference.class);
         EasyMock.expect(epr2.getURI()).andReturn("wire2Target");
         EasyMock.expect(epr2.getBinding()).andReturn(b2);

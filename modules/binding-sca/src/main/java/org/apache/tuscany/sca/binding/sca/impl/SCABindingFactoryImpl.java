@@ -17,15 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly;
+package org.apache.tuscany.sca.binding.sca.impl;
 
-import org.apache.tuscany.sca.assembly.impl.SCABindingFactoryImpl;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 
 /**
  * A factory for the SCA binding model.
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultSCABindingFactory extends SCABindingFactoryImpl implements SCABindingFactory {
+public class SCABindingFactoryImpl implements SCABindingFactory {
 
+    public SCABinding createSCABinding() {
+        return new SCABindingImpl();
+    }
+    
 }

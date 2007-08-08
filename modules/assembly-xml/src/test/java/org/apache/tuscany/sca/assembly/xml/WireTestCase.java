@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
@@ -64,7 +63,7 @@ public class WireTestCase extends TestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         resolver = new TestModelResolver();
         assemblyFactory = new DefaultAssemblyFactory();
-        scaBindingFactory = new DefaultSCABindingFactory();
+        scaBindingFactory = new TestSCABindingFactoryImpl();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
     }

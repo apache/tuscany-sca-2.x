@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.assembly.impl;
+package org.apache.tuscany.sca.assembly.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,11 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
- * Represents an SCA binding.
+ * A test cheel for the SCA binding.
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, WireableBinding {
+public class TestSCABindingImpl implements SCABinding, WireableBinding {
     private String name;
     private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -50,7 +50,7 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     /**
      * Constructs a new SCA binding.
      */
-    protected SCABindingImpl() {
+    protected TestSCABindingImpl() {
     }
     
     public Component getComponent() {

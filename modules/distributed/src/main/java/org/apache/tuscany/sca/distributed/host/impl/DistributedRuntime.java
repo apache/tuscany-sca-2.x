@@ -22,8 +22,11 @@ package org.apache.tuscany.sca.distributed.host.impl;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.binding.sca.impl.RuntimeSCABindingProviderFactory;
+import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -38,7 +41,6 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.runtime.RuntimeSCABindingProviderFactory;
 import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.sca.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.sca.distributed.core.DistributedCompositeActivatorImpl;
@@ -101,6 +103,10 @@ public class DistributedRuntime  {
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         registry.addExtensionPoint(factories);
         
+        // Create context factory extension point
+        ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint();
+        registry.addExtensionPoint(contextFactories);        
+        
         // Create Message factory
         MessageFactory messageFactory = new MessageFactoryImpl();
         factories.addFactory(messageFactory);
@@ -151,7 +157,7 @@ public class DistributedRuntime  {
         
         // if not use the core version
         if (scaBindingFactory == null) {
-            scaBindingFactory = new DefaultSCABindingFactory();
+            scaBindingFactory = new SCABindingFactoryImpl();
             factories.addFactory(scaBindingFactory);
         }
 
