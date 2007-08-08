@@ -46,7 +46,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     public OMElement create(ElementInfo element, TransformationContext context) {
-        OMElement wrapper = factory.createOMElement(element.getQName(), null);
+        OMElement wrapper = AxiomHelper.createOMElement(factory, element.getQName());
         return wrapper;
     }
 
