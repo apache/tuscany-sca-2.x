@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Scope; 
 
 /**
  * Represents the mapping between components and runtime nodes.

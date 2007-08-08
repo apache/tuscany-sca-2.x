@@ -32,12 +32,12 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
@@ -68,7 +68,7 @@ public class ReadTestCase extends TestCase {
     public void setUp() throws Exception {
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = new DefaultAssemblyFactory();
-        scaBindingFactory = new DefaultSCABindingFactory();
+        scaBindingFactory = new SCABindingFactoryImpl();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();

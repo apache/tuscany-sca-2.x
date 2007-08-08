@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultSCABindingFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
@@ -61,7 +60,7 @@ public class WriteAllTestCase extends TestCase {
 
     public void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
-        scaBindingFactory = new DefaultSCABindingFactory();
+        scaBindingFactory = new TestSCABindingFactoryImpl();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
         compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null);
