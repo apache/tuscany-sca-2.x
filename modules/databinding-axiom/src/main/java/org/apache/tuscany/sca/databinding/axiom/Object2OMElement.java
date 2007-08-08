@@ -39,7 +39,7 @@ public class Object2OMElement extends Java2SimpleTypeTransformer<OMElement> {
     }
 
     protected OMElement createElement(QName element, String text, TransformationContext context) {
-        OMElement omElement = factory.createOMElement(element, null);
+        OMElement omElement = AxiomHelper.createOMElement(factory, element);
         factory.createOMText(omElement, text);
         return omElement;
     }

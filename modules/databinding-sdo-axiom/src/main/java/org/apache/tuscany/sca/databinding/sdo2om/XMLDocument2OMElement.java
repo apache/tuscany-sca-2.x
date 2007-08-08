@@ -18,10 +18,11 @@
  */
 package org.apache.tuscany.sca.databinding.sdo2om;
 
+import javax.xml.namespace.QName;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
@@ -41,8 +42,8 @@ public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElemen
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
         SDODataSource dataSource = new SDODataSource(source, helperContext);
         OMFactory factory = OMAbstractFactory.getOMFactory();
-        OMNamespace namespace = factory.createOMNamespace(source.getRootElementURI(), source.getRootElementName());
-        OMElement element = factory.createOMElement(dataSource, source.getRootElementName(), namespace);
+        QName name = new QName(source.getRootElementURI(), source.getRootElementName());
+        OMElement element = AxiomHelper.createOMElement(factory, name, dataSource);
         return element;
     }
 

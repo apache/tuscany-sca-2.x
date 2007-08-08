@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.databinding.axiom;
+package org.apache.tuscany.sca.databinding.sdo2om;
 
 import javax.xml.namespace.QName;
 
@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 public class AxiomHelper {
+
     private static final String DEFAULT_PREFIX = "_ns_";
 
     private AxiomHelper() {

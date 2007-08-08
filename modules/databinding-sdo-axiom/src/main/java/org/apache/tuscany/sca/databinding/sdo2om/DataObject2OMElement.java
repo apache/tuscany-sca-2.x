@@ -20,10 +20,11 @@ package org.apache.tuscany.sca.databinding.sdo2om;
 
 import static org.apache.tuscany.sca.databinding.sdo.SDODataBinding.ROOT_ELEMENT;
 
+import javax.xml.namespace.QName;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
@@ -47,29 +48,23 @@ public class DataObject2OMElement extends BaseTransformer<DataObject, OMElement>
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
         OMFactory factory = OMAbstractFactory.getOMFactory();
 
-        OMNamespace namespace = null;
-        String localName = ROOT_ELEMENT.getLocalPart();
+        QName name  = ROOT_ELEMENT;
         if (context != null) {
             DataType dataType = context.getTargetDataType();
             Object logical = dataType == null ? null : dataType.getLogical();
             if (logical instanceof XMLType) {
                 XMLType xmlType = (XMLType)logical;
                 if (xmlType.isElement()) {
-                    namespace = factory.createOMNamespace(xmlType.getElementName().getNamespaceURI(), xmlType
-                        .getElementName().getPrefix());
-                    localName = xmlType.getElementName().getLocalPart();
+                    name = xmlType.getElementName();
                 }
             }
         }
-        if (namespace == null) {
-            namespace = factory.createOMNamespace(ROOT_ELEMENT.getNamespaceURI(), ROOT_ELEMENT.getPrefix());
-        }
 
         XMLDocument document = helperContext.getXMLHelper().createDocument(source,
-                                                                           namespace.getNamespaceURI(),
-                                                                           localName);
+                                                                           name.getNamespaceURI(),
+                                                                           name.getLocalPart());
         SDODataSource dataSource = new SDODataSource(document, helperContext);
-        OMElement element = factory.createOMElement(dataSource, localName, namespace);
+        OMElement element = AxiomHelper.createOMElement(factory, name, dataSource);
         return element;
     }
 
