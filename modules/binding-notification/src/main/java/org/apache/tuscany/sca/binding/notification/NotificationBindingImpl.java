@@ -36,6 +36,16 @@ public class NotificationBindingImpl extends BaseImpl implements NotificationBin
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     protected String ntmAddress;
     protected URI notificationType;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
     
     public Object clone() {
         return this;
