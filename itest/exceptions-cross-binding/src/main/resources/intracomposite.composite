@@ -30,6 +30,6 @@
     </component>
 
     <!-- Move to the end to verify the fix for TUSCANY-1165 -->
-    <dbsdo:import.sdo factory="stockexceptiontestservice.scatesttool.ScatesttoolFactory" />
+    <!-- dbsdo:import.sdo factory="stockexceptiontestservice.scatesttool.ScatesttoolFactory" / -->
 
 </composite>

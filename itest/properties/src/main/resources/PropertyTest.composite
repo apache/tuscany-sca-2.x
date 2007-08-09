@@ -28,7 +28,7 @@
     </service>           
            
     <dbsdo:import.sdo location="customer.xsd" />
-    <dbsdo:import.sdo factory="com.example.customer.sdo.SdoFactory" />
+    <!-- dbsdo:import.sdo factory="com.example.customer.sdo.SdoFactory" / -->
                
     <property name="number" type="xsd:int">1</property>
     <property name="complex" type="foo:MyComplexType" >

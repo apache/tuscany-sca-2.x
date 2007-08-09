@@ -18,7 +18,7 @@
     * under the License.
 -->
 <composite name="intracomposite" xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance">
-	<dbsdo:import.sdo factory="stockexceptiontestservice.scatesttool.ScatesttoolFactory"/>
+	<!-- dbsdo:import.sdo factory="stockexceptiontestservice.scatesttool.ScatesttoolFactory"/ -->
 	
 	<service name="exchangeJaxbService">
 		<interface.java class="org.apache.tuscany.sca.test.exceptions.impl.StockExceptionTestJAXB"/>

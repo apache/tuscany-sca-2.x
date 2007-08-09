@@ -19,8 +19,8 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" name="SDOWSDLTest">
 
-    <dbsdo:import.sdo xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
-        factory="com.bigbank.account.AccountFactory" />
+    <!-- dbsdo:import.sdo xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
+        factory="com.bigbank.account.AccountFactory" / -->
 
     <service name="AccountService1a2a3a4a" promote="Component2a3a4a">
         <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />

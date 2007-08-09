@@ -24,8 +24,8 @@
     name="FeedAggregator">
     
     <!-- SDO factory classes -->    
-    <dbsdo:import.sdo factory="org.apache.tuscany.sca.demos.aggregator.service.ServiceFactory"/>        
-    <dbsdo:import.sdo factory="org.apache.tuscany.sca.demos.aggregator.types.TypesFactory"/> 
+    <!-- dbsdo:import.sdo factory="org.apache.tuscany.sca.demos.aggregator.service.ServiceFactory"/ -->
+    <!-- dbsdo:import.sdo factory="org.apache.tuscany.sca.demos.aggregator.types.TypesFactory"/ --> 
 
     <!-- The alerts rss service -->
     <service name="AlertsFeedServiceRSS" promote="AlertsFeedServiceComponent/Collection">
