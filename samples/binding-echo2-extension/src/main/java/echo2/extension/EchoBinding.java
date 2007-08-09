@@ -59,6 +59,15 @@ public class EchoBinding implements Binding {
         // The sample binding does not support policies
         return Collections.emptyList();
     }
+
+    public List<Intent> getComputedIntents() {
+        // The sample binding does not support policies
+        return Collections.emptyList();
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        // The sample binding does not support policies
+        return Collections.emptyList();    }
     
     public List<Object> getExtensions() {
         // The sample binding does not support extensions
