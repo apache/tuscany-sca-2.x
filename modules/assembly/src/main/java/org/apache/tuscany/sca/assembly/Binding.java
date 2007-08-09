@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import java.util.List;
+
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
@@ -55,4 +59,18 @@ public interface Binding extends Base, IntentAttachPoint, PolicySetAttachPoint {
      * @param name the binding name
      */
     void setName(String name);
+    
+    /**
+     * Returns the list of computed/applicable policy intents for this binding
+     * 
+     * @return list of applicable/computed policy intents
+     */
+    List<Intent> getComputedIntents();
+    
+    /**
+     * Returns the list of computed/applicable policysets for this binding
+     * 
+     * @return list of applicable/computed policysets
+     */
+    List<PolicySet> getComputedPolicySets();
 }

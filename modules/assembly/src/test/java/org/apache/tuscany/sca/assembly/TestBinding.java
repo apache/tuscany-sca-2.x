@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.policy.Intent;
@@ -29,7 +30,13 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class TestBinding implements Binding {
+    public List<Intent> getComputedIntents() {
+        return null;
+    }
 
+    public List<PolicySet> getComputedPolicySets() {
+        return null;
+    }
     public TestBinding(AssemblyFactory factory) {
     }
 
