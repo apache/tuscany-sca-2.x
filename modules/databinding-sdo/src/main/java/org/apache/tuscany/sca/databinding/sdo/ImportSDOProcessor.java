@@ -38,11 +38,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
-import commonj.sdo.impl.HelperProvider;
 
 /**
  * Loader that handles &lt;import.sdo&gt; elements.
@@ -63,22 +61,10 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
 
     public ImportSDO read(XMLStreamReader reader) throws ContributionReadException {
         assert IMPORT_SDO.equals(reader.getName());
-
-        HelperContext helperContext = null;
-
-        // FIXME: [rfeng] How to get the enclosing composite?
-        int id = System.identityHashCode(reader);
-        // FIXME: [rfeng] How to associate the TypeHelper with deployment
-        // context?
-        synchronized (helperContextRegistry) {
-            helperContext = helperContextRegistry.getHelperContext(id);
-            if (helperContext == null) {
-                helperContext = SDOUtil.createHelperContext();
-                helperContextRegistry.register(id, helperContext);
-            }
-        }
-
-        ImportSDO importSDO = new ImportSDO(helperContext);
+ 
+        // FIXME: How do we associate the application HelperContext with the one
+        // imported by the composite
+        ImportSDO importSDO = new ImportSDO(SDOContextHelper.getDefaultHelperContext());
         String factoryName = reader.getAttributeValue(null, "factory");
         if (factoryName != null) {
             importSDO.setFactoryClassName(factoryName);
@@ -121,10 +107,8 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         Method method = factory.getClass().getMethod("register", new Class[] {HelperContext.class});
         method.invoke(factory, new Object[] {helperContext});
 
-        // FIXME: How do we associate the application HelperContext with the one
-        // imported by the composite
-        HelperContext defaultContext = HelperProvider.getDefaultContext();
-        method.invoke(factory, new Object[] {defaultContext});
+//        HelperContext defaultContext = HelperProvider.getDefaultContext();
+//        method.invoke(factory, new Object[] {defaultContext});
     }
 
     private void importWSDL(ImportSDO importSDO) throws ContributionResolveException {
@@ -145,18 +129,6 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                 InputStream xsdInputStream = wsdlURL.openStream();
                 try {
                     XSDHelper xsdHelper = importSDO.getHelperContext().getXSDHelper();
-                    xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
-                } finally {
-                    xsdInputStream.close();
-                }
-                // FIXME: How do we associate the application HelperContext with
-                // the one
-                // imported by the composite
-                HelperContext defaultContext = HelperProvider.getDefaultContext();
-                xsdInputStream = wsdlURL.openStream();
-                try {
-                    XSDHelper xsdHelper = defaultContext.getXSDHelper();
-                    ClassLoader cl = Thread.currentThread().getContextClassLoader();
                     xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
                 } finally {
                     xsdInputStream.close();
