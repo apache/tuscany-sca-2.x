@@ -18,17 +18,19 @@
  */
 package org.apache.tuscany.sca.implementation.spring;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringBeanElement;
-
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.core.io.Resource;
 
 /**
@@ -47,6 +49,16 @@ public class SpringImplementation extends ComponentTypeImpl implements Implement
     private Hashtable<String, SpringBeanElement> serviceMap;
     // Mapping of property names to Java class
     private Hashtable<String, Class> propertyMap;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
 
     protected SpringImplementation() {
         this.springLocation = null;
