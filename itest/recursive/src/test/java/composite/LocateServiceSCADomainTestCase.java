@@ -56,5 +56,15 @@ public class LocateServiceSCADomainTestCase extends TestCase {
             // expected.
         }
     }
+    
+    public void testValidRecursiveLocateService() throws Exception {
+        Source source;
+        try {
+            source = domain.getService(Source.class, "SourceComponent/InnerSourceService");
+            assertNotNull(source);
+        } catch (Throwable t) {
+            fail("Could not locate service");
+        }
+    }
 
 }

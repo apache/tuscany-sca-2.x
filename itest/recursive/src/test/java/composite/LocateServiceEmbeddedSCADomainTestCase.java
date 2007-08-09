@@ -80,6 +80,16 @@ public class LocateServiceEmbeddedSCADomainTestCase extends TestCase {
             // expected.
         }
     }
+    
+    public void testValidRecursiveLocateService() throws Exception {
+        Source source;
+        try {
+            source = domain.getService(Source.class, "SourceComponent/InnerSourceService");
+            assertNotNull(source);
+        } catch (Throwable t) {
+            fail("Could not locate service");
+        }
+    }
 
     public void tearDown() throws Exception {
         ContributionService contributionService = domain.getContributionService();
