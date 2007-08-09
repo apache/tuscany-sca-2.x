@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
  * @version $Rev$ $Date$
  */
 public class DefaultTransformerExtensionPoint implements TransformerExtensionPoint {
-    private DataBindingExtensionPoint dataBindings;
     private boolean loadedTransformers;
     
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
@@ -41,11 +40,6 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     public DefaultTransformerExtensionPoint() {
     }
     
-    //FIXME Hack
-    public void setDataBindings(DataBindingExtensionPoint dataBindings) {
-        this.dataBindings = dataBindings;
-    }
-
     public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
         graph.addEdge(sourceType, resultType, transformer, weight);
     }
@@ -122,8 +116,8 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     public List<Transformer> getTransformerChain(String sourceType, String resultType) {
         loadTransformers();
         
-        String source = normalize(sourceType);
-        String result = normalize(resultType);
+        String source = sourceType;
+        String result = resultType;
         List<Transformer> transformers = new ArrayList<Transformer>();
         DirectedGraph<Object, Transformer>.Path path = graph.getShortestPath(source, result);
         if (path == null) {
@@ -139,22 +133,6 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         loadTransformers();
         
         return graph.toString();
-    }
-
-    /**
-     * Normalize the id to a name of a data binding as databindings may have aliases
-     * @param id
-     * @return
-     */
-    private String normalize(String id) {
-        loadTransformers();
-        
-        if (dataBindings != null) {
-            DataBinding dataBinding = dataBindings.getDataBinding(id);
-            return dataBinding == null ? id : dataBinding.getName();
-        } else {
-            return id;
-        }
     }
 
 }

@@ -54,10 +54,6 @@ public class JavaImportExportModuleActivator implements ModuleActivator {
      */
     private JavaImportExportListener listener;
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
     public void start(ExtensionPointRegistry registry) {
         importProcessor = new JavaImportProcessor(factory);
         exportProcessor = new JavaExportProcessor(factory);

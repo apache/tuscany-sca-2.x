@@ -39,8 +39,4 @@ public class WebAppModuleActivator implements ModuleActivator {
     public void stop(ExtensionPointRegistry registry) {
     }
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
 }

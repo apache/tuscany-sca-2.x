@@ -32,10 +32,6 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
 
     private JettyServer server;
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
     public void start(ExtensionPointRegistry extensionPointRegistry) {
 
         // Register a Jetty servlet host

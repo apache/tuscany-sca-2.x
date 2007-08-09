@@ -22,20 +22,10 @@ package org.apache.tuscany.sca.implementation.java;
  * A factory for the Java model.
  */
 import org.apache.tuscany.sca.implementation.java.impl.JavaImplementationFactoryImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 
 public class DefaultJavaImplementationFactory extends JavaImplementationFactoryImpl implements JavaImplementationFactory {
 
-    /**
-     * @deprecated Please use the constructor that takes a JavaClassIntrospectorExtensionPoint.
-     */
     public DefaultJavaImplementationFactory() {
-        super(new DefaultJavaClassIntrospectorExtensionPoint());
-    }
-    
-    public DefaultJavaImplementationFactory(JavaClassIntrospectorExtensionPoint visitors) {
-        super(visitors);
     }
 
 }

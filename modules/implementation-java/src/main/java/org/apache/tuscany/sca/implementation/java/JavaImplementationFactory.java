@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.java;
 
+import java.util.List;
+
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
+
 
 /**
  * Factory for the Java model
@@ -48,5 +52,24 @@ public interface JavaImplementationFactory {
      * @return
      */
     void createJavaImplementation(JavaImplementation javaImplementation, Class<?> implementationClass) throws IntrospectionException;
+
+    /**
+     * Registers the given visitor.
+     * 
+     * @param visitor
+     */
+    void addClassVisitor(JavaClassVisitor visitor);
+
+    /**
+     * Deregisters the given visitor.
+     */
+    void removeClassVisitor(JavaClassVisitor visitor);
+    
+    /**
+     * Returns the list of visitors.
+     * 
+     * @return
+     */
+    List<JavaClassVisitor> getClassVisitors();
 
 }

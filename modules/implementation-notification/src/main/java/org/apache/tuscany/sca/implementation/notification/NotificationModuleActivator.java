@@ -46,7 +46,4 @@ public class NotificationModuleActivator implements ModuleActivator {
         processors.removeArtifactProcessor(implementationLoader);
     }
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
 }

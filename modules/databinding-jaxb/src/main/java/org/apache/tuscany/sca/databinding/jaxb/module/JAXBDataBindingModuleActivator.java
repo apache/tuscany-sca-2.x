@@ -32,10 +32,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  */
 public class JAXBDataBindingModuleActivator implements ModuleActivator {
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
     public void start(ExtensionPointRegistry registry) {
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);

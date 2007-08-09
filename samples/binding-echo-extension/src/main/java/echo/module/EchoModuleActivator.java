@@ -36,11 +36,6 @@ import echo.provider.EchoBindingProviderFactory;
  */
 public class EchoModuleActivator implements ModuleActivator {
     
-    public Object[] getExtensionPoints() {
-        // No extensionPoints being contributed here
-        return null;
-    }
-
     public void start(ExtensionPointRegistry registry) {
         
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);

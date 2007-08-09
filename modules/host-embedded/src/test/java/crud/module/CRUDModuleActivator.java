@@ -43,12 +43,6 @@ import crud.provider.CRUDImplementationProviderFactory;
  */
 public class CRUDModuleActivator implements ModuleActivator {
 
-    public Object[] getExtensionPoints() {
-        // This module extension does not contribute any new
-        // extension point
-        return null;
-    }
-
     public void start(ExtensionPointRegistry registry) {
 
         // Create the CRUD implementation factory

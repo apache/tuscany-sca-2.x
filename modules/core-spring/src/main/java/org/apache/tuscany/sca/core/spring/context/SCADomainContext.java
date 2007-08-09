@@ -47,8 +47,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.sca.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
@@ -104,7 +102,8 @@ public class SCADomainContext {
         InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         modelFactories.addFactory(javaFactory);
-        JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
+        JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
+        modelFactories.addFactory(javaImplementationFactory);
         
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
@@ -124,10 +123,8 @@ public class SCADomainContext {
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
         for (JavaClassVisitor e : extensions) {
-            classVisitors.addClassVisitor(e);
+            javaImplementationFactory.addClassVisitor(e);
         }
-        JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory, classVisitors);
-        modelFactories.addFactory(javaImplementationFactory);
 
         // Populate ArtifactProcessor registry
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();

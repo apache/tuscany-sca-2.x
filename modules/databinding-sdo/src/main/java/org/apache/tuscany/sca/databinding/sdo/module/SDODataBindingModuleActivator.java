@@ -24,30 +24,17 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.sdo.DataObject2String;
-import org.apache.tuscany.sca.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextProcessor;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistry;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistryImpl;
 import org.apache.tuscany.sca.databinding.sdo.ImportSDOProcessor;
-import org.apache.tuscany.sca.databinding.sdo.SDODataBinding;
-import org.apache.tuscany.sca.databinding.sdo.String2DataObject;
-import org.apache.tuscany.sca.databinding.sdo.XMLDocument2String;
-import org.apache.tuscany.sca.databinding.sdo.XMLDocument2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.sdo.XMLStreamReader2DataObject;
-import org.apache.tuscany.sca.databinding.sdo.XMLStreamReader2XMLDocument;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.databinding.sdo.SDOTypeRegisterListener;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 
 /**
  * @version $Rev$ $Date$
  */
 public class SDODataBindingModuleActivator implements ModuleActivator {
-
-    public Object[] getExtensionPoints() {
-        return null;
-    }
 
     public void start(ExtensionPointRegistry registry) {
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
@@ -60,8 +47,8 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         //ContributionListenerExtensionPoint listeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class);
         //listeners.addContributionListener(new SDOTypeRegisterListener(contextRegistry));
         
-        JavaClassIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
-        introspectors.addClassVisitor(new HelperContextProcessor(assemblyFactory, contextRegistry));
+        JavaImplementationFactory javaImplementationFactory = registry.getExtensionPoint(JavaImplementationFactory.class);
+        javaImplementationFactory.addClassVisitor(new HelperContextProcessor(assemblyFactory, contextRegistry));
 
     }
 
