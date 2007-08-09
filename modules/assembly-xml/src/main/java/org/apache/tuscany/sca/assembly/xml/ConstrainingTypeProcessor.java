@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.assembly.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -40,6 +43,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -217,10 +221,18 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
     }
     
     public void resolve(ConstrainingType constrainingType, ModelResolver resolver) throws ContributionResolveException {
-
         // Resolve component type services and references
         resolveAbstractContracts(constrainingType.getServices(), resolver);
         resolveAbstractContracts(constrainingType.getReferences(), resolver);
+        
+        resolveIntents(constrainingType.getRequiredIntents(), resolver);
+        for ( AbstractService service  : constrainingType.getServices() ) {
+            resolveIntents(service.getRequiredIntents(), resolver);
+        }
+        
+        for ( AbstractReference reference : constrainingType.getReferences() ) {
+            resolveIntents(reference.getRequiredIntents(), resolver);
+        }
     }
     
     public QName getArtifactType() {

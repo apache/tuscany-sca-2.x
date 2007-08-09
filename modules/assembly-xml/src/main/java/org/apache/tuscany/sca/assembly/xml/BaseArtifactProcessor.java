@@ -41,6 +41,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
+import org.apache.tuscany.sca.assembly.AbstractService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -221,7 +222,8 @@ abstract class BaseArtifactProcessor implements Constants {
                 Intent intent = policyFactory.createIntent();
                 intent.setName(qname);
                 if (operation != null) {
-                    intent.getOperations().add(operation);
+                    //intent.getOperations().add(operation);
+                    operation.getRequiredIntents().add(intent);
                 }
                 requiredIntents.add(intent);
             }
@@ -254,7 +256,8 @@ abstract class BaseArtifactProcessor implements Constants {
                 PolicySet policySet = policyFactory.createPolicySet();
                 policySet.setName(qname);
                 if (operation != null) {
-                    policySet.getOperations().add(operation);
+                    //policySet.getOperations().add(operation);
+                    operation.getPolicySets().add(policySet);
                 }
                 policySets.add(policySet);
             }
@@ -405,6 +408,9 @@ abstract class BaseArtifactProcessor implements Constants {
                         resolver.addModel(implementation);
                     }
                 }
+                
+                resolveIntents(implementation.getRequiredIntents(), resolver);
+                resolvePolicySets(implementation.getPolicySets(), resolver);
             }
         }
         return implementation;
@@ -417,7 +423,6 @@ abstract class BaseArtifactProcessor implements Constants {
      */
     protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver) throws ContributionResolveException {
         for (Contract contract: contracts) {
-
             // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
             if (interfaceContract != null) {
@@ -428,6 +433,8 @@ abstract class BaseArtifactProcessor implements Constants {
             for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
                 Binding binding = contract.getBindings().get(i);
                 extensionProcessor.resolve(binding, resolver);
+                resolveIntents(binding.getRequiredIntents(), resolver);
+                resolvePolicySets(binding.getPolicySets(), resolver);
             }
 
             // Resolve callback bindings
@@ -435,8 +442,13 @@ abstract class BaseArtifactProcessor implements Constants {
                 for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
                     Binding binding = contract.getCallback().getBindings().get(i);
                     extensionProcessor.resolve(binding, resolver);
+                    resolveIntents(binding.getRequiredIntents(), resolver);
+                    resolvePolicySets(binding.getPolicySets(), resolver);
                 }
             }
+            
+            resolveIntents(contract.getRequiredIntents(), resolver);
+            resolvePolicySets(contract.getPolicySets(), resolver);
         }
     }
 
@@ -722,4 +734,39 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
+    
+    
+    /**
+     * Resolve policy intents attached to a specific SCA Artifact
+     * @param policyIntents list of policy intents
+     * @param resolver
+     */
+    protected void resolveIntents(List<Intent> policyIntents, ModelResolver resolver) {
+        List<Intent> requiredIntents = new ArrayList<Intent>();
+        Intent resolvedIntent = null;
+        for ( Intent intent : policyIntents ) {
+            resolvedIntent = resolver.resolveModel(Intent.class, intent);
+            requiredIntents.add(resolvedIntent);
+        }
+        policyIntents.clear();
+        policyIntents.addAll(requiredIntents);
+    }
+    
+    
+    /**
+     * Resolve policy sets attached to a specific SCA Construct
+     * @param policySets list of attached policy sets
+     * @param resolver
+     */
+    protected void resolvePolicySets(List<PolicySet> policySets, ModelResolver resolver) {
+        List<PolicySet> resolvedPolicySets = new ArrayList<PolicySet>();
+        PolicySet resolvedPolicySet = null;
+        for ( PolicySet policySet : policySets ) {
+            resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
+            resolvedPolicySets.add(resolvedPolicySet);
+        }
+        policySets.clear();
+        policySets.addAll(resolvedPolicySets);
+    }
+   
 }

@@ -83,9 +83,9 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
         assertTrue(composite.isLocal());
         assertFalse(composite.isAutowire());
-        assertEquals(composite.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality",
+        assertEquals(composite.getRequiredIntents().get(0).getName(), new QName("http://test",
                                                                                 "confidentiality"));
-        assertEquals(composite.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        assertEquals(composite.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
 
         Composite include = composite.getIncludes().get(0);
         assertEquals(include.getName(), new QName("http://calc", "TestAllDivide"));
@@ -96,14 +96,14 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcCompositeService.getPromotedService().getName(),
                      "CalculatorServiceComponent/CalculatorService");
         assertEquals(calcCompositeService.getRequiredIntents().get(0).getName(),
-                     new QName("http://test/confidentiality", "confidentiality"));
-        assertEquals(calcCompositeService.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+                     new QName("http://test", "confidentiality"));
+        assertEquals(calcCompositeService.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
         // TODO test operations
         Callback calcServiceCallback = calcCompositeService.getCallback();
         assertNotNull(calcServiceCallback);
         assertEquals(calcServiceCallback.getRequiredIntents().get(0).getName(),
-                     new QName("http://test/confidentiality", "confidentiality"));
-        assertEquals(calcServiceCallback.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+                     new QName("http://test", "confidentiality"));
+        assertEquals(calcServiceCallback.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
         // TODO test operations
 
         Component calcComponent = composite.getComponents().get(0);
@@ -111,15 +111,15 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcComponent.isAutowire(), false);
         assertEquals(calcComponent.getConstrainingType().getName(), new QName("http://calc",
                                                                               "CalculatorComponent"));
-        assertEquals(calcComponent.getRequiredIntents().get(0).getName(), new QName("http://test/confidentiality",
+        assertEquals(calcComponent.getRequiredIntents().get(0).getName(), new QName("http://test",
                                                                                     "confidentiality"));
-        assertEquals(calcComponent.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+        assertEquals(calcComponent.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
 
         ComponentService calcComponentService = calcComponent.getServices().get(0);
         assertEquals(calcComponentService.getName(), "CalculatorService");
         assertEquals(calcComponentService.getRequiredIntents().get(0).getName(),
-                     new QName("http://test/confidentiality", "confidentiality"));
-        assertEquals(calcComponentService.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+                     new QName("http://test", "confidentiality"));
+        assertEquals(calcComponentService.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
         // TODO test operations
 
         ComponentReference calcComponentReference = calcComponent.getReferences().get(0);
@@ -127,8 +127,8 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcComponentReference.isAutowire(), false);
         assertEquals(calcComponentReference.isWiredByImpl(), false);
         assertEquals(calcComponentReference.getRequiredIntents().get(0).getName(),
-                     new QName("http://test/confidentiality", "confidentiality"));
-        assertEquals(calcComponentReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+                     new QName("http://test", "confidentiality"));
+        assertEquals(calcComponentReference.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
         // TODO test operations
 
         Property property = calcComponent.getProperties().get(0);
@@ -146,13 +146,13 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcCompositeReference.getPromotedReferences().get(0).getName(),
                      "CalculatorServiceComponent/multiplyService");
         assertEquals(calcCompositeReference.getRequiredIntents().get(0).getName(),
-                     new QName("http://test/confidentiality", "confidentiality"));
-        assertEquals(calcCompositeReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+                     new QName("http://test", "confidentiality"));
+        assertEquals(calcCompositeReference.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
         // TODO test operations
         Callback calcCallback = calcCompositeReference.getCallback();
         assertEquals(calcCompositeReference.getRequiredIntents().get(0).getName(),
-                     new QName("http://test/confidentiality", "confidentiality"));
-        assertEquals(calcCompositeReference.getPolicySets().get(0).getName(), new QName("http://test/secure", "secure"));
+                     new QName("http://test", "confidentiality"));
+        assertEquals(calcCompositeReference.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
         assertNotNull(calcCallback);
         // TODO test operations
 
