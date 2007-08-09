@@ -55,24 +55,12 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         
-        DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        dataBindings.addDataBinding(new SDODataBinding());
-
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         HelperContextRegistry contextRegistry = new HelperContextRegistryImpl();
         processors.addArtifactProcessor(new ImportSDOProcessor(contextRegistry));
 
         ContributionListenerExtensionPoint listeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class);
         listeners.addContributionListener(new SDOTypeRegisterListener(contextRegistry));
-        
-        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformers.addTransformer(new DataObject2String());
-        transformers.addTransformer(new DataObject2XMLStreamReader());
-        transformers.addTransformer(new XMLDocument2String());
-        transformers.addTransformer(new String2DataObject());
-        transformers.addTransformer(new XMLDocument2XMLStreamReader());
-        transformers.addTransformer(new XMLStreamReader2DataObject());
-        transformers.addTransformer(new XMLStreamReader2XMLDocument());
         
         JavaClassIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaClassIntrospectorExtensionPoint.class);
         introspectors.addClassVisitor(new HelperContextProcessor(assemblyFactory, contextRegistry));

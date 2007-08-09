@@ -30,9 +30,6 @@ import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 
 
 /**
@@ -51,7 +48,7 @@ public class AbstractProcessorTest extends TestCase {
 
     protected AbstractProcessorTest() {
         factory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        javaFactory = new DefaultJavaInterfaceFactory();
         referenceProcessor = new ReferenceProcessor(factory, javaFactory);
         propertyProcessor = new PropertyProcessor(factory);
         resourceProcessor = new ResourceProcessor(factory);

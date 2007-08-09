@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.core;
 
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 /**
  * Default implementation of a registry to hold all the Tuscany core extension
@@ -56,7 +59,31 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
      * @return The instance of the extension point
      */
     public <T> T getExtensionPoint(Class<T> extensionPointType) {
-        return extensionPointType.cast(extensionPoints.get(extensionPointType));
+        Object extensionPoint = extensionPoints.get(extensionPointType);
+        if (extensionPoint == null) {
+            
+            // Dynamically load an extension point class declared under META-INF/services 
+            ClassLoader classLoader = extensionPointType.getClassLoader();
+            try {
+                Set<String> classNames = TempServiceDeclarationUtil.getServiceClassNames(classLoader, extensionPointType.getName());
+                if (!classNames.isEmpty()) {
+                    Class<?> extensionPointClass = Class.forName(classNames.iterator().next(), true, classLoader);
+                    extensionPoint = extensionPointClass.newInstance();
+                    
+                    // Cache the loaded extension point
+                    addExtensionPoint(extensionPoint);
+                }
+            } catch (IOException e) {
+                throw new IllegalArgumentException(e);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException(e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        return extensionPointType.cast(extensionPoint);
     }
 
     /**

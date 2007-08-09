@@ -53,8 +53,18 @@ import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.work.ThreadPoolWorkManager;
+import org.apache.tuscany.sca.databinding.DataBinding;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.PullTransformer;
+import org.apache.tuscany.sca.databinding.PushTransformer;
+import org.apache.tuscany.sca.databinding.Transformer;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.sca.databinding.impl.LazyDataBinding;
+import org.apache.tuscany.sca.databinding.impl.LazyPullTransformer;
+import org.apache.tuscany.sca.databinding.impl.LazyPushTransformer;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -192,18 +202,33 @@ public class ReallySmallRuntime {
     }
 
     @SuppressWarnings("unchecked")
-    private List<ModuleActivator> loadModules(ExtensionPointRegistry registry, ClassLoader classLoader) {
+    private List<ModuleActivator> loadModules(ExtensionPointRegistry registry, ClassLoader classLoader) throws ActivationException {
 
         // Load and instantiate the modules found on the classpath
-        List<ModuleActivator> modules = ReallySmallRuntimeBuilder.getServices(classLoader, ModuleActivator.class);
-        for (ModuleActivator module : modules) {
-            Object[] extensionPoints = module.getExtensionPoints();
-            if (extensionPoints != null) {
-                for (Object e : extensionPoints) {
-                    registry.addExtensionPoint(e);
+        modules = new ArrayList<ModuleActivator>();
+        try {
+            Set<String> classNames = TempServiceDeclarationUtil.getServiceClassNames(classLoader, ModuleActivator.class.getName());
+            for (String className : classNames) {       
+                Class moduleClass = Class.forName(className, true, classLoader);
+                ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
+                modules.add(module);
+                Object[] extensionPoints = module.getExtensionPoints();
+                if (extensionPoints != null) {
+                    for (Object e : extensionPoints) {
+                        registry.addExtensionPoint(e);
+                    }
                 }
             }
+        } catch (IOException e) {
+            throw new ActivationException(e);
+        } catch (ClassNotFoundException e) {
+            throw new ActivationException(e);
+        } catch (InstantiationException e) {
+            throw new ActivationException(e);
+        } catch (IllegalAccessException e) {
+            throw new ActivationException(e);
         }
+
         return modules;
     }
     
@@ -220,7 +245,7 @@ public class ReallySmallRuntime {
         // Get the processor service declarations
         Set<String> processorDeclarations; 
         try {
-            processorDeclarations = ReallySmallRuntimeBuilder.getServiceClassNames(classLoader, processorClass.getName());
+            processorDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, processorClass.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -232,7 +257,7 @@ public class ReallySmallRuntime {
         List<ArtifactProcessor> processors = new ArrayList<ArtifactProcessor>();
         
         for (String processorDeclaration: processorDeclarations) {
-            Map<String, String> attributes = ReallySmallRuntimeBuilder.parseServiceDeclaration(processorDeclaration);
+            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(processorDeclaration);
             String className = attributes.get("class");
             
             // Load a StAX artifact processor
@@ -272,10 +297,10 @@ public class ReallySmallRuntime {
 
     private List<ProviderFactory> loadProviderFactories(ExtensionPointRegistry registry, ClassLoader classLoader, Class<?> factoryClass) {
 
-        // Get the processor service declarations
+        // Get the provider factory service declarations
         Set<String> factoryDeclarations; 
         try {
-            factoryDeclarations = ReallySmallRuntimeBuilder.getServiceClassNames(classLoader, factoryClass.getName());
+            factoryDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, factoryClass.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -285,7 +310,7 @@ public class ReallySmallRuntime {
         List<ProviderFactory> factories = new ArrayList<ProviderFactory>();
         
         for (String factoryDeclaration: factoryDeclarations) {
-            Map<String, String> attributes = ReallySmallRuntimeBuilder.parseServiceDeclaration(factoryDeclaration);
+            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(factoryDeclaration);
             String className = attributes.get("class");
             
             // Load an implementation provider factory

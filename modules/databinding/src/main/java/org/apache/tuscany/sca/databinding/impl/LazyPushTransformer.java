@@ -40,10 +40,10 @@ public class LazyPushTransformer implements PushTransformer<Object, Object> {
     private String className;
     private PushTransformer<Object, Object> transformer;
 
-    public LazyPushTransformer(String source, String target, String weight, ClassLoader classLoader, String className) {
+    public LazyPushTransformer(String source, String target, int weight, ClassLoader classLoader, String className) {
         this.source = source;
         this.target = target;
-        this.weight = Integer.valueOf(weight);
+        this.weight = weight;
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
         this.className = className;
     }

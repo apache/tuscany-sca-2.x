@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.sca.contribution;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Set;
+
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 
 /**
@@ -76,6 +80,38 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
      */    
     public <T> T getFactory(Class<T> factoryInterface) {
         Object factory = factories.get(factoryInterface);
+        if (factory == null) {
+            
+            if (factoryInterface.isInterface()) {
+                
+                // Dynamically load a factory class declared under META-INF/services 
+                ClassLoader classLoader = factoryInterface.getClassLoader();
+                try {
+                    Set<String> classNames = TempServiceDeclarationUtil.getServiceClassNames(classLoader, factoryInterface.getName());
+                    if (!classNames.isEmpty()) {
+                        Class<?> factoryClass = Class.forName(classNames.iterator().next(), true, classLoader);
+                        factory = factoryClass.newInstance();
+                        
+                        // Cache the loaded factory
+                        addFactory(factory);
+                    }
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(e);
+                }
+            } else {
+
+                // Call the newInstance static method on the factory abstract class
+                try {
+                    Method newInstanceMethod = factoryInterface.getMethod("newInstance");
+                    factory = newInstanceMethod.invoke(null);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(e);
+                }
+                
+                // Cache the factory
+                addFactory(factory);
+            }
+        }
         return factoryInterface.cast(factory);
     }
 

@@ -19,19 +19,7 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -274,102 +262,6 @@ public class ReallySmallRuntimeBuilder {
         registry.addExtensionPoint(scopeRegistry);
 
         return scopeRegistry;
-    }
-
-    /**
-     * Read the service name from a configuration file
-     * 
-     * @param classLoader
-     * @param name The name of the service class
-     * @return A class name which extends/implements the service class
-     * @throws IOException
-     */
-    public static Set<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
-        Set<String> set = new HashSet<String>();
-        Enumeration<URL> urls = classLoader.getResources("META-INF/services/" + name);
-        while (urls.hasMoreElements()) {
-            URL url = urls.nextElement();
-            Set<String> service = getServiceClassNames(url);
-            if (service != null) {
-                set.addAll(service);
-
-            }
-        }
-        return set;
-    }
-
-    private static Set<String> getServiceClassNames(URL url) throws IOException {
-        Set<String> names = new HashSet<String>();
-        InputStream is = url.openStream();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(is));
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                line = line.trim();
-                if (!line.startsWith("#") && !"".equals(line)) {
-                    names.add(line.trim());
-                }
-            }
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ioe) {
-                    //ignore
-                }
-            }
-        }
-        return names;
-    }
-
-    public static <T> List<T> getServices(final ClassLoader classLoader, Class<T> serviceClass) {
-        List<T> instances = new ArrayList<T>();
-        try {
-            Set<String> services = getServiceClassNames(classLoader, serviceClass.getName());
-            for (String className : services) {
-                Class cls = Class.forName(className, true, classLoader);
-                instances.add(serviceClass.cast(cls.newInstance()));
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        return instances;
-    }
-
-    /**
-     * Parse a service declaration in the form class;attr=value,attr=value and
-     * return a map of attributes
-     * 
-     * @param declaration
-     * @return a map of attributes
-     */
-    public static Map<String, String> parseServiceDeclaration(String declaration) {
-        Map<String, String> attributes = new HashMap<String, String>();
-        StringTokenizer tokens = new StringTokenizer(declaration);
-        String className = tokens.nextToken(";");
-        if (className != null) {
-            attributes.put("class", className);
-        }
-        for (;;) {
-            if (!tokens.hasMoreTokens())
-                break;
-            String key = tokens.nextToken("=").substring(1);
-            if (key == null)
-                break;
-            String value = tokens.nextToken(",").substring(1);
-            if (value == null)
-                break;
-            attributes.put(key, value);
-        }
-        return attributes;
     }
 
 }

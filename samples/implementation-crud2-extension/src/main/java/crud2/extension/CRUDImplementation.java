@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -63,7 +62,7 @@ public class CRUDImplementation implements Implementation {
         crudService.setName("CRUD");
         
         // Create a Java interface model for the CRUD Java interface
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         JavaInterface javaInterface;
         try {
             javaInterface = javaFactory.createJavaInterface(CRUD.class);

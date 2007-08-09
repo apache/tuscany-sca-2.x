@@ -18,21 +18,25 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 /**
  * A factory for the Java model.
  */
 public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     
+    private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
     private JavaInterfaceIntrospectorImpl introspector;
     
-    public JavaInterfaceFactoryImpl(JavaInterfaceIntrospectorExtensionPoint visitors) {
-        introspector = new JavaInterfaceIntrospectorImpl(visitors);
+    public JavaInterfaceFactoryImpl() {
+        introspector = new JavaInterfaceIntrospectorImpl(this);
     }
 
     public JavaInterface createJavaInterface() {
@@ -53,4 +57,15 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
         return new JavaInterfaceContractImpl();
     }
 
+    public void addInterfaceVisitor(JavaInterfaceVisitor extension) {
+        visitors.add(extension);
+    }
+
+    public void removeInterfaceVisitor(JavaInterfaceVisitor extension) {
+        visitors.remove(extension);
+    }
+
+    public List<JavaInterfaceVisitor> getInterfaceVisitors() {
+        return visitors;
+    }
 }

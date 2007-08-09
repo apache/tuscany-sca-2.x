@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.implementation.data.config.ConnectionInfo;
 import org.apache.tuscany.sca.implementation.data.config.ConnectionProperties;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
@@ -79,7 +78,7 @@ public class DATAImplementationProcessorTestCase extends TestCase {
         modelFactories = new DefaultModelFactoryExtensionPoint();
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         modelFactories.addFactory(assemblyFactory);
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         modelFactories.addFactory(javaFactory);
     }
 

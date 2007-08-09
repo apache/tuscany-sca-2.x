@@ -71,8 +71,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.xml.JavaInterfaceProcessor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -104,8 +102,7 @@ public class SCADomainContext {
         ContributionFactory contributionFactory = new ContributionFactoryImpl();
         modelFactories.addFactory(contributionFactory);
         InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
-        JavaInterfaceIntrospectorExtensionPoint interfaceVisitors = new DefaultJavaInterfaceIntrospectorExtensionPoint();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(interfaceVisitors);
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         modelFactories.addFactory(javaFactory);
         JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
         

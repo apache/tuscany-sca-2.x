@@ -18,7 +18,10 @@
  */
 package org.apache.tuscany.sca.interfacedef.java;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 /**
  * Factory for the Java interface model
@@ -56,4 +59,24 @@ public interface JavaInterfaceFactory {
      */
     JavaInterfaceContract createJavaInterfaceContract();
 
+    /**
+     * Registers the given visitor.
+     * 
+     * @param visitor
+     */
+    void addInterfaceVisitor(JavaInterfaceVisitor visitor);
+
+    /**
+     * Deregisters the given visitor.
+     * 
+     * @param visitor
+     */
+    void removeInterfaceVisitor(JavaInterfaceVisitor visitor);
+
+    /**
+     * Returns a list of interface visitors.
+     * 
+     * @return
+     */
+    List<JavaInterfaceVisitor> getInterfaceVisitors();
 }

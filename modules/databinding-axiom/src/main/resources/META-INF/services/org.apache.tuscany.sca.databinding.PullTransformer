@@ -1,0 +1,24 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Implementation classes for the transformers
+org.apache.tuscany.sca.databinding.axiom.Object2OMElement;source=java:simpleType,target=org.apache.axiom.om.OMElement,weight=10000
+org.apache.tuscany.sca.databinding.axiom.OMElement2Object;source=org.apache.axiom.om.OMElement,target=java:simpleType,weight=10000
+org.apache.tuscany.sca.databinding.axiom.OMElement2String;source=org.apache.axiom.om.OMElement,target=java.lang.String,weight=40
+org.apache.tuscany.sca.databinding.axiom.OMElement2XMLStreamReader;source=org.apache.axiom.om.OMElement,target=javax.xml.stream.XMLStreamReader,weight=10
+org.apache.tuscany.sca.databinding.axiom.String2OMElement;source=java.lang.String,target=org.apache.axiom.om.OMElement,weight=40
+org.apache.tuscany.sca.databinding.axiom.XMLStreamReader2OMElement;source=javax.xml.stream.XMLStreamReader,target=org.apache.axiom.om.OMElement,weight=10

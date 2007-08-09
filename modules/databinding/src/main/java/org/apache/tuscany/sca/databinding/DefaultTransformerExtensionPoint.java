@@ -18,20 +18,31 @@
  */
 package org.apache.tuscany.sca.databinding;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph;
+import org.apache.tuscany.sca.databinding.impl.LazyPullTransformer;
+import org.apache.tuscany.sca.databinding.impl.LazyPushTransformer;
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 /**
  * @version $Rev$ $Date$
  */
 public class DefaultTransformerExtensionPoint implements TransformerExtensionPoint {
     private DataBindingExtensionPoint dataBindings;
+    private boolean loadedTransformers;
     
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
     
-    public DefaultTransformerExtensionPoint(DataBindingExtensionPoint dataBindings) {
+    public DefaultTransformerExtensionPoint() {
+    }
+    
+    //FIXME Hack
+    public void setDataBindings(DataBindingExtensionPoint dataBindings) {
         this.dataBindings = dataBindings;
     }
 
@@ -51,11 +62,66 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     }
 
     public Transformer getTransformer(String sourceType, String resultType) {
+        loadTransformers();
+        
         DirectedGraph<Object, Transformer>.Edge edge = graph.getEdge(sourceType, resultType);
         return (edge == null) ? null : edge.getValue();
     }
 
+    /**
+     * Dynamically load transformers registered under META-INF/services.
+     *
+     */
+    private void loadTransformers() {
+        if (loadedTransformers) {
+            return;
+        }
+        loadTransformers(PullTransformer.class);
+        loadTransformers(PushTransformer.class);
+        loadedTransformers = true;
+    }
+
+    /**
+     * Dynamically load transformers registered under META-INF/services.
+     * 
+     * @param transformerClass
+     */
+    private void loadTransformers(Class<?> transformerClass) {
+
+        // Get the transformer service declarations
+        ClassLoader classLoader = transformerClass.getClassLoader();
+        Set<String> transformerDeclarations; 
+        try {
+            transformerDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, transformerClass.getName());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Load transformers
+        for (String transformerDeclaration: transformerDeclarations) {
+            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(transformerDeclaration);
+            String className = attributes.get("class");
+            String source = attributes.get("source");
+            String target = attributes.get("target");
+            int weight = Integer.valueOf(attributes.get("weight"));
+                
+            // Create a transformer wrapper and register it
+            Transformer transformer;
+            if (transformerClass == PullTransformer.class) {
+                transformer = new LazyPullTransformer(source, target, weight, classLoader, className);
+            } else {
+                transformer = new LazyPushTransformer(source, target, weight, classLoader, className);
+            }
+            addTransformer(transformer);
+        }
+    }
+    
+    //FIXME The following methods should be on a different class from
+    // extension point
+    
     public List<Transformer> getTransformerChain(String sourceType, String resultType) {
+        loadTransformers();
+        
         String source = normalize(sourceType);
         String result = normalize(resultType);
         List<Transformer> transformers = new ArrayList<Transformer>();
@@ -70,6 +136,8 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     }
 
     public String toString() {
+        loadTransformers();
+        
         return graph.toString();
     }
 
@@ -79,6 +147,8 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
      * @return
      */
     private String normalize(String id) {
+        loadTransformers();
+        
         if (dataBindings != null) {
             DataBinding dataBinding = dataBindings.getDataBinding(id);
             return dataBinding == null ? id : dataBinding.getName();

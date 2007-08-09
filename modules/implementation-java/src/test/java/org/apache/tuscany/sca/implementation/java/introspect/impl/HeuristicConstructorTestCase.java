@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
@@ -48,7 +47,7 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
 
     public HeuristicConstructorTestCase() {
         factory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        javaFactory = new DefaultJavaInterfaceFactory();
         javaImplementationFactory = new DefaultJavaImplementationFactory();
         processor = new HeuristicPojoProcessor(factory, javaFactory);
     }
