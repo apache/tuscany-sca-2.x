@@ -26,8 +26,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 public class CompositeImpl extends ComponentTypeImpl implements Composite, Cloneable {
     private List<Component> components = new ArrayList<Component>();
@@ -36,6 +37,16 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite, Clone
     private List<Wire> wires = new ArrayList<Wire>();
     private boolean autowire;
     private boolean local = true;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
     
     /**
      * Constructs a new composite.

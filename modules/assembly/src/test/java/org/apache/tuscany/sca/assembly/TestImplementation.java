@@ -18,9 +18,14 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A test component implementation model.
@@ -28,7 +33,17 @@ import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
  * @version $Rev$ $Date$
  */
 public class TestImplementation extends ComponentTypeImpl implements Implementation {
+    private List<Intent> computedIntents = new ArrayList<Intent>();
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();
 
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
+    
     public TestImplementation(AssemblyFactory factory) {
 
         Property p = factory.createProperty();
