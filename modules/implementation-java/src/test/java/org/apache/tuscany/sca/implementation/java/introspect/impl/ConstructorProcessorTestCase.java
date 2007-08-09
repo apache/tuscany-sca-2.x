@@ -37,9 +37,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.introspect.ExtensibleJavaInterfaceIntrospector;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -92,7 +89,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         processor.visitConstructor(ctor1, type);
 
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
@@ -166,7 +163,7 @@ public class ConstructorProcessorTestCase extends TestCase {
                                                                     String[].class);
         processor.visitConstructor(ctor1, type);
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint());
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();

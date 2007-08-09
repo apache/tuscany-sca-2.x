@@ -33,8 +33,8 @@ public class ExtensibleJavaInterfaceIntrospector extends JavaInterfaceIntrospect
     
     private JavaInterfaceFactory javaFactory;
 
-    public ExtensibleJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory, JavaInterfaceIntrospectorExtensionPoint visitors) {
-        super(visitors);
+    public ExtensibleJavaInterfaceIntrospector(JavaInterfaceFactory javaFactory) {
+        super(javaFactory);
         this.javaFactory = javaFactory;
     }
     

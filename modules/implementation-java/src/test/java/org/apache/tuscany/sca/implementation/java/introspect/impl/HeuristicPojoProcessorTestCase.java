@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -51,7 +50,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
     private JavaImplementationFactory javaImplementationFactory;
 
     public HeuristicPojoProcessorTestCase() {
-        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint()));
+        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 

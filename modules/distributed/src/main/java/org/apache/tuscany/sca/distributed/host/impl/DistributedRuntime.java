@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.distributed.host.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -48,6 +51,7 @@ import org.apache.tuscany.sca.distributed.host.DistributedSCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntimeBuilder;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -242,14 +246,28 @@ public class DistributedRuntime  {
         throws ActivationException {
 
         // Load and instantiate the modules found on the classpath
-        List<ModuleActivator> modules = ReallySmallRuntimeBuilder.getServices(classLoader, ModuleActivator.class);
-        for (ModuleActivator module : modules) {       
-            Object[] extensionPoints = module.getExtensionPoints();
-            if (extensionPoints != null) {
-                for (Object e : extensionPoints) {
-                    registry.addExtensionPoint(e);
+        modules = new ArrayList<ModuleActivator>();
+        try {
+            Set<String> classNames = TempServiceDeclarationUtil.getServiceClassNames(classLoader, ModuleActivator.class.getName());
+            for (String className : classNames) {       
+                Class moduleClass = Class.forName(className, true, classLoader);
+                ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
+                modules.add(module);
+                Object[] extensionPoints = module.getExtensionPoints();
+                if (extensionPoints != null) {
+                    for (Object e : extensionPoints) {
+                        registry.addExtensionPoint(e);
+                    }
                 }
             }
+        } catch (IOException e) {
+            throw new ActivationException(e);
+        } catch (ClassNotFoundException e) {
+            throw new ActivationException(e);
+        } catch (InstantiationException e) {
+            throw new ActivationException(e);
+        } catch (IllegalAccessException e) {
+            throw new ActivationException(e);
         }
 
         // Start all the extension modules

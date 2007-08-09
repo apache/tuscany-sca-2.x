@@ -40,10 +40,10 @@ public class LazyPullTransformer implements PullTransformer<Object, Object> {
     private String className;
     private PullTransformer<Object, Object> transformer;
 
-    public LazyPullTransformer(String source, String target, String weight, ClassLoader classLoader, String className) {
+    public LazyPullTransformer(String source, String target, int weight, ClassLoader classLoader, String className) {
         this.source = source;
         this.target = target;
-        this.weight = Integer.valueOf(weight);
+        this.weight = weight;
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
         this.className = className;
     }

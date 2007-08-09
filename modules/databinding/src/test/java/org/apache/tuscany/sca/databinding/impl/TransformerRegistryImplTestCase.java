@@ -43,7 +43,7 @@ public class TransformerRegistryImplTestCase extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new DefaultTransformerExtensionPoint(null);
+        registry = new DefaultTransformerExtensionPoint();
     }
 
     public void testRegisterTransformer1() {

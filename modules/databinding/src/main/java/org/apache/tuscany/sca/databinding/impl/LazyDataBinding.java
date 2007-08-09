@@ -38,12 +38,16 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 public class LazyDataBinding implements DataBinding {
 
     private String name;
+    private String[] aliases; 
     private WeakReference<ClassLoader> classLoader;
     private String className;
     private DataBinding dataBinding;
 
-    public LazyDataBinding(String name, ClassLoader classLoader, String className) {
-        this.name = name;
+    public LazyDataBinding(String type, String name, ClassLoader classLoader, String className) {
+        this.name = type;
+        if (name != null) {
+            this.aliases = new String[] {name};
+        }
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
         this.className = className;
     }
@@ -73,7 +77,7 @@ public class LazyDataBinding implements DataBinding {
     }
 
     public String[] getAliases() {
-        return null;
+        return aliases;
     }
 
     public ExceptionHandler getExceptionHandler() {

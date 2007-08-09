@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
@@ -53,8 +53,8 @@ public class JavaInterfaceIntrospectorImpl {
 
     private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
 
-    public JavaInterfaceIntrospectorImpl(JavaInterfaceIntrospectorExtensionPoint visitors) {
-        this.visitors = visitors.getInterfaceVisitors();
+    public JavaInterfaceIntrospectorImpl(JavaInterfaceFactory javaFactory) {
+        this.visitors = javaFactory.getInterfaceVisitors();
     }
 
     public void introspectInterface(JavaInterface javaInterface, Class<?> type) throws InvalidInterfaceException {

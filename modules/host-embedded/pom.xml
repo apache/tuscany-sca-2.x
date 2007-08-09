@@ -77,9 +77,8 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core-databinding</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
-                        
                         
     </dependencies>
 </project>

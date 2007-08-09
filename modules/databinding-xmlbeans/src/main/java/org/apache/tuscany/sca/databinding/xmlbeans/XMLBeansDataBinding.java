@@ -27,6 +27,7 @@ import org.apache.xmlbeans.XmlObject;
  */
 public class XMLBeansDataBinding extends BaseDataBinding {
     public static final String NAME = XmlObject.class.getName();
+    public static final String[] ALIASES = { "xmlbeans" };
     
     public XMLBeansDataBinding() {
         super(NAME, XmlObject.class);

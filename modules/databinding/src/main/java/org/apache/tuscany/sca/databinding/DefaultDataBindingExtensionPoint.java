@@ -18,15 +18,17 @@
  */
 package org.apache.tuscany.sca.databinding;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.sca.databinding.impl.LazyDataBinding;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 /**
  * The default implementation of a data binding extension point.
@@ -35,12 +37,21 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  */
 public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoint {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
+    private boolean loadedDataBindings;
+    
+    public DefaultDataBindingExtensionPoint() {
+    }
 
     public DataBinding getDataBinding(String id) {
         if (id == null) {
             return null;
         }
-        return bindings.get(id.toLowerCase());
+        DataBinding dataBinding = bindings.get(id.toLowerCase());
+        if (dataBinding == null) {
+            loadDataBindings();
+            dataBinding = bindings.get(id.toLowerCase());
+        }
+        return dataBinding;
     }
 
     public void addDataBinding(DataBinding dataBinding) {
@@ -69,10 +80,39 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         return dataBinding;
     }
 
-    private Set<DataBinding> getDataBindings() {
-        return new HashSet<DataBinding>(bindings.values());
+    /**
+     * Dynamically load data bindings declared under META-INF/services
+     */
+    private void loadDataBindings() {
+        if (loadedDataBindings)
+            return;
+
+        // Get the databinding service declarations
+        ClassLoader classLoader = DataBinding.class.getClassLoader();
+        Set<String> dataBindingDeclarations; 
+        try {
+            dataBindingDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, DataBinding.class.getName());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Load data bindings
+        for (String dataBindingDeclaration: dataBindingDeclarations) {
+            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(dataBindingDeclaration);
+            String className = attributes.get("class");
+            String type = attributes.get("type");
+            String name = attributes.get("name");
+                
+            // Create a data binding wrapper and register it
+            DataBinding dataBinding = new LazyDataBinding(type, name, classLoader, className);
+            addDataBinding(dataBinding);
+        }
+        
+        loadedDataBindings = true;
     }
 
+    //FIXME The following methods should not be on the extension point
+    // they should be on a separate class
     public boolean introspectType(DataType dataType, Annotation[] annotations) {
         return introspectType(dataType, annotations, false);
     }
@@ -81,7 +121,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     // Leverage the DataBinding ExceptionHandler to calculate the DataType of an exception DataType
     //
     public boolean introspectType(DataType dataType, Annotation[] annotations, boolean isException) {
-        for (DataBinding binding : getDataBindings()) {
+        loadDataBindings();
+        for (DataBinding binding : bindings.values()) {
             // don't introspect for JavaBeansDatabinding as all javatypes will
             // anyways match to its basetype
             // which is java.lang.Object. Default to this only if no databinding
@@ -116,8 +157,9 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     // Didn't bother to provide special exc-handling support for this method
     //
     public DataType introspectType(Object value) {
+        loadDataBindings();
         DataType dataType = null;
-        for (DataBinding binding : getDataBindings()) {
+        for (DataBinding binding : bindings.values()) {
             // don't introspect for JavaBeansDatabinding as all javatypes will
             // anyways match to its basetype
             // which is java.lang.Object. Default to this only if no databinding

@@ -19,17 +19,11 @@
 
 package org.apache.tuscany.sca.databinding.jaxb.module;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;
-import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.JAXWSJavaInterfaceProcessor;
-import org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;
-import org.apache.tuscany.sca.databinding.jaxb.Reader2JAXB;
-import org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
  * Module activator for JAXB databinding
@@ -43,18 +37,9 @@ public class JAXBDataBindingModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        dataBindings.addDataBinding(new JAXBDataBinding());
-
-        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        transformers.addTransformer(new JAXB2Node());
-        transformers.addTransformer(new Node2JAXB());
-        transformers.addTransformer(new Reader2JAXB());
-        transformers.addTransformer(new XMLStreamReader2JAXB());
-
-        JavaInterfaceIntrospectorExtensionPoint introspectors = registry.getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        introspectors.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor());
-        
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor());
     }
 
     public void stop(ExtensionPointRegistry registry) {

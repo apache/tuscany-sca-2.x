@@ -79,7 +79,7 @@ public class MediatorImplTestCase extends TestCase {
         super.setUp();
 
         DataBindingExtensionPoint dataBindingRegistry = new DefaultDataBindingExtensionPoint();
-        TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint(dataBindingRegistry);
+        TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint();
 
         registry.addTransformer(new String2SAX());
         registry.addTransformer(new SAX2DOMPipe());

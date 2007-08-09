@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.introspect.DefaultJavaInterfaceIntrospectorExtensionPoint;
 
 /**
  * Verifies constructors that have extensible annotation types, i.e. that have
@@ -44,7 +43,7 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
     private JavaImplementationFactory javaImplementationFactory;
 
     public HeutisticExtensibleConstructorTestCase() {
-        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(new DefaultJavaInterfaceIntrospectorExtensionPoint()));
+        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 

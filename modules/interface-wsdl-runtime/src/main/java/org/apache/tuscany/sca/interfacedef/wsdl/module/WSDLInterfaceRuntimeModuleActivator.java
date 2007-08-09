@@ -19,15 +19,10 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.module;
 
-import javax.wsdl.WSDLException;
-
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XSDModelResolver;
@@ -42,18 +37,6 @@ public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
     }
 
     public void start(ExtensionPointRegistry registry) {
-        
-        // Register the WSDL interface factory
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class); 
-        WSDLFactory wsdlFactory = new DefaultWSDLFactory();
-        modelFactories.addFactory(wsdlFactory);
-        javax.wsdl.factory.WSDLFactory wsdl4jFactory;
-        try {
-            wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
-        } catch (WSDLException e) {
-            throw new IllegalStateException(e);
-        }
-        modelFactories.addFactory(wsdl4jFactory);
         
         ModelResolverExtensionPoint resolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
         resolvers.addResolver(WSDLDefinition.class, WSDLModelResolver.class);

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.databinding.module;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
@@ -27,7 +28,6 @@ import org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransform
 import org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;
 import org.apache.tuscany.sca.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
@@ -61,7 +61,7 @@ import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2SAX;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
 /**
@@ -69,16 +69,17 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
  */
 public class DataBindingModuleActivator implements ModuleActivator {
 
-    private DataBindingExtensionPoint dataBindings;
-    private TransformerExtensionPoint transformers;
-
     public Object[] getExtensionPoints() {
-        dataBindings = new DefaultDataBindingExtensionPoint();
-        transformers = new DefaultTransformerExtensionPoint(dataBindings);
-        return new Object[] { dataBindings, transformers };
+        return null;
     }
 
     public void start(ExtensionPointRegistry registry) {
+        DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
+        
+        //FIXME hack for now
+        ((DefaultTransformerExtensionPoint)transformers).setDataBindings(dataBindings);
+        
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
@@ -93,9 +94,9 @@ public class DataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(output2OutputTransformer);
         transformers.addTransformer(exception2ExceptionTransformer);
 
-        JavaInterfaceIntrospectorExtensionPoint introspectors = registry
-            .getExtensionPoint(JavaInterfaceIntrospectorExtensionPoint.class);
-        introspectors.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        javaFactory.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 
         RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry
             .getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);

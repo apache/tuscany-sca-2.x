@@ -18,12 +18,15 @@
  */
 package org.apache.tuscany.sca.core.spring.implementation.java.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceIntrospectorImpl;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 /**
  * An alternate implementation of the SCA Java assembly model factory that creates SCA
@@ -33,10 +36,11 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceIntrospe
  */
 public class BeanJavaInterfaceFactory implements JavaInterfaceFactory {
 	
+    private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
     private JavaInterfaceIntrospectorImpl introspector;
     
-        public BeanJavaInterfaceFactory(JavaInterfaceIntrospectorExtensionPoint visitors) {
-            introspector = new JavaInterfaceIntrospectorImpl(visitors);
+        public BeanJavaInterfaceFactory() {
+            introspector = new JavaInterfaceIntrospectorImpl(this);
         }
 
 	public JavaInterface createJavaInterface() {
@@ -57,4 +61,15 @@ public class BeanJavaInterfaceFactory implements JavaInterfaceFactory {
             return new BeanJavaInterfaceContractImpl();
         }
 
+        public void addInterfaceVisitor(JavaInterfaceVisitor extension) {
+            visitors.add(extension);
+        }
+
+        public void removeInterfaceVisitor(JavaInterfaceVisitor extension) {
+            visitors.remove(extension);
+        }
+
+        public List<JavaInterfaceVisitor> getInterfaceVisitors() {
+            return visitors;
+        }
 }

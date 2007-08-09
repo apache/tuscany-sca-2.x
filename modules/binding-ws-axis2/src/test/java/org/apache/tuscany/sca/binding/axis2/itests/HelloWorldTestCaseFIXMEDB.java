@@ -6,45 +6,39 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.
+ * under the License.    
  */
-package org.apache.tuscany.sca.interfacedef.java.introspect;
 
-import java.util.List;
+package org.apache.tuscany.sca.binding.axis2.itests;
 
-/**
- * An extension point for Java interface visitors.
- * 
- * @version $Rev$ $Date$
- */
-public interface JavaInterfaceIntrospectorExtensionPoint {
+import junit.framework.TestCase;
 
-    /**
-     * Registers the given visitor.
-     * 
-     * @param visitor
-     */
-    void addInterfaceVisitor(JavaInterfaceVisitor visitor);
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-    /**
-     * Deregisters the given visitor.
-     * 
-     * @param visitor
-     */
-    void removeInterfaceVisitor(JavaInterfaceVisitor visitor);
+public class HelloWorldTestCaseFIXMEDB extends TestCase {
 
-    /**
-     * Returns a list of interface visitors.
-     * 
-     * @return
-     */
-    List<JavaInterfaceVisitor> getInterfaceVisitors();
+    private SCADomain domain;
+    private HelloWorld helloWorld;
+
+    public void testCalculator() throws Exception {
+        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
+    }
+
+    protected void setUp() throws Exception {
+        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/HelloWorld.composite");
+        helloWorld = domain.getService(HelloWorld.class, "HelloWorldComponent");
+    }
+    
+    protected void tearDown() throws Exception {
+        domain.close();
+    }
+
 }
