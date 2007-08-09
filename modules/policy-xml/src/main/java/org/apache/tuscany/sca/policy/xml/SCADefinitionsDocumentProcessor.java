@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.policy.SCADefinitions;
  */
 public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SCADefinitions> {
     protected StAXArtifactProcessor<Object> extensionProcessor;
+    protected SCADefinitionsBuilder defnBuilder = null;
 
     private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     static {
@@ -58,6 +59,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     public SCADefinitionsDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = inputFactory;
+        defnBuilder = new SCADefinitionsBuilderImpl();
     }
 
     public SCADefinitions read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
@@ -67,13 +69,14 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
             SCADefinitions scaDefns = (SCADefinitions)extensionProcessor.read(reader);
-            return scaDefns;
             
+            return scaDefns;
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         } catch (IOException e) {
             throw new ContributionReadException(e);
         } finally {
+        
             try {
                 if (urlStream != null) {
                     urlStream.close();
@@ -85,12 +88,17 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         }
     }
     
-    public void resolve(SCADefinitions composite, ModelResolver resolver) throws ContributionResolveException {
-        extensionProcessor.resolve(composite, resolver);
+    public void resolve(SCADefinitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
+        try {
+            defnBuilder.build(scaDefinitions);
+            extensionProcessor.resolve(scaDefinitions, resolver);
+        } catch (SCADefinitionsBuilderException e) {
+            throw new ContributionResolveException(e);
+        }
     }
 
     public String getArtifactType() {
-        return "definitions.composite";
+        return "definitions.xml";
     }
     
     public Class<SCADefinitions> getModelType() {
