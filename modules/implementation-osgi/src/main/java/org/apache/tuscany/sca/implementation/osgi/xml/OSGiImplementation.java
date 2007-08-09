@@ -20,12 +20,15 @@ package org.apache.tuscany.sca.implementation.osgi.xml;
 
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.scope.Scope;
 import org.osoa.sca.annotations.AllowsPassByReference;
 
@@ -46,6 +49,16 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
     private boolean needsPropertyInjection;
     private Hashtable<String, List<ComponentProperty>> referenceProperties;
     private Hashtable<String, List<ComponentProperty>> serviceProperties;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
 
     private Hashtable<String, List<ComponentProperty>> referenceCallbackProperties;
     private Hashtable<String, List<ComponentProperty>> serviceCallbackProperties;
