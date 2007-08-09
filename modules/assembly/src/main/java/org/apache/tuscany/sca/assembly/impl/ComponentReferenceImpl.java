@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.Reference;
 
@@ -35,6 +36,7 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     private Reference reference;
     private boolean autowire;
     private List<CompositeReference> promotedAs = new ArrayList<CompositeReference>();
+    private ComponentService callbackService;
 
     /**
      * Constructs a new component reference.
@@ -67,6 +69,14 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
 
     public List<CompositeReference> promotedAs() {
         return promotedAs;
+    }
+
+    public ComponentService getCallbackService() {
+        return callbackService;
+    }
+
+    public void setCallbackService(ComponentService callbackService) {
+        this.callbackService = callbackService;
     }
     
 }

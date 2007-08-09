@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
@@ -101,22 +102,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
             for (ComponentService service : component.getServices()) {
                 addServiceBindingProviders((RuntimeComponent)component, (RuntimeComponentService)service, service
                     .getBindings());
-                if (service.getCallback() != null) {
-                    addServiceBindingProviders((RuntimeComponent)component,
-                                                  (RuntimeComponentService)service,
-                                                  service.getCallback().getBindings());
-                }
             }
 
             for (ComponentReference reference : component.getReferences()) {
                 addReferenceBindingProviders((RuntimeComponent)component,
                                                 (RuntimeComponentReference)reference,
                                                 reference.getBindings());
-                if (reference.getCallback() != null) {
-                    addReferenceBindingProviders((RuntimeComponent)component,
-                                                    (RuntimeComponentReference)reference,
-                                                    reference.getCallback().getBindings());
-                }
             }
 
             Implementation implementation = component.getImplementation();
@@ -141,22 +132,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
             for (ComponentService service : component.getServices()) {
                 removeServiceBindingProviders((RuntimeComponent)component, (RuntimeComponentService)service, service
                     .getBindings());
-                if (service.getCallback() != null) {
-                    removeServiceBindingProviders((RuntimeComponent)component,
-                                                  (RuntimeComponentService)service,
-                                                  service.getCallback().getBindings());
-                }
             }
 
             for (ComponentReference reference : component.getReferences()) {
                 removeReferenceBindingProviders((RuntimeComponent)component,
                                                 (RuntimeComponentReference)reference,
                                                 reference.getBindings());
-                if (reference.getCallback() != null) {
-                    removeReferenceBindingProviders((RuntimeComponent)component,
-                                                    (RuntimeComponentReference)reference,
-                                                    reference.getCallback().getBindings());
-                }
             }
 
             Implementation implementation = component.getImplementation();
@@ -269,19 +250,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     bindingProvider.start();
                 }
             }
-            if (service.getCallback() != null) {
-                for (Binding binding : service.getCallback().getBindings()) {
-                    ServiceBindingProvider bindingProvider =
-                        ((RuntimeComponentService)service).getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.start();
-                    }
-                }
-            }
             for (RuntimeWire wire : ((RuntimeComponentService)service).getRuntimeWires()) {
-                wireProcessor.process(wire);
-            }
-            for (RuntimeWire wire : ((RuntimeComponentService)service).getCallbackWires()) {
                 wireProcessor.process(wire);
             }
         }
@@ -297,15 +266,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         if (!reference.getName().startsWith("$self$.")) {
                             throw e;
                         }
-                    }
-                }
-            }
-            if (reference.getCallback() != null) {
-                for (Binding binding : reference.getCallback().getBindings()) {
-                    ReferenceBindingProvider bindingProvider =
-                        ((RuntimeComponentReference)reference).getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.start();
                     }
                 }
             }
@@ -345,15 +305,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     bindingProvider.stop();
                 }
             }
-            if (service.getCallback() != null) {
-                for (Binding binding : service.getCallback().getBindings()) {
-                    ServiceBindingProvider bindingProvider =
-                        ((RuntimeComponentService)service).getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.stop();
-                    }
-                }
-            }
         }
         for (ComponentReference reference : component.getReferences()) {
             for (Binding binding : reference.getBindings()) {
@@ -361,15 +312,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     ((RuntimeComponentReference)reference).getBindingProvider(binding);
                 if (bindingProvider != null) {
                     bindingProvider.stop();
-                }
-            }
-            if (reference.getCallback() != null) {
-                for (Binding binding : reference.getCallback().getBindings()) {
-                    ReferenceBindingProvider bindingProvider =
-                        ((RuntimeComponentReference)reference).getBindingProvider(binding);
-                    if (bindingProvider != null) {
-                        bindingProvider.stop();
-                    }
                 }
             }
         }
@@ -409,28 +351,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 // Create outbound wires for the component references
                 for (ComponentReference reference : component.getReferences()) {
                     for (Binding binding : reference.getBindings()) {
-                        addReferenceWires(component, reference, binding, false);
-                    }
-                    if (reference.getCallback() != null) {
-                        for (Binding binding : reference.getCallback().getBindings()) {
-                            addReferenceWires(component, reference, binding, true);
-                        }
+                        addReferenceWires(component, reference, binding);
                     }
                 }
                 // Create inbound wires for the component services
                 for (ComponentService service : component.getServices()) {
                     for (Binding binding : service.getBindings()) {
-                        addServiceWires(component, service, binding, false);
-                    }
-                    if (service.getCallback() != null) {
-                        for (Binding binding : service.getCallback().getBindings()) {
-                            if (binding instanceof WireableBinding) {
-                                if (((WireableBinding)binding).getTargetComponent() != null) {
-                                    continue;
-                                }
-                            }
-                            addServiceWires(component, service, binding, true);
-                        }
+                        addServiceWires(component, service, binding);
                     }
                 }
             }
@@ -438,7 +365,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     /**
-     * Create runtime wires for the composite
+     * Remove runtime wires for the composite
      * 
      * @param composite
      * @throws IncompatibleInterfaceContractException
@@ -453,28 +380,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 // Remove outbound wires for the component references
                 for (ComponentReference reference : component.getReferences()) {
                     for (Binding binding : reference.getBindings()) {
-                        removeReferenceWires(component, reference, binding, false);
-                    }
-                    if (reference.getCallback() != null) {
-                        for (Binding binding : reference.getCallback().getBindings()) {
-                            removeReferenceWires(component, reference, binding, true);
-                        }
+                        removeReferenceWires(component, reference, binding);
                     }
                 }
                 // Remove inbound wires for the component services
                 for (ComponentService service : component.getServices()) {
                     for (Binding binding : service.getBindings()) {
-                        removeServiceWires(service, binding, false);
-                    }
-                    if (service.getCallback() != null) {
-                        for (Binding binding : service.getCallback().getBindings()) {
-                            if (binding instanceof WireableBinding) {
-                                if (((WireableBinding)binding).getTargetComponent() != null) {
-                                    continue;
-                                }
-                            }
-                            removeServiceWires(service, binding, true);
-                        }
+                        removeServiceWires(service, binding);
                     }
                 }
             }
@@ -506,78 +418,89 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param component
      * @param reference
      * @param binding
-     * @param isCallback
      */
-    private void addReferenceWires(Component component, ComponentReference reference, Binding binding, boolean isCallback) {
+    private void addReferenceWires(Component component, ComponentReference reference, Binding binding) {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-        if ((!(binding instanceof WireableBinding)) || binding.getURI() != null || isCallback) {
-            // create wire if binding has an endpoint
-            Component targetComponent = null;
-            ComponentService targetComponentService = null;
-            Binding targetBinding = null;
-            if (binding instanceof WireableBinding) {
-                WireableBinding endpoint = (WireableBinding)binding;
-                targetComponent = endpoint.getTargetComponent();
-                targetComponentService = endpoint.getTargetComponentService();
-                targetBinding = endpoint.getTargetBinding();
-            }
-            if (!isCallback) {
-                addReferenceWire(reference,
-                                    component,
-                                    binding,
-                                    targetComponentService,
-                                    targetComponent,
-                                    targetBinding,
-                                    isCallback);
-            } else {
-                addReferenceWire(reference, component, binding, null, null, binding, true);
-                if (targetComponentService != null) {
-                    Binding serviceBinding = targetComponentService.getCallbackBinding(binding.getClass());
-                    if (serviceBinding != null) {
-                        addServiceWire(targetComponentService,
-                                          targetComponent,
-                                          serviceBinding,
-                                          reference,
-                                          component,
-                                          binding,
-                                          true);
+        if (binding instanceof WireableBinding && binding.getURI() == null) {
+            return;
+        }
+
+        // create wire if binding has an endpoint
+        Component targetComponent = null;
+        ComponentService targetComponentService = null;
+        Binding targetBinding = null;
+        if (binding instanceof WireableBinding) {
+            WireableBinding endpoint = (WireableBinding)binding;
+            targetComponent = endpoint.getTargetComponent();
+            targetComponentService = endpoint.getTargetComponentService();
+            targetBinding = endpoint.getTargetBinding();
+        }
+
+        // create a forward wire, either static or dynamic
+        addReferenceWire(reference,
+                         component,
+                         binding,
+                         targetComponentService,
+                         targetComponent,
+                         targetBinding,
+                         false);
+
+        // if static forward wire (not from self-reference), try to create a static callback wire 
+        if (targetComponentService != null && !reference.getName().startsWith("$self$.")) {
+            ComponentReference callbackReference = targetComponentService.getCallbackReference();
+            if (callbackReference != null) {
+                Binding callbackBinding = null;
+                Binding callbackServiceBinding = null;
+                // select a service callback binding that can be wired back to this component
+                for (Binding refBinding : callbackReference.getBindings()) {
+                    // first look for a callback binding whose name matches the target binding name
+                    if (refBinding.getName().equals(targetBinding.getName())) {
+                        callbackBinding = refBinding;
+                        break;
                     }
                 }
-    
+                // see if there is a matching reference callback binding 
+                if (callbackBinding != null) {
+                    callbackServiceBinding = reference.getCallbackService().getBinding(callbackBinding.getClass());
+                }
+                // if there isn't an end-to-end match, try again based on target binding type
+                if (callbackBinding == null || callbackServiceBinding == null) {
+                    callbackBinding = callbackReference.getBinding(targetBinding.getClass());
+                    if (callbackBinding != null) {
+                        callbackServiceBinding = reference.getCallbackService().getBinding(callbackBinding.getClass());
+                    }
+                }
+                if (callbackBinding != null && callbackServiceBinding != null) {
+                    // end-to-end match, so create a static callback wire as well as the static forward wire
+
+                    addReferenceWire(callbackReference,
+                                     targetComponent,
+                                     callbackBinding,
+                                     reference.getCallbackService(),
+                                     component,
+                                     callbackServiceBinding,
+                                     false);
+                } else {
+                    // no end-to-end match, so do not create a static callback wire
+                }
             }
         }
     }
 
     /**
-     * Create the runtime wires for a reference binding
+     * Remove the runtime wires for a reference binding
      * 
      * @param component
      * @param reference
      * @param binding
-     * @param isCallback
      */
-    private void removeReferenceWires(Component component, ComponentReference reference, Binding binding, boolean isCallback) {
+    private void removeReferenceWires(Component component, ComponentReference reference, Binding binding) {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-        if ((!(binding instanceof WireableBinding)) || binding.getURI() != null || isCallback) {
-            // create wire if binding has an endpoint
-            ComponentService targetComponentService = null;
-            if (!isCallback) {
-                removeReferenceWire(reference);
-            } else {
-                removeReferenceWire(reference);
-                if (targetComponentService != null) {
-                    Binding serviceBinding = targetComponentService.getCallbackBinding(binding.getClass());
-                    if (serviceBinding != null) {
-                        removeServiceWire(targetComponentService);
-                    }
-                }
-
-            }
-        }
+        removeReferenceWire(reference);
     }
 
     /**
@@ -591,12 +514,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param isCallback
      */
     private RuntimeWire addReferenceWire(ComponentReference reference,
-                                            Component refComponent,
-                                            Binding refBinding,
-                                            ComponentService service,
-                                            Component serviceComponent,
-                                            Binding serviceBinding,
-                                            boolean isCallback) {
+                                         Component refComponent,
+                                         Binding refBinding,
+                                         ComponentService service,
+                                         Component serviceComponent,
+                                         Binding serviceBinding,
+                                         boolean isCallback) {
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
         InterfaceContract bindingContract = getInterfaceContract(reference, refBinding, isCallback);
     
@@ -605,14 +528,20 @@ public class CompositeActivatorImpl implements CompositeActivator {
         InterfaceContract sourceContract =
             componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
         sourceContract = sourceContract.makeUnidirectional(isCallback);
-    
+
         EndpointReference wireSource =
-            new EndpointReferenceImpl((RuntimeComponent)refComponent, (RuntimeComponentReference)reference, refBinding,
-                                      sourceContract);
-    
+            new EndpointReferenceImpl((RuntimeComponent)refComponent, reference, refBinding, sourceContract);
+        ComponentService callbackService = reference.getCallbackService();
+        if (callbackService != null) {
+            Binding callbackBinding = callbackService.getBinding(refBinding.getClass());
+            InterfaceContract callbackContract = callbackService.getInterfaceContract();
+            EndpointReference callbackEndpoint = new EndpointReferenceImpl(
+                    (RuntimeComponent)refComponent, callbackService, callbackBinding, callbackContract);
+            wireSource.setCallbackEndpoint(callbackEndpoint);
+        }
+   
         EndpointReference wireTarget =
-            new EndpointReferenceImpl((RuntimeComponent)serviceComponent, (RuntimeComponentService)service,
-                                      serviceBinding, bindingContract);
+            new EndpointReferenceImpl((RuntimeComponent)serviceComponent, service, serviceBinding, bindingContract);
     
         RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget);
         if (!isCallback) {
@@ -679,13 +608,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param component
      * @param service
      * @param binding
-     * @param isCallback
      */
-    private void addServiceWires(Component component, ComponentService service, Binding binding, boolean isCallback) {
+    private void addServiceWires(Component component, ComponentService service, Binding binding) {
         if (!(service instanceof RuntimeComponentService)) {
             return;
         }
-        RuntimeWire wire = addServiceWire(service, component, binding, null, null, binding, isCallback);
+        RuntimeWire wire = addServiceWire(service, component, binding, null, null, binding, false);
     
         //FIXME: need to decide if this is the best way to create the source URI
         // The source URI is used by JDKCallbackInvocationHandler to find the callback wire
@@ -693,7 +621,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         // This only works if the source URI is the same for the matched pair of forward and
         // callback wires.  The binding name seems a reasonable key to use for this match,
         // as it allows the user to control which callback binding should be selected.
-        wire.getSource().setURI(binding.getName());
+        //wire.getSource().setURI(binding.getName());
     }
 
     /**
@@ -702,9 +630,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param component
      * @param service
      * @param binding
-     * @param isCallback
      */
-    private void removeServiceWires(ComponentService service, Binding binding, boolean isCallback) {
+    private void removeServiceWires(ComponentService service, Binding binding) {
         if (!(service instanceof RuntimeComponentService)) {
             return;
         }
@@ -722,17 +649,21 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param isCallback
      */
     private RuntimeWire addServiceWire(ComponentService service,
-                                          Component serviceComponent,
-                                          Binding serviceBinding,
-                                          ComponentReference reference,
-                                          Component refComponent,
-                                          Binding refBinding,
-                                          boolean isCallback) {
+                                       Component serviceComponent,
+                                       Binding serviceBinding,
+                                       ComponentReference reference,
+                                       Component refComponent,
+                                       Binding refBinding,
+                                       boolean isCallback) {
         RuntimeComponentService runtimeService = (RuntimeComponentService)service;
     
         // FIXME: [rfeng] We might need a better way to get the impl interface contract
-        InterfaceContract targetContract = service.getService().getInterfaceContract().makeUnidirectional(isCallback);
-    
+        Service targetService = service.getService();
+        if (targetService == null) {
+            targetService = service;
+        }
+        InterfaceContract targetContract = targetService.getInterfaceContract().makeUnidirectional(isCallback);
+
         InterfaceContract sourceContract = getInterfaceContract(service, serviceBinding, isCallback);
     
         EndpointReference wireSource =

@@ -251,11 +251,7 @@ public class WebServiceBindingProcessor implements
                 } catch (InvalidInterfaceException e) {
                     throw new ContributionResolveException(e);
                 }
-                if (!model.isCallback()) {
-                    interfaceContract.setInterface(wsdlInterface);
-                } else {
-                    interfaceContract.setCallbackInterface(wsdlInterface);
-                }
+                interfaceContract.setInterface(wsdlInterface);
                 model.setBindingInterfaceContract(interfaceContract);
             }
         }

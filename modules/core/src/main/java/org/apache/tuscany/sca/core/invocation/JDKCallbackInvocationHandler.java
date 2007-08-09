@@ -41,7 +41,7 @@ import org.osoa.sca.NoRegisteredCallbackException;
  * 
  * @version $Rev$ $Date$
  */
-public class JDKCallbackInvocationHandler extends AbstractInvocationHandler implements InvocationHandler {
+public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
     private transient Map<String, RuntimeWire> wires;
 
@@ -49,18 +49,18 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
      * Constructor used for deserialization only
      */
     public JDKCallbackInvocationHandler(MessageFactory messageFactory) {
-        super(messageFactory, false);
+        super(messageFactory, null, null);
         wires = new HashMap<String, RuntimeWire>();
     }
 
     public JDKCallbackInvocationHandler(MessageFactory messageFactory, List<RuntimeWire> wireList) {
-        super(messageFactory, false);
+        super(messageFactory, null, null);
         this.wires = new HashMap<String, RuntimeWire>();
         for (RuntimeWire wire : wireList) {
-            wires.put(wire.getSource().getURI(), wire);
-            InterfaceContract contract = wire.getSource().getInterfaceContract();
-            this.conversational = contract.getCallbackInterface().isConversational();
-            // TODO: doesn't work if mix conv. and non-conv, can that happen? 
+            wires.put(wire.getTarget().getURI(), wire);
+            InterfaceContract contract = wire.getTarget().getInterfaceContract();
+            this.conversational = contract.getInterface().isConversational();
+            // TODO: doesn't work if mix conv. and non-conv, should never happen 
         }
     }
 
@@ -84,9 +84,12 @@ public class JDKCallbackInvocationHandler extends AbstractInvocationHandler impl
             //FIXME: need better exception
             throw new RuntimeException("Wire for callback cannot be found");
         }
-        IdentityHashMap<Operation, InvocationChain> map = wire.getCallbackInvocationMap();
-        Operation operation = JavaInterfaceUtil.findOperation(method, map.keySet());
-        InvocationChain chain = map.get(operation);
+
+        InvocationChain chain = getInvocationChain(method, wire);
+        if (chain == null) {
+            throw new IllegalArgumentException("No matching operation is found: " + method);
+        }
+
         try {
             return invoke(chain, args, wire);
         } catch (InvocationTargetException e) {

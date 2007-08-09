@@ -51,12 +51,27 @@ public interface AbstractContract extends Base, IntentAttachPoint {
      */
     InterfaceContract getInterfaceContract();
     
-
     /**
-     * Returns the interface contract defining the interface and callback
+     * Sets the interface contract defining the interface and callback
      * interface for the contract.
      * 
      * @param interfaceContract the interface contract
      */
     void setInterfaceContract(InterfaceContract interfaceContract);
+
+    /**
+     * Returns true if this contract is a reference or service created internally
+     * to handle a callback interface of another contract, false otherwise.
+     * 
+     * @return true for a callback contract, false otherwise
+     */
+    boolean isCallback();
+
+    /**
+     * Sets a flag indicating whether this is a callback contract.
+     * 
+     * @param isCallback true for a callback contract, false otherwise
+     */
+    void setIsCallback(boolean isCallback);
+
 }

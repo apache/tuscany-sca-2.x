@@ -34,6 +34,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     private Binding binding;
     private InterfaceContract interfaceContract;
     private String uri;
+    private EndpointReference callbackEndpoint;
 
     /**
      * @param component
@@ -100,6 +101,14 @@ public class EndpointReferenceImpl implements EndpointReference {
 
     public void setURI(String uri) {
         this.uri = uri;
+    }
+
+    public EndpointReference getCallbackEndpoint() {
+        return callbackEndpoint;
+    }
+
+    public void setCallbackEndpoint(EndpointReference callbackEndpoint) {
+        this.callbackEndpoint = callbackEndpoint;
     }
 
     @Override
