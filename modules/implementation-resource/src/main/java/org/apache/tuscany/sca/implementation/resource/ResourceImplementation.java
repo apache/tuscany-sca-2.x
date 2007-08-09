@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.resource;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,6 +47,16 @@ public class ResourceImplementation implements Implementation {
     private String location;
     private URL url;
     private boolean unresolved;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
 
     /**
      * Constructs a new resource implementation.

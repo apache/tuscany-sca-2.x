@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.resource;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,6 +36,16 @@ public class HTTPResourceBinding implements Binding {
     
     private String name;
     private String uri;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
 
     public String getName() {
         return name;
