@@ -53,15 +53,6 @@ import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.work.ThreadPoolWorkManager;
-import org.apache.tuscany.sca.databinding.DataBinding;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.PullTransformer;
-import org.apache.tuscany.sca.databinding.PushTransformer;
-import org.apache.tuscany.sca.databinding.Transformer;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.LazyDataBinding;
-import org.apache.tuscany.sca.databinding.impl.LazyPullTransformer;
-import org.apache.tuscany.sca.databinding.impl.LazyPushTransformer;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
@@ -212,12 +203,6 @@ public class ReallySmallRuntime {
                 Class moduleClass = Class.forName(className, true, classLoader);
                 ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
                 modules.add(module);
-                Object[] extensionPoints = module.getExtensionPoints();
-                if (extensionPoints != null) {
-                    for (Object e : extensionPoints) {
-                        registry.addExtensionPoint(e);
-                    }
-                }
             }
         } catch (IOException e) {
             throw new ActivationException(e);

@@ -40,16 +40,12 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
  */
 public class DataBindingModuleActivator implements ModuleActivator {
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         
         //FIXME hack for now
-        ((DefaultTransformerExtensionPoint)transformers).setDataBindings(dataBindings);
+        //((DefaultTransformerExtensionPoint)transformers).setDataBindings(dataBindings);
         
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();

@@ -39,14 +39,6 @@ package org.apache.tuscany.sca.core;
  * @version $Rev$ $Date$
  */
 public interface ModuleActivator {
-    /**
-     * Get a map of the extension points defined by this module. The key is the
-     * java interface to represent the extension point and the the value is the
-     * instance of the implementation of the interface.
-     * 
-     * @return All the extension points defined by this module
-     */
-    Object[] getExtensionPoints();
 
     /**
      * This method is invoked when the module is started by the Tuscany system.

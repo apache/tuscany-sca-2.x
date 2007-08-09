@@ -16,34 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.introspect;
 
+package org.apache.tuscany.sca.rmi;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An extension point for Java class visitors.
- *
+ * Default implementation of an RMI host extension point.
+ * 
  * @version $Rev$ $Date$
  */
-public interface JavaClassIntrospectorExtensionPoint {
+public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint {
 
-    /**
-     * Registers the given visitor.
-     * 
-     * @param visitor
-     */
-    void addClassVisitor(JavaClassVisitor visitor);
-
-    /**
-     * Deregisters the given visitor.
-     */
-    void removeClassVisitor(JavaClassVisitor visitor);
+    private List<RMIHost> rmiHosts = new ArrayList<RMIHost>();
     
-    /**
-     * Returns the list of visitors.
-     * 
-     * @return
-     */
-    List<JavaClassVisitor> getClassVisitors();
+    public DefaultRMIHostExtensionPoint() {
+        addRMIHost(new DefaultRMIHost());
+    }
 
+    public void addRMIHost(RMIHost rmiHost) {
+        rmiHosts.add(rmiHost);
+    }
+
+    public void removeRMIHost(RMIHost rmiHost) {
+        rmiHosts.remove(rmiHost);
+    }
+
+    public List<RMIHost> getRMIHosts() {
+        return rmiHosts;
+    }
 }

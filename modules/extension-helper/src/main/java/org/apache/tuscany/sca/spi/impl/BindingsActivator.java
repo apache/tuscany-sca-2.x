@@ -140,10 +140,6 @@ public class BindingsActivator implements ModuleActivator {
         return new QName(Constants.SCA10_NS, "binding." + sb.toString());
     }
 
-    public Object[] getExtensionPoints() {
-        return null; // not used by binding or implementation extensions
-    }
-
     private final class DelegatingBindingProviderFactory implements BindingProviderFactory {
         private Class modelType;
 

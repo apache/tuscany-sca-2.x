@@ -32,10 +32,6 @@ public class TomcatRuntimeModuleActivator implements ModuleActivator {
 
     private TomcatServer server;
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
     public void start(ExtensionPointRegistry extensionPointRegistry) {
 
         // Register a Tomcat servlet host

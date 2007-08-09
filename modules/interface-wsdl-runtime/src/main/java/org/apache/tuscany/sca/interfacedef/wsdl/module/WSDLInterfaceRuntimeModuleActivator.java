@@ -32,10 +32,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.xml.XSDModelResolver;
  */
 public class WSDLInterfaceRuntimeModuleActivator implements ModuleActivator {
     
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
     public void start(ExtensionPointRegistry registry) {
         
         ModelResolverExtensionPoint resolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);

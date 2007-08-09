@@ -18,11 +18,14 @@
  */
 package org.apache.tuscany.sca.core.spring.implementation.java.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaClassIntrospectorImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**
@@ -34,10 +37,10 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 public class BeanJavaImplementationFactory implements JavaImplementationFactory {
 
     private BeanDefinitionRegistry beanRegistry;
+    private List<JavaClassVisitor> visitors = new ArrayList<JavaClassVisitor>();
     private JavaClassIntrospectorImpl introspector;
 
-    public BeanJavaImplementationFactory(BeanDefinitionRegistry beanRegistry,
-                                         JavaClassIntrospectorExtensionPoint visitors) {
+    public BeanJavaImplementationFactory(BeanDefinitionRegistry beanRegistry) {
         this.beanRegistry = beanRegistry;
         introspector = new JavaClassIntrospectorImpl(visitors);
     }
@@ -55,6 +58,18 @@ public class BeanJavaImplementationFactory implements JavaImplementationFactory 
         JavaImplementation javaImplementation = createJavaImplementation();
         introspector.introspectClass(javaImplementation, implementationClass);
         return javaImplementation;
+    }
+
+    public void addClassVisitor(JavaClassVisitor visitor) {
+        visitors.add(visitor);
+    }
+
+    public void removeClassVisitor(JavaClassVisitor visitor) {
+        visitors.remove(visitor);
+    }
+    
+    public List<JavaClassVisitor> getClassVisitors() {
+        return visitors;
     }
 
 }

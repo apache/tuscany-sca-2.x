@@ -253,12 +253,6 @@ public class DistributedRuntime  {
                 Class moduleClass = Class.forName(className, true, classLoader);
                 ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
                 modules.add(module);
-                Object[] extensionPoints = module.getExtensionPoints();
-                if (extensionPoints != null) {
-                    for (Object e : extensionPoints) {
-                        registry.addExtensionPoint(e);
-                    }
-                }
             }
         } catch (IOException e) {
             throw new ActivationException(e);

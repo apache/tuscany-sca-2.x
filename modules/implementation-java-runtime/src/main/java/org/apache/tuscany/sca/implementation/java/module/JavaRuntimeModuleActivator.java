@@ -30,11 +30,8 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
-import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
@@ -55,7 +52,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.implementation.java.invocation.CglibProxyFactory;
 import org.apache.tuscany.sca.implementation.java.invocation.JavaImplementationProviderFactory;
-import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -66,16 +62,9 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
  */
 public class JavaRuntimeModuleActivator implements ModuleActivator {
     
-    private JavaClassIntrospectorExtensionPoint classVisitors;
-    
     public JavaRuntimeModuleActivator() {
     }
      
-
-    public Object[] getExtensionPoints() {
-        classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
-        return new Object[] { classVisitors };
-    }
 
     public void start(ExtensionPointRegistry registry) {
 
@@ -88,6 +77,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         proxyFactory.setClassProxyFactory(new CglibProxyFactory(messageFactory, proxyFactory.getInterfaceContractMapper()));
         
         JavaInterfaceFactory javaFactory = factories.getFactory(JavaInterfaceFactory.class);
+        JavaImplementationFactory javaImplementationFactory = factories.getFactory(JavaImplementationFactory.class);
         
         BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
             new ConstructorProcessor(assemblyFactory),
@@ -108,16 +98,13 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             new PolicyProcessor(assemblyFactory, policyFactory)
         };
         for (JavaClassVisitor extension : extensions) {
-            classVisitors.addClassVisitor(extension);
+            javaImplementationFactory.addClassVisitor(extension);
         }
         
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
-
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(classVisitors);
-        factories.addFactory(javaImplementationFactory);
 
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);

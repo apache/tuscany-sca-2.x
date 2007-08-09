@@ -133,8 +133,4 @@ public class ImplementationsActivator implements ModuleActivator {
         return new QName(Constants.SCA10_NS, "implementation." + sb.toString());
     }
 
-
-    public Object[] getExtensionPoints() {
-        return null;
-    }
 }

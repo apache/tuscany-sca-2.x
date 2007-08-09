@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.binding.ajax;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.http.ExtensibleServletHost;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -32,8 +34,8 @@ public class AjaxBindingActivator implements BindingActivator<AjaxBinding>{
 
     private ServletHost servletHost;
     
-    public AjaxBindingActivator(ServletHost servletHost) {
-        this.servletHost = servletHost;
+    public AjaxBindingActivator(ServletHostExtensionPoint servletHosts) {
+        this.servletHost = new ExtensibleServletHost(servletHosts);
     }
 
     public Class<AjaxBinding> getBindingClass() {

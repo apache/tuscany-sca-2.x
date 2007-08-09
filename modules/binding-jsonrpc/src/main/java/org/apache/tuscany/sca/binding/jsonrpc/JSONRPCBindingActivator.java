@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.binding.jsonrpc;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.http.ExtensibleServletHost;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -33,8 +35,8 @@ public class JSONRPCBindingActivator implements BindingActivator<JSONRPCBinding>
 
     protected ServletHost servletHost;
 
-    public JSONRPCBindingActivator(ServletHost servletHost) {
-        this.servletHost = servletHost;
+    public JSONRPCBindingActivator(ServletHostExtensionPoint servletHosts) {
+        this.servletHost = new ExtensibleServletHost(servletHosts);
     }
 
     public Class<JSONRPCBinding> getBindingClass() {

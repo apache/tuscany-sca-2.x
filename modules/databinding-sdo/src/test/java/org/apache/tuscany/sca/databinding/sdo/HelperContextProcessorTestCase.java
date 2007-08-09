@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
 
 import commonj.sdo.helper.HelperContext;
 
@@ -43,7 +42,7 @@ public class HelperContextProcessorTestCase extends TestCase {
         HelperContextRegistry registry = new HelperContextRegistryImpl();
         HelperContextProcessor processor = new HelperContextProcessor(new DefaultAssemblyFactory(), registry);
         
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory(new DefaultJavaClassIntrospectorExtensionPoint());
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         JavaImplementation componentType = javaImplementationFactory.createJavaImplementation();
         componentType.setJavaClass(FooImpl.class);
         for (Field f : FooImpl.class.getDeclaredFields()) {

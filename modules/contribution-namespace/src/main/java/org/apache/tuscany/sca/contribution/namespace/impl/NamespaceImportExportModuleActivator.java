@@ -55,10 +55,6 @@ public class NamespaceImportExportModuleActivator implements ModuleActivator {
      */
     private NamespaceImportExportListener listener;
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
-
     public void start(ExtensionPointRegistry registry) {
         importProcessor = new NamespaceImportProcessor(factory);
         exportProcessor = new NamespaceExportProcessor(factory);

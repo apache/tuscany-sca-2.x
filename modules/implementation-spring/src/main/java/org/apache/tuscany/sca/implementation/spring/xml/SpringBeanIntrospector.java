@@ -30,8 +30,6 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.DefaultJavaClassIntrospectorExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassIntrospectorExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
@@ -60,7 +58,6 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class SpringBeanIntrospector {
 
-    private JavaClassIntrospectorExtensionPoint classVisitors = new DefaultJavaClassIntrospectorExtensionPoint();
     private JavaImplementationFactory javaImplementationFactory;
 
     /**
@@ -74,6 +71,8 @@ public class SpringBeanIntrospector {
                                   JavaInterfaceFactory javaFactory,
                                   PolicyFactory policyFactory) {
 
+        javaImplementationFactory = new DefaultJavaImplementationFactory();
+        
         // Create the list of class visitors
         BaseJavaClassVisitor[] extensions =
             new BaseJavaClassVisitor[] {
@@ -93,10 +92,8 @@ public class SpringBeanIntrospector {
                                         new HeuristicPojoProcessor(assemblyFactory, javaFactory),
                                         new PolicyProcessor(assemblyFactory, policyFactory)};
         for (JavaClassVisitor extension : extensions) {
-            classVisitors.addClassVisitor(extension);
+            javaImplementationFactory.addClassVisitor(extension);
         }
-
-        javaImplementationFactory = new DefaultJavaImplementationFactory(classVisitors);
 
     } // end constructor 
 

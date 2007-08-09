@@ -53,7 +53,9 @@ import org.apache.tuscany.sca.binding.notification.encoding.SubscribeEnDeCoder;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.http.ExtensibleServletHost;
 import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -157,7 +159,7 @@ public class NotificationBindingModuleActivator implements ModuleActivator {
             httpPort = DEFAULT_PORT;
         }
 
-        ServletHost servletHost = registry.getExtensionPoint(ServletHost.class);
+        ServletHost servletHost = new ExtensibleServletHost(registry.getExtensionPoint(ServletHostExtensionPoint.class));
 
         ntm = new NotificationTypeManagerImpl();
         ntm.setServletHost(servletHost);
@@ -220,7 +222,4 @@ public class NotificationBindingModuleActivator implements ModuleActivator {
         processors.removeArtifactProcessor(bindingProcessor);
     }
 
-    public Object[] getExtensionPoints() {
-        return null;
-    }
 }

@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.http;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.Servlet;
 
 /**
@@ -32,14 +29,12 @@ import javax.servlet.Servlet;
 public class ExtensibleServletHost implements ServletHost {
     
     private ServletHostExtensionPoint servletHosts;
-    private List<String> uriList = new ArrayList<String>();
     
     public ExtensibleServletHost(ServletHostExtensionPoint servletHosts) {
         this.servletHosts = servletHosts;
     }
 
     public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
-        uriList.add(uri);
         if (servletHosts.getServletHosts().isEmpty()) {
             throw new ServletMappingException("No servlet host available");
         }
@@ -50,20 +45,9 @@ public class ExtensibleServletHost implements ServletHost {
     }
 
     public Servlet removeServletMapping(String uri) throws ServletMappingException {
-        uriList.remove(uri);
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
         return servletHosts.getServletHosts().get(0).removeServletMapping(uri);
     }
     
-    /**
-     * For debugging purposes this returns the list of URI strings
-     * that have been passed in 
-     * 
-     * @return the string uri list
-     */
-    public List<String> getURIList(){
-        return uriList;
-    }    
-
 }
