@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents an operation on a service interface.
@@ -46,6 +48,11 @@ public class OperationImpl implements Operation {
     private WrapperInfo wrapper;
     private String dataBinding;
     private boolean dynamic;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
 
     /**
      * @param name
@@ -311,6 +318,22 @@ public class OperationImpl implements Operation {
         }
         
         return copy;
+    }
+    
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
     }
 
 }
