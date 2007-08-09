@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
 
 /**
@@ -36,7 +35,7 @@ public class IntentImpl implements Intent {
     private static final String QUALIFIED_SEPARATOR = ".";
     private static final String DOMAIN_SEPARATOR = ".";
     private QName name;
-    private List<Operation> operations = new ArrayList<Operation>();
+    //private List<Operation> operations = new ArrayList<Operation>();
     private List<QName> constrains = new ArrayList<QName>();
     private String description;
     private List<Intent> qualifiedIntents = new ArrayList<Intent>();;
@@ -75,9 +74,9 @@ public class IntentImpl implements Intent {
         return results;
     }
 
-    public List<Operation> getOperations() {
+    /*public List<Operation> getOperations() {
         return operations;
-    }
+    }*/
 
     public List<QName> getConstrains() {
         return constrains;

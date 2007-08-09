@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -38,7 +37,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class PolicySetImpl implements PolicySet {
 
     private QName name;
-    private List<Operation> operations = new ArrayList<Operation>();
+    //private List<Operation> operations = new ArrayList<Operation>();
     //private List<QName> appliesTo;
     private String appliesTo;
     private List<Intent> providedIntents = new ArrayList<Intent>();
@@ -58,9 +57,9 @@ public class PolicySetImpl implements PolicySet {
         this.name = name;
     }
 
-    public List<Operation> getOperations() {
+    /*public List<Operation> getOperations() {
         return operations;
-    }
+    }*/
 
     public String getAppliesTo() {
         return appliesTo;

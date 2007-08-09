@@ -23,8 +23,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
-
 /**
  * Represents a policy set. See the Policy Framework specification for a
  * description of this element.
@@ -50,7 +48,7 @@ public interface PolicySet {
      * 
      * @return
      */
-    List<Operation> getOperations();
+    //List<Operation> getOperations();
 
     /**
      * Returns the list of
