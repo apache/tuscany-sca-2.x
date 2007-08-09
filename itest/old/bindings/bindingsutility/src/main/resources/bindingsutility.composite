@@ -22,7 +22,7 @@
 	xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
     name="bindingsutility">
 
-    <dbsdo:import.sdo location="wsdl/testutility.wsdl" />
+    <!-- dbsdo:import.sdo location="wsdl/testutility.wsdl" / -->
 
     <service name="SCATestUtilityWSService">
         <interface.wsdl interface="http://scatestutil.scabeta1fvt#wsdl.interface(SCATestUtilityService)"

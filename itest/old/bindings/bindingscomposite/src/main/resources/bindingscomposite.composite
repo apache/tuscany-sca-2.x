@@ -22,8 +22,8 @@
     xmlns:v="http://www.osoa.org/xmlns/sca/values/1.0" xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
     name="bindingscomposite">
 
-    <dbsdo:import.sdo location="wsdl/testtool.wsdl" />
-    <dbsdo:import.sdo location="wsdl/testutility.wsdl" />
+    <!-- dbsdo:import.sdo location="wsdl/testtool.wsdl" / -->
+    <!-- dbsdo:import.sdo location="wsdl/testutility.wsdl" / -->
 
     <service name="SCATestToolWSService">
         <interface.wsdl interface="http://scatesttool.scabeta1fvt#wsdl.interface(SCATestToolService)"
