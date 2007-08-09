@@ -36,26 +36,24 @@ import org.w3c.dom.NodeList;
 
 public class DOMWrapperHandler implements WrapperHandler<Node> {
 
-    private Document document;
-
     public DOMWrapperHandler() {
         super();
+    }
+
+    public Node create(ElementInfo element, TransformationContext context) {
         try {
-            this.document = DOMHelper.newDocument();
+            Document document = DOMHelper.newDocument();
+            QName name = element.getQName();
+            return DOMHelper.createElement(document, name);
         } catch (ParserConfigurationException e) {
             throw new TransformationException(e);
         }
     }
 
-    public Node create(ElementInfo element, TransformationContext context) {
-        QName name = element.getQName();
-        return DOMHelper.createElement(document, name);
-    }
-
     public void setChild(Node wrapper, int i, ElementInfo childElement, Object value) {
-        Node node = (Node) value;
+        Node node = (Node)value;
         if (node.getNodeType() == Node.DOCUMENT_NODE) {
-            node = ((Document) node).getDocumentElement();
+            node = ((Document)node).getDocumentElement();
         }
         wrapper.appendChild(wrapper.getOwnerDocument().importNode(node, true));
     }
@@ -63,7 +61,7 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
     public List getChildren(Node wrapper) {
         assert wrapper != null;
         if (wrapper.getNodeType() == Node.DOCUMENT_NODE) {
-            wrapper = ((Document) wrapper).getDocumentElement();
+            wrapper = ((Document)wrapper).getDocumentElement();
         }
         List<Node> elements = new ArrayList<Node>();
         NodeList nodes = wrapper.getChildNodes();

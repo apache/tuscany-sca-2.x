@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.databinding.impl;
 
 import org.apache.tuscany.sca.databinding.DataPipe;
+import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -34,21 +35,22 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 public class PipedTransformer<S, I, R> implements PullTransformer<S, R> {
     private PushTransformer<S, I> pusher;
 
-    private DataPipe<I, R> pipe;
+    private DataPipeTransformer<I, R> pipe;
 
     /**
      * @param pumper
      * @param pipe
      */
-    public PipedTransformer(PushTransformer<S, I> pumper, DataPipe<I, R> pipe) {
+    public PipedTransformer(PushTransformer<S, I> pumper, DataPipeTransformer<I, R> pipe) {
         super();
         this.pusher = pumper;
         this.pipe = pipe;
     }
 
     public R transform(S source, TransformationContext context) {
-        pusher.transform(source, pipe.getSink(), context);
-        return pipe.getResult();
+        DataPipe<I, R> dataPipe = pipe.newInstance();
+        pusher.transform(source, dataPipe.getSink(), context);
+        return dataPipe.getResult();
     }
 
     public String getSourceDataBinding() {

@@ -24,14 +24,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import org.apache.tuscany.sca.databinding.DataPipe;
+import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
-public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> implements DataPipe<Writer, Reader> {
+public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> implements DataPipeTransformer<Writer, Reader> {
 
-    private StringWriter writer = new StringWriter();
-
-    public Reader getResult() {
-        return new StringReader(writer.toString());
+    public DataPipe<Writer, Reader> newInstance() {
+        return new Pipe();
     }
 
     public Class getTargetType() {
@@ -42,12 +41,20 @@ public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> imple
         return 50;
     }
 
-    public Writer getSink() {
-        return writer;
-    }
-
     public Class getSourceType() {
         return Writer.class;
+    }
+
+    private static class Pipe implements DataPipe<Writer, Reader> {
+        private StringWriter writer = new StringWriter();
+
+        public Reader getResult() {
+            return new StringReader(writer.toString());
+        }
+
+        public Writer getSink() {
+            return writer;
+        }
     }
 
 }

@@ -24,15 +24,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.tuscany.sca.databinding.DataPipe;
+import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 public class StreamDataPipe extends BaseTransformer<OutputStream, InputStream> implements
-    DataPipe<OutputStream, InputStream> {
+    DataPipeTransformer<OutputStream, InputStream> {
 
-    private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-    public InputStream getResult() {
-        return new ByteArrayInputStream(outputStream.toByteArray());
+    public DataPipe<OutputStream, InputStream> newInstance() {
+        return new Pipe();
     }
 
     public Class getTargetType() {
@@ -43,12 +42,21 @@ public class StreamDataPipe extends BaseTransformer<OutputStream, InputStream> i
         return 50;
     }
 
-    public OutputStream getSink() {
-        return outputStream;
-    }
-
     public Class getSourceType() {
         return OutputStream.class;
+    }
+
+    public static class Pipe implements DataPipe<OutputStream, InputStream> {
+        private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        public InputStream getResult() {
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        }
+
+        public OutputStream getSink() {
+            return outputStream;
+        }
+
     }
 
 }
