@@ -48,6 +48,16 @@ public class WebServiceBindingImpl implements WebServiceBinding {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private boolean unresolved;
     private List<Object> extensions = new ArrayList<Object>();
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
     
     private String location;
     private Binding binding;
