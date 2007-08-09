@@ -158,24 +158,6 @@ public class CompositeWireBuilderImpl {
                     scaBinding.setComponent(component);
                     scaBinding.setURI(uri);
                 }
-    
-                // if service has a callback, create and configure an SCA binding for the callback
-                if (componentService.getInterfaceContract() != null && // can be null in unit tests
-                componentService.getInterfaceContract().getCallbackInterface() != null) {
-                    if (componentService.getCallback() != null && componentService.getCallback().getBindings()
-                        .isEmpty()) {
-                        SCABinding scaCallbackBinding = componentService.getCallbackBinding(SCABinding.class);
-                        if (scaCallbackBinding == null) {
-                            scaCallbackBinding = scaBindingFactory.createSCABinding();
-                            scaCallbackBinding.setName(componentService.getName());
-                            if (componentService.getCallback() == null) {
-                                componentService.setCallback(assemblyFactory.createCallback());
-                            }
-                            componentService.getCallback().getBindings().add(scaCallbackBinding);
-                        }
-                        scaCallbackBinding.setComponent(component);
-                    }
-                }
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
@@ -190,24 +172,6 @@ public class CompositeWireBuilderImpl {
                         componentReference.getBindings().add(scaBinding);
                     }
                     scaBinding.setComponent(component);
-                }
-    
-                // if reference has a callback, create and configure an SCA binding for the callback
-                if (componentReference.getInterfaceContract() != null && // can be null in unit tests
-                componentReference.getInterfaceContract().getCallbackInterface() != null) {
-                    if (componentReference.getCallback() != null && componentReference.getCallback().getBindings()
-                        .isEmpty()) {
-                        SCABinding scaCallbackBinding = componentReference.getCallbackBinding(SCABinding.class);
-                        if (scaCallbackBinding == null) {
-                            scaCallbackBinding = scaBindingFactory.createSCABinding();
-                            scaCallbackBinding.setName(componentReference.getName());
-                            if (componentReference.getCallback() == null) {
-                                componentReference.setCallback(assemblyFactory.createCallback());
-                            }
-                            componentReference.getCallback().getBindings().add(scaCallbackBinding);
-                        }
-                        scaCallbackBinding.setComponent(component);
-                    }
                 }
             }
         }
@@ -628,8 +592,9 @@ public class CompositeWireBuilderImpl {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
                 for (ComponentReference componentReference : component.getReferences()) {
-                    CompositeReference compositeReference = (CompositeReference)componentReference.getReference();
-                    if (compositeReference != null) {
+                    Reference implReference = componentReference.getReference();
+                    if (implReference != null && implReference instanceof CompositeReference) {
+                        CompositeReference compositeReference = (CompositeReference)implReference;
                         List<ComponentReference> promotedReferences =
                             getPromotedComponentReferences(compositeReference);
                         for (ComponentReference promotedReference : promotedReferences) {

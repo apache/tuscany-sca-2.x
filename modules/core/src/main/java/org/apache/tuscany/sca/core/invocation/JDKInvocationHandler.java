@@ -41,7 +41,9 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
     public JDKInvocationHandler(MessageFactory messageFactory, Class<?> proxyInterface, RuntimeWire wire) {
         super(messageFactory, false);
         this.wire = wire;
-        init(proxyInterface, wire);
+        if (wire != null) {
+            init(proxyInterface, wire);
+        }
     }
 
     private void init(Class<?> interfaze, RuntimeWire wire) {
@@ -64,7 +66,7 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
         } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
             return hashCode();
         }
-        InvocationChain chain = getInvocationChain(method);
+        InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {
             throw new IllegalArgumentException("No matching operation is found: " + method);
         }
@@ -99,7 +101,7 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
 
     }
 
-    private InvocationChain getInvocationChain(Method method) {
+    protected InvocationChain getInvocationChain(Method method, RuntimeWire wire) {
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation operation = chain.getSourceOperation();
             if (operation.isDynamic()) {

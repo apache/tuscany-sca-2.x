@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Service;
@@ -34,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Service;
 public class ComponentServiceImpl extends ServiceImpl implements ComponentService, Cloneable {
     private Service service;
     private List<CompositeService> promotedAs = new ArrayList<CompositeService>();
+    private ComponentReference callbackReference;
     
     /**
      * Constructs a new component service.
@@ -57,4 +59,13 @@ public class ComponentServiceImpl extends ServiceImpl implements ComponentServic
     public List<CompositeService> promotedAs() {
         return promotedAs;
     }
+
+    public ComponentReference getCallbackReference() {
+        return callbackReference;
+    }
+
+    public void setCallbackReference(ComponentReference callbackReference) {
+        this.callbackReference = callbackReference;
+    }
+
 }

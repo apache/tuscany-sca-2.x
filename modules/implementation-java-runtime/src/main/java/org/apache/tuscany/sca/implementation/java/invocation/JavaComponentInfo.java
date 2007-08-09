@@ -154,10 +154,12 @@ public class JavaComponentInfo implements ComponentContextProvider {
             Map<String, List<RuntimeWire>> callbackWires = new HashMap<String, List<RuntimeWire>>();
             for (ComponentService service : component.getServices()) {
 
-                RuntimeComponentService componentService = (RuntimeComponentService)service;
-                if (!componentService.getCallbackWires().isEmpty()) {
-                    callbackWires.put(componentService.getCallbackWires().get(0).getTarget().getInterfaceContract()
-                        .getCallbackInterface().toString(), componentService.getCallbackWires());
+                RuntimeComponentReference callbackReference = (RuntimeComponentReference)service.getCallbackReference();
+                if (callbackReference != null) {
+                    List<RuntimeWire> wires = callbackReference.getRuntimeWires();
+                    if (!wires.isEmpty()) {
+                        callbackWires.put(wires.get(0).getSource().getInterfaceContract().getInterface().toString(), wires);
+                    }
                 }
             }
 

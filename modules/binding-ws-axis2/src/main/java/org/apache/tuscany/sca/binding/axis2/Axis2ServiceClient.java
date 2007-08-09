@@ -98,11 +98,11 @@ public class Axis2ServiceClient {
         QName serviceQName = wsBinding.getServiceName();
         String portName = wsBinding.getPortName();
 
-        // If no service is specified in the binding element and this is a callback
-        // binding, allow for WSDL that only contains a portType for the callback and
+        // If no service is specified in the binding element,
+        // allow for WSDL that only contains a portType for the callback and
         // not a service and port.  Synthesize a service and port using WSDL4J and
         // add them to the wsdlDefinition to keep Axis happy.
-        if (serviceQName == null && wsBinding.isCallback()) {
+        if (serviceQName == null && wsBinding.getBinding() != null) {
             QName bindingQName = wsBinding.getBindingName();
             Port port = wsdlDefinition.createPort();
             portName = "$port$." + bindingQName.getLocalPart();

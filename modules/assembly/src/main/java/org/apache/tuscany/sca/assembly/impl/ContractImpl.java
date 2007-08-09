@@ -29,6 +29,7 @@ public class ContractImpl extends BaseImpl implements AbstractContract {
     private InterfaceContract interfaceContract;
     private String name;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private boolean isCallback = false;
     
     /**
      * Constructs a new contract.
@@ -54,6 +55,14 @@ public class ContractImpl extends BaseImpl implements AbstractContract {
     
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
+    }
+
+    public boolean isCallback() {
+        return isCallback;
+    }
+
+    public void setIsCallback(boolean isCallback) {
+        this.isCallback = isCallback;
     }
 
 }

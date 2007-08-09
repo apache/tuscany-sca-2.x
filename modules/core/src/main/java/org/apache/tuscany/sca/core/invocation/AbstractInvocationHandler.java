@@ -131,7 +131,9 @@ public abstract class AbstractInvocationHandler {
             }
         }
         msg.setBody(args);
-        msg.setFrom(wire.getSource());
+        if (wire.getSource() != null) {
+            msg.setFrom(wire.getSource().getCallbackEndpoint());
+        }
         if (epTo != null) {
             msg.setTo(epTo);
         } else {

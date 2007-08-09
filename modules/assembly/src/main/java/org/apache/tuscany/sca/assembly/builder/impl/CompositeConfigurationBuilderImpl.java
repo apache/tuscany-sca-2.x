@@ -47,6 +47,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 public class CompositeConfigurationBuilderImpl {
     
+    private String CALLBACK_PREFIX = "$callback$.";
+
     private AssemblyFactory assemblyFactory;
     private CompositeBuilderMonitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
@@ -171,6 +173,12 @@ public class CompositeConfigurationBuilderImpl {
             reconcileReferences(component, references, componentReferences);
             reconcileProperties(component, properties, componentProperties);
     
+            // Configure or create callback services for component's references with callbacks
+            configureCallbackServices(component, componentServices);
+
+            // Configure or create callback references for component's services with callbacks
+            configureCallbackReferences(component, componentReferences);
+
             // Create self references to the component's services
             if (!(component.getImplementation() instanceof Composite)) {
                 createSelfReferences(component);
@@ -320,6 +328,7 @@ public class CompositeConfigurationBuilderImpl {
             for (Reference reference : component.getImplementation().getReferences()) {
                 if (!componentReferences.containsKey(reference.getName())) {
                     ComponentReference componentReference = assemblyFactory.createComponentReference();
+                    componentReference.setIsCallback(reference.isCallback());
                     componentReference.setName(reference.getName());
                     componentReference.setReference(reference);
                     component.getReferences().add(componentReference);
@@ -420,9 +429,12 @@ public class CompositeConfigurationBuilderImpl {
             for (Service service : component.getImplementation().getServices()) {
                 if (!componentServices.containsKey(service.getName())) {
                     ComponentService componentService = assemblyFactory.createComponentService();
-                    componentService.setName(service.getName());
+                    componentService.setIsCallback(service.isCallback());
+                    String name = service.getName();
+                    componentService.setName(name);
                     componentService.setService(service);
                     component.getServices().add(componentService);
+                    componentServices.put(name, componentService);
                 }
             }
         }
@@ -511,7 +523,7 @@ public class CompositeConfigurationBuilderImpl {
             if (componentReference.getCallback() != null) {
                 for (Binding binding : componentReference.getCallback().getBindings()) {
                     if (binding.getName() == null) {
-                        binding.setName(componentReference.getName());
+                        binding.setName(CALLBACK_PREFIX + componentReference.getName());
                     }
                 }
             }
@@ -574,6 +586,134 @@ public class CompositeConfigurationBuilderImpl {
     }
 
     /**
+     * For all the references with callbacks, create a corresponding callback service.
+     * 
+     * @param component
+     */
+    private void configureCallbackServices(Component component, Map<String, ComponentService> componentServices) {
+        for (ComponentReference reference : component.getReferences()) {
+            if (reference.getInterfaceContract() != null && // can be null in unit tests
+                reference.getInterfaceContract().getCallbackInterface() != null) {
+                ComponentService service = componentServices.get(CALLBACK_PREFIX + reference.getName());
+                if (service == null) {
+                    service = createCallbackService(component, reference);
+                }
+                if (reference.getCallback() != null) {
+                    if (service.getBindings().isEmpty()) {
+                        service.getBindings().addAll(reference.getCallback().getBindings());
+                    }
+                    if (service.getPolicySets().isEmpty()) {
+                        service.getPolicySets().addAll(reference.getCallback().getPolicySets());
+                    }
+                    if (service.getRequiredIntents().isEmpty()) {
+                        service.getRequiredIntents().addAll(reference.getCallback().getRequiredIntents());
+                    }
+                }
+                reference.setCallbackService(service);
+            }
+        }
+    }
+
+    /**
+     * Create a callback service for a component reference
+     * @param component
+     * @param reference
+     */
+    private ComponentService createCallbackService(Component component, ComponentReference reference) {
+        ComponentService componentService = assemblyFactory.createComponentService();
+        componentService.setIsCallback(true);
+        componentService.setName(CALLBACK_PREFIX + reference.getName());
+        try {
+            InterfaceContract contract = (InterfaceContract)reference.getInterfaceContract().clone();
+            contract.setInterface(contract.getCallbackInterface());
+            contract.setCallbackInterface(null);
+            componentService.setInterfaceContract(contract);
+        } catch (CloneNotSupportedException e) {
+            // will not happen
+        }
+        Reference implReference = reference.getReference();
+        if (implReference != null) {
+            Service implService = assemblyFactory.createService();
+            implService.setName(CALLBACK_PREFIX + implReference.getName());
+            try {
+                InterfaceContract implContract = (InterfaceContract)implReference.getInterfaceContract().clone();
+                implContract.setInterface(implContract.getCallbackInterface());
+                implContract.setCallbackInterface(null);
+                implService.setInterfaceContract(implContract);
+            } catch (CloneNotSupportedException e) {
+                // will not happen
+            }
+            componentService.setService(implService);
+        }
+        component.getServices().add(componentService);
+        return componentService;
+    }
+
+    /**
+     * For all the services with callbacks, create a corresponding callback reference.
+     * 
+     * @param component
+     */
+    private void configureCallbackReferences(Component component, Map<String, ComponentReference> componentReferences) {
+        for (ComponentService service : component.getServices()) {
+            if (service.getInterfaceContract() != null && // can be null in unit tests
+                service.getInterfaceContract().getCallbackInterface() != null) {
+                ComponentReference reference = componentReferences.get(CALLBACK_PREFIX + service.getName());
+                if (reference == null) {
+                    reference = createCallbackReference(component, service);
+                }
+                if (service.getCallback() != null) {
+                    if (reference.getBindings().isEmpty()) {
+                        reference.getBindings().addAll(service.getCallback().getBindings());
+                    }
+                    if (reference.getPolicySets().isEmpty()) {
+                        reference.getPolicySets().addAll(service.getCallback().getPolicySets());
+                    }
+                    if (reference.getRequiredIntents().isEmpty()) {
+                        reference.getRequiredIntents().addAll(service.getCallback().getRequiredIntents());
+                    }
+                }
+                service.setCallbackReference(reference);
+            }
+        }
+    }
+
+    /**
+     * Create a callback reference for a component service
+     * @param component
+     * @param service
+     */
+    private ComponentReference createCallbackReference(Component component, ComponentService service) {
+        ComponentReference componentReference = assemblyFactory.createComponentReference();
+        componentReference.setIsCallback(true);
+        componentReference.setName(CALLBACK_PREFIX + service.getName());
+        try {
+            InterfaceContract contract = (InterfaceContract)service.getInterfaceContract().clone();
+            contract.setInterface(contract.getCallbackInterface());
+            contract.setCallbackInterface(null);
+            componentReference.setInterfaceContract(contract);
+        } catch (CloneNotSupportedException e) {
+            // will not happen
+        }
+        Service implService = service.getService();
+        if (implService != null) {
+            Reference implReference = assemblyFactory.createReference();
+            implReference.setName(CALLBACK_PREFIX + implService.getName());
+            try {
+                InterfaceContract implContract = (InterfaceContract)implService.getInterfaceContract().clone();
+                implContract.setInterface(implContract.getCallbackInterface());
+                implContract.setCallbackInterface(null);
+                implReference.setInterfaceContract(implContract);
+            } catch (CloneNotSupportedException e) {
+                // will not happen
+            }
+            componentReference.setReference(implReference);
+        }
+        component.getReferences().add(componentReference);
+        return componentReference;
+    }
+
+    /**
      * Create a self-reference for a component service
      * @param component
      * @param service
@@ -612,7 +752,9 @@ public class CompositeConfigurationBuilderImpl {
      */
     private void createSelfReferences(Component component) {
         for (ComponentService service : component.getServices()) {
-            createSelfReference(component, service);
+            if (!service.isCallback()) {
+                createSelfReference(component, service);
+            }
         }
     }
 
@@ -635,8 +777,9 @@ public class CompositeConfigurationBuilderImpl {
                 // Process the component services declared on components
                 // in this composite
                 for (ComponentService componentService : component.getServices()) {
-                    CompositeService compositeService = (CompositeService)componentService.getService();
-                    if (compositeService != null) {
+                    Service implService = componentService.getService();
+                    if (implService != null && implService instanceof CompositeService) {
+                        CompositeService compositeService = (CompositeService)implService;
     
                         // Get the inner most promoted service
                         ComponentService promotedService = getPromotedComponentService(compositeService);

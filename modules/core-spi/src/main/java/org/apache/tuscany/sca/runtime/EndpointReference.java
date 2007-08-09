@@ -72,5 +72,17 @@ public interface EndpointReference {
      * @param uri The new URI of the endpoint
      */
     void setURI(String uri);
-    
+
+    /**
+     * Get the callback endpoint for this endpoint
+     * @return The callback endpoint for this endpoint
+     */
+    EndpointReference getCallbackEndpoint();
+
+    /**
+     * Set the callback endpoint for this endpoint
+     * @param callbackEndpoint The new callback endpoint for this endpoint
+     */
+    void setCallbackEndpoint(EndpointReference callbackEndpoint);
+
 }
