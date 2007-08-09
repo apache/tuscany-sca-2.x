@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.spi.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -35,8 +36,10 @@ public class AbstractBinding implements Binding {
     private String uri;
     private List<Object> extensions;
     private boolean unresolved;
-    private List<Intent> requiredIntents;
-    private List<PolicySet> policySets;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
 
     public String getName() {
         return name;
@@ -74,4 +77,11 @@ public class AbstractBinding implements Binding {
         return policySets;
     }
 
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
 }
