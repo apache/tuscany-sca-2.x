@@ -22,8 +22,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
-
 /**
  * Represents a policy intent. See the Policy Framework specification for a
  * description of this element.
@@ -61,7 +59,7 @@ public interface Intent {
      * 
      * @return
      */
-    List<Operation> getOperations();
+    //List<Operation> getOperations();
 
     /**
      * Returns the list of SCA constructs that this intent is meant to
