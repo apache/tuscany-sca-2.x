@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.das;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -128,6 +129,16 @@ public class DASImplementation implements Implementation {
 
     public List<Object> getExtensions() {
         // The sample DAS implementation does not support extensions
+        return Collections.emptyList();
+    }
+    
+    public List<Intent> getComputedIntents() {
+        //The sample DAS implementation does not support computed intents
+        return Collections.emptyList();
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        //The sample DAS implementation does not support computed policysets
         return Collections.emptyList();
     }
 
