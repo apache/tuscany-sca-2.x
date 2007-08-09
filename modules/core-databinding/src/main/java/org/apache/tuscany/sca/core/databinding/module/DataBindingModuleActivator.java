@@ -32,35 +32,6 @@ import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
-import org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;
-import org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;
-import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
-import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
-import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
-import org.apache.tuscany.sca.databinding.xml.InputSource2Node;
-import org.apache.tuscany.sca.databinding.xml.InputSource2SAX;
-import org.apache.tuscany.sca.databinding.xml.InputStream2Node;
-import org.apache.tuscany.sca.databinding.xml.InputStream2SAX;
-import org.apache.tuscany.sca.databinding.xml.Node2OutputStream;
-import org.apache.tuscany.sca.databinding.xml.Node2SimpleJavaType;
-import org.apache.tuscany.sca.databinding.xml.Node2String;
-import org.apache.tuscany.sca.databinding.xml.Node2Writer;
-import org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.xml.Reader2Node;
-import org.apache.tuscany.sca.databinding.xml.Reader2SAX;
-import org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;
-import org.apache.tuscany.sca.databinding.xml.SimpleJavaType2Node;
-import org.apache.tuscany.sca.databinding.xml.Source2ResultTransformer;
-import org.apache.tuscany.sca.databinding.xml.StreamDataPipe;
-import org.apache.tuscany.sca.databinding.xml.String2Node;
-import org.apache.tuscany.sca.databinding.xml.String2SAX;
-import org.apache.tuscany.sca.databinding.xml.String2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.xml.Writer2ReaderDataPipe;
-import org.apache.tuscany.sca.databinding.xml.XMLGroupDataBinding;
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2SAX;
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
-import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
@@ -83,16 +54,19 @@ public class DataBindingModuleActivator implements ModuleActivator {
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
+        transformers.addTransformer(input2InputTransformer);
 
         Output2OutputTransformer output2OutputTransformer = new Output2OutputTransformer();
         output2OutputTransformer.setMediator(mediator);
+        transformers.addTransformer(output2OutputTransformer);
 
         Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer();
         exception2ExceptionTransformer.setMediator(mediator);
-
-        transformers.addTransformer(input2InputTransformer);
-        transformers.addTransformer(output2OutputTransformer);
         transformers.addTransformer(exception2ExceptionTransformer);
+
+        Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
+        group2GroupTransformer.setMediator(mediator);
+        transformers.addTransformer(group2GroupTransformer);
 
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
@@ -104,52 +78,6 @@ public class DataBindingModuleActivator implements ModuleActivator {
             wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator));
         }
 
-        DOMDataBinding domDataBinding = new DOMDataBinding();
-        dataBindings.addDataBinding(domDataBinding);
-        XMLStringDataBinding xmlStringDataBinding = new XMLStringDataBinding();
-        dataBindings.addDataBinding(xmlStringDataBinding);
-        XMLGroupDataBinding xmlGroupDataBinding = new XMLGroupDataBinding();
-        dataBindings.addDataBinding(xmlGroupDataBinding);
-        JavaBeansDataBinding javaBeansDataBinding = new JavaBeansDataBinding();
-        dataBindings.addDataBinding(javaBeansDataBinding);
-        
-        SimpleJavaDataBinding simpleJavaDataBinding = new SimpleJavaDataBinding();
-        dataBindings.addDataBinding(simpleJavaDataBinding);
-
-        Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
-        group2GroupTransformer.setMediator(mediator);
-        transformers.addTransformer(group2GroupTransformer);
-
-        transformers.addTransformer(new InputSource2Node());
-        transformers.addTransformer(new InputSource2SAX());
-        transformers.addTransformer(new InputStream2Node());
-        transformers.addTransformer(new InputStream2SAX());
-
-        transformers.addTransformer(new DOMNode2JavaBeanTransformer());
-        transformers.addTransformer(new Node2OutputStream());
-        transformers.addTransformer(new Node2String());
-        transformers.addTransformer(new Node2Writer());
-        transformers.addTransformer(new Node2XMLStreamReader());
-
-        transformers.addTransformer(new JavaBean2DOMNodeTransformer());
-        transformers.addTransformer(new Reader2Node());
-
-        transformers.addTransformer(new Reader2SAX());
-        transformers.addTransformer(new SAX2DOMPipe());
-
-        transformers.addTransformer(new Source2ResultTransformer());
-        transformers.addTransformer(new StreamDataPipe());
-        transformers.addTransformer(new String2Node());
-        transformers.addTransformer(new String2SAX());
-        transformers.addTransformer(new String2XMLStreamReader());
-        transformers.addTransformer(new Writer2ReaderDataPipe());
-
-        transformers.addTransformer(new XMLStreamReader2Node());
-        transformers.addTransformer(new XMLStreamReader2SAX());
-        transformers.addTransformer(new XMLStreamReader2String());
-        
-        transformers.addTransformer(new Node2SimpleJavaType());
-        transformers.addTransformer(new SimpleJavaType2Node());
     }
 
     public void stop(ExtensionPointRegistry registry) {

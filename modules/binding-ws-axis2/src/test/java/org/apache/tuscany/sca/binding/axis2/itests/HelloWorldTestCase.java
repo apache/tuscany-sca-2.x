@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class HelloWorldTestCaseFIXMEDB extends TestCase {
+public class HelloWorldTestCase extends TestCase {
 
     private SCADomain domain;
     private HelloWorld helloWorld;
