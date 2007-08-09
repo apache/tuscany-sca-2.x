@@ -1,0 +1,34 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Implementation classes for the transformers
+org.apache.tuscany.sca.databinding.xml.InputSource2Node;source=org.xml.sax.InputSource,target=org.w3c.dom.Node,weight=40
+org.apache.tuscany.sca.databinding.xml.InputStream2Node;source=java.io.InputStream,target=org.w3c.dom.Node,weight=40
+org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;source=org.w3c.dom.Node,target=java.lang.Object,weight=10000
+org.apache.tuscany.sca.databinding.xml.Node2String;source=org.w3c.dom.Node,target=java.lang.String,weight=40
+org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;source=org.w3c.dom.Node,target=javax.xml.stream.XMLStreamReader,weight=40
+org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;source=java.lang.Object,target=org.w3c.dom.Node,weight=10000
+org.apache.tuscany.sca.databinding.xml.Reader2Node;source=java.io.Reader,target=org.w3c.dom.Node,weight=40
+org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;source=org.xml.sax.ContentHandler,target=org.w3c.dom.Node,weight=30
+org.apache.tuscany.sca.databinding.xml.StreamDataPipe;source=java.io.OutputStream,target=java.io.InputStream,weight=50
+org.apache.tuscany.sca.databinding.xml.String2Node;source=java.lang.String,target=org.w3c.dom.Node,weight=50
+org.apache.tuscany.sca.databinding.xml.String2XMLStreamReader;source=java.lang.String,target=javax.xml.stream.XMLStreamReader,weight=50
+org.apache.tuscany.sca.databinding.xml.Writer2ReaderDataPipe;source=java.io.Writer,target=java.io.Reader,weight=50
+org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;source=javax.xml.stream.XMLStreamReader,target=org.w3c.dom.Node,weight=40
+org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;source=javax.xml.stream.XMLStreamReader,target=java.lang.String,weight=40
+org.apache.tuscany.sca.databinding.xml.Node2SimpleJavaType;source=org.w3c.dom.Node,target=java:simpleType,weight=10000
+org.apache.tuscany.sca.databinding.xml.SimpleJavaType2Node;source=java:simpleType,target=org.w3c.dom.Node,weight=10000
