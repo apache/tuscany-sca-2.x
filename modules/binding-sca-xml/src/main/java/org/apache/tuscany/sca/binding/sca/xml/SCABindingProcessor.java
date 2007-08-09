@@ -164,7 +164,8 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
                 PolicySet policySet = policyFactory.createPolicySet();
                 policySet.setName(qname);
                 if (operation != null) {
-                    policySet.getOperations().add(operation);
+                    //policySet.getOperations().add(operation);
+                    operation.getPolicySets().add(policySet);
                 }
                 policySets.add(policySet);
             }
@@ -186,7 +187,8 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
                 Intent intent = policyFactory.createIntent();
                 intent.setName(qname);
                 if (operation != null) {
-                    intent.getOperations().add(operation);
+                    //intent.getOperations().add(operation);
+                    operation.getRequiredIntents().add(intent);
                 }
                 requiredIntents.add(intent);
             }
