@@ -19,16 +19,17 @@
 
 package org.apache.tuscany.sca.databinding.sdo;
 
-import java.awt.Component;
+import java.lang.reflect.Method;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
+import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.impl.HelperProvider;
 
@@ -40,53 +41,45 @@ public final class SDOContextHelper {
     }
 
     public static HelperContext getHelperContext(TransformationContext context) {
-        if (context == null || context.getMetadata() == null) {
+        if (context == null) {
             return getDefaultHelperContext();
         }
-        HelperContext helperContext = null;
-        Component composite = (Component)context.getMetadata().get(Component.class);
-        if (composite != null) {
-            // SDOHelperContext sdoContext =
-            // (SDOHelperContext)composite.getExtensions().get(HelperContext.class.getName());
-            // if (sdoContext != null) {
-            // helperContext = sdoContext.getHelperContext();
-            // }
-            // AtomicComponent child =
-            // (AtomicComponent)composite.getSystemChild(HelperContext.class.getName());
-            // try {
-            // helperContext = (HelperContext)child.getTargetInstance();
-            // } catch (TargetResolutionException e) {
-            // helperContext = null;
-            // }
-        }
-        if (helperContext == null) {
-            return getDefaultHelperContext();
-        } else {
+        HelperContext helperContext = SDOUtil.createHelperContext();
+        Class javaType = context.getTargetDataType().getPhysical();
+        boolean found = register(helperContext, javaType);
+        javaType = context.getSourceDataType().getPhysical();
+        found = found || register(helperContext, javaType);
+        if (found) {
             return helperContext;
+        } else {
+            return getDefaultHelperContext();
         }
+
     }
 
-    public static HelperContext getHelperContext(Composite model) {
-        HelperContext helperContext = null;
-        for (Object ext : model.getExtensions()) {
-            if (ext instanceof HelperContext) {
-                helperContext = (HelperContext)ext;
-                break;
+    /**
+     * FIXME: [rfeng] This is a hack to get the factory out a SDO class
+     * @param helperContext
+     * @param javaType
+     */
+
+    private static boolean register(HelperContext helperContext, Class javaType) {
+        try {
+            Type type = helperContext.getTypeHelper().getType(javaType);
+            if (type != null && (!type.isDataType())) {
+                Method method = type.getClass().getMethod("getEPackage", new Class[] {});
+                Object factory = method.invoke(type, new Object[] {});
+                method = factory.getClass().getMethod("register", new Class[] {HelperContext.class});
+                method.invoke(factory, new Object[] {helperContext});
+                return true;
             }
+            return false;
+        } catch (Exception e) {
+            throw new TransformationException(e);
         }
-        if (helperContext == null) {
-            helperContext = SDOUtil.createHelperContext();
-            model.getExtensions().add(helperContext);
-        }
-
-        if (helperContext == null) {
-            helperContext = getDefaultHelperContext();
-        }
-
-        return helperContext;
     }
 
-    protected static HelperContext getDefaultHelperContext() {
+    public static HelperContext getDefaultHelperContext() {
         // SDOUtil.createHelperContext();
         return HelperProvider.getDefaultContext();
     }
