@@ -75,7 +75,8 @@ public class JavaBeansDataBinding extends BaseDataBinding {
                 return objectCopy;
             } else {
                 // return arg;
-                throw new IllegalArgumentException("Pass-by-value is not supported for the given object");
+                throw new IllegalArgumentException("Argument type '" + arg.getClass().getCanonicalName() + "' is not Serializable. " + 
+                                                   " Pass-by-value cannot be performed on this argument");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("Pass-by-value is not supported for the given object", e);
