@@ -54,7 +54,7 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected ModelResolver definitionsResolver;
     
-    protected PolicyIntentProcessor policyIntentResolver;
+    //protected PolicyIntentProcessor policyIntentResolver;
     
     /**
      * Construct a new (sca) definitions processor
@@ -65,7 +65,7 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
                               StAXArtifactProcessor extensionProcessor) {
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
-        this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
+        //this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
     }
     
     /**
@@ -79,7 +79,7 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
                               ModelResolver modelResolver) {
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
-        this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
+        //this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
         this.definitionsResolver = modelResolver;
     }
 
@@ -262,6 +262,11 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
     }
     
     public void resolve(SCADefinitions scaDefns, ModelResolver resolver) throws ContributionResolveException {
+        for (int count = 0, size = scaDefns.getPolicyIntents().size(); count < size; count++) {
+            Intent intent = scaDefns.getPolicyIntents().get(count);
+            extensionProcessor.resolve(intent, resolver);
+        }
+        
         for (int count = 0, size = scaDefns.getPolicySets().size(); count < size; count++) {
             PolicySet policySet = scaDefns.getPolicySets().get(count);
             extensionProcessor.resolve(policySet, resolver);

@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
  * Processor for handling xml models of PolicyIntent definitions
  */
 
-public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, PolicyConstants {
+public abstract class PolicyIntentProcessor<T extends Intent> implements StAXArtifactProcessor<T>, PolicyConstants {
 
     private PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
@@ -55,7 +55,7 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
         this.extensionProcessor = extensionProcessor;
     }
 
-    public Intent read(XMLStreamReader reader) throws ContributionReadException {
+    public T read(XMLStreamReader reader) throws ContributionReadException {
         try {
             Intent policyIntent = null;
             String policyIntentName = reader.getAttributeValue(null, NAME);
@@ -105,14 +105,14 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
                     reader.next();
                 }
             }
-            return policyIntent;
+            return (T)policyIntent;
             
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
     }
     
-    public void write(Intent policyIntent, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(T policyIntent, XMLStreamWriter writer) throws ContributionWriteException {
         try {
             // Write an <sca:intent>
             writer.writeStartElement(PolicyConstants.SCA10_NS, INTENT);
@@ -205,7 +205,7 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
         policyIntent.setUnresolved(false);
     }
     
-    public void resolve(Intent policyIntent, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(T policyIntent, ModelResolver resolver) throws ContributionResolveException {
         resolveContrainedArtifacts(policyIntent, resolver);
         
         if ( !policyIntent.isUnresolved() ) {
@@ -215,10 +215,6 @@ public class PolicyIntentProcessor implements StAXArtifactProcessor<Intent>, Pol
     
     public QName getArtifactType() {
         return POLICY_INTENT_QNAME;
-    }
-    
-    public Class<Intent> getModelType() {
-        return Intent.class;
     }
     
     protected void readConstrainedArtifacts(Intent policyIntent, XMLStreamReader reader) throws ContributionReadException {

@@ -82,7 +82,9 @@ public class ReadDocumentTestCase extends TestCase {
         scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, staxProcessor, resolver);
         
         staxProcessors.addArtifactProcessor(scaDefnProcessor);
-        staxProcessors.addArtifactProcessor(new PolicyIntentProcessor(policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new PolicySetProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
         
@@ -146,7 +148,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertTrue(basicAuthMsgProtSecurityPolicySet.getMappedPolicies().isEmpty());
         
         scaDefnDocProcessor.resolve(scaDefinitions, resolver);
-        builder.build(scaDefinitions);
+        //builder.build(scaDefinitions);
         
         //testing if policy intents have been linked have property been linked up 
         assertNotNull(profileIntent.getRequiredIntents().get(0).getDescription());
