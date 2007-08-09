@@ -20,11 +20,13 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
+import org.xml.sax.ContentHandler;
 
 /**
  * Transform DOM Node to XML XMLStreamReader
@@ -36,7 +38,7 @@ public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node>
 
     public Node transform(XMLStreamReader source, TransformationContext context) {
         try {
-            SAX2DOMPipe pipe = new SAX2DOMPipe();
+            DataPipe<ContentHandler, Node> pipe = new SAX2DOMPipe().newInstance();
             stax2sax.transform(source, pipe.getSink(), context);
             Node node = pipe.getResult();
             source.close();

@@ -21,36 +21,29 @@ package org.apache.tuscany.sca.databinding.xml;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tuscany.sca.databinding.DataPipe;
+import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
-public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implements
-    DataPipe<ContentHandler, Node> {
-    private SAX2DOM pipe;
+public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implements DataPipeTransformer<ContentHandler, Node> {
 
     /**
      * 
      */
     public SAX2DOMPipe() {
         super();
-        try {
-            this.pipe = new SAX2DOM();
-        } catch (ParserConfigurationException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
-    public Node getResult() {
-        return pipe.getDOM();
+    /**
+     * @see org.apache.tuscany.sca.databinding.DataPipeTransformer#newInstance()
+     */
+    public DataPipe<ContentHandler, Node> newInstance() {
+        return new Pipe();
     }
 
     public Class getTargetType() {
         return Node.class;
-    }
-
-    public ContentHandler getSink() {
-        return pipe;
     }
 
     public Class getSourceType() {
@@ -61,4 +54,25 @@ public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implement
         return 30;
     }
 
+    private static class Pipe implements DataPipe<ContentHandler, Node> {
+        private SAX2DOM pipe;
+
+        public Pipe() {
+            super();
+            try {
+                this.pipe = new SAX2DOM();
+            } catch (ParserConfigurationException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        public Node getResult() {
+            return pipe.getDOM();
+        }
+
+        public ContentHandler getSink() {
+            return pipe;
+        }
+
+    }
 }

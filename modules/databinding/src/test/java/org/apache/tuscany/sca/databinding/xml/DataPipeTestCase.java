@@ -28,6 +28,8 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.DataPipe;
+import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
 import org.w3c.dom.Document;
@@ -41,13 +43,12 @@ public class DataPipeTestCase extends TestCase {
 
     public final void testStreamPipe() throws IOException {
         byte[] bytes = new byte[] {1, 2, 3};
-        StreamDataPipe pipe = new StreamDataPipe();
-        Assert.assertSame(OutputStream.class, pipe.getSourceType());
-        Assert.assertSame(InputStream.class, pipe.getTargetType());
-        OutputStream os = pipe.getSink();
+        DataPipeTransformer<OutputStream, InputStream> pipe = new StreamDataPipe();
+        DataPipe<OutputStream, InputStream> dataPipe = pipe.newInstance();
+        OutputStream os = dataPipe.getSink();
         os.write(bytes);
         byte[] newBytes = new byte[16];
-        int count = pipe.getResult().read(newBytes);
+        int count = dataPipe.getResult().read(newBytes);
         Assert.assertEquals(3, count);
         for (int i = 0; i < bytes.length; i++) {
             Assert.assertEquals(bytes[i], newBytes[i]);
@@ -59,9 +60,10 @@ public class DataPipeTestCase extends TestCase {
         Writer2ReaderDataPipe pipe = new Writer2ReaderDataPipe();
         Assert.assertSame(Writer.class, pipe.getSourceType());
         Assert.assertSame(Reader.class, pipe.getTargetType());
-        pipe.getSink().write(str);
+        DataPipe<Writer, Reader> dataPipe = pipe.newInstance();
+        dataPipe.getSink().write(str);
         char[] buf = new char[16];
-        int count = pipe.getResult().read(buf);
+        int count = dataPipe.getResult().read(buf);
         Assert.assertEquals(3, count);
         for (int i = 0; i < str.length(); i++) {
             Assert.assertEquals(str.charAt(i), buf[i]);
