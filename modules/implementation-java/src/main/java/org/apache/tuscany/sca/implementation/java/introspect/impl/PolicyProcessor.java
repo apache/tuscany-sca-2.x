@@ -100,7 +100,8 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                     // operation corresponding to the annotated method
                     Intent intent = policyFactory.createIntent();
                     intent.setName(getQName(intentName));
-                    intent.getOperations().add(operation);
+                    //intent.getOperations().add(operation);
+                    operation.getRequiredIntents().add(intent);
                     requiredIntents.add(intent);
                 }
             }
