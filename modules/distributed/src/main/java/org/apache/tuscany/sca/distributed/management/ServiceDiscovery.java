@@ -47,6 +47,6 @@ public interface ServiceDiscovery {
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @return url
      */
-    public String registerServiceEndpoint(String domainUri, String serviceName);  
+    public String findServiceEndpoint(String domainUri, String serviceName);  
  
 }
