@@ -48,6 +48,16 @@ public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implement
 	private boolean unresolved;
 	private BeanDefinitionRegistry beanRegistry;
         private String uri;
+        private List<Intent> computedIntents = new ArrayList<Intent>();;
+        private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+        public List<Intent> getComputedIntents() {
+            return computedIntents;
+        }
+
+        public List<PolicySet> getComputedPolicySets() {
+            return computedPolicySets;
+        }
         
 	protected BeanBaseJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
 		this.beanRegistry = beanRegistry;
