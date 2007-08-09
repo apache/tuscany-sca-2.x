@@ -116,6 +116,16 @@ public class CRUDImplementationImpl implements CRUDImplementation {
         return Collections.emptyList();
     }
 
+    public List<PolicySet> getComputedPolicySets() {
+        // The sample CRUD implementation does not support policy sets
+        return Collections.emptyList();
+    }
+
+    public List<Intent> getComputedIntents() {
+        // The sample CRUD implementation does not support intents
+        return Collections.emptyList();
+    }
+
     public List<Object> getExtensions() {
         // The sample CRUD implementation does not support extensions
         return Collections.emptyList();
