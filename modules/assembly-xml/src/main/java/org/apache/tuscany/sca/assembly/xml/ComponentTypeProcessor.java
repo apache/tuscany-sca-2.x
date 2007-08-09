@@ -317,6 +317,8 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         // Resolve component type services and references
         resolveContracts(componentType.getServices(), resolver);
         resolveContracts(componentType.getReferences(), resolver);
+        resolveIntents(componentType.getRequiredIntents(), resolver);
+        resolvePolicySets(componentType.getPolicySets(), resolver);
     }
     
     public QName getArtifactType() {

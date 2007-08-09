@@ -254,7 +254,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             implementation.setName(getQName(reader, NAME));
                             implementation.setUnresolved(true);
                             component.setImplementation(implementation);
-                            
+                            readPolicies(implementation, reader);
                         } else {
     
                             // Read an extension element
@@ -596,6 +596,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         // Resolve composite services and references
         resolveContracts(composite.getServices(), resolver);
         resolveContracts(composite.getReferences(), resolver);
+        resolveIntents(composite.getRequiredIntents(), resolver);
+        resolvePolicySets(composite.getPolicySets(), resolver);
     }
 
     public QName getArtifactType() {

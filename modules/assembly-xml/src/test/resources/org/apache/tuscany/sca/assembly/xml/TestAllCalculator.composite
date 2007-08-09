@@ -18,44 +18,44 @@
  * under the License.    
 -->
 
-<composite autowire="false" constrainingType="tns:CalculatorComponent" local="true" name="TestAllCalculator" policySets="sns:secure"
+<composite autowire="false" constrainingType="tns:CalculatorComponent" local="true" name="TestAllCalculator" policySets="sns:SecureReliablePolicy"
     requires="cns:confidentiality" targetNamespace="http://calc" xmlns:tns="http://calc"
     xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0 "
     xmlns:ext="http://extension"
-    xmlns:cns="http://test/confidentiality" xmlns:sns="http://test/secure">
+    xmlns:cns="http://test" xmlns:sns="http://test">
 
     <include name="tns:TestAllDivide"/>
     <ext:testExtension/>
 
     <service name="CalculatorService" promote="CalculatorServiceComponent/CalculatorService" requires="cns:confidentiality"
-        policySets="sns:secure">
+        policySets="sns:SecureReliablePolicy">
         <ext:testExtension/>
         <interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback" />
-        <operation name="add" policySets="sns:secure" requires="cns:confidentiality" />
+        <operation name="add" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
 
-        <binding.ws name="CalculatorWS" policySets="sns:secure" port="" requires="cns:confidentiality" uri="http://calc/ws">
-            <operation name="add" policySets="sns:secure" requires="cns:confidentiality" />
+        <binding.ws name="CalculatorWS" policySets="sns:SecureReliablePolicy" port="" requires="cns:confidentiality" uri="http://calc/ws">
+            <operation name="add" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
         </binding.ws>
 
-        <callback policySets="sns:secure" requires="cns:confidentiality">
+        <callback policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">
 	        <ext:testExtension/>
             <binding.ws name="CalculatorCallbackWS" policySets="" port="" requires="" uri="http://calc/callback/ws">
-                <operation name="addCallback" policySets="sns:secure" requires="cns:confidentiality" />
+                <operation name="addCallback" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
             </binding.ws>
         </callback>
     </service>
 
     <component name="CalculatorServiceComponent" autowire="false" constrainingType="tns:CalculatorComponent"
-        policySets="sns:secure" requires="cns:confidentiality">
+        policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">
         <ext:testExtension/>
-        <service name="CalculatorService" policySets="sns:secure" requires="cns:confidentiality">
+        <service name="CalculatorService" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">
             <interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback" />
         </service>
 
         <reference name="addService" target="AddServiceComponent/AddService" autowire="false" multiplicity="1..1"
-            policySets="sns:secure" requires="cns:confidentiality" wiredByImpl="false">
+            policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" wiredByImpl="false">
             <ext:testExtension/>
             <interface.java interface="calculator.AddService" callbackInterface="calculator.AddCallback" />
         </reference>
@@ -94,19 +94,19 @@
         <implementation.java class="calculator.DivideServiceImpl" />
     </component>
 
-    <reference name="MultiplyService" promote="CalculatorServiceComponent/multiplyService" policySets="sns:secure"
+    <reference name="MultiplyService" promote="CalculatorServiceComponent/multiplyService" policySets="sns:SecureReliablePolicy"
         requires="cns:confidentiality">
         <interface.java interface="calculator.MultiplyService" callbackInterface="calculator.MultiplyCallback" />
-        <operation name="multiply" policySets="sns:secure" requires="cns:confidentiality" />
+        <operation name="multiply" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
 
-        <binding.ws name="MultiplyWS" port="" policySets="sns:secure" requires="cns:confidentiality" uri="http://calc/ws">
-            <operation name="multiply" policySets="sns:secure" requires="cns:confidentiality" />
+        <binding.ws name="MultiplyWS" port="" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" uri="http://calc/ws">
+            <operation name="multiply" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
         </binding.ws>
 
-        <callback policySets="sns:secure" requires="cns:confidentiality">
-            <binding.ws name="MultiplyCallbackWS" port="" uri="http://calc/callback/ws" policySets="sns:secure"
+        <callback policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">
+            <binding.ws name="MultiplyCallbackWS" port="" uri="http://calc/callback/ws" policySets="sns:SecureReliablePolicy"
                 requires="cns:confidentiality">
-                <operation name="multiplyCallback" policySets="sns:secure" requires="cns:confidentiality" />
+                <operation name="multiplyCallback" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
             </binding.ws>
         </callback>
     </reference>
