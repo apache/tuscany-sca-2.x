@@ -18,6 +18,7 @@
  */
 package crud.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,6 +47,16 @@ public class CRUDImplementationImpl implements CRUDImplementation {
 
     private Service crudService;
     private String directory;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
 
     /**
      * Constructs a new CRUD implementation.
