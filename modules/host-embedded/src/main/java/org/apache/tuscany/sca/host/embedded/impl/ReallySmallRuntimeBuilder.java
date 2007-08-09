@@ -210,7 +210,7 @@ public class ReallySmallRuntimeBuilder {
         ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
         registry.addExtensionPoint(modelResolvers);
 
-        // Register model resolvers for SCA assembly models
+        // Register model resolvers for SCA assembly models 
         modelResolvers.addResolver(Composite.class, CompositeModelResolver.class);
         modelResolvers.addResolver(ConstrainingType.class, ConstrainingTypeModelResolver.class);
         modelResolvers.addResolver(ComponentType.class, ComponentTypeModelResolver.class);
