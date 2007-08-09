@@ -46,6 +46,17 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     private Component targetComponent;
     private ComponentService targetComponentService;
     private Binding targetBinding;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
+
     
     /**
      * Constructs a new SCA binding.
