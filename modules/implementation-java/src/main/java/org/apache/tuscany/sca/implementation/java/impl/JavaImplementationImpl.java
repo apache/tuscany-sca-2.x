@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A component type specialization for POJO implementations
@@ -49,6 +51,16 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private long maxAge = -1;
     private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
+    private List<Intent> computedIntents = new ArrayList<Intent>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+
+    public List<Intent> getComputedIntents() {
+        return computedIntents;
+    }
+
+    public List<PolicySet> getComputedPolicySets() {
+        return computedPolicySets;
+    }
 
     protected JavaImplementationImpl() {
         super();
