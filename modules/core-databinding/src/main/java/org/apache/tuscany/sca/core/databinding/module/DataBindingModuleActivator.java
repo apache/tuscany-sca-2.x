@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransform
 import org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;
 import org.apache.tuscany.sca.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;

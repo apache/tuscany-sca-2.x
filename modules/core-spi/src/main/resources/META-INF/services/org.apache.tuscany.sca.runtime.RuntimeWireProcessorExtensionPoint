@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Implementation classes for the transformers
+org.apache.tuscany.sca.runtime.DefaultWireProcessorExtensionPoint

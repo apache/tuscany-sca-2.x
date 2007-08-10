@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.contribution.processor;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
@@ -95,7 +94,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
             String modelTypeName = attributes.get("model");
             
             // Create a processor wrapper and register it
-            URLArtifactProcessor processor = new LazyURLArtifactProcessor(modelFactories, artifactType, modelTypeName, classLoader, className);
+            URLArtifactProcessor processor = new LazyURLArtifactProcessor(modelFactories, artifactType, modelTypeName, className);
             addArtifactProcessor(processor);
         }
         
@@ -111,16 +110,14 @@ public class DefaultURLArtifactProcessorExtensionPoint
         private ModelFactoryExtensionPoint modelFactories;
         private String artifactType;
         private String modelTypeName;
-        private WeakReference<ClassLoader> classLoader;
         private String className;
         private URLArtifactProcessor processor;
         private Class modelType;
         
-        LazyURLArtifactProcessor(ModelFactoryExtensionPoint modelFactories, String artifactType, String modelTypeName, ClassLoader classLoader, String className) {
+        LazyURLArtifactProcessor(ModelFactoryExtensionPoint modelFactories, String artifactType, String modelTypeName, String className) {
             this.modelFactories = modelFactories;
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
-            this.classLoader = new WeakReference<ClassLoader>(classLoader);
             this.className = className;
         }
 
@@ -132,7 +129,8 @@ public class DefaultURLArtifactProcessorExtensionPoint
         private URLArtifactProcessor getProcessor() {
             if (processor == null) {
                 try {
-                    Class<URLArtifactProcessor> processorClass = (Class<URLArtifactProcessor>)Class.forName(className, true, classLoader.get());
+                    ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
+                    Class<URLArtifactProcessor> processorClass = (Class<URLArtifactProcessor>)Class.forName(className, true, classLoader);
                     Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class);
                     processor = constructor.newInstance(modelFactories);
                 } catch (Exception e) {
@@ -149,7 +147,8 @@ public class DefaultURLArtifactProcessorExtensionPoint
         public Class getModelType() {
             if (modelType == null) {
                 try {
-                    modelType = Class.forName(modelTypeName, true, classLoader.get());
+                    ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
+                    modelType = Class.forName(modelTypeName, true, classLoader);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

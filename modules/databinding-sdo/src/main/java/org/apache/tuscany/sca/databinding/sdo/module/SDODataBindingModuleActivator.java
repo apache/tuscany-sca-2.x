@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.databinding.sdo.HelperContextProcessor;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistry;
 import org.apache.tuscany.sca.databinding.sdo.HelperContextRegistryImpl;
 import org.apache.tuscany.sca.databinding.sdo.ImportSDOProcessor;
-import org.apache.tuscany.sca.databinding.sdo.SDOTypeRegisterListener;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 
 /**
@@ -44,9 +43,6 @@ public class SDODataBindingModuleActivator implements ModuleActivator {
         HelperContextRegistry contextRegistry = new HelperContextRegistryImpl();
         processors.addArtifactProcessor(new ImportSDOProcessor(contextRegistry));
 
-        //ContributionListenerExtensionPoint listeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class);
-        //listeners.addContributionListener(new SDOTypeRegisterListener(contextRegistry));
-        
         JavaImplementationFactory javaImplementationFactory = registry.getExtensionPoint(JavaImplementationFactory.class);
         javaImplementationFactory.addClassVisitor(new HelperContextProcessor(assemblyFactory, contextRegistry));
 
