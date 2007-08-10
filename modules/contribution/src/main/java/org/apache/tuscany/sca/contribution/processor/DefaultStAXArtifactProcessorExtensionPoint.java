@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.contribution.processor;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Set;
@@ -107,7 +106,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
             String modelTypeName = attributes.get("model");
             
             // Create a processor wrapper and register it
-            StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, classLoader, className);
+            StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, className);
             addArtifactProcessor(processor);
         }
         
@@ -123,16 +122,14 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         private ModelFactoryExtensionPoint modelFactories;
         private QName artifactType;
         private String modelTypeName;
-        private WeakReference<ClassLoader> classLoader;
         private String className;
         private StAXArtifactProcessor processor;
         private Class modelType;
         
-        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, QName artifactType, String modelTypeName, ClassLoader classLoader, String className) {
+        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, QName artifactType, String modelTypeName, String className) {
             this.modelFactories = modelFactories;
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
-            this.classLoader = new WeakReference<ClassLoader>(classLoader);
             this.className = className;
         }
 
@@ -150,7 +147,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
                     AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
                     PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
                     try {
-                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader.get());
+                        ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
+                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader);
                         Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(AssemblyFactory.class, PolicyFactory.class, QName.class, Class.class);
                         processor = constructor.newInstance(assemblyFactory, policyFactory, artifactType, getModelType());
                     } catch (Exception e) {
@@ -160,7 +158,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
                     
                     // Load and instanciate the processor class
                     try {
-                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader.get());
+                        ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
+                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader);
                         Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class);
                         processor = constructor.newInstance(modelFactories);
                     } catch (Exception e) {
@@ -183,7 +182,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         public Class getModelType() {
             if (modelType == null) {
                 try {
-                    modelType = Class.forName(modelTypeName, true, classLoader.get());
+                    ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
+                    modelType = Class.forName(modelTypeName, true, classLoader);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

@@ -26,13 +26,10 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.binding.sca.impl.RuntimeSCABindingProviderFactory;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -54,9 +51,7 @@ import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.provider.DefaultProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.runtime.DefaultWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
@@ -121,8 +116,7 @@ public class DistributedRuntime  {
         factories.addFactory(assemblyFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         factories.addFactory(policyFactory);
-        ContributionFactory contributionFactory = new ContributionFactoryImpl(); 
-        factories.addFactory(contributionFactory);        
+        ContributionFactory contributionFactory = factories.getFactory(ContributionFactory.class); 
         
         // Create a contribution service
         contributionService = createContributionService(classLoader, 
@@ -141,14 +135,11 @@ public class DistributedRuntime  {
         registry.addExtensionPoint(workScheduler);
 
         // Create a wire post processor extension point
-        RuntimeWireProcessorExtensionPoint wireProcessors = new DefaultWireProcessorExtensionPoint();
-        registry.addExtensionPoint(wireProcessors);
+        RuntimeWireProcessorExtensionPoint wireProcessors = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
 
         // Create a provider factory extension point
-        ProviderFactoryExtensionPoint providerFactories = new DefaultProviderFactoryExtensionPoint();
-        registry.addExtensionPoint(providerFactories);
-        providerFactories.addProviderFactory(new RuntimeSCABindingProviderFactory());
+        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         
         // Start the runtime modules
         modules = startModules(registry, classLoader);
@@ -157,12 +148,6 @@ public class DistributedRuntime  {
         // loaded from an extension
         SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
         
-        // if not use the core version
-        if (scaBindingFactory == null) {
-            scaBindingFactory = new SCABindingFactoryImpl();
-            factories.addFactory(scaBindingFactory);
-        }
-
         // Create the composite activator
         compositeActivator = createCompositeActivator(registry,
                                                       domain,
