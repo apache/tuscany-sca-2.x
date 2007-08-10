@@ -114,8 +114,7 @@ public class NodeRuntime extends DistributedRuntime  {
     
     public Composite getNodeComposite(URL nodeFileURL)
       throws ContributionReadException, ContributionResolveException {
-        DefaultURLArtifactProcessorExtensionPoint documentProcessors = 
-            (DefaultURLArtifactProcessorExtensionPoint)
+        URLArtifactProcessorExtensionPoint documentProcessors =
             registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         ExtensibleURLArtifactProcessor documentProcessor = 
             new ExtensibleURLArtifactProcessor(documentProcessors);  

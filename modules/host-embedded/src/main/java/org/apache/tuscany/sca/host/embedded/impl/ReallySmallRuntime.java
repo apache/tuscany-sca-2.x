@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.ArtifactProcessor;
@@ -93,9 +92,8 @@ public class ReallySmallRuntime {
         // Create an interface contract mapper
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
 
-        // Create factory extension point
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        registry.addExtensionPoint(factories);
+        // Get factory extension point
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         
         // Create context factory extension point
         ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint();
