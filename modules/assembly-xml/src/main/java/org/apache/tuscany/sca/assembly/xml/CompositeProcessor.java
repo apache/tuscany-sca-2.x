@@ -588,7 +588,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                     }
                 }
             }
-            
+            resolveIntents(component.getRequiredIntents(), resolver);
+            resolvePolicySets(component.getPolicySets(), resolver);
             resolveContracts(component.getServices(), resolver);
             resolveContracts(component.getReferences(), resolver);
         }

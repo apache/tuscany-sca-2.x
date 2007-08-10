@@ -129,6 +129,20 @@ public class ResolvePolicyTestCase extends TestCase {
         
         assertNull(composite.getServices().get(0).getRequiredIntents().get(0).getDescription());
         assertTrue(composite.getServices().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNull(composite.getServices().get(0).getCallback().getRequiredIntents().get(0).getDescription());
+        assertTrue(composite.getServices().get(0).getCallback().getPolicySets().get(0).getProvidedIntents().isEmpty());
+        
+        assertNull(composite.getComponents().get(0).getRequiredIntents().get(0).getDescription());
+        assertTrue(composite.getComponents().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNull(composite.getComponents().get(0).getServices().get(0).getRequiredIntents().get(0).getDescription());
+        assertTrue(composite.getComponents().get(0).getServices().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNull(composite.getComponents().get(0).getReferences().get(0).getRequiredIntents().get(0).getDescription());
+        assertTrue(composite.getComponents().get(0).getReferences().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        
+        assertNull(composite.getReferences().get(0).getRequiredIntents().get(0).getDescription());
+        assertTrue(composite.getReferences().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNull(composite.getReferences().get(0).getCallback().getRequiredIntents().get(0).getDescription());
+        assertTrue(composite.getReferences().get(0).getCallback().getPolicySets().get(0).getProvidedIntents().isEmpty());
     }
     
     private void postResolvePolicyTests(Composite composite) {
@@ -139,6 +153,28 @@ public class ResolvePolicyTestCase extends TestCase {
         assertNotNull(composite.getServices().get(0).getRequiredIntents().get(0).getDescription());
         assertFalse(composite.getServices().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
         assertNotNull(composite.getServices().get(0).getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        assertNotNull(composite.getServices().get(0).getCallback().getRequiredIntents().get(0).getDescription());
+        assertFalse(composite.getServices().get(0).getCallback().getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNotNull(composite.getServices().get(0).getCallback().getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        
+        assertNotNull(composite.getComponents().get(0).getRequiredIntents().get(0).getDescription());
+        assertFalse(composite.getComponents().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNotNull(composite.getComponents().get(0).getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        assertNotNull(composite.getComponents().get(0).getServices().get(0).getRequiredIntents().get(0).getDescription());
+        assertFalse(composite.getComponents().get(0).getServices().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNotNull(composite.getComponents().get(0).getServices().get(0).getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        assertNotNull(composite.getComponents().get(0).getReferences().get(0).getRequiredIntents().get(0).getDescription());
+        assertFalse(composite.getComponents().get(0).getReferences().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNotNull(composite.getComponents().get(0).getReferences().get(0).getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        
+        assertNotNull(composite.getReferences().get(0).getRequiredIntents().get(0).getDescription());
+        assertFalse(composite.getReferences().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNotNull(composite.getReferences().get(0).getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        assertNotNull(composite.getReferences().get(0).getCallback().getRequiredIntents().get(0).getDescription());
+        assertFalse(composite.getReferences().get(0).getCallback().getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNotNull(composite.getReferences().get(0).getCallback().getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        
+        
     }
 
     public void testResolveComposite() throws Exception {
