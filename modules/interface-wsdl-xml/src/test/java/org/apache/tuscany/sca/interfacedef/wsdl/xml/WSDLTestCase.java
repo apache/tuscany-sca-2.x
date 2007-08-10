@@ -46,7 +46,7 @@ public class WSDLTestCase extends TestCase {
     private WSDLModelResolver wsdlResolver;
 
     public void setUp() throws Exception {
-        documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
+        documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();

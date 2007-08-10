@@ -25,23 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
-import org.apache.tuscany.sca.contribution.processor.ArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -146,10 +138,6 @@ public class ReallySmallRuntime {
         // Start the runtime modules
         startModules(registry, modules);
         
-        // Load the artifact processor extensions
-        loadArtifactProcessors(registry, classLoader, URLArtifactProcessor.class);
-        loadArtifactProcessors(registry, classLoader, StAXArtifactProcessor.class);
-        
         // Load the provider factory extensions
         loadProviderFactories(registry, classLoader, BindingProviderFactory.class);
         loadProviderFactories(registry, classLoader, ImplementationProviderFactory.class);
@@ -221,61 +209,6 @@ public class ReallySmallRuntime {
         for (ModuleActivator activator : modules) {
             activator.start(registry);
         }
-    }
-
-    private List<ArtifactProcessor> loadArtifactProcessors(ExtensionPointRegistry registry, ClassLoader classLoader, Class<?> processorClass) {
-
-        // Get the processor service declarations
-        Set<String> processorDeclarations; 
-        try {
-            processorDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, processorClass.getName());
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        
-        // Get the target extension points
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        URLArtifactProcessorExtensionPoint urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        List<ArtifactProcessor> processors = new ArrayList<ArtifactProcessor>();
-        
-        for (String processorDeclaration: processorDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(processorDeclaration);
-            String className = attributes.get("class");
-            
-            // Load a StAX artifact processor
-            if (processorClass == StAXArtifactProcessor.class) {
-                QName artifactType = null;
-                String qname = attributes.get("type");
-                if (qname != null) {
-                    int h = qname.indexOf('#');
-                    if (h == -1) {
-                        artifactType = new QName(Constants.SCA10_NS, qname);
-                    } else {
-                        artifactType = new QName(qname.substring(0, h), qname.substring(h+1));
-                    }
-                }
-                
-                String modelTypeName = attributes.get("model");
-                
-                // Create a processor wrapper and register it
-                StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, classLoader, className);
-                staxProcessors.addArtifactProcessor(processor);
-                processors.add(processor);
-
-            } else if (processorClass == URLArtifactProcessor.class) {
-
-                String artifactType = attributes.get("type");
-                String modelTypeName = attributes.get("model");
-                
-                // Create a processor wrapper and register it
-                URLArtifactProcessor processor = new LazyURLArtifactProcessor(modelFactories, artifactType, modelTypeName, classLoader, className);
-                urlProcessors.addArtifactProcessor(processor);
-                processors.add(processor);
-
-            }
-        }
-        return processors;
     }
 
     private List<ProviderFactory> loadProviderFactories(ExtensionPointRegistry registry, ClassLoader classLoader, Class<?> factoryClass) {

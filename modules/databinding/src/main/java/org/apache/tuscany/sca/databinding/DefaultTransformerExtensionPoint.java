@@ -19,14 +19,14 @@
 package org.apache.tuscany.sca.databinding;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph;
-import org.apache.tuscany.sca.databinding.impl.LazyPullTransformer;
-import org.apache.tuscany.sca.databinding.impl.LazyPushTransformer;
 import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 /**
@@ -109,6 +109,125 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             addTransformer(transformer);
         }
     }
+    
+    /**
+     * A transformer facade allowing transformers to be lazily loaded
+     * and initialized.
+     */
+    private static class LazyPullTransformer implements PullTransformer<Object, Object> {
+
+        private String source;
+        private String target;
+        private int weight;
+        private WeakReference<ClassLoader> classLoader;
+        private String className;
+        private PullTransformer<Object, Object> transformer;
+
+        public LazyPullTransformer(String source, String target, int weight, ClassLoader classLoader, String className) {
+            this.source = source;
+            this.target = target;
+            this.weight = weight;
+            this.classLoader = new WeakReference<ClassLoader>(classLoader);
+            this.className = className;
+        }
+
+        /**
+         * Load and instantiate the transformer class.
+         * 
+         * @return The transformer.
+         */
+        @SuppressWarnings("unchecked")
+        private PullTransformer<Object, Object> getTransformer() {
+            if (transformer == null) {
+                try {
+                    Class<PullTransformer<Object, Object>> transformerClass =
+                        (Class<PullTransformer<Object, Object>>)Class.forName(className, true, classLoader.get());
+                    Constructor<PullTransformer<Object, Object>> constructor = transformerClass.getConstructor();
+                    transformer = constructor.newInstance();
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return transformer;
+        }
+
+        public String getSourceDataBinding() {
+            return source;
+        }
+
+        public String getTargetDataBinding() {
+            return target;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+        
+        public Object transform(Object source, TransformationContext context) {
+            return getTransformer().transform(source, context);
+        }
+
+    }
+
+    /**
+     * A transformer facade allowing transformers to be lazily loaded
+     * and initialized.
+     */
+    private static class LazyPushTransformer implements PushTransformer<Object, Object> {
+
+        private String source;
+        private String target;
+        private int weight;
+        private WeakReference<ClassLoader> classLoader;
+        private String className;
+        private PushTransformer<Object, Object> transformer;
+
+        public LazyPushTransformer(String source, String target, int weight, ClassLoader classLoader, String className) {
+            this.source = source;
+            this.target = target;
+            this.weight = weight;
+            this.classLoader = new WeakReference<ClassLoader>(classLoader);
+            this.className = className;
+        }
+
+        /**
+         * Load and instantiate the transformer class.
+         * 
+         * @return The transformer.
+         */
+        @SuppressWarnings("unchecked")
+        private PushTransformer<Object, Object> getTransformer() {
+            if (transformer == null) {
+                try {
+                    Class<PushTransformer<Object, Object>> transformerClass =
+                        (Class<PushTransformer<Object, Object>>)Class.forName(className, true, classLoader.get());
+                    Constructor<PushTransformer<Object, Object>> constructor = transformerClass.getConstructor();
+                    transformer = constructor.newInstance();
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return transformer;
+        }
+
+        public String getSourceDataBinding() {
+            return source;
+        }
+
+        public String getTargetDataBinding() {
+            return target;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void transform(Object source, Object sink, TransformationContext context) {
+            getTransformer().transform(source, sink, context);
+        }
+
+    }
+
     
     //FIXME The following methods should be on a different class from
     // extension point

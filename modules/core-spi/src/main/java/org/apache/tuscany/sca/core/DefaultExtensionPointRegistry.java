@@ -20,12 +20,15 @@
 package org.apache.tuscany.sca.core;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 /**
@@ -68,11 +71,25 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
                 Set<String> classNames = TempServiceDeclarationUtil.getServiceClassNames(classLoader, extensionPointType.getName());
                 if (!classNames.isEmpty()) {
                     Class<?> extensionPointClass = Class.forName(classNames.iterator().next(), true, classLoader);
-                    extensionPoint = extensionPointClass.newInstance();
+                    
+                    // Construct the extension point
+                    try {
+                        Constructor constructor = extensionPointClass.getConstructor();
+                        extensionPoint = constructor.newInstance();
+                    } catch (NoSuchMethodException e) {
+                        try {
+                            Constructor constructor = extensionPointClass.getConstructor(ModelFactoryExtensionPoint.class);
+                            extensionPoint = constructor.newInstance(getExtensionPoint(ModelFactoryExtensionPoint.class));
+                        } catch (NoSuchMethodException e2) {
+                            throw new IllegalArgumentException(e2);
+                        }
+                    }
                     
                     // Cache the loaded extension point
                     addExtensionPoint(extensionPoint);
                 }
+            } catch (InvocationTargetException e) {
+                throw new IllegalArgumentException(e);
             } catch (IOException e) {
                 throw new IllegalArgumentException(e);
             } catch (ClassNotFoundException e) {

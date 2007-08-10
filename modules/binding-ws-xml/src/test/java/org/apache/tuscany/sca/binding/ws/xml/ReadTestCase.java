@@ -75,7 +75,7 @@ public class ReadTestCase extends TestCase {
         factories.addFactory(policyFactory);
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();

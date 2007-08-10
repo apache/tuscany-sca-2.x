@@ -20,11 +20,12 @@ package org.apache.tuscany.sca.databinding;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tuscany.sca.databinding.impl.LazyDataBinding;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -111,6 +112,82 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         loadedDataBindings = true;
     }
 
+    
+    /**
+     * A data binding facade allowing data bindings to be lazily loaded and
+     * initialized.
+     */
+    private static class LazyDataBinding implements DataBinding {
+
+        private String name;
+        private String[] aliases; 
+        private WeakReference<ClassLoader> classLoader;
+        private String className;
+        private DataBinding dataBinding;
+
+        private LazyDataBinding(String type, String name, ClassLoader classLoader, String className) {
+            this.name = type;
+            if (name != null) {
+                this.aliases = new String[] {name};
+            }
+            this.classLoader = new WeakReference<ClassLoader>(classLoader);
+            this.className = className;
+        }
+
+        /**
+         * Load and instantiate the data binding class.
+         * 
+         * @return The data binding.
+         */
+        @SuppressWarnings("unchecked")
+        private DataBinding getDataBinding() {
+            if (dataBinding == null) {
+                try {
+                    Class<DataBinding> dataBindingClass =
+                        (Class<DataBinding>)Class.forName(className, true, classLoader.get());
+                    Constructor<DataBinding> constructor = dataBindingClass.getConstructor();
+                    dataBinding = constructor.newInstance();
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return dataBinding;
+        }
+
+        public Object copy(Object object) {
+            return getDataBinding().copy(object);
+        }
+
+        public String[] getAliases() {
+            return aliases;
+        }
+
+        public ExceptionHandler getExceptionHandler() {
+            return getDataBinding().getExceptionHandler();
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public SimpleTypeMapper getSimpleTypeMapper() {
+            return getDataBinding().getSimpleTypeMapper();
+        }
+
+        public WrapperHandler getWrapperHandler() {
+            return getDataBinding().getWrapperHandler();
+        }
+
+        public boolean introspect(DataType dataType, Annotation[] annotations) {
+            return getDataBinding().introspect(dataType, annotations);
+        }
+
+        public DataType introspect(Object value) {
+            return getDataBinding().introspect(value);
+        }
+    }
+
+    
     //FIXME The following methods should not be on the extension point
     // they should be on a separate class
     public boolean introspectType(DataType dataType, Annotation[] annotations) {
