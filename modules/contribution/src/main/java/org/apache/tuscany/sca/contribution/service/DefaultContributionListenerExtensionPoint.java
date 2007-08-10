@@ -19,8 +19,12 @@
 
 package org.apache.tuscany.sca.contribution.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 /**
  * Default implementation of a contribution listener extension point.
@@ -30,17 +34,54 @@ import java.util.List;
 public class DefaultContributionListenerExtensionPoint implements ContributionListenerExtensionPoint {
     
     private List<ContributionListener> listeners = new ArrayList<ContributionListener>();
+    private boolean loadedListeners;
 
     public void addContributionListener(ContributionListener listener) {
         listeners.add(listener);
     }
 
     public List<ContributionListener> getContributionListeners() {
+        loadListeners();
         return listeners;
     }
 
     public void removeContributionListener(ContributionListener listener) {
         listeners.remove(listener);
+    }
+
+    /**
+     * Dynamically load listeners declared under META-INF/services
+     */
+    private void loadListeners() {
+        if (loadedListeners)
+            return;
+
+        // Get the databinding service declarations
+        ClassLoader classLoader = ContributionListener.class.getClassLoader();
+        Set<String> listenerDeclarations; 
+        try {
+            listenerDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, ContributionListener.class.getName());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Load data bindings
+        for (String listenerDeclaration: listenerDeclarations) {
+            ContributionListener listener;
+            try {
+                Class<ContributionListener> listenerClass = (Class<ContributionListener>)Class.forName(listenerDeclaration, true, classLoader);
+                listener = listenerClass.newInstance();
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException(e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException(e);
+            }
+            addContributionListener(listener);
+        }
+        
+        loadedListeners = true;
     }
 
 }

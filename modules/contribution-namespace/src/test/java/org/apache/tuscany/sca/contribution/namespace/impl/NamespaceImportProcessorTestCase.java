@@ -9,6 +9,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
@@ -45,7 +47,9 @@ public class NamespaceImportProcessorTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
-        NamespaceImportProcessor importProcessor = new NamespaceImportProcessor(new NamespaceImportExportFactoryImpl());
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(new NamespaceImportExportFactoryImpl());
+        NamespaceImportProcessor importProcessor = new NamespaceImportProcessor(factories);
         NamespaceImport namespaceImport = importProcessor.read(reader);
         
         assertEquals("http://foo", namespaceImport.getNamespace());
@@ -59,7 +63,9 @@ public class NamespaceImportProcessorTestCase extends TestCase {
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
 
-        NamespaceImportProcessor importProcessor = new NamespaceImportProcessor(new NamespaceImportExportFactoryImpl());
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(new NamespaceImportExportFactoryImpl());
+        NamespaceImportProcessor importProcessor = new NamespaceImportProcessor(factories);
         try {
             importProcessor.read(reader);
             fail("readerException should have been thrown");

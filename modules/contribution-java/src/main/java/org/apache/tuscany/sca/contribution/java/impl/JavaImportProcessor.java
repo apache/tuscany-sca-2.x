@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -50,9 +51,9 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
     
     private final JavaImportExportFactory factory;
     
-    public JavaImportProcessor(JavaImportExportFactory factory) {
+    public JavaImportProcessor(ModelFactoryExtensionPoint modelFactories) {
         super();
-        this.factory = factory;
+        this.factory = modelFactories.getFactory(JavaImportExportFactory.class);
     }
     
     public QName getArtifactType() {

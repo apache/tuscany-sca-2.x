@@ -8,6 +8,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
@@ -44,7 +46,9 @@ public class JavaExportProcessorTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
-        JavaExportProcessor exportProcessor = new JavaExportProcessor(new JavaImportExportFactoryImpl());
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(new JavaImportExportFactoryImpl());
+        JavaExportProcessor exportProcessor = new JavaExportProcessor(factories);
         JavaExport javaExport = exportProcessor.read(reader);
         
         assertEquals("org.apache.tuscany.sca.contribution.java", javaExport.getPackage());
@@ -57,7 +61,9 @@ public class JavaExportProcessorTestCase extends TestCase {
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
 
-        JavaExportProcessor exportProcessor = new JavaExportProcessor(new JavaImportExportFactoryImpl());
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(new JavaImportExportFactoryImpl());
+        JavaExportProcessor exportProcessor = new JavaExportProcessor(factories);
         try {
             exportProcessor.read(reader);
             fail("readerException should have been thrown");

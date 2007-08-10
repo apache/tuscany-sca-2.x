@@ -8,6 +8,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
@@ -44,7 +46,9 @@ public class JavaImportProcessorTestCase extends TestCase {
     public void testLoad() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
-        JavaImportProcessor importProcessor = new JavaImportProcessor(new JavaImportExportFactoryImpl());
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(new JavaImportExportFactoryImpl());
+        JavaImportProcessor importProcessor = new JavaImportProcessor(factories);
         JavaImport javaImport = importProcessor.read(reader);
         
         assertEquals("org.apache.tuscany.sca.contribution.java", javaImport.getPackage());
@@ -58,7 +62,9 @@ public class JavaImportProcessorTestCase extends TestCase {
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
 
-        JavaImportProcessor importProcessor = new JavaImportProcessor(new JavaImportExportFactoryImpl());
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        factories.addFactory(new JavaImportExportFactoryImpl());
+        JavaImportProcessor importProcessor = new JavaImportProcessor(factories);
         try {
             importProcessor.read(reader);
             fail("readerException should have been thrown");

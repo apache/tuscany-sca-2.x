@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -49,9 +50,9 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
     
     private final NamespaceImportExportFactory factory;
     
-    public NamespaceExportProcessor(NamespaceImportExportFactory factory) {
+    public NamespaceExportProcessor(ModelFactoryExtensionPoint modelFactories) {
         super();
-        this.factory = factory;
+        this.factory = modelFactories.getFactory(NamespaceImportExportFactory.class);
     }
 
     public QName getArtifactType() {

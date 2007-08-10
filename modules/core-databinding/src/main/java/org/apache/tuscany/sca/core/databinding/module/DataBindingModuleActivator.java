@@ -44,9 +44,6 @@ public class DataBindingModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         
-        //FIXME hack for now
-        //((DefaultTransformerExtensionPoint)transformers).setDataBindings(dataBindings);
-        
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
@@ -68,8 +65,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         javaFactory.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 
-        RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry
-            .getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
+        RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
             wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator));
         }

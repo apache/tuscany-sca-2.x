@@ -39,16 +39,16 @@ import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
-import org.apache.tuscany.sca.contribution.processor.DefaultContributionPostProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultPackageProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
@@ -56,7 +56,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.contribution.service.DefaultContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
@@ -93,9 +92,8 @@ public class NodeRuntimeBuilder {
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
 
-        // Create STAX artifact processor extension point
-        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
-        registry.addExtensionPoint(staxProcessors);
+        // Get STAX artifact processor extension point
+        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
         // Create and register STAX processors for SCA assembly XML
         ExtensibleStAXArtifactProcessor staxProcessor = 
@@ -108,8 +106,7 @@ public class NodeRuntimeBuilder {
 
         // Create URL artifact processor extension point
         // FIXME use the interface instead of the class
-        DefaultURLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint();
-        registry.addExtensionPoint(documentProcessors);
+        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
 
         // Create and register document processors for SCA assembly XML
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -129,8 +126,7 @@ public class NodeRuntimeBuilder {
 
         // Create contribution package processor extension point
         PackageTypeDescriberImpl describer = new PackageTypeDescriberImpl();
-        PackageProcessorExtensionPoint packageProcessors = new DefaultPackageProcessorExtensionPoint();
-        registry.addExtensionPoint(packageProcessors);
+        PackageProcessorExtensionPoint packageProcessors = registry.getExtensionPoint(PackageProcessorExtensionPoint.class);
 
         // Register base package processors
         packageProcessors.addPackageProcessor(new JarContributionProcessor());
@@ -141,17 +137,10 @@ public class NodeRuntimeBuilder {
         // Get the model factory extension point
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         
-        //FIXME Deprecate and remove this
-        // Create contribution postProcessor extension point
-        DefaultContributionPostProcessorExtensionPoint contributionPostProcessors = new DefaultContributionPostProcessorExtensionPoint();
-        ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(contributionPostProcessors);
-        registry.addExtensionPoint(contributionPostProcessors);        
+        //FIXME remove this
+        ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(registry.getExtensionPoint(ContributionPostProcessorExtensionPoint.class));
 
-        // Create contribution listener extension point
-        ContributionListenerExtensionPoint contributionListeners = new DefaultContributionListenerExtensionPoint();
-        registry.addExtensionPoint(contributionListeners);
-        
-        ExtensibleContributionListener contributionListener = new ExtensibleContributionListener(contributionListeners);
+        ExtensibleContributionListener contributionListener = new ExtensibleContributionListener(registry.getExtensionPoint(ContributionListenerExtensionPoint.class));
         
 
         // Create a contribution repository
