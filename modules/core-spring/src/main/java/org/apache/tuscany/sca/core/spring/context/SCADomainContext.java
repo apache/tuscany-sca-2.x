@@ -127,7 +127,7 @@ public class SCADomainContext {
         }
 
         // Populate ArtifactProcessor registry
-        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
         ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         CompositeProcessor compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory,
                                                                        interfaceContractMapper, staxProcessor);

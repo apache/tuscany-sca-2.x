@@ -66,7 +66,7 @@ public class WriteTestCase extends TestCase {
         modelFactories.addFactory(policyFactory);
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint();
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();

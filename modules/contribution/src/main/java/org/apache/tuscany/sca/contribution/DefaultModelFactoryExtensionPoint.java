@@ -34,6 +34,9 @@ import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionPoint {
     
     private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
+    
+    public DefaultModelFactoryExtensionPoint() {
+    }
 
     /**
      * Add a model factory extension.
