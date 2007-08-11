@@ -86,11 +86,6 @@
             <version>${pom.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>commonj-api</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-contribution</artifactId>
             <version>${pom.version}</version>
