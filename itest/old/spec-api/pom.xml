@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-spec-api</artifactId>
+    <artifactId>itest-spec-api</artifactId>
     <name>Apache Tuscany SCA Spec API Integration Tests</name>
 
     <dependencies>

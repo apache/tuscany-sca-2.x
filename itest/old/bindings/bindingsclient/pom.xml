@@ -29,7 +29,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.testing.bindingstest</groupId>
-    <artifactId>tuscany-itest-bindings-bindingsclient</artifactId>
+    <artifactId>itest-bindings-bindingsclient</artifactId>
     <packaging>jar</packaging>
     <name>SCA FVT Bindings Test Tool JSP Client</name>
 
@@ -37,13 +37,13 @@
 
         <dependency>
             <groupId>org.apache.tuscany.testing.bindingstest</groupId>
-            <artifactId>tuscany-itest-bindings-bindingscomposite</artifactId>
+            <artifactId>itest-bindings-bindingscomposite</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.testing.bindingstest</groupId>
-            <artifactId>tuscany-itest-bindings-bindingsutility</artifactId>
+            <artifactId>itest-bindings-bindingsutility</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
