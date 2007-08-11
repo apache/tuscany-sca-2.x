@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -62,7 +63,11 @@ public class DiscoveryUtils {
         Object[] extensions = new Object[paramTypes.length];
 
         for (int i=0; i< paramTypes.length; i++) {
-            extensions[i] = registry.getExtensionPoint(paramTypes[i]);
+            if ("org.apache.tuscany.sca.http.ServletHost".equals(paramTypes[i].getName())) {
+                extensions[i] = getServletHost(registry);
+            } else {
+                extensions[i] = registry.getExtensionPoint(paramTypes[i]);
+            }
         }
         
         try {
@@ -70,6 +75,31 @@ public class DiscoveryUtils {
             return cs[0].newInstance(extensions);
 
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Object getServletHost(ExtensionPointRegistry registry) {
+        try {
+
+            Class<?> servletHostEPClass = Class.forName("org.apache.tuscany.sca.http.ServletHostExtensionPoint");
+            Object servletHostEP = registry.getExtensionPoint(servletHostEPClass);
+            Class<?> extensibleServletHost = Class.forName("org.apache.tuscany.sca.http.ExtensibleServletHost");
+            return extensibleServletHost.getConstructor(new Class[] {servletHostEPClass}).newInstance(servletHostEP);
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (SecurityException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
