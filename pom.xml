@@ -131,6 +131,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.1</version>
                     <configuration>
                         <archive>
                             <manifestEntries>
@@ -145,7 +146,6 @@
                             </manifestEntries>
                          </archive>
                     </configuration>
-                    <version>2.1</version>
                 </plugin>
 
                 <!-- source code style check plugin configuration -->
