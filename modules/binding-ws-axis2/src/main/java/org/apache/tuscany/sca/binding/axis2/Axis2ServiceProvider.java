@@ -211,7 +211,7 @@ public class Axis2ServiceProvider {
      */
     protected URI getEndpoint(Port wsdlPort) {
         if (wsdlPort != null) {
-            List wsdlPortExtensions = wsdlPort.getExtensibilityElements();
+            List<?> wsdlPortExtensions = wsdlPort.getExtensibilityElements();
             for (Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
                     return URI.create(((SOAPAddress)extension).getLocationURI());
@@ -287,7 +287,7 @@ public class Axis2ServiceProvider {
     }
 
     protected void initAxisOperations(AxisService axisService) {
-        for (Iterator i = axisService.getOperations(); i.hasNext();) {
+        for (Iterator<?> i = axisService.getOperations(); i.hasNext();) {
             AxisOperation axisOp = (AxisOperation)i.next();
             Operation op = getOperation(axisOp);
             if (op != null) {
@@ -334,16 +334,16 @@ public class Axis2ServiceProvider {
         if (isConversational()) {
             SOAPHeader header = inMC.getEnvelope().getHeader();
             if (header != null) {
-                Iterator i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
+                Iterator<?> i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
                 for (; i.hasNext();) {
                     Object a = i.next();
                     if (a instanceof OMElement) {
                         OMElement ao = (OMElement)a;
-                        for (Iterator rpI =
+                        for (Iterator<?> rpI =
                             ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing",
                                                              "ReferenceParameters")); rpI.hasNext();) {
                             OMElement rpE = (OMElement)rpI.next();
-                            for (Iterator cidI =
+                            for (Iterator<?> cidI =
                                 rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN); cidI.hasNext();) {
                                 OMElement cidE = (OMElement)cidI.next();
                                 conversationID = cidE.getText();
@@ -367,12 +367,12 @@ public class Axis2ServiceProvider {
         if (contract instanceof RuntimeComponentService && contract.getInterfaceContract().getCallbackInterface() != null) {
             SOAPHeader header = inMC.getEnvelope().getHeader();
             if (header != null) {
-                Iterator i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
+                Iterator<?> i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
                 for (; i.hasNext();) {
                     Object a = i.next();
                     if (a instanceof OMElement) {
                         OMElement ao = (OMElement)a;
-                        for (Iterator adI =
+                        for (Iterator<?> adI =
                             ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "Address")); adI
                             .hasNext();) {
                             OMElement adE = (OMElement)adI.next();

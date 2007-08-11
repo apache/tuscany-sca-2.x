@@ -129,7 +129,7 @@ public class Axis2ServiceServlet extends AxisServlet {
                         return null;
                     }
 
-                    public Set getResourcePaths(String path) {
+                    public Set<?> getResourcePaths(String path) {
                         return Collections.emptySet();
                     }
 

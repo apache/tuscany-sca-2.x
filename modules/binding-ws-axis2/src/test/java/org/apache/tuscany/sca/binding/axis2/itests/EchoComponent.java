@@ -19,26 +19,15 @@
 
 package org.apache.tuscany.sca.binding.axis2.itests;
 
-import junit.framework.TestCase;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+public class EchoComponent implements Echo {
 
-public class HelloWorldNoWSDLTestCaseFIXME extends TestCase {
+    @Reference
+    public Echo echoWS;
 
-    private SCADomain domain;
-    private HelloWorld helloWorld;
-
-    public void testCalculator() throws Exception {
-        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
-    }
-
-    protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/HelloWorldNoWSDL.composite");
-        helloWorld = domain.getService(HelloWorld.class, "HelloWorldComponent");
-    }
-    
-    protected void tearDown() throws Exception {
-        domain.close();
+    public Foo echoFoo(Foo foo) {
+        return echoWS.echoFoo(foo);
     }
 
 }

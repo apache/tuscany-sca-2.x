@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
@@ -46,6 +47,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
             contract = service.getInterfaceContract().makeUnidirectional(wsBinding.isCallback());
+            if ((contract instanceof JavaInterfaceContract)) {
+                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
+            }
             wsBinding.setBindingInterfaceContract(contract);
         }
 

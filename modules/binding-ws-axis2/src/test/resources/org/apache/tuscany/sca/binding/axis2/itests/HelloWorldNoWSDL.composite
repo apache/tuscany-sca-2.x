@@ -21,24 +21,40 @@
            name="HelloWorldNoWSDL">
 
     <service name="helloWorld" promote="HelloWorldService">
-        <!-- interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" / -->
-        <interface.java interface="org.apache.tuscany.sca.binding.axis2.itests.HelloWorld" />
+        <!-- interface.java interface="org.apache.tuscany.sca.binding.axis2.itests.HelloWorld" / -->
         <binding.ws/>
     </service>
 
     <component name="HelloWorldService">
-		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldService"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldService"/>
     </component>
 
     <component name="HelloWorldComponent">
-		<implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldComponent"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.HelloWorldComponent"/>
         <reference name="helloWorldWS" />
     </component>
 
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <!-- interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" / -->
-        <interface.java interface="org.apache.tuscany.sca.binding.axis2.itests.HelloWorld" />
+        <!-- interface.java interface="org.apache.tuscany.sca.binding.axis2.itests.HelloWorld" / -->
         <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
+    </reference>
+
+    <service name="Echo" promote="EchoService">
+        <binding.ws/>
+    </service>
+
+    <component name="EchoService">
+        <implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.EchoImpl"/>
+    </component>
+
+    <component name="EchoComponent">
+        <implementation.java class="org.apache.tuscany.sca.binding.axis2.itests.EchoComponent"/>
+        <reference name="echoWS" />
+    </component>
+
+    <reference name="echoWS" promote="EchoComponent/echoWS">
+        <binding.ws uri="http://localhost:8085/EchoService/Echo"/>
     </reference>
 
 </composite>
