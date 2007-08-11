@@ -67,9 +67,6 @@ public class Axis2ServiceProvider {
     private ConfigurationContext configContext;
 
     // TODO: what to do about the base URI?
-    //FIXME: changed from 8080 to 8085 as a hack to work around current limitation that
-    // the base URI must be the same for all servlet mappings in a single ServletHost.
-    // It appears that the code in both http-tomcat and http-jetty has this restriction.
     // This port number may be used to construct callback URIs.  The value 8085 is used
     // beacuse it matches the service port number used by the simple-callback-ws sample.
     private static final String BASE_URI = "http://localhost:8085/";
@@ -184,13 +181,8 @@ public class Axis2ServiceProvider {
         }
 
         // for service bindings with multiple services, the default binding URI is the binding name
-        // for callback reference bindings, add a prefix "$callback$." to ensure uniqueness
-        if (bindingURI == null && (wsBinding.isCallback() || component.getServices().size() > 1)) {
-            if (!wsBinding.isCallback()) {
-                bindingURI = URI.create(wsBinding.getName());
-            } else {
-                bindingURI = URI.create("$callback$." + wsBinding.getName());
-            }
+        if (bindingURI == null && component.getServices().size() > 1) {
+            bindingURI = URI.create(wsBinding.getName());
         }
 
         // add any relative binding URI
@@ -311,9 +303,7 @@ public class Axis2ServiceProvider {
 
     protected Operation getOperation(AxisOperation axisOp) {
         String operationName = axisOp.getName().getLocalPart();
-        Interface iface =
-            wsBinding.isCallback() ? wsBinding.getBindingInterfaceContract().getCallbackInterface() : wsBinding
-                .getBindingInterfaceContract().getInterface();
+        Interface iface = wsBinding.getBindingInterfaceContract().getInterface();
         for (Operation op : iface.getOperations()) {
             if (op.getName().equalsIgnoreCase(operationName)) {
                 return op;
@@ -399,11 +389,11 @@ public class Axis2ServiceProvider {
         requestMsg.setBody(args);
 
         if (contract instanceof RuntimeComponentService)
-            requestMsg.setFrom(((RuntimeComponentService)contract).getRuntimeWire(wsBinding).getSource());
+            requestMsg.setTo(((RuntimeComponentService)contract).getRuntimeWire(wsBinding).getTarget());
         else
-            requestMsg.setFrom(((RuntimeComponentReference)contract).getRuntimeWire(wsBinding).getSource());
+            requestMsg.setTo(((RuntimeComponentReference)contract).getRuntimeWire(wsBinding).getTarget());
         if (callbackAddress != null) {
-            requestMsg.setTo(new EndpointReferenceImpl(callbackAddress));
+            requestMsg.setFrom(new EndpointReferenceImpl(callbackAddress));
         }
 
         Message workContext = ThreadMessageContext.getMessageContext();
@@ -416,13 +406,7 @@ public class Axis2ServiceProvider {
                 requestMsg.setConversationID(null);
             }
 
-            Message responseMsg =
-                contract instanceof RuntimeComponentService ? ((RuntimeComponentService)contract).getInvoker(wsBinding,
-                                                                                                             op)
-                    .invoke(requestMsg) : ((RuntimeComponentReference)contract).getCallbackInvocationChain(wsBinding,
-                                                                                                           op)
-                    .getHeadInvoker().invoke(requestMsg);
-
+            Message responseMsg = ((RuntimeComponentService)contract).getInvoker(wsBinding, op).invoke(requestMsg);
             if (responseMsg.isFault()) {
                 throw new InvocationTargetException((Throwable)responseMsg.getBody());
             }
@@ -434,11 +418,7 @@ public class Axis2ServiceProvider {
     }
 
     public boolean isConversational() {
-        if (!wsBinding.isCallback()) {
-            return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
-        } else {
-            return wsBinding.getBindingInterfaceContract().getCallbackInterface().isConversational();
-        }
+        return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
     }
 
 }

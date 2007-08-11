@@ -42,11 +42,11 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
         super(messageFactory, false);
         this.wire = wire;
         if (wire != null) {
-            init(proxyInterface, wire);
+            setConversational(wire);
         }
     }
 
-    private void init(Class<?> interfaze, RuntimeWire wire) {
+    protected void setConversational(RuntimeWire wire) {
         InterfaceContract contract = wire.getSource().getInterfaceContract();
         this.conversational = contract.getInterface().isConversational();
     }
@@ -65,6 +65,10 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
             return equals(Proxy.getInvocationHandler(obj));
         } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
             return hashCode();
+        }
+        if (wire == null) {
+            //FIXME: need better exception
+            throw new RuntimeException("Destination for callback is not known");
         }
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {

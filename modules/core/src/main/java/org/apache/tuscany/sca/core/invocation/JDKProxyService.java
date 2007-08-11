@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
@@ -52,14 +53,20 @@ public class JDKProxyService implements ProxyFactory {
      * share conversation state so sets the conversaton object to null
      */
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        return createProxy(interfaze, wire, null);
+        return createProxy(interfaze, wire, null, null);
     }
     
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation) throws ProxyCreationException {
+        return createProxy(interfaze, wire, conversation, null);
+    }
+    
+    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation, EndpointReference endpoint)
+                             throws ProxyCreationException {
         assert interfaze != null;
         assert wire != null;
         JDKInvocationHandler handler = new JDKInvocationHandler(messageFactory, interfaze, wire);
         handler.setConversation(conversation);
+        handler.setEndpoint(endpoint);
         ClassLoader cl = interfaze.getClassLoader();
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
     }    

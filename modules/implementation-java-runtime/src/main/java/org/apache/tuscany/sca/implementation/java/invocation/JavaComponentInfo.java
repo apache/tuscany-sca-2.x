@@ -102,14 +102,14 @@ public class JavaComponentInfo implements ComponentContextProvider {
                              RequestContextFactory requestContextFactory) {
         super();
         this.configuration = configuration;
+        this.proxyService = configuration.getProxyFactory();
         if (componentContextFactory != null) {
             this.componentContext = componentContextFactory.createComponentContext(component, requestContextFactory);
         } else {
-            this.componentContext = new ComponentContextImpl(this, requestContextFactory);
+            this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
         }
         this.groupId = configuration.getGroupId();
         this.component = component;
-        this.proxyService = configuration.getProxyFactory();
         this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
         this.componentContextFactory = componentContextFactory;

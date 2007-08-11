@@ -36,8 +36,6 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
     private RuntimeComponentReference reference;
     private WebServiceBinding wsBinding;
     private Axis2ServiceClient axisClient;
-    private Axis2ServiceProvider axisProvider;
-    private WebServiceBinding callbackBinding;
 
     public Axis2ReferenceBindingProvider(RuntimeComponent component,
                                          RuntimeComponentReference reference,
@@ -50,7 +48,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
-            contract = reference.getInterfaceContract().makeUnidirectional(wsBinding.isCallback());
+            contract = reference.getInterfaceContract().makeUnidirectional(false);
             if ((contract instanceof JavaInterfaceContract)) {
                 contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
             }
@@ -58,75 +56,30 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         }
 
         // Set to use the Axiom data binding
-        if (contract.getInterface() != null) {
-            contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
-        }
-        if (contract.getCallbackInterface() != null) {
-            contract.getCallbackInterface().setDefaultDataBinding(OMElement.class.getName());
-        }
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
-        if (!wsBinding.isCallback()) {
-            // this is a forward binding, so look for a matching callback binding
-            if (reference.getCallback() != null) {
-                for (Binding binding : reference.getCallback().getBindings()) {
-                    if (binding instanceof WebServiceBinding) {
-                        // set the first compatible callback binding
-                        setCallbackBinding((WebServiceBinding)binding);
-                        continue;
-                    }
-                }
-            }
-        } else {
-            // this is a callback binding, so look for all matching forward binding
-            for (Binding binding : reference.getBindings()) {
-                if (reference.getBindingProvider(binding) instanceof Axis2ReferenceBindingProvider) {
-                    // set all compatible forward binding providers for this reference
-                    ((Axis2ReferenceBindingProvider)reference.getBindingProvider(binding))
-                        .setCallbackBinding(wsBinding);
+        // look for a matching callback binding
+        WebServiceBinding callbackBinding = null;
+        if (reference.getCallback() != null) {
+            for (Binding binding : reference.getCallback().getBindings()) {
+                if (binding instanceof WebServiceBinding) {
+                    // set the first compatible callback binding
+                    callbackBinding = (WebServiceBinding)binding;
+                    continue;
                 }
             }
         }
 
-        if (!wsBinding.isCallback()) {
-            axisClient =
-                new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory, callbackBinding);
-        } else {
-            // FIXME: need to support callbacks through self-references
-            // For now, don't create a callback service provider for a self-reference
-            // because this modifies the binding URI. This messes up the service callback
-            // wires because the self-reference has the same binding object as the service.
-            if (!reference.getName().startsWith("$self$.")) {
-                axisProvider = new Axis2ServiceProvider(component, reference, wsBinding, servletHost, messageFactory);
-            }
-        }
-    }
-
-    protected void setCallbackBinding(WebServiceBinding callbackBinding) {
-        if (this.callbackBinding == null) {
-            this.callbackBinding = callbackBinding;
-        }
+        axisClient =
+            new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory, callbackBinding);
     }
 
     public void start() {
-        if (!wsBinding.isCallback()) {
-            axisClient.start();
-        } else {
-            // FIXME: need to support callbacks through self-references
-            if (!reference.getName().startsWith("$self$.")) {
-                axisProvider.start();
-            }
-        }
+        axisClient.start();
     }
 
     public void stop() {
-        if (!wsBinding.isCallback()) {
-            axisClient.stop();
-        } else {
-            // FIXME: need to support callbacks through self-references
-            if (!reference.getName().startsWith("$self$.")) {
-                axisProvider.stop();
-            }
-        }
+        axisClient.stop();
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -147,9 +100,6 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
     }
 
     public Invoker createInvoker(Operation operation) {
-        if (wsBinding.isCallback()) {
-            throw new RuntimeException("Cannot create invoker for a callback binding");
-        }
         return axisClient.createInvoker(operation);
     }
 

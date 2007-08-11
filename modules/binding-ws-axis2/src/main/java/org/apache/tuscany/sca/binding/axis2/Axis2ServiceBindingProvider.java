@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
 
     private WebServiceBinding wsBinding;
-    private Axis2ServiceClient axisClient;
     private Axis2ServiceProvider axisProvider;
 
     public Axis2ServiceBindingProvider(RuntimeComponent component,
@@ -46,7 +45,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
-            contract = service.getInterfaceContract().makeUnidirectional(wsBinding.isCallback());
+            contract = service.getInterfaceContract().makeUnidirectional(false);
             if ((contract instanceof JavaInterfaceContract)) {
                 contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
             }
@@ -54,49 +53,17 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         }
 
         // Set to use the Axiom data binding
-        if (contract.getInterface() != null) {
-            contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
-        }
-        if (contract.getCallbackInterface() != null) {
-            contract.getCallbackInterface().setDefaultDataBinding(OMElement.class.getName());
-        }
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
-        if (!wsBinding.isCallback()) {
-            axisProvider = new Axis2ServiceProvider(component, service, wsBinding, servletHost,
-                                                    messageFactory);
-        } else {
-            // pass null as last parameter because SCDL doesn't allow a callback callback binding
-            // to be specified for a callback binding, i.e., can't have the following:
-            // <service>
-            //   <binding.x/>
-            //   <callback>
-            //     <binding.y/>
-            //     <callback>
-            //       <binding.z/>
-            //     </callback>
-            //   </callback>
-            // </service>
-            // This means that you can't do a callback from a callback (at least not
-            // in s spec-compliant way).
-            axisClient = new Axis2ServiceClient(component, service, wsBinding, servletHost,
-                                                messageFactory, null);
-        }
+        axisProvider = new Axis2ServiceProvider(component, service, wsBinding, servletHost, messageFactory);
     }
 
     public void start() {
-        if (!wsBinding.isCallback()) {
-            axisProvider.start();                                          
-        } else {
-            axisClient.start();
-        }
+        axisProvider.start();                                          
     }
 
     public void stop() {
-        if (!wsBinding.isCallback()) {
-            axisProvider.stop();
-        } else {
-            axisClient.stop();
-        }
+        axisProvider.stop();
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -104,10 +71,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
-        if (!wsBinding.isCallback()) {
-            throw new RuntimeException("Cannot create callback invoker for a forward binding");
-        }
-        return axisClient.createInvoker(operation);
+        throw new UnsupportedOperationException();
     }
 
     public boolean supportsAsyncOneWayInvocation() {

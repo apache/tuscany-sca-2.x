@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2 {
 
     private RuntimeComponentService service;
-    private boolean started = false;
 
     public RuntimeSCAServiceBindingProvider(RuntimeComponent component,
                                             RuntimeComponentService service,
@@ -56,39 +55,10 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
-        return new RuntimeSCABindingInvoker();
+        throw new UnsupportedOperationException();
     }
 
     public void start() {
-        if (started) {
-            return;
-        } else {
-            started = true;
-        }
-        for (RuntimeWire sourceWire : service.getCallbackWires()) {
-            if (sourceWire.getTarget().getBinding() instanceof SCABinding) {
-                EndpointReference source = sourceWire.getSource();
-                if (source != null) {
-                    RuntimeComponentReference reference = (RuntimeComponentReference)source.getContract();
-                    if (reference != null) { // a hard-wired callback
-                        Binding refBinding = source.getBinding();
-                        RuntimeWire targetWire = reference.getRuntimeWire(refBinding);
-                        for (InvocationChain sourceChain : sourceWire.getCallbackInvocationChains()) {
-                            InvocationChain targetChain =
-                                reference.getCallbackInvocationChain(refBinding, sourceChain.getTargetOperation());
-                            if (targetChain != null) {
-                                ((Interceptor)sourceChain.getTailInvoker()).setNext(targetChain.getHeadInvoker());
-                                sourceChain.setTargetOperation(targetChain.getSourceOperation());
-                            } else {
-                                throw new RuntimeException(
-                                                           "Incompatible operations for source and target callback wires");
-                            }
-                        }
-                        sourceWire.getSource().setInterfaceContract(targetWire.getTarget().getInterfaceContract());
-                    }
-                }
-            }
-        }
     }
 
     public void stop() {
