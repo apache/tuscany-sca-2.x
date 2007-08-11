@@ -20,13 +20,13 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-itest-databindings</artifactId>
+        <artifactId>itest-databindings</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tuscany-itest-databindings-common</artifactId>
+    <artifactId>itest-databindings-common</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Apache Tuscany Common elements of Databindings Integration Tests</name>

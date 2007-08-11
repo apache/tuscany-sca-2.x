@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-callback-set-conversation</artifactId>
+    <artifactId>itest-callback-set-conversation</artifactId>
     <name>Apache Tuscany SCA Callback Set Conversation Integration Tests</name>
 
     <dependencies>

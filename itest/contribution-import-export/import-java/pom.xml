@@ -25,13 +25,13 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-contribution-import-java</artifactId>
+    <artifactId>itest-contribution-import-java</artifactId>
     <name>Apache Tuscany Contribution Import Java Test</name>
 
 <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-itest-contribution-export-java</artifactId>
+            <artifactId>itest-contribution-export-java</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 

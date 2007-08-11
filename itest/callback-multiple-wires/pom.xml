@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-callback-multiple-wires</artifactId>
+    <artifactId>itest-callback-multiple-wires</artifactId>
     <name>Apache Tuscany SCA Callback With Mutiple Wires Test</name>
 
     <dependencies>

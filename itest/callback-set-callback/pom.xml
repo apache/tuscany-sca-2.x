@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-callback-set-callback</artifactId>
+    <artifactId>itest-callback-set-callback</artifactId>
     <name>Apache Tuscany SCA Set Callback Integration Tests</name>
 
     <dependencies>

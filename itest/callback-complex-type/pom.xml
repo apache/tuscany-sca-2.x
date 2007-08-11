@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-callback-complex-type</artifactId>
+    <artifactId>itest-callback-complex-type</artifactId>
     <name>Apache Tuscany SCA Callback Complex Type Integration Tests</name>
 
     <dependencies>

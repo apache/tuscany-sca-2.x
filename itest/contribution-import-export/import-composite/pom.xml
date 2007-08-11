@@ -25,13 +25,13 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-contribution-import-composite</artifactId>
+    <artifactId>itest-contribution-import-composite</artifactId>
     <name>Apache Tuscany Contribution Import Composite Test</name>
 
 <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-itest-contribution-export-composite</artifactId>
+            <artifactId>itest-contribution-export-composite</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 

@@ -20,13 +20,13 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-itest-databindings</artifactId>
+        <artifactId>itest-databindings</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tuscany-itest-databindings-sdo</artifactId>
+    <artifactId>itest-databindings-sdo</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Apache Tuscany SDO Databinding Integration Test</name>
@@ -106,7 +106,7 @@
         </dependency>                 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-itest-databindings-common</artifactId>
+            <artifactId>itest-databindings-common</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency> 
@@ -139,7 +139,7 @@
                           <artifactItems>
                               <artifactItem>
                                   <groupId>org.apache.tuscany.sca</groupId>
-                                  <artifactId>tuscany-itest-databindings-common</artifactId>
+                                  <artifactId>itest-databindings-common</artifactId>
                                   <version>${project.version}</version>
                                   <overWrite>true</overWrite>
                                   <outputDirectory>${project.build.directory}/classes</outputDirectory>

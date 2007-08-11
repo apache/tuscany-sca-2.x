@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-properties</artifactId>
+    <artifactId>itest-properties</artifactId>
     <name>Apache Tuscany Properties Integration Tests</name>
 
     <dependencies>

@@ -28,7 +28,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.testing.bindingstest</groupId>
-    <artifactId>tuscany-itest-bindings-bindingsutility</artifactId>
+    <artifactId>itest-bindings-bindingsutility</artifactId>
     <packaging>jar</packaging>
     <name>SCA FVT Bindings Test Tool Utility Composite</name>
 
