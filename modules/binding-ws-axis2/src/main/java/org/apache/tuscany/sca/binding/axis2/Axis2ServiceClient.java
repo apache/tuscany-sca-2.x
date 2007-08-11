@@ -167,7 +167,7 @@ public class Axis2ServiceClient {
     protected EndpointReference getPortLocationEPR(WebServiceBinding binding) {
         String ep = binding.getURI();
         if (ep == null && binding.getPort() != null) {
-            List wsdlPortExtensions = binding.getPort().getExtensibilityElements();
+            List<?> wsdlPortExtensions = binding.getPort().getExtensibilityElements();
             for (final Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
                     ep = ((SOAPAddress)extension).getLocationURI();
