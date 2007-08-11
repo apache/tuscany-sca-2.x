@@ -31,6 +31,7 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.invocation.Message;
 
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
@@ -42,12 +43,9 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, String conversationId)
-                             throws InvocationTargetException {
+    protected Object invokeTarget(Message msg) throws InvocationTargetException {
         try {
-            Object[] args = (Object[]) payload;
-
-            OperationClient operationClient = createOperationClient(args, conversationId);
+            OperationClient operationClient = createOperationClient(msg);
 
             // ensure connections are tracked so that they can be closed by the reference binding
             MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);

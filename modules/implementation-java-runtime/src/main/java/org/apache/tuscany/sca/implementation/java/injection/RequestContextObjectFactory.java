@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.component.RequestContextImpl;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.osoa.sca.RequestContext;
@@ -33,16 +34,22 @@ import org.osoa.sca.RequestContext;
  */
 public class RequestContextObjectFactory implements ObjectFactory<RequestContext> {
     private RequestContextFactory factory;
+    private ProxyFactory proxyService;
 
     public RequestContextObjectFactory(RequestContextFactory factory) {
+        this(factory, null);
+    }
+
+    public RequestContextObjectFactory(RequestContextFactory factory, ProxyFactory proxyService) {
         this.factory = factory;
+        this.proxyService = proxyService;
     }
 
     public RequestContext getInstance() throws ObjectCreationException {
         if (factory != null) {
             return factory.createRequestContext();
         } else {
-            return new RequestContextImpl();
+            return new RequestContextImpl(proxyService);
         }
     }
 }

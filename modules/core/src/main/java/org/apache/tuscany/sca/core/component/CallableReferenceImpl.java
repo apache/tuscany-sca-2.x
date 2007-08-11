@@ -31,7 +31,7 @@ import org.osoa.sca.Conversation;
  * @version $Rev$ $Date$
  * @param <B> the type of the business interface
  */
-public abstract class CallableReferenceImpl<B> implements CallableReference<B> {
+public class CallableReferenceImpl<B> implements CallableReference<B> {
     private final Class<B> businessInterface;
     private final ObjectFactory<B> factory;
 

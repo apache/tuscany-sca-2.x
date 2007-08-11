@@ -18,14 +18,19 @@
  */
 package org.apache.tuscany.sca.core.component;
 
+import java.util.List;
 import javax.security.auth.Subject;
 
+import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
@@ -35,7 +40,10 @@ import org.osoa.sca.ServiceReference;
  */
 public class RequestContextImpl implements RequestContext {
 
-    public RequestContextImpl() {
+    private ProxyFactory proxyService;
+
+    public RequestContextImpl(ProxyFactory proxyService) {
+        this.proxyService = proxyService;
     }
 
     public Subject getSecuritySubject() {
@@ -59,14 +67,17 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public <CB> CallableReference<CB> getCallbackReference() {
-        EndpointReference from = ThreadMessageContext.getMessageContext().getFrom();
-        RuntimeComponentReference service = (RuntimeComponentReference) from.getContract();
-        RuntimeComponent component = (RuntimeComponent) from.getComponent();
-        JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getCallbackInterface();
-        if(javaInterface==null) {
+        EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
+        RuntimeComponentService service = (RuntimeComponentService) to.getContract();
+        RuntimeComponentReference callbackReference = (RuntimeComponentReference)service.getCallbackReference();
+        if (callbackReference == null) {
             return null;
         }
-        // FIXME: Creating a self-ref is probably not right
-        return (CallableReference<CB>) component.createSelfReference(javaInterface.getCallbackClass());
+        JavaInterface javaInterface = (JavaInterface) callbackReference.getInterfaceContract().getInterface();
+        Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
+        List<RuntimeWire> wires = callbackReference.getRuntimeWires();
+        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyService, wires);
+        factory.resolveTarget();
+        return (CallableReference<CB>) new CallableReferenceImpl<CB>(javaClass, (ObjectFactory<CB>)factory);
     }
 }

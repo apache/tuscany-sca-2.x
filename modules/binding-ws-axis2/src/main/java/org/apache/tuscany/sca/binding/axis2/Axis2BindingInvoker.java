@@ -36,7 +36,6 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -66,10 +65,8 @@ public class Axis2BindingInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
-
-            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence(), msg.getConversationID());
+            Object resp = invokeTarget(msg);
             msg.setBody(resp);
-
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
         } catch (Throwable e) {
@@ -79,12 +76,9 @@ public class Axis2BindingInvoker implements Invoker {
         return msg;
     }
 
-    protected Object invokeTarget(final Object payload, final ConversationSequence sequence, String conversationId)
-        throws InvocationTargetException {
+    protected Object invokeTarget(Message msg) throws InvocationTargetException {
         try {
-
-            Object[] args = (Object[])payload;
-            OperationClient operationClient = createOperationClient(args, conversationId);
+            OperationClient operationClient = createOperationClient(msg);
 
             // ensure connections are tracked so that they can be closed by the reference binding
             MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
@@ -105,8 +99,9 @@ public class Axis2BindingInvoker implements Invoker {
     }
 
     @SuppressWarnings("deprecation")
-    protected OperationClient createOperationClient(Object[] args, String conversationId) throws AxisFault {
+    protected OperationClient createOperationClient(Message msg) throws AxisFault {
         SOAPEnvelope env = soapFactory.getDefaultEnvelope();
+        Object[] args = (Object[])msg.getBody();
         if (args != null && args.length > 0) {
             SOAPBody body = env.getBody();
             for (Object bc : args) {
@@ -124,6 +119,7 @@ public class Axis2BindingInvoker implements Invoker {
         // Axis2 operationClients can not be shared so create a new one for each request
         OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
 
+        String conversationId = msg.getConversationID();
         if (conversationId != null && conversationId.length() != 0) {
             EndpointReference fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
             fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId);
@@ -141,14 +137,18 @@ public class Axis2BindingInvoker implements Invoker {
         }
 
         operationClient.setOptions(options);
+        // if target endpoint was not specified when this invoker was created, 
+        // use dynamically specified target endpoint passed in on this call
         if (options.getTo() == null) {
-            org.apache.tuscany.sca.runtime.EndpointReference ep = ThreadMessageContext.getMessageContext().getTo();
+            org.apache.tuscany.sca.runtime.EndpointReference ep = msg.getTo();
             if (ep != null) {
                 requestMC.setTo(new EndpointReference(ep.getURI()));
             } else {
                 throw new RuntimeException("Unable to determine destination endpoint");
             }
         }
+        //FIXME: need to consolidate the following code with similar code above for
+        // conversations, so that conversations and callbacks work when used together
         if (options.getFrom() != null) {
             requestMC.setFrom(options.getFrom());
             //FIXME: is there any way to use the Axis2 addressing support for this?

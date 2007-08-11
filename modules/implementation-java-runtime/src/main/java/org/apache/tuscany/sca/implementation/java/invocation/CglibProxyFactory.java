@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
@@ -60,15 +61,19 @@ public class CglibProxyFactory implements ProxyFactory {
     }
 
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        return createProxy(interfaze, wire, null);
+        return createProxy(interfaze, wire, null, null);
     }
 
+    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation) throws ProxyCreationException {
+        return createProxy(interfaze, wire, conversation, null);
+    }
+    
     /**
      * create the proxy with cglib. use the same JDKInvocationHandler as
      * JDKProxyService.
      */
-    public <T> T createProxy(final Class<T> interfaze, final RuntimeWire wire, final Conversation conversation)
-        throws ProxyCreationException {
+    public <T> T createProxy(final Class<T> interfaze, final RuntimeWire wire, final Conversation conversation,
+                             final EndpointReference endpoint) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(interfaze);
         enhancer.setCallback(new MethodInterceptor() {
@@ -76,6 +81,7 @@ public class CglibProxyFactory implements ProxyFactory {
                 throws Throwable {
                 JDKInvocationHandler invocationHandler = new JDKInvocationHandler(messageFactory, interfaze, wire);
                 invocationHandler.setConversation(conversation);
+                invocationHandler.setEndpoint(endpoint);
                 Object result = invocationHandler.invoke(proxy, method, args);
                 return result;
             }

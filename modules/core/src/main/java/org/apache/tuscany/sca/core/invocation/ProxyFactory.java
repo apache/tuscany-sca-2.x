@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
@@ -36,7 +37,8 @@ public interface ProxyFactory {
      * Creates a Java proxy for the given wire
      *
      * @param interfaze the interface the proxy implements
-     * @param wire      the wire to proxy @return the proxy
+     * @param wire      the wire to proxy
+     * @return the proxy
      * @throws ProxyCreationException
      */
     <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException;
@@ -46,10 +48,27 @@ public interface ProxyFactory {
      * a conversation object to represent conversational state
      *
      * @param interfaze the interface the proxy implements
-     * @param wire      the wire to proxy @return the proxy
+     * @param wire      the wire to proxy
+     * @param conversation the conversation object
+     * @return the proxy
      * @throws ProxyCreationException
      */
     <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation) throws ProxyCreationException;
+
+    /**
+     * Creates a Java proxy for the given wire and accepts
+     * a conversation object to represent conversational state and an
+     * endpoint that should be used instead of the wire's target endpoint
+     *
+     * @param interfaze the interface the proxy implements
+     * @param wire      the wire to proxy
+     * @param conversation the conversation object
+     * @param endpoint the target endpoint
+     * @return the proxy
+     * @throws ProxyCreationException
+     */
+    <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation, EndpointReference endpoint)
+                     throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the service contract callback

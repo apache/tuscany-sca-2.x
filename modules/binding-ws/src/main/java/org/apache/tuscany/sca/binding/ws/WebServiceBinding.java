@@ -22,7 +22,7 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.CallbackBinding;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 
@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
  * 
  * @version $Rev$ $Date$
  */
-public interface WebServiceBinding extends CallbackBinding {
+public interface WebServiceBinding extends Binding {
 
     /**
      * Sets the WSDL location. 

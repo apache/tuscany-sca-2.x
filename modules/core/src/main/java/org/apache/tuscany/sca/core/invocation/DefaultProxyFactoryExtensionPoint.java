@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
@@ -111,6 +112,20 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
             return interfaceFactory.createProxy(interfaze, wire, conversation);
         } else {
             return classFactory.createProxy(interfaze, wire, conversation);
+        }
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
+     *      org.apache.tuscany.sca.runtime.RuntimeWire,
+     *      org.osoa.sca.Conversation)
+     */
+    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation, EndpointReference endpoint)
+        throws ProxyCreationException {
+        if (interfaze.isInterface()) {
+            return interfaceFactory.createProxy(interfaze, wire, conversation, endpoint);
+        } else {
+            return classFactory.createProxy(interfaze, wire, conversation, endpoint);
         }
     }
 

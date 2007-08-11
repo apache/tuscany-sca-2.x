@@ -100,14 +100,14 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             }
 
             componentInfo.configureProperties(component.getProperties());
-            handleResources(implementation);
+            handleResources(implementation, proxyService);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
 
     }
 
-    private void handleResources(JavaImplementation componentType) {
+    private void handleResources(JavaImplementation componentType, ProxyFactory proxyService) {
         for (JavaResourceImpl resource : componentType.getResources().values()) {
             String name = resource.getName();
 
@@ -118,7 +118,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                 if (ComponentContext.class.equals(type)) {
                     objectFactory = new PojoComponentContextFactory(componentInfo);
                 } else if (RequestContext.class.equals(type)) {
-                    objectFactory = new RequestContextObjectFactory(requestContextFactory);
+                    objectFactory = new RequestContextObjectFactory(requestContextFactory, proxyService);
                 } else if (String.class.equals(type)) {
                     objectFactory = new PojoComponentNameFactory(componentInfo);
                 } else {

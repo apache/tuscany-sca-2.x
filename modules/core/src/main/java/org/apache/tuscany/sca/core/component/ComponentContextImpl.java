@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.core.component;
 
 import org.apache.tuscany.sca.context.RequestContextFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
@@ -33,10 +34,13 @@ import org.osoa.sca.ServiceRuntimeException;
 public class ComponentContextImpl implements ComponentContext {
     private final ComponentContextProvider component;
     private final RequestContextFactory requestContextFactory;
+    private final ProxyFactory proxyService;
 
-    public ComponentContextImpl(ComponentContextProvider component, RequestContextFactory requestContextFactory) {
+    public ComponentContextImpl(ComponentContextProvider component, RequestContextFactory requestContextFactory,
+                                ProxyFactory proxyService) {
         this.component = component;
         this.requestContextFactory = requestContextFactory;
+        this.proxyService = proxyService;
     }
 
     public String getURI() {
@@ -94,7 +98,7 @@ public class ComponentContextImpl implements ComponentContext {
         if (requestContextFactory != null) {
             return requestContextFactory.createRequestContext();
         } else {
-            return new RequestContextImpl();
+            return new RequestContextImpl(proxyService);
         }
     }
 }

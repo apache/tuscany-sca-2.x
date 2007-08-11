@@ -44,6 +44,7 @@ public abstract class AbstractInvocationHandler {
     protected ConversationImpl conversation;
     private boolean conversationStarted;
     private MessageFactory messageFactory;
+    private EndpointReference endpoint;
 
     protected AbstractInvocationHandler(MessageFactory messageFactory, boolean conversational) {
         this.conversational = conversational;
@@ -53,12 +54,15 @@ public abstract class AbstractInvocationHandler {
     public void setConversation(Conversation conversation){
         this.conversation = (ConversationImpl)conversation;
     }
+
+    public void setEndpoint(EndpointReference endpoint){
+        this.endpoint = endpoint;
+    }
     
     protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
 
         Message msgContext = ThreadMessageContext.getMessageContext();
         Object  msgContextConversationId = msgContext.getConversationID();
-        EndpointReference epTo = msgContext.getTo();   
         
         Message msg = messageFactory.createMessage();
                
@@ -134,11 +138,12 @@ public abstract class AbstractInvocationHandler {
         if (wire.getSource() != null) {
             msg.setFrom(wire.getSource().getCallbackEndpoint());
         }
-        if (epTo != null) {
-            msg.setTo(epTo);
+        if (endpoint != null) {
+            msg.setTo(endpoint);
         } else {
             msg.setTo(wire.getTarget());
         }
+
         ThreadMessageContext.setMessageContext(msg);
         try {
             // dispatch the wire down the chain and get the response
