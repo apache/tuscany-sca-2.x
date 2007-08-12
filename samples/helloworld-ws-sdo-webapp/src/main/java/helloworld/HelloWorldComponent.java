@@ -18,13 +18,12 @@
  */
 package helloworld;
 
-import java.rmi.RemoteException;
 
 public class HelloWorldComponent implements HelloWorld {
 
     HelloWorld helloWorld;
 
-    public String getGreetings(Party party) throws RemoteException {
+    public String getGreetings(Party party)  {
         System.out.println("Called getGreetings");
         return helloWorld.getGreetings(party);
     }

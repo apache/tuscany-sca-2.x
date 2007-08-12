@@ -18,7 +18,6 @@
  */
 package helloworld;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 import org.osoa.sca.annotations.Service;
@@ -26,7 +25,7 @@ import org.osoa.sca.annotations.Service;
 @Service(HelloWorld.class)
 public class HelloWorldImpl implements HelloWorld {
 
-    public String getGreetings(Party party) throws RemoteException {
+    public String getGreetings(Party party) {
         System.out.println("Greeting party");
         StringBuffer greetings = new StringBuffer();
         greetings.append("Hello ");
