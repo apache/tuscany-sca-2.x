@@ -41,6 +41,6 @@ public interface HelloWorld {
      * 
      * @param getGreetings
      */
-    public java.lang.String getGreetings(helloworld.Party getGreetings) throws java.rmi.RemoteException;
+    public java.lang.String getGreetings(helloworld.Party getGreetings);
 
 }
