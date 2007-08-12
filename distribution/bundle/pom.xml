@@ -44,11 +44,6 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-assembly-java-dsl</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -74,7 +69,22 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-notification</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-binding-rmi</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-sca</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-sca-xml</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -129,11 +139,6 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-core-spring</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-databinding</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -165,6 +170,11 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-http</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-host-rmi</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -254,31 +264,14 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-policy-xml</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>sca-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
-        <!-- don't want the tools in the bundle jar? 
-                <dependency>
-                    <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-wsdl2java</artifactId>
-                    <version>${pom.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-java2wsdl</artifactId>
-                    <version>${pom.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-maven-java2wsdl</artifactId>
-                    <version>${pom.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-maven-wsdl2java</artifactId>
-                    <version>${pom.version}</version>
-                </dependency>
-        -->
     </dependencies>
 
     <build>
@@ -322,6 +315,27 @@
                                 </transformer>
                                 <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.spi.BindingActivator</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.provider.BindingProviderFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.contribution.java.JavaImportExportFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.contribution.resolver.ModelResolver</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.contribution.service.ContributionListener</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.databinding.DataBinding</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.databinding.PullTransformer</resource>
                                 </transformer>
                             </transformers>
 

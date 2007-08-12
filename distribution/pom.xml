@@ -38,6 +38,7 @@
     <modules>
         <module>bundle</module>
         <module>manifest</module>
+        <module>webapp</module>
     </modules>
 
     <dependencies>
