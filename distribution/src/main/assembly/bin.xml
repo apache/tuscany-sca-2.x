@@ -71,14 +71,26 @@
                 <exclude>das-service/**/*</exclude>
                 <exclude>das-service-web</exclude>
                 <exclude>das-service-web/**/*</exclude>
+                <exclude>osgi-supplychain</exclude>
+                <exclude>osgi-supplychain/**/*</exclude>
+                <exclude>company-das</exclude>
+                <exclude>company-das/**/*</exclude>
+                <exclude>company-das-webapp</exclude>
+                <exclude>company-das-webapp/**/*</exclude>
                 <exclude>helloworld-dojo/src/main/webapp/dojo</exclude>
                 <exclude>helloworld-dojo/src/main/webapp/dojo/**/*</exclude>
                 <exclude>helloworld-ws-reference/work</exclude>
                 <exclude>helloworld-ws-reference/work/**/*</exclude>
                 <exclude>helloworld-ws-service/work</exclude>
                 <exclude>helloworld-ws-service/work/**/*</exclude>
+                <exclude>helloworld-ws-service-webapp/target/sample-helloworld-jsonrpc</exclude>
+                <exclude>helloworld-ws-service-webapp/target/sample-helloworld-jsonrpc/**/*</exclude>
+                <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-jsonrpc</exclude>
+                <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-jsonrpc/**/*</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
+                <exclude>calculator-webapp-ws/target/sample-calculator-webapp-ws</exclude>
+                <exclude>calculator-webapp-ws/target/sample-calculator-webapp-ws/**/*</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp/**/*</exclude>
                 <exclude>helloworld-dojo/target/sample-helloworld-dojo</exclude>
@@ -89,6 +101,7 @@
                 <exclude>loanapplication/**/*</exclude>
                 <exclude>*/.classpath</exclude>
                 <exclude>*/.project</exclude>
+                <exclude>*/.settings</exclude>
                 <exclude>*/target/classes</exclude>
                 <exclude>*/target/classes/**/*</exclude>
                 <exclude>*/target/test-classes</exclude>
@@ -119,6 +132,7 @@
                 <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck/**/*</exclude>
                 <exclude>*/.classpath</exclude>
                 <exclude>*/.project</exclude>
+                <exclude>*/.settings</exclude>
                 <exclude>*/target/classes</exclude>
                 <exclude>*/target/classes/**/*</exclude>
                 <exclude>*/target/test-classes</exclude>
