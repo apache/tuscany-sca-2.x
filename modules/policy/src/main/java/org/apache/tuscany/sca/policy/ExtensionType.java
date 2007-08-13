@@ -45,12 +45,27 @@ public interface ExtensionType {
      * Returns the list of names of policy intents that will always be provided by this Extension Type
      * @ruturn list of Policy Intent names
      */
-    List<QName> getAlwaysProvidedPolicyIntents();
+    List<Intent> getAlwaysProvidedIntents();
     
     /**
      * Returns the list of names of policy intents that may be provided by this Extension Type thro
      * appropriate configuration
      * @ruturn list of Policy Intent names
      */
-    List<QName> getMayProvidePolicyIntents();
+    List<Intent> getMayProvideIntents();
+    
+
+    /**
+     * Returns true if the model element is unresolved.
+     * 
+     * @return true if the model element is unresolved.
+     */
+    boolean isUnresolved();
+
+    /**
+     * Sets whether the model element is unresolved.
+     * 
+     * @param unresolved whether the model element is unresolved
+     */
+    void setUnresolved(boolean unresolved);
 }
