@@ -135,27 +135,6 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             }
         }
 
-        // Object targetAddress = UriHelper.getBaseName(source.getUri());
-        List<InvocationChain> callbackChains = wire.getCallbackInvocationChains();
-        if (callbackChains == null) {
-            // callback chains could be null
-            return;
-        }
-
-        for (InvocationChain chain : callbackChains) {
-            Operation sourceOperation = chain.getSourceOperation();
-            Operation targetOperation = chain.getTargetOperation();
-            if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
-
-                // Add the interceptor to the source side because multiple
-                // references can be wired
-                // to the same service
-                DataTransformationInteceptor interceptor = new DataTransformationInteceptor(wire, sourceOperation,
-                                                                              targetOperation);
-                interceptor.setMediator(mediator);
-                chain.addInterceptor(0, interceptor);
-            }
-        }
     }
 
 }
