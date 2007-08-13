@@ -274,14 +274,12 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
         
         for (int count = 0, size = scaDefns.getBindingTypes().size(); count < size; count++) {
             BindingType bindingType = scaDefns.getBindingTypes().get(count);
-            bindingType = resolver.resolveModel(BindingType.class, bindingType);
-            scaDefns.getBindingTypes().set(count, bindingType);
+            extensionProcessor.resolve(bindingType, resolver);
         }
         
         for (int count = 0, size = scaDefns.getImplementationTypes().size(); count < size; count++) {
             ImplementationType implType = scaDefns.getImplementationTypes().get(count);
-            implType = resolver.resolveModel(ImplementationType.class, implType);
-            scaDefns.getImplementationTypes().set(count, implType);
+            extensionProcessor.resolve(implType, resolver);
         }
     }
     

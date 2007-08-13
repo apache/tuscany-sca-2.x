@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
  *
  */
 public interface PolicyConstants {
+    String WHITE_SPACE = " ";
     String COLON = ":";
     String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     String INTENT = "intent";
@@ -43,6 +44,13 @@ public interface PolicyConstants {
     String REQUIRES = "requires";
     String DEFAULT = "default";
     
+    String ALWAYS_PROVIDES = "alwaysProvides";
+    String MAY_PROVIDE = "mayProvide";
+    String TYPE = "type";
+    String IMPLEMENATION_TYPE = "implementationType";
+    String BINDING_TYPE = "bindingType";
+    QName IMPLEMENTATION_TYPE_QNAME = new QName(SCA10_NS, IMPLEMENATION_TYPE);
+    QName BINDING_TYPE_QNAME = new QName(SCA10_NS, BINDING_TYPE);
     
     QName POLICY_INTENT_QNAME = new QName(SCA10_NS, INTENT);
     QName POLICY_SET_QNAME = new QName(SCA10_NS, POLICY_SET);

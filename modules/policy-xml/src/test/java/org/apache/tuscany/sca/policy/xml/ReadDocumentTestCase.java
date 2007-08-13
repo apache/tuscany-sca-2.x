@@ -34,13 +34,17 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.ExtensionTypeFactory;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 import org.apache.tuscany.sca.policy.SCADefinitions;
+import org.apache.tuscany.sca.policy.impl.DefaultExtensionTypeFactory;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -56,6 +60,8 @@ public class ReadDocumentTestCase extends TestCase {
     private SCADefinitions scaDefinitions;
     Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
+    Map<QName, BindingType> bindingTypesTable = new Hashtable<QName, BindingType>();
+    Map<QName, ImplementationType> implTypesTable = new Hashtable<QName, ImplementationType>();
     public static final String namespace = "http://www.osoa.org/xmlns/sca/1.0";
     
     private static final QName confidentiality = new QName(namespace, "confidentiality");
@@ -67,11 +73,14 @@ public class ReadDocumentTestCase extends TestCase {
     private static final QName secureMessagingPolicies = new QName(namespace, "SecureMessagingPolicies");
     private static final QName securityPolicy = new QName(namespace, "SecurityPolicy");
     private static final QName basicAuthMsgProtSecurity = new QName(namespace, "BasicAuthMsgProtSecurity");
+    private static final QName wsBinding = new QName(namespace, "binding.ws");
+    private static final QName javaImpl = new QName(namespace, "implementation.java");
     
 
     public void setUp() throws Exception {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
+        ExtensionTypeFactory extnTypeFactory = new DefaultExtensionTypeFactory();
         this.resolver = new SCADefinitionsResolver();
         this.builder = new SCADefinitionsBuilderImpl();
         
@@ -87,6 +96,8 @@ public class ReadDocumentTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new PolicySetProcessor(policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ImplementationTypeProcessor(policyFactory, extnTypeFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new BindingTypeProcessor(policyFactory, extnTypeFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
         
         URL url = getClass().getResource("definitions.xml");
@@ -99,6 +110,14 @@ public class ReadDocumentTestCase extends TestCase {
         
         for ( PolicySet policySet : scaDefinitions.getPolicySets() ) {
             policySetTable.put(policySet.getName(), policySet);
+        }
+        
+        for ( BindingType bindingType : scaDefinitions.getBindingTypes() ) {
+            bindingTypesTable.put(bindingType.getTypeName(), bindingType);
+        }
+        
+        for ( ImplementationType implType : scaDefinitions.getImplementationTypes() ) {
+            implTypesTable.put(implType.getTypeName(), implType);
         }
     }
 
@@ -122,6 +141,11 @@ public class ReadDocumentTestCase extends TestCase {
         
         assertNotNull(policySetTable.get(secureMessagingPolicies));
         assertEquals(policySetTable.get(secureMessagingPolicies).getMappedPolicies().size(), 3);
+        
+        assertEquals(bindingTypesTable.size(), 1);
+        assertNotNull(bindingTypesTable.get(wsBinding));
+        assertEquals(implTypesTable.size(), 1);
+        assertNotNull(implTypesTable.get(javaImpl));
     }
     
     public void testResolveSCADefinitions() throws Exception {
@@ -148,6 +172,14 @@ public class ReadDocumentTestCase extends TestCase {
         assertTrue(basicAuthMsgProtSecurityPolicySet.getPolicies().isEmpty());
         assertTrue(basicAuthMsgProtSecurityPolicySet.getMappedPolicies().isEmpty());
         
+        BindingType wsBindingType = bindingTypesTable.get(wsBinding);
+        assertNull(wsBindingType.getAlwaysProvidedIntents().get(0).getDescription());
+        assertNull(wsBindingType.getMayProvideIntents().get(0).getDescription());
+        
+        ImplementationType javaImplType = implTypesTable.get(javaImpl);
+        assertNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
+        assertNull(javaImplType.getMayProvideIntents().get(0).getDescription());
+        
         scaDefnDocProcessor.resolve(scaDefinitions, resolver);
         //builder.build(scaDefinitions);
         
@@ -171,5 +203,11 @@ public class ReadDocumentTestCase extends TestCase {
         assertFalse(basicAuthMsgProtSecurityPolicySet.getPolicies().isEmpty());
         assertFalse(basicAuthMsgProtSecurityPolicySet.getMappedPolicies().isEmpty());
         assertNotNull(basicAuthMsgProtSecurityPolicySet.getMappedPolicies().get(intentTable.get(confidentiality_transport)));
+        
+        assertNotNull(wsBindingType.getAlwaysProvidedIntents().get(0).getDescription());
+        assertNotNull(wsBindingType.getMayProvideIntents().get(0).getDescription());
+        
+        assertNotNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
+        assertNotNull(javaImplType.getMayProvideIntents().get(0).getDescription());
     }
 }

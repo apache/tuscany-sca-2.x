@@ -3,6 +3,12 @@
  			targetNamespace="http://test"
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
 
+<!-- Extension Types Metadata -->
+<implementationType type="sca:implementation.java" alwaysProvides="logging"
+					mayProvide="tracing"/>
+<bindingType type="sca:binding.ws" alwaysProvides="confidentiality"
+					mayProvide="integrity"/>					
+
  <!-- qualified intents -->
  <intent name="confidentiality.transport" />
  <intent name="confidentiality.message" />
@@ -151,6 +157,20 @@
  			 <description>
  			 Communitcation thro this binding required
  			 Authentication.
+ 			 </description>
+ </intent>
+ 
+ <intent name="logging" 
+ 			 constrains="sca:implementation">
+ 			 <description>
+ 			 	All messages to and from this implementation must be logged
+ 			 </description>
+ </intent>
+ 
+ <intent name="tracing" 
+ 			 constrains="sca:implementation.java">
+ 			 <description>
+ 			 	Need to figure out some description for this 
  			 </description>
  </intent>
  
