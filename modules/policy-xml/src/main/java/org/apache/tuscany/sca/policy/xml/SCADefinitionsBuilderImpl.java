@@ -26,6 +26,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -49,9 +52,42 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
         for (PolicySet policySet : scaDefns.getPolicySets()) {
             definedPolicySets.put(policySet.getName(), policySet);
         }
+        
+        Map<QName, BindingType> definedBindingTypes = new HashMap<QName, BindingType>();
+        for (BindingType bindingType : scaDefns.getBindingTypes()) {
+            definedBindingTypes.put(bindingType.getTypeName(), bindingType);
+        }
+        
+        Map<QName, ImplementationType> definedImplTypes = new HashMap<QName, ImplementationType>();
+        for (ImplementationType implType : scaDefns.getImplementationTypes()) {
+            definedImplTypes.put(implType.getTypeName(), implType);
+        }
+        
         buildPolicyIntents(scaDefns, definedIntents);
         buildPolicySets(scaDefns, definedPolicySets, definedIntents);
+        buildBindingTypes(scaDefns, definedBindingTypes, definedIntents);
+        buildImplementationTypes(scaDefns, definedImplTypes, definedIntents);
     }
+    
+    private void buildBindingTypes(SCADefinitions scaDefns, 
+                                   Map<QName, BindingType> definedBindingTypes, 
+                                   Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+        for (BindingType bindingType : scaDefns.getBindingTypes()) {
+            buildAlwaysProvidedIntents(bindingType, definedIntents);
+            buildMayProvideIntents(bindingType, definedIntents);
+        }
+
+    }
+    
+    private void buildImplementationTypes(SCADefinitions scaDefns, 
+                                   Map<QName, ImplementationType> definedImplTypes, 
+                                   Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+        for (ImplementationType implType : scaDefns.getImplementationTypes()) {
+            buildAlwaysProvidedIntents(implType, definedIntents);
+            buildMayProvideIntents(implType, definedIntents);
+        }
+    }
+    
 
     private void buildPolicyIntents(SCADefinitions scaDefns, Map<QName, Intent> definedIntents)
         throws SCADefinitionsBuilderException {
@@ -82,7 +118,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
             }
         }
     }
-
+    
     private void buildProfileIntent(ProfileIntent policyIntent, Map<QName, Intent> definedIntents)
         throws SCADefinitionsBuilderException {
         //FIXME: Need to check for cyclic references first i.e an A requiring B and then B requiring A... 
@@ -126,6 +162,59 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                 }
 
             }
+        }
+    }
+    
+    
+    private void buildAlwaysProvidedIntents(ExtensionType extensionType,
+                                            Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+        if (extensionType != null) {
+            // resolve all provided intents
+            List<Intent> alwaysProvided = new ArrayList<Intent>();
+            for (Intent providedIntent : extensionType.getAlwaysProvidedIntents()) {
+                if (providedIntent.isUnresolved()) {
+                    Intent resolvedProvidedIntent = definedIntents.get(providedIntent.getName());
+                    if (resolvedProvidedIntent != null) {
+                        alwaysProvided.add(resolvedProvidedIntent);
+                    } else {
+                        throw new SCADefinitionsBuilderException(
+                                                                 "Always Provided Intent - " + providedIntent
+                                                                     + " not found for ExtensionType "
+                                                                     + extensionType);
+
+                    }
+                } else {
+                    alwaysProvided.add(providedIntent);
+                }
+            }
+            extensionType.getAlwaysProvidedIntents().clear();
+            extensionType.getAlwaysProvidedIntents().addAll(alwaysProvided);
+        }
+    }
+    
+    private void buildMayProvideIntents(ExtensionType extensionType,
+                                            Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+        if (extensionType != null) {
+            // resolve all provided intents
+            List<Intent> mayProvide = new ArrayList<Intent>();
+            for (Intent providedIntent : extensionType.getMayProvideIntents()) {
+                if (providedIntent.isUnresolved()) {
+                    Intent resolvedProvidedIntent = definedIntents.get(providedIntent.getName());
+                    if (resolvedProvidedIntent != null) {
+                        mayProvide.add(resolvedProvidedIntent);
+                    } else {
+                        throw new SCADefinitionsBuilderException(
+                                                                 "May Provide Intent - " + providedIntent
+                                                                     + " not found for ExtensionType "
+                                                                     + extensionType);
+
+                    }
+                } else {
+                    mayProvide.add(providedIntent);
+                }
+            }
+            extensionType.getMayProvideIntents().clear();
+            extensionType.getMayProvideIntents().addAll(mayProvide);
         }
     }
 
