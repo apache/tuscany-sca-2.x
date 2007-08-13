@@ -19,10 +19,8 @@
 
 package org.apache.tuscany.sca.runtime;
 
-import java.util.IdentityHashMap;
 import java.util.List;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**
@@ -55,30 +53,5 @@ public interface RuntimeWire {
      *         wire
      */
     List<InvocationChain> getInvocationChains();
-
-    /**
-     * Returns the invocation chains for callback service operations associated
-     * with the wire
-     * 
-     * @return the invocation chains for callback service operations associated
-     *         with the wire
-     */
-    List<InvocationChain> getCallbackInvocationChains();
-   
-    /**
-     * Add an invocation chain for a callback service operation associated
-     * with the wire
-     * 
-     * @param chain an invocation chain
-     */
-    void addCallbackInvocationChain(InvocationChain chain);
-   
-    /**
-     * Get a map of invocation chains for callback service operations associated
-     * with the wire
-     * 
-     * @return a map of invocation chains
-     */
-    IdentityHashMap<Operation, InvocationChain> getCallbackInvocationMap();
    
 }

@@ -83,18 +83,4 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
         return null;
     }
 
-    public InvocationChain getCallbackInvocationChain(Binding binding, Operation operation) {
-        RuntimeWire wire = getRuntimeWire(binding);
-        if (wire == null) {
-            return null;
-        }
-        for (InvocationChain chain : wire.getCallbackInvocationChains()) {
-            Operation op = chain.getTargetOperation();
-            if (mapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
-                return chain;
-            }
-        }
-        return null;
-    }
-
 }

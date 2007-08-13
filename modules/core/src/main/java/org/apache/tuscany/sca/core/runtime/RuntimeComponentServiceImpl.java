@@ -102,17 +102,4 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         return null;
     }
 
-    public Invoker getCallbackInvoker(Binding binding, Operation operation) {
-        for (RuntimeWire wire : callbackWires) {
-            if (wire.getTarget().getBinding() == binding) {
-                for (InvocationChain chain : wire.getCallbackInvocationChains()) {
-                    Operation op = chain.getSourceOperation();
-                    if (mapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
-                        return chain.getHeadInvoker();
-                    }
-                }
-            }
-        }
-        return null;
-    }
 }
