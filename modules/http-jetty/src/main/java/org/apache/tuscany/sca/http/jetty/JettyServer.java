@@ -216,7 +216,8 @@ public class JettyServer implements ServletHost {
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
         
-        System.out.println("addServletMapping port: " + portNumber + " path: " + path);
+        URI addedURI = URI.create(uri.getScheme() + "://localhost:" + portNumber + path);
+        System.out.println("Added Servlet mapping: " + addedURI);
     }
 
     public Servlet removeServletMapping(String uriStr) {
