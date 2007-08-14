@@ -130,6 +130,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                         SCABinding scaBinding = service.getBinding(SCABinding.class);
                         RuntimeWire targetWire = service.getRuntimeWire(scaBinding);
                         boolean dynamicService = service.getInterfaceContract().getInterface().isDynamic();
+                        if (!dynamicService) {
+                            sourceWire.getTarget().setInterfaceContract(targetWire.getTarget().getInterfaceContract());
+                        }
                         for (InvocationChain sourceChain : sourceWire.getInvocationChains()) {
                             InvocationChain targetChain =
                                 service.getInvocationChain(scaBinding, sourceChain.getTargetOperation());
@@ -145,9 +148,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                             } else {
                                 throw new RuntimeException("Incompatible operations for source and target wires");
                             }
-                        }
-                        if (!dynamicService) {
-                            sourceWire.getTarget().setInterfaceContract(targetWire.getTarget().getInterfaceContract());
                         }
                     }
                 }
