@@ -275,6 +275,11 @@
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-tools</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
      </dependencies>
 
     <build>
