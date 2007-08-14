@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -48,11 +49,9 @@ import commonj.sdo.helper.XSDHelper;
  * @version $Rev$ $Date$
  */
 public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
-    private HelperContextRegistry helperContextRegistry;
 
-    public ImportSDOProcessor(HelperContextRegistry helperContextRegistry) {
+    public ImportSDOProcessor(ModelFactoryExtensionPoint modelFactories) {
         super();
-        this.helperContextRegistry = helperContextRegistry;
     }
 
     public QName getXMLType() {
