@@ -28,41 +28,24 @@
     <artifactId>itest-osgi-implementation</artifactId>
     <name>Apache Tuscany OSGi-SCA Integration tests</name>
 
-    <repositories>
-       <!-- for felix snapshots -->
-       <repository>
-          <id>apache.snapshots</id>
-          <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-       </repository>
-    </repositories>
-
     <dependencies>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.main</artifactId>
-            <version>0.9.0-incubator-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr</artifactId>
-            <version>0.9.0-incubator-SNAPSHOT</version>
+            <artifactId>org.osgi.core</artifactId>
+            <version>1.0.0</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>0.9.0-incubator-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.log</artifactId>
-            <version>0.9.0-incubator-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
