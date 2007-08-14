@@ -163,7 +163,7 @@ public class BindingsActivator implements ModuleActivator {
                 private InvokerFactory factory;
 
                 public Invoker createInvoker(Operation operation, boolean isCallback) {
-                    InvokerProxy invoker = new InvokerProxy(operation);
+                    InvokerProxy invoker = new InvokerProxy(factory, operation);
                     invokers.add(invoker);
                     return invoker;
                 }
@@ -181,9 +181,9 @@ public class BindingsActivator implements ModuleActivator {
                     if (factory instanceof ComponentLifecycle) {
                         ((ComponentLifecycle)factory).start();
                     }
-                    for (InvokerProxy invoker : invokers) {
-                        invoker.start(factory);
-                    }
+//                    for (InvokerProxy invoker : invokers) {
+//                        invoker.start(factory);
+//                    }
                 }
 
                 public void stop() {
@@ -229,18 +229,21 @@ public class BindingsActivator implements ModuleActivator {
 }
 
 class InvokerProxy implements Invoker {
+    InvokerFactory factory;
     Invoker invoker;
     Operation op;
 
-    InvokerProxy(Operation op) {
+    InvokerProxy(InvokerFactory factory, Operation op) {
+        this.factory = factory;
         this.op = op;
+        this.invoker = factory.createInvoker(op);
     }
 
     public Message invoke(Message arg0) {
         return invoker.invoke(arg0);
     }
 
-    public void start(InvokerFactory factory) {
-        invoker = factory.createInvoker(op);
-    }
+//    public void start(InvokerFactory factory) {
+//        invoker = factory.createInvoker(op);
+//    }
 }
