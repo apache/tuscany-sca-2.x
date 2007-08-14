@@ -199,7 +199,8 @@ public class TomcatServer implements ServletHost {
             throw new ServletMappingException(e);
         }
 
-        System.out.println("addServletMapping port: " + portNumber + " path: " + mapping);
+        URI addedURI = URI.create(uri.getScheme() + "://localhost:" + portNumber + mapping);
+        System.out.println("Added Servlet mapping: " + addedURI);
     }
 
     public Servlet removeServletMapping(String uriStr) {
