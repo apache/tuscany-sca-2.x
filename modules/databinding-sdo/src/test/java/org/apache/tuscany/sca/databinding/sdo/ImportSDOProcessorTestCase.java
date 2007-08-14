@@ -65,7 +65,7 @@ public class ImportSDOProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         URI id = URI.create("/composite1/");
-        loader = new ImportSDOProcessor(new HelperContextRegistryImpl());
+        loader = new ImportSDOProcessor(null);
         xmlFactory = XMLInputFactory.newInstance();
     }
 
