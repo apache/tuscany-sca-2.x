@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.databinding.impl;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.ExceptionHandler;
@@ -39,7 +37,7 @@ public abstract class BaseDataBinding implements DataBinding {
     private Class<?> baseType;
 
     private String name;
-    private String[] aliases; 
+    private String[] aliases;
 
     /**
      * Create a databinding with the base java type whose name will be used as
@@ -62,7 +60,7 @@ public abstract class BaseDataBinding implements DataBinding {
     protected BaseDataBinding(String name, Class<?> baseType) {
         this(name, null, baseType);
     }
-    
+
     /**
      * Create a databinding with the name and base java type
      * 
@@ -75,26 +73,20 @@ public abstract class BaseDataBinding implements DataBinding {
         this.name = name;
         this.baseType = baseType;
         this.aliases = aliases;
-    }    
+    }
 
     @SuppressWarnings("unchecked")
     public boolean introspect(DataType type, Annotation[] annotations) {
         assert type != null;
-        Type physical = type.getPhysical();
-        if (physical instanceof ParameterizedType) {
-            physical = ((ParameterizedType)physical).getRawType();
-        }
-        if (physical instanceof Class) {
-            Class cls = (Class)physical;
-            if (baseType != null && baseType.isAssignableFrom(cls)) {
-                type.setDataBinding(getName());
-                type.setLogical(baseType);
-                return true;
-            }
+        Class cls = type.getPhysical();
+        if (baseType != null && baseType.isAssignableFrom(cls)) {
+            type.setDataBinding(getName());
+            type.setLogical(baseType);
+            return true;
         }
         return false;
     }
-    
+
     public DataType introspect(Object value) {
         if (value == null) {
             return null;

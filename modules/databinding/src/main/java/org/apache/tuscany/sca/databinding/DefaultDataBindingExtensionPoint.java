@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoint {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
     private boolean loadedDataBindings;
-    
+
     public DefaultDataBindingExtensionPoint() {
     }
 
@@ -90,29 +90,29 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
 
         // Get the databinding service declarations
         ClassLoader classLoader = DataBinding.class.getClassLoader();
-        Set<String> dataBindingDeclarations; 
+        Set<String> dataBindingDeclarations;
         try {
-            dataBindingDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, DataBinding.class.getName());
+            dataBindingDeclarations =
+                TempServiceDeclarationUtil.getServiceClassNames(classLoader, DataBinding.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        
+
         // Load data bindings
-        for (String dataBindingDeclaration: dataBindingDeclarations) {
+        for (String dataBindingDeclaration : dataBindingDeclarations) {
             Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(dataBindingDeclaration);
             String className = attributes.get("class");
             String type = attributes.get("type");
             String name = attributes.get("name");
-                
+
             // Create a data binding wrapper and register it
             DataBinding dataBinding = new LazyDataBinding(type, name, classLoader, className);
             addDataBinding(dataBinding);
         }
-        
+
         loadedDataBindings = true;
     }
 
-    
     /**
      * A data binding facade allowing data bindings to be lazily loaded and
      * initialized.
@@ -120,7 +120,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     private static class LazyDataBinding implements DataBinding {
 
         private String name;
-        private String[] aliases; 
+        private String[] aliases;
         private WeakReference<ClassLoader> classLoader;
         private String className;
         private DataBinding dataBinding;
@@ -187,7 +187,6 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         }
     }
 
-    
     //FIXME The following methods should not be on the extension point
     // they should be on a separate class
     public boolean introspectType(DataType dataType, Annotation[] annotations) {
@@ -205,16 +204,21 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             // which is java.lang.Object. Default to this only if no databinding
             // results
             if (!binding.getName().equals(JavaBeansDataBinding.NAME)) {
-                if (binding.introspect(dataType, annotations)) {
-                    return true;
-                }
                 if (isException) {
                     // Next look to see if the DB's exceptionHandler handles this exception
                     ExceptionHandler excHandler = binding.getExceptionHandler();
-                    if (excHandler != null && excHandler.getFaultType(dataType) != null) {
+                    if (excHandler != null) {
                         // Assymetric to have the introspect() methods set the DataBindings themselves
                         // whereas we're setting it ourselves here.   
-                        dataType.setDataBinding(binding.getName());
+                        DataType faultType = excHandler.getFaultType(dataType);
+                        if (faultType != null) {
+                            dataType.setDataBinding(binding.getName());
+                            dataType.setLogical(faultType);
+                            return true;
+                        }
+                    }
+                } else {
+                    if (binding.introspect(dataType, annotations)) {
                         return true;
                     }
                 }
@@ -223,16 +227,13 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         // FIXME: Should we honor the databinding from operation/interface
         // level?
         Class physical = dataType.getPhysical();
-        if (physical == Object.class || Throwable.class.isAssignableFrom((Class)physical)) {
+        if (physical == Object.class) {
             return false;
         }
         dataType.setDataBinding(JavaBeansDataBinding.NAME);
         return false;
     }
 
-    //
-    // Didn't bother to provide special exc-handling support for this method
-    //
     public DataType introspectType(Object value) {
         loadDataBindings();
         DataType dataType = null;

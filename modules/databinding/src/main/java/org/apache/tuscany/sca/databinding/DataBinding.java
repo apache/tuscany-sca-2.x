@@ -56,7 +56,7 @@ public interface DataBinding {
     /**
      * Introspect and populate information to a DataType model
      * 
-     * @param javaType The java class or interface to be introspected
+     * @param dataType The data type to be introspected
      * @param annotations The java annotations
      * @return true if the databinding has recognized the given data type
      */
