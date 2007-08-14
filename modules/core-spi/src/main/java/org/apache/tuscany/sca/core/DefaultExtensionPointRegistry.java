@@ -81,7 +81,12 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
                             Constructor constructor = extensionPointClass.getConstructor(ModelFactoryExtensionPoint.class);
                             extensionPoint = constructor.newInstance(getExtensionPoint(ModelFactoryExtensionPoint.class));
                         } catch (NoSuchMethodException e2) {
-                            throw new IllegalArgumentException(e2);
+                            try {
+                                Constructor constructor = extensionPointClass.getConstructor(ExtensionPointRegistry.class);
+                                extensionPoint = constructor.newInstance(this);
+                            } catch (NoSuchMethodException e3) {
+                                throw new IllegalArgumentException(e3);
+                            }
                         }
                     }
                     
