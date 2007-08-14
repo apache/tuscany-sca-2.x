@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -29,6 +30,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.WireableBinding;
@@ -203,6 +205,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private void addReferenceBindingProviders(RuntimeComponent component,
                                                  RuntimeComponentReference reference,
                                                  List<Binding> bindings) {
+        
+        List<Binding> unresolvedTargetBindings = new ArrayList<Binding>();
+        
+        // create binding providers for all of the bindings for resolved targets
+        // or for all of the bindings where no targets are specified
         for (Binding binding : bindings) {
             BindingProviderFactory providerFactory =
                 (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
@@ -219,6 +226,59 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
             }
         }
+        
+        // go over any targets that have not been resolved yet (as they are running on other nodes)
+        // and try an resolve them remotely
+        // TODO - this should work for any kind of wired binding but the only wireable binding 
+        //        is currently the SCA binding so we assume that
+        for ( ComponentService service : reference.getTargets()){
+            if ( service.isUnresolved()){
+                for (Binding binding : service.getBindings()) {
+                    // TODO - we should look at all the bindings now associated with the 
+                    //        unresolved target but we assume the SCA binding here as
+                    //        its currently the only wireable one
+                    if (binding instanceof SCABinding) {
+                        SCABinding scaBinding = (SCABinding)binding;
+                
+                        BindingProviderFactory providerFactory =
+                            (BindingProviderFactory)providerFactories.getProviderFactory(SCABinding.class);
+                        
+                        if (providerFactory == null) {
+                            throw new IllegalStateException("Provider factory not found for class: " + scaBinding.getClass().getName());
+                        }
+                        
+                        // clone the SCA binding and fill in service details 
+                        SCABinding clonedSCABinding = null;
+                        try {
+                            clonedSCABinding = (SCABinding)((WireableBinding)scaBinding).clone();
+                            clonedSCABinding.setURI(service.getName());
+                            ((WireableBinding)clonedSCABinding).setIsRemote(true);
+                        } catch (Exception e) {
+                            // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
+                        }  
+
+                        @SuppressWarnings("unchecked")
+                        ReferenceBindingProvider bindingProvider =
+                            providerFactory.createReferenceBindingProvider((RuntimeComponent)component,
+                                                                           (RuntimeComponentReference)reference,
+                                                                           clonedSCABinding);
+                        if (bindingProvider != null) {
+                            ((RuntimeComponentReference)reference).setBindingProvider(clonedSCABinding, bindingProvider);
+                            
+                            // add the cloned SCA binding to the reference as it will be used to look up the 
+                            // provider later
+                            reference.getBindings().add(clonedSCABinding);
+                        } else {
+                            throw new IllegalStateException("No distributed SCA Binding implementation found for reference: " +
+                                                            reference.getName() +
+                                                            " and target: " + 
+                                                            service.getName() + 
+                                                            " or the referenced interface is not remoteable");
+                        }
+                    }
+                }
+            }
+        }  
     }
 
     private void removeReferenceBindingProviders(RuntimeComponent component,

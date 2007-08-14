@@ -353,7 +353,11 @@ public class CompositeWireBuilderImpl {
                                         composite);
                             }
                         } else {
-                            warning("Component reference target not found: " + target.getName(), composite);
+                            // put all the reference bindings into the target so that they
+                            // can be used for comparison when the target is resolved at runtime
+                            target.getBindings().addAll(componentReference.getBindings());
+                            
+                            warning("Component reference target not found, it might be a remote service: " + target.getName(), composite);
                         }
                     }
                 }
@@ -400,23 +404,31 @@ public class CompositeWireBuilderImpl {
     
             for (ComponentService service : targets) {
                 ComponentService target = service;
-                if (service.getService() instanceof CompositeService) {
-                    // Normalize the service to be the final target
-                    target = ((CompositeService)service.getService()).getPromotedService();
-                }
-                Binding selected = BindingUtil.resolveBindings(componentReference, target);
-                if (selected == null) {
-                    warning("Component reference doesn't have a matching binding", componentReference);
-                } else {
-                    selectedBindings.add(selected);
-                }
-                if (bidirectional) {
-                    Binding selectedCallback = BindingUtil.resolveCallbackBindings(componentReference, target);
-                    if (selectedCallback != null) {
-                        selectedCallbackBindings.add(selectedCallback);
+                
+                // if the target is unresolved it will now have a list of the reference
+                // bindings so ignore it
+                if (!target.isUnresolved()){
+                
+                    if (service.getService() instanceof CompositeService) {
+                        // Normalize the service to be the final target
+                        target = ((CompositeService)service.getService()).getPromotedService();
+                    }
+                    Binding selected = BindingUtil.resolveBindings(componentReference, target);
+                    if (selected == null) {
+                        warning("Component reference doesn't have a matching binding", componentReference);
+                    } else {
+                        selectedBindings.add(selected);
+                    }
+                    if (bidirectional) {
+                        Binding selectedCallback = BindingUtil.resolveCallbackBindings(componentReference, target);
+                        if (selectedCallback != null) {
+                            selectedCallbackBindings.add(selectedCallback);
+                        }
                     }
                 }
+               
             }
+            
             if (!targets.isEmpty()) {
                 // Add all the effective bindings
                 componentReference.getBindings().clear();
@@ -426,7 +438,9 @@ public class CompositeWireBuilderImpl {
                     componentReference.getCallback().getBindings().addAll(selectedCallbackBindings);
                 }
                 // Remove the targets since they have been normalized as bindings
-                targets.clear();
+                // TODO - leave then in for the case where there are still unresolved
+                //        targets that will be resolved at runtime
+                //targets.clear();
             }
         }
     }

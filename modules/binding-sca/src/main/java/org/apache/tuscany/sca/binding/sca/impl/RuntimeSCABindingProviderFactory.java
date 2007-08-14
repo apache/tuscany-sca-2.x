@@ -20,10 +20,19 @@
 package org.apache.tuscany.sca.binding.sca.impl;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -33,19 +42,36 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<SCABinding> {
     
+    private ExtensionPointRegistry extensionPoints;
+    
     public RuntimeSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-    }
-
+        this.extensionPoints = extensionPoints;
+        
+    } 
+    
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    SCABinding binding) {
-        return new RuntimeSCAReferenceBindingProvider(component, reference, binding);
+        RuntimeSCAReferenceBindingProvider provider = null;
+               
+        try {
+            provider = new RuntimeSCAReferenceBindingProvider(extensionPoints, component, reference, binding);
+        } catch (Exception ex) {
+            // The binding could not create a reference provider because either
+            // the sca binding does not have remote support or the interface
+            // in question is not remoteable
+            // null will be returned
+            System.err.println(ex.toString());
+            ex.printStackTrace();
+        }
+       
+        return provider;
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                SCABinding binding) {
-        return new RuntimeSCAServiceBindingProvider(component, service, binding);
+        return new RuntimeSCAServiceBindingProvider(extensionPoints, component, service, binding);
     }
 
     public Class<SCABinding> getModelType() {
