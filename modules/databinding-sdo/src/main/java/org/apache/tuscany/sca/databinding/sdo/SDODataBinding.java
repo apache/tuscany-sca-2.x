@@ -58,11 +58,7 @@ public class SDODataBinding extends BaseDataBinding {
 
     @Override
     public boolean introspect(DataType dataType, Annotation[] annotations) {
-        Object physical = dataType.getPhysical();
-        if (!(physical instanceof Class)) {
-            return false;
-        }
-        Class javaType = (Class)physical;
+        Class javaType = dataType.getPhysical();
         HelperContext context = HelperProvider.getDefaultContext();
         // FIXME: Need a better to test dynamic SDO
         if (DataObject.class.isAssignableFrom(javaType)) {

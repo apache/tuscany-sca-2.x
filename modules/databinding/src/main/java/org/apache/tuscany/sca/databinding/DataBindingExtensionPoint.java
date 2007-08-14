@@ -69,7 +69,7 @@ public interface DataBindingExtensionPoint {
      * @return A DataType representing the java type or null if no databinding
      *         recognizes the java type
      */
-    boolean introspectType(DataType dataType, Annotation[] annotations, boolean exception);
+    boolean introspectType(DataType dataType, Annotation[] annotations, boolean isFaultType);
 
     /**
      * Introspect the value to figure out the corresponding DataType
