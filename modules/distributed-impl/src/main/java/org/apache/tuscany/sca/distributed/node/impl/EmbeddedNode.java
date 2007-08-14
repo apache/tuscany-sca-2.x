@@ -19,17 +19,9 @@
 
 package org.apache.tuscany.sca.distributed.node.impl;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
@@ -114,8 +106,7 @@ public class EmbeddedNode {
             if (contributionURLString == null){
                 // find the current directory as a URL. This is where our contribution 
                 // will come from
-                File currentDirectory = new File (".");
-                contributionURL = new URL("file:/" + currentDirectory.getCanonicalPath() + "/src/test/resources/" + nodeName + "/");
+                contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
             } else {
                 contributionURL = new URL(contributionURLString);
             }
