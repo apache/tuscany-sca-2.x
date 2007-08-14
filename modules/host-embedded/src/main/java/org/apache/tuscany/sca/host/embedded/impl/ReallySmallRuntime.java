@@ -134,11 +134,6 @@ public class ReallySmallRuntime {
         
         // Start the runtime modules
         startModules(registry, modules);
-        
-        // Load the provider factory extensions
-        loadProviderFactories(registry, classLoader, BindingProviderFactory.class);
-        loadProviderFactories(registry, classLoader, ImplementationProviderFactory.class);
-
     }
 
     public void stop() throws ActivationException {
@@ -206,47 +201,6 @@ public class ReallySmallRuntime {
         for (ModuleActivator activator : modules) {
             activator.start(registry);
         }
-    }
-
-    private List<ProviderFactory> loadProviderFactories(ExtensionPointRegistry registry, ClassLoader classLoader, Class<?> factoryClass) {
-
-        // Get the provider factory service declarations
-        Set<String> factoryDeclarations; 
-        try {
-            factoryDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, factoryClass.getName());
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        
-        // Get the target extension point
-        ProviderFactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        List<ProviderFactory> factories = new ArrayList<ProviderFactory>();
-        
-        for (String factoryDeclaration: factoryDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(factoryDeclaration);
-            String className = attributes.get("class");
-            
-            // Load an implementation provider factory
-            if (factoryClass == ImplementationProviderFactory.class) {
-                String modelTypeName = attributes.get("model");
-                
-                // Create a provider factory wrapper and register it
-                ImplementationProviderFactory factory = new LazyImplementationProviderFactory(registry, modelTypeName, classLoader, className);
-                factoryExtensionPoint.addProviderFactory(factory);
-                factories.add(factory);
-
-            } else if (factoryClass == BindingProviderFactory.class) {
-
-                // Load a binding provider factory
-                String modelTypeName = attributes.get("model");
-                
-                // Create a provider factory wrapper and register it
-                BindingProviderFactory factory = new LazyBindingProviderFactory(registry, modelTypeName, classLoader, className);
-                factoryExtensionPoint.addProviderFactory(factory);
-                factories.add(factory);
-            }
-        }
-        return factories;
     }
 
     private void stopModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) {
