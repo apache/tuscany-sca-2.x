@@ -28,52 +28,21 @@
     </parent>
 
     <artifactId>tuscany-distributed</artifactId>
-    <name>Apache Tuscany Distributed Domain Support</name>
+    <name>Apache Tuscany Distributed Domain Base Support</name>
 
-    <dependencies>
-
+    <dependencies>   
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core</artifactId>
+            <artifactId>sca-api</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-        
+ 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>  
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>              
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-sca</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency> 
-                
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-topology</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-topology-xml</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>               
-
+        </dependency>      
+                    
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>

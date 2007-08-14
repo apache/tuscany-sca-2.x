@@ -20,14 +20,16 @@
 package org.apache.tuscany.sca.distributed.management;
 
 import java.util.List;
+import org.osoa.sca.annotations.Remotable;
 
 
 /**
- * Provides a mechanism whereby service enpoints can be shared amongst the 
+ * Provides a mechanism whereby service enoints can be shared amongst the 
  * nodes of a distributed domain.
  * 
  * @version $Rev: 552343 $ $Date: 2007-07-01 18:43:40 +0100 (Sun, 01 Jul 2007) $
  */
+@Remotable
 public interface ServiceDiscovery {
    
     /**
@@ -36,17 +38,19 @@ public interface ServiceDiscovery {
      * @param domainUri the string uri for the distributed domain
      * @param nodeUri the string uri for the current node
      * @param serviceName the name of the service that is exposed and the provided endpoint
+     * @param bindingName the remote binding that is providing the endpoint
      * @param url the enpoint url
      */
-    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String URL);
+    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
     
     /**
      * Locates information about a service endpoint 
      * 
      * @param domainUri the string uri for the distributed domain
      * @param serviceName the name of the service that is exposed and the provided endpoint
-     * @return url
+     * @param bindingName the remote binding that we want to find an endpoint for
+     * @return url the endpoint url
      */
-    public String findServiceEndpoint(String domainUri, String serviceName);  
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName);  
  
 }
