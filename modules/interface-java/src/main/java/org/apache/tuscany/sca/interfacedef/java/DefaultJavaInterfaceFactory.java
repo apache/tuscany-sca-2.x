@@ -18,14 +18,64 @@
  */
 package org.apache.tuscany.sca.interfacedef.java;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
+import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 /**
  * A factory for the Java interface model.
  */
 public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     
+    private boolean loadedVisitors; 
+    
     public DefaultJavaInterfaceFactory() {
+    }
+    
+    @Override
+    public List<JavaInterfaceVisitor> getInterfaceVisitors() {
+        loadVisitors();
+        return super.getInterfaceVisitors();
+    }
+    
+    /**
+     * Load visitors declared under META-INF/services
+     */
+    @SuppressWarnings("unchecked")
+    private void loadVisitors() {
+        if (loadedVisitors)
+            return;
+
+        // Get the databinding service declarations
+        ClassLoader classLoader = JavaInterfaceVisitor.class.getClassLoader();
+        Set<String> visitorDeclarations; 
+        try {
+            visitorDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, JavaInterfaceVisitor.class.getName());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Load data bindings
+        for (String visitorDeclaration: visitorDeclarations) {
+            JavaInterfaceVisitor visitor;
+            try {
+                Class<JavaInterfaceVisitor> visitorClass = (Class<JavaInterfaceVisitor>)Class.forName(visitorDeclaration, true, classLoader);
+                visitor = visitorClass.newInstance();
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException(e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException(e);
+            }
+            addInterfaceVisitor(visitor);
+        }
+        
+        loadedVisitors = true;
     }
 
 }
