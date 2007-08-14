@@ -43,10 +43,12 @@ public class HelloWorldNoWSDLTestCase extends TestCase {
         b1.setS("petra");
         b1.setX(1);
         b1.setY(new Integer(2));
+        b1.setB(Boolean.TRUE);
         Bar b2 = new Bar();
         b2.setS("beate");
         b2.setX(3);
         b2.setY(new Integer(4));
+        b2.setB(Boolean.FALSE);
         f.setBars(new Bar[] { b1, b2} );
        
         Foo f2 = echo.echoFoo(f);
@@ -54,9 +56,11 @@ public class HelloWorldNoWSDLTestCase extends TestCase {
         assertEquals("petra", f2.getBars()[0].getS());
         assertEquals(1, f2.getBars()[0].getX());
         assertEquals(2, f2.getBars()[0].getY().intValue());
+        assertTrue(f2.getBars()[0].getB().booleanValue());
         assertEquals("beate", f2.getBars()[1].getS());
         assertEquals(3, f2.getBars()[1].getX());
         assertEquals(4, f2.getBars()[1].getY().intValue());
+        assertFalse(f2.getBars()[1].getB().booleanValue());
        
     }
    

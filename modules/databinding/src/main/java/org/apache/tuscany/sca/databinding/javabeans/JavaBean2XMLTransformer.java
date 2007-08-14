@@ -175,7 +175,8 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
             || javaObject instanceof Integer
             || javaObject instanceof Long
             || javaObject instanceof Float
-            || javaObject instanceof Double) {
+            || javaObject instanceof Double
+            || javaObject instanceof Boolean) {
             return true;
         }
         if (javaObject instanceof GregorianCalendar || javaObject instanceof Date
