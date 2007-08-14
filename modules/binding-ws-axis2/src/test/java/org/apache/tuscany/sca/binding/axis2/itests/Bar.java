@@ -26,6 +26,15 @@ public class Bar implements Serializable {
     private String s;
     private int x;
     private Integer y;
+    
+    private Boolean b;
+    
+    public Boolean getB() {
+        return b;
+    }
+    public void setB(Boolean b) {
+        this.b = b;
+    }
     public String getS() {
         return s;
     }
