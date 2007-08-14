@@ -1,0 +1,150 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+package org.apache.tuscany.sca.binding.sca.axis2.impl;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.axis2.Axis2ReferenceBindingProvider;
+import org.apache.tuscany.sca.binding.axis2.Axis2ServiceProvider;
+import org.apache.tuscany.sca.binding.axis2.Java2WSDLHelper;
+import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
+import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
+import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
+import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.distributed.management.ServiceNotFoundException;
+import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
+
+/**
+ * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
+ */
+public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider2 {
+
+    private RuntimeComponent component;
+    private RuntimeComponentReference reference;
+    private SCABinding binding;
+    private ServletHost servletHost;
+    private MessageFactory messageFactory;
+   
+    private Axis2ReferenceBindingProvider axisReferenceBindingProvider;
+    private WebServiceBinding wsBinding;
+    
+    private boolean started = false;
+    private EndpointReference serviceEPR;
+
+    public Axis2SCAReferenceBindingProvider(RuntimeComponent component,
+                                              RuntimeComponentReference reference,
+                                              DistributedSCABinding binding,
+                                              ServletHost servletHost,
+                                              MessageFactory messageFactory) {
+        this.component = component;
+        this.reference = reference;
+        this.binding = binding.getSCABinding();
+        this.servletHost = servletHost;
+        this.messageFactory = messageFactory;
+        
+        wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
+        
+        // fix up the minimal things required to get the ws binding going. 
+        
+        // Turn the java interface contract into a wsdl interface contract
+        InterfaceContract contract = reference.getInterfaceContract();
+        if ((contract instanceof JavaInterfaceContract)) {
+            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
+        }
+        
+        // Set to use the Axiom data binding
+        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
+        
+        wsBinding.setBindingInterfaceContract(contract);
+        wsBinding.setName(this.binding.getName());         
+               
+        axisReferenceBindingProvider = new Axis2ReferenceBindingProvider(component,
+                                                                         reference,
+                                                                         wsBinding,
+                                                                         servletHost,
+                                                                         messageFactory);
+        // make an EPR to share between all the invokers as the 
+        // endpoint is not know until start time
+        serviceEPR = new EndpointReferenceImpl("");
+    }
+
+    public InterfaceContract getBindingInterfaceContract() {
+        return wsBinding.getBindingInterfaceContract();
+    }
+
+    public boolean supportsAsyncOneWayInvocation() {
+        return false;
+    }
+
+    public Invoker createInvoker(Operation operation) {
+        //return axisReferenceBindingProvider.createInvoker(operation);
+        return new Axis2SCABindingInvoker(serviceEPR, axisReferenceBindingProvider.createInvoker(operation));
+    }
+
+    @Deprecated
+    public Invoker createInvoker(Operation operation, boolean isCallback) {
+        if (isCallback) {
+            throw new UnsupportedOperationException();
+        } else {
+            return createInvoker(operation);
+        }
+    }
+
+    public void start() {
+        
+        // look up the endpoint of the service that will be invoked 
+        // through this binding
+        DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
+        ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
+        
+        String serviceUrl = serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(), 
+                                                                 binding.getURI(), 
+                                                                 SCABinding.class.getName());
+        
+        // If we find one set it into the EPR that is shared amonnst
+        // the invokers this provider created
+        if (serviceUrl == null){ 
+            throw new ServiceNotFoundException(); 
+        } else {
+            serviceEPR.setURI(serviceUrl);
+        }
+
+    }
+
+    public void stop() {
+    }
+
+}
