@@ -116,6 +116,8 @@ public class EmbeddedNode {
                 // will come from
                 File currentDirectory = new File (".");
                 contributionURL = new URL("file:/" + currentDirectory.getCanonicalPath() + "/src/test/resources/" + nodeName + "/");
+            } else {
+                contributionURL = new URL(contributionURLString);
             }
          
             loadContribution(domainName, contributionURL);
