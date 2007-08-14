@@ -60,7 +60,13 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>              
+        </dependency>    
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distributed</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency> 
 
         <dependency>
             <groupId>org.easymock</groupId>

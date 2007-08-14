@@ -45,6 +45,7 @@ import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.AbstractContract;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
@@ -96,7 +97,7 @@ public class Axis2ServiceProvider {
         wsBinding.setURI(uri);
     }
 
-    protected void start() {
+    public void start() {
 
         // TODO: if <binding.ws> specifies the wsdl service then should create a
         // service for every port
@@ -114,7 +115,7 @@ public class Axis2ServiceProvider {
         servletHost.addServletMapping(servletURI, servlet);
     }
 
-    protected void stop() {
+    public void stop() {
         servletHost.removeServletMapping(wsBinding.getURI());
         try {
             configContext.getAxisConfiguration().removeService(wsBinding.getURI());
@@ -389,9 +390,9 @@ public class Axis2ServiceProvider {
         requestMsg.setBody(args);
 
         if (contract instanceof RuntimeComponentService)
-            requestMsg.setTo(((RuntimeComponentService)contract).getRuntimeWire(wsBinding).getTarget());
+            requestMsg.setTo(((RuntimeComponentService)contract).getRuntimeWire(getBinding()).getTarget());
         else
-            requestMsg.setTo(((RuntimeComponentReference)contract).getRuntimeWire(wsBinding).getTarget());
+            requestMsg.setTo(((RuntimeComponentReference)contract).getRuntimeWire(getBinding()).getTarget());
         if (callbackAddress != null) {
             requestMsg.setFrom(new EndpointReferenceImpl(callbackAddress));
         }
@@ -406,7 +407,7 @@ public class Axis2ServiceProvider {
                 requestMsg.setConversationID(null);
             }
 
-            Message responseMsg = ((RuntimeComponentService)contract).getInvoker(wsBinding, op).invoke(requestMsg);
+            Message responseMsg = ((RuntimeComponentService)contract).getInvoker(getBinding(), op).invoke(requestMsg);
             if (responseMsg.isFault()) {
                 throw new InvocationTargetException((Throwable)responseMsg.getBody());
             }
@@ -419,6 +420,16 @@ public class Axis2ServiceProvider {
 
     public boolean isConversational() {
         return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
+    }
+    
+    /**
+     * Return the binding for this provider as a primitive binding type
+     * For use when looking up wires registered against the binding.
+     * 
+     * @return the binding
+     */
+    protected Binding getBinding(){
+        return wsBinding;
     }
 
 }

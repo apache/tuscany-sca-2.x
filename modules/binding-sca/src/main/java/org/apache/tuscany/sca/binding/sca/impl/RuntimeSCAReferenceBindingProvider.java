@@ -20,11 +20,19 @@
 package org.apache.tuscany.sca.binding.sca.impl;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.distributed.management.ServiceNotFoundException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -37,19 +45,53 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider2 {
 
+    private ExtensionPointRegistry extensionPoints;
     private RuntimeComponentReference reference;
     private SCABinding binding;
     private boolean started = false;
+    
+    private ReferenceBindingProvider2 distributedProvider = null;
 
-    public RuntimeSCAReferenceBindingProvider(RuntimeComponent component,
+    public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
+                                              RuntimeComponent component,
                                               RuntimeComponentReference reference,
-                                              SCABinding binding) {
+                                              SCABinding binding) 
+      throws BindingNotDistributedException, ServiceNotFoundException{
         this.reference = reference;
         this.binding = binding;
+
+        // look to see if a distributed SCA binding implementation has
+        // been included on the classpath. This will be needed by the 
+        // provider itself to do it's thing
+        ProviderFactoryExtensionPoint factoryExtensionPoint = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        BindingProviderFactory<DistributedSCABinding> distributedProviderFactory = (BindingProviderFactory<DistributedSCABinding>)
+            factoryExtensionPoint.getProviderFactory(DistributedSCABinding.class);
+
+        // if there is a wire to this service that crosses the node boundary 
+        if (((WireableBinding)binding).getIsRemote() == true) {
+            // Make sure that we have a distributed sca binding and 
+            // that the interface is remoteable
+            
+            if ((distributedProviderFactory != null) && 
+                (reference.getInterfaceContract().getInterface().isRemotable())){                  
+                DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
+                distributedBinding.setSCABinging(binding);
+                
+                distributedProvider = (ReferenceBindingProvider2)
+                    distributedProviderFactory.createReferenceBindingProvider(component, reference, distributedBinding);
+               
+            } else {
+                throw new BindingNotDistributedException();
+            }
+        }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return reference.getInterfaceContract();
+        if (distributedProvider != null){
+            return distributedProvider.getBindingInterfaceContract();
+        } else {
+            return reference.getInterfaceContract();
+        }        
     }
 
     public boolean supportsAsyncOneWayInvocation() {
@@ -57,7 +99,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public Invoker createInvoker(Operation operation) {
-        return new RuntimeSCABindingInvoker();
+        if (distributedProvider != null){
+            return distributedProvider.createInvoker(operation);
+        } else {
+            return new RuntimeSCABindingInvoker(); 
+        }
     }
 
     @Deprecated
@@ -107,9 +153,16 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                 }
             }
         }
+        
+        if (distributedProvider != null){
+            distributedProvider.start();
+        }
     }
 
     public void stop() {
+        if (distributedProvider != null){
+            distributedProvider.stop();
+        }
     }
 
 }

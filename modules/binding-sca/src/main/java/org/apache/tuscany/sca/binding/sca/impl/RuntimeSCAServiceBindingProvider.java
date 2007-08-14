@@ -21,11 +21,18 @@ package org.apache.tuscany.sca.binding.sca.impl;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -38,16 +45,78 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2 {
 
+    private ExtensionPointRegistry extensionPoints;
+    private RuntimeComponent component;
     private RuntimeComponentService service;
+    private SCABinding binding;
+    
+    private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
+    private ServiceBindingProvider2 distributedProvider;
+    private DistributedSCABinding distributedBinding;
+    
+    private boolean started = false;
+    
+ 
 
-    public RuntimeSCAServiceBindingProvider(RuntimeComponent component,
+    public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
+                                            RuntimeComponent component,
                                             RuntimeComponentService service,
                                             SCABinding binding) {
+        this.extensionPoints = extensionPoints;
+        this.component = component;
         this.service = service;
+        this.binding = binding;
+        
+        // look to see if a distributed SCA binding implementation has
+        // been included on the classpath and store it if it has
+        ProviderFactoryExtensionPoint factoryExtensionPoint = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        distributedProviderFactory = (BindingProviderFactory<DistributedSCABinding>)
+                                     factoryExtensionPoint.getProviderFactory(DistributedSCABinding.class);
+        
+        // if a distributed sca binding is available and 
+        //    the target interface is remoteable and 
+        //    there is a wire to this service that crosses the node boundary
+        //then 
+        //     create a nested provider to handle the remote case
+        if ( (distributedProviderFactory != null) &&
+             (service.getInterfaceContract().getInterface().isRemotable()) ){
+            distributedBinding = new DistributedSCABindingImpl();
+            distributedBinding.setSCABinging(binding);
+            distributedProvider = (ServiceBindingProvider2)
+                                  distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
+            
+            // get the url out of the binding and send it to the registry if
+            // a distributed domain is configured
+            DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
+            
+            if (distributedDomain != null){
+                ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
+                
+                // register endpoint twice to take account the formats 
+                //  ComponentName
+                //  ComponentName/ServiceName
+                serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
+                                                         distributedDomain.getNodeName(), 
+                                                         component.getName(), 
+                                                         SCABinding.class.getName(), 
+                                                         binding.getURI());
+                serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
+                                                         distributedDomain.getNodeName(), 
+                                                         component.getName() + "/" + service.getName(), 
+                                                         SCABinding.class.getName(), 
+                                                         binding.getURI());
+            }
+            
+        }
+        
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
+        if (distributedProvider != null){
+            return distributedProvider.getBindingInterfaceContract();
+        } else {
+            return service.getInterfaceContract();
+        }
     }
 
     public boolean supportsAsyncOneWayInvocation() {
@@ -59,9 +128,16 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
     }
 
     public void start() {
+
+        if (distributedProvider != null) {
+            distributedProvider.start();
+        }
     }
 
     public void stop() {
+        if (distributedProvider != null) {
+            distributedProvider.stop();
+        }
     }
 
 }

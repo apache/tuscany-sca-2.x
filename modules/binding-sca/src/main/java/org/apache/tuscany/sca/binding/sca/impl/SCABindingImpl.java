@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 
 /**
  * Represents an SCA binding.
@@ -47,7 +48,19 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     private ComponentService targetComponentService;
     private Binding targetBinding;
     private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
+    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();
+    private boolean isRemote = false;
+    
+    private DistributedSCADomain distributedDomain;
+
+    
+    public void setDistributedDomain(DistributedSCADomain distributedDomain){
+        this.distributedDomain = distributedDomain;
+    }
+    
+    public DistributedSCADomain getDistributedDomain(){
+        return distributedDomain;
+    }
 
     public List<Intent> getComputedIntents() {
         return computedIntents;
@@ -155,5 +168,22 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
      */
     public void setTargetBinding(Binding targetBinding) {
         this.targetBinding = targetBinding;
+    }
+    
+    /**
+     * If a reference targets in a component running in a separate
+     * node then its binding will be set remote until runtime
+     * 
+     * @param isRemote
+     */
+    public void setIsRemote(Boolean isRemote){
+        this.isRemote = isRemote;
+    }
+    
+    /**
+     * @return the flag indicating whether the binding targets a remote component
+     */
+    public boolean getIsRemote(){
+        return isRemote;
     }
 }
