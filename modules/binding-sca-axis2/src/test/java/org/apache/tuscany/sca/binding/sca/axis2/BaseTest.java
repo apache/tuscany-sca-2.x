@@ -18,10 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import java.io.File;
 import java.net.URL;
-
-import junit.framework.Assert;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorld;
@@ -31,7 +28,6 @@ import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class BaseTest {
 
@@ -40,115 +36,106 @@ public class BaseTest {
     public static DistributedSCADomain distributedDomainA;
     public static DistributedSCADomain distributedDomainB;
     public static EmbeddedSCADomain domainA;
-    public static EmbeddedSCADomain domainB;  
+    public static EmbeddedSCADomain domainB;
     public static HelloWorld helloWorldClientA;
     public static HelloWorld helloWorldClientB;
 
     @BeforeClass
-    public static void init() throws Exception {     
+    public static void init() throws Exception {
         System.out.println("Setting up distributed nodes");
-        ClassLoader cl = BaseTest.class.getClassLoader(); 
-             
+        ClassLoader cl = BaseTest.class.getClassLoader();
+
         try {
             // create nodeA to run clients
             String nodeName = "nodeA";
-            
+
             // Create the distributed domain representation
             distributedDomainA = new TestDistributedSCADomainImpl(DEFULT_DOMAIN_NAME);
-            distributedDomainA.setNodeName(nodeName);  
+            distributedDomainA.setNodeName(nodeName);
 
             // create and start domainA
-            domainA = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);   
+            domainA = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);
             domainA.start();
-            
+
             // add a contribution to A
             ContributionService contributionService = domainA.getContributionService();
-            
+
             // find the current directory as a URL. This is where our contribution 
             // will come from
-            File currentDirectory = new File (".");
-            URL contributionURL = new URL("file:/" + currentDirectory.getCanonicalPath() + "/src/test/resources/" + nodeName + "/");
-            
-            
+            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
+
             // Contribute the SCA application
-            Contribution contribution = contributionService.contribute("http://calculator", 
-                                                          contributionURL, 
-                                                          null, //resolver, 
-                                                          false);
+            Contribution contribution = contributionService.contribute("http://calculator", contributionURL, null, //resolver, 
+                                                                       false);
             Composite composite = contribution.getDeployables().get(0);
-            
+
             // Add the deployable composite to the domain
             domainA.getDomainComposite().getIncludes().add(composite);
             domainA.getCompositeBuilder().build(composite);
-            
+
             distributedDomainA.addDistributedDomainToBindings(composite);
-            
-            domainA.getCompositeActivator().activate(composite);            
-            
-            
+
+            domainA.getCompositeActivator().activate(composite);
+
             // create nodeB to run remote services
             nodeName = "nodeB";
-            
+
             // Create the distributed domain representation
             distributedDomainB = new TestDistributedSCADomainImpl(DEFULT_DOMAIN_NAME);
-            distributedDomainB.setNodeName(nodeName);  
+            distributedDomainB.setNodeName(nodeName);
 
             // create and start domainB
-            domainB = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);   
+            domainB = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);
             domainB.start();
-            
+
             // add a contribution to B
             contributionService = domainB.getContributionService();
-            
+
             // find the current directory as a URL. This is where our contribution 
             // will come from
-            contributionURL = new URL("file:/" + currentDirectory.getCanonicalPath() + "/src/test/resources/" + nodeName + "/");
-            
-            
+            contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
+
             // Contribute the SCA application
-            contribution = contributionService.contribute("http://calculator", 
-                                                          contributionURL, 
-                                                          null, //resolver, 
+            contribution = contributionService.contribute("http://calculator", contributionURL, null, //resolver, 
                                                           false);
             composite = contribution.getDeployables().get(0);
-            
+
             // Add the deployable composite to the domain
             domainB.getDomainComposite().getIncludes().add(composite);
             domainB.getCompositeBuilder().build(composite);
-            
+
             distributedDomainB.addDistributedDomainToBindings(composite);
-            
-            domainB.getCompositeActivator().activate(composite);   
-            
-            
+
+            domainB.getCompositeActivator().activate(composite);
+
             // Start node A
-            for (Composite compositeA : domainA.getDomainComposite().getIncludes() ){
+            for (Composite compositeA : domainA.getDomainComposite().getIncludes()) {
                 domainA.getCompositeActivator().start(compositeA);
-            }            
-            
+            }
+
             // start node B
-            for (Composite compositeB : domainB.getDomainComposite().getIncludes() ){
+            for (Composite compositeB : domainB.getDomainComposite().getIncludes()) {
                 domainB.getCompositeActivator().start(composite);
             }
-                     
-        } catch(Exception ex) {
+
+        } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
             ex.printStackTrace(System.err);
             throw ex;
         }
-               
+
         // get a reference to the calculator service from domainA
         // which will be running this component
         helloWorldClientA = domainA.getService(HelloWorld.class, "HelloWorldClient");
         //helloWorldClientB = domainB.getService(HelloWorld.class, "HelloWorldClient");       
-        
-   }
+
+    }
 
     @AfterClass
-    public static void destroy() throws Exception {  
+    public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
         domainA.stop();
-        domainB.stop();    
+        domainB.stop();
     }
 
 }
