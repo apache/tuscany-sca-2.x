@@ -47,8 +47,8 @@
                 <module>binding-notification</module>
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
-                <module>binding-sca-axis2</module>
                 <!--
+                <module>binding-sca-axis2</module>
                 <module>binding-sca-jms</module>
                 -->
                 <module>binding-sca-xml</module>
@@ -74,7 +74,9 @@
                 <module>discovery-jms</module>
                 -->
                 <module>distributed</module>
+                <!--
                 <module>distributed-impl</module>
+                -->
                 <module>extension-helper</module>
                 <module>host-embedded</module>
                 <module>host-http</module>
