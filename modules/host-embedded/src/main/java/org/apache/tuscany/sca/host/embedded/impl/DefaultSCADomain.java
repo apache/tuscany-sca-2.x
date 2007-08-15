@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -350,24 +349,16 @@ public class DefaultSCADomain extends SCADomain {
         ComponentContext componentContext = null;
 
         // If the component is a composite, then we need to find the
-        // non-composite
-        // component that provides the requested service
+        // non-composite component that provides the requested service
         if (component.getImplementation() instanceof Composite) {
-            ComponentService promotedService = null;
             for (ComponentService componentService : component.getServices()) {
                 if (serviceName == null || serviceName.equals(componentService.getName())) {
-
                     CompositeService compositeService = (CompositeService)componentService.getService();
                     if (compositeService != null) {
-                        promotedService = compositeService.getPromotedService();
-                        SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                        if (scaBinding != null) {
-                            Component promotedComponent = scaBinding.getComponent();
-                            if (serviceName != null) {
-                                serviceName = "$promoted$." + serviceName;
-                            }
-                            componentContext = (ComponentContext)promotedComponent;
+                        if (serviceName != null) {
+                            serviceName = "$promoted$." + serviceName;
                         }
+                        componentContext = (ComponentContext)compositeService.getPromotedComponent();
                     }
                     break;
                 }

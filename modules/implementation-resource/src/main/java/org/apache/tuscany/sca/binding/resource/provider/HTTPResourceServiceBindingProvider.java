@@ -52,16 +52,12 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
         this.binding = binding;
         this.servletHost = servletHost;
 
-        if (binding.getURI() != null) {
-            uri = binding.getURI();
-            if (!uri.endsWith("/")) {
-                uri += "/";
-            }
-            if (!uri.endsWith("*")) {
-                uri += "*";
-            }
-        } else {
-            uri = "/" + this.component.getName() + "/*";
+        uri = binding.getURI();
+        if (!uri.endsWith("/")) {
+            uri += "/";
+        }
+        if (!uri.endsWith("*")) {
+            uri += "*";
         }
     }
 

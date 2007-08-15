@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.core.spring.assembly.impl;
 
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 
 /**
@@ -39,11 +38,12 @@ public class BeanReferenceImpl extends RuntimeBeanReference {
 
     public String getBeanName() {
         SCABinding binding = reference.getBinding(SCABinding.class);
-        if (binding instanceof WireableBinding) {
-            return ((WireableBinding) binding).getTargetComponent().getURI();
-        } else {
-            return null;
+        String name = binding.getURI();
+        int s = name.lastIndexOf('/');
+        if (s != -1) {
+            name = name.substring(0, s);
         }
+        return name;
     }
 
     public boolean equals(Object other) {

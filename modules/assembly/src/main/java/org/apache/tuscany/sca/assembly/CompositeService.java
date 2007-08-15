@@ -26,6 +26,20 @@ package org.apache.tuscany.sca.assembly;
 public interface CompositeService extends Service {
 
     /**
+     * Returns the promoted component.
+     * 
+     * @return the promoted component.
+     */
+    Component getPromotedComponent();
+
+    /**
+     * Sets the promoted component
+     * 
+     * @param promotedComponent the promoted component.
+     */
+    void setPromotedComponent(Component promotedComponent);
+    
+    /**
      * Returns the promoted component service .
      * 
      * @return the promoted component service.

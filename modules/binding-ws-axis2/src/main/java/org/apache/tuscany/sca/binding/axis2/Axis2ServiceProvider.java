@@ -146,19 +146,13 @@ public class Axis2ServiceProvider {
             wsdlURI = getEndpoint(wsBinding.getPort());
         }
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
-            if (wsBinding.getURI() != null && (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null)) {
-                throw new IllegalArgumentException("binding URI cannot be used with absolute WSDL endpoint URI");
-            }
             return URI.create(wsdlURI.toString());
         }
 
         // either there is no wsdl port endpoint URI or that URI is relative
 
-        URI bindingURI = null;
-        if (wsBinding.getURI() != null) {
-            bindingURI = URI.create(wsBinding.getURI());
-        }
-        if (bindingURI != null && bindingURI.isAbsolute()) {
+        URI bindingURI = URI.create(wsBinding.getURI());
+        if (bindingURI.isAbsolute()) {
             // there is an absoulte uri specified on the binding: <binding.ws
             // uri="xxx"
             if (wsdlURI != null) {
@@ -167,36 +161,10 @@ public class Axis2ServiceProvider {
             } else {
                 return bindingURI;
             }
-        }
-
-        // both the WSDL endpoint and binding uri are either unspecified or relative
-        // so the endpoint is based on the component name and service binding URI
-
-        URI componentURI = URI.create(component.getName());
-
-        String actualURI;
-        if (componentURI.isAbsolute()) {
-            actualURI = componentURI.toString();
         } else {
-            actualURI = baseURI + "/" + componentURI;
+            bindingURI = URI.create(baseURI + "/" + wsBinding.getURI());
+            return bindingURI;
         }
-
-        // for service bindings with multiple services, the default binding URI is the binding name
-        if (bindingURI == null && component.getServices().size() > 1) {
-            bindingURI = URI.create(wsBinding.getName());
-        }
-
-        // add any relative binding URI
-        if (bindingURI != null) {
-            actualURI += "/" + bindingURI;
-        }
-
-        // add any relative WSDL port URI
-        if (wsdlURI != null) {
-            actualURI += "/" + wsdlURI.toString();
-        }
-
-        return URI.create(actualURI);
     }
 
     /**

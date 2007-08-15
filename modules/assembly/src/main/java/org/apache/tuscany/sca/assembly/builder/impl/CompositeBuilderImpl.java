@@ -60,9 +60,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
 
         includeBuilder = new CompositeIncludeBuilderImpl(monitor);
-        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
+        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
         cloneBuilder = new CompositeCloneBuilderImpl(monitor);
-        configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
+        configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {

@@ -51,9 +51,6 @@ public class RSSServiceBindingProvider implements ServiceBindingProvider {
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
         uri = binding.getURI();
-        if (uri == null) {
-            uri = "/" + this.component.getName();
-        }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
