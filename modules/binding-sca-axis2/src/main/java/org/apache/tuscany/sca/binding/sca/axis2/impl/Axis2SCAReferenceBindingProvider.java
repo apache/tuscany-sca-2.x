@@ -134,10 +134,13 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
                                                                  binding.getURI(), 
                                                                  SCABinding.class.getName());
         
-        // If we find one set it into the EPR that is shared amonnst
+        // If we find one set it into the EPR that is shared amongst
         // the invokers this provider created
         if (serviceUrl == null){ 
-            throw new ServiceNotFoundException(); 
+            throw new ServiceNotFoundException("Can't find service: " + 
+                                               binding.getURI() + 
+                                               " in domain: " +
+                                               distributedDomain.getDomainName()); 
         } else {
             serviceEPR.setURI(serviceUrl);
         }

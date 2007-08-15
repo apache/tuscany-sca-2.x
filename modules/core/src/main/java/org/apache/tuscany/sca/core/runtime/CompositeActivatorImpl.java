@@ -185,6 +185,51 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
             }
         }
+        
+        // support for distributed domain follows
+        // TODO - roll into above code but keeping separate so that it is obvious 
+        
+        // If there is an SCA binding for the service add a second one marked as
+        // remote in the case where the service interface is remotable. This
+        // service binding provides a separate wire that will be active if 
+        // this service is referenced remotely.  
+        SCABinding clonedSCABinding = null;
+        
+        for (Binding binding : bindings) {
+            if ((binding instanceof SCABinding) &&
+                (service.getInterfaceContract().getInterface().isRemotable())){
+                SCABinding scaBinding = (SCABinding)binding;  
+
+                BindingProviderFactory providerFactory =
+                    (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
+                if (providerFactory != null) {
+                    
+                    // clone the SCA binding and fill in service details 
+                    try {
+                        clonedSCABinding = (SCABinding)((WireableBinding)scaBinding).clone();
+                        ((WireableBinding)clonedSCABinding).setIsRemote(true);
+                    } catch (Exception e) {
+                        // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
+                    }  
+                    
+                    @SuppressWarnings("unchecked")
+                    ServiceBindingProvider bindingProvider =
+                        providerFactory.createServiceBindingProvider((RuntimeComponent)component,
+                                                                     (RuntimeComponentService)service,
+                                                                     clonedSCABinding);
+                    if (bindingProvider != null) {
+                        ((RuntimeComponentService)service).setBindingProvider(clonedSCABinding, bindingProvider);
+                    }
+                } else {
+                    throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
+                }
+            }
+        }
+        
+        // add the cloned SCA binding to the service as it will be used to look up the provider later
+        if (clonedSCABinding != null){
+            service.getBindings().add(clonedSCABinding);            
+        }
     }
 
     private void removeServiceBindingProviders(RuntimeComponent component,
@@ -219,6 +264,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
             }
         }
+        
+        // Support for distributed domain follows
         
         // go over any targets that have not been resolved yet (as they are running on other nodes)
         // and try an resolve them remotely
