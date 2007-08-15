@@ -26,7 +26,6 @@
         <!--pathelement location="${classpath}"/-->
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/distributed-changes/1.0-incubating-SNAPSHOT/distributed-changes-1.0-incubating-SNAPSHOT.jar"/>    	
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-interface-java-xml/1.0-incubating-SNAPSHOT/tuscany-interface-java-xml-1.0-incubating-SNAPSHOT.jar"/>
-    	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-interface-java-runtime/1.0-incubating-SNAPSHOT/tuscany-interface-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/wsdl4j/wsdl4j/1.6.2/wsdl4j-1.6.2.jar"/>
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-implementation-java-xml/1.0-incubating-SNAPSHOT/tuscany-implementation-java-xml-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/org/codehaus/woodstox/wstx-asl/3.2.0/wstx-asl-3.2.0.jar"/>
@@ -40,7 +39,6 @@
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-interface-java/1.0-incubating-SNAPSHOT/tuscany-interface-java-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/sca-api/1.0-incubating-SNAPSHOT/sca-api-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-implementation-java-runtime/1.0-incubating-SNAPSHOT/tuscany-implementation-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
-    	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-interface-wsdl-runtime/1.0-incubating-SNAPSHOT/tuscany-interface-wsdl-runtime-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-core/1.0-incubating-SNAPSHOT/tuscany-core-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}/org/apache/tuscany/sca/tuscany-assembly-xml/1.0-incubating-SNAPSHOT/tuscany-assembly-xml-1.0-incubating-SNAPSHOT.jar"/>

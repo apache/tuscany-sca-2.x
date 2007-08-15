@@ -60,10 +60,8 @@
                 <include name="tuscany-implementation-java-xml-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-java-0.91-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-runtime-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-java-xml-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-wsdl-0.91-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-runtime-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-wsdl-xml-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-policy-0.91-incubating-SNAPSHOT.jar"/>
             </zipfileset>
