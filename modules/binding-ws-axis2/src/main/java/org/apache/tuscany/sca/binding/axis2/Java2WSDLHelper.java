@@ -89,7 +89,10 @@ public class Java2WSDLHelper {
                 for (DataType<?> dt : clonedOp.getInputType().getLogical()) {
                     dt.setDataBinding(null);
                 }
-                clonedOp.getOutputType().setDataBinding(null);
+                
+                if (clonedOp.getOutputType() != null ){
+                    clonedOp.getOutputType().setDataBinding(null);
+                }
                 for (DataType<?> dt : clonedOp.getFaultTypes()) {
                     dt.setDataBinding(null);
                 }
