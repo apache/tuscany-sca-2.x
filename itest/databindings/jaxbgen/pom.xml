@@ -100,7 +100,7 @@
         </dependency> 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface-java-runtime</artifactId>
+            <artifactId>tuscany-interface-java-xml</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>        
