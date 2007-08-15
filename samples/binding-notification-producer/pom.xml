@@ -35,31 +35,36 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-notification</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-notification</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-        <!-- if this is not in, BuilderRegistryImpl throws NPE (line 96) -->
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
-        <!-- end -->
-        <!-- test dependencies -->
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl-xml</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
