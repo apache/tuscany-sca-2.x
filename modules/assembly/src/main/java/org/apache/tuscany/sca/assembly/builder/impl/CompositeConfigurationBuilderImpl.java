@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,16 +78,22 @@ public class CompositeConfigurationBuilderImpl {
      * @param problems
      */
     private void configureComponents(Composite composite, String uri) {
+        URI parentURI;
+        if (uri != null) {
+            parentURI = URI.create(uri + '/');
+        } else {
+            parentURI = null;
+        }
     
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
     
             // Initialize component URI
             String componentURI;
-            if (uri == null) {
+            if (parentURI == null) {
                 componentURI = component.getName();
             } else {
-                componentURI = uri + "/" + component.getName();
+                componentURI = parentURI.resolve(component.getName()).toString();
             }
             component.setURI(componentURI);
     
@@ -112,13 +119,16 @@ public class CompositeConfigurationBuilderImpl {
                 if (binding.getName() == null) {
                     binding.setName(service.getName());
                 }
+                String bindingURI;
                 if (binding.getURI() == null) {
-                    if (uri == null) {
-                        binding.setURI(binding.getName());
-                    } else {
-                        binding.setURI(uri + '/' + binding.getName());
-                    }
+                    bindingURI = String.valueOf(binding.getName());
+                } else {
+                    bindingURI = binding.getURI();
                 }
+                if (parentURI != null) {
+                    bindingURI = parentURI.resolve(bindingURI).toString();
+                }
+                binding.setURI(bindingURI);
             }
             if (service.getCallback() != null) {
                 for (Binding binding : service.getCallback().getBindings()) {
@@ -157,6 +167,7 @@ public class CompositeConfigurationBuilderImpl {
         // Initialize all component services and references
         Map<String, Component> components = new HashMap<String, Component>();
         for (Component component : composite.getComponents()) {
+            URI componentURI = URI.create(component.getURI() + '/');
     
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
@@ -210,7 +221,6 @@ public class CompositeConfigurationBuilderImpl {
                 createSelfReferences(component);
             }
             
-            
             // Initialize service bindings
             for (ComponentService componentService: component.getServices()) {
                 
@@ -225,9 +235,14 @@ public class CompositeConfigurationBuilderImpl {
                     if (binding.getName() == null) {
                         binding.setName(componentService.getName());
                     }
+                    String bindingURI;
                     if (binding.getURI() == null) {
-                        binding.setURI(component.getURI() + '/' + binding.getName());
+                        bindingURI = String.valueOf(binding.getName());
+                    } else {
+                        bindingURI = binding.getURI();
                     }
+                    bindingURI = componentURI.resolve(bindingURI).toString();
+                    binding.setURI(bindingURI);
                 }
                 if (componentService.getCallback() != null) {
                     for (Binding binding : componentService.getCallback().getBindings()) {
