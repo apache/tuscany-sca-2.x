@@ -116,7 +116,11 @@ public class TomcatServer implements ServletHost {
     public void addServletMapping(String strURI, Servlet servlet) {
         URI uri = URI.create(strURI);
         
-        // Get the URI port
+        // Get the URI scheme and port
+        String scheme = uri.getScheme();
+        if (scheme == null) {
+            scheme = "http";
+        }
         int portNumber = uri.getPort();
         if (portNumber == -1) {
             portNumber = DEFAULT_PORT;
@@ -165,32 +169,35 @@ public class TomcatServer implements ServletHost {
         }
 
         // Register the servlet mapping
+        String path = uri.getPath();
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        
         ServletWrapper wrapper;
         if (servlet instanceof DefaultResourceServlet) {
             
             // Optimize the handling of resource requests, use the Tomcat default servlet
             // instead of our default resource servlet
-            String servletPath = uri.getPath();
-            if (servletPath.endsWith("*")) {
-                servletPath = servletPath.substring(0, servletPath.length()-1);
+            if (path.endsWith("*")) {
+                path = path.substring(0, path.length()-1);
             }
-            if (servletPath.endsWith("/")) {
-                servletPath = servletPath.substring(0, servletPath.length()-1);
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length()-1);
             }
             DefaultResourceServlet resourceServlet = (DefaultResourceServlet)servlet;
-            TomcatDefaultServlet defaultServlet = new TomcatDefaultServlet(servletPath, resourceServlet.getDocumentRoot());
+            TomcatDefaultServlet defaultServlet = new TomcatDefaultServlet(path, resourceServlet.getDocumentRoot());
             wrapper = new ServletWrapper(defaultServlet);
             
         } else {
             wrapper = new ServletWrapper(servlet);
         }
-        String mapping = uri.getPath();
-        Context context = port.getHost().map(mapping);
-        wrapper.setName(mapping);
-        wrapper.addMapping(mapping);
+        Context context = port.getHost().map(path);
+        wrapper.setName(path);
+        wrapper.addMapping(path);
         context.addChild(wrapper);
-        context.addServletMapping(mapping, mapping);
-        port.getConnector().getMapper().addWrapper("localhost", "", mapping, wrapper);
+        context.addServletMapping(path, path);
+        port.getConnector().getMapper().addWrapper("localhost", "", path, wrapper);
 
         // Initialize the servlet
         try {
@@ -199,7 +206,7 @@ public class TomcatServer implements ServletHost {
             throw new ServletMappingException(e);
         }
 
-        URI addedURI = URI.create(uri.getScheme() + "://localhost:" + portNumber + mapping);
+        URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
         System.out.println("Added Servlet mapping: " + addedURI);
     }
 
