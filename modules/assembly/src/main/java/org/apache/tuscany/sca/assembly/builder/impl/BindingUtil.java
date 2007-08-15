@@ -63,7 +63,7 @@ class BindingUtil {
             return null;
         } else {
             for (Binding binding : matched) {
-                // If binding.sca is present, 
+                // If binding.sca is present, use it
                 if (SCABinding.class.isInstance(binding)) {
                     return binding;
                 }
