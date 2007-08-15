@@ -47,9 +47,9 @@
         <td colspan="2">
            <p>This example uses the <a href="http://dojotoolkit.org/">Dojo Toolkit</a>
            to create a JavaScript object <code>accountService</code> for the service at
-           <b>SCADomain/AccountJSONService</b>
+           <b>http://localhost:8080/AccountJSONService</b>
            using <a href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's RPC classes</a>
-           and providing them with <a href="SCADomain/AccountJSONService?smd">SCADomain/AccountJSONService?smd</a>
+           and providing them with <a href="AccountJSONService?smd">http://localhost:8080/AccountJSONService?smd</a>
            for <a href="http://dojo.jot.com/SMD">Simple Method Description (SMD)</a> input.</p>
            <p>It then creates a Dojo button that will envoke the <code>getAccountReport</code> method of the <code>accountService</code> object.</p>
       </tr>
@@ -79,7 +79,7 @@
     		handlerNode.innerHTML = "<p>" + result + "</p>" ;
     	}
     
-    	var accountService = new dojo.rpc.JsonService("SCADomain/AccountJSONService?smd");
+    	var accountService = new dojo.rpc.JsonService("AccountJSONService?smd");
     
     </script>
        
