@@ -64,7 +64,7 @@
         <implementation.java class="calculator.SubtractServiceImpl"/>      
     </component-->  
     
-    <!--component name="SubtractServiceComponent2">
+    <!--component name="SubtractServiceComponent">
         <implementation.java class="calculator.SubtractServiceImpl"/>
         <service name="SubtractService">
             <interface.java interface="calculator.SubtractService" />
@@ -77,7 +77,7 @@
         <implementation.java class="calculator.MultiplyServiceImpl" />
     </component>
     
-    <!--component name="MultiplyServiceComponent2">
+    <!--component name="MultiplyServiceComponent">
         <implementation.java class="calculator.MultiplyServiceImpl" />
         <service>
             <interface.java interface="calculator.MultiplyService" />

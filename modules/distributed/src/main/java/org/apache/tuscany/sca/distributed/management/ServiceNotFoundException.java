@@ -26,5 +26,9 @@ package org.apache.tuscany.sca.distributed.management;
  */
 public class ServiceNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 8612661660934426128L;
+    
+    public ServiceNotFoundException(String message){
+        super(message);
+    }
 
 }

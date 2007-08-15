@@ -80,7 +80,7 @@
     
     <wsdl:service name="SubtractService">
         <wsdl:port binding="tns:SubtractSoapBinding" name="SubtractSoapPort">
-            <wsdlsoap:address location="http://localhost:8086/SubtractServiceComponent"/>            
+            <wsdlsoap:address location="http://localhost:8088/SubtractServiceComponent"/>            
         </wsdl:port>
     </wsdl:service>
 
