@@ -100,10 +100,8 @@
                 <include name="tuscany-implementation-java-xml-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-java-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-java-xml-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-wsdl-1.0-incubating-SNAPSHOT.jar"/>
-                <include name="tuscany-interface-wsdl-runtime-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-interface-wsdl-xml-1.0-incubating-SNAPSHOT.jar"/>
                 <include name="tuscany-policy-1.0-incubating-SNAPSHOT.jar"/>
             </zipfileset>
