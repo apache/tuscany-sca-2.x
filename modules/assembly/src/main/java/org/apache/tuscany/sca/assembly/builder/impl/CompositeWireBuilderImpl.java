@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.WireableBinding;
@@ -52,12 +51,10 @@ public class CompositeWireBuilderImpl {
 
     private CompositeBuilderMonitor monitor;
     private AssemblyFactory assemblyFactory;
-    private SCABindingFactory scaBindingFactory;
     private InterfaceContractMapper interfaceContractMapper;
     
-    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
+    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
-        this.scaBindingFactory = scaBindingFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
     }
@@ -78,20 +75,19 @@ public class CompositeWireBuilderImpl {
             }
         }
 
-        // Index and bind all component services and references
+        // Index components, services and references
+        Map<String, Component> components = new HashMap<String, Component>();
         Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
         Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-
-        // Create SCA bindings on all component services and references
-        createSCABindings(composite, componentServices, componentReferences);
+        indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
 
         // Connect composite services and references to the component
         // services and references that they promote
-        connectCompositeServices(composite, componentServices);
+        connectCompositeServices(composite, components, componentServices);
         connectCompositeReferences(composite, componentReferences);
 
         // Connect component references to their targets
-        connectComponentReferences(composite, componentServices, componentReferences);
+        connectComponentReferences(composite, components, componentServices, componentReferences);
 
         // Connect component references as described in wires
         connectWires(composite, componentServices, componentReferences);
@@ -124,20 +120,21 @@ public class CompositeWireBuilderImpl {
             }
         }
     }
-
+    
     /**
-     * Create SCA bindings for component services and references.
-     * 
+     * Index components, services and references inside a composite.
      * @param composite
+     * @param components
      * @param componentServices
      * @param componentReferences
-     * @param problems
      */
-    private void createSCABindings(Composite composite,
-                                   Map<String, ComponentService> componentServices,
-                                   Map<String, ComponentReference> componentReferences) {
-    
+    private void indexComponentsServicesAndReferences(Composite composite,
+                                              Map<String, Component> components,
+                                              Map<String, ComponentService> componentServices,
+                                              Map<String, ComponentReference> componentReferences) {
+
         for (Component component : composite.getComponents()) {
+            components.put(component.getName(), component);
             int i = 0;
             for (ComponentService componentService : component.getServices()) {
                 String uri = component.getName() + '/' + componentService.getName();
@@ -146,36 +143,12 @@ public class CompositeWireBuilderImpl {
                     componentServices.put(component.getName(), componentService);
                 }
                 i++;
-    
-                // Create and configure an SCA binding for the service
-                if (componentService.getBindings().isEmpty()) {
-                    SCABinding scaBinding = componentService.getBinding(SCABinding.class);
-                    if (scaBinding == null) {
-                        scaBinding = scaBindingFactory.createSCABinding();
-                        scaBinding.setName(componentService.getName());
-                        componentService.getBindings().add(scaBinding);
-                    }
-                    scaBinding.setComponent(component);
-                    scaBinding.setURI(uri);
-                }
             }
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
                 componentReferences.put(uri, componentReference);
-    
-                if (componentReference.getBindings().isEmpty()) {
-                    // Create and configure an SCA binding for the reference
-                    SCABinding scaBinding = componentReference.getBinding(SCABinding.class);
-                    if (scaBinding == null) {
-                        scaBinding = scaBindingFactory.createSCABinding();
-                        scaBinding.setName(componentReference.getName());
-                        componentReference.getBindings().add(scaBinding);
-                    }
-                    scaBinding.setComponent(component);
-                }
             }
         }
-    
     }
 
     /**
@@ -196,7 +169,7 @@ public class CompositeWireBuilderImpl {
      * @param componentServices
      * @param problems
      */
-    private void connectCompositeServices(Composite composite, Map<String, ComponentService> componentServices) {
+    private void connectCompositeServices(Composite composite, Map<String, Component> components, Map<String, ComponentService> componentServices) {
     
         // Propagate interfaces from inner composite components' services to
         // their component services
@@ -216,13 +189,24 @@ public class CompositeWireBuilderImpl {
         // Connect composite services to the component services that they
         // promote
         for (Service service : composite.getServices()) {
-    
             CompositeService compositeService = (CompositeService)service;
             ComponentService componentService = compositeService.getPromotedService();
             if (componentService != null && componentService.isUnresolved()) {
-                ComponentService promotedService = componentServices.get(componentService.getName());
+                
+                String promotedComponentName = compositeService.getPromotedComponent().getName(); 
+                String promotedServiceName;
+                if (componentService.getName() != null) {
+                    promotedServiceName = promotedComponentName + '/' + componentService.getName();
+                } else {
+                    promotedServiceName = promotedComponentName;
+                }
+                ComponentService promotedService = componentServices.get(promotedServiceName);
                 if (promotedService != null) {
     
+                    // Point to the resolved component
+                    Component promotedComponent = components.get(promotedComponentName);
+                    compositeService.setPromotedComponent(promotedComponent);
+                    
                     // Point to the resolved component service
                     compositeService.setPromotedService(promotedService);
     
@@ -233,7 +217,7 @@ public class CompositeWireBuilderImpl {
                     }
     
                 } else {
-                    warning("Promoted component service not found: " + componentService.getName(), composite);
+                    warning("Promoted component service not found: " + promotedServiceName, composite);
                 }
             }
         }
@@ -303,24 +287,43 @@ public class CompositeWireBuilderImpl {
      * @param problems
      */
     private void connectComponentReferences(Composite composite,
+                                            Map<String, Component> components,
                                             Map<String, ComponentService> componentServices,
                                             Map<String, ComponentReference> componentReferences) {
+        
+        // Represents a target component and service
+        class Target {
+            Component component;
+            ComponentService service;
+            
+            Target(Component component, ComponentService service) {
+                this.component = component;
+                this.service = service;
+            }
+            
+            Component getComponent() {
+                return component;
+            }
+            
+            ComponentService getService() {
+                return service;
+            }
+        };
     
         for (ComponentReference componentReference : componentReferences.values()) {
-            List<ComponentService> targets = componentReference.getTargets();
+            List<Target> targets = new ArrayList<Target>();
     
             if (componentReference.isAutowire()) {
     
                 // Find suitable targets in the current composite for an
                 // autowired reference
                 Multiplicity multiplicity = componentReference.getMultiplicity();
-                for (Component component : composite.getComponents()) {
-                    for (ComponentService componentService : component.getServices()) {
-                        if (componentReference.getInterfaceContract() == null || interfaceContractMapper
-                            .isCompatible(componentReference.getInterfaceContract(), componentService
-                                .getInterfaceContract())) {
-    
-                            targets.add(componentService);
+                for (Component targetComponent : composite.getComponents()) {
+                    for (ComponentService targetComponentService : targetComponent.getServices()) {
+                        if (componentReference.getInterfaceContract() == null ||
+                            interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+                            Target target = new Target(targetComponent, targetComponentService);
+                            targets.add(target);
                             if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
                                 break;
                             }
@@ -328,108 +331,119 @@ public class CompositeWireBuilderImpl {
                     }
                 }
     
-            } else if (!targets.isEmpty()) {
+            } else if (!componentReference.getTargets().isEmpty()) {
     
                 // Resolve targets specified on the component reference
-                for (int i = 0, n = targets.size(); i < n; i++) {
-                    ComponentService target = targets.get(i);
-                    if (target.isUnresolved()) {
-                        ComponentService resolved = componentServices.get(target.getName());
-                        if (resolved != null) {
-    
-                            // Check that the target component service provides
-                            // a superset of
-                            // the component reference interface
-                            if (componentReference.getInterfaceContract() == null || interfaceContractMapper
-                                .isCompatible(componentReference.getInterfaceContract(), resolved
-                                    .getInterfaceContract())) {
-    
-                                targets.set(i, resolved);
-                            } else {
-                                warning("Incompatible interfaces on component reference and target: " + componentReference
-                                            .getName()
-                                            + " : "
-                                            + target.getName(),
-                                        composite);
-                            }
+                for (ComponentService componentService : componentReference.getTargets()) {
+                    
+                    // Resolve the target component and service
+                    String name = componentService.getName();
+                    ComponentService targetComponentService = componentServices.get(name);
+                    Component targetComponent;
+                    int s = name.indexOf('/');
+                    if (s == -1) {
+                        targetComponent = components.get(name);
+                    } else {
+                        targetComponent = components.get(name.substring(0, s));
+                    }
+                    
+                    if (targetComponentService != null) {
+
+                        // Check that the target component service provides
+                        // a superset of the component reference interface
+                        if (componentReference.getInterfaceContract() == null ||
+                            interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+
+                            Target target = new Target(targetComponent, targetComponentService);
+                            targets.add(target);
                         } else {
-                            // put all the reference bindings into the target so that they
-                            // can be used for comparison when the target is resolved at runtime
-                            target.getBindings().addAll(componentReference.getBindings());
-                            
-                            warning("Component reference target not found, it might be a remote service: " + target.getName(), composite);
+                            warning("Incompatible interfaces on component reference and target: " + componentReference
+                                        .getName()
+                                        + " : "
+                                        + componentService.getName(),
+                                    composite);
                         }
+                    } else {
+                        warning("Component reference target not found, it might be a remote service: " + componentService.getName(), composite);
                     }
                 }
             } else if (componentReference.getReference() != null) {
     
                 // Resolve targets from the corresponding reference in the
                 // componentType
-                for (ComponentService target : componentReference.getReference().getTargets()) {
-                    if (target.isUnresolved()) {
-                        ComponentService resolved = componentServices.get(target.getName());
-                        if (resolved != null) {
-    
-                            // Check that the target component service provides
-                            // a superset of
-                            // the component reference interface
-                            if (componentReference.getInterfaceContract() == null || interfaceContractMapper
-                                .isCompatible(componentReference.getInterfaceContract(), resolved
-                                    .getInterfaceContract())) {
-    
-                                targets.add(resolved);
-                            } else {
-                                warning("Incompatible interfaces on component reference and target: " + componentReference
-                                            .getName()
-                                            + " : "
-                                            + target.getName(),
-                                        composite);
-                            }
+                for (ComponentService componentService : componentReference.getReference().getTargets()) {
+
+                    // Resolve the target component and service
+                    String name = componentService.getName();
+                    ComponentService targetComponentService = componentServices.get(name);
+                    Component targetComponent;
+                    int s = name.indexOf('/');
+                    if (s == -1) {
+                        targetComponent = components.get(name);
+                    } else {
+                        targetComponent = components.get(name.substring(0, s));
+                    }
+                    
+                    if (targetComponentService != null) {
+
+                        // Check that the target component service provides
+                        // a superset of
+                        // the component reference interface
+                        if (componentReference.getInterfaceContract() == null ||
+                            interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+
+                            Target target = new Target(targetComponent, targetComponentService);
+                            targets.add(target);
                         } else {
-                            warning("Reference target not found: " + target.getName(), composite);
+                            warning("Incompatible interfaces on component reference and target: " + componentReference
+                                        .getName()
+                                        + " : "
+                                        + componentService.getName(),
+                                    composite);
                         }
+                    } else {
+                        warning("Reference target not found: " + componentService.getName(), composite);
                     }
                 }
             }
-            // [rfeng] For any targets, select the matching binding for the reference
+
+            // Select the reference bindings matching the target service bindings 
             List<Binding> selectedBindings = new ArrayList<Binding>();
     
             // Handle callback
             boolean bidirectional = false;
-            if (componentReference.getInterfaceContract() != null && componentReference.getInterfaceContract()
-                .getCallbackInterface() != null) {
+            if (componentReference.getInterfaceContract() != null && componentReference.getInterfaceContract().getCallbackInterface() != null) {
                 bidirectional = true;
             }
             List<Binding> selectedCallbackBindings = bidirectional ? new ArrayList<Binding>() : null;
     
-            for (ComponentService service : targets) {
-                ComponentService target = service;
+            for (Target target : targets) {
                 
-                // if the target is unresolved it will now have a list of the reference
-                // bindings so ignore it
-                if (!target.isUnresolved()){
-                
-                    if (service.getService() instanceof CompositeService) {
-                        // Normalize the service to be the final target
-                        target = ((CompositeService)service.getService()).getPromotedService();
-                    }
-                    Binding selected = BindingUtil.resolveBindings(componentReference, target);
-                    if (selected == null) {
-                        warning("Component reference doesn't have a matching binding", componentReference);
-                    } else {
-                        selectedBindings.add(selected);
-                    }
-                    if (bidirectional) {
-                        Binding selectedCallback = BindingUtil.resolveCallbackBindings(componentReference, target);
-                        if (selectedCallback != null) {
-                            selectedCallbackBindings.add(selectedCallback);
-                        }
+                Component targetComponent = target.getComponent();
+                ComponentService targetComponentService = target.getService();
+                if (targetComponentService.getService() instanceof CompositeService) {
+                    
+                    // Find the promoted component service
+                    targetComponentService = ((CompositeService)targetComponentService.getService()).getPromotedService();
+                }
+
+                // Match the binding against the bindings of the target service
+                Binding selected = BindingUtil.resolveBindings(componentReference, targetComponent, targetComponentService);
+                if (selected == null) {
+                    warning("Component reference doesn't have a matching binding", componentReference);
+                } else {
+                    selectedBindings.add(selected);
+                }
+                if (bidirectional) {
+                    Binding selectedCallback = BindingUtil.resolveCallbackBindings(componentReference, targetComponent, targetComponentService);
+                    if (selectedCallback != null) {
+                        selectedCallbackBindings.add(selectedCallback);
                     }
                 }
-               
             }
             
             if (!targets.isEmpty()) {
+
                 // Add all the effective bindings
                 componentReference.getBindings().clear();
                 componentReference.getBindings().addAll(selectedBindings);
@@ -437,10 +451,6 @@ public class CompositeWireBuilderImpl {
                     componentReference.getCallback().getBindings().clear();
                     componentReference.getCallback().getBindings().addAll(selectedCallbackBindings);
                 }
-                // Remove the targets since they have been normalized as bindings
-                // TODO - leave then in for the case where there are still unresolved
-                //        targets that will be resolved at runtime
-                //targets.clear();
             }
         }
     }

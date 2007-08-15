@@ -71,16 +71,11 @@ public class JSONRPCService implements ComponentLifecycle {
         Object instance = component.createSelfReference(serviceInterface).getService();
         JSONRPCServiceServlet serviceServlet = new JSONRPCServiceServlet(binding.getName(), serviceInterface, instance);
         int port;
-        if (binding.getURI() != null) {
-            servletHost.addServletMapping(binding.getURI(), serviceServlet);
-            URI uri = URI.create(binding.getURI());
-            port = uri.getPort();
-            if (port == -1)
-                port = 8080;
-        } else {
-            servletHost.addServletMapping(SERVICE_PREFIX + binding.getName(), serviceServlet);
+        servletHost.addServletMapping(binding.getURI(), serviceServlet);
+        URI uri = URI.create(binding.getURI());
+        port = uri.getPort();
+        if (port == -1)
             port = 8080;
-        }
 
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
         // this uses removeServletMapping / addServletMapping as theres no getServletMapping facility
@@ -100,16 +95,11 @@ public class JSONRPCService implements ComponentLifecycle {
 
         // Unregister from the service servlet mapping
         int port;
-        if (binding.getURI() != null) {
-            servletHost.removeServletMapping(binding.getURI());
-            URI uri = URI.create(binding.getURI());
-            port = uri.getPort();
-            if (port == -1)
-                port = 8080;
-        } else {
-            servletHost.removeServletMapping(SERVICE_PREFIX + binding.getName());
+        servletHost.removeServletMapping(binding.getURI());
+        URI uri = URI.create(binding.getURI());
+        port = uri.getPort();
+        if (port == -1)
             port = 8080;
-        }
 
         // Unregister the service from the scaDomain script servlet
         // don't unregister the scaDomain script servlet if it still has other service names

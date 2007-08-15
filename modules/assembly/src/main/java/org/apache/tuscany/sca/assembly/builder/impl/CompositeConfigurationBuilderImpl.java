@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -37,8 +35,8 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
@@ -50,11 +48,13 @@ public class CompositeConfigurationBuilderImpl {
     private String CALLBACK_PREFIX = "$callback$.";
 
     private AssemblyFactory assemblyFactory;
+    private SCABindingFactory scaBindingFactory;
     private CompositeBuilderMonitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
     
-    public CompositeConfigurationBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
+    public CompositeConfigurationBuilderImpl(AssemblyFactory assemblyFactory, SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
+        this.scaBindingFactory = scaBindingFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
     }
@@ -98,11 +98,26 @@ public class CompositeConfigurationBuilderImpl {
             }
         }
     
-        // Set default binding names
+        // Initialize service bindings
         for (Service service : composite.getServices()) {
+            
+            // Create default SCA binding
+            if (service.getBindings().isEmpty()) {
+                SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                service.getBindings().add(scaBinding);
+            }
+            
+            // Initialize binding names and URIs
             for (Binding binding : service.getBindings()) {
                 if (binding.getName() == null) {
                     binding.setName(service.getName());
+                }
+                if (binding.getURI() == null) {
+                    if (uri == null) {
+                        binding.setURI(binding.getName());
+                    } else {
+                        binding.setURI(uri + '/' + binding.getName());
+                    }
                 }
             }
             if (service.getCallback() != null) {
@@ -113,12 +128,23 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
+        
+        // Initialize reference bindings
         for (Reference reference : composite.getReferences()) {
+            
+            // Create default SCA binding
+            if (reference.getBindings().isEmpty()) {
+                SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                reference.getBindings().add(scaBinding);
+            }
+
+            // Set binding names
             for (Binding binding : reference.getBindings()) {
                 if (binding.getName() == null) {
                     binding.setName(reference.getName());
                 }
             }
+            
             if (reference.getCallback() != null) {
                 for (Binding binding : reference.getCallback().getBindings()) {
                     if (binding.getName() == null) {
@@ -148,17 +174,17 @@ public class CompositeConfigurationBuilderImpl {
                 ((ComponentPreProcessor)component.getImplementation()).preProcess(component);
             }
     
+            // Index properties, services and references
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
-            //Index properties, services and references
             indexImplementationPropertiesServicesAndReferences(component, services, references, properties);
     
+            // Index component services, references and properties
+            // Also check for duplicates
             Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
             Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
             Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
-            //Index component services, references and properties
-            // Also check for duplicates
             indexComponentPropertiesServicesAndReferences(component,
                                                           componentServices,
                                                           componentReferences,
@@ -182,6 +208,58 @@ public class CompositeConfigurationBuilderImpl {
             // Create self references to the component's services
             if (!(component.getImplementation() instanceof Composite)) {
                 createSelfReferences(component);
+            }
+            
+            
+            // Initialize service bindings
+            for (ComponentService componentService: component.getServices()) {
+                
+                // Create default SCA binding
+                if (componentService.getBindings().isEmpty()) {
+                    SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                    componentService.getBindings().add(scaBinding);
+                }
+                
+                // Set binding names and URIs
+                for (Binding binding : componentService.getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(componentService.getName());
+                    }
+                    if (binding.getURI() == null) {
+                        binding.setURI(component.getURI() + '/' + binding.getName());
+                    }
+                }
+                if (componentService.getCallback() != null) {
+                    for (Binding binding : componentService.getCallback().getBindings()) {
+                        if (binding.getName() == null) {
+                            binding.setName(componentService.getName());
+                        }
+                    }
+                }
+            }
+            
+            // Initialize reference bindings
+            for (ComponentReference componentReference: component.getReferences()) {
+                
+                // Create default SCA binding
+                if (componentReference.getBindings().isEmpty()) {
+                    SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                    componentReference.getBindings().add(scaBinding);
+                }
+
+                // Set binding names
+                for (Binding binding : componentReference.getBindings()) {
+                    if (binding.getName() == null) {
+                        binding.setName(componentReference.getName());
+                    }
+                }
+                if (componentReference.getCallback() != null) {
+                    for (Binding binding : componentReference.getCallback().getBindings()) {
+                        if (binding.getName() == null) {
+                            binding.setName(CALLBACK_PREFIX + componentReference.getName());
+                        }
+                    }
+                }
             }
         }
     }
@@ -490,20 +568,6 @@ public class CompositeConfigurationBuilderImpl {
             } else {
                 componentServices.put(componentService.getName(), componentService);
             }
-    
-            // Initialize binding names
-            for (Binding binding : componentService.getBindings()) {
-                if (binding.getName() == null) {
-                    binding.setName(componentService.getName());
-                }
-            }
-            if (componentService.getCallback() != null) {
-                for (Binding binding : componentService.getCallback().getBindings()) {
-                    if (binding.getName() == null) {
-                        binding.setName(componentService.getName());
-                    }
-                }
-            }
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
@@ -512,20 +576,6 @@ public class CompositeConfigurationBuilderImpl {
                     + componentReference.getName(), component);
             } else {
                 componentReferences.put(componentReference.getName(), componentReference);
-            }
-    
-            // Initialize binding names
-            for (Binding binding : componentReference.getBindings()) {
-                if (binding.getName() == null) {
-                    binding.setName(componentReference.getName());
-                }
-            }
-            if (componentReference.getCallback() != null) {
-                for (Binding binding : componentReference.getCallback().getBindings()) {
-                    if (binding.getName() == null) {
-                        binding.setName(CALLBACK_PREFIX + componentReference.getName());
-                    }
-                }
             }
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
@@ -723,13 +773,10 @@ public class CompositeConfigurationBuilderImpl {
         componentReference.setName("$self$." + service.getName());
         componentReference.getBindings().addAll(service.getBindings());
         componentReference.setCallback(service.getCallback());
-        /*
         ComponentService componentService = assemblyFactory.createComponentService();
-        componentService.setName(component.getName() + "/" + service.getName());
+        componentService.setName(component.getName() + '/' + service.getName());
         componentService.setUnresolved(true);
         componentReference.getTargets().add(componentService);
-        */
-        componentReference.getTargets().add(service);
         componentReference.getPolicySets().addAll(service.getPolicySets());
         componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
         
@@ -784,6 +831,7 @@ public class CompositeConfigurationBuilderImpl {
                         // Get the inner most promoted service
                         ComponentService promotedService = getPromotedComponentService(compositeService);
                         if (promotedService != null) {
+                            Component promotedComponent = getPromotedComponent(compositeService);
     
                             // Default to use the interface from the promoted service
                             if (compositeService.getInterfaceContract() == null) {
@@ -795,47 +843,30 @@ public class CompositeConfigurationBuilderImpl {
     
                             // Create a new component service to represent this composite
                             // service on the promoted component
-                            SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                            if (scaBinding != null) {
-                                Component promotedComponent = scaBinding.getComponent();
-                                ComponentService newComponentService = assemblyFactory.createComponentService();
-                                newComponentService.setName("$promoted$." + compositeService.getName());
-                                //newComponentService.setService(compositeService);
-                                promotedComponent.getServices().add(newComponentService);
-                                newComponentService.getBindings().add(scaBinding);
-                                newComponentService.getBindings().addAll(compositeService.getBindings());
-                                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                                if (compositeService.getInterfaceContract() != null && // can be null in unit tests
-                                compositeService.getInterfaceContract().getCallbackInterface() != null) {
-                                    SCABinding scaCallbackBinding =
-                                        promotedService.getCallbackBinding(SCABinding.class);
-                                    newComponentService.setCallback(assemblyFactory.createCallback());
-                                    if (scaCallbackBinding != null) {
-                                        newComponentService.getCallback().getBindings().add(scaCallbackBinding);
-                                    }
-                                    if (compositeService.getCallback() != null) {
-                                        newComponentService.getCallback().getBindings().addAll(compositeService
-                                            .getCallback().getBindings());
-                                    }
+                            ComponentService newComponentService = assemblyFactory.createComponentService();
+                            newComponentService.setName("$promoted$." + compositeService.getName());
+                            promotedComponent.getServices().add(newComponentService);
+                            newComponentService.setService(promotedService.getService());
+                            newComponentService.getBindings().addAll(compositeService.getBindings());
+                            newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
+                            if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                                newComponentService.setCallback(assemblyFactory.createCallback());
+                                if (compositeService.getCallback() != null) {
+                                    newComponentService.getCallback().getBindings().addAll(
+                                                                                           compositeService.getCallback().getBindings());
                                 }
-    
-                                // FIXME: [rfeng] Set the service to promoted
-                                newComponentService.setService(promotedService.getService());
-                                
-                                // Create a self-reference for the promoted service
-                                ComponentReference selfRef = createSelfReference(promotedComponent, newComponentService);
-                                Binding binding = BindingUtil.resolveBindings(selfRef, newComponentService);
-                                selfRef.getBindings().clear();
-                                selfRef.getBindings().add(binding);
-                                selfRef.getTargets().clear();
-    
-                                // Change the composite service to now promote the newly
-                                // created component service directly
-                                compositeService.setPromotedService(newComponentService);
-    
-                            } else {
-                                warning("Promoted component service not found: " + promotedService.getName(), composite);
                             }
+                            
+                            // Create a self-reference for the promoted service
+                            ComponentReference selfReference = createSelfReference(promotedComponent, newComponentService);
+                            Binding binding = BindingUtil.resolveBindings(selfReference, promotedComponent, newComponentService);
+                            selfReference.getBindings().clear();
+                            selfReference.getBindings().add(binding);
+                            selfReference.getTargets().clear();
+
+                            // Change the composite service to now promote the newly
+                            // created component service directly
+                            compositeService.setPromotedService(newComponentService);
                         }
                     }
                 }
@@ -849,6 +880,7 @@ public class CompositeConfigurationBuilderImpl {
             // Get the inner most promoted service
             ComponentService promotedService = getPromotedComponentService(compositeService);
             if (promotedService != null) {
+                Component promotedComponent = getPromotedComponent(compositeService);
     
                 // Default to use the interface from the promoted service
                 if (compositeService.getInterfaceContract() == null && promotedService.getInterfaceContract() != null) {
@@ -857,38 +889,23 @@ public class CompositeConfigurationBuilderImpl {
     
                 // Create a new component service to represent this composite
                 // service on the promoted component
-                SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                if (scaBinding != null) {
-                    Component promotedComponent = scaBinding.getComponent();
-                    ComponentService newComponentService = assemblyFactory.createComponentService();
-                    newComponentService.setName("$promoted$." + compositeService.getName());
-                    //newComponentService.setService(compositeService);
-                    promotedComponent.getServices().add(newComponentService);
-                    newComponentService.getBindings().add(scaBinding);
-                    newComponentService.getBindings().addAll(compositeService.getBindings());
-                    newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                    if (compositeService.getInterfaceContract() != null && // can be null in unit tests
-                    compositeService.getInterfaceContract().getCallbackInterface() != null) {
-                        SCABinding scaCallbackBinding = promotedService.getCallbackBinding(SCABinding.class);
-                        newComponentService.setCallback(assemblyFactory.createCallback());
-                        if (scaCallbackBinding != null) {
-                            newComponentService.getCallback().getBindings().add(scaCallbackBinding);
-                        }
-                        if (compositeService.getCallback() != null) {
-                            newComponentService.getCallback().getBindings().addAll(compositeService.getCallback()
-                                .getBindings());
-                        }
+                ComponentService newComponentService = assemblyFactory.createComponentService();
+                newComponentService.setName("$promoted$." + compositeService.getName());
+                promotedComponent.getServices().add(newComponentService);
+                newComponentService.setService(promotedService.getService());
+                newComponentService.getBindings().addAll(compositeService.getBindings());
+                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
+                if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                    newComponentService.setCallback(assemblyFactory.createCallback());
+                    if (compositeService.getCallback() != null) {
+                        newComponentService.getCallback().getBindings().addAll(
+                                                                                   compositeService.getCallback().getBindings());
                     }
-    
-                    // FIXME: [rfeng] Set the service to promoted
-                    newComponentService.setService(promotedService.getService());
-    
-                    // Change the composite service to now promote the newly
-                    // created component service directly
-                    compositeService.setPromotedService(newComponentService);
-                } else {
-                    warning("Promoted component service not found: " + promotedService.getName(), composite);
                 }
+
+                // Change the composite service to now promote the newly
+                // created component service directly
+                compositeService.setPromotedService(newComponentService);
             }
         }
     }
@@ -913,6 +930,34 @@ public class CompositeConfigurationBuilderImpl {
     
                 // Found a non-composite service
                 return componentService;
+            }
+        } else {
+    
+            // No promoted service
+            return null;
+        }
+    }
+
+    /**
+     * Follow a service promotion chain down to the inner most (non composite)
+     * component.
+     * 
+     * @param compositeService
+     * @return
+     */
+    private Component getPromotedComponent(CompositeService compositeService) {
+        ComponentService componentService = compositeService.getPromotedService();
+        if (componentService != null) {
+            Service service = componentService.getService();
+            if (componentService.getName() != null && service instanceof CompositeService) {
+    
+                // Continue to follow the service promotion chain
+                return getPromotedComponent((CompositeService)service);
+    
+            } else {
+    
+                // Found a non-composite service
+                return compositeService.getPromotedComponent();
             }
         } else {
     

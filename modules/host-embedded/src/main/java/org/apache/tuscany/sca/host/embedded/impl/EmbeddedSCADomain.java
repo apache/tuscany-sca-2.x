@@ -167,21 +167,15 @@ public class EmbeddedSCADomain extends SCADomain {
         // non-composite
         // component that provides the requested service
         if (component.getImplementation() instanceof Composite) {
-            ComponentService promotedService = null;
             for (ComponentService componentService : component.getServices()) {
                 if (serviceName == null || serviceName.equals(componentService.getName())) {
 
                     CompositeService compositeService = (CompositeService)componentService.getService();
                     if (compositeService != null) {
-                        promotedService = compositeService.getPromotedService();
-                        SCABinding scaBinding = promotedService.getBinding(SCABinding.class);
-                        if (scaBinding != null) {
-                            Component promotedComponent = scaBinding.getComponent();
-                            if (serviceName != null) {
-                                serviceName = "$promoted$." + serviceName;
-                            }
-                            componentContext = (ComponentContext)promotedComponent;
+                        if (serviceName != null) {
+                            serviceName = "$promoted$." + serviceName;
                         }
+                        componentContext = (ComponentContext)compositeService.getPromotedComponent();
                     }
                     break;
                 }

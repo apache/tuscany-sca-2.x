@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.impl;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
 
@@ -29,6 +30,7 @@ import org.apache.tuscany.sca.assembly.CompositeService;
  */
 public class CompositeServiceImpl extends ServiceImpl implements CompositeService, Cloneable {
     private ComponentService promotedService;
+    private Component promotedComponent;
 
     /**
      * Constructs a new composite service.
@@ -48,4 +50,13 @@ public class CompositeServiceImpl extends ServiceImpl implements CompositeServic
     public void setPromotedService(ComponentService promotedService) {
         this.promotedService = promotedService;
     }
+    
+    public Component getPromotedComponent() {
+        return promotedComponent;
+    }
+    
+    public void setPromotedComponent(Component promotedComponent) {
+        this.promotedComponent = promotedComponent;
+    }
+    
 }

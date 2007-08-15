@@ -37,7 +37,7 @@
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
         <!-- interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" / -->
         <!-- interface.java interface="org.apache.tuscany.sca.binding.axis2.itests.HelloWorld" / -->
-        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
+        <binding.ws uri="http://localhost:8085/helloWorld"/>
     </reference>
 
     <service name="Echo" promote="EchoService">
@@ -54,7 +54,7 @@
     </component>
 
     <reference name="echoWS" promote="EchoComponent/echoWS">
-        <binding.ws uri="http://localhost:8085/EchoService/Echo"/>
+        <binding.ws uri="http://localhost:8085/Echo"/>
     </reference>
 
 </composite>

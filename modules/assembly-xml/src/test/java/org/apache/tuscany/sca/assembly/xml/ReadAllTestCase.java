@@ -95,7 +95,7 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(calcCompositeService.getName(), "CalculatorService");
         assertTrue(calcCompositeService.getPromotedService().isUnresolved());
         assertEquals(calcCompositeService.getPromotedService().getName(),
-                     "CalculatorServiceComponent/CalculatorService");
+                     "CalculatorService");
         assertEquals(calcCompositeService.getRequiredIntents().get(0).getName(),
                      new QName("http://test", "confidentiality"));
         assertEquals(calcCompositeService.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));

@@ -107,8 +107,8 @@ public class SCABindingTestCase {
 	        SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);
 	        SCABinding serviceSCABinding   = (SCABinding) composite.getComponents().get(1).getServices().get(0).getBindings().get(0);
 	        
-	        Assert.assertEquals("addService", referenceSCABinding.getName());
-	        Assert.assertEquals(null, serviceSCABinding.getName());
+	        Assert.assertNotNull(referenceSCABinding);
+	        Assert.assertNotNull(serviceSCABinding);
     	} catch (Exception ex) {
     		Assert.fail(ex.getMessage());
     	}

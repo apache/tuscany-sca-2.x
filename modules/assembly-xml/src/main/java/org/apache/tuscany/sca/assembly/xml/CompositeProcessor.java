@@ -149,11 +149,28 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                                 compositeService = assemblyFactory.createCompositeService();
                                 contract = compositeService;
                                 compositeService.setName(getString(reader, NAME));
+                                
+                                String promoted = getString(reader, PROMOTE);
+                                String promotedComponentName;
+                                String promotedServiceName;
+                                int s = promoted.indexOf('/');
+                                if (s == -1) {
+                                    promotedComponentName = promoted;
+                                    promotedServiceName = null;
+                                } else {
+                                    promotedComponentName = promoted.substring(0, s);
+                                    promotedServiceName = promoted.substring(s+1);
+                                }
     
-                                ComponentService promoted = assemblyFactory.createComponentService();
-                                promoted.setUnresolved(true);
-                                promoted.setName(getString(reader, PROMOTE));
-                                compositeService.setPromotedService(promoted);
+                                Component promotedComponent = assemblyFactory.createComponent();
+                                promotedComponent.setUnresolved(true);
+                                promotedComponent.setName(promotedComponentName);
+                                compositeService.setPromotedComponent(promotedComponent);
+
+                                ComponentService promotedService = assemblyFactory.createComponentService();
+                                promotedService.setUnresolved(true);
+                                promotedService.setName(promotedServiceName);
+                                compositeService.setPromotedService(promotedService);
     
                                 composite.getServices().add(compositeService);
                                 readPolicies(contract, reader);
@@ -178,7 +195,15 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                                 compositeReference.setName(getString(reader, NAME));
                                 readMultiplicity(compositeReference, reader);
                                 readTargets(compositeReference, reader);
-                                readPromotes(compositeReference, reader);
+                                String promote = reader.getAttributeValue(null, Constants.PROMOTE);
+                                if (promote != null) {
+                                    for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
+                                        ComponentReference promotedReference = assemblyFactory.createComponentReference();
+                                        promotedReference.setUnresolved(true);
+                                        promotedReference.setName(tokens.nextToken());
+                                        compositeReference.getPromotedReferences().add(promotedReference);
+                                    }
+                                }
                                 compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
                                 composite.getReferences().add(compositeReference);
                                 readPolicies(contract, reader);
@@ -349,8 +374,18 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
             for (Service service : composite.getServices()) {
                 CompositeService compositeService = (CompositeService)service;
+                Component promotedComponent = compositeService.getPromotedComponent();
                 ComponentService promotedService = compositeService.getPromotedService();
-                String promote = promotedService != null ? promotedService.getName() : null;
+                String promote;
+                if (promotedService != null) {
+                    if (promotedService.getName() != null) {
+                        promote = promotedComponent.getName() + '/' + promotedService.getService();
+                    } else {
+                        promote = promotedComponent.getName();
+                    }
+                } else {
+                    promote = null;
+                }
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote));
 
                 extensionProcessor.write(service.getInterfaceContract(), writer);
@@ -607,23 +642,5 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
     
     public Class<Composite> getModelType() {
         return Composite.class;
-    }
-    
-    /**
-     * Read list of refence targets
-     * @param reference
-     * @param reader
-     */
-    protected void readPromotes(CompositeReference reference, XMLStreamReader reader) {
-        String value = reader.getAttributeValue(null, Constants.PROMOTE);
-        ComponentReference promoted = null;
-        if (value != null) {
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                promoted = assemblyFactory.createComponentReference();
-                promoted.setUnresolved(true);
-                promoted.setName(tokens.nextToken());
-                reference.getPromotedReferences().add(promoted);
-            }
-        }
     }
 }

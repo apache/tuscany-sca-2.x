@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -32,7 +33,7 @@ import org.apache.tuscany.sca.assembly.WireableBinding;
  */
 class BindingUtil {
     
-    private static Binding matchBinding(ComponentService service, List<Binding> source, List<Binding> target) {
+    private static Binding matchBinding(Component component, ComponentService service, List<Binding> source, List<Binding> target) {
         List<Binding> matched = new ArrayList<Binding>();
         // Find the corresponding bindings from the service side
         for (Binding binding : source) {
@@ -44,11 +45,7 @@ class BindingUtil {
                         try {
                             cloned = (Binding)((WireableBinding)binding).clone();
                             WireableBinding endpoint = ((WireableBinding)cloned);
-                            // FIXME: This is a hack to get the target component
-                            SCABinding scaBinding = service.getBinding(SCABinding.class);
-                            if (scaBinding != null) {
-                                endpoint.setTargetComponent(scaBinding.getComponent());
-                            }
+                            endpoint.setTargetComponent(component);
                             endpoint.setTargetComponentService(service);
                             endpoint.setTargetBinding(serviceBinding);
                             cloned.setURI(serviceBinding.getURI());
@@ -84,11 +81,11 @@ class BindingUtil {
      * @param service The component service
      * @return Resolved binding
      */
-    static Binding resolveBindings(ComponentReference reference, ComponentService service) {
+    static Binding resolveBindings(ComponentReference reference, Component component, ComponentService service) {
         List<Binding> source = reference.getBindings();
         List<Binding> target = service.getBindings();
     
-        return matchBinding(service, source, target);
+        return matchBinding(component, service, source, target);
     
     }
 
@@ -97,10 +94,10 @@ class BindingUtil {
      * @param service
      * @return
      */
-    static Binding resolveCallbackBindings(ComponentReference reference, ComponentService service) {
+    static Binding resolveCallbackBindings(ComponentReference reference, Component component, ComponentService service) {
         List<Binding> source = reference.getCallback().getBindings();
         List<Binding> target = service.getCallback().getBindings();
     
-        return matchBinding(service, source, target);
+        return matchBinding(component, service, source, target);
     }
 }

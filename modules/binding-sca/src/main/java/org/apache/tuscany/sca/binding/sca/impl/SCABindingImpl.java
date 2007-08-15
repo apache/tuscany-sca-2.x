@@ -42,8 +42,6 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<Object> extensions = new ArrayList<Object>();
     
-    private Component component;
-    
     private Component targetComponent;
     private ComponentService targetComponentService;
     private Binding targetBinding;
@@ -77,14 +75,6 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     protected SCABindingImpl() {
     }
     
-    public Component getComponent() {
-        return component;
-    }
-    
-    public void setComponent(Component component) {
-        this.component = component;
-    }
-
     public String getName() {
         return name;
     }

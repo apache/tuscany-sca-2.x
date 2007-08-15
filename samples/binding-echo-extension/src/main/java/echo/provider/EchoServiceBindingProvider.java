@@ -61,9 +61,6 @@ public class EchoServiceBindingProvider implements ServiceBindingProvider {
         
         // Register with the hosting server
         String uri = binding.getURI();
-        if (uri == null) {
-            uri = component.getURI() + "/" + binding.getName();
-        }
         EchoServer.getServer().register(uri, new EchoServiceListener(chain.getHeadInvoker(), messageFactory));
     }
 
