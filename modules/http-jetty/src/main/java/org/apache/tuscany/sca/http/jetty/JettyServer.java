@@ -136,7 +136,11 @@ public class JettyServer implements ServletHost {
     public void addServletMapping(String uriStr, Servlet servlet) throws ServletMappingException {
         URI uri = URI.create(uriStr);
         
-        // Get the URI port
+        // Get the URI scheme and port
+        String scheme = uri.getScheme();
+        if (scheme == null) {
+            scheme = "http";
+        }
         int portNumber = uri.getPort();
         if (portNumber == -1) {
             portNumber = DEFAULT_PORT;
@@ -150,7 +154,7 @@ public class JettyServer implements ServletHost {
             try {
                 Server server = new Server();
                 server.setThreadPool(new WorkSchedulerThreadPool());
-                if ("https".equals(uri.getScheme())) {
+                if ("https".equals(scheme)) {
                     Connector httpConnector = new SelectChannelConnector();
                     httpConnector.setPort(portNumber);
                     SslSocketConnector sslConnector = new SslSocketConnector();
@@ -213,10 +217,13 @@ public class JettyServer implements ServletHost {
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
         String path = uri.getPath();
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
         
-        URI addedURI = URI.create(uri.getScheme() + "://localhost:" + portNumber + path);
+        URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
         System.out.println("Added Servlet mapping: " + addedURI);
     }
 
