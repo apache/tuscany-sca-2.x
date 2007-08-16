@@ -4,12 +4,10 @@
 	xmlns:hw="http://stockquote"
     name="StockQuote">
 
-    <service name="StockQuoteWebService" promote="StockQuoteServiceComponent">
-        <interface.java interface="stockquote.StockQuoteService" />
-        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
-    </service>
-
     <component name="StockQuoteServiceComponent">
+	    <service name="StockQuoteService">
+	        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
+	    </service>
         <implementation.java class="stockquote.StockQuoteImpl" />
     </component>
 
