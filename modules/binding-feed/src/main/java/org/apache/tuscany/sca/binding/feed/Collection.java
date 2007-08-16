@@ -16,17 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.binding.feed;
 
-import org.osoa.sca.annotations.Remotable;
+import java.io.InputStream;
+
+import com.sun.syndication.feed.atom.Entry;
 
 /**
- * Provides access to a resource collection feed.
+ * Provides access to a collection of resources using Atom.
  * 
  * @version $Rev$ $Date$
  */
-@Remotable
 public interface Collection {
 
     /**
@@ -36,4 +36,57 @@ public interface Collection {
      * @return the RSS or Atom feed
      */
     com.sun.syndication.feed.atom.Feed getFeed();
+
+    /**
+     * Creates a new entry.
+     * 
+     * @param entry
+     * @return
+     */
+    Entry post(Entry entry);
+
+    /**
+     * Creates a new media entry
+     * 
+     * @param title
+     * @param slug
+     * @param contentType
+     * @param media
+     */
+    Entry postMedia(String title, String slug, String contentType, InputStream media);
+
+    /**
+     * Retrieves an entry.
+     * 
+     * @param id
+     * @return
+     */
+    Entry get(String id) throws NotFoundException;
+
+    /**
+     * Update an entry.
+     * 
+     * @param id
+     * @param entry
+     * @return
+     */
+    Entry put(String id, Entry entry) throws NotFoundException;
+
+    /**
+     * Update a media entry.
+     * 
+     * @param id
+     * @param contentType
+     * @param media
+     * @return
+     */
+    Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException;
+
+    /**
+     * Delete an entry.
+     * 
+     * @param id
+     */
+    void delete(String id) throws NotFoundException;
+
 }

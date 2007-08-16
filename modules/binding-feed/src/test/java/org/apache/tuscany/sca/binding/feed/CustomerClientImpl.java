@@ -31,7 +31,7 @@ import com.sun.syndication.feed.atom.Feed;
 public class CustomerClientImpl implements CustomerClient {
 
     @Reference
-    public EditableCollection resourceCollection;
+    public Collection resourceCollection;
 
     public void testCustomerCollection() throws Exception {
 
