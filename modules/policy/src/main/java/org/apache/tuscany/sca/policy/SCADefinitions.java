@@ -59,7 +59,7 @@ public interface SCADefinitions {
      * 
      * @return a list of domain wide Binding Types 
      */
-    List<BindingType> getBindingTypes();
+    List<IntentAttachPointType> getBindingTypes();
     
     
     /**
@@ -67,5 +67,5 @@ public interface SCADefinitions {
      * 
      * @return a list of domain wide Implementation Types 
      */
-    List<ImplementationType> getImplementationTypes();
+    List<IntentAttachPointType> getImplementationTypes();
 }

@@ -23,11 +23,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.policy.BindingType;
-import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.SCADefinitions;
 
@@ -39,15 +36,15 @@ public class SCADefinitionsImpl implements SCADefinitions {
     private URI targetNamespace = null;
     private List<Intent> policyIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<BindingType> bindingTypes = new ArrayList<BindingType>();
-    private List<ImplementationType> implementationTypes = new ArrayList<ImplementationType>();
+    private List<IntentAttachPointType> bindingTypes = new ArrayList<IntentAttachPointType>();
+    private List<IntentAttachPointType> implementationTypes = new ArrayList<IntentAttachPointType>();
 
    
-    public List<BindingType> getBindingTypes() {
+    public List<IntentAttachPointType> getBindingTypes() {
         return bindingTypes;
     }
 
-    public List<ImplementationType> getImplementationTypes() {
+    public List<IntentAttachPointType> getImplementationTypes() {
         return implementationTypes;
     }
 
