@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -32,6 +33,11 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class PropertyImpl extends AbstractPropertyImpl implements Property, Cloneable {
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
     /**
      * Constructs a new property.

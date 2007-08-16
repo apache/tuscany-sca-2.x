@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Binding extends Base, IntentAttachPoint, PolicySetAttachPoint {
+public interface Binding extends Base {
 
     /**
      * Returns the binding URI.
@@ -59,18 +59,4 @@ public interface Binding extends Base, IntentAttachPoint, PolicySetAttachPoint {
      * @param name the binding name
      */
     void setName(String name);
-    
-    /**
-     * Returns the list of computed/applicable policy intents for this binding
-     * 
-     * @return list of applicable/computed policy intents
-     */
-    List<Intent> getComputedIntents();
-    
-    /**
-     * Returns the list of computed/applicable policysets for this binding
-     * 
-     * @return list of applicable/computed policysets
-     */
-    List<PolicySet> getComputedPolicySets();
 }

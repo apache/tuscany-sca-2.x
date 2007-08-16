@@ -33,17 +33,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class TestImplementation extends ComponentTypeImpl implements Implementation {
-    private List<Intent> computedIntents = new ArrayList<Intent>();
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
-    
     public TestImplementation(AssemblyFactory factory) {
 
         Property p = factory.createProperty();

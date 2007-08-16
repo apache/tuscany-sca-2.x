@@ -30,13 +30,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class TestBinding implements Binding {
-    public List<Intent> getComputedIntents() {
-        return null;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return null;
-    }
     public TestBinding(AssemblyFactory factory) {
     }
 
@@ -52,14 +45,6 @@ public class TestBinding implements Binding {
     }
 
     public void setURI(String uri) {
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return null;
-    }
-
-    public List<Intent> getRequiredIntents() {
-        return null;
     }
 
     public List<Object> getExtensions() {

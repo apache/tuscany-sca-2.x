@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface ComponentType extends Base, IntentAttachPoint, PolicySetAttachPoint {
+public interface ComponentType extends Base {
     
     /**
      * Returns the URI of this component type.
