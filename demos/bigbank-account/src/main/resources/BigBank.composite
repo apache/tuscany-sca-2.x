@@ -9,15 +9,6 @@
 		<binding.ws wsdlElement="http://bigbank#wsdl.port(AccountService/AccountServiceSoap)"/>
     </service>
 
-    <service name="AccountJSONService" promote="AccountServiceComponent">
-        <interface.java interface="bigbank.account.AccountService"/>
-        <binding.jsonrpc/>
-    </service>
-
-   	<service name="AccountWebResources" promote="WebResourceComponent">
-   		<binding.resource uri="/"/>
-   	</service>
-
    	<service name="AccountFeed" promote="AccountFeedComponent">
    		<binding.rss uri="/rss"/>
    	</service>
@@ -27,6 +18,9 @@
    	</service>
 
     <component name="AccountServiceComponent">
+	    <service name="AccountService">
+	        <binding.jsonrpc uri="/AccountJSONService"/>
+	    </service>
         <implementation.java class="bigbank.account.AccountServiceImpl"/>
         <reference name="accountDataService" target="AccountDataServiceComponent"/>
         <property name="currency">EURO</property>
@@ -42,6 +36,9 @@
     </component>
 
     <component name="WebResourceComponent">
+	   	<service name="Resource">
+	   		<binding.resource uri="/"/>
+	   	</service>
         <implementation.resource location="web"/>
     </component>
 
