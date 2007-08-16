@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xsd:schema targetNamespace="http://www.example.org/price" xmlns:pri="http://www.example.org/price" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+	<xsd:element name="priceQuote" type="pri:PriceQuote"/>
+	<xsd:complexType name="PriceRequest">
+		<xsd:sequence>
+			<xsd:element name="widgetId" type="xsd:integer"/>
+			<xsd:element name="price" type="xsd:float"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PriceRequests">
+		<xsd:sequence>
+			<xsd:element name="priceRequest" type="pri:PriceRequest" minOccurs="1" maxOccurs="10"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ShipAddress">
+        <xsd:attribute name="street" type="xsd:string"/>
+        <xsd:attribute name="city" type="xsd:string"/>
+        <xsd:attribute name="state" type="xsd:string"/>
+        <xsd:attribute name="zip" type="xsd:string"/>
+	</xsd:complexType>		
+	<xsd:complexType name="PriceQuote">
+		<xsd:sequence>
+			<xsd:element name="customerName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="shipAddress" type="pri:ShipAddress" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="priceRequests" type="pri:PriceRequests"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
+
+
+

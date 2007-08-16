@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<xsd:schema targetNamespace="http://www.example.org/quote" xmlns:quo="http://www.example.org/quote" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xsd:element name="quote" type="quo:Quote"/>
+	<xsd:complexType name="Quote">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="address" type="xsd:string"/>
+			<xsd:element name="quoteResponse" type="quo:QuoteResponse" minOccurs="1" maxOccurs="10"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="QuoteResponse">
+		<xsd:sequence>
+			<xsd:element name="widgetId" type="xsd:integer"/>
+			<xsd:element name="unitPrice" type="xsd:float" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="requestedQuantity" type="xsd:int"/>
+			<xsd:element name="fillOrder" type="xsd:boolean"/>
+			<xsd:element name="shipDate" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="taxRate" type="xsd:float" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="totalCost" type="xsd:float" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

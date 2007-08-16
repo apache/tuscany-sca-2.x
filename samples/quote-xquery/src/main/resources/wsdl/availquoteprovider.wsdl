@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<wsdl:definitions targetNamespace="http://quote.xquery" xmlns:tns="http://quote.xquery"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:ava="http://www.example.org/avail" name="quotejoin">
+
+    <wsdl:import namespace="http://www.example.org/avail" location="AvailQuote.xsd"/>
+    <wsdl:types>
+        <schema elementFormDefault="qualified" targetNamespace="http://quote.xquery"
+            xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ava="http://www.example.org/avail">
+
+			<element name="provideAvailQuote">
+                <complexType>
+                    <sequence>
+                        <element name="provideAvailQuote" type="xsd:String" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="provideAvailQuoteResponse">
+                <complexType>
+                    <sequence>
+                        <element name="provideAvailQuoteReturn" type="ava:AvailQuote" />
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </wsdl:types>
+
+	<wsdl:message name="provideAvailQuoteRequest">
+        <wsdl:part element="tns:provideAvailQuote" name="parameters" />
+    </wsdl:message>
+    <wsdl:message name="provideAvailQuoteResponse">
+        <wsdl:part element="tns:provideAvailQuoteResponse" name="parameters" />
+    </wsdl:message>
+
+    <wsdl:portType name="AvailQuoteProvider">
+        <wsdl:operation name="provideAvailQuote">
+	        <wsdl:input message="tns:provideAvailQuoteRequest" name="provideAvailQuoteRequest" />
+            <wsdl:output message="tns:provideAvailQuoteResponse" name="provideAvailQuoteResponse" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="AvailQuoteProviderSoapBinding" type="tns:AvailQuoteProvider">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="provideAvailQuote">
+            <wsdlsoap:operation soapAction="" />
+            <wsdl:input name="provideAvailQuoteRequest">
+                <wsdlsoap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="provideAvailQuoteResponse">
+                <wsdlsoap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="AvailQuoteProviderService">
+        <wsdl:port binding="tns:AvailQuoteProviderSoapBinding" name="AvailQuoteProviderSoapPort">
+            <wsdlsoap:address location="http://localhost:8085/AvailQuoteProviderService" />
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

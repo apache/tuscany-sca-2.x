@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://quote.xquery/client"
+	xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
+           xmlns:xq="http://quote.xquery/client" name="xqueryquotewsclient">
+
+	<dbsdo:import.sdo factory="org.example.avail.AvailFactory"/>
+	<dbsdo:import.sdo factory="org.example.price.PriceFactory"/>
+	<dbsdo:import.sdo factory="org.example.quote.QuoteFactory"/>
+	
+	<component name="QuoteJoinLocalComponent">
+		<implementation.java class="xquery.quote.QuoteJoinLocalImpl"/>
+		<reference name="quoteJoin" target="QuoteJoinComponent"/>
+		<reference name="propertiesQuoteJoin" target="QuoteJoinPropertiesComponent"/>
+		<reference name="externalServicesQuoteJoin" target="QuoteJoinExternalReferencesComponent"/>
+    </component>
+	
+    <component name="QuoteJoinComponent">
+		<implementation.xquery location="META-INF/sca/quote_join.xq"/>
+		<reference name="quoteCalculator" target="QuoteCalculatorComponent" />
+    </component>
+    <component name="QuoteJoinPropertiesComponent">
+		<implementation.xquery location="META-INF/sca/quote_join_properties.xq"/>
+		<property name="priceQuoteDoc">
+			<pri:priceQuote xmlns:pri="http://www.example.org/price">
+			  <pri:customerName>Acme Inc</pri:customerName>
+			  <pri:shipAddress pri:street="12 Springs Rd" pri:city="Morris Plains" pri:state="nj" pri:zip="07960"/>
+			  <pri:priceRequests>
+			    <pri:priceRequest>
+			      <pri:widgetId>12</pri:widgetId>
+			      <pri:price>1.0</pri:price>
+			    </pri:priceRequest>
+			    <pri:priceRequest>
+			      <pri:widgetId>134</pri:widgetId>
+			      <pri:price>34.1</pri:price>
+			    </pri:priceRequest>
+			    <pri:priceRequest>
+			      <pri:widgetId>211</pri:widgetId>
+			      <pri:price>10.0</pri:price>
+			    </pri:priceRequest>
+			  </pri:priceRequests>
+			</pri:priceQuote>
+		</property>
+		<property name="availQuoteDoc">
+			<ava:availQuote xmlns:ava="http://www.example.org/avail">
+			  <ava:availRequest>
+			    <ava:widgetId>12</ava:widgetId>
+			    <ava:requestedQuantity>10</ava:requestedQuantity>
+			    <ava:quantityAvail>true</ava:quantityAvail>
+			    <ava:shipDate>2003-03-22</ava:shipDate>
+			  </ava:availRequest>
+			  <ava:availRequest>
+			    <ava:widgetId>134</ava:widgetId>
+			    <ava:requestedQuantity>345</ava:requestedQuantity>
+			    <ava:quantityAvail>false</ava:quantityAvail>
+			    <ava:shipDate>BackOrder</ava:shipDate>
+			  </ava:availRequest>
+			  <ava:availRequest>
+			    <ava:widgetId>211</ava:widgetId>
+			    <ava:requestedQuantity>100</ava:requestedQuantity>
+			    <ava:quantityAvail>true</ava:quantityAvail>
+			    <ava:shipDate>2003-04-21</ava:shipDate>
+			  </ava:availRequest>
+			</ava:availQuote>
+		</property>
+		<property name="taxRate">0.1</property>
+		<reference name="quoteCalculator" target="QuoteCalculatorComponent" />
+    </component>
+    <component name="QuoteJoinExternalReferencesComponent">
+		<implementation.xquery location="META-INF/sca/quote_join_external_references.xq"/>
+		<reference name="quoteCalculator" target="QuoteCalculatorComponent" />
+		<reference name="priceQuoteProvider" target="PriceQuoteProviderComponent" />
+    </component>
+    
+    <component name="QuoteCalculatorComponent">
+		<implementation.java class="xquery.quote.QuoteCalculatorImpl"/>
+    </component>
+    
+    <component name="PriceQuoteProviderComponent">
+		<implementation.java class="xquery.quote.PriceQuoteProviderImpl"/>
+    </component>
+    
+    <reference name="availQuoteProvider" promote="QuoteJoinExternalReferencesComponent/availQuoteProvider">
+        <interface.java interface="xquery.quote.AvailQuoteProviderService" />
+        <binding.ws wsdlElement="http://quote.xquery#wsdl.port(AvailQuoteProviderService/AvailQuoteProviderSoapPort)" />
+    </reference>
+    <reference name="quoteJoinWs" promote="QuoteJoinLocalComponent/quoteJoinWs">
+        <interface.java interface="xquery.quote.QuoteJoin" />
+        <binding.ws wsdlElement="http://quote.xquery#wsdl.port(QuoteJoinService/QuoteJoinSoapPort)" />
+    </reference>
+</composite>
