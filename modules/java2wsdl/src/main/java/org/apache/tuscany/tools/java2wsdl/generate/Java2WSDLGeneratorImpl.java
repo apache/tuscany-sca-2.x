@@ -29,12 +29,11 @@ import org.apache.ws.java2wsdl.Java2WSDL;
 import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOption;
 import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOptionParser;
 import org.apache.ws.java2wsdl.utils.Java2WSDLOptionsValidator;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * This is an implementation of the Java2WSDLGenerator facade. This
