@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<xsd:schema targetNamespace="http://www.example.org/avail" xmlns:ava="http://www.example.org/avail" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+	<xsd:element name="availQuote" type="ava:AvailQuote"/>
+	<xsd:complexType name="AvailRequest">
+		<xsd:sequence>
+			<xsd:element name="widgetId" type="xsd:integer"/>
+			<xsd:element name="requestedQuantity" type="xsd:int"/>
+			<xsd:element name="quantityAvail" type="xsd:boolean"/>
+			<xsd:element name="shipDate" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AvailQuote">
+		<xsd:sequence>
+			<xsd:element name="availRequest" type="ava:AvailRequest" minOccurs="1" maxOccurs="10">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
+
+
+

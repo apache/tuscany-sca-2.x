@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://quote.xquery"
+    xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" xmlns:xq="http://quote.xquery"
+    name="xqueryquotews">
+    
+    <dbsdo:import.sdo factory="org.example.avail.AvailFactory"/>
+	<dbsdo:import.sdo factory="org.example.price.PriceFactory"/>
+	<dbsdo:import.sdo factory="org.example.quote.QuoteFactory"/>
+    
+    <component name="QuoteJoinServerComponent">
+        <service name="QuoteJoin">
+            <interface.java interface="xquery.quote.QuoteJoin" />
+            <binding.ws wsdlElement="http://quote.xquery#wsdl.port(QuoteJoinService/QuoteJoinSoapPort)"/>
+        </service>
+        <implementation.xquery location="META-INF/sca/quote_join.xq"/>
+        <reference name="quoteCalculator" target="QuoteCalculatorServerComponent" />
+    </component>
+    
+    <component name="QuoteCalculatorServerComponent">
+		<implementation.java class="xquery.quote.QuoteCalculatorImpl"/>
+    </component>
+    
+    <component name="AvailQuoteProviderComponent">
+        <service name="AvailQuoteProvider">
+            <interface.java interface="xquery.quote.AvailQuoteProviderService" />
+            <binding.ws wsdlElement="http://quote.xquery#wsdl.port(AvailQuoteProviderService/AvailQuoteProviderSoapPort)"/>
+        </service>
+        <implementation.java class="xquery.quote.AvailQuoteProviderImpl" />
+    </component>
+
+</composite>
