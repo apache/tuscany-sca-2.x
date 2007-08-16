@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A componentType processor.
@@ -317,8 +318,10 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         // Resolve component type services and references
         resolveContracts(componentType.getServices(), resolver);
         resolveContracts(componentType.getReferences(), resolver);
-        resolveIntents(componentType.getRequiredIntents(), resolver);
-        resolvePolicySets(componentType.getPolicySets(), resolver);
+        if ( componentType instanceof PolicySetAttachPoint ) {
+            resolveIntents(((PolicySetAttachPoint)componentType).getRequiredIntents(), resolver);
+            resolvePolicySets(((PolicySetAttachPoint)componentType).getPolicySets(), resolver);
+        }
     }
     
     public QName getArtifactType() {

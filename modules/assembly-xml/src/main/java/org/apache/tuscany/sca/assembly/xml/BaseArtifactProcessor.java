@@ -223,8 +223,7 @@ abstract class BaseArtifactProcessor implements Constants {
                 intent.setName(qname);
                 if (operation != null) {
                     //intent.getOperations().add(operation);
-                    operation.getRequiredIntents().add(intent);
-                }
+}
                 requiredIntents.add(intent);
             }
         }
@@ -235,8 +234,10 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param attachPoint
      * @param reader
      */
-    protected void readPolicies(PolicySetAttachPoint attachPoint, XMLStreamReader reader) {
-        readPolicies(attachPoint, null, reader);
+    protected void readPolicies(Object attachPoint, XMLStreamReader reader) {
+        if ( attachPoint instanceof PolicySetAttachPoint ) {
+            readPolicies((PolicySetAttachPoint)attachPoint, null, reader);        
+        }
     }
 
     /**
@@ -257,7 +258,6 @@ abstract class BaseArtifactProcessor implements Constants {
                 policySet.setName(qname);
                 if (operation != null) {
                     //policySet.getOperations().add(operation);
-                    operation.getPolicySets().add(policySet);
                 }
                 policySets.add(policySet);
             }
@@ -409,8 +409,10 @@ abstract class BaseArtifactProcessor implements Constants {
                     }
                 }
                 
-                resolveIntents(implementation.getRequiredIntents(), resolver);
-                resolvePolicySets(implementation.getPolicySets(), resolver);
+                if ( implementation instanceof PolicySetAttachPoint ) {
+                    resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
+                    resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
+                }
             }
         }
         return implementation;
@@ -433,8 +435,14 @@ abstract class BaseArtifactProcessor implements Constants {
             for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
                 Binding binding = contract.getBindings().get(i);
                 extensionProcessor.resolve(binding, resolver);
-                resolveIntents(binding.getRequiredIntents(), resolver);
-                resolvePolicySets(binding.getPolicySets(), resolver);
+                if ( binding instanceof IntentAttachPoint ) {
+                    IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
+                    resolveIntents(policiedBinding.getRequiredIntents(), resolver);
+                }
+                if ( binding instanceof PolicySetAttachPoint ) {
+                    PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
+                    resolvePolicySets(policiedBinding.getPolicySets(), resolver);
+                }
             }
 
             // Resolve callback bindings
@@ -444,8 +452,15 @@ abstract class BaseArtifactProcessor implements Constants {
                 for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
                     Binding binding = contract.getCallback().getBindings().get(i);
                     extensionProcessor.resolve(binding, resolver);
-                    resolveIntents(binding.getRequiredIntents(), resolver);
-                    resolvePolicySets(binding.getPolicySets(), resolver);
+                    
+                    if ( binding instanceof IntentAttachPoint ) {
+                        IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
+                        resolveIntents(policiedBinding.getRequiredIntents(), resolver);
+                    }
+                    if ( binding instanceof PolicySetAttachPoint ) {
+                        PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
+                        resolvePolicySets(policiedBinding.getPolicySets(), resolver);
+                    }
                 }
             }
             

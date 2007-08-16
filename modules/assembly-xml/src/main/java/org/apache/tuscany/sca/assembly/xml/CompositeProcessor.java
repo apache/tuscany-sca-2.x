@@ -58,6 +58,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A composite processor.
@@ -632,8 +633,10 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         // Resolve composite services and references
         resolveContracts(composite.getServices(), resolver);
         resolveContracts(composite.getReferences(), resolver);
-        resolveIntents(composite.getRequiredIntents(), resolver);
-        resolvePolicySets(composite.getPolicySets(), resolver);
+        if ( composite instanceof PolicySetAttachPoint ) {
+            resolveIntents(((PolicySetAttachPoint)composite).getRequiredIntents(), resolver);
+            resolvePolicySets(((PolicySetAttachPoint)composite).getPolicySets(), resolver);
+        }
     }
 
     public QName getArtifactType() {

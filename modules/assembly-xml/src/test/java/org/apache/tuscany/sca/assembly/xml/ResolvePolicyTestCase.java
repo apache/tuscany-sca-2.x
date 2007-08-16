@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.SCADefinitions;
 import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
 import org.apache.tuscany.sca.policy.xml.ProfileIntentProcessor;
@@ -125,8 +126,8 @@ public class ResolvePolicyTestCase extends TestCase {
     }
     
     private void preResolvePolicyTests(Composite composite) {
-        assertNull(composite.getRequiredIntents().get(0).getDescription());
-        assertTrue(composite.getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNull(((PolicySetAttachPoint)composite).getRequiredIntents().get(0).getDescription());
+        assertTrue(((PolicySetAttachPoint)composite).getPolicySets().get(0).getProvidedIntents().isEmpty());
         
         assertNull(composite.getServices().get(0).getRequiredIntents().get(0).getDescription());
         assertTrue(composite.getServices().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());
@@ -147,9 +148,9 @@ public class ResolvePolicyTestCase extends TestCase {
     }
     
     private void postResolvePolicyTests(Composite composite) {
-        assertNotNull(composite.getRequiredIntents().get(0).getDescription());
-        assertFalse(composite.getPolicySets().get(0).getProvidedIntents().isEmpty());
-        assertNotNull(composite.getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
+        assertNotNull(((PolicySetAttachPoint)composite).getRequiredIntents().get(0).getDescription());
+        assertFalse(((PolicySetAttachPoint)composite).getPolicySets().get(0).getProvidedIntents().isEmpty());
+        assertNotNull(((PolicySetAttachPoint)composite).getPolicySets().get(0).getProvidedIntents().get(1).getDescription());
         
         assertNotNull(composite.getServices().get(0).getRequiredIntents().get(0).getDescription());
         assertFalse(composite.getServices().get(0).getPolicySets().get(0).getProvidedIntents().isEmpty());

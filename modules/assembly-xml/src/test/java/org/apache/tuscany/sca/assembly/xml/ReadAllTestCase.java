@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -84,9 +85,9 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
         assertTrue(composite.isLocal());
         assertFalse(composite.isAutowire());
-        assertEquals(composite.getRequiredIntents().get(0).getName(), new QName("http://test",
+        assertEquals(((PolicySetAttachPoint)composite).getRequiredIntents().get(0).getName(), new QName("http://test",
                                                                                 "confidentiality"));
-        assertEquals(composite.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
+        assertEquals(((PolicySetAttachPoint)composite).getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
 
         Composite include = composite.getIncludes().get(0);
         assertEquals(include.getName(), new QName("http://calc", "TestAllDivide"));

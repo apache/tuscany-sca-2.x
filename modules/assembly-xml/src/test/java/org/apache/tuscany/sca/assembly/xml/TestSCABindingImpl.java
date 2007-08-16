@@ -37,26 +37,13 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class TestSCABindingImpl implements SCABinding, WireableBinding {
     private String name;
     private String uri;
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<Object> extensions = new ArrayList<Object>();
     
     private Component targetComponent;
     private ComponentService targetComponentService;
     private Binding targetBinding;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();
     private boolean isRemote = false;
 
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
-
-    
     /**
      * Constructs a new SCA binding.
      */
@@ -77,14 +64,6 @@ public class TestSCABindingImpl implements SCABinding, WireableBinding {
 
     public void setURI(String uri) {
         this.uri = uri;
-    }
-
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return policySets;
     }
 
     public List<Object> getExtensions() {
