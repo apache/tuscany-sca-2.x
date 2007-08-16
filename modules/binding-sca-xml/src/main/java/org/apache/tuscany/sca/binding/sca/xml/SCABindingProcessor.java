@@ -86,7 +86,9 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
             SCABinding scaBinding = scaBindingFactory.createSCABinding();
             
             // Read policies
-            readPolicies(scaBinding, reader);
+            if ( scaBinding instanceof IntentAttachPoint && scaBinding instanceof PolicySetAttachPoint ) {
+                readPolicies((PolicySetAttachPoint)scaBinding, reader);
+            }
             
             // Read binding name
             String name = reader.getAttributeValue(null, NAME);
@@ -165,7 +167,6 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
                 policySet.setName(qname);
                 if (operation != null) {
                     //policySet.getOperations().add(operation);
-                    operation.getPolicySets().add(policySet);
                 }
                 policySets.add(policySet);
             }
@@ -188,7 +189,6 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
                 intent.setName(qname);
                 if (operation != null) {
                     //intent.getOperations().add(operation);
-                    operation.getRequiredIntents().add(intent);
                 }
                 requiredIntents.add(intent);
             }

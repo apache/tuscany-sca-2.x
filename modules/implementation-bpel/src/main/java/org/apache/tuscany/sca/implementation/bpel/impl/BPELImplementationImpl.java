@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.w3c.dom.Node;
 
@@ -57,16 +58,6 @@ public class BPELImplementationImpl implements BPELImplementation {
     private QName _processName;
     private byte[] _compiledProcess;
     private boolean unresolved;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 
     /**
      * Constructs a new BPEL implementation.
@@ -132,16 +123,7 @@ public class BPELImplementationImpl implements BPELImplementation {
         // The sample BPEL implementation does not have a URI
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The sample BPEL implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample BPEL implementation does not support intents
-        return Collections.emptyList();
-    }
-
+    
     public List<Object> getExtensions() {
         // The sample BPEL implementation does not support extensions
         return Collections.emptyList();

@@ -34,16 +34,6 @@ public class RSSBinding implements Binding {
 
     private String name;
     private String uri;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 
     public String getName() {
         return name;
@@ -59,16 +49,6 @@ public class RSSBinding implements Binding {
 
     public void setURI(String uri) {
         this.uri = uri;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        // The sample binding does not support policies
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The binding does not support policies
-        return Collections.emptyList();
     }
 
     public List<Object> getExtensions() {

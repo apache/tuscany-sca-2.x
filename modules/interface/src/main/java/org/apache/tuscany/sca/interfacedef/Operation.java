@@ -178,33 +178,4 @@ public interface Operation extends Cloneable {
      */
     Object clone() throws CloneNotSupportedException;
     
-    /**
-     * Returns the list of computed/applicable policy intents for this binding
-     * 
-     * @return list of applicable/computed policy intents
-     */
-    List<Intent> getComputedIntents();
-    
-    /**
-     * Returns the list of computed/applicable policysets for this binding
-     * 
-     * @return list of applicable/computed policysets
-     */
-    List<PolicySet> getComputedPolicySets();
-    
-    /**
-     * Returns a list of policy intents. See the Policy Framework specification
-     * for a description of this attribute.
-     * 
-     * @return a list of policy intents.
-     */
-    List<Intent> getRequiredIntents();
-    
-    /**
-     * Returns a list of policy sets. See the Policy Framework specification for
-     * a description of this attribute.
-     * 
-     * @return a list of policy sets.
-     */
-    List<PolicySet> getPolicySets();
 }

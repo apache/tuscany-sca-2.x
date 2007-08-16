@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 
@@ -87,11 +88,13 @@ public class PolicyProcessorTestCase extends TestCase {
     }
 
     private void verifyIntents(Class serviceImplClass, JavaImplementation type) {
-
+        if ( !(type instanceof PolicySetAttachPoint) ) {
+            fail("No Intents on the service ");
+        }
         Requires serviceImplIntentAnnotation = (Requires)serviceImplClass.getAnnotation(Requires.class);
         if (serviceImplIntentAnnotation != null) {
             String[] serviceImplIntents = serviceImplIntentAnnotation.value();
-            List<Intent> requiredIntents = type.getRequiredIntents();
+            List<Intent> requiredIntents = ((PolicySetAttachPoint)type).getRequiredIntents();
             if (serviceImplIntents.length > 0) {
                 if (requiredIntents == null || requiredIntents.size() == 0) {
                     fail("No Intents on the service ");
@@ -188,7 +191,7 @@ public class PolicyProcessorTestCase extends TestCase {
                 if (methodIntentAnnotation != null) {
                     String[] methodIntents = methodIntentAnnotation.value();
                     if (methodIntents.length > 0) {
-                        List<Intent> requiredIntents = type.getRequiredIntents();
+                        List<Intent> requiredIntents = ((PolicySetAttachPoint)type).getRequiredIntents();
                         if (requiredIntents.size() == 0) {
                             fail("No Intents on operation " + method.getName());
                         }

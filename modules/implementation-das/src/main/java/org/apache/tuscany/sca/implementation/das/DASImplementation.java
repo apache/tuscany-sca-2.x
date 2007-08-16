@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 
@@ -117,31 +118,11 @@ public class DASImplementation implements Implementation {
         // The sample DAS implementation does not have a URI
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The sample DAS implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample DAS implementation does not support intents
-        return Collections.emptyList();
-    }
-
     public List<Object> getExtensions() {
         // The sample DAS implementation does not support extensions
         return Collections.emptyList();
     }
     
-    public List<Intent> getComputedIntents() {
-        //The sample DAS implementation does not support computed intents
-        return Collections.emptyList();
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        //The sample DAS implementation does not support computed policysets
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         // The sample DAS implementation is always resolved
         return false;
@@ -150,5 +131,4 @@ public class DASImplementation implements Implementation {
     public void setUnresolved(boolean unresolved) {
         // The sample DAS implementation is always resolved
     }
-
 }

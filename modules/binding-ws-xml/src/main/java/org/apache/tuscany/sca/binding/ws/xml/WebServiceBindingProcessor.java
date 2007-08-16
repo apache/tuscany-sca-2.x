@@ -75,7 +75,9 @@ public class WebServiceBindingProcessor implements
             wsBinding.setUnresolved(true);
 
             // Read policies
-            readPolicies(wsBinding, reader);
+            if ( wsBinding instanceof PolicySetAttachPoint ) {
+                readPolicies((PolicySetAttachPoint)wsBinding, reader);
+            }
             
             // Read the binding name
             String name = reader.getAttributeValue(null, NAME);

@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.ChildBeanDefinition;
@@ -39,7 +40,17 @@ import org.springframework.beans.factory.support.ChildBeanDefinition;
  *  @version $Rev$ $Date$
  */
 public class BeanComponentImpl extends ChildBeanDefinition implements Component, Cloneable {
-	private static final long serialVersionUID = 1L;
+	public IntentAttachPointType getType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setType(IntentAttachPointType type) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private static final long serialVersionUID = 1L;
 	
 	private ConstrainingType constrainingType;
 	private Implementation implementation;

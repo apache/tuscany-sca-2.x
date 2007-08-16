@@ -32,20 +32,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class NotificationBindingImpl extends BaseImpl implements NotificationBinding {
     private String name;
     private String uri;
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
     protected String ntmAddress;
     protected URI notificationType;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
     
     public Object clone() {
         return this;
@@ -67,14 +55,6 @@ public class NotificationBindingImpl extends BaseImpl implements NotificationBin
         this.uri = uri;
     }
 
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-    
     public String getNtmAddress() {
         return ntmAddress;
     }

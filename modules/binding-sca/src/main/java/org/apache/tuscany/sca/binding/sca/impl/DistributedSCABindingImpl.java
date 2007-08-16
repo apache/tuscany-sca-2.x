@@ -39,13 +39,6 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     
     private SCABinding scaBinding;
 
-    public List<Intent> getComputedIntents() {
-        return null;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return null;
-    }
     
     public Component getComponent() {
         return null;
@@ -66,14 +59,6 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     }
 
     public void setURI(String uri) {
-    }
-
-    public List<Intent> getRequiredIntents() {
-        return null;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return null;
     }
 
     public List<Object> getExtensions() {

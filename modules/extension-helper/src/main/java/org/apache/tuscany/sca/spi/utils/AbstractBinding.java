@@ -36,10 +36,6 @@ public class AbstractBinding implements Binding {
     private String uri;
     private List<Object> extensions;
     private boolean unresolved;
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
 
     public String getName() {
         return name;
@@ -69,19 +65,4 @@ public class AbstractBinding implements Binding {
         this.unresolved = unresolved;
     }
 
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 }

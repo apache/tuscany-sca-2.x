@@ -127,7 +127,9 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
             JMSBinding jmsBinding = new JMSBinding();
             
             // Read policies
-            readPolicies(jmsBinding, reader);
+            if ( jmsBinding instanceof PolicySetAttachPoint ) {
+                readPolicies((PolicySetAttachPoint)jmsBinding, reader);
+            }
 
             // Read binding name
             String name = reader.getAttributeValue(null, "name");

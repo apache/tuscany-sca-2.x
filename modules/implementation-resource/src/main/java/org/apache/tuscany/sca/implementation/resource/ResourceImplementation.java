@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 
@@ -47,16 +48,6 @@ public class ResourceImplementation implements Implementation {
     private String location;
     private URL url;
     private boolean unresolved;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 
     /**
      * Constructs a new resource implementation.
@@ -129,15 +120,6 @@ public class ResourceImplementation implements Implementation {
         this.location = uri;
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The resource implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The resource implementation does not support intents
-        return Collections.emptyList();
-    }
 
     public List<Object> getExtensions() {
         // The resource implementation does not support extensions
@@ -150,6 +132,5 @@ public class ResourceImplementation implements Implementation {
 
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
-    }
-
+    }    
 }
