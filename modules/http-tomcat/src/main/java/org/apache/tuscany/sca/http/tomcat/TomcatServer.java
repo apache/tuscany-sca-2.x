@@ -176,17 +176,18 @@ public class TomcatServer implements ServletHost {
         
         ServletWrapper wrapper;
         if (servlet instanceof DefaultResourceServlet) {
+            String defaultServletPath = path;
             
             // Optimize the handling of resource requests, use the Tomcat default servlet
             // instead of our default resource servlet
-            if (path.endsWith("*")) {
-                path = path.substring(0, path.length()-1);
+            if (defaultServletPath.endsWith("*")) {
+                defaultServletPath = defaultServletPath.substring(0, defaultServletPath.length()-1);
             }
-            if (path.endsWith("/")) {
-                path = path.substring(0, path.length()-1);
+            if (defaultServletPath.endsWith("/")) {
+                defaultServletPath = defaultServletPath.substring(0, defaultServletPath.length()-1);
             }
             DefaultResourceServlet resourceServlet = (DefaultResourceServlet)servlet;
-            TomcatDefaultServlet defaultServlet = new TomcatDefaultServlet(path, resourceServlet.getDocumentRoot());
+            TomcatDefaultServlet defaultServlet = new TomcatDefaultServlet(defaultServletPath, resourceServlet.getDocumentRoot());
             wrapper = new ServletWrapper(defaultServlet);
             
         } else {
