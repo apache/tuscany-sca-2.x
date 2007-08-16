@@ -69,6 +69,9 @@
                 <module>databinding-sdo</module>
                 <module>databinding-sdo-axiom</module>
                 <module>databinding-json</module>
+                <!--
+                <module>databinding-saxon</module>
+                -->
                 <module>databinding-xmlbeans</module>
                 <!--
                 <module>discovery-jms</module>
@@ -100,6 +103,9 @@
                 <module>implementation-resource</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
+                <!--
+                <module>implementation-xquery</module>
+                -->
                 <module>java2wsdl</module>
                 <!--
                 <module>jmx</module>
