@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.tools.wsdl2java.generate;
 
-import static org.apache.tuscany.tools.wsdl2java.util.XMLNameUtil.getPackageNameFromNamespace;
-
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +33,10 @@ import java.util.Map;
 
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
+import javax.wsdl.Fault;
+import javax.wsdl.Message;
+import javax.wsdl.Operation;
+import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
@@ -45,6 +49,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
+import org.apache.axis2.util.FileWriter;
 import org.apache.axis2.util.XMLUtils;
 import org.apache.axis2.wsdl.codegen.CodeGenConfiguration;
 import org.apache.axis2.wsdl.codegen.CodeGenerationException;
@@ -56,16 +61,19 @@ import org.apache.axis2.wsdl.databinding.JavaTypeMapper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import com.sun.tools.xjc.api.XJC;
+
 public class JavaInterfaceGenerator {
 
     private List codegenExtensions = new ArrayList();
     private List<CodeGenConfiguration> codegenConfigurations= new LinkedList<CodeGenConfiguration>();
-    
+    private String outputLocation;
     
 
 
     public JavaInterfaceGenerator(String uri, String ports[], String outputLocation, String packageName,
                                   Map<QName, SDODataBindingTypeMappingEntry> typeMapping) throws CodeGenerationException {
+        this.outputLocation = outputLocation;
         
         Definition definition;
         try {
@@ -74,7 +82,7 @@ public class JavaInterfaceGenerator {
             throw new CodeGenerationException(e);
         }
         
-        HashSet interestedPorts= ports == null ? null : new HashSet(Arrays.asList(ports));
+        HashSet<String> interestedPorts = ports == null ? null : new HashSet<String>(Arrays.asList(ports));
         
        // Service service=(Service)definition.getServices().values().().next();
         
@@ -94,19 +102,30 @@ public class JavaInterfaceGenerator {
                  donePortTypes.add(pQName);
               
                 if (packageName == null) {
-                                        
-                    packageName = getPackageNameFromNamespace(definition.getTargetNamespace());
+                    //use JAXWS/JAXB NS->package default algorithm, not the SDO/EMF one
+                    packageName = XJC.getDefaultPackageName(definition.getTargetNamespace());
                 }
+                //
+                // Use WSDL4J object to generate exception classes
+                //
+                generateFaults(packageName, portType, typeMapping);
                 JavaTypeMapper typeMapper = new JavaTypeMapper();
                 for (Map.Entry<QName, SDODataBindingTypeMappingEntry> e : typeMapping.entrySet()) {
                     typeMapper.addTypeMappingObject(e.getKey(), e.getValue());
+                    // Added for generation of exceptions from faults
+                    typeMapper.addTypeMappingName(e.getKey(), e.getValue().getClassName());
                 }
 
-                WSDL11ToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, serviceQname, port.getName());
-                builder.setCodegen(true);
 
                 AxisService axisService;
+                WSDL11ToAxisServiceBuilder builder;
                 try {
+                    //
+                    // Added since at a newer level of Axis2, this doesn't work 
+                    //  without the setCodegen(true)
+                    //
+                    builder = new WSDL11ToAxisServiceBuilder(definition, serviceQname, port.getName());
+                    builder.setCodegen(true);
                     axisService = builder.populateService();
                 } catch (AxisFault e) {
                     throw new CodeGenerationException(e);
@@ -129,6 +148,7 @@ public class JavaInterfaceGenerator {
                 codegenConfiguration.setPortName(port.getName());
                 codegenConfiguration.setServerSide(false);
                 codegenConfiguration.setServiceName(service.getQName().getLocalPart());
+                // This lines up with the sync/async variable from the XSL template
                 codegenConfiguration.setSyncOn(true);
                 codegenConfiguration.setTypeMapper(typeMapper);
                 codegenConfiguration.setWriteMessageReceiver(false);
@@ -231,5 +251,71 @@ public class JavaInterfaceGenerator {
 
         return reader.readWSDL(baseURI, doc);
     }
+    private void generateFaults(String packageName, PortType portType, Map<QName, SDODataBindingTypeMappingEntry> typeMapping) 
+        throws CodeGenerationException{
+        
+        for (Object o: portType.getOperations()) {
+            Operation op = (Operation)o;
+            Map messageMap = op.getFaults();
+            Iterator iter = messageMap.values().iterator();
+            while (iter.hasNext()) {
+                Fault fault = (Fault)iter.next();
+                Message faultMsg = fault.getMessage();
+                Iterator iter2 = faultMsg.getParts().values().iterator();
+                Part faultMsgPart = (Part)iter2.next();
+                // TODO - if other parts throw exc
+                QName faultMsgQName = faultMsg.getQName();
+                QName faultMsgPartElementQName = faultMsgPart.getElementName();
+                String faultClassName = typeMapping.get(faultMsgPartElementQName).getClassName();                
+                writeException(packageName, faultMsgQName, faultClassName, faultMsgPartElementQName);
+            }
+        }
+    }
+    
+    private void writeException(String packageName, QName faultMsgQName, String faultClassName, QName faultMsgPartElementQName) 
+        throws CodeGenerationException{        
+        
+        try {
+            String faultWrapperClassName = 
+                WSDL2JavaGenerator.normalizeClassName(faultMsgQName.getLocalPart());
+            
+            File outputDir = new File(this.outputLocation);
+            
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+            File outputFile = FileWriter.createClassFile(outputDir,
+                    packageName, faultWrapperClassName, ".java");
 
+            FileOutputStream fileStream = new FileOutputStream(outputFile);       
+            PrintStream stream = new PrintStream(fileStream); 
+
+            System.out.println(">>  Generating Java exception class " + packageName + "." + faultWrapperClassName);
+
+            stream.println();
+            stream.println("package " + packageName + ";");
+            stream.println();
+            stream.println("import javax.xml.namespace.QName; ");
+            stream.println();
+            stream.println("public class " + faultWrapperClassName  + " extends Exception {");
+            stream.println();
+            stream.println("    private " + faultClassName + " fault;");
+            stream.println();
+            stream.println("    public " + faultWrapperClassName + "(String message, " + faultClassName + " fault, Throwable cause) {");
+            stream.println("        super(message, cause);");
+            stream.println("        this.fault = fault;");
+            stream.println("    }");
+            stream.println();
+            stream.println("    public static QName FAULT_ELEMENT = new QName(\"" + faultMsgPartElementQName.getNamespaceURI() + 
+                    "\",\"" + faultMsgPartElementQName.getLocalPart() + "\");");
+            stream.println();
+            stream.println("    public " + faultClassName + " getFaultInfo() {");
+            stream.println("        return this.fault;");
+            stream.println("    }");
+            stream.println("}");
+            stream.println();
+        } catch (Exception e) {
+            throw new CodeGenerationException(e);
+        }
+    }
 }

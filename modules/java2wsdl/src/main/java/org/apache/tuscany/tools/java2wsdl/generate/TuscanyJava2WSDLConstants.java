@@ -42,10 +42,15 @@ public interface TuscanyJava2WSDLConstants extends Java2WSDLConstants
     String ATTR_FORM_DEFAULT_OPTION = "afd";
     String ELEMENT_FORM_DEFAULT_OPTION = "efd";
     String EXTRA_CLASSES_DEFAULT_OPTION = "xc";
+    String FACTORY_CLASSNAMES_OPTION = "fcn";
     
     //long options
     String IMPORT_XSD_OPTION_LONG = "import_xsd";       //option for importing XSDs
     String ATTR_FORM_DEFAULT_OPTION_LONG = "attributeFormDefault";
     String ELEMENT_FORM_DEFAULT_OPTION_LONG = "elementFormDefault";
     String EXTRA_CLASSES_DEFAULT_OPTION_LONG = "extraClasses";
+    String FACTORY_CLASSNAMES_OPTION_LONG = "factoryClassNames";
+    
+    //  This is a new creation, not an override.
+    String WSDL_SERVICE_SUFFIX = "WebService";
 }

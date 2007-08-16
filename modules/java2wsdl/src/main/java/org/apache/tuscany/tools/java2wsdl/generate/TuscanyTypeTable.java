@@ -30,6 +30,8 @@ import org.apache.axiom.om.OMElement;
 import org.apache.ws.java2wsdl.Java2WSDLUtils;
 import org.codehaus.jam.JClass;
 
+import commonj.sdo.DataObject;
+
 public class TuscanyTypeTable 
 {
     public static final String XML_SCHEMA_URI = "http://www.w3.org/2001/XMLSchema";
@@ -37,8 +39,8 @@ public class TuscanyTypeTable
     public static final QName XS_QNAME = new QName(XML_SCHEMA_URI, "schema", XS_URI_PREFIX);
     public static final String DELIMITER = "#";
     
-    private Hashtable simpleXSDTypes;
-    private Hashtable complexXSDTypes;
+    private Hashtable<String, QName> simpleXSDTypes;
+    private Hashtable<String, QName> complexXSDTypes;
     
     public static String asQualifiedName(String uri, String typeName)
     {
@@ -48,8 +50,8 @@ public class TuscanyTypeTable
     
     public  TuscanyTypeTable() 
     {
-        simpleXSDTypes = new Hashtable();
-        complexXSDTypes = new Hashtable();
+        simpleXSDTypes = new Hashtable<String, QName>();
+        complexXSDTypes = new Hashtable<String, QName>();
         populateSimpleXSDTypes();
         populateStdSDOTypes();
     }
@@ -162,27 +164,29 @@ public class TuscanyTypeTable
                 new QName(XML_SCHEMA_URI, "anyType", XS_URI_PREFIX));
         simpleXSDTypes.put(List.class.getName(),
                 new QName(XML_SCHEMA_URI, "anyType", XS_URI_PREFIX));
+
+        // I'm unsure what populateStdSDOTypes is supposed to be setting up,
+        // given that I still have to do this to map "commonj.sdo.DataObject" 
+        // to xsd:anyType, but I'll do it anyway.
+        //
+        simpleXSDTypes.put(DataObject.class.getName(),
+                new QName(XML_SCHEMA_URI, "anyType", XS_URI_PREFIX));
     }
     
-    public QName getStdSdoType(String typename) 
-    {
+    public QName getStdSdoType(String typename) {
         return (QName) simpleXSDTypes.get(typename);
     }
 
-    public QName getComplexSchemaTypeName(String sdoURI, String sdoTypeName) 
-    {
+    public QName getComplexSchemaTypeName(String sdoURI, String sdoTypeName) {
         return (QName) complexXSDTypes.get(asQualifiedName(sdoURI, sdoTypeName));
-    }    
-    
-    public QName getComplexSchemaTypeName(JClass javaClass, ClassLoader cl) throws Exception 
-    {
-        String namespace = Java2WSDLUtils.schemaNamespaceFromClassName(
-        		javaClass.getQualifiedName(), cl).toString();
+    }
+
+    public QName getComplexSchemaTypeName(JClass javaClass, ClassLoader cl) throws Exception {
+        String namespace = Java2WSDLUtils.schemaNamespaceFromClassName(javaClass.getQualifiedName(), cl).toString();
         return (QName) complexXSDTypes.get(asQualifiedName(namespace, javaClass.getSimpleName()));
-    } 
-    
-    public boolean isSimpleType(String typeName) 
-    {
+    }
+
+    public boolean isSimpleType(String typeName) {
         Iterator keys = simpleXSDTypes.keySet().iterator();
         while (keys.hasNext()) {
             String s = (String) keys.next();
@@ -193,31 +197,22 @@ public class TuscanyTypeTable
         return false;
     }
     
-    public QName getSimpleSchemaTypeName(String typename) 
-    {
+    public QName getSimpleSchemaTypeName(String typename) {
         return (QName) simpleXSDTypes.get(typename);
     }
-    
-    public void addSimpleSchemaType(String typeName, QName schemaType) 
-    {
+
+    public void addSimpleSchemaType(String typeName, QName schemaType) {
         simpleXSDTypes.put(typeName, schemaType);
     }
-    
-    
-    public void addComplexSchemaType(String namespaceURI, String name, QName schemaType) 
-    {
+
+    public void addComplexSchemaType(String namespaceURI, String name, QName schemaType) {
         complexXSDTypes.put(asQualifiedName(namespaceURI, name), schemaType);
     }
 
-    
-    public QName getQNamefortheType(String namespaceURI, String typeName) 
-    {
-        if ( XML_SCHEMA_URI.equals(namespaceURI))
-        {
+    public QName getQNamefortheType(String namespaceURI, String typeName) {
+        if (XML_SCHEMA_URI.equals(namespaceURI)) {
             return getSimpleSchemaTypeName(typeName);
-        }
-        else
-        {
+        } else {
             return getComplexSchemaTypeName(namespaceURI, typeName);
         }
     }

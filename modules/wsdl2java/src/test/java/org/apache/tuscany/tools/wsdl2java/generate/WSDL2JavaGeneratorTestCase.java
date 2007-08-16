@@ -32,7 +32,8 @@ public class WSDL2JavaGeneratorTestCase extends TestCase {
             basedir =".";
         
         
-        String[] args=new String[] { "-targetDirectory", basedir + "/target/wsdl2java-source",
+        String[] args=new String[] { 
+                "-targetDirectory", basedir + "/target/wsdl2java-source",
                 "-javaPackage", "org.apache.tuscany.tools.wsdl2java.generate.account",
                 basedir + "/src/test/resources/AccountService.wsdl"};
 

@@ -20,16 +20,20 @@ package org.apache.tuscany.tools.java2wsdl.generate;
 
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
@@ -47,6 +51,7 @@ import org.codehaus.jam.JProperty;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Type;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
 
 public class SchemaBuilder implements TuscanyJava2WSDLConstants {
@@ -72,7 +77,19 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
 
     protected Map schemaLocationMap = null;
 
-    private ClassLoader classLoader;
+    private ClassLoader classLoader = null;
+
+    private ArrayList factoryClassNames = null;
+
+    private HelperContext helperContext = null;
+    
+    private XSDHelper xsdHelper = null;
+
+    private Set<String> registeredSDOFactories = new HashSet<String>();
+    
+    boolean alreadyPrintedDefaultSDOFactoryFound = false;
+    
+    boolean alreadyPrintedDefaultSDOFactoryNotFound = false;
 
     protected SchemaBuilder(XmlSchemaCollection schemaCollection,
                             Hashtable schemaMap,
@@ -81,7 +98,8 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
                             String attrFormDef,
                             String eleFormDef,
                             Map schemaLocMap,
-                            ClassLoader classLoader) {
+                            ClassLoader classLoader,
+                            ArrayList factoryClassNames) {
         this.schemaMap = schemaMap;
         this.xmlSchemaCollection = schemaCollection;
         this.targetNamespacePrefixMap = nsPrefixMap;
@@ -90,12 +108,30 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
         this.classLoader = classLoader;
         this.attrFormDefault = attrFormDef;
         this.elementFormDefault = eleFormDef;
-    }
+        this.factoryClassNames = factoryClassNames;
+  
+        // Register the types in the generated SDO factories
+        this.helperContext = org.apache.tuscany.sdo.api.SDOUtil.createHelperContext();
+        this.xsdHelper = helperContext.getXSDHelper();
+
+        Class factoryClass = null;
+        for (Object factoryClassName : this.factoryClassNames) {
+            try {
+                factoryClass = Class.forName((String)factoryClassName, true, classLoader);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace(); 
+                System.out.println("");
+                System.out.println("Generated SDO Factory class with name: " + factoryClassName + " could not be loaded.  Exiting.");
+                throw new IllegalArgumentException(e); 
+            }
+            registerSDOFactory(factoryClass);
+        }
+   }
 
     private boolean isSDO(JClass javaType) throws Exception {
-        Class sdoClass = Class.forName(javaType.getQualifiedName(),
-                                       true,
-                                       classLoader);
+
+        Class sdoClass = Class.forName(javaType.getQualifiedName(), true, classLoader);
+
         return DataObject.class.isAssignableFrom(sdoClass);
     }
 
@@ -191,19 +227,26 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
                                                                   dataType.getName());
 
         if (schemaTypeName == null) {
-            // invoke XSDHelper to generate schema for this sdo type
-            XSDHelper xsdHelper = SDOUtil.createXSDHelper(SDOUtil.createTypeHelper());
-            // it is better to check if XSDHelper can generate the schema
-            if (xsdHelper.isXSD(dataType)) {
+            // We can't load the XSDs into an XSDHelper and match them against the static SDOs; they will
+            // never match.  Instead let's take an all-or-nothing approach and say, if we've got this NS
+            // in our map then we assume we have this Type as well in the corresponding XSD file.  
+            //
+            boolean inXSDForm = schemaLocationMap.get(dataType.getURI()) != null;
+
+            if (inXSDForm) {
                 // if schemalocations for xsd has been specified, include them
-                includeExtXSD(dataType);
+
+                // External XSDs will be handled in processing the schema TNS of the wrapper elements.
+                // This is partly because SDO codegen needs some modification in this area 
+                // So we won't bother including the external XSDs here at all.
+                //
+                //  includeExtXSD(dataType);
             } else {
-                List typeList = new Vector();
+                List<Type> typeList = new Vector<Type>();
                 typeList.add(dataType);
 
                 // the xsdhelper returns a string that contains the schemas for this type
-                String schemaDefns = xsdHelper.generate(typeList,
-                                                        schemaLocationMap);
+                String schemaDefns = xsdHelper.generate(typeList, schemaLocationMap);
 
                 // extract the schema elements and store them in the schema map
                 extractSchemas(schemaDefns);
@@ -218,6 +261,13 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
         return schemaTypeName;
     }
 
+    /**
+     * Identify the java type (pojo versus sdo) and build the schema accordingly
+     * 
+     * @param javaType reference to the classs
+     * @return
+     * @throws Exception
+     */
     public QName generateSchema(JClass javaType) throws Exception {
         if (isSDO(javaType)) {
             Type dataType = createDataObject(javaType).getType();
@@ -237,16 +287,12 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
             xmlSchema.setAttributeFormDefault(getAttrFormDefaultSetting());
             xmlSchema.setElementFormDefault(getElementFormDefaultSetting());
 
-            targetNamespacePrefixMap.put(targetNamespace,
-                                         targetNamespacePrefix);
-            schemaMap.put(targetNamespace,
-                          xmlSchema);
+            targetNamespacePrefixMap.put(targetNamespace, targetNamespacePrefix);
+            schemaMap.put(targetNamespace, xmlSchema);
 
             NamespaceMap prefixmap = new NamespaceMap();
-            prefixmap.put(TuscanyTypeTable.XS_URI_PREFIX,
-                          TuscanyTypeTable.XML_SCHEMA_URI);
-            prefixmap.put(targetNamespacePrefix,
-                          targetNamespace);
+            prefixmap.put(TuscanyTypeTable.XS_URI_PREFIX, TuscanyTypeTable.XML_SCHEMA_URI);
+            prefixmap.put(targetNamespacePrefix, targetNamespace);
             xmlSchema.setNamespaceContext(prefixmap);
         }
         return xmlSchema;
@@ -261,13 +307,9 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
      */
     public static String getCorrectName(String wrongName) {
         if (wrongName.length() > 1) {
-            return wrongName.substring(0,
-                                       1).toLowerCase(Locale.ENGLISH)
-                    + wrongName.substring(1,
-                                          wrongName.length());
+            return wrongName.substring(0, 1).toLowerCase(Locale.ENGLISH) + wrongName.substring(1, wrongName.length());
         } else {
-            return wrongName.substring(0,
-                                       1).toLowerCase(Locale.ENGLISH);
+            return wrongName.substring(0, 1).toLowerCase(Locale.ENGLISH);
         }
     }
 
@@ -297,30 +339,27 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
     }
 
     private String formGlobalElementName(String typeName) {
-        String firstChar = typeName.substring(0,
-                                              1);
-        return typeName.replaceFirst(firstChar,
-                                     firstChar.toLowerCase());
+        String firstChar = typeName.substring(0, 1);
+        return typeName.replaceFirst(firstChar, firstChar.toLowerCase());
     }
 
-    private void createGlobalElement(XmlSchema xmlSchema,
-                                     XmlSchemaComplexType complexType,
-                                     QName elementName) {
+    private void createGlobalElement(XmlSchema xmlSchema, XmlSchemaComplexType complexType, QName elementName) {
         XmlSchemaElement globalElement = new XmlSchemaElement();
         globalElement.setSchemaTypeName(complexType.getQName());
         globalElement.setName(formGlobalElementName(complexType.getName()));
         globalElement.setQName(elementName);
 
         xmlSchema.getItems().add(globalElement);
-        xmlSchema.getElements().add(elementName,
-                                    globalElement);
+        xmlSchema.getElements().add(elementName, globalElement);
     }
 
     private DataObject createDataObject(JClass sdoClass) throws Exception {
-        Class sdoType = Class.forName(sdoClass.getQualifiedName(),
-                                      true,
-                                      classLoader);
+        Class sdoType = Class.forName(sdoClass.getQualifiedName(), true, classLoader);
 
+        //register the factory
+        detectAndRegisterFactory(sdoType);
+        
+        //create data object
         Constructor constructor = sdoType.getDeclaredConstructor(new Class[0]);
         constructor.setAccessible(true);
         Object instance = constructor.newInstance(new Object[0]);
@@ -415,8 +454,7 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
         if (existingSchema == null) {
             extractedSchema.setAttributeFormDefault(getAttrFormDefaultSetting());
             extractedSchema.setElementFormDefault(getElementFormDefaultSetting());
-            schemaMap.put(extractedSchema.getTargetNamespace(),
-                          extractedSchema);
+            schemaMap.put(extractedSchema.getTargetNamespace(), extractedSchema);
 
         } else {
             copySchemaItems(existingSchema,
@@ -443,8 +481,7 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
                 // if the element does not exist in the existing schema
                 if (existingSchema.getElementByName(qName) == null) {
                     // add it to the existing schema
-                    existingSchema.getElements().add(qName,
-                                                     schemaElement);
+                    existingSchema.getElements().add(qName, schemaElement);
                     existingSchema.getItems().add(schemaElement);
                 }
             } else if (schemaObject instanceof XmlSchemaType) {
@@ -453,12 +490,10 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
                 // if the element does not exist in the existing schema
                 if (existingSchema.getElementByName(qName) == null) {
                     // add it to the existing schema
-                    existingSchema.getSchemaTypes().add(qName,
-                                                        schemaType);
+                    existingSchema.getSchemaTypes().add(qName, schemaType);
                     existingSchema.getItems().add(schemaType);
                     // add imports
-                    addImports(existingSchema,
-                               qName);
+                    addImports(existingSchema, qName);
                 }
             } else if (schemaObject instanceof XmlSchemaInclude) {
                 schemaInclude = (XmlSchemaInclude) itemsIterator.next();
@@ -520,5 +555,57 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
 
     public void setElementFormDefault(String elementFormDefault) {
         this.elementFormDefault = elementFormDefault;
+    }
+
+
+    /**
+     * Recognize the pattern of generated SDO type names vs. SDO factory names.
+     * E.g. SDO class:   test.sca.w2j.gen.Company will be associated with 
+     *      SDO factory: test.sca.w2j.gen.GenFactory
+     */
+    private void detectAndRegisterFactory(Class sdoClass) {
+        String pkgName = sdoClass.getPackage().getName();
+
+        // Find last segment, e.g. from 'test.sca.w2j.gen' produce 'gen'.
+        int lastDot = pkgName.lastIndexOf('.');
+        String lastSegment = pkgName.substring(lastDot+1);
+
+        String rest = lastSegment.substring(1);
+        String firstChar = lastSegment.substring(0,1).toUpperCase();
+
+        String factoryBaseName = pkgName + "." + firstChar + rest + "Factory";
+
+        Class factoryClass = null;
+        try {
+            factoryClass = Class.forName((String)factoryBaseName, true, classLoader);
+            if (!alreadyPrintedDefaultSDOFactoryFound) {
+                System.out.println("Found default generated SDO Factory with name: " + factoryBaseName + "; Registering.");
+                alreadyPrintedDefaultSDOFactoryFound = true;
+            }
+            registerSDOFactory(factoryClass);
+        } catch (ClassNotFoundException e) {
+            if (!alreadyPrintedDefaultSDOFactoryNotFound) {
+                System.out.println("Did not find default generated SDO Factory with name: " + factoryBaseName + "; Continue." );
+                alreadyPrintedDefaultSDOFactoryNotFound = true;
+            }
+        }
+    }
+
+    private void registerSDOFactory(Class factoryClass) {
+        String factoryClassName = factoryClass.getName();
+        if (!registeredSDOFactories.contains(factoryClassName)) {
+            try {                
+                Field field = factoryClass.getField("INSTANCE");
+                Object factoryImpl = field.get(null);
+                Method method = factoryImpl.getClass().getMethod("register", new Class[] {HelperContext.class});
+                method.invoke(factoryImpl, new Object[] {this.helperContext});
+            } catch (Exception e) { 
+                e.printStackTrace(); 
+                System.out.println("");
+                System.out.println("Fatal error registering factoryClassName = " + factoryClassName);
+                throw new IllegalArgumentException(e); 
+            }
+            registeredSDOFactories.add(factoryClassName);
+        }
     }
 }

@@ -36,10 +36,9 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.ws.commons.schema.XmlSchema;
-import org.apache.ws.java2wsdl.Java2WSDLConstants;
 import org.codehaus.jam.JMethod;
 
-public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
+public class TuscanyJava2OMBuilder implements TuscanyJava2WSDLConstants {
 
     private TuscanyTypeTable typeTable = null;
 
@@ -79,45 +78,31 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
 
     public OMElement generateOM() throws Exception {
         OMFactory fac = OMAbstractFactory.getOMFactory();
-        wsdl = fac.createOMNamespace(WSDL_NAMESPACE,
-                                     DEFAULT_WSDL_NAMESPACE_PREFIX);
-        OMElement ele = fac.createOMElement("definitions",
-                                            wsdl);
+        wsdl = fac.createOMNamespace(WSDL_NAMESPACE, DEFAULT_WSDL_NAMESPACE_PREFIX);
+        OMElement ele = fac.createOMElement("definitions", wsdl);
 
-        ele.addAttribute("targetNamespace",
-                         generationParams.getTargetNamespace(),
-                         null);
-        generateNamespaces(fac,
-                           ele);
-        generateTypes(fac,
-                      ele);
-        generateMessages(fac,
-                         ele);
-        generatePortType(fac,
-                         ele);
-        generateBinding(fac,
-                        ele);
-        generateService(fac,
-                        ele);
+        ele.addAttribute("targetNamespace", generationParams.getTargetNamespace(), null);
+        generateNamespaces(fac, ele);
+        generateTypes(fac, ele);
+        generateMessages(fac, ele);
+        generatePortType(fac, ele);
+        generateBinding(fac, ele);
+        generateService(fac, ele);
         return ele;
     }
 
     private void generateNamespaces(OMFactory fac, OMElement defintions) throws Exception {
-        soap = defintions.declareNamespace(URI_WSDL11_SOAP,
-                                           SOAP11_PREFIX);
-        tns = defintions.declareNamespace(generationParams.getTargetNamespace(),
-                                          generationParams.getTargetNamespacePrefix());
-        soap12 = defintions.declareNamespace(URI_WSDL12_SOAP,
-                                             SOAP12_PREFIX);
-        http = defintions.declareNamespace(HTTP_NAMESPACE,
-                                           HTTP_PREFIX);
-        mime = defintions.declareNamespace(MIME_NAMESPACE,
-                                           MIME_PREFIX);
+        soap = defintions.declareNamespace(URI_WSDL11_SOAP, SOAP11_PREFIX);
+        tns =
+            defintions.declareNamespace(generationParams.getTargetNamespace(), generationParams
+                .getTargetNamespacePrefix());
+        soap12 = defintions.declareNamespace(URI_WSDL12_SOAP, SOAP12_PREFIX);
+        http = defintions.declareNamespace(HTTP_NAMESPACE, HTTP_PREFIX);
+        mime = defintions.declareNamespace(MIME_NAMESPACE, MIME_PREFIX);
     }
 
     private void generateTypes(OMFactory fac, OMElement defintions) throws Exception {
-        OMElement wsdlTypes = fac.createOMElement("types",
-                                                  wsdl);
+        OMElement wsdlTypes = fac.createOMElement("types", wsdl);
         StringWriter writer = new StringWriter();
 
         // wrap the Schema elements with this start and end tags to create a
@@ -127,17 +112,15 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
         writeSchemas(writer);
         writer.write("</xmlSchemas>");
 
-        XMLStreamReader xmlReader = XMLInputFactory.newInstance()
-                                                   .createXMLStreamReader(new ByteArrayInputStream(writer.toString()
-                                                                                                         .getBytes()));
+        XMLStreamReader xmlReader =
+            XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(writer.toString().getBytes()));
 
         StAXOMBuilder staxOMBuilders = new StAXOMBuilder(fac, xmlReader);
         OMElement documentElement = staxOMBuilders.getDocumentElement();
 
-        
         Iterator iterator = documentElement.getChildElements();
         while (iterator.hasNext()) {
-            wsdlTypes.addChild((OMNode) iterator.next());
+            wsdlTypes.addChild((OMNode)iterator.next());
         }
         defintions.addChild(wsdlTypes);
     }
@@ -145,12 +128,13 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
     private void writeSchemas(StringWriter writer) {
         Iterator iterator = schemaCollection.iterator();
         XmlSchema xmlSchema = null;
-        
+
         while (iterator.hasNext()) {
-            xmlSchema = (XmlSchema) iterator.next();
+            xmlSchema = (XmlSchema)iterator.next();
             // typeIterator = xmlSchema.getSchemaTypes().getValues();
             /*
-             * while (typeIterator.hasNext()) { xmlSchema.getItems().add((XmlSchemaObject) typeIterator.next()); }
+             * while (typeIterator.hasNext()) {
+             * xmlSchema.getItems().add((XmlSchemaObject) typeIterator.next()); }
              */
             xmlSchema.write(writer);
         }
@@ -166,65 +150,49 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
 
             if (jmethod.isPublic()) {
                 // Request Message
-                OMElement requestMessge = fac.createOMElement(MESSAGE_LOCAL_NAME,
-                                                              wsdl);
-                requestMessge.addAttribute(ATTRIBUTE_NAME,
-                                           jmethod.getSimpleName() + MESSAGE_SUFFIX,
-                                           null);
+                OMElement requestMessge = fac.createOMElement(MESSAGE_LOCAL_NAME, wsdl);
+                requestMessge.addAttribute(ATTRIBUTE_NAME, jmethod.getSimpleName() + MESSAGE_SUFFIX, null);
                 definitions.addChild(requestMessge);
 
                 // only if a type for the message part has already been defined
-                if ((messagePartType = typeTable.getComplexSchemaTypeName(generationParams.getSchemaTargetNamespace(),
-                                                                          jmethod.getSimpleName())) != null) {
+                if ((messagePartType =
+                    typeTable.getComplexSchemaTypeName(generationParams.getSchemaTargetNamespace(), jmethod
+                        .getSimpleName())) != null) {
                     namespaceURI = messagePartType.getNamespaceURI();
                     // avoid duplicate namespaces
-                    if ((namespacePrefix = (String) namespaceMap.get(namespaceURI)) == null) {
+                    if ((namespacePrefix = (String)namespaceMap.get(namespaceURI)) == null) {
                         namespacePrefix = generatePrefix();
-                        namespaceMap.put(namespaceURI,
-                                         namespacePrefix);
+                        namespaceMap.put(namespaceURI, namespacePrefix);
                     }
 
-                    OMElement requestPart = fac.createOMElement(PART_ATTRIBUTE_NAME,
-                                                                wsdl);
+                    OMElement requestPart = fac.createOMElement(PART_ATTRIBUTE_NAME, wsdl);
                     requestMessge.addChild(requestPart);
-                    requestPart.addAttribute(ATTRIBUTE_NAME,
-                                             "part1",
-                                             null);
+                    requestPart.addAttribute(ATTRIBUTE_NAME, "part1", null);
 
-                    requestPart.addAttribute(ELEMENT_ATTRIBUTE_NAME,
-                                             namespacePrefix + COLON_SEPARATOR
-                                                     + jmethod.getSimpleName(),
-                                             null);
+                    requestPart.addAttribute(ELEMENT_ATTRIBUTE_NAME, namespacePrefix + COLON_SEPARATOR
+                        + jmethod.getSimpleName(), null);
                 }
 
                 // only if a type for the message part has already been defined
-                if ((messagePartType = typeTable.getComplexSchemaTypeName(generationParams.getSchemaTargetNamespace(),
-                                                                          jmethod.getSimpleName()
-                                                                                  + RESPONSE)) != null) {
+                if ((messagePartType =
+                    typeTable.getComplexSchemaTypeName(generationParams.getSchemaTargetNamespace(), jmethod
+                        .getSimpleName() + RESPONSE)) != null) {
                     namespaceURI = messagePartType.getNamespaceURI();
-                    if ((namespacePrefix = (String) namespaceMap.get(namespaceURI)) == null) {
+                    if ((namespacePrefix = (String)namespaceMap.get(namespaceURI)) == null) {
                         namespacePrefix = generatePrefix();
-                        namespaceMap.put(namespaceURI,
-                                         namespacePrefix);
+                        namespaceMap.put(namespaceURI, namespacePrefix);
                     }
                     // Response Message
-                    OMElement responseMessge = fac.createOMElement(MESSAGE_LOCAL_NAME,
-                                                                   wsdl);
-                    responseMessge.addAttribute(ATTRIBUTE_NAME,
-                                                jmethod.getSimpleName() + RESPONSE_MESSAGE,
-                                                null);
+                    OMElement responseMessge = fac.createOMElement(MESSAGE_LOCAL_NAME, wsdl);
+                    responseMessge.addAttribute(ATTRIBUTE_NAME, jmethod.getSimpleName() + RESPONSE_MESSAGE, null);
                     definitions.addChild(responseMessge);
-                    OMElement responsePart = fac.createOMElement(PART_ATTRIBUTE_NAME,
-                                                                 wsdl);
+                    OMElement responsePart = fac.createOMElement(PART_ATTRIBUTE_NAME, wsdl);
                     responseMessge.addChild(responsePart);
-                    responsePart.addAttribute(ATTRIBUTE_NAME,
-                                              "part1",
-                                              null);
+                    responsePart.addAttribute(ATTRIBUTE_NAME, "part1", null);
 
-                    responsePart.addAttribute(ELEMENT_ATTRIBUTE_NAME,
-                                              namespacePrefix + COLON_SEPARATOR
-                                                      + jmethod.getSimpleName() + RESPONSE,
-                                              null);
+                    responsePart.addAttribute(ELEMENT_ATTRIBUTE_NAME, namespacePrefix + COLON_SEPARATOR
+                        + jmethod.getSimpleName()
+                        + RESPONSE, null);
                 }
             }
         }
@@ -232,9 +200,8 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
         // now add these unique namespaces to the the definitions element
         Enumeration enumeration = namespaceMap.keys();
         while (enumeration.hasMoreElements()) {
-            namespaceURI = (String) enumeration.nextElement();
-            definitions.declareNamespace(namespaceURI,
-                                         (String) namespaceMap.get(namespaceURI));
+            namespaceURI = (String)enumeration.nextElement();
+            definitions.declareNamespace(namespaceURI, (String)namespaceMap.get(namespaceURI));
         }
     }
 
@@ -245,39 +212,31 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
         JMethod jmethod = null;
         OMElement operation = null;
         OMElement message = null;
-        OMElement portType = fac.createOMElement(PORT_TYPE_LOCAL_NAME,
-                                                 wsdl);
+        OMElement portType = fac.createOMElement(PORT_TYPE_LOCAL_NAME, wsdl);
         defintions.addChild(portType);
-        portType.addAttribute(ATTRIBUTE_NAME,
-                              generationParams.getServiceName() + PORT_TYPE_SUFFIX,
-                              null);
+        // changed default PortType name to match Java interface name
+        // instead of appending "PortType".
+        portType.addAttribute(ATTRIBUTE_NAME, generationParams.getServiceName(), null);
         // adding message refs
         for (int i = 0; i < method.length; i++) {
             jmethod = method[i];
 
             if (jmethod.isPublic()) {
-                operation = fac.createOMElement(OPERATION_LOCAL_NAME,
-                                                wsdl);
+                operation = fac.createOMElement(OPERATION_LOCAL_NAME, wsdl);
                 portType.addChild(operation);
-                operation.addAttribute(ATTRIBUTE_NAME,
-                                       jmethod.getSimpleName(),
-                                       null);
+                operation.addAttribute(ATTRIBUTE_NAME, jmethod.getSimpleName(), null);
 
-                message = fac.createOMElement(IN_PUT_LOCAL_NAME,
-                                              wsdl);
-                message.addAttribute(MESSAGE_LOCAL_NAME,
-                                     tns.getPrefix() + COLON_SEPARATOR + jmethod.getSimpleName()
-                                             + MESSAGE_SUFFIX,
-                                     null);
+                message = fac.createOMElement(IN_PUT_LOCAL_NAME, wsdl);
+                message.addAttribute(MESSAGE_LOCAL_NAME, tns.getPrefix() + COLON_SEPARATOR
+                    + jmethod.getSimpleName()
+                    + MESSAGE_SUFFIX, null);
                 operation.addChild(message);
 
                 if (!jmethod.getReturnType().isVoidType()) {
-                    message = fac.createOMElement(OUT_PUT_LOCAL_NAME,
-                                                  wsdl);
-                    message.addAttribute(MESSAGE_LOCAL_NAME,
-                                         tns.getPrefix() + COLON_SEPARATOR
-                                                 + jmethod.getSimpleName() + RESPONSE_MESSAGE,
-                                         null);
+                    message = fac.createOMElement(OUT_PUT_LOCAL_NAME, wsdl);
+                    message.addAttribute(MESSAGE_LOCAL_NAME, tns.getPrefix() + COLON_SEPARATOR
+                        + jmethod.getSimpleName()
+                        + RESPONSE_MESSAGE, null);
                     operation.addChild(message);
                 }
             }
@@ -289,22 +248,16 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
      * Generate the service
      */
     public void generateService(OMFactory fac, OMElement defintions) {
-        OMElement service = fac.createOMElement(SERVICE_LOCAL_NAME,
-                                                wsdl);
+        OMElement service = fac.createOMElement(SERVICE_LOCAL_NAME, wsdl);
         defintions.addChild(service);
-        service.addAttribute(ATTRIBUTE_NAME,
-                             generationParams.getServiceName(),
-                             null);
-        OMElement port = fac.createOMElement(PORT,
-                                             wsdl);
+        // Add "WebService" to the end of WSDL service name
+        service.addAttribute(ATTRIBUTE_NAME, generationParams.getServiceName() + WSDL_SERVICE_SUFFIX, null);
+        OMElement port = fac.createOMElement(PORT, wsdl);
         service.addChild(port);
-        port.addAttribute(ATTRIBUTE_NAME,
-                          generationParams.getServiceName() + SOAP11PORT,
-                          null);
-        port.addAttribute(BINDING_LOCAL_NAME,
-                          tns.getPrefix() + COLON_SEPARATOR + generationParams.getServiceName()
-                                  + BINDING_NAME_SUFFIX,
-                          null);
+        port.addAttribute(ATTRIBUTE_NAME, generationParams.getServiceName() + SOAP11PORT, null);
+        port.addAttribute(BINDING_LOCAL_NAME, tns.getPrefix() + COLON_SEPARATOR
+            + generationParams.getServiceName()
+            + BINDING_NAME_SUFFIX, null);
         addExtensionElement(fac,
                             port,
                             soap,
@@ -312,16 +265,12 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
                             LOCATION,
                             generationParams.getLocationUri() + generationParams.getServiceName());
 
-        port = fac.createOMElement(PORT,
-                                   wsdl);
+        port = fac.createOMElement(PORT, wsdl);
         service.addChild(port);
-        port.addAttribute(ATTRIBUTE_NAME,
-                          generationParams.getServiceName() + SOAP12PORT,
-                          null);
-        port.addAttribute(BINDING_LOCAL_NAME,
-                          tns.getPrefix() + COLON_SEPARATOR + generationParams.getServiceName()
-                                  + SOAP12BINDING_NAME_SUFFIX,
-                          null);
+        port.addAttribute(ATTRIBUTE_NAME, generationParams.getServiceName() + SOAP12PORT, null);
+        port.addAttribute(BINDING_LOCAL_NAME, tns.getPrefix() + COLON_SEPARATOR
+            + generationParams.getServiceName()
+            + SOAP12BINDING_NAME_SUFFIX, null);
         addExtensionElement(fac,
                             port,
                             soap12,
@@ -334,38 +283,25 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
      * Generate the bindings
      */
     private void generateBinding(OMFactory fac, OMElement defintions) throws Exception {
-        generateSoap11Binding(fac,
-                              defintions);
-        generateSoap12Binding(fac,
-                              defintions);
+        generateSoap11Binding(fac, defintions);
+        generateSoap12Binding(fac, defintions);
     }
 
     private void generateSoap11Binding(OMFactory fac, OMElement defintions) throws Exception {
-        OMElement binding = fac.createOMElement(BINDING_LOCAL_NAME,
-                                                wsdl);
+        OMElement binding = fac.createOMElement(BINDING_LOCAL_NAME, wsdl);
         defintions.addChild(binding);
-        binding.addAttribute(ATTRIBUTE_NAME,
-                             generationParams.getServiceName() + BINDING_NAME_SUFFIX,
-                             null);
-        binding.addAttribute("type",
-                             tns.getPrefix() + COLON_SEPARATOR + generationParams.getServiceName()
-                                     + PORT_TYPE_SUFFIX,
-                             null);
+        binding.addAttribute(ATTRIBUTE_NAME, generationParams.getServiceName() + BINDING_NAME_SUFFIX, null);
+        // changed default PortType name to match Java interface name
+        // instead of appending "PortType".
+        binding.addAttribute("type", tns.getPrefix() + COLON_SEPARATOR + generationParams.getServiceName(), null);
 
-        addExtensionElement(fac,
-                            binding,
-                            soap,
-                            BINDING_LOCAL_NAME,
-                            TRANSPORT,
-                            TRANSPORT_URI,
-                            STYLE,
-                            generationParams.getStyle());
+        addExtensionElement(fac, binding, soap, BINDING_LOCAL_NAME, TRANSPORT, TRANSPORT_URI, STYLE, generationParams
+            .getStyle());
 
         for (int i = 0; i < method.length; i++) {
             JMethod jmethod = method[i];
             if (jmethod.isPublic()) {
-                OMElement operation = fac.createOMElement(OPERATION_LOCAL_NAME,
-                                                          wsdl);
+                OMElement operation = fac.createOMElement(OPERATION_LOCAL_NAME, wsdl);
                 binding.addChild(operation);
 
                 addExtensionElement(fac,
@@ -376,12 +312,9 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
                                     URN_PREFIX + COLON_SEPARATOR + jmethod.getSimpleName(),
                                     STYLE,
                                     generationParams.getStyle());
-                operation.addAttribute(ATTRIBUTE_NAME,
-                                       jmethod.getSimpleName(),
-                                       null);
+                operation.addAttribute(ATTRIBUTE_NAME, jmethod.getSimpleName(), null);
 
-                OMElement input = fac.createOMElement(IN_PUT_LOCAL_NAME,
-                                                      wsdl);
+                OMElement input = fac.createOMElement(IN_PUT_LOCAL_NAME, wsdl);
                 addExtensionElement(fac,
                                     input,
                                     soap,
@@ -393,8 +326,7 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
                 operation.addChild(input);
 
                 if (!jmethod.getReturnType().isVoidType()) {
-                    OMElement output = fac.createOMElement(OUT_PUT_LOCAL_NAME,
-                                                           wsdl);
+                    OMElement output = fac.createOMElement(OUT_PUT_LOCAL_NAME, wsdl);
                     addExtensionElement(fac,
                                         output,
                                         soap,
@@ -410,35 +342,23 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
     }
 
     private void generateSoap12Binding(OMFactory fac, OMElement defintions) throws Exception {
-        OMElement binding = fac.createOMElement(BINDING_LOCAL_NAME,
-                                                wsdl);
+        OMElement binding = fac.createOMElement(BINDING_LOCAL_NAME, wsdl);
         defintions.addChild(binding);
-        binding.addAttribute(ATTRIBUTE_NAME,
-                             generationParams.getServiceName() + SOAP12BINDING_NAME_SUFFIX,
-                             null);
-        binding.addAttribute("type",
-                             tns.getPrefix() + COLON_SEPARATOR + generationParams.getServiceName()
-                                     + PORT_TYPE_SUFFIX,
-                             null);
+        binding.addAttribute(ATTRIBUTE_NAME, generationParams.getServiceName() + SOAP12BINDING_NAME_SUFFIX, null);
+        // changed default PortType name to match Java interface name
+        // instead of appending "PortType".
+        binding.addAttribute("type", tns.getPrefix() + COLON_SEPARATOR + generationParams.getServiceName(), null);
 
-        addExtensionElement(fac,
-                            binding,
-                            soap12,
-                            BINDING_LOCAL_NAME,
-                            TRANSPORT,
-                            TRANSPORT_URI,
-                            STYLE,
-                            generationParams.getStyle());
+        addExtensionElement(fac, binding, soap12, BINDING_LOCAL_NAME, TRANSPORT, TRANSPORT_URI, STYLE, generationParams
+            .getStyle());
 
         for (int i = 0; i < method.length; i++) {
             JMethod jmethod = method[i];
 
             if (jmethod.isPublic()) {
-                OMElement operation = fac.createOMElement(OPERATION_LOCAL_NAME,
-                                                          wsdl);
+                OMElement operation = fac.createOMElement(OPERATION_LOCAL_NAME, wsdl);
                 binding.addChild(operation);
-                operation.declareNamespace(URI_WSDL12_SOAP,
-                                           SOAP12_PREFIX);
+                operation.declareNamespace(URI_WSDL12_SOAP, SOAP12_PREFIX);
 
                 addExtensionElement(fac,
                                     operation,
@@ -448,12 +368,9 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
                                     URN_PREFIX + COLON_SEPARATOR + jmethod.getSimpleName(),
                                     STYLE,
                                     generationParams.getStyle());
-                operation.addAttribute(ATTRIBUTE_NAME,
-                                       jmethod.getSimpleName(),
-                                       null);
+                operation.addAttribute(ATTRIBUTE_NAME, jmethod.getSimpleName(), null);
 
-                OMElement input = fac.createOMElement(IN_PUT_LOCAL_NAME,
-                                                      wsdl);
+                OMElement input = fac.createOMElement(IN_PUT_LOCAL_NAME, wsdl);
                 addExtensionElement(fac,
                                     input,
                                     soap12,
@@ -465,8 +382,7 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
                 operation.addChild(input);
 
                 if (!jmethod.getReturnType().isVoidType()) {
-                    OMElement output = fac.createOMElement(OUT_PUT_LOCAL_NAME,
-                                                           wsdl);
+                    OMElement output = fac.createOMElement(OUT_PUT_LOCAL_NAME, wsdl);
                     addExtensionElement(fac,
                                         output,
                                         soap12,
@@ -489,15 +405,10 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
                                      String att1Value,
                                      String att2Name,
                                      String att2Value) {
-        OMElement soapbinding = fac.createOMElement(name,
-                                                    namespace);
+        OMElement soapbinding = fac.createOMElement(name, namespace);
         element.addChild(soapbinding);
-        soapbinding.addAttribute(att1Name,
-                                 att1Value,
-                                 null);
-        soapbinding.addAttribute(att2Name,
-                                 att2Value,
-                                 null);
+        soapbinding.addAttribute(att1Name, att1Value, null);
+        soapbinding.addAttribute(att2Name, att2Value, null);
     }
 
     private void addExtensionElement(OMFactory fac,
@@ -506,16 +417,12 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
                                      String name,
                                      String att1Name,
                                      String att1Value) {
-        OMElement soapbinding = fac.createOMElement(name,
-                                                    namespace);
+        OMElement soapbinding = fac.createOMElement(name, namespace);
         element.addChild(soapbinding);
-        soapbinding.addAttribute(att1Name,
-                                 att1Value,
-                                 null);
+        soapbinding.addAttribute(att1Name, att1Value, null);
     }
 
     private String generatePrefix() {
         return NAMESPACE_PREFIX + prefixCount++;
     }
-
 }
