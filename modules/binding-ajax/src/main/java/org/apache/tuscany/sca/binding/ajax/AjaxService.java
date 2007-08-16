@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.binding.ajax;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.core.invocation.JDKProxyService;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -52,9 +54,12 @@ public class AjaxService implements ComponentLifecycle {
         }
         
         Class<?> type = ((JavaInterface)rcs.getInterfaceContract().getInterface()).getJavaClass();
-        Object instance = rc.createSelfReference(type).getService();
 
-        servlet.addService(binding.getName(), type, instance);
+        // Create a Java proxy to the target service
+        ProxyFactory proxyFactory = new JDKProxyService();
+        Object proxy = proxyFactory.createProxy(type, rcs.getRuntimeWire(binding));
+
+        servlet.addService(binding.getName(), type, proxy);
 
         servletHost.addServletMapping(SERVLET_PATH, servlet);
     }
