@@ -20,45 +20,22 @@
 package org.apache.tuscany.sca.policy.xml;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.policy.ExtensionTypeFactory;
-import org.apache.tuscany.sca.policy.ImplementationType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 
 /* 
  * Processor for handling xml models of ImplementationType meta data definitions
  */
-public class ImplementationTypeProcessor extends ExtensionTypeProcessor<ImplementationType> {
+public class ImplementationTypeProcessor extends IntentAttachPointProcessor {
 
-    public ImplementationTypeProcessor(PolicyFactory policyFactory, ExtensionTypeFactory extnTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(policyFactory, extnTypeFactory, extensionProcessor);
+    public ImplementationTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory intentAttachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
+        super(policyFactory, intentAttachPointTypeFactory, extensionProcessor);
     }
 
-    public ImplementationType read(XMLStreamReader reader) throws ContributionReadException {
-        QName type = getQName(reader, TYPE);
-        
-        if ( type != null ) {
-            ImplementationType implType = extnTypeFactory.createImplementationType();
-            implType.setTypeName(type);
-            
-            readAlwaysProvidedIntents(implType, reader);
-            readMayProvideIntents(implType, reader);
-            return implType;
-        } else { 
-            throw new ContributionReadException("Required attribute '" + TYPE + 
-                                                "' missing from ImplementationType Definition");
-        }
-    }
-    
     public QName getArtifactType() {
         return IMPLEMENTATION_TYPE_QNAME;
-    }
-    
-    public Class<ImplementationType> getModelType() {
-        return ImplementationType.class;
     }
 }
