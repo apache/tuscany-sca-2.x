@@ -21,7 +21,7 @@ package bigbank.account.feed;
 import java.io.InputStream;
 import java.util.Collections;
 
-import org.apache.tuscany.sca.binding.feed.EditableCollection;
+import org.apache.tuscany.sca.binding.feed.Collection;
 import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
@@ -37,8 +37,8 @@ import com.sun.syndication.feed.atom.Link;
  * @version $$Rev$$ $$Date$$
  */
 
-@Service(EditableCollection.class)
-public class AccountFeedImpl implements EditableCollection {
+@Service(Collection.class)
+public class AccountFeedImpl implements Collection {
 
     @Reference
     protected AccountService accountService;

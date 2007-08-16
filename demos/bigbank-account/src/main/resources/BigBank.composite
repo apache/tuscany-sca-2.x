@@ -4,29 +4,31 @@
 	xmlns:bb="http://bigbank"
 	name="BigBank">
 
-    <service name="AccountWebService" promote="AccountServiceComponent">
-        <interface.java interface="bigbank.account.AccountService"/>
-		<binding.ws wsdlElement="http://bigbank#wsdl.port(AccountService/AccountServiceSoap)"/>
-    </service>
-
-   	<service name="AccountFeed" promote="AccountFeedComponent">
-   		<binding.rss uri="/rss"/>
-   	</service>
-
-   	<service name="AccountFeed" promote="AccountFeedComponent">
-   		<binding.atom uri="/atom"/>
-   	</service>
-
     <component name="AccountServiceComponent">
 	    <service name="AccountService">
 	        <binding.jsonrpc uri="/AccountJSONService"/>
+			<binding.ws wsdlElement="http://bigbank#wsdl.port(AccountService/AccountServiceSoap)"/>
+			<binding.sca/>
 	    </service>
+
         <implementation.java class="bigbank.account.AccountServiceImpl"/>
+
         <reference name="accountDataService" target="AccountDataServiceComponent"/>
+	    <reference name="calculatorService">
+	    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	   	</reference>
+	    <reference name="stockQuoteService">
+	        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
+	    </reference>
+	   	
         <property name="currency">EURO</property>
     </component>
 
     <component name="AccountFeedComponent">
+	   	<service name="Collection">
+	   		<binding.rss uri="/rss"/>
+	   		<binding.atom uri="/atom"/>
+	   	</service>
         <implementation.java class="bigbank.account.feed.AccountFeedImpl"/>
         <reference name="accountService" target="AccountServiceComponent"/>
     </component>
@@ -41,13 +43,5 @@
 	   	</service>
         <implementation.resource location="web"/>
     </component>
-
-    <reference name="CalculatorReference" promote="AccountServiceComponent/calculatorService">
-    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
-   	</reference> 
-   	
-    <reference name="StockQuoteReference" promote="AccountServiceComponent/stockQuoteService">
-        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
-    </reference>
 
 </composite>
