@@ -22,11 +22,14 @@ package org.apache.tuscany.sca.binding.jsonrpc;
 import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.core.invocation.JDKProxyService;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
 /**
@@ -66,10 +69,15 @@ public class JSONRPCService implements ComponentLifecycle {
 
     public void start() {
         
-        // Create and register a servlet for this service
+        // Determine the service business interface
         Class<?> serviceInterface = getTargetJavaClass(service.getInterfaceContract().getInterface());
-        Object instance = component.createSelfReference(serviceInterface).getService();
-        JSONRPCServiceServlet serviceServlet = new JSONRPCServiceServlet(binding.getName(), serviceInterface, instance);
+
+        // Create a Java proxy to the target service
+        ProxyFactory proxyFactory = new JDKProxyService();
+        Object proxy = proxyFactory.createProxy(serviceInterface, service.getRuntimeWire(binding));
+        
+        // Create and register a servlet for this service
+        JSONRPCServiceServlet serviceServlet = new JSONRPCServiceServlet(binding.getName(), serviceInterface, proxy);
         int port;
         servletHost.addServletMapping(binding.getURI(), serviceServlet);
         URI uri = URI.create(binding.getURI());
