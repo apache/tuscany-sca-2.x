@@ -26,10 +26,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.BindingType;
-import org.apache.tuscany.sca.policy.ExtensionType;
-import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
@@ -53,14 +51,14 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
             definedPolicySets.put(policySet.getName(), policySet);
         }
         
-        Map<QName, BindingType> definedBindingTypes = new HashMap<QName, BindingType>();
-        for (BindingType bindingType : scaDefns.getBindingTypes()) {
-            definedBindingTypes.put(bindingType.getTypeName(), bindingType);
+        Map<QName, IntentAttachPointType> definedBindingTypes = new HashMap<QName, IntentAttachPointType>();
+        for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
+            definedBindingTypes.put(bindingType.getName(), bindingType);
         }
         
-        Map<QName, ImplementationType> definedImplTypes = new HashMap<QName, ImplementationType>();
-        for (ImplementationType implType : scaDefns.getImplementationTypes()) {
-            definedImplTypes.put(implType.getTypeName(), implType);
+        Map<QName, IntentAttachPointType> definedImplTypes = new HashMap<QName, IntentAttachPointType>();
+        for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
+            definedImplTypes.put(implType.getName(), implType);
         }
         
         buildPolicyIntents(scaDefns, definedIntents);
@@ -70,9 +68,9 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
     
     private void buildBindingTypes(SCADefinitions scaDefns, 
-                                   Map<QName, BindingType> definedBindingTypes, 
+                                   Map<QName, IntentAttachPointType> definedBindingTypes, 
                                    Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
-        for (BindingType bindingType : scaDefns.getBindingTypes()) {
+        for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
             buildAlwaysProvidedIntents(bindingType, definedIntents);
             buildMayProvideIntents(bindingType, definedIntents);
         }
@@ -80,9 +78,9 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
     
     private void buildImplementationTypes(SCADefinitions scaDefns, 
-                                   Map<QName, ImplementationType> definedImplTypes, 
+                                   Map<QName, IntentAttachPointType> definedImplTypes, 
                                    Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
-        for (ImplementationType implType : scaDefns.getImplementationTypes()) {
+        for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
             buildAlwaysProvidedIntents(implType, definedIntents);
             buildMayProvideIntents(implType, definedIntents);
         }
@@ -166,7 +164,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
     
     
-    private void buildAlwaysProvidedIntents(ExtensionType extensionType,
+    private void buildAlwaysProvidedIntents(IntentAttachPointType extensionType,
                                             Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
         if (extensionType != null) {
             // resolve all provided intents
@@ -192,7 +190,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
         }
     }
     
-    private void buildMayProvideIntents(ExtensionType extensionType,
+    private void buildMayProvideIntents(IntentAttachPointType extensionType,
                                             Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
         if (extensionType != null) {
             // resolve all provided intents

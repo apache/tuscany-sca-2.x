@@ -36,9 +36,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.policy.BindingType;
-import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.SCADefinitions;
@@ -139,11 +138,14 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
                                     scaDefns.getPolicyIntents().add((Intent)extension);
                                 } else if ( extension instanceof PolicySet ) {
                                     scaDefns.getPolicySets().add((PolicySet)extension);
-                                } else if ( extension instanceof BindingType ) {
-                                    scaDefns.getBindingTypes().add((BindingType)extension);
-                                } else if ( extension instanceof ImplementationType ) {
-                                    scaDefns.getImplementationTypes().add((ImplementationType)extension);
-                                }
+                                } else if ( extension instanceof IntentAttachPointType ) {
+                                    IntentAttachPointType type = (IntentAttachPointType)extension;
+                                    if ( type.getName().getLocalPart().startsWith(BINDING)) {
+                                        scaDefns.getBindingTypes().add((IntentAttachPointType)extension);
+                                    } else if ( type.getName().getLocalPart().startsWith(IMPLEMENTATION)) {
+                                        scaDefns.getImplementationTypes().add((IntentAttachPointType)extension);
+                                    }
+                                } 
                                 
                                 if ( getDefinitionsResolver() != null ) {
                                     getDefinitionsResolver().addModel(extension);
@@ -246,11 +248,11 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
                 extensionProcessor.write(policySet, writer);
             }
             
-            for (BindingType bindingType : scaDefns.getBindingTypes()) {
+            for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
                 extensionProcessor.write(bindingType, writer);
             }
             
-            for (ImplementationType implType : scaDefns.getImplementationTypes()) {
+            for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
                 extensionProcessor.write(implType, writer);
             }
 
@@ -273,12 +275,12 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
         }
         
         for (int count = 0, size = scaDefns.getBindingTypes().size(); count < size; count++) {
-            BindingType bindingType = scaDefns.getBindingTypes().get(count);
+            IntentAttachPointType bindingType = scaDefns.getBindingTypes().get(count);
             extensionProcessor.resolve(bindingType, resolver);
         }
         
         for (int count = 0, size = scaDefns.getImplementationTypes().size(); count < size; count++) {
-            ImplementationType implType = scaDefns.getImplementationTypes().get(count);
+            IntentAttachPointType implType = scaDefns.getImplementationTypes().get(count);
             extensionProcessor.resolve(implType, resolver);
         }
     }

@@ -51,6 +51,8 @@ public interface PolicyConstants {
     String BINDING_TYPE = "bindingType";
     QName IMPLEMENTATION_TYPE_QNAME = new QName(SCA10_NS, IMPLEMENATION_TYPE);
     QName BINDING_TYPE_QNAME = new QName(SCA10_NS, BINDING_TYPE);
+    String BINDING = "binding";
+    String IMPLEMENTATION = "implementation";
     
     QName POLICY_INTENT_QNAME = new QName(SCA10_NS, INTENT);
     QName POLICY_SET_QNAME = new QName(SCA10_NS, POLICY_SET);

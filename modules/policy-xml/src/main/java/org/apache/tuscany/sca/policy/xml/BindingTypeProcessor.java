@@ -20,45 +20,22 @@
 package org.apache.tuscany.sca.policy.xml;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.policy.BindingType;
-import org.apache.tuscany.sca.policy.ExtensionTypeFactory;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 
 /* 
  * Processor for handling xml models of BindingType meta data definitions
  */
-public class BindingTypeProcessor extends ExtensionTypeProcessor<BindingType> {
+public class BindingTypeProcessor extends IntentAttachPointProcessor {
 
-    public BindingTypeProcessor(PolicyFactory policyFactory, ExtensionTypeFactory extnTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(policyFactory, extnTypeFactory, extensionProcessor);
+    public BindingTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory intentAttachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
+        super(policyFactory, intentAttachPointTypeFactory, extensionProcessor);
     }
 
-    public BindingType read(XMLStreamReader reader) throws ContributionReadException {
-        QName type = getQName(reader, TYPE);
-        
-        if ( type != null ) {
-            BindingType bindingType = extnTypeFactory.createBindingType();
-            bindingType.setTypeName(type);
-            
-            readAlwaysProvidedIntents(bindingType, reader);
-            readMayProvideIntents(bindingType, reader);
-            return bindingType;
-        } else { 
-            throw new ContributionReadException("Required attribute '" + TYPE + 
-                                                "' missing from BindingType Definition");
-        }
-    }
-    
     public QName getArtifactType() {
         return BINDING_TYPE_QNAME;
-    }
-    
-    public Class<BindingType> getModelType() {
-        return BindingType.class;
     }
 }
