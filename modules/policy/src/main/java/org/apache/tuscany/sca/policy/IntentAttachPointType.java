@@ -22,24 +22,23 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-
 /**
- * Represents the base ExtensionType for BindingType and ImplementationType
- * and its support of various QoS policies
- * 
+ * Base interface for representing the model type of assembly model objects that can be have policy intents
+ * attached to them.
  */
-public interface ExtensionType {
+public interface IntentAttachPointType {
+
     /**
      * Returns the name of the extension type defined by this instance e.g. implementation.java, binding.ws
      * @return the extension type QName
      */
-    QName getTypeName();
+    QName getName();
     
     /**
      * Sets the name of the extension type
      * @param the name of the extension type
      */
-    void setTypeName(QName type);
+    void setName(QName type);
     
     /**
      * Returns the list of names of policy intents that will always be provided by this Extension Type
@@ -54,7 +53,6 @@ public interface ExtensionType {
      */
     List<Intent> getMayProvideIntents();
     
-
     /**
      * Returns true if the model element is unresolved.
      * 

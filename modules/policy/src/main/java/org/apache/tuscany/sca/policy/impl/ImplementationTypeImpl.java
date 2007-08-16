@@ -18,11 +18,45 @@
  */
 package org.apache.tuscany.sca.policy.impl;
 
-import org.apache.tuscany.sca.policy.ImplementationType;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 
 /**
  * Concrete implementation for a Implementation Type
  * 
  */
-public class ImplementationTypeImpl extends ExtensionTypeImpl implements ImplementationType {
+public class ImplementationTypeImpl implements IntentAttachPointType {
+    private List<Intent> alwaysProvides = new ArrayList<Intent>();
+    private List<Intent> mayProvides = new ArrayList<Intent>();
+    private QName typeName;
+    private boolean unResolved = true;
+    
+    public List<Intent> getAlwaysProvidedIntents() {
+        return alwaysProvides;
+    }
+
+    public List<Intent> getMayProvideIntents() {
+        return mayProvides;
+    }
+
+    public QName getName() {
+        return typeName;
+    }
+
+    public void setName(QName type) {
+        this.typeName = type;
+    }
+    
+    public boolean isUnresolved() {
+        return unResolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unResolved = unresolved;
+    }
 }

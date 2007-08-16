@@ -16,24 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.policy.impl;
-
-import org.apache.tuscany.sca.policy.BindingType;
-import org.apache.tuscany.sca.policy.ExtensionTypeFactory;
-import org.apache.tuscany.sca.policy.ImplementationType;
+package org.apache.tuscany.sca.policy;
 
 /**
- * A Default concrete implementation for an ExtensionsTypeFactory
- *
+ * Factory interface for creating extension types meta data
+ * 
  */
-public class DefaultExtensionTypeFactory implements ExtensionTypeFactory {
+public interface IntentAttachPointTypeFactory {
 
-    public BindingType createBindingType() {
-        return new BindingTypeImpl();
-    }
-
-    public ImplementationType createImplementationType() {
-        return new ImplementationTypeImpl();
-    }
-
+    /**
+     * Creates an ImplementationTypeImpl instance to hold metadata related to
+     * a particular implementation extension in the SCA Domain
+     * 
+     * @return an instance of IntentAttachPointType
+     */
+    IntentAttachPointType createImplementationType();
+    
+    /**
+     * Creates an BindingTypeImpl instance to hold metadata related to
+     * a particular binding extension in the SCA Domain
+     * 
+     * @return an instance of IntentAttachPointType
+     */
+    IntentAttachPointType createBindingType();
 }
