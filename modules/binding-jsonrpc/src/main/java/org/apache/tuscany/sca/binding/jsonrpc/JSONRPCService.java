@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.jsonrpc;
 import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.core.invocation.JDKProxyService;
+import org.apache.tuscany.sca.core.invocation.JDKProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -73,7 +73,7 @@ public class JSONRPCService implements ComponentLifecycle {
         Class<?> serviceInterface = getTargetJavaClass(service.getInterfaceContract().getInterface());
 
         // Create a Java proxy to the target service
-        ProxyFactory proxyFactory = new JDKProxyService();
+        ProxyFactory proxyFactory = new JDKProxyFactory();
         Object proxy = proxyFactory.createProxy(serviceInterface, service.getRuntimeWire(binding));
         
         // Create and register a servlet for this service

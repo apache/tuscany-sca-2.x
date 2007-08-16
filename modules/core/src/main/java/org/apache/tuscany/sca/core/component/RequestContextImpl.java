@@ -54,6 +54,7 @@ public class RequestContextImpl implements RequestContext {
         return ThreadMessageContext.getMessageContext().getTo().getContract().getName();
     }
 
+    @SuppressWarnings("unchecked")
     public <B> ServiceReference<B> getServiceReference() {
         EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();
@@ -62,10 +63,12 @@ public class RequestContextImpl implements RequestContext {
         return (ServiceReference<B>) component.createSelfReference(javaInterface.getJavaClass(), service.getName());
     }
 
+    @SuppressWarnings("unchecked")
     public <CB> CB getCallback() {
         return (CB) getCallbackReference().getService();
     }
 
+    @SuppressWarnings("unchecked")
     public <CB> CallableReference<CB> getCallbackReference() {
         EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();

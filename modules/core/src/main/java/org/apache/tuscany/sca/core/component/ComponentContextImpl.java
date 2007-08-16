@@ -51,6 +51,7 @@ public class ComponentContextImpl implements ComponentContext {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         try {
             return (R) component.cast(target);

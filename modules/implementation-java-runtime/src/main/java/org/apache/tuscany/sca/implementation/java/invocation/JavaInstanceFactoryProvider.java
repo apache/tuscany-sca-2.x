@@ -52,18 +52,17 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospect
  * 
  * @version $Rev$ $Date$
  */
-public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
+public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T> {
     private JavaImplementation definition;
     private ProxyFactory proxyService;
     private URI groupId;
-    private URI name;
 
     private final List<JavaElementImpl> injectionSites;
     private final EventInvoker<T> initInvoker;
     private final EventInvoker<T> destroyInvoker;
     private final Map<JavaElementImpl, Object> factories = new HashMap<JavaElementImpl, Object>();
 
-    public PojoConfiguration(JavaImplementation definition) {
+    public JavaInstanceFactoryProvider(JavaImplementation definition) {
         this.definition = definition;
         this.initInvoker = definition.getInitMethod() == null ? null : new MethodEventInvoker<T>(definition
             .getInitMethod());
@@ -137,6 +136,7 @@ public class PojoConfiguration<T> implements InstanceFactoryProvider<T> {
         return initArgs;
     }
 
+    @SuppressWarnings("unchecked")
     protected Injector<T>[] getInjectors() {
         // work around JDK1.5 issue with allocating generic arrays
         @SuppressWarnings("unchecked")

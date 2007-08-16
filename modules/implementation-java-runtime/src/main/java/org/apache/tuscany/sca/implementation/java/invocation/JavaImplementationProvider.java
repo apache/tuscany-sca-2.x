@@ -50,8 +50,7 @@ import org.osoa.sca.RequestContext;
  */
 public class JavaImplementationProvider implements ScopedImplementationProvider {
     private JavaImplementation implementation;
-    private JavaComponentInfo componentInfo;
-    private ComponentContextFactory componentContextFactory;
+    private JavaComponentContextProvider componentInfo;
     private RequestContextFactory requestContextFactory;
     
     public JavaImplementationProvider(RuntimeComponent component,
@@ -63,15 +62,14 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                       RequestContextFactory requestContextFactory) {
         super();
         this.implementation = implementation;
-        this.componentContextFactory = componentContextFactory;
         this.requestContextFactory = requestContextFactory;
         try {
-            PojoConfiguration configuration = new PojoConfiguration(implementation);
+            JavaInstanceFactoryProvider configuration = new JavaInstanceFactoryProvider(implementation);
             configuration.setProxyFactory(proxyService);
             // FIXME: Group id to be removed
             configuration.setGroupId(URI.create("/"));
             componentInfo =
-                new JavaComponentInfo(component, configuration, dataBindingRegistry, propertyValueObjectFactory,
+                new JavaComponentContextProvider(component, configuration, dataBindingRegistry, propertyValueObjectFactory,
                                       componentContextFactory, requestContextFactory);
 
             Scope scope = getScope();
@@ -116,11 +114,11 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             if (objectFactory == null) {
                 Class<?> type = resource.getElement().getType();
                 if (ComponentContext.class.equals(type)) {
-                    objectFactory = new PojoComponentContextFactory(componentInfo);
+                    objectFactory = new JavaComponentContextFactory(componentInfo);
                 } else if (RequestContext.class.equals(type)) {
                     objectFactory = new RequestContextObjectFactory(requestContextFactory, proxyService);
                 } else if (String.class.equals(type)) {
-                    objectFactory = new PojoComponentNameFactory(componentInfo);
+                    objectFactory = new JavaComponentNameFactory(componentInfo);
                 } else {
                     boolean optional = resource.isOptional();
                     String mappedName = resource.getMappedName();

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -243,8 +242,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private void addReferenceBindingProviders(RuntimeComponent component,
                                                  RuntimeComponentReference reference,
                                                  List<Binding> bindings) {
-        
-        List<Binding> unresolvedTargetBindings = new ArrayList<Binding>();
         
         // create binding providers for all of the bindings for resolved targets
         // or for all of the bindings where no targets are specified

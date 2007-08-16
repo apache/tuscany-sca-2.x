@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.scope.TargetInvocationException;
  * @version $Rev$ $Date$
  */
 public class InvalidConversationSequenceException extends TargetInvocationException {
+    private static final long serialVersionUID = -5744028391493899147L;
 
     public InvalidConversationSequenceException() {
         super();

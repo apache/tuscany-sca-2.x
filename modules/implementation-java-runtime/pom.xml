@@ -34,40 +34,41 @@
             <artifactId>tuscany-core</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>2.1_3</version>
-        </dependency>        
     </dependencies>
 </project>

@@ -18,11 +18,8 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.invocation.Message;

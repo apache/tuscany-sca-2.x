@@ -43,7 +43,7 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
     public DefaultProxyFactoryExtensionPoint(MessageFactory messageFactory, InterfaceContractMapper mapper) {
         this.interfaceContractMapper = mapper;
         this.messageFactory = messageFactory;
-        interfaceFactory = new JDKProxyService(messageFactory, mapper);
+        interfaceFactory = new JDKProxyFactory(messageFactory, mapper);
     }
 
     /**
@@ -79,6 +79,7 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
     /**
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#cast(java.lang.Object)
      */
+    @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         if (interfaceFactory.isProxyClass(target.getClass())) {
             return (R) interfaceFactory.cast(target);
