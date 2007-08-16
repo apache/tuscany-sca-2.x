@@ -18,11 +18,12 @@
  */
 package feed;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.Collection;
+import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -37,12 +38,12 @@ import com.sun.syndication.feed.atom.Person;
  *
  * @version $Rev$ $Date$
  */
-public class AggregatorImpl implements Collection {
+public class AggregatorImpl implements org.apache.tuscany.sca.binding.feed.Collection {
 
     @Reference
-    public Collection feed1;
+    public org.apache.tuscany.sca.binding.feed.Collection feed1;
     @Reference
-    public Collection feed2;
+    public org.apache.tuscany.sca.binding.feed.Collection feed2;
     @Reference(required = false)
     public Sort sort;
 
@@ -81,4 +82,28 @@ public class AggregatorImpl implements Collection {
             feed.setEntries(entries);
         return feed;
     }
+
+    public void delete(String id) throws NotFoundException {
+    }
+
+    public Entry get(String id) throws NotFoundException {
+        return null;
+    }
+
+    public Entry post(Entry entry) {
+        return null;
+    }
+
+    public Entry postMedia(String title, String slug, String contentType, InputStream media) {
+        return null;
+    }
+
+    public Entry put(String id, Entry entry) throws NotFoundException {
+        return null;
+    }
+
+    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
+        return null;
+    }
+    
 }
