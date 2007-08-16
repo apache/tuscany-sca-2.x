@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.EditableCollection;
+import org.apache.tuscany.sca.binding.feed.Collection;
 import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.apache.tuscany.sca.implementation.data.DATA;
 import org.osoa.sca.annotations.Reference;
@@ -37,7 +37,7 @@ import com.sun.syndication.feed.atom.Link;
 import com.sun.syndication.feed.atom.Person;
 import commonj.sdo.DataObject;
 
-public class CompanyFeed implements EditableCollection {
+public class CompanyFeed implements Collection {
     
     @Reference
     protected DATA dataService;

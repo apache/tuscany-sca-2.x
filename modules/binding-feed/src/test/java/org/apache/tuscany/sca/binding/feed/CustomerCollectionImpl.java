@@ -36,7 +36,7 @@ import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 
 @Scope("COMPOSITE")
-public class CustomerCollectionImpl implements EditableCollection {
+public class CustomerCollectionImpl implements Collection {
 
     private Map<String, Entry> entries = new HashMap<String, Entry>();
 
