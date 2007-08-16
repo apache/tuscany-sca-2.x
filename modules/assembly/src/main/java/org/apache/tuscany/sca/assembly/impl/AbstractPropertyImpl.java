@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 
 /**
  * Represents an abstract property.
@@ -40,6 +41,11 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
     private boolean many;
     private boolean mustSupply;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
     /**
      * Constructs a new abstract property.
@@ -95,8 +101,10 @@ public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
         this.xsdType = type;
     }
 
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
+    public IntentAttachPointType getType() {
+        return null;
     }
 
+    public void setType(IntentAttachPointType type) {
+    }
 }

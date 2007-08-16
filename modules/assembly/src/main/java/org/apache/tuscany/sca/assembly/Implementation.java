@@ -29,17 +29,4 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public interface Implementation extends ComponentType {
-    /**
-     * Returns the list of computed/applicable policy intents for this implementation
-     * 
-     * @return list of applicable/computed policy intents
-     */
-    List<Intent> getComputedIntents();
-    
-    /**
-     * Returns the list of computed/applicable policysets for this implementation
-     * 
-     * @return list of applicable/computed policysets
-     */
-    List<PolicySet> getComputedPolicySets();
 }

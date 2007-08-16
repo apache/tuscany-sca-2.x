@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class CompositeIncludeBuilderImpl {
     
@@ -67,8 +68,10 @@ public class CompositeIncludeBuilderImpl {
             composite.getReferences().addAll(clone.getReferences());
             composite.getProperties().addAll(clone.getProperties());
             composite.getWires().addAll(clone.getWires());
-            composite.getPolicySets().addAll(clone.getPolicySets());
-            composite.getRequiredIntents().addAll(clone.getRequiredIntents());
+            if ( composite instanceof PolicySetAttachPoint ) {
+                ((PolicySetAttachPoint)composite).getPolicySets().addAll(((PolicySetAttachPoint)clone).getPolicySets());
+                ((PolicySetAttachPoint)composite).getRequiredIntents().addAll(((PolicySetAttachPoint)clone).getRequiredIntents());
+            }
         }
     
         // Clear the list of includes

@@ -24,11 +24,13 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 
 public class ContractImpl extends BaseImpl implements AbstractContract {
     private InterfaceContract interfaceContract;
     private String name;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
     private boolean isCallback = false;
     
     /**
@@ -63,6 +65,13 @@ public class ContractImpl extends BaseImpl implements AbstractContract {
 
     public void setIsCallback(boolean isCallback) {
         this.isCallback = isCallback;
+    }
+
+    public IntentAttachPointType getType() {
+        return null;
+    }
+
+    public void setType(IntentAttachPointType type) {
     }
 
 }

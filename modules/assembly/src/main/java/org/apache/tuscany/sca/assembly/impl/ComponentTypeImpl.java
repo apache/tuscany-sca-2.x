@@ -27,14 +27,16 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents a component type.
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl extends BaseImpl implements ComponentType, Cloneable {
+public class ComponentTypeImpl extends BaseImpl implements ComponentType, Cloneable, PolicySetAttachPoint {
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
@@ -102,6 +104,13 @@ public class ComponentTypeImpl extends BaseImpl implements ComponentType, Clonea
 
     public List<PolicySet> getPolicySets() {
         return policySets;
+    }
+    
+    public IntentAttachPointType getType() {
+        return null;
+    }
+
+    public void setType(IntentAttachPointType type) {
     }
 
     @Override
