@@ -178,11 +178,19 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
                         implementation.getReferences().addAll(componentType.getReferences());
                         implementation.getProperties().addAll(componentType.getProperties());
                         implementation.setConstrainingType(componentType.getConstrainingType());
-                        if (implementation.getPolicySets() != null) {
-                            implementation.getPolicySets().addAll(componentType.getPolicySets());
-                        }
-                        if (implementation.getRequiredIntents() != null) {
-                            implementation.getRequiredIntents().addAll(componentType.getRequiredIntents());
+                        
+                        if (implementation instanceof PolicySetAttachPoint &&
+                            componentType instanceof PolicySetAttachPoint )
+                        {
+                            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
+                            PolicySetAttachPoint policiedCompType = (PolicySetAttachPoint)componentType;
+                            
+                            if ( policiedImpl.getPolicySets() != null) {
+                                policiedImpl.getPolicySets().addAll(policiedCompType.getPolicySets());
+                            }
+                            if (policiedImpl.getRequiredIntents() != null) {
+                                policiedImpl.getRequiredIntents().addAll(policiedCompType.getRequiredIntents());
+                            }
                         }
                     }
                 }
