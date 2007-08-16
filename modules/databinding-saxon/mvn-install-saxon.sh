@@ -25,10 +25,10 @@ wget http://prdownloads.sourceforge.net/saxon/saxonb8-9j.zip
 unzip saxonb8-9j.zip
 
 mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8.jar
+mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon-dom -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8-dom.jar
 
 #mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon-ant -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8-ant.jar
 #mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon-dom4j -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8-dom4j.jar
-#mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon-dom -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8-dom.jar
 #mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon-jdom -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8-jdom.jar
 #mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon-sql -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8-sql.jar
 #mvn install:install-file -DgroupId=net.sf.saxon -DartifactId=saxon-xom -Dversion=8.9 -Dpackaging=jar -Dfile=/tmp/saxon8-xom.jar
