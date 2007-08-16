@@ -36,7 +36,6 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
     private RuntimeWire wire;
     private ProxyFactory proxyService;
-    private boolean optimizable;
     
     // if the wire targets a conversational service this holds the conversation state 
     private Conversation conversation = null;    

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.java.invocation;
+package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -27,11 +27,6 @@ import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.sca.core.invocation.JDKCallbackInvocationHandler;
-import org.apache.tuscany.sca.core.invocation.JDKInvocationHandler;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
-import org.apache.tuscany.sca.core.invocation.ProxyCreationException;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;

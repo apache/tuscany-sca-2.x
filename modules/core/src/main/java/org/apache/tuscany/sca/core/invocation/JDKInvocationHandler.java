@@ -23,23 +23,36 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.tuscany.sca.core.component.ConversationImpl;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.Conversation;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JDKInvocationHandler extends AbstractInvocationHandler implements InvocationHandler {
-    // private Class<?> proxyInterface;
+public class JDKInvocationHandler implements InvocationHandler {
+    private boolean conversational;
+    private ConversationImpl conversation;
+    private boolean conversationStarted;
+    private MessageFactory messageFactory;
+    private EndpointReference endpoint;
     private RuntimeWire wire;
 
     public JDKInvocationHandler(MessageFactory messageFactory, Class<?> proxyInterface, RuntimeWire wire) {
-        super(messageFactory, false);
+        this.conversational = false;
+        this.messageFactory = messageFactory;
         this.wire = wire;
         if (wire != null) {
             setConversational(wire);
@@ -86,6 +99,7 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
      * 
      * @return true if the operation matches, false if does not
      */
+    @SuppressWarnings("unchecked")
     private static boolean match(Operation operation, Method method) {
         Class<?>[] params = method.getParameterTypes();
         DataType<List<DataType>> inputType = operation.getInputType();
@@ -116,6 +130,122 @@ public class JDKInvocationHandler extends AbstractInvocationHandler implements I
             }
         }
         return null;
+    }
+
+    public void setConversation(Conversation conversation){
+        this.conversation = (ConversationImpl)conversation;
+    }
+
+    public void setEndpoint(EndpointReference endpoint){
+        this.endpoint = endpoint;
+    }
+    
+    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
+
+        Message msgContext = ThreadMessageContext.getMessageContext();
+        Object  msgContextConversationId = msgContext.getConversationID();
+        
+        Message msg = messageFactory.createMessage();
+               
+        // make sure that the conversation id is set so it can be put in the 
+        // outgoing messages. The id can come from one of three places
+        // 1 - Generated here (if the source is stateless)
+        // 2 - Specified by the application (through a service reference)
+        // 3 - from the message context (if the source is stateful)
+        //
+        // TODO - number 3 seems a little shaky as we end up propagating
+        //        a conversationId through the source component. If we don't
+        //        do this though we can't correlate the callback call with the
+        //        current target instance. Currently specifying an application
+        //        conversationId in this case also means that the callback
+        //        can't be correlated with the source component instance 
+        if (conversational) {
+            if (conversation == null){
+                // this is a callback so create a conversation to 
+                // hold onto the conversation state for the lifetime of the
+                // stateful callback
+                conversation = new ConversationImpl();
+            }
+            Object conversationId = conversation.getConversationID();
+            
+            // create a conversation id if one doesn't exist 
+            // already, i.e. the conversation is just starting
+            if ((conversationStarted == false) && (conversationId == null)) {
+                
+                // It the current component is already in a conversation
+                // the use this just in case this message has a stateful 
+                // callback. In which case the callback will come back
+                // to the correct instance. 
+                // TODO - we should always create a unique id here or
+                //        take the application defined conversation id. 
+                //        This implies we have to re-register the component 
+                //        instance against this 
+                if (msgContextConversationId == null) {
+                    conversationId = createConversationID();
+                } else {
+                    conversationId = msgContextConversationId;
+                }
+
+                conversation.setConversationID(conversationId);
+            }
+            //TODO - assuming that the conversation ID is a string here when
+            //       it can be any object that is serializable to XML
+            msg.setConversationID((String)conversationId);
+        }
+
+        Invoker headInvoker = chain.getHeadInvoker();
+        msg.setCorrelationID(msgContext.getCorrelationID());
+        Operation operation = chain.getTargetOperation();
+        msg.setOperation(operation);
+        Interface contract = operation.getInterface();
+        if (contract != null && contract.isConversational()) {
+            ConversationSequence sequence = operation.getConversationSequence();
+            if (sequence == ConversationSequence.CONVERSATION_END) {
+                msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
+                conversationStarted = false;
+                if (conversation != null){
+                    conversation.setConversationID(null);
+                }
+            } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
+                if (conversationStarted) {
+                    msg.setConversationSequence(ConversationSequence.CONVERSATION_CONTINUE);
+                } else {
+                    conversationStarted = true;
+                    msg.setConversationSequence(ConversationSequence.CONVERSATION_START);
+                }
+            }
+        }
+        msg.setBody(args);
+        if (wire.getSource() != null) {
+            msg.setFrom(wire.getSource().getCallbackEndpoint());
+        }
+        if (endpoint != null) {
+            msg.setTo(endpoint);
+        } else {
+            msg.setTo(wire.getTarget());
+        }
+
+        ThreadMessageContext.setMessageContext(msg);
+        try {
+            // dispatch the wire down the chain and get the response
+            Message resp = headInvoker.invoke(msg);
+            Object body = resp.getBody();
+            if (resp.isFault()) {
+                throw (Throwable)body;
+            }
+            return body;
+        } finally {
+            ThreadMessageContext.setMessageContext(msgContext);
+        }
+    }
+
+    /**
+     * Creates a new conversational id
+     * 
+     * @return the conversational id
+     */
+    private String createConversationID() {
+        return UUID.randomUUID().toString();
     }
 
 }

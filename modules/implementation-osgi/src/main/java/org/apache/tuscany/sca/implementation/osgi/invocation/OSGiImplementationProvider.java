@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.core.invocation.JDKProxyService;
+import org.apache.tuscany.sca.core.invocation.JDKProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -768,7 +768,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         }
         
            
-        JDKProxyService proxyService = new JDKProxyService();
+        JDKProxyFactory proxyService = new JDKProxyFactory();
               
         Class<?> proxyInterface = bundle.loadClass(interfaceClass.getName());
                 
@@ -789,7 +789,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         processProperties(implementation.getServiceCallbackProperties(service.getName()), targetProperties);
         targetProperties.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
           
-        JDKProxyService proxyService = new JDKProxyService();
+        JDKProxyFactory proxyService = new JDKProxyFactory();
               
         Class<?> proxyInterface = bundle.loadClass(interfaceClass.getName());
                 

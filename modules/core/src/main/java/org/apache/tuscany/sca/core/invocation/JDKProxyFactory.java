@@ -35,15 +35,15 @@ import org.osoa.sca.Conversation;
  * @version $$Rev$$ $$Date: 2007-04-11 18:59:43 -0700 (Wed, 11 Apr
  *          2007) $$
  */
-public class JDKProxyService implements ProxyFactory {
+public class JDKProxyFactory implements ProxyFactory {
     protected InterfaceContractMapper contractMapper;
     private MessageFactory messageFactory;
 
-    public JDKProxyService() {
+    public JDKProxyFactory() {
         this(new MessageFactoryImpl(), new InterfaceContractMapperImpl());
     }
 
-    public JDKProxyService(MessageFactory messageFactory, InterfaceContractMapper mapper) {
+    public JDKProxyFactory(MessageFactory messageFactory, InterfaceContractMapper mapper) {
         this.contractMapper = mapper;
         this.messageFactory = messageFactory;
     }

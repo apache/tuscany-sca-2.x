@@ -46,13 +46,11 @@ public class JavaTargetInvoker implements TargetInvoker {
     protected InstanceWrapper target;
     protected boolean cacheable;
 
-    private final RuntimeComponent component;
     private final ScopeContainer scopeContainer;
 
     public JavaTargetInvoker(Method operation, RuntimeComponent component) {
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
-        this.component = component;
         this.scopeContainer = ((ScopedRuntimeComponent) component).getScopeContainer();
         stateless = Scope.STATELESS == this.scopeContainer.getScope();
     }
@@ -71,6 +69,7 @@ public class JavaTargetInvoker implements TargetInvoker {
     /**
      * Resolves the target service instance or returns a cached one
      */
+    @SuppressWarnings("unchecked")
     protected InstanceWrapper getInstance(ConversationSequence sequence, Object contextId)
         throws TargetResolutionException, InvalidConversationSequenceException {
         if (sequence == null) {
@@ -97,6 +96,7 @@ public class JavaTargetInvoker implements TargetInvoker {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Object invokeTarget(final Object payload, final ConversationSequence sequence)
         throws InvocationTargetException {
 

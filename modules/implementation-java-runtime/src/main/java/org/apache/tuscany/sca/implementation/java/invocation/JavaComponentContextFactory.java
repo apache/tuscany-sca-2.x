@@ -20,21 +20,21 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import org.apache.tuscany.sca.factory.ObjectCreationException;
 import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
  */
-public class PojoComponentNameFactory implements ObjectFactory<String> {
-    private final JavaComponentInfo component;
+public class JavaComponentContextFactory implements ObjectFactory<ComponentContext> {
+    private final JavaComponentContextProvider component;
 
 
-    public PojoComponentNameFactory(JavaComponentInfo component) {
+    public JavaComponentContextFactory(JavaComponentContextProvider component) {
         this.component = component;
     }
 
 
-    public String getInstance() throws ObjectCreationException {
-        String uri = component.getUri().toString();
-        return uri.substring(uri.lastIndexOf('/')+1);
+    public ComponentContext getInstance() throws ObjectCreationException {
+        return component.getComponentContext();
     }
 }

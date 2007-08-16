@@ -62,11 +62,9 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.PersistenceException;
-import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
@@ -80,22 +78,18 @@ import org.osoa.sca.annotations.ConversationID;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaComponentInfo implements ComponentContextProvider {
+public class JavaComponentContextProvider implements ComponentContextProvider {
     private JavaPropertyValueObjectFactory propertyValueFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
-    private ComponentContextFactory componentContextFactory;
-    private RequestContextFactory requestContextFactory;
     
-    protected RuntimeComponent component;
-    protected PojoConfiguration<?> configuration;
-    protected Scope scope;
-    protected ProxyFactory proxyService;
-    protected URI groupId;
+    private RuntimeComponent component;
+    private JavaInstanceFactoryProvider<?> configuration;
+    private ProxyFactory proxyService;
 
     private final ComponentContext componentContext;
 
-    public JavaComponentInfo(RuntimeComponent component,
-                             PojoConfiguration configuration,
+    public JavaComponentContextProvider(RuntimeComponent component,
+                             JavaInstanceFactoryProvider configuration,
                              DataBindingExtensionPoint dataBindingExtensionPoint,
                              JavaPropertyValueObjectFactory propertyValueObjectFactory,
                              ComponentContextFactory componentContextFactory,
@@ -108,12 +102,9 @@ public class JavaComponentInfo implements ComponentContextProvider {
         } else {
             this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
         }
-        this.groupId = configuration.getGroupId();
         this.component = component;
         this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
-        this.componentContextFactory = componentContextFactory;
-        this.requestContextFactory = requestContextFactory;
     }
   
     public void destroy(Object instance) throws TargetDestructionException {
@@ -309,6 +300,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
         return componentContext;
     }
 
+    @SuppressWarnings("unchecked")
     public <B> B getProperty(Class<B> type, String propertyName) {
         JavaElementImpl element = configuration.getDefinition().getPropertyMembers().get(propertyName);
         Object obj = configuration.getFactories().get(element);
@@ -367,6 +359,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) {
         return (R)proxyService.cast(target);
     }
@@ -383,7 +376,7 @@ public class JavaComponentInfo implements ComponentContextProvider {
         return createInstanceWrapper().getInstance();
     }
 
-    public PojoConfiguration<?> getConfiguration() {
+    public JavaInstanceFactoryProvider<?> getConfiguration() {
         return configuration;
     }
 

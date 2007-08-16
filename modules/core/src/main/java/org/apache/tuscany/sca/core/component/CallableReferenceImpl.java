@@ -19,9 +19,7 @@
 package org.apache.tuscany.sca.core.component;
 
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
-import org.apache.tuscany.sca.core.runtime.RuntimeWireImpl;
 import org.apache.tuscany.sca.factory.ObjectFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
 
