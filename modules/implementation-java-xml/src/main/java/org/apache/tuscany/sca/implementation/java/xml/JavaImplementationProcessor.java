@@ -69,7 +69,9 @@ public class JavaImplementationProcessor implements
             javaImplementation.setName(reader.getAttributeValue(null, CLASS));
 
             // Read policies
-            readPolicies(javaImplementation, reader);
+            if ( javaImplementation instanceof PolicySetAttachPoint ) {
+                readPolicies((PolicySetAttachPoint)javaImplementation, reader);
+            }
 
             // Skip to end element
             while (reader.hasNext()) {

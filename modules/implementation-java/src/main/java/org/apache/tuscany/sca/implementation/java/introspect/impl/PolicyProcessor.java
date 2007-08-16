@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.osoa.sca.annotations.Requires;
 
 /**
@@ -101,7 +102,6 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                     Intent intent = policyFactory.createIntent();
                     intent.setName(getQName(intentName));
                     //intent.getOperations().add(operation);
-                    operation.getRequiredIntents().add(intent);
                     requiredIntents.add(intent);
                 }
             }
@@ -111,7 +111,9 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         
         // Read intents on the Java implementation class
-        readIntents(clazz, type.getRequiredIntents());
+        if ( type instanceof PolicySetAttachPoint ) {
+            readIntents(clazz, ((PolicySetAttachPoint)type).getRequiredIntents());
+        }
         
         // Process annotations on the service interfaces
         //TODO This will have to move to a JavaInterface introspector later
@@ -160,6 +162,8 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         
         // Read the intents specified on the given implementation method
-        readIntents(method, type.getRequiredIntents());
+        if ( type instanceof PolicySetAttachPoint ) {
+            readIntents(method, ((PolicySetAttachPoint)type).getRequiredIntents());
+        }
     }
 }

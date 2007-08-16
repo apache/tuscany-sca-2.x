@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -42,18 +43,6 @@ public abstract class AbstractImplementation implements Implementation {
     private ConstrainingType constrainingType;
     private String uri;
     private boolean unresolved = true;
-    private List<Intent> intents = new ArrayList<Intent>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();;
-    private List<Intent> computedIntents = new ArrayList<Intent>();
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 
     public AbstractImplementation() {
     }
@@ -84,14 +73,6 @@ public abstract class AbstractImplementation implements Implementation {
 
     public void setConstrainingType(ConstrainingType constrainingType) {
         this.constrainingType = constrainingType;
-    }
-
-    public List<Intent> getRequiredIntents() {
-        return intents;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return policySets;
     }
 
     public List<Object> getExtensions() {
@@ -133,5 +114,4 @@ public abstract class AbstractImplementation implements Implementation {
         }
         return null;
     }
-
 }

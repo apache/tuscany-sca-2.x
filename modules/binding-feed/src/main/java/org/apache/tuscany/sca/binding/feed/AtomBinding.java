@@ -34,16 +34,7 @@ public class AtomBinding implements Binding {
 
     private String name;
     private String uri;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
 
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 
     public String getName() {
         return name;
@@ -61,15 +52,6 @@ public class AtomBinding implements Binding {
         this.uri = uri;
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The binding does not support policies
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The binding does not support policies
-        return Collections.emptyList();
-    }
 
     public List<Object> getExtensions() {
         // The binding does not support extensions

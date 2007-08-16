@@ -40,16 +40,7 @@ public class NotificationImplementationImpl extends ComponentTypeImpl implements
     private String componentTypeName;
     private String implementationType;
     private ComponentType componentType;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
 
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
     
     public NotificationImplementationImpl() {
         // Without this, the loader's resolve is not called

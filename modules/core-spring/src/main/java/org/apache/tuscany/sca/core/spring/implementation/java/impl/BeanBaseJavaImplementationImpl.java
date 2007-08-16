@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.java.BaseJavaImplementation;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -41,23 +42,11 @@ public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implement
 	private static final long serialVersionUID = 1L;
 	
 	private List<Service> services = new ArrayList<Service>();
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
 	private ConstrainingType constrainingType;
 	private List<Object> extensions = new ArrayList<Object>();
 	private boolean unresolved;
 	private BeanDefinitionRegistry beanRegistry;
         private String uri;
-        private List<Intent> computedIntents = new ArrayList<Intent>();;
-        private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
-
-        public List<Intent> getComputedIntents() {
-            return computedIntents;
-        }
-
-        public List<PolicySet> getComputedPolicySets() {
-            return computedPolicySets;
-        }
         
 	protected BeanBaseJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
 		this.beanRegistry = beanRegistry;
@@ -180,13 +169,4 @@ public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implement
 	public void setUnresolved(boolean unresolved) {
 		this.unresolved = unresolved;
 	}
-
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
-
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
-
 }

@@ -43,21 +43,8 @@ public class JMSBinding implements Binding {
     private String uri                   = null; 
     private String name                  = null;
     private boolean unresolved           = false;    
-    private List<PolicySet> policySets   = new ArrayList<PolicySet>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();  
     private List<Object> extensions      = new ArrayList<Object>();    
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
 
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
-
-    
     // Properties required to describe the JMS 
     // binding model
     
@@ -240,9 +227,6 @@ public class JMSBinding implements Binding {
         this.name = name;
     }
     
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
 
     public boolean isUnresolved() {
         return this.unresolved;
@@ -252,10 +236,6 @@ public class JMSBinding implements Binding {
         this.unresolved = unresolved;
     }  
 
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-         
     public List<Object> getExtensions() {
         return extensions;
     }    

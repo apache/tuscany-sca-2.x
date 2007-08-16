@@ -49,16 +49,6 @@ public class SpringImplementation extends ComponentTypeImpl implements Implement
     private Hashtable<String, SpringBeanElement> serviceMap;
     // Mapping of property names to Java class
     private Hashtable<String, Class> propertyMap;
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
-
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 
     protected SpringImplementation() {
         this.springLocation = null;

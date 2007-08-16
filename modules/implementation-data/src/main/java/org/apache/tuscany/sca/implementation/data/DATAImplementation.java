@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.data;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 
@@ -117,25 +119,6 @@ public class DATAImplementation implements Implementation {
         // The sample DATA implementation does not have a URI
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The sample DATA implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample DATA implementation does not support intents
-        return Collections.emptyList();
-    }
-    
-    public List<Intent> getComputedIntents() {
-        //The sample DATA implementation does not support intents
-        return Collections.emptyList();
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        //The sample DATA implementation does not support policy sets
-        return Collections.emptyList();
-    }
 
     public List<Object> getExtensions() {
         // The sample DATA implementation does not support extensions
@@ -149,5 +132,5 @@ public class DATAImplementation implements Implementation {
 
     public void setUnresolved(boolean unresolved) {
         // The sample DATA implementation is always resolved
-    }
+    }      
 }
