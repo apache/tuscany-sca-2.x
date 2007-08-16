@@ -61,9 +61,6 @@
                 <module>recursive</module>
                 <module>references</module>
                 <module>scopes</module>
-                <!--
-                <module>spec-api</module>
-                -->
                 <module>wsdl</module>
             </modules>
         </profile>
