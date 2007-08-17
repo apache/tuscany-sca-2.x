@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
-import org.apache.tuscany.sca.distributed.management.ServiceNotFoundException;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -62,7 +61,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     private WebServiceBinding wsBinding;
     
     private boolean started = false;
-    private EndpointReference serviceEPR;
+    private EndpointReference serviceEPR = null;
 
     public Axis2SCAReferenceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentReference reference,
@@ -96,9 +95,6 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
                                                                          wsBinding,
                                                                          servletHost,
                                                                          messageFactory);
-        // make an EPR to share between all the invokers as the 
-        // endpoint is not know until start time
-        serviceEPR = new EndpointReferenceImpl("");
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -111,7 +107,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
 
     public Invoker createInvoker(Operation operation) {
         //return axisReferenceBindingProvider.createInvoker(operation);
-        return new Axis2SCABindingInvoker(serviceEPR, axisReferenceBindingProvider.createInvoker(operation));
+        return new Axis2SCABindingInvoker(this, axisReferenceBindingProvider.createInvoker(operation));
     }
 
     @Deprecated
@@ -122,29 +118,40 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
             return createInvoker(operation);
         }
     }
+    
+    public EndpointReference getServiceEndpoint(){
+        
+        if ( serviceEPR == null ){
+            // try to resolve the service endpoint with the registry 
+            DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
+            ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
+            
+            String serviceUrl = serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(), 
+                                                                     binding.getURI(), 
+                                                                     SCABinding.class.getName());
+            
+            if (!serviceUrl.equals("")){
+                serviceEPR = new EndpointReferenceImpl(serviceUrl);
+            }
+        }
+        
+        return serviceEPR;
+    }
+    
+    public SCABinding getSCABinding () {
+        return binding;
+    }
+    
+    public RuntimeComponent getComponent () {
+        return component;
+    }
+    
+    public RuntimeComponentReference getComponentReference () {
+        return reference;
+    }    
 
     public void start() {
-        
-        // look up the endpoint of the service that will be invoked 
-        // through this binding
-        DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
-        ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
-        
-        String serviceUrl = serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(), 
-                                                                 binding.getURI(), 
-                                                                 SCABinding.class.getName());
-        
-        // If we find one set it into the EPR that is shared amongst
-        // the invokers this provider created
-        if (serviceUrl == null){ 
-            throw new ServiceNotFoundException("Can't find service: " + 
-                                               binding.getURI() + 
-                                               " in domain: " +
-                                               distributedDomain.getDomainName()); 
-        } else {
-            serviceEPR.setURI(serviceUrl);
-        }
-
+        getServiceEndpoint();
     }
 
     public void stop() {

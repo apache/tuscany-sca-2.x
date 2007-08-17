@@ -59,11 +59,9 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
- * I'm trying to work out which bits are important in the Axis binding implementation
- * so I can generalize. Currently this uses the Axis binding service provider
- * but 
- *    - passes on a fake ws binding model
- *    - on invoke finds the wire based on the sca bining and not the ws binding
+ * A specialization of the Axis2BindingProvider that just switches in the SCABinding model
+ * element when it is required. The SCABinding is required as the service binding provider
+ * finds the service wire based in the binding 
  * 
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */

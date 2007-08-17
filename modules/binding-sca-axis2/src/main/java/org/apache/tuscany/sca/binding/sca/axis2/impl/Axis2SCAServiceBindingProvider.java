@@ -93,16 +93,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
         
         wsBinding.setBindingInterfaceContract(contract);
         wsBinding.setName(this.binding.getName()); 
-        
-        // only pass on the uri if it absolute, i.e. come from the uri attribute
-        // of the sca binding. The axis binding will sort it out for itself if 
-        // it's relative
-        if (this.binding.getURI() != null) {
-            URI bindingURI = URI.create(this.binding.getURI());
-            if (bindingURI.isAbsolute()){
-                wsBinding.setURI(this.binding.getURI());
-            }
-        }
+        wsBinding.setURI(this.binding.getURI());
         
         axisProvider = new Axis2SCAServiceProvider(component, 
                                                    service, 

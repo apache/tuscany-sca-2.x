@@ -79,10 +79,11 @@ public class TestServiceDiscoveryImpl implements ServiceDiscovery{
      * @param bindingName the remote binding that is providing the endpoint
      * @param url the enpoint url
      */
-    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
         ServiceEndpoint serviceEndpoint = new ServiceEndpoint (domainUri, nodeUri, serviceName, bindingName, URL);
         serviceEndpoints.add(serviceEndpoint);
         System.err.println("Registering service: " + serviceEndpoint.toString());
+        return "";
     }
     
    

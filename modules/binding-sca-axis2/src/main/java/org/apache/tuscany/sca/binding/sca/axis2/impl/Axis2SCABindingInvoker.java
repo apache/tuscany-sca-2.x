@@ -23,15 +23,16 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.osoa.sca.ServiceUnavailableException;
 
 public class Axis2SCABindingInvoker implements Interceptor {
 
     private Invoker axis2Invoker;
-    private EndpointReference serviceEPR;
+    private Axis2SCAReferenceBindingProvider provider;
     
-    public Axis2SCABindingInvoker(EndpointReference serviceEPR, Invoker axis2Invoker) {
+    public Axis2SCABindingInvoker(Axis2SCAReferenceBindingProvider provider, Invoker axis2Invoker) {
         this.axis2Invoker = axis2Invoker;
-        this.serviceEPR = serviceEPR;
+        this.provider = provider;
     }
 
     public void setNext(Invoker next) {
@@ -42,11 +43,26 @@ public class Axis2SCABindingInvoker implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        // fix up the URL for the message
+        // fix up the URL for the message. The "to" EndPoint comes from the wire
+        // target and needs to b replaced with the endpoint from the registry
+        // The default URL for an Endpoint URI where there is no 
+        // target component or service information, as in the case of a 
+        // wire crossing a node boundary, is "/"
         EndpointReference ep = msg.getTo();
         
         if ((ep == null) || 
             (ep != null) && (ep.getURI().equals("/")) ){
+            
+            EndpointReference serviceEPR = provider.getServiceEndpoint();
+            
+            if ( serviceEPR == null){
+                throw new ServiceUnavailableException("Endpoint for service: " +
+                                                      provider.getSCABinding().getURI() +
+                                                      " can't be found for component: " +
+                                                      provider.getComponent().getName() +
+                                                      " reference: " + 
+                                                      provider.getComponentReference().getName());
+            }
             msg.setTo(serviceEPR);
         }
         
