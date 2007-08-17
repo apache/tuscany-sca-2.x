@@ -43,7 +43,9 @@
                 <module>binding-notification-consumer</module>
                 <module>binding-notification-producer</module>
                 <module>calculator</module>
+                <!--
                 <module>calculator-distributed</module>
+                -->
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
