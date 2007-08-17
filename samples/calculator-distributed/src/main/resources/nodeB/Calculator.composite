@@ -17,11 +17,13 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-
-
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="nodeA">
-    <component name="ComponentRegistry">
-        <implementation.java class="org.apache.tuscany.sca.distributed.node.impl.DefaultComponentRegistry"/>
-    </component>  
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
+           name="Calculator">
+
+    <component name="AddServiceComponent">
+        <implementation.java class="calculator.AddServiceImpl" />
+    </component>
+    
 </composite>

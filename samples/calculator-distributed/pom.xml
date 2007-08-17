@@ -42,17 +42,18 @@
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distributed</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>   
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distributed-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>         
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -64,19 +65,26 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-topology-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>                       
+        </dependency>                                 
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-sca</artifactId>
+            <artifactId>tuscany-binding-sca-axis2</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>    
+        </dependency>   
         
-        <dependency>
+        <!-- dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jms</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>           
+        </dependency -->         
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-http-jetty</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>          
         
         <dependency>
             <groupId>junit</groupId>

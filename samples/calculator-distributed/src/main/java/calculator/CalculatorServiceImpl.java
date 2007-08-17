@@ -28,7 +28,7 @@ public class CalculatorServiceImpl implements CalculatorService {
 
     private AddService addService;
     private SubtractService subtractService;
-    private MultiplyService multiplyService;
+    private MultiplyService multiplyService; 
     private DivideService divideService;
 
     @Reference
@@ -51,7 +51,6 @@ public class CalculatorServiceImpl implements CalculatorService {
         this.divideService = divideService;
     }
     
-
     public double add(double n1, double n2) {
         System.out.println("CalculatorService - add " + n1 + " and " + n2);
         return addService.add(n1, n2);

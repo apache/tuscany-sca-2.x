@@ -1,0 +1,16 @@
+  ant runDomainNode Run up 
+
+the node that provides the registryRun up the node that runs the add service  ant ru
+
+
+Run up the node that provides the registry
+  ant runDomainNode 
+
+Run up the node that runs the add service
+  ant runNodeB
+
+Run up the node that runs the subtract service
+  ant runNodeC
+
+Run up the node that runs the Calculator services and drives calls to the various methods
+  ant runNodeA
