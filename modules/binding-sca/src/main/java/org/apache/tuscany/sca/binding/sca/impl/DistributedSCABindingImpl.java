@@ -31,7 +31,9 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
- * The Distributed SCA binding wrapper for the SCA binding model object
+ * The Distributed SCA binding wrapper for the SCA binding model object. This is currently
+ * just used to locate the remote binding extension and pass the SCA binding to the remote
+ * extentsion. It isn't used in the model itself
  * 
  * @version $Rev: 564307 $ $Date: 2007-08-09 18:48:29 +0100 (Thu, 09 Aug 2007) $
  */

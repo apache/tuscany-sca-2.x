@@ -75,7 +75,8 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
                                          factoryExtensionPoint.getProviderFactory(DistributedSCABinding.class);
             
             // if a distributed sca binding is available then create a nested provider to handle the remote case
-            if (distributedProviderFactory != null) {
+            if ((distributedProviderFactory != null) &&
+                (((SCABindingImpl)binding).getDistributedDomain() != null)){
                 distributedBinding = new DistributedSCABindingImpl();
                 distributedBinding.setSCABinging(binding);
                 
