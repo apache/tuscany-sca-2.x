@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.core.component.ComponentContextProvider;
 import org.apache.tuscany.sca.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.factory.ObjectCreationException;
@@ -384,7 +385,13 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
     }
 
     public void removeInstance() throws PersistenceException {
-        ((ScopedRuntimeComponent) component).getScopeContainer().remove();
+        try {
+            // FIXME: How to deal with other scopes
+            Object contextId = ThreadMessageContext.getMessageContext().getConversationID();
+            ((ScopedRuntimeComponent) component).getScopeContainer().remove(contextId);
+        } catch (TargetDestructionException e) {
+            throw new PersistenceException(e);
+        }
     }
 
     public URI getUri() {
