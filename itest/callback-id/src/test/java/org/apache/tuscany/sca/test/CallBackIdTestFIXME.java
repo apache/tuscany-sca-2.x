@@ -22,25 +22,22 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class CallBackSetCallbackTest extends TestCase {
+public class CallBackIdTestFIXME extends TestCase {
 
     private SCADomain domain;
-    private CallBackSetCallbackClient aCallBackClient;
+    private CallBackIdClient aCallBackClient;
 
-    public void testCallBackSetCallback() {
+    public void testCallBackBasic() {
         aCallBackClient.run();
     }
 
     protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("CallBackSetCallbackTest.composite");
-    	
-        aCallBackClient =
-            domain.getService(CallBackSetCallbackClient.class,
-                                                               "CallBackSetCallbackClient");
-    }
-    
-    protected void tearDown() throws Exception {
-    	domain.close();
+        domain = SCADomain.newInstance("CallBackIdClient.composite");
+
+        aCallBackClient = domain.getService(CallBackIdClient.class, "CallBackIdClient");
     }
 
+    protected void tearDown() throws Exception {
+        domain.close();
+    }
 }
