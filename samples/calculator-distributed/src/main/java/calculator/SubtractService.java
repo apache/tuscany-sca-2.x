@@ -18,9 +18,12 @@
  */
 package calculator;
 
+import org.osoa.sca.annotations.Remotable;
+
 /**
  * The interface for the multiply service
  */
+@Remotable
 public interface SubtractService {
 
     double subtract(double n1, double n2);

@@ -17,24 +17,16 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
+           name="Calculator">
 
-<runtime xmlns="http://www.apache.org/tuscany/topology/1.0">
-    <node name="nodeA">
-        <schema name="http" baseURL="http://localhost:80" /> 
-        <schema name="https" baseURL="https://localhost:443" />
-        <component name="CalculatorServiceComponent" />
-        <component name="MultiplyServiceComponent" />   
-        <component name="DivideServiceComponent" />             
-    </node>
-    <node name="nodeB">
-        <schema name="http" baseURL="http://localhost:81"/> 
-        <schema name="https" baseURL="https://localhost:444" />
-        <component name="AddServiceComponent"/>
-    </node>   
-    <node name="nodeC">
-        <schema name="http" baseURL="http://localhost:81"/> 
-        <schema name="https" baseURL="https://localhost:444" />
-        <component name="SubtractServiceComponent"/>
-    </node>       
-</runtime>
+    <component name="SubtractServiceComponent">
+        <implementation.java class="calculator.SubtractServiceImpl" />
+        <service name="SubtractService">
+            <binding.sca uri="http://localhost:8086/SubtractServiceComponent"/>
+        </service>
+    </component>
 
+</composite>
