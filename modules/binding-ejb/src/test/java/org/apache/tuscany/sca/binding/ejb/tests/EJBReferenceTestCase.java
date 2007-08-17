@@ -49,6 +49,9 @@ public class EJBReferenceTestCase extends TestCase {
 
         // Start the mock server to simulate the remote EJB
         new Thread(new MockServer(MOCK_PORT)).start();
+        
+        // Wait enough for the server to be started
+        Thread.sleep(500);
     }
 
     private InitialContext getRemoteInitialContext() throws NamingException {
