@@ -95,9 +95,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         return false;
     }
 
-    public void remove() throws PersistenceException {
-    }
-
     public void returnWrapper(InstanceWrapper wrapper, KEY contextId) throws TargetDestructionException {
     }
     
