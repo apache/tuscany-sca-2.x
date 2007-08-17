@@ -53,11 +53,4 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         wrapper.stop();
     }
     
-    /**
-     * The stateless scope container just does nothing if you try
-     * and remove component instances from it
-     */
-    public void remove() throws PersistenceException {
-        // Intentially left blank
-    }    
 }
