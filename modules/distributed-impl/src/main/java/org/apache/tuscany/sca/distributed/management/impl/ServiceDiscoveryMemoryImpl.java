@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.osoa.sca.annotations.Scope;
 
 
 /**
@@ -30,6 +31,7 @@ import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
  * 
  * @version $Rev: 552343 $ $Date: 2007-07-01 18:43:40 +0100 (Sun, 01 Jul 2007) $
  */
+@Scope("COMPOSITE")
 public class ServiceDiscoveryMemoryImpl implements ServiceDiscovery{
     
     List<ServiceEndpoint> serviceEndpoints = new ArrayList<ServiceEndpoint>();
@@ -79,10 +81,11 @@ public class ServiceDiscoveryMemoryImpl implements ServiceDiscovery{
      * @param bindingName the remote binding that is providing the endpoint
      * @param url the enpoint url
      */
-    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+    public String  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
         ServiceEndpoint serviceEndpoint = new ServiceEndpoint (domainUri, nodeUri, serviceName, bindingName, URL);
         serviceEndpoints.add(serviceEndpoint);
         System.err.println("Registering service: " + serviceEndpoint.toString());
+        return "";
     }
     
    
@@ -101,7 +104,7 @@ public class ServiceDiscoveryMemoryImpl implements ServiceDiscovery{
                            bindingName +
                            "]");
         
-        String url = null;
+        String url = "";
         
         for(ServiceEndpoint serviceEndpoint : serviceEndpoints){
             if ( serviceEndpoint.match(domainUri, serviceName, bindingName)){
