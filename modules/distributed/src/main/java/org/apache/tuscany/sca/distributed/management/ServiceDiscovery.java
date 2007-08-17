@@ -40,8 +40,9 @@ public interface ServiceDiscovery {
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
      * @param url the enpoint url
+     * @return TBD - information about the registration
      */
-    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
+    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
     
     /**
      * Locates information about a service endpoint 
