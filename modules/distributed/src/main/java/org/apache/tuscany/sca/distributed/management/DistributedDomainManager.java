@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.distributed.management;
 
 import java.util.List;
 
+import org.osoa.sca.annotations.Remotable;
+
 
 /**
  * The management interface for distributed domain. This is resposible for 
@@ -29,12 +31,13 @@ import java.util.List;
  * 
  * @version $Rev: 552343 $ $Date: 2007-07-01 18:43:40 +0100 (Sun, 01 Jul 2007) $
  */
+@Remotable
 public interface DistributedDomainManager {
 
     /**
-     * A node registers with the distributed domain manager. The mechanism wherby this
+     * A node registers with the distributed domain manager. The mechanism whereby this
      * registration interface is discovered is not defined. For example, JMS, JINI
-     * or a hardcoded configuration could all be candidates in the java world. 
+     * or a hard coded configuration could all be candidates in the java world. 
      * 
      * @param domainUri the string uri for the distributed domain
      * @param nodeUri the string uri for the current node
@@ -49,7 +52,7 @@ public interface DistributedDomainManager {
      * ftp, http. The return value is the url of where to look for the configuration 
      * information. From a management point of view it is convenient to maintain all 
      * current and previous node configurations. This can easily be achieved by providing
-     * a different URL each time the onfiguration is changed. 
+     * a different URL each time the configuration is changed. 
      *  
      * @param domainUri the string uri for the distributed domain
      * @param nodeUri the string uri for the current node
