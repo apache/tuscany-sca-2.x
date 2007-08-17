@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
-import org.apache.tuscany.sca.distributed.management.ServiceNotFoundException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -56,7 +55,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                                               RuntimeComponent component,
                                               RuntimeComponentReference reference,
                                               SCABinding binding) 
-      throws BindingNotDistributedException, ServiceNotFoundException{
+      throws BindingNotDistributedException {
         this.reference = reference;
         this.binding = binding;
 
@@ -73,6 +72,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // that the interface is remoteable
             
             if ((distributedProviderFactory != null) && 
+                (((SCABindingImpl)binding).getDistributedDomain() != null) &&
                 (reference.getInterfaceContract().getInterface().isRemotable())){                  
                 DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
                 distributedBinding.setSCABinging(binding);

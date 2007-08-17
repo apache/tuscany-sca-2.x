@@ -59,10 +59,8 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
         } catch (Exception ex) {
             // The binding could not create a reference provider because either
             // the sca binding does not have remote support or the interface
-            // in question is not remoteable
-            // null will be returned
-            System.err.println(ex.toString());
-            ex.printStackTrace();
+            // in question is not remotable null will be returned
+            // TODO - throw and appropriate exception here SCARuntime?
         }
        
         return provider;
