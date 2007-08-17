@@ -364,6 +364,10 @@ public class CompositeWireBuilderImpl {
                                     composite);
                         }
                     } else {
+                        // put all the reference bindings into the target so that they
+                        // can be used for comparison when the target is resolved at runtime
+                        componentService.getBindings().addAll(componentReference.getBindings());
+                        
                         warning("Component reference target not found, it might be a remote service: " + componentService.getName(), composite);
                     }
                 }
