@@ -21,15 +21,20 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
@@ -43,17 +48,25 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class CompositeConfigurationBuilderImpl {
-    
+
     private String CALLBACK_PREFIX = "$callback$.";
 
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private CompositeBuilderMonitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
-    
-    public CompositeConfigurationBuilderImpl(AssemblyFactory assemblyFactory, SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
+
+    public CompositeConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
+                                             SCABindingFactory scaBindingFactory,
+                                             InterfaceContractMapper interfaceContractMapper,
+                                             CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
         this.interfaceContractMapper = interfaceContractMapper;
@@ -84,10 +97,10 @@ public class CompositeConfigurationBuilderImpl {
         } else {
             parentURI = null;
         }
-    
+
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
-    
+
             // Initialize component URI
             String componentURI;
             if (parentURI == null) {
@@ -96,24 +109,45 @@ public class CompositeConfigurationBuilderImpl {
                 componentURI = parentURI.resolve(component.getName()).toString();
             }
             component.setURI(componentURI);
-    
+
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-    
+
                 // Process nested composite
                 configureComponents((Composite)implementation, componentURI);
             }
         }
-    
+
+        List<Intent> compositeIntents = null;
+        List<PolicySet> compositePolicySets = null;
+        if (composite instanceof PolicySetAttachPoint) {
+            compositeIntents = ((PolicySetAttachPoint)composite).getRequiredIntents();
+            compositePolicySets = ((PolicySetAttachPoint)composite).getPolicySets();
+        }
+
         // Initialize service bindings
         for (Service service : composite.getServices()) {
+            // Set default binding names and inherit intents and policysets
+            // defined at composite level
+            addInheritedPolicies(compositeIntents, service.getRequiredIntents());
+            addInheritedPolicies(compositePolicySets, service.getPolicySets());
             
+            //inherit intents and policies from promoted service
+            if ( service instanceof CompositeService ) {
+                CompositeService compService = (CompositeService)service;
+                addInheritedPolicies(compService.getPromotedService().getRequiredIntents(), 
+                                     service.getRequiredIntents());
+                addInheritedPolicies(compService.getPromotedService().getPolicySets(), 
+                                     service.getPolicySets());
+            }
+            
+
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
                 SCABinding scaBinding = scaBindingFactory.createSCABinding();
                 service.getBindings().add(scaBinding);
             }
-            
+
             // Initialize binding names and URIs
             for (Binding binding : service.getBindings()) {
                 if (binding.getName() == null) {
@@ -138,9 +172,23 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
-        
+
         // Initialize reference bindings
         for (Reference reference : composite.getReferences()) {
+            addInheritedPolicies(compositeIntents, reference.getRequiredIntents());
+            addInheritedPolicies(compositePolicySets, reference.getPolicySets());
+
+            //inherit intents and policies from promoted service
+            if ( reference instanceof CompositeReference ) {
+                CompositeReference compReference = (CompositeReference)reference;
+                for ( Reference promotedReference : compReference.getPromotedReferences() ) {
+                    addInheritedPolicies(promotedReference.getRequiredIntents(), 
+                                         reference.getRequiredIntents());
+                
+                    addInheritedPolicies(promotedReference.getPolicySets(), 
+                                         reference.getPolicySets());
+                }
+            }
             
             // Create default SCA binding
             if (reference.getBindings().isEmpty()) {
@@ -153,8 +201,11 @@ public class CompositeConfigurationBuilderImpl {
                 if (binding.getName() == null) {
                     binding.setName(reference.getName());
                 }
+                
+                //inherit intents and policysets
+                
             }
-            
+
             if (reference.getCallback() != null) {
                 for (Binding binding : reference.getCallback().getBindings()) {
                     if (binding.getName() == null) {
@@ -163,44 +214,57 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
-    
+
         // Initialize all component services and references
         Map<String, Component> components = new HashMap<String, Component>();
         for (Component component : composite.getComponents()) {
             URI componentURI = URI.create(component.getURI() + '/');
-    
+
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
-                warning("Duplicate component name: " + composite.getName() + " : " + component.getName(), composite);
+                warning("Duplicate component name: " + composite.getName()
+                    + " : "
+                    + component.getName(), composite);
             } else {
                 components.put(component.getName(), component);
             }
-    
+
             // Propagate the autowire flag from the composite to components
             if (composite.isAutowire()) {
                 component.setAutowire(true);
             }
-    
+
+            // inherit intents defined at the composite level
+            addInheritedPolicies(compositeIntents, component.getRequiredIntents());
+            // inherit policysets defined at the composite level
+            addInheritedPolicies(compositePolicySets, component.getPolicySets());
+
             if (component.getImplementation() instanceof ComponentPreProcessor) {
                 ((ComponentPreProcessor)component.getImplementation()).preProcess(component);
             }
-    
+
             // Index properties, services and references
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
-            indexImplementationPropertiesServicesAndReferences(component, services, references, properties);
-    
+            indexImplementationPropertiesServicesAndReferences(component,
+                                                               services,
+                                                               references,
+                                                               properties);
+
             // Index component services, references and properties
             // Also check for duplicates
-            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-            Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
+            Map<String, ComponentService> componentServices =
+                new HashMap<String, ComponentService>();
+            Map<String, ComponentReference> componentReferences =
+                new HashMap<String, ComponentReference>();
+            Map<String, ComponentProperty> componentProperties =
+                new HashMap<String, ComponentProperty>();
             indexComponentPropertiesServicesAndReferences(component,
                                                           componentServices,
                                                           componentReferences,
                                                           componentProperties);
-    
+
             // Reconcile component services/references/properties and
             // implementation
             // services/references and create component
@@ -209,27 +273,29 @@ public class CompositeConfigurationBuilderImpl {
             reconcileServices(component, services, componentServices);
             reconcileReferences(component, references, componentReferences);
             reconcileProperties(component, properties, componentProperties);
-    
-            // Configure or create callback services for component's references with callbacks
+
+            // Configure or create callback services for component's references
+            // with callbacks
             configureCallbackServices(component, componentServices);
 
-            // Configure or create callback references for component's services with callbacks
+            // Configure or create callback references for component's services
+            // with callbacks
             configureCallbackReferences(component, componentReferences);
 
             // Create self references to the component's services
             if (!(component.getImplementation() instanceof Composite)) {
                 createSelfReferences(component);
             }
-            
+
             // Initialize service bindings
-            for (ComponentService componentService: component.getServices()) {
-                
+            for (ComponentService componentService : component.getServices()) {
+
                 // Create default SCA binding
                 if (componentService.getBindings().isEmpty()) {
                     SCABinding scaBinding = scaBindingFactory.createSCABinding();
                     componentService.getBindings().add(scaBinding);
                 }
-                
+
                 // Set binding names and URIs
                 for (Binding binding : componentService.getBindings()) {
                     if (binding.getName() == null) {
@@ -252,10 +318,10 @@ public class CompositeConfigurationBuilderImpl {
                     }
                 }
             }
-            
+
             // Initialize reference bindings
-            for (ComponentReference componentReference: component.getReferences()) {
-                
+            for (ComponentReference componentReference : component.getReferences()) {
+
                 // Create default SCA binding
                 if (componentReference.getBindings().isEmpty()) {
                     SCABinding scaBinding = scaBindingFactory.createSCABinding();
@@ -302,7 +368,7 @@ public class CompositeConfigurationBuilderImpl {
     private void reconcileProperties(Component component,
                                      Map<String, Property> properties,
                                      Map<String, ComponentProperty> componentProperties) {
-    
+
         // Connect component properties to their properties
         for (ComponentProperty componentProperty : component.getProperties()) {
             Property property = properties.get(componentProperty.getName());
@@ -314,7 +380,7 @@ public class CompositeConfigurationBuilderImpl {
                     + componentProperty.getName(), component);
             }
         }
-    
+
         // Create component properties for all properties
         if (component.getImplementation() != null) {
             for (Property property : component.getImplementation().getProperties()) {
@@ -329,48 +395,51 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
-    
+
         // Reconcile component properties and their properties
         for (ComponentProperty componentProperty : component.getProperties()) {
             Property property = componentProperty.getProperty();
             if (property != null) {
-    
+
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
                     warning("Component property mustSupply attribute incompatible with property: " + component
-                        .getName()
-                        + "/"
-                        + componentProperty.getName(), component);
+                                .getName()
+                                + "/"
+                                + componentProperty.getName(),
+                            component);
                 }
-    
+
                 // Default to the mustSupply attribute specified on the property
                 if (!componentProperty.isMustSupply())
                     componentProperty.setMustSupply(property.isMustSupply());
-    
+
                 // Default to the value specified on the property
                 if (componentProperty.getValue() == null) {
                     componentProperty.setValue(property.getValue());
                 }
-    
+
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
                     warning("No value configured on a mustSupply property: " + component.getName()
                         + "/"
                         + componentProperty.getName(), component);
                 }
-    
+
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
-                    warning("Component property many attribute incompatible with property: " + component.getName()
-                        + "/"
-                        + componentProperty.getName(), component);
+                    warning("Component property many attribute incompatible with property: " + component
+                                .getName()
+                                + "/"
+                                + componentProperty.getName(),
+                            component);
                 }
-    
+
                 // Default to the many attribute defined on the property
                 componentProperty.setMany(property.isMany());
-    
+
                 // Default to the type and element defined on the property
                 if (componentProperty.getXSDType() == null) {
                     componentProperty.setXSDType(property.getXSDType());
@@ -378,7 +447,7 @@ public class CompositeConfigurationBuilderImpl {
                 if (componentProperty.getXSDElement() == null) {
                     componentProperty.setXSDElement(property.getXSDElement());
                 }
-    
+
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
                     warning("No type specified on component property: " + component.getName()
@@ -401,7 +470,7 @@ public class CompositeConfigurationBuilderImpl {
     private void reconcileReferences(Component component,
                                      Map<String, Reference> references,
                                      Map<String, ComponentReference> componentReferences) {
-    
+
         // Connect each component reference to the corresponding reference
         for (ComponentReference componentReference : component.getReferences()) {
             Reference reference = references.get(componentReference.getName());
@@ -415,12 +484,13 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
-    
+
         // Create a component reference for each reference
         if (component.getImplementation() != null) {
             for (Reference reference : component.getImplementation().getReferences()) {
                 if (!componentReferences.containsKey(reference.getName())) {
-                    ComponentReference componentReference = assemblyFactory.createComponentReference();
+                    ComponentReference componentReference =
+                        assemblyFactory.createComponentReference();
                     componentReference.setIsCallback(reference.isCallback());
                     componentReference.setName(reference.getName());
                     componentReference.setReference(reference);
@@ -428,16 +498,24 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
-    
+
         // Reconcile each component reference with its reference
         for (ComponentReference componentReference : component.getReferences()) {
+            // inherit intents and policysets from component
+            componentReference.getRequiredIntents().addAll(component.getRequiredIntents());
+            componentReference.getPolicySets().addAll(component.getPolicySets());
+
             Reference reference = componentReference.getReference();
             if (reference != null) {
-    
+                // reconcile intents and policysets
+                componentReference.getRequiredIntents().addAll(reference.getRequiredIntents());
+                componentReference.getPolicySets().addAll(reference.getPolicySets());
+
                 // Reconcile multiplicity
                 if (componentReference.getMultiplicity() != null) {
-                    if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(), componentReference
-                        .getMultiplicity())) {
+                    if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
+                                                                   componentReference
+                                                                       .getMultiplicity())) {
                         warning("Component reference multiplicity incompatible with reference multiplicity: " + component
                                     .getName()
                                     + "/"
@@ -447,27 +525,37 @@ public class CompositeConfigurationBuilderImpl {
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
                 }
-    
+
                 // Reconcile interface
                 if (componentReference.getInterfaceContract() != null) {
-                    if (!componentReference.getInterfaceContract().equals(reference.getInterfaceContract())) {
-                        if (!interfaceContractMapper.isCompatible(reference.getInterfaceContract(), componentReference
-                            .getInterfaceContract())) {
+                    if (!componentReference.getInterfaceContract().equals(reference
+                        .getInterfaceContract())) {
+                        if (!interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
+                                                                  componentReference
+                                                                      .getInterfaceContract())) {
                             warning("Component reference interface incompatible with reference interface: " + component
-                                .getName()
-                                + "/"
-                                + componentReference.getName(), component);
+                                        .getName()
+                                        + "/"
+                                        + componentReference.getName(),
+                                    component);
                         }
                     }
                 } else {
                     componentReference.setInterfaceContract(reference.getInterfaceContract());
                 }
-    
-                // Reconcile bindings
+
+                // Reconcile bindings 
                 if (componentReference.getBindings().isEmpty()) {
                     componentReference.getBindings().addAll(reference.getBindings());
                 }
-    
+                
+                //compute intents and policyset for each binding
+                computeIntents(componentReference.getBindings(), 
+                               componentReference.getRequiredIntents());
+                computePolicySets(componentReference,
+                                  componentReference.getBindings(),
+                                  componentReference.getPolicySets());
+
                 // Reconcile callback bindings
                 if (componentReference.getCallback() == null) {
                     componentReference.setCallback(reference.getCallback());
@@ -475,16 +563,26 @@ public class CompositeConfigurationBuilderImpl {
                         // Create an empty callback to avoid null check
                         componentReference.setCallback(assemblyFactory.createCallback());
                     }
-    
-                } else if (componentReference.getCallback().getBindings().isEmpty() && reference.getCallback() != null) {
-                    componentReference.getCallback().getBindings().addAll(reference.getCallback().getBindings());
+
+                } else if (componentReference.getCallback().getBindings().isEmpty() && reference
+                    .getCallback() != null) {
+                    componentReference.getCallback().getBindings().addAll(reference.getCallback()
+                        .getBindings());
                 }
-    
+                
+                //compute intents and policyset for each callback binding
+                computeIntents(componentReference.getCallback().getBindings(), 
+                               componentReference.getRequiredIntents());
+                computePolicySets(componentReference,
+                                  componentReference.getCallback().getBindings(),
+                                  componentReference.getPolicySets());
+                
+
                 // Propagate autowire setting from the component
                 if (component.isAutowire()) {
                     componentReference.setAutowire(true);
                 }
-    
+
                 // Reconcile targets
                 if (componentReference.getTargets().isEmpty()) {
                     componentReference.getTargets().addAll(reference.getTargets());
@@ -504,7 +602,7 @@ public class CompositeConfigurationBuilderImpl {
     private void reconcileServices(Component component,
                                    Map<String, Service> services,
                                    Map<String, ComponentService> componentServices) {
-    
+
         // Connect each component service to the corresponding service
         for (ComponentService componentService : component.getServices()) {
             Service service = services.get(componentService.getName());
@@ -516,7 +614,7 @@ public class CompositeConfigurationBuilderImpl {
                     + componentService.getName(), component);
             }
         }
-    
+
         // Create a component service for each service
         if (component.getImplementation() != null) {
             for (Service service : component.getImplementation().getServices()) {
@@ -531,32 +629,48 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
-    
+
         // Reconcile each component service with its service
         for (ComponentService componentService : component.getServices()) {
+            // inherit intents and policysets from component
+            componentService.getRequiredIntents().addAll(component.getRequiredIntents());
+            componentService.getPolicySets().addAll(component.getPolicySets());
+
             Service service = componentService.getService();
             if (service != null) {
-    
+                // reconcile intents and policysets
+                componentService.getRequiredIntents().addAll(service.getRequiredIntents());
+                componentService.getPolicySets().addAll(service.getPolicySets());
+
                 // Reconcile interface
                 if (componentService.getInterfaceContract() != null) {
-                    if (!componentService.getInterfaceContract().equals(service.getInterfaceContract())) {
-                        if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(), service
-                            .getInterfaceContract())) {
+                    if (!componentService.getInterfaceContract().equals(service
+                        .getInterfaceContract())) {
+                        if (!interfaceContractMapper.isCompatible(componentService
+                            .getInterfaceContract(), service.getInterfaceContract())) {
                             warning("Component service interface incompatible with service interface: " + component
-                                .getName()
-                                + "/"
-                                + componentService.getName(), component);
+                                        .getName()
+                                        + "/"
+                                        + componentService.getName(),
+                                    component);
                         }
                     }
                 } else {
                     componentService.setInterfaceContract(service.getInterfaceContract());
                 }
-    
+
                 // Reconcile bindings
                 if (componentService.getBindings().isEmpty()) {
                     componentService.getBindings().addAll(service.getBindings());
                 }
-    
+                
+                //compute intents and policyset for each binding
+                computeIntents(componentService.getBindings(), 
+                               componentService.getRequiredIntents());
+                computePolicySets(componentService,
+                                  componentService.getBindings(),
+                                  componentService.getPolicySets());
+
                 // Reconcile callback bindings
                 if (componentService.getCallback() == null) {
                     componentService.setCallback(service.getCallback());
@@ -564,11 +678,20 @@ public class CompositeConfigurationBuilderImpl {
                         // Create an empty callback to avoid null check
                         componentService.setCallback(assemblyFactory.createCallback());
                     }
-                } else if (componentService.getCallback().getBindings().isEmpty() && service.getCallback() != null) {
-                    componentService.getCallback().getBindings().addAll(service.getCallback().getBindings());
+                } else if (componentService.getCallback().getBindings().isEmpty() && service
+                    .getCallback() != null) {
+                    componentService.getCallback().getBindings().addAll(service.getCallback()
+                        .getBindings());
                 }
+                //compute intents and policyset for each binding
+                computeIntents(componentService.getCallback().getBindings(), 
+                               componentService.getRequiredIntents());
+                computePolicySets(componentService,
+                                  componentService.getCallback().getBindings(),
+                                  componentService.getPolicySets());
+                
             }
-    
+
         }
     }
 
@@ -578,8 +701,9 @@ public class CompositeConfigurationBuilderImpl {
                                                                Map<String, ComponentProperty> componentProperties) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-                warning("Duplicate component service name: " + component.getName() + "/" + componentService.getName(),
-                        component);
+                warning("Duplicate component service name: " + component.getName()
+                    + "/"
+                    + componentService.getName(), component);
             } else {
                 componentServices.put(componentService.getName(), componentService);
             }
@@ -595,13 +719,14 @@ public class CompositeConfigurationBuilderImpl {
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-                warning("Duplicate component property name: " + component.getName() + "/" + componentProperty.getName(),
-                        component);
+                warning("Duplicate component property name: " + component.getName()
+                    + "/"
+                    + componentProperty.getName(), component);
             } else {
                 componentProperties.put(componentProperty.getName(), componentProperty);
             }
         }
-    
+
     }
 
     private void indexImplementationPropertiesServicesAndReferences(Component component,
@@ -611,55 +736,66 @@ public class CompositeConfigurationBuilderImpl {
         // First check that the component has a resolved implementation
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
-    
+
             // A component must have an implementation
             warning("No implementation for component: " + component.getName(), component);
-    
+
         } else if (implementation.isUnresolved()) {
-    
+
             // The implementation must be fully resolved
-            warning("Component implementation not found: " + component.getName() + " : " + implementation.getURI(),
-                    component);
-    
+            warning("Component implementation not found: " + component.getName()
+                + " : "
+                + implementation.getURI(), component);
+
         } else {
-    
+
             // Index properties, services and references, also check for
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                    warning("Duplicate property name: " + component.getName() + "/" + property.getName(), component);
+                    warning("Duplicate property name: " + component.getName()
+                        + "/"
+                        + property.getName(), component);
                 } else {
                     properties.put(property.getName(), property);
                 }
             }
             for (Service service : implementation.getServices()) {
                 if (services.containsKey(service.getName())) {
-                    warning("Duplicate service name: " + component.getName() + "/" + service.getName(), component);
+                    warning("Duplicate service name: " + component.getName()
+                        + "/"
+                        + service.getName(), component);
                 } else {
                     services.put(service.getName(), service);
                 }
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                    warning("Duplicate reference name: " + component.getName() + "/" + reference.getName(), component);
+                    warning("Duplicate reference name: " + component.getName()
+                        + "/"
+                        + reference.getName(), component);
                 } else {
                     references.put(reference.getName(), reference);
                 }
             }
         }
-    
+
     }
 
     /**
-     * For all the references with callbacks, create a corresponding callback service.
+     * For all the references with callbacks, create a corresponding callback
+     * service.
      * 
      * @param component
      */
-    private void configureCallbackServices(Component component, Map<String, ComponentService> componentServices) {
+    private void configureCallbackServices(Component component,
+                                           Map<String, ComponentService> componentServices) {
         for (ComponentReference reference : component.getReferences()) {
-            if (reference.getInterfaceContract() != null && // can be null in unit tests
-                reference.getInterfaceContract().getCallbackInterface() != null) {
-                ComponentService service = componentServices.get(CALLBACK_PREFIX + reference.getName());
+            if (reference.getInterfaceContract() != null && // can be null in
+                                                            // unit tests
+            reference.getInterfaceContract().getCallbackInterface() != null) {
+                ComponentService service =
+                    componentServices.get(CALLBACK_PREFIX + reference.getName());
                 if (service == null) {
                     service = createCallbackService(component, reference);
                 }
@@ -671,7 +807,8 @@ public class CompositeConfigurationBuilderImpl {
                         service.getPolicySets().addAll(reference.getCallback().getPolicySets());
                     }
                     if (service.getRequiredIntents().isEmpty()) {
-                        service.getRequiredIntents().addAll(reference.getCallback().getRequiredIntents());
+                        service.getRequiredIntents().addAll(reference.getCallback()
+                            .getRequiredIntents());
                     }
                 }
                 reference.setCallbackService(service);
@@ -681,6 +818,7 @@ public class CompositeConfigurationBuilderImpl {
 
     /**
      * Create a callback service for a component reference
+     * 
      * @param component
      * @param reference
      */
@@ -689,7 +827,8 @@ public class CompositeConfigurationBuilderImpl {
         componentService.setIsCallback(true);
         componentService.setName(CALLBACK_PREFIX + reference.getName());
         try {
-            InterfaceContract contract = (InterfaceContract)reference.getInterfaceContract().clone();
+            InterfaceContract contract =
+                (InterfaceContract)reference.getInterfaceContract().clone();
             contract.setInterface(contract.getCallbackInterface());
             contract.setCallbackInterface(null);
             componentService.setInterfaceContract(contract);
@@ -701,7 +840,8 @@ public class CompositeConfigurationBuilderImpl {
             Service implService = assemblyFactory.createService();
             implService.setName(CALLBACK_PREFIX + implReference.getName());
             try {
-                InterfaceContract implContract = (InterfaceContract)implReference.getInterfaceContract().clone();
+                InterfaceContract implContract =
+                    (InterfaceContract)implReference.getInterfaceContract().clone();
                 implContract.setInterface(implContract.getCallbackInterface());
                 implContract.setCallbackInterface(null);
                 implService.setInterfaceContract(implContract);
@@ -715,15 +855,19 @@ public class CompositeConfigurationBuilderImpl {
     }
 
     /**
-     * For all the services with callbacks, create a corresponding callback reference.
+     * For all the services with callbacks, create a corresponding callback
+     * reference.
      * 
      * @param component
      */
-    private void configureCallbackReferences(Component component, Map<String, ComponentReference> componentReferences) {
+    private void configureCallbackReferences(Component component,
+                                             Map<String, ComponentReference> componentReferences) {
         for (ComponentService service : component.getServices()) {
-            if (service.getInterfaceContract() != null && // can be null in unit tests
-                service.getInterfaceContract().getCallbackInterface() != null) {
-                ComponentReference reference = componentReferences.get(CALLBACK_PREFIX + service.getName());
+            if (service.getInterfaceContract() != null && // can be null in
+                                                            // unit tests
+            service.getInterfaceContract().getCallbackInterface() != null) {
+                ComponentReference reference =
+                    componentReferences.get(CALLBACK_PREFIX + service.getName());
                 if (reference == null) {
                     reference = createCallbackReference(component, service);
                 }
@@ -735,7 +879,8 @@ public class CompositeConfigurationBuilderImpl {
                         reference.getPolicySets().addAll(service.getCallback().getPolicySets());
                     }
                     if (reference.getRequiredIntents().isEmpty()) {
-                        reference.getRequiredIntents().addAll(service.getCallback().getRequiredIntents());
+                        reference.getRequiredIntents().addAll(service.getCallback()
+                            .getRequiredIntents());
                     }
                 }
                 service.setCallbackReference(reference);
@@ -745,6 +890,7 @@ public class CompositeConfigurationBuilderImpl {
 
     /**
      * Create a callback reference for a component service
+     * 
      * @param component
      * @param service
      */
@@ -765,7 +911,8 @@ public class CompositeConfigurationBuilderImpl {
             Reference implReference = assemblyFactory.createReference();
             implReference.setName(CALLBACK_PREFIX + implService.getName());
             try {
-                InterfaceContract implContract = (InterfaceContract)implService.getInterfaceContract().clone();
+                InterfaceContract implContract =
+                    (InterfaceContract)implService.getInterfaceContract().clone();
                 implContract.setInterface(implContract.getCallbackInterface());
                 implContract.setCallbackInterface(null);
                 implReference.setInterfaceContract(implContract);
@@ -780,6 +927,7 @@ public class CompositeConfigurationBuilderImpl {
 
     /**
      * Create a self-reference for a component service
+     * 
      * @param component
      * @param service
      */
@@ -794,7 +942,7 @@ public class CompositeConfigurationBuilderImpl {
         componentReference.getTargets().add(componentService);
         componentReference.getPolicySets().addAll(service.getPolicySets());
         componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
-        
+
         // FIXME: What interface contract should be used?
         InterfaceContract interfaceContract = service.getInterfaceContract();
         Service componentTypeService = service.getService();
@@ -827,59 +975,73 @@ public class CompositeConfigurationBuilderImpl {
      * @param problems
      */
     public void activateCompositeServices(Composite composite) {
-    
+
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-    
+
                 // First process nested composites
                 activateCompositeServices((Composite)implementation);
-    
+
                 // Process the component services declared on components
                 // in this composite
                 for (ComponentService componentService : component.getServices()) {
                     Service implService = componentService.getService();
                     if (implService != null && implService instanceof CompositeService) {
                         CompositeService compositeService = (CompositeService)implService;
-    
+
                         // Get the inner most promoted service
-                        ComponentService promotedService = getPromotedComponentService(compositeService);
+                        ComponentService promotedService =
+                            getPromotedComponentService(compositeService);
                         if (promotedService != null) {
                             Component promotedComponent = getPromotedComponent(compositeService);
-    
-                            // Default to use the interface from the promoted service
+
+                            // Default to use the interface from the promoted
+                            // service
                             if (compositeService.getInterfaceContract() == null) {
-                                compositeService.setInterfaceContract(promotedService.getInterfaceContract());
+                                compositeService.setInterfaceContract(promotedService
+                                    .getInterfaceContract());
                             }
                             if (componentService.getInterfaceContract() == null) {
-                                componentService.setInterfaceContract(promotedService.getInterfaceContract());
+                                componentService.setInterfaceContract(promotedService
+                                    .getInterfaceContract());
                             }
-    
-                            // Create a new component service to represent this composite
+
+                            // Create a new component service to represent this
+                            // composite
                             // service on the promoted component
-                            ComponentService newComponentService = assemblyFactory.createComponentService();
+                            ComponentService newComponentService =
+                                assemblyFactory.createComponentService();
                             newComponentService.setName("$promoted$." + compositeService.getName());
                             promotedComponent.getServices().add(newComponentService);
                             newComponentService.setService(promotedService.getService());
-                            newComponentService.getBindings().addAll(compositeService.getBindings());
-                            newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                            if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                            newComponentService.getBindings()
+                                .addAll(compositeService.getBindings());
+                            newComponentService.setInterfaceContract(compositeService
+                                .getInterfaceContract());
+                            if (compositeService.getInterfaceContract() != null && compositeService
+                                .getInterfaceContract().getCallbackInterface() != null) {
                                 newComponentService.setCallback(assemblyFactory.createCallback());
                                 if (compositeService.getCallback() != null) {
-                                    newComponentService.getCallback().getBindings().addAll(
-                                                                                           compositeService.getCallback().getBindings());
+                                    newComponentService.getCallback().getBindings()
+                                        .addAll(compositeService.getCallback().getBindings());
                                 }
                             }
-                            
+
                             // Create a self-reference for the promoted service
-                            ComponentReference selfReference = createSelfReference(promotedComponent, newComponentService);
-                            Binding binding = BindingUtil.resolveBindings(selfReference, promotedComponent, newComponentService);
+                            ComponentReference selfReference =
+                                createSelfReference(promotedComponent, newComponentService);
+                            Binding binding =
+                                BindingUtil.resolveBindings(selfReference,
+                                                            promotedComponent,
+                                                            newComponentService);
                             selfReference.getBindings().clear();
                             selfReference.getBindings().add(binding);
                             selfReference.getTargets().clear();
 
-                            // Change the composite service to now promote the newly
+                            // Change the composite service to now promote the
+                            // newly
                             // created component service directly
                             compositeService.setPromotedService(newComponentService);
                         }
@@ -887,21 +1049,22 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
-    
+
         // Process composite services declared in this composite
         for (Service service : composite.getServices()) {
             CompositeService compositeService = (CompositeService)service;
-    
+
             // Get the inner most promoted service
             ComponentService promotedService = getPromotedComponentService(compositeService);
             if (promotedService != null) {
                 Component promotedComponent = getPromotedComponent(compositeService);
-    
+
                 // Default to use the interface from the promoted service
-                if (compositeService.getInterfaceContract() == null && promotedService.getInterfaceContract() != null) {
+                if (compositeService.getInterfaceContract() == null && promotedService
+                    .getInterfaceContract() != null) {
                     compositeService.setInterfaceContract(promotedService.getInterfaceContract());
                 }
-    
+
                 // Create a new component service to represent this composite
                 // service on the promoted component
                 ComponentService newComponentService = assemblyFactory.createComponentService();
@@ -910,11 +1073,12 @@ public class CompositeConfigurationBuilderImpl {
                 newComponentService.setService(promotedService.getService());
                 newComponentService.getBindings().addAll(compositeService.getBindings());
                 newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                if (compositeService.getInterfaceContract() != null && compositeService
+                    .getInterfaceContract().getCallbackInterface() != null) {
                     newComponentService.setCallback(assemblyFactory.createCallback());
                     if (compositeService.getCallback() != null) {
-                        newComponentService.getCallback().getBindings().addAll(
-                                                                                   compositeService.getCallback().getBindings());
+                        newComponentService.getCallback().getBindings().addAll(compositeService
+                            .getCallback().getBindings());
                     }
                 }
 
@@ -937,17 +1101,17 @@ public class CompositeConfigurationBuilderImpl {
         if (componentService != null) {
             Service service = componentService.getService();
             if (componentService.getName() != null && service instanceof CompositeService) {
-    
+
                 // Continue to follow the service promotion chain
                 return getPromotedComponentService((CompositeService)service);
-    
+
             } else {
-    
+
                 // Found a non-composite service
                 return componentService;
             }
         } else {
-    
+
             // No promoted service
             return null;
         }
@@ -965,20 +1129,111 @@ public class CompositeConfigurationBuilderImpl {
         if (componentService != null) {
             Service service = componentService.getService();
             if (componentService.getName() != null && service instanceof CompositeService) {
-    
+
                 // Continue to follow the service promotion chain
                 return getPromotedComponent((CompositeService)service);
-    
+
             } else {
-    
+
                 // Found a non-composite service
                 return compositeService.getPromotedComponent();
             }
         } else {
-    
+
             // No promoted service
             return null;
         }
     }
 
+    private void computeIntents(List<Binding> bindings, List<Intent> inheritedIntents) {
+        boolean found = false;
+
+        for (Binding binding : bindings) {
+            if (binding instanceof IntentAttachPoint) {
+                IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
+                IntentAttachPointType bindingType = policiedBinding.getType();
+
+                // validate intents specified for the binding
+                for (Intent intent : policiedBinding.getRequiredIntents()) {
+                    for (QName constrained : intent.getConstrains()) {
+                        if (bindingType.getName().getNamespaceURI().equals(constrained
+                            .getNamespaceURI()) && bindingType.getName().getLocalPart()
+                            .startsWith(constrained.getLocalPart())) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        warning("Policy Intent '" + intent.getName()
+                            + "' does not constrain binding type  "
+                            + bindingType, binding);
+                    }
+                }
+
+                for (Intent intent : inheritedIntents) {
+                    for (QName constrained : intent.getConstrains()) {
+                        if (bindingType.getName().getNamespaceURI().equals(constrained
+                            .getNamespaceURI()) && bindingType.getName().getLocalPart()
+                            .startsWith(constrained.getLocalPart())) {
+                            policiedBinding.getRequiredIntents().add(intent);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void computePolicySets(Base parent,
+                                   List<Binding> bindings,
+                                   List<PolicySet> inheritedPolicySets) {
+        String appliesTo = null;
+
+        for (Binding binding : bindings) {
+            if (binding instanceof PolicySetAttachPoint) {
+                PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
+                IntentAttachPointType bindingType = policiedBinding.getType();
+
+                //validate policysets specified for the binding
+                for (PolicySet policySet : policiedBinding.getPolicySets()) {
+                    appliesTo = policySet.getAppliesTo();
+
+                    if (!isPolicySetApplicable(parent, appliesTo, bindingType)) {
+                        warning("Policy Set '" + policySet.getName()
+                            + "' does not apply to binding type  "
+                            + bindingType, binding);
+
+                    }
+                }
+
+                for (PolicySet policySet : inheritedPolicySets) {
+                    appliesTo = policySet.getAppliesTo();
+
+                    if (isPolicySetApplicable(parent, appliesTo, bindingType)) {
+                        policiedBinding.getPolicySets().add(policySet);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isPolicySetApplicable(Base parent,
+                                          String xpath,
+                                          IntentAttachPointType bindingType) {
+        if (parent instanceof ComponentReference) {
+        } else if (parent instanceof ComponentReference) {
+        } else if (parent instanceof Component) {
+        } else if (parent instanceof CompositeService) {
+        } else if (parent instanceof CompositeReference) {
+
+        }
+        return true;
+    }
+
+    private <T> void addInheritedPolicies(List<T> sourceList, List<T> targetList) {
+        if (sourceList != null) {
+            targetList.addAll(sourceList);
+        }
+    }
 }
