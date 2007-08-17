@@ -24,31 +24,76 @@ import java.net.URL;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.domain.impl.DistributedSCADomainImpl;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
 /**
- * This client program shows how to run a distributed SCA node. In this case a 
- * calculator node has been constructed specifically for running the calculator 
- * composite. 
+ * An embeddable node implementation. 
  */
 public class EmbeddedNode {
     
+    // The data required to get the domain up and running on this node
     private String nodeName;
     private String domainName; 
     private EmbeddedSCADomain domain;
+    private DistributedSCADomainImpl distributedDomain;
     
-    // should be a collection but assuming only one domain
-    // per node for now
-    private DistributedSCADomain distributedDomain;
+    // Node management 
+    private EmbeddedSCADomain management;
     
-    public EmbeddedNode(String nodeName){
+    public EmbeddedNode(String nodeName)
+      throws ActivationException {
         this.nodeName = nodeName;
+      
+        try {
+            // This is starting a local domain just to use component references to 
+            // talk to the domain node. It maybe that we can slim this down when we have the 
+            // remote service reference code working.
+            
+            ClassLoader cl = EmbeddedNode.class.getClassLoader(); 
+            
+            // start a local domain to run management components
+            management = new EmbeddedSCADomain(cl, "management");   
+            management.start();
+            
+            // add management composite to the management domain
+            ContributionService contributionService = management.getContributionService();
+            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource("management/");
+            
+            if ( contributionURL != null){
+                System.err.println(contributionURL.toString());
+                Contribution contribution = contributionService.contribute("http://management", 
+                                                                           contributionURL, 
+                                                                           null, //resolver, 
+                                                                           false);
+                Composite composite = contribution.getDeployables().get(0);
+                management.getDomainComposite().getIncludes().add(composite);
+                management.getCompositeBuilder().build(composite); 
+                management.getCompositeActivator().activate(composite); 
+                management.getCompositeActivator().start(composite);
+                
+                // get the management components out of the domain so that they 
+                // can be configured/used. None are yet but this would be the place to 
+                // get components out of the management domain and give them access to 
+                // useful parts of the node
+            
+            } else {
+                throw new ActivationException("Can't find the management contribution on the classpath");
+            }
+                        
+        } catch(Exception ex) {
+            System.err.println("Exception when creating management components " + ex.getMessage());
+            domain = null;
+            throw new ActivationException(ex);
+        } 
+
     }
     
-    public SCADomain createDomain(DistributedSCADomain distributedDomain){
-        this.distributedDomain = distributedDomain;
+    public SCADomain attachDomain(DistributedSCADomain distributedDomain){
+        this.distributedDomain = (DistributedSCADomainImpl) distributedDomain;
         domainName = distributedDomain.getDomainName();
         
         try {
@@ -64,8 +109,12 @@ public class EmbeddedNode {
             domain = null;
         }
         
-        // add node information into the distributed domain
+        // add local information into the distributed domain
         this.distributedDomain.setNodeName(nodeName);
+        this.distributedDomain.setLocalDomain(management); 
+        
+        // add domain information into the management components that need it
+        
         
         return domain;
     }

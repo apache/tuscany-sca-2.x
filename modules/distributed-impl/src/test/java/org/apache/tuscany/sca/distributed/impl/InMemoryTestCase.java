@@ -1,3 +1,4 @@
+package org.apache.tuscany.sca.distributed.impl;
 
 
 import junit.framework.Assert;
@@ -40,19 +41,19 @@ public class InMemoryTestCase {
         // create the node that runs the 
         // calculator component
         nodeA = new EmbeddedNode("nodeA");
-        domainA = nodeA.createDomain(distributedDomain);
+        domainA = nodeA.attachDomain(distributedDomain);
         nodeA.addContribution(DEFULT_DOMAIN_NAME, null);
 
         // create the node that runs the 
         // add component
         nodeB = new EmbeddedNode("nodeB");
-        domainB = nodeB.createDomain(distributedDomain);
+        domainB = nodeB.attachDomain(distributedDomain);
         nodeB.addContribution(DEFULT_DOMAIN_NAME, null);         
  
         // create the node that runs the 
         // subtract component      
         nodeC = new EmbeddedNode("nodeC");
-        domainC = nodeC.createDomain(distributedDomain);
+        domainC = nodeC.attachDomain(distributedDomain);
         nodeC.addContribution(DEFULT_DOMAIN_NAME, null);  
      
         

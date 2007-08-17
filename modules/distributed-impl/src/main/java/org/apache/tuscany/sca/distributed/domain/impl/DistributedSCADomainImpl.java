@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
 
 /**
@@ -41,6 +42,7 @@ public class DistributedSCADomainImpl implements DistributedSCADomain {
     
     private String nodeName;
     private String domainName;
+    protected EmbeddedSCADomain domain;
     
     public DistributedSCADomainImpl(String domainName){
         this.domainName = domainName;      
@@ -67,6 +69,10 @@ public class DistributedSCADomainImpl implements DistributedSCADomain {
     public void setDomainName(String domainName){
         this.domainName = domainName;
     }    
+    
+    public void setLocalDomain(EmbeddedSCADomain localDomain){
+        this.domain = localDomain;
+    }
     
     public ServiceDiscovery getServiceDiscovery(){
         return null;

@@ -19,6 +19,15 @@
 
 package org.apache.tuscany.sca.distributed.management.impl;
 
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.client.Options;
+import org.apache.axis2.rpc.client.RPCServiceClient;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.osoa.sca.annotations.Reference;
 
@@ -42,9 +51,15 @@ public class ServiceDiscoveryNetworkImpl implements ServiceDiscovery{
      * @param bindingName the remote binding that is providing the endpoint
      * @param url the enpoint url
      */
-    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
-        System.err.println("Registering service " + serviceName);
-        serviceDiscovery.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
+    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+        System.err.println("Registering service: [" + 
+                domainUri + " " +
+                nodeUri + " " +
+                serviceName + " " +
+                bindingName + " " +
+                URL +
+                "]");
+        return serviceDiscovery.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
     }
     
    
@@ -57,7 +72,12 @@ public class ServiceDiscoveryNetworkImpl implements ServiceDiscovery{
      * @return url the endpoint url
      */
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
-        System.err.println("Finding service " + serviceName);
+        System.err.println("Finding service: [" + 
+                domainUri + " " +
+                serviceName + " " +
+                bindingName +
+                "]");
+        
         return serviceDiscovery.findServiceEndpoint(domainUri, serviceName, bindingName);
     }
     
