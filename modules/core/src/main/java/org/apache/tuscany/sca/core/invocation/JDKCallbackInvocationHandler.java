@@ -22,9 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -50,6 +56,27 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         this.wires = wires;
     }
 
+    private RuntimeComponentReference bind(RuntimeComponentReference reference,
+                                           RuntimeComponent component,
+                                           RuntimeComponentService service) throws CloneNotSupportedException {
+        RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
+        ref.getTargets().add(service);
+        ref.getBindings().clear();
+        for (Binding binding : service.getBindings()) {
+            if (binding instanceof WireableBinding) {
+                WireableBinding wireableBinding = (WireableBinding)((WireableBinding)binding).clone();
+                wireableBinding.setTargetBinding(binding);
+                wireableBinding.setTargetComponent(component);
+                wireableBinding.setTargetComponentService(service);
+                wireableBinding.setRemote(false);
+                ref.getBindings().add(wireableBinding);
+            } else {
+                ref.getBindings().add(binding);
+            }
+        }
+        return ref;
+    }
+
     @SuppressWarnings( {"unchecked"})
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
@@ -69,17 +96,26 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             //FIXME: need better exception
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
         }
-        setConversational(wire);
+        RuntimeWire resolvedWire = (RuntimeWire)wire.clone();
+        EndpointReference callback = msgContext.getFrom().getCallbackEndpoint();
+        if (callback != null) {
+            RuntimeComponentReference ref =
+                bind((RuntimeComponentReference)wire.getSource().getContract(),
+                     callback.getComponent(),
+                     (RuntimeComponentService)callback.getContract());
+            resolvedWire = ref.getRuntimeWires().get(0);
+        }
+        setConversational(resolvedWire);
         setEndpoint(msgContext.getFrom());
 
         //FIXME: can we use the same code as JDKInvocationHandler to select the chain? 
-        InvocationChain chain = getInvocationChain(method, wire);
+        InvocationChain chain = getInvocationChain(method, resolvedWire);
         if (chain == null) {
             throw new IllegalArgumentException("No matching operation is found: " + method);
         }
 
         try {
-            return invoke(chain, args, wire);
+            return invoke(chain, args, resolvedWire);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {

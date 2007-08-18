@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface EndpointReference {
+public interface EndpointReference extends Cloneable {
     /**
      * Get the component for the endpoint
      * @return The component, null of the EPR is for a non-SCA service
@@ -85,4 +85,6 @@ public interface EndpointReference {
      */
     void setCallbackEndpoint(EndpointReference callbackEndpoint);
 
+    Object clone() throws CloneNotSupportedException;   
+    
 }

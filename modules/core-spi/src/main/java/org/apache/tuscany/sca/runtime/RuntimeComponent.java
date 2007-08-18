@@ -30,7 +30,7 @@ import org.osoa.sca.ComponentContext;
  * 
  * @version $Rev$ $Date$
  */
-public interface RuntimeComponent extends Component, ComponentContext {
+public interface RuntimeComponent extends Component {
     /**
      * Set the implementation-specific configuration for this component
      * @param implementationProvider The object that manages the component implementation
@@ -42,6 +42,17 @@ public interface RuntimeComponent extends Component, ComponentContext {
      * @return The implementation provider for this component
      */
     ImplementationProvider getImplementationProvider();
+    
+    /**
+     * Get the associated component context
+     * @return
+     */
+    ComponentContext getComponentContext();
+    /**
+     * Set the associated component context
+     * @param context
+     */
+    void setComponentContext(ComponentContext context);
     
     /**
      * Tests if the RuntimeComponent is started

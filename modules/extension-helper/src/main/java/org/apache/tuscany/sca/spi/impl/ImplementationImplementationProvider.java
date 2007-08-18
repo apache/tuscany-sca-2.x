@@ -45,10 +45,14 @@ public class ImplementationImplementationProvider implements ImplementationProvi
     RuntimeComponent runtimeComponent;
     Implementation impl;
     Object userImpl;
-    
+    InvokerFactory factory;
+
     List<InvokerProxy> invokers = new ArrayList<InvokerProxy>();
-    
-    public ImplementationImplementationProvider(ImplementationActivator implementationActivator, RuntimeComponent rc, Implementation impl, Object userImpl) {
+
+    public ImplementationImplementationProvider(ImplementationActivator implementationActivator,
+                                                RuntimeComponent rc,
+                                                Implementation impl,
+                                                Object userImpl) {
         this.implementationActivator = implementationActivator;
         this.runtimeComponent = rc;
         this.impl = impl;
@@ -57,19 +61,15 @@ public class ImplementationImplementationProvider implements ImplementationProvi
 
     public Invoker createInvoker(RuntimeComponentService arg0, final Operation op) {
         InvokerProxy invoker = new InvokerProxy(op);
-        invokers.add(invoker);    
         return invoker;
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
-        throw new RuntimeException("TODO: callbacks not yet implemented"); 
+        throw new RuntimeException("TODO: callbacks not yet implemented");
     }
 
     public void start() {
-        InvokerFactory factory = implementationActivator.createInvokerFactory(runtimeComponent, impl, userImpl);
-        for (InvokerProxy invoker : invokers) {
-            invoker.start(factory);
-        }
+        factory = implementationActivator.createInvokerFactory(runtimeComponent, impl, userImpl);
     }
 
     public void stop() {
@@ -78,14 +78,20 @@ public class ImplementationImplementationProvider implements ImplementationProvi
     class InvokerProxy implements Invoker {
         Invoker invoker;
         Operation op;
+
         InvokerProxy(Operation op) {
             this.op = op;
         }
-        public Message invoke(Message arg0) {
-            return invoker.invoke(arg0);
+
+        public Message invoke(Message msg) {
+            init();
+            return invoker.invoke(msg);
         }
-        public void start(InvokerFactory factory) {
-            invoker = factory.createInvoker(op);
+
+        public synchronized void init() {
+            if (invoker == null) {
+                invoker = factory.createInvoker(op);
+            }
         }
-     }
+    }
 }

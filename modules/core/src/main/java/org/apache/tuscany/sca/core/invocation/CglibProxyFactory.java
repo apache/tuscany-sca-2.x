@@ -89,7 +89,7 @@ public class CglibProxyFactory implements ProxyFactory {
      * create the callback proxy with cglib. use the same
      * JDKCallbackInvocationHandler as JDKProxyService.
      */
-    public Object createCallbackProxy(Class<?> interfaze, final List<RuntimeWire> wires) throws ProxyCreationException {
+    public <T> T createCallbackProxy(Class<T> interfaze, final List<RuntimeWire> wires) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(interfaze);
         enhancer.setCallback(new MethodInterceptor() {

@@ -128,6 +128,11 @@ public class RuntimeWireImpl implements RuntimeWire {
     public EndpointReference getTarget() {
         return wireTarget;
     }
+    
+    public void setTarget(EndpointReference target) {
+        this.wireTarget = target;
+        this.chains = null;
+    }
 
     /**
      * Add the interceptor for a binding
@@ -203,5 +208,17 @@ public class RuntimeWireImpl implements RuntimeWire {
             invoker = provider.createInvoker((RuntimeComponentService)service, operation);
             chain.addInvoker(invoker);
         }
+    }
+
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        RuntimeWireImpl copy =(RuntimeWireImpl) super.clone();
+        copy.wireSource = (EndpointReference) wireSource.clone();
+        copy.wireTarget = (EndpointReference) wireTarget.clone();
+        copy.chains = null;
+        return copy;
     }
 }

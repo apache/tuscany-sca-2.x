@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
  * 
  * @version $Rev$ $Date$
  */
-public interface RuntimeWire {
+public interface RuntimeWire extends Cloneable {
 
     /**
      * Get the source of the wire
@@ -44,7 +44,7 @@ public interface RuntimeWire {
      * @return The end point reference of the target
      */
     EndpointReference getTarget();
-
+    void setTarget(EndpointReference target);
     /**
      * Returns the invocation chains for service operations associated with the
      * wire
@@ -53,5 +53,9 @@ public interface RuntimeWire {
      *         wire
      */
     List<InvocationChain> getInvocationChains();
-   
+    /**
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;   
 }

@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.List;
 
 import org.apache.tuscany.sca.factory.ObjectCreationException;
-import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -31,14 +30,12 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  *
  * @version $Rev$ $Date$
  */
-public class CallbackWireObjectFactory implements ObjectFactory {
-    private ProxyFactory proxyFactory;
-    private Class<?> interfaze;
+public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
     private List<RuntimeWire> wires;
-    private RuntimeWire resolvedWire;
     private EndpointReference resolvedEndpoint;
 
-    public CallbackWireObjectFactory(Class<?> interfaze, ProxyFactory proxyService, List<RuntimeWire> wires) {
+    public CallbackWireObjectFactory(Class<B> interfaze, ProxyFactory proxyService, List<RuntimeWire> wires) {
+        super(interfaze, null, proxyService);
         this.interfaze = interfaze;
         this.proxyFactory = proxyService;
         this.wires = wires;
@@ -46,18 +43,18 @@ public class CallbackWireObjectFactory implements ObjectFactory {
 
     public void resolveTarget() {
         Message msgContext = ThreadMessageContext.getMessageContext();
-        resolvedWire = selectCallbackWire(msgContext, wires);
-        if (resolvedWire == null) {
+        wire = selectCallbackWire(msgContext, wires);
+        if (wire == null) {
             //FIXME: need better exception
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
         }
         resolvedEndpoint = msgContext.getFrom();
     }
 
-    public Object getInstance() throws ObjectCreationException {
-        if (resolvedWire != null) {
+    public B getInstance() throws ObjectCreationException {
+        if (wire != null) {
             // wire and endpoint already resolved, so return a pre-wired proxy
-            return proxyFactory.createProxy(interfaze, resolvedWire, null, resolvedEndpoint);
+            return proxyFactory.createProxy(interfaze, wire, null, resolvedEndpoint);
         } else {
             // wire not yet selected, so return a proxy that resolves the target dynamically
             return proxyFactory.createCallbackProxy(interfaze, wires);

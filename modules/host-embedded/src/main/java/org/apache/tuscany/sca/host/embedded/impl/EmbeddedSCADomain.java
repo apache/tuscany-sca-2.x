@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -29,13 +26,13 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
@@ -175,7 +172,7 @@ public class EmbeddedSCADomain extends SCADomain {
                         if (serviceName != null) {
                             serviceName = "$promoted$." + serviceName;
                         }
-                        componentContext = (ComponentContext)compositeService.getPromotedComponent();
+                        componentContext = ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
                     }
                     break;
                 }
@@ -184,7 +181,7 @@ public class EmbeddedSCADomain extends SCADomain {
                 throw new ServiceRuntimeException("Composite service not found: " + name);
             }
         } else {
-            componentContext = (ComponentContext)component;
+            componentContext = ((RuntimeComponent)component).getComponentContext();
         }
 
         ServiceReference<B> serviceReference;

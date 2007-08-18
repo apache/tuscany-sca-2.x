@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -82,6 +83,14 @@ public interface RuntimeComponentService extends ComponentService {
      * @return The runtime invoker
      */
     Invoker getInvoker(Binding binding, Operation operation);    
+
+    /**
+     * Get the invoker for the given binding and operation
+     * @param binding The assembly model binding 
+     * @param operation The assembly model operation
+     * @return The runtime invoker
+     */
+    Invoker getInvoker(Binding binding, InterfaceContract interfaceContract, Operation operation);    
     
     /**
      * Get the invocation chain for the given binding and operation

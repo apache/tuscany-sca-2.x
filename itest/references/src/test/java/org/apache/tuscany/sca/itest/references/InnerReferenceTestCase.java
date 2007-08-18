@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.itest.references;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
@@ -68,7 +68,11 @@ public class InnerReferenceTestCase {
 
     @Test
     public void testRequiredFalseReference() {
-        assertNull(acomponent.getDReference());
+        try {
+            acomponent.getDReference().foo();
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
     }
 
     public static void main(String[] args) throws Exception {

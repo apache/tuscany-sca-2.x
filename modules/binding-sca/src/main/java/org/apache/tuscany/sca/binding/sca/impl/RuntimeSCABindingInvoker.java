@@ -26,7 +26,8 @@ public class RuntimeSCABindingInvoker implements Interceptor {
 
     private Invoker next;
     
-    public RuntimeSCABindingInvoker() {
+    public RuntimeSCABindingInvoker(Invoker invoker) {
+        this.next = invoker;
     }
 
     public void setNext(Invoker next) {

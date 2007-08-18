@@ -23,12 +23,8 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -48,38 +44,39 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private RuntimeComponentReference reference;
     private SCABinding binding;
     private boolean started = false;
-    
+
     private ReferenceBindingProvider2 distributedProvider = null;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeComponent component,
                                               RuntimeComponentReference reference,
-                                              SCABinding binding) 
-      throws BindingNotDistributedException {
+                                              SCABinding binding) throws BindingNotDistributedException {
         this.reference = reference;
         this.binding = binding;
 
         // look to see if a distributed SCA binding implementation has
         // been included on the classpath. This will be needed by the 
         // provider itself to do it's thing
-        ProviderFactoryExtensionPoint factoryExtensionPoint = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        BindingProviderFactory<DistributedSCABinding> distributedProviderFactory = (BindingProviderFactory<DistributedSCABinding>)
-            factoryExtensionPoint.getProviderFactory(DistributedSCABinding.class);
+        ProviderFactoryExtensionPoint factoryExtensionPoint =
+            extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        BindingProviderFactory<DistributedSCABinding> distributedProviderFactory =
+            (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
+                .getProviderFactory(DistributedSCABinding.class);
 
         // if there is a wire to this service that crosses the node boundary 
-        if (((WireableBinding)binding).getIsRemote() == true) {
+        if (((WireableBinding)binding).isRemote() == true) {
             // Make sure that we have a distributed sca binding and 
             // that the interface is remoteable
-            
-            if ((distributedProviderFactory != null) && 
-                (((SCABindingImpl)binding).getDistributedDomain() != null) &&
-                (reference.getInterfaceContract().getInterface().isRemotable())){                  
+
+            if ((distributedProviderFactory != null) && (((SCABindingImpl)binding).getDistributedDomain() != null)
+                && (reference.getInterfaceContract().getInterface().isRemotable())) {
                 DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
                 distributedBinding.setSCABinging(binding);
-                
-                distributedProvider = (ReferenceBindingProvider2)
-                    distributedProviderFactory.createReferenceBindingProvider(component, reference, distributedBinding);
-               
+
+                distributedProvider =
+                    (ReferenceBindingProvider2)distributedProviderFactory
+                        .createReferenceBindingProvider(component, reference, distributedBinding);
+
             } else {
                 throw new BindingNotDistributedException();
             }
@@ -87,11 +84,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (distributedProvider != null){
+        if (distributedProvider != null) {
             return distributedProvider.getBindingInterfaceContract();
         } else {
             return reference.getInterfaceContract();
-        }        
+        }
     }
 
     public boolean supportsAsyncOneWayInvocation() {
@@ -99,10 +96,15 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public Invoker createInvoker(Operation operation) {
-        if (distributedProvider != null){
+        if (distributedProvider != null) {
             return distributedProvider.createInvoker(operation);
         } else {
-            return new RuntimeSCABindingInvoker(); 
+            RuntimeWire wire = reference.getRuntimeWire(binding);
+            Invoker invoker = getInvoker(wire, operation);
+            if (invoker == null) {
+                throw new IllegalStateException("No service invoker");
+            }
+            return new RuntimeSCABindingInvoker(invoker);
         }
     }
 
@@ -121,46 +123,39 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         } else {
             started = true;
         }
-        for (RuntimeWire sourceWire : reference.getRuntimeWires()) {
-            if (sourceWire.getSource().getBinding() == binding) {
-                EndpointReference target = sourceWire.getTarget();
-                if (target != null) {
-                    RuntimeComponentService service = (RuntimeComponentService)target.getContract();
-                    if (service != null) { // not a callback wire
-                        SCABinding scaBinding = service.getBinding(SCABinding.class);
-                        RuntimeWire targetWire = service.getRuntimeWire(scaBinding);
-                        boolean dynamicService = service.getInterfaceContract().getInterface().isDynamic();
-                        if (!dynamicService) {
-                            sourceWire.getTarget().setInterfaceContract(targetWire.getTarget().getInterfaceContract());
-                        }
-                        for (InvocationChain sourceChain : sourceWire.getInvocationChains()) {
-                            InvocationChain targetChain =
-                                service.getInvocationChain(scaBinding, sourceChain.getTargetOperation());
-                            if (targetChain == null && dynamicService) {
-                                targetChain = targetWire.getInvocationChains().get(0);
-                            }
-                            if (targetChain != null) {
-                                ((Interceptor)sourceChain.getTailInvoker()).setNext(targetChain.getHeadInvoker());
-                                if (!dynamicService) {
-                                    // FIXME: [rfeng] Change the target operation will impact the interceptors
-                                    sourceChain.setTargetOperation(targetChain.getTargetOperation());
-                                }
-                            } else {
-                                throw new RuntimeException("Incompatible operations for source and target wires");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        if (distributedProvider != null){
+
+//        ComponentService service = ((WireableBinding)binding).getTargetComponentService();
+//        if (service != null) {
+//            RuntimeWire wire = reference.getRuntimeWire(binding);
+//            InterfaceContract interfaceContract = service.getInterfaceContract();
+//            boolean dynamicService = interfaceContract.getInterface().isDynamic();
+//            if (!dynamicService) {
+//                wire.getTarget().setInterfaceContract(interfaceContract);
+//            }
+//        }
+
+        if (distributedProvider != null) {
             distributedProvider.start();
         }
     }
 
+    /**
+     * @param wire
+     */
+    private Invoker getInvoker(RuntimeWire wire, Operation operation) {
+        EndpointReference target = wire.getTarget();
+        if (target != null) {
+            RuntimeComponentService service = (RuntimeComponentService)target.getContract();
+            if (service != null) { // not a callback wire
+                SCABinding scaBinding = service.getBinding(SCABinding.class);
+                return service.getInvoker(scaBinding, wire.getSource().getInterfaceContract(), operation);
+            }
+        }
+        return null;
+    }
+
     public void stop() {
-        if (distributedProvider != null){
+        if (distributedProvider != null) {
             distributedProvider.stop();
         }
     }

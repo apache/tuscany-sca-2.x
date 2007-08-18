@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.impl;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
@@ -28,18 +27,12 @@ import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
-import org.apache.tuscany.sca.provider.ProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * @version $Rev$ $Date$
@@ -67,7 +60,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
         this.binding = binding;
         
         // if there is potentially a wire to this service that crosses the node boundary 
-        if (((WireableBinding)binding).getIsRemote() == true) {        
+        if (((WireableBinding)binding).isRemote()) {        
             // look to see if a distributed SCA binding implementation has
             // been included on the classpath and store it if it has
             ProviderFactoryExtensionPoint factoryExtensionPoint = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);

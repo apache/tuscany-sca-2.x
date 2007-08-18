@@ -135,4 +135,12 @@ public class EndpointReferenceImpl implements EndpointReference {
             return false;
         return true;
     }
+
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

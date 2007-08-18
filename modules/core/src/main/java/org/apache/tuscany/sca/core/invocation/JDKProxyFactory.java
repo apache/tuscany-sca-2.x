@@ -71,7 +71,7 @@ public class JDKProxyFactory implements ProxyFactory {
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
     }    
 
-    public Object createCallbackProxy(Class<?> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
+    public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
         ClassLoader cl = interfaze.getClassLoader();
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, wires);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));

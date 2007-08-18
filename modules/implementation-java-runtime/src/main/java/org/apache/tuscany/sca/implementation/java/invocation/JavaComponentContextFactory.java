@@ -35,6 +35,6 @@ public class JavaComponentContextFactory implements ObjectFactory<ComponentConte
 
 
     public ComponentContext getInstance() throws ObjectCreationException {
-        return component.getComponentContext();
+        return component.getComponent().getComponentContext();
     }
 }

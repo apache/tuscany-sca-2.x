@@ -94,7 +94,7 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createCallbackProxy(java.lang.Class,
      *      java.util.List)
      */
-    public Object createCallbackProxy(Class<?> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
+    public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
         if (interfaze.isInterface()) {
             return interfaceFactory.createCallbackProxy(interfaze, wires);
         } else {

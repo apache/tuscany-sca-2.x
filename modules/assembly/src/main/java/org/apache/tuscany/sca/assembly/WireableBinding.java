@@ -46,12 +46,12 @@ public interface WireableBinding extends Binding, Cloneable {
      * 
      * @param isRemote
      */
-    void setIsRemote(Boolean isRemote);
+    void setRemote(boolean isRemote);
     
     /**
      * @return the flag indicating whether the binding targets a remote component
      */
-    boolean getIsRemote();
+    boolean isRemote();
      
     /**
      * @return
