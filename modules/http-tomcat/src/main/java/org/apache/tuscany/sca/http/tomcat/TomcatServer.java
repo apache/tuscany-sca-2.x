@@ -144,6 +144,7 @@ public class TomcatServer implements ServletHost {
 
             // Create the root context
             StandardContext context = new StandardContext();
+            context.setParentClassLoader(Thread.currentThread().getContextClassLoader());
             context.setDocBase("");
             context.setPath("");
             ContextConfig config = new ContextConfig();
