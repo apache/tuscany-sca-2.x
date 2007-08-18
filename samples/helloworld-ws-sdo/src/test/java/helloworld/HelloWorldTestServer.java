@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Starts up the SCA runtime which starts listening for service requests
  */
-public class HelloWorldServerTest {
+public class HelloWorldTestServer {
 
     private SCADomain scaDomain;
 

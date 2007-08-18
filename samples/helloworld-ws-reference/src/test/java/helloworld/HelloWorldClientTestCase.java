@@ -45,7 +45,7 @@ public class HelloWorldClientTestCase {
             helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
             helloTuscanyService = scaDomain.getService(HelloWorldService.class, "HelloTuscanyServiceComponent");
     
-            server =  new SCATestCaseRunner(HelloWorldServerTest.class);
+            server =  new SCATestCaseRunner(HelloWorldTestServer.class);
             server.before();
 
         } catch (Throwable e) {

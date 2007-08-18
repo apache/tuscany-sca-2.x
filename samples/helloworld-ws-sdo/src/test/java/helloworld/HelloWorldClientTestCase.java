@@ -43,7 +43,7 @@ public class HelloWorldClientTestCase {
             scaDomain = SCADomain.newInstance("helloworldwsclient.composite");
             helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
     
-            server =  new SCATestCaseRunner(HelloWorldServerTest.class);
+            server =  new SCATestCaseRunner(HelloWorldTestServer.class);
             server.before();
 
         } catch (Throwable e) {
