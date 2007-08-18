@@ -23,7 +23,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +37,10 @@ import org.apache.tuscany.sca.implementation.java.context.ReflectiveInstanceFact
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ArrayMultiplicityObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.EventInvoker;
 import org.apache.tuscany.sca.implementation.java.injection.FieldInjector;
 import org.apache.tuscany.sca.implementation.java.injection.Injector;
 import org.apache.tuscany.sca.implementation.java.injection.InvalidAccessorException;
 import org.apache.tuscany.sca.implementation.java.injection.ListMultiplicityObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.MethodEventInvoker;
 import org.apache.tuscany.sca.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
@@ -55,7 +52,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospect
 public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T> {
     private JavaImplementation definition;
     private ProxyFactory proxyService;
-    private URI groupId;
 
     private final List<JavaElementImpl> injectionSites;
     private final EventInvoker<T> initInvoker;
@@ -71,49 +67,18 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
         injectionSites = new ArrayList<JavaElementImpl>();
     }
 
-    public URI getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(URI groupId) {
-        this.groupId = groupId;
-    }
-
-    public EventInvoker<Object> getInitInvoker() {
-        if (definition.getInitMethod() != null) {
-            return new MethodEventInvoker<Object>(definition.getInitMethod());
-        } else {
-            return null;
-        }
-    }
-
-    public EventInvoker<Object> getDestroyInvoker() {
-        if (definition.getDestroyMethod() != null) {
-            return new MethodEventInvoker<Object>(definition.getDestroyMethod());
-        } else {
-            return null;
-        }
-    }
-
-    public ProxyFactory getProxyFactory() {
+    ProxyFactory getProxyFactory() {
         return proxyService;
     }
 
-    public void setProxyFactory(ProxyFactory proxyService) {
+    void setProxyFactory(ProxyFactory proxyService) {
         this.proxyService = proxyService;
-    }
-
-    /**
-     * @return the constructor
-     */
-    public JavaConstructorImpl<?> getConstructor() {
-        return definition.getConstructor();
     }
 
     /**
      * @return the definition
      */
-    public JavaImplementation getDefinition() {
+    JavaImplementation getImplementation() {
         return definition;
     }
 
@@ -125,7 +90,7 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
                                                 initArgs, injectors, initInvoker, destroyInvoker);
     }
 
-    protected ObjectFactory<?>[] getConstructorArgs() {
+    private ObjectFactory<?>[] getConstructorArgs() {
         JavaConstructorImpl<?> constructor = definition.getConstructor();
         ObjectFactory<?>[] initArgs = new ObjectFactory<?>[constructor.getParameters().length];
         for (int i = 0; i < initArgs.length; i++) {
@@ -137,7 +102,7 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
     }
 
     @SuppressWarnings("unchecked")
-    protected Injector<T>[] getInjectors() {
+    private Injector<T>[] getInjectors() {
         // work around JDK1.5 issue with allocating generic arrays
         @SuppressWarnings("unchecked")
         Injector<T>[] injectors = (Injector<T>[])new Injector[injectionSites.size()];
@@ -166,7 +131,7 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
         return injectors;
     }
 
-    protected Injector<T> createMultiplicityInjector(JavaElementImpl element, List<ObjectFactory<?>> factories) {
+    private Injector<T> createMultiplicityInjector(JavaElementImpl element, List<ObjectFactory<?>> factories) {
         Class<?> interfaceType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
 
         if (element.getAnchor() instanceof Field) {
@@ -204,14 +169,14 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
     /**
      * @return the injectionSites
      */
-    public List<JavaElementImpl> getInjectionSites() {
+    List<JavaElementImpl> getInjectionSites() {
         return injectionSites;
     }
 
     /**
      * @return the factories
      */
-    public Map<JavaElementImpl, Object> getFactories() {
+    Map<JavaElementImpl, Object> getFactories() {
         return factories;
     }
 

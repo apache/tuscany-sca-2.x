@@ -16,14 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.mock;
+package org.apache.tuscany.sca.implementation.java.invocation;
+
+import org.apache.tuscany.sca.implementation.java.injection.InjectionRuntimeException;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Denotes an error when invoking an event on an object
+ *
+ * @version $Rev$ $Date$
  */
-public interface OrderedDependentPojo extends OrderedInitPojo {
+public class EventInvocationException extends InjectionRuntimeException {
+    private static final long serialVersionUID = 1480018831708211581L;
 
-    OrderedInitPojo getPojo();
+    public EventInvocationException() {
+        super();
+    }
 
-    void setPojo(OrderedInitPojo pojo);
+    public EventInvocationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public EventInvocationException(String message) {
+        super(message);
+    }
+
+    public EventInvocationException(Throwable cause) {
+        super(cause);
+    }
+
 }

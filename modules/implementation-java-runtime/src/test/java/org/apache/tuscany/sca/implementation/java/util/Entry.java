@@ -16,21 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.mock;
+package org.apache.tuscany.sca.implementation.java.util;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Implementations are used in wiring tests
+ *
+ * @version $Rev$ $Date$
  */
-public class OrderedDependentPojoImpl extends OrderedInitPojoImpl implements OrderedDependentPojo {
+public interface Entry {
 
-    private OrderedInitPojo pojo;
+    String getString();
 
-    public OrderedInitPojo getPojo() {
-        return pojo;
-    }
-
-    public void setPojo(OrderedInitPojo pojo) {
-        this.pojo = pojo;
-    }
-
+    void setString(String val);
 }
+

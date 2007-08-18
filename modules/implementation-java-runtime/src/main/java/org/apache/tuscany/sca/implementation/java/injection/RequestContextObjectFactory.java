@@ -34,22 +34,22 @@ import org.osoa.sca.RequestContext;
  */
 public class RequestContextObjectFactory implements ObjectFactory<RequestContext> {
     private RequestContextFactory factory;
-    private ProxyFactory proxyService;
+    private ProxyFactory proxyFactory;
 
     public RequestContextObjectFactory(RequestContextFactory factory) {
         this(factory, null);
     }
 
-    public RequestContextObjectFactory(RequestContextFactory factory, ProxyFactory proxyService) {
+    public RequestContextObjectFactory(RequestContextFactory factory, ProxyFactory proxyFactory) {
         this.factory = factory;
-        this.proxyService = proxyService;
+        this.proxyFactory = proxyFactory;
     }
 
     public RequestContext getInstance() throws ObjectCreationException {
         if (factory != null) {
             return factory.createRequestContext();
         } else {
-            return new RequestContextImpl(proxyService);
+            return new RequestContextImpl(proxyFactory);
         }
     }
 }

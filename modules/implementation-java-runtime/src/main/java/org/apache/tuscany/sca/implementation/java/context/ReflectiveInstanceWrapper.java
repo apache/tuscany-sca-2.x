@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.context;
 
-import org.apache.tuscany.sca.implementation.java.injection.EventInvoker;
+import org.apache.tuscany.sca.implementation.java.invocation.EventInvoker;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInitializationException;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.context;
+package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +38,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class JavaPropertyValueObjectFactory {
-    // protected DataBindingRegistry dbRegistry = new DataBindingRegistryImpl();
-    protected Mediator mediator = null;
-    protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
-    boolean isSimpleType;
+    private Mediator mediator = null;
+    private boolean isSimpleType;
 
     public JavaPropertyValueObjectFactory(Mediator mediator) {
         this.mediator = mediator;

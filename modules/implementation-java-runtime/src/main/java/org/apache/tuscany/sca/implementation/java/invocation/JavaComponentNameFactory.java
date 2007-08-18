@@ -25,16 +25,16 @@ import org.apache.tuscany.sca.factory.ObjectFactory;
  * @version $Rev$ $Date$
  */
 public class JavaComponentNameFactory implements ObjectFactory<String> {
-    private final JavaComponentContextProvider component;
+    private final JavaComponentContextProvider componentContextProvider;
 
 
     public JavaComponentNameFactory(JavaComponentContextProvider component) {
-        this.component = component;
+        this.componentContextProvider = component;
     }
 
 
     public String getInstance() throws ObjectCreationException {
-        String uri = component.getUri().toString();
+        String uri = componentContextProvider.getComponent().getURI();
         return uri.substring(uri.lastIndexOf('/')+1);
     }
 }

@@ -20,16 +20,13 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.scope.TargetResolutionException;
@@ -40,55 +37,31 @@ import org.apache.tuscany.sca.scope.TargetResolutionException;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaTargetInvoker implements TargetInvoker {
-    protected Method operation;
-    protected boolean stateless;
-    protected InstanceWrapper target;
-    protected boolean cacheable;
+public class JavaImplementationInvoker implements Invoker {
+    private Method method;
 
     private final ScopeContainer scopeContainer;
 
-    public JavaTargetInvoker(Method operation, RuntimeComponent component) {
-        assert operation != null : "Operation method cannot be null";
-        this.operation = operation;
+    public JavaImplementationInvoker(Method method, RuntimeComponent component) {
+        assert method != null : "Operation method cannot be null";
+        this.method = method;
         this.scopeContainer = ((ScopedRuntimeComponent) component).getScopeContainer();
-        stateless = Scope.STATELESS == this.scopeContainer.getScope();
-    }
-
-    @Override
-    public JavaTargetInvoker clone() throws CloneNotSupportedException {
-        try {
-            JavaTargetInvoker invoker = (JavaTargetInvoker)super.clone();
-            invoker.target = null;
-            return invoker;
-        } catch (CloneNotSupportedException e) {
-            return null; // will not happen
-        }
     }
 
     /**
      * Resolves the target service instance or returns a cached one
      */
     @SuppressWarnings("unchecked")
-    protected InstanceWrapper getInstance(ConversationSequence sequence, Object contextId)
+    private InstanceWrapper getInstance(ConversationSequence sequence, Object contextId)
         throws TargetResolutionException, InvalidConversationSequenceException {
         if (sequence == null) {
-            if (cacheable) {
-                if (target == null) {
-                    target = scopeContainer.getWrapper(contextId);
-                }
-                return target;
-            } else {
-                return scopeContainer.getWrapper(contextId);
-            }
+            return scopeContainer.getWrapper(contextId);
         } else {
             switch (sequence) {
                 case CONVERSATION_START:
-                    assert !cacheable;
                     return scopeContainer.getWrapper(contextId);
                 case CONVERSATION_CONTINUE:
                 case CONVERSATION_END:
-                    assert !cacheable;
                     return scopeContainer.getAssociatedWrapper(contextId);
                 default:
                     throw new InvalidConversationSequenceException("Unknown sequence type: " + String.valueOf(sequence));
@@ -96,10 +69,16 @@ public class JavaTargetInvoker implements TargetInvoker {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Object invokeTarget(final Object payload, final ConversationSequence sequence)
-        throws InvocationTargetException {
+    public Message invoke(Message msg) {
+        Object messageId = msg.getMessageID();
+        if (messageId != null) {
+            Message workContext = ThreadMessageContext.getMessageContext();
+            workContext.setCorrelationID(messageId);
+        }
 
+        ConversationSequence sequence = msg.getConversationSequence();
+        Object payload = msg.getBody();
+        
         // FIXME: How to deal with other scopes
         Object contextId = ThreadMessageContext.getMessageContext().getConversationID();
         try {
@@ -107,53 +86,22 @@ public class JavaTargetInvoker implements TargetInvoker {
             Object instance = wrapper.getInstance();
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
-                ret = operation.invoke(instance, payload);
+                ret = method.invoke(instance, payload);
             } else {
-                ret = operation.invoke(instance, (Object[])payload);
+                ret = method.invoke(instance, (Object[])payload);
             }
             scopeContainer.returnWrapper(wrapper, contextId);
             if (sequence == ConversationSequence.CONVERSATION_END) {
                 // if end conversation, remove resource
                 scopeContainer.remove(contextId);
             }
-            return ret;
-        } catch (InvocationTargetException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new InvocationTargetException(e);
-        }
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object messageId = msg.getMessageID();
-            Message workContext = ThreadMessageContext.getMessageContext();
-            if (messageId != null) {
-                workContext.setCorrelationID(messageId);
-            }
-            Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence());
-            msg.setBody(resp);
+            msg.setBody(ret);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
+        } catch (Exception e) {
+            msg.setFaultBody(e);
         }
         return msg;
-    }
-
-    public boolean isCacheable() {
-        return cacheable;
-    }
-
-    public void setCacheable(boolean cacheable) {
-        this.cacheable = cacheable;
-    }
-
-    protected InvocationChain getInvocationChain(List<InvocationChain> chains, Operation targetOperation) {
-        for (InvocationChain chain : chains) {
-            if (chain.getTargetOperation().equals(targetOperation)) {
-                return chain;
-            }
-        }
-        return null;
     }
 
 }

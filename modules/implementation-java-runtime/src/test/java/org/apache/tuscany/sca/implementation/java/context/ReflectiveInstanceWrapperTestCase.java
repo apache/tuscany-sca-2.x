@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.java.context;
 import static org.easymock.EasyMock.createMock;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.implementation.java.injection.EventInvoker;
+import org.apache.tuscany.sca.implementation.java.invocation.EventInvoker;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInitializationException;
 import org.easymock.EasyMock;

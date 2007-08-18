@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.factory.ObjectFactory;
  * @version $Rev$ $Date$
  * @see org.apache.tuscany.sca.implementation.java.injection.Injector
  */
-public class PojoObjectFactory<T> implements ObjectFactory<T> {
+public class TestObjectFactory<T> implements ObjectFactory<T> {
 
     private final Constructor<T> ctr;
     private ObjectFactory[] initializerFactories;
@@ -41,7 +41,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
      *
      * @param ctr the constructor to use when instantiating a new object
      */
-    public PojoObjectFactory(Constructor<T> ctr) {
+    public TestObjectFactory(Constructor<T> ctr) {
         assert ctr != null;
         this.ctr = ctr;
         initializerFactories = new ObjectFactory[ctr.getParameterTypes().length];
@@ -53,7 +53,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
      * @param ctr       the constructor to use when instantiating a new object
      * @param factories an ordered list of <code>ObjectFactory</code>s to use for returning constructor parameters
      */
-    public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> factories) {
+    public TestObjectFactory(Constructor<T> ctr, List<ObjectFactory> factories) {
         assert ctr != null;
         int params = ctr.getParameterTypes().length;
         assert params == factories.size();

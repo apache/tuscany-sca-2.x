@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.net.URI;
 
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -29,8 +28,8 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.RequestContextObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
@@ -50,7 +49,7 @@ import org.osoa.sca.RequestContext;
  */
 public class JavaImplementationProvider implements ScopedImplementationProvider {
     private JavaImplementation implementation;
-    private JavaComponentContextProvider componentInfo;
+    private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
     
     public JavaImplementationProvider(RuntimeComponent component,
@@ -66,9 +65,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         try {
             JavaInstanceFactoryProvider configuration = new JavaInstanceFactoryProvider(implementation);
             configuration.setProxyFactory(proxyService);
-            // FIXME: Group id to be removed
-            configuration.setGroupId(URI.create("/"));
-            componentInfo =
+            componentContextProvider =
                 new JavaComponentContextProvider(component, configuration, dataBindingRegistry, propertyValueObjectFactory,
                                       componentContextFactory, requestContextFactory);
 
@@ -94,10 +91,10 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             }
 
             if (implementation.getConversationIDMembers().size() > 0) {
-                componentInfo.addConversationIDFactories(implementation.getConversationIDMembers());
+                componentContextProvider.addConversationIDFactories(implementation.getConversationIDMembers());
             }
 
-            componentInfo.configureProperties(component.getProperties());
+            componentContextProvider.configureProperties(component.getProperties());
             handleResources(implementation, proxyService);
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -110,22 +107,22 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             String name = resource.getName();
 
             ObjectFactory<?> objectFactory =
-                (ObjectFactory<?>)componentInfo.getConfiguration().getFactories().get(resource.getElement());
+                (ObjectFactory<?>)componentContextProvider.getInstanceFactoryProvider().getFactories().get(resource.getElement());
             if (objectFactory == null) {
                 Class<?> type = resource.getElement().getType();
                 if (ComponentContext.class.equals(type)) {
-                    objectFactory = new JavaComponentContextFactory(componentInfo);
+                    objectFactory = new JavaComponentContextFactory(componentContextProvider);
                 } else if (RequestContext.class.equals(type)) {
                     objectFactory = new RequestContextObjectFactory(requestContextFactory, proxyService);
                 } else if (String.class.equals(type)) {
-                    objectFactory = new JavaComponentNameFactory(componentInfo);
+                    objectFactory = new JavaComponentNameFactory(componentContextProvider);
                 } else {
                     boolean optional = resource.isOptional();
                     String mappedName = resource.getMappedName();
                     objectFactory = createResourceObjectFactory(type, mappedName, optional, null);
                 }
             }
-            componentInfo.addResourceFactory(name, objectFactory);
+            componentContextProvider.addResourceFactory(name, objectFactory);
         }
     }
 
@@ -136,13 +133,9 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         return new ResourceObjectFactory<T>(type, mappedName, optional, host);
     }
 
-    public Object createInstance(RuntimeComponent component, ComponentService service) {
-        return componentInfo.createInstance();
-    }
-
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         try {
-            return new TargetInvokerInvoker(componentInfo.createTargetInvoker(operation));
+            return componentContextProvider.createInvoker(operation);
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }
@@ -150,7 +143,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
     public Invoker createCallbackInvoker(Operation operation) {
         try {
-            return new TargetInvokerInvoker(componentInfo.createTargetInvoker(operation));
+            return componentContextProvider.createInvoker(operation);
         } catch (TargetInvokerCreationException e) {
             throw new IllegalArgumentException(e);
         }
@@ -161,15 +154,15 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     }
 
     public void start() {
-        componentInfo.start();
+        componentContextProvider.start();
     }
 
     public void stop() {
-        componentInfo.stop();
+        componentContextProvider.stop();
     }
 
     public InstanceWrapper createInstanceWrapper() {
-        return componentInfo.createInstanceWrapper();
+        return componentContextProvider.createInstanceWrapper();
     }
 
     public boolean isEagerInit() {

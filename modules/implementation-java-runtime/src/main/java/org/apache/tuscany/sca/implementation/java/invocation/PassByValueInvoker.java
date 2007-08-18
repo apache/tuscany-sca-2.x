@@ -35,22 +35,22 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * 
  * @version $Rev$ $Date$
  */
-public class PassByValueInvoker extends JavaTargetInvoker {
-    private DataBindingExtensionPoint registry;
+public class PassByValueInvoker extends JavaImplementationInvoker {
+    private DataBindingExtensionPoint dataBindings;
     private Operation operation;
 
     /**
-     * @param registry
+     * @param dataBindings
      * @param operation
      * @param method
      * @param component
      */
-    public PassByValueInvoker(DataBindingExtensionPoint registry,
+    public PassByValueInvoker(DataBindingExtensionPoint dataBindings,
                               Operation operation,
                               Method method,
                               RuntimeComponent component) {
         super(method, component);
-        this.registry = registry;
+        this.dataBindings = dataBindings;
         this.operation = operation;
     }
 
@@ -62,7 +62,7 @@ public class PassByValueInvoker extends JavaTargetInvoker {
 
         if (!result.isFault() && operation.getOutputType() != null) {
             String dataBindingId = operation.getOutputType().getDataBinding();
-            DataBinding dataBinding = registry.getDataBinding(dataBindingId);
+            DataBinding dataBinding = dataBindings.getDataBinding(dataBindingId);
             result.setBody(copy(result.getBody(), dataBinding));
         }
         return result;
@@ -83,7 +83,7 @@ public class PassByValueInvoker extends JavaTargetInvoker {
                     copiedArgs[i] = copiedArg;
                 } else {
                     String dataBindingId = operation.getInputType().getLogical().get(i).getDataBinding();
-                    DataBinding dataBinding = registry.getDataBinding(dataBindingId);
+                    DataBinding dataBinding = dataBindings.getDataBinding(dataBindingId);
                     copiedArg = copy(args[i], dataBinding);
                     map.put(args[i], copiedArg);
                     copiedArgs[i] = copiedArg;
@@ -102,9 +102,9 @@ public class PassByValueInvoker extends JavaTargetInvoker {
             copiedArg = argDataBinding.copy(arg);
         } else {
             copiedArg = arg;
-            DataType<?> dataType = registry.introspectType(arg);
+            DataType<?> dataType = dataBindings.introspectType(arg);
             if (dataType != null) {
-                DataBinding binding = registry.getDataBinding(dataType.getDataBinding());
+                DataBinding binding = dataBindings.getDataBinding(dataType.getDataBinding());
                 if (binding != null) {
                     copiedArg = binding.copy(arg);
                 }
