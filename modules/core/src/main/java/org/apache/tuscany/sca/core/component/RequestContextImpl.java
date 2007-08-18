@@ -19,12 +19,12 @@
 package org.apache.tuscany.sca.core.component;
 
 import java.util.List;
+
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
-import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -60,7 +60,7 @@ public class RequestContextImpl implements RequestContext {
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getInterface();
-        return (ServiceReference<B>) component.createSelfReference(javaInterface.getJavaClass(), service.getName());
+        return (ServiceReference<B>) component.getComponentContext().createSelfReference(javaInterface.getJavaClass(), service.getName());
     }
 
     @SuppressWarnings("unchecked")
@@ -80,7 +80,7 @@ public class RequestContextImpl implements RequestContext {
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyService, wires);
-        factory.resolveTarget();
-        return (CallableReference<CB>) new CallableReferenceImpl<CB>(javaClass, (ObjectFactory<CB>)factory);
+        // factory.resolveTarget();
+        return new ServiceReferenceImpl<CB>(javaClass, factory);
     }
 }

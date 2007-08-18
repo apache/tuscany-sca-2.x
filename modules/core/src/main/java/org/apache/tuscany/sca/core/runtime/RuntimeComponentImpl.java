@@ -19,29 +19,19 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.impl.ComponentImpl;
-import org.apache.tuscany.sca.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RuntimeComponentImpl extends ComponentImpl implements RuntimeComponent, ScopedRuntimeComponent {
-    public static final String SELF_REFERENCE_PREFIX = "$self$.";
+    protected ComponentContext componentContext;
     protected ImplementationProvider implementationProvider;
     protected ProxyFactory proxyService;
     protected ScopeContainer scopeContainer;
@@ -53,62 +43,6 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     public RuntimeComponentImpl(ProxyFactory proxyService) {
         super();
         this.proxyService = proxyService;
-    }
-
-    public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
-        return getServiceReference(businessInterface, SELF_REFERENCE_PREFIX);
-    }
-
-    public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, String serviceName) {
-        return getServiceReference(businessInterface, SELF_REFERENCE_PREFIX + serviceName);
-    }
-
-    public <B> B getProperty(Class<B> type, String propertyName) {
-        for (Property p : getProperties()) {
-            if (p.getName().equals(propertyName)) {
-                // FIXME: Need to use the property object factory to create the
-                // instance
-                return null;
-            }
-        }
-        return null;
-    }
-
-    public RequestContext getRequestContext() {
-        return null;
-    }
-
-    public <B> B getService(Class<B> businessInterface, String referenceName) {
-        List<ComponentReference> refs = getReferences();
-        for (ComponentReference ref : refs) {
-            if (ref.getName().equals(referenceName)) {
-                RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
-                RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
-                return proxyService.createProxy(businessInterface, wire);
-            }
-        }
-        return null;
-    }
-
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
-        List<ComponentReference> references = getReferences();
-        for (ComponentReference reference : references) {
-            if (reference.getName().equals(referenceName) || referenceName.equals("$self$.")
-                && reference.getName().startsWith(referenceName)) {
-                RuntimeComponentReference attachPoint = (RuntimeComponentReference)reference;
-                RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
-                WireObjectFactory<B> factory = new WireObjectFactory<B>(businessInterface, wire, proxyService);
-                return new ServiceReferenceImpl<B>(businessInterface, factory);
-            }
-        }
-        return null;
-
-    }
-
-    @SuppressWarnings("unchecked")
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        Object ref = proxyService.cast(target);
-        return (R)ref;
     }
 
     public ImplementationProvider getImplementationProvider() {
@@ -133,5 +67,19 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
 
     public void setStarted(boolean started) {
         this.started = started;
+    }
+
+    /**
+     * @return the componentContext
+     */
+    public ComponentContext getComponentContext() {
+        return componentContext;
+    }
+
+    /**
+     * @param componentContext the componentContext to set
+     */
+    public void setComponentContext(ComponentContext componentContext) {
+        this.componentContext = componentContext;
     }
 }

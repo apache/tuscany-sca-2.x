@@ -133,14 +133,14 @@ public class TestSCABindingImpl implements SCABinding, WireableBinding {
      * 
      * @param isRemote
      */
-    public void setIsRemote(Boolean isRemote){
+    public void setRemote(boolean isRemote){
         this.isRemote = isRemote;
     }
     
     /**
      * @return the flag indicating whether the binding targets a remote component
      */
-    public boolean getIsRemote(){
+    public boolean isRemote(){
         return isRemote;
     }    
 }

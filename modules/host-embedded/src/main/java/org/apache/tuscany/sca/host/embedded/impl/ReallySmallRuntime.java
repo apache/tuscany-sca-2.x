@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.host.embedded.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -48,10 +47,6 @@ import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.provider.BindingProviderFactory;
-import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
-import org.apache.tuscany.sca.provider.ProviderFactory;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
 
 public class ReallySmallRuntime {
@@ -126,6 +121,7 @@ public class ReallySmallRuntime {
                                                                                 assemblyFactory,
                                                                                 scaBindingFactory,
                                                                                 mapper,
+                                                                                proxyFactory,
                                                                                 scopeRegistry,
                                                                                 workManager);
 

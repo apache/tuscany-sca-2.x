@@ -217,7 +217,7 @@ public class JDKInvocationHandler implements InvocationHandler {
         }
         msg.setBody(args);
         if (wire.getSource() != null) {
-            msg.setFrom(wire.getSource().getCallbackEndpoint());
+            msg.setFrom(wire.getSource());
         }
         if (endpoint != null) {
             msg.setTo(endpoint);

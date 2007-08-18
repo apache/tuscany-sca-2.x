@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.core.runtime.RuntimeComponentImpl;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.Constants;
@@ -358,7 +359,7 @@ public class DefaultSCADomain extends SCADomain {
                         if (serviceName != null) {
                             serviceName = "$promoted$." + serviceName;
                         }
-                        componentContext = (ComponentContext)compositeService.getPromotedComponent();
+                        componentContext = ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
                     }
                     break;
                 }
@@ -367,7 +368,7 @@ public class DefaultSCADomain extends SCADomain {
                 throw new ServiceRuntimeException("Composite service not found: " + name);
             }
         } else {
-            componentContext = (ComponentContext)component;
+            componentContext = ((RuntimeComponent)component).getComponentContext();
         }
 
         ServiceReference<B> serviceReference;

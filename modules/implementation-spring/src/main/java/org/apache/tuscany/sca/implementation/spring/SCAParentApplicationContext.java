@@ -24,7 +24,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -32,8 +31,6 @@ import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -130,15 +127,7 @@ class SCAParentApplicationContext implements ApplicationContext {
      * @return an Bean of the type defined by <B>
      */
     private <B> B getService(Class<B> businessInterface, String referenceName) {
-        List<ComponentReference> refs = component.getReferences();
-        for (ComponentReference ref : refs) {
-            if (ref.getName().equals(referenceName)) {
-                RuntimeComponentReference attachPoint = (RuntimeComponentReference)ref;
-                RuntimeWire wire = attachPoint.getRuntimeWires().get(0);
-                return proxyService.createProxy(businessInterface, wire);
-            }
-        }
-        return null;
+        return component.getComponentContext().getService(businessInterface, referenceName);
     }
 
     /**

@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.binding.sca.xml.SCABindingProcessor;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
@@ -71,6 +73,7 @@ import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -101,6 +104,7 @@ public class ReallySmallRuntimeBuilder {
                                                               AssemblyFactory assemblyFactory,
                                                               SCABindingFactory scaBindingFactory,
                                                               InterfaceContractMapper mapper,
+                                                              ProxyFactory proxyFactory,
                                                               ScopeRegistry scopeRegistry,
                                                               WorkManager workManager) {
 
@@ -124,10 +128,13 @@ public class ReallySmallRuntimeBuilder {
         // Create a provider factory extension point
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
 
+        JavaInterfaceFactory javaInterfaceFactory = registry.getExtensionPoint(ModelFactoryExtensionPoint.class).getFactory(JavaInterfaceFactory.class);
+        RequestContextFactory requestContextFactory = registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
+       
         // Create the composite activator
         CompositeActivator compositeActivator =
-            new CompositeActivatorImpl(assemblyFactory, scaBindingFactory, mapper, scopeRegistry, workScheduler,
-                                       wireProcessor, providerFactories);
+            new CompositeActivatorImpl(assemblyFactory, javaInterfaceFactory, scaBindingFactory, mapper, scopeRegistry, workScheduler,
+                                       wireProcessor, requestContextFactory, proxyFactory, providerFactories);
 
         return compositeActivator;
     }

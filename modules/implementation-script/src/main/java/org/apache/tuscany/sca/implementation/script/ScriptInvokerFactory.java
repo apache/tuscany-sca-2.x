@@ -49,16 +49,39 @@ public class ScriptInvokerFactory implements InvokerFactory {
 
     protected ScriptEngine scriptEngine;
     protected XMLHelper xmlHelper;
-
-    public ScriptInvokerFactory(RuntimeComponent rc, ComponentType ct, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
-        init(rc, ct, implementation, propertyFactory);
-    }
     
+    protected RuntimeComponent rc; 
+    protected ComponentType ct; 
+    protected ScriptImplementation implementation;
+    protected PropertyValueObjectFactory propertyFactory;
+
+    
+    /**
+     * @param rc
+     * @param ct
+     * @param implementation
+     * @param propertyFactory
+     */
+    public ScriptInvokerFactory(RuntimeComponent rc,
+                                ComponentType ct,
+                                ScriptImplementation implementation,
+                                PropertyValueObjectFactory propertyFactory) {
+        super();
+        this.rc = rc;
+        this.ct = ct;
+        this.implementation = implementation;
+        this.propertyFactory = propertyFactory;
+    }
+
     public Invoker createInvoker(Operation operation) {
+        init(rc, ct, implementation, propertyFactory);
         return new ScriptInvoker(scriptEngine, xmlHelper, operation);
     }
     
-    protected void init(RuntimeComponent rc, ComponentType ct, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
+    protected synchronized void init(RuntimeComponent rc, ComponentType ct, ScriptImplementation implementation, PropertyValueObjectFactory propertyFactory) {
+        if(scriptEngine!=null) {
+            return;
+        }
         try {
             scriptEngine = getScriptEngineByExtension(implementation.getScriptLanguage());
             if (scriptEngine == null) {
@@ -104,7 +127,7 @@ public class ScriptInvokerFactory implements InvokerFactory {
         for (ComponentReference reference : component.getReferences()) {
             if (reference.getName().equals(name)) {
                 Class iface = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
-                return component.getService(iface, name);
+                return component.getComponentContext().getService(iface, name);
             }
         }
         throw new IllegalArgumentException("reference " + name + " not found on component: " + component);

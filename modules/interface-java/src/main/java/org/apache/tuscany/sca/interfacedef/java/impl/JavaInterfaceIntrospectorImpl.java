@@ -88,6 +88,10 @@ public class JavaInterfaceIntrospectorImpl {
         List<Operation> operations = new ArrayList<Operation>(methods.length);
         Set<String> names = remotable? new HashSet<String>() : null;
         for (Method method : methods) {
+            if (method.getDeclaringClass() == Object.class) {
+                // Skip the methods on the Object.class
+                continue;
+            }
             String name = method.getName();
             if (remotable && names.contains(name)) {
                 throw new OverloadedOperationException(method);

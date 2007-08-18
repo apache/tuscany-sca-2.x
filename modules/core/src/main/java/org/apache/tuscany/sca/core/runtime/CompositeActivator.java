@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.core.runtime;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * Start/stop a composite
@@ -34,7 +36,12 @@ public interface CompositeActivator {
      * @param composite
      */
     void activate(Composite composite) throws ActivationException;
-
+    /**
+     * Activate a component reference
+     * @param component
+     * @param ref
+     */
+    void activate(RuntimeComponent component, RuntimeComponentReference ref);
     /**
      * Stop a composite
      * @param composite

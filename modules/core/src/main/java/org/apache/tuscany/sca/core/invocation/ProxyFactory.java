@@ -77,7 +77,7 @@ public interface ProxyFactory {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    Object createCallbackProxy(Class<?> interfaze, List<RuntimeWire> wires) throws ProxyCreationException;
+    <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException;
 
     /**
      * Cast a proxy to a CallableReference.

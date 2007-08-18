@@ -33,9 +33,9 @@ import org.osoa.sca.Conversation;
  * @version $Rev$ $Date$
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
-    private Class<T> interfaze;
-    private RuntimeWire wire;
-    private ProxyFactory proxyService;
+    protected Class<T> interfaze;
+    protected RuntimeWire wire;
+    protected ProxyFactory proxyFactory;
     
     // if the wire targets a conversational service this holds the conversation state 
     private Conversation conversation = null;    
@@ -52,21 +52,23 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
         throws NoMethodForOperationException {
         this.interfaze = interfaze;
         this.wire = wire;
-        this.proxyService = proxyService;
+        this.proxyFactory = proxyService;
         
         // look to see if the target is conversational and if so create 
         // a conversation
-        EndpointReference wireTarget = wire.getTarget();
-        InterfaceContract contract = wireTarget.getInterfaceContract();
-        Interface contractInterface = contract.getInterface();
-       
-        if (contractInterface != null && contractInterface.isConversational()){
-            conversation = new ConversationImpl();          
-        }        
+        if (wire != null) {
+            EndpointReference wireTarget = wire.getTarget();
+            InterfaceContract contract = wireTarget.getInterfaceContract();
+            Interface contractInterface = contract.getInterface();
+
+            if (contractInterface != null && contractInterface.isConversational()) {
+                conversation = new ConversationImpl();
+            }
+        }
     }
 
     public T getInstance() throws ObjectCreationException {
-        return interfaze.cast(proxyService.createProxy(interfaze, wire, conversation));
+        return interfaze.cast(proxyFactory.createProxy(interfaze, wire, conversation));
     }
     
     public Conversation getConversation() {

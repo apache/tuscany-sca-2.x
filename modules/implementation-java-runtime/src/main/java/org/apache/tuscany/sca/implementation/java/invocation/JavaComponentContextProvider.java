@@ -36,9 +36,6 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
-import org.apache.tuscany.sca.core.component.ComponentContextImpl;
-import org.apache.tuscany.sca.core.component.ComponentContextProvider;
-import org.apache.tuscany.sca.core.component.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
@@ -50,13 +47,8 @@ import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjec
 import org.apache.tuscany.sca.implementation.java.context.TargetMethodNotFoundException;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.sca.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ConversationIDObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.FieldInjector;
-import org.apache.tuscany.sca.implementation.java.injection.Injector;
 import org.apache.tuscany.sca.implementation.java.injection.InvalidAccessorException;
-import org.apache.tuscany.sca.implementation.java.injection.ListMultiplicityObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.sca.implementation.java.injection.ObjectCallbackException;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -69,9 +61,6 @@ import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.ConversationID;
 
 /**
@@ -79,15 +68,13 @@ import org.osoa.sca.annotations.ConversationID;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaComponentContextProvider implements ComponentContextProvider {
+public class JavaComponentContextProvider {
     private JavaPropertyValueObjectFactory propertyValueFactory;
     private DataBindingExtensionPoint dataBindingRegistry;
     
     private RuntimeComponent component;
     private JavaInstanceFactoryProvider<?> configuration;
     private ProxyFactory proxyService;
-
-    private final ComponentContext componentContext;
 
     public JavaComponentContextProvider(RuntimeComponent component,
                              JavaInstanceFactoryProvider configuration,
@@ -98,11 +85,11 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
         super();
         this.configuration = configuration;
         this.proxyService = configuration.getProxyFactory();
-        if (componentContextFactory != null) {
-            this.componentContext = componentContextFactory.createComponentContext(component, requestContextFactory);
-        } else {
-            this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
-        }
+//        if (componentContextFactory != null) {
+//            this.componentContext = componentContextFactory.createComponentContext(component, requestContextFactory);
+//        } else {
+//            this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
+//        }
         this.component = component;
         this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
@@ -244,63 +231,6 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
         }
     }
 
-    public boolean implementsCallback(Class callbackClass) {
-        Class<?>[] implementedInterfaces = configuration.getDefinition().getJavaClass().getInterfaces();
-        for (Class<?> implementedInterface : implementedInterfaces) {
-            if (implementedInterface.isAssignableFrom(callbackClass)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected Injector<Object> createInjector(Member member, RuntimeWire wire) {
-        if (member instanceof Field) {
-            Class<?> type = ((Field)member).getType();
-            ObjectFactory<?> factory = createWireFactory(type, wire);
-            return new FieldInjector<Object>((Field)member, factory);
-        } else if (member instanceof Method) {
-            Class<?> type = ((Method)member).getParameterTypes()[0];
-            ObjectFactory<?> factory = createWireFactory(type, wire);
-            return new MethodInjector<Object>((Method)member, factory);
-        } else if (member instanceof Constructor) {
-            return null;
-        } else {
-            throw new InvalidAccessorException("Member must be a field or method: " + member.getName());
-        }
-    }
-
-    protected Injector<Object> createMultiplicityInjector(Member member,
-                                                          Class<?> interfaceType,
-                                                          List<RuntimeWire> wireFactories) {
-        List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
-        for (RuntimeWire wire : wireFactories) {
-            factories.add(createWireFactory(interfaceType, wire));
-        }
-        if (member instanceof Field) {
-            Field field = (Field)member;
-            if (field.getType().isArray()) {
-                return new FieldInjector<Object>(field, new ArrayMultiplicityObjectFactory(interfaceType, factories));
-            } else {
-                return new FieldInjector<Object>(field, new ListMultiplicityObjectFactory(factories));
-            }
-        } else if (member instanceof Method) {
-            Method method = (Method)member;
-            if (method.getParameterTypes()[0].isArray()) {
-                return new MethodInjector<Object>(method, new ArrayMultiplicityObjectFactory(interfaceType, factories));
-            } else {
-                return new MethodInjector<Object>(method, new ListMultiplicityObjectFactory(factories));
-            }
-        } else {
-            throw new InvalidAccessorException("Member must be a field or method: " + member.getName());
-        }
-    }
-
-    public ComponentContext getComponentContext() {
-        return componentContext;
-    }
-
     @SuppressWarnings("unchecked")
     public <B> B getProperty(Class<B> type, String propertyName) {
         JavaElementImpl element = configuration.getDefinition().getPropertyMembers().get(propertyName);
@@ -327,6 +257,7 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
 
     }
 
+    /*
     public <B> B getService(Class<B> type, String name) {
         List<RuntimeWire> referenceWires = getWiresForReference(name);
         if (referenceWires == null || referenceWires.size() < 1) {
@@ -346,7 +277,7 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
         } else {
             // TODO support multiplicity
             RuntimeWire wire = referenceWires.get(0);
-            ObjectFactory<B> factory = createWireFactory(type, wire);
+            WireObjectFactory<B> factory = createWireFactory(type, wire);
             return new ServiceReferenceImpl<B>(type, factory);
         }
     }
@@ -359,19 +290,7 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
         }
         return null;
     }
-
-    @SuppressWarnings("unchecked")
-    public <B, R extends CallableReference<B>> R cast(B target) {
-        return (R)proxyService.cast(target);
-    }
-
-    public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, String serviceName) {
-        return null;
-    }
-
-    public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
-        return null;
-    }
+    */
 
     public Object createInstance() throws ObjectCreationException {
         return createInstanceWrapper().getInstance();
@@ -418,7 +337,7 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
 
     }
 
-    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, RuntimeWire wire) {
+    protected <B> WireObjectFactory<B> createWireFactory(Class<B> interfaze, RuntimeWire wire) {
         return new WireObjectFactory<B>(interfaze, wire, proxyService);
     }
 
@@ -426,6 +345,13 @@ public class JavaComponentContextProvider implements ComponentContextProvider {
                                                           Object propertyValue,
                                                           Class javaType) {
         return propertyValueFactory.createValueFactory(property, propertyValue, javaType);
+    }
+
+    /**
+     * @return the component
+     */
+    public RuntimeComponent getComponent() {
+        return component;
     }
 
 }
