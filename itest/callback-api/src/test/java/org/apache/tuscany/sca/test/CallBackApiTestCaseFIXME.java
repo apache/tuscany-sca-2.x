@@ -16,33 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.test;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class ConversationsTestFIXME extends TestCase {
+//FIXME Fix this test case
+public class CallBackApiTestCaseFIXME extends TestCase {
 
     private SCADomain domain;
-    private ConversationsClient aConversationsClient;
+    private CallBackApiClient aCallBackClient;
 
-    public void testConversations() {
-        aConversationsClient.run();
+    public void testCallBackBasic() {
+        aCallBackClient.run();
     }
 
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("ConversationsTest.composite");
-
-        aConversationsClient =
-            domain.getService(ConversationsClient.class,
-                              "ConversationsClient/ConversationsClient");
-
+    	domain = SCADomain.newInstance("CallBackApiTest.composite");
+    	
+        aCallBackClient =
+            domain.getService(CallBackApiClient.class, "CallBackApiClient");
     }
-
+    
     protected void tearDown() throws Exception {
-        domain.close();
+    	domain.close();
     }
 
 }

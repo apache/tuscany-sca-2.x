@@ -22,20 +22,22 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class CallBackApiTestFIXME extends TestCase {
+//FIXME Fix this test case
+public class CallBackSetCallbackConvTestCaseFIXME extends TestCase {
 
     private SCADomain domain;
-    private CallBackApiClient aCallBackClient;
+    private CallBackSetCallbackConvClient aCallBackClient;
 
-    public void testCallBackBasic() {
+    public void testCallBackSetCallback() {
         aCallBackClient.run();
     }
 
     protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("CallBackApiTest.composite");
+    	domain = SCADomain.newInstance("CallBackSetCallbackConvTest.composite");
     	
         aCallBackClient =
-            domain.getService(CallBackApiClient.class, "CallBackApiClient");
+            domain.getService(CallBackSetCallbackConvClient.class,
+                                                               "CallBackSetCallbackConvClient");
     }
     
     protected void tearDown() throws Exception {

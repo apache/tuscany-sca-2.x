@@ -24,19 +24,15 @@
  */
 package org.apache.tuscany.sca.test.exceptions.sdohandgen;
 
-import org.apache.tuscany.api.annotation.DataType;
 import org.osoa.sca.annotations.Remotable;
 
 import stockexceptiontestservice.scatesttool.StockOffer;
-
-import org.apache.tuscany.sca.test.exceptions.sdohandgen.MarketClosedSDOException;
 
 /*
  * StockExceptionTest java interface
  */
 
 @Remotable
-@DataType(name = "commonj.sdo.DataObject")
 public interface StockExceptionTest {
 
     /**

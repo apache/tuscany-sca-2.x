@@ -25,36 +25,30 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>iTest-exceptions-crossBinding-ws</artifactId>
-    <packaging>jar</packaging>
-    <name>Test Suite Exception Handling cross bindings WS</name>
-    <!-- JAX-WS temporary only until java.net maven2 repo is ready-->
-    <repositories>
-        <repository>
-            <id>java.net</id>
-            <url>https://maven-repository.dev.java.net/nonav/repository/</url>
-            <layout>legacy</layout>
-        </repository>
-    </repositories>
+    <artifactId>itest-exceptions-cross-binding-ws</artifactId>
+    <name>Apache Tuscany Web Service Binding Exceptions Integration Tests</name>
+
     <dependencies>
-        <!-- Required extensions -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-sdo</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-wsdl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-wsdl-xml</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
@@ -62,13 +56,13 @@
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
 
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-http-jetty</artifactId>
@@ -81,46 +75,30 @@
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-axiom</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
-        <!-- End of Required extensions -->
-        <!-- sun's jax-ws -->
+
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>jaxws-rt</artifactId>
             <version>2.1</version>
         </dependency>
-        <!--  you will need to install these on your internal repo
-            https://jax-ws.dev.java.net/2.1/ download binary
-            mvn  install:install-file "-DgroupId=com.sun.xml.ws" "-DartifactId=http"  "-Dversion=2.1" "-Dpackaging=jar" "-Dfile=jaxws-ri\lib\http.jar"
-            mvn  install:install-file "-DgroupId=com.sun.xml.ws" "-DartifactId=resolver" "-Dversion=2.1" "-Dpackaging=jar" "-Dfile=jaxws-ri\lib\resolver.jar"
-        -->
-        <!--         
-            <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>http</artifactId>
-            <version>2.1</version>
-            </dependency>
-            <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>resolver</artifactId>
-            <version>2.1</version>
-            </dependency>
-        -->
+
         <dependency>
             <groupId>javax.jws</groupId>
             <artifactId>jsr181-api</artifactId>
             <version>1.0-MR1</version>
         </dependency>
+
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.1</version>
         </dependency>
-        <!-- ENDOF sun's jax-ws -->
     </dependencies>
     <build>
         <plugins>
