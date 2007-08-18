@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.test.exceptions.impl;
 
-import org.apache.tuscany.api.annotation.DataType;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockExceptionTest;
 import org.osoa.sca.annotations.Remotable;
 
@@ -27,7 +26,6 @@ import org.osoa.sca.annotations.Remotable;
  * 
  */
 @Remotable
-@DataType(name = "javax.xml.bind.JAXBElement")
 public interface StockExceptionTestJAXB extends StockExceptionTest {
 
 }

@@ -16,31 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.test;
+package sample;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class CallBackSetCallbackTestFIXME extends TestCase {
+//FIXME Fix this test case
+public class RecursiveCompositeTestCaseFIXME extends TestCase {
 
     private SCADomain domain;
-    private CallBackSetCallbackClient aCallBackClient;
-
-    public void testCallBackSetCallback() {
-        aCallBackClient.run();
-    }
+    private Service1 tracker, tracker2;
 
     protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("CallBackSetCallbackTest.composite");
-    	
-        aCallBackClient =
-            domain.getService(CallBackSetCallbackClient.class,
-                                                               "CallBackSetCallbackClient");
-    }
-    
-    protected void tearDown() throws Exception {
-    	domain.close();
+        domain = SCADomain.newInstance("http://localhost", "/", "Composite1.composite", "Composite2.composite");
+        tracker = domain.getService(Service1.class, "ComponentC");
+        tracker2 = domain.getService(Service1.class, "ComponentB");
+
     }
 
+    protected void tearDown() throws Exception {
+        domain.close();
+    }
+
+    public void test() throws Exception {
+        try {
+            System.out.println("Main thread " + Thread.currentThread());
+            System.out.println(tracker.track("Client"));
+            System.out.println(tracker2.track("Client"));
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
 }

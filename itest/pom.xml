@@ -48,10 +48,8 @@
                 <module>conversations</module>
                 <module>databindings</module>
                 <module>exceptions</module>
-                <!--
                 <module>exceptions-cross-binding</module>
                 <module>exceptions-cross-binding-ws</module>
-                -->
                 <module>extended-api</module>
                 <module>operation-overloading</module>
                 <!--
