@@ -18,12 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents a binding.
