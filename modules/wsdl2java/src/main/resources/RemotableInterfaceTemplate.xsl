@@ -19,7 +19,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="text"/>
 
-     <!-- import the databinding template-->
+    <!-- import the databinding template-->
     <xsl:include href="databindsupporter"/>
     <!-- import the other templates for databinding
          Note  -  these names would be handled by a special
@@ -43,14 +43,12 @@
     package <xsl:value-of select="$package"/>;
 
     import org.osoa.sca.annotations.Remotable;
-    import org.apache.tuscany.api.annotation.DataType;
     
     /*
      *  <xsl:value-of select="@name"/> java interface
      */
 
     @Remotable
-    @DataType(name="commonj.sdo.DataObject")
     public interface <xsl:value-of select="@name"></xsl:value-of> {
           <xsl:for-each select="method">
             <!-- Code for in-out mep -->
@@ -84,7 +82,7 @@
             <xsl:if test="@type!=''"><xsl:if test="position()>1">,</xsl:if><xsl:value-of select="@type"/><xsl:text> </xsl:text><xsl:value-of select="@name"></xsl:value-of></xsl:if></xsl:for-each>
            <xsl:if test="$paramCount>0">,</xsl:if>final <xsl:value-of select="$package"/>.<xsl:value-of select="$callbackname"/> callback) throws java.rmi.RemoteException;
         </xsl:if>
-<!-- end of async block-->
+       <!-- end of async block-->
 
      </xsl:if>
         <!-- Code for in-only mep -->
