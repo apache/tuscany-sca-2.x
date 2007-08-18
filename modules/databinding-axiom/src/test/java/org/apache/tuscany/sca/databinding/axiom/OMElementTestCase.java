@@ -24,7 +24,14 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 public class OMElementTestCase extends TestCase {
     private static final String IPO_XML =
@@ -98,6 +105,21 @@ public class OMElementTestCase extends TestCase {
         OMElement copy = (OMElement)new AxiomDataBinding().copy(element);
         assertNotSame(element, copy);
         assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getQName());
+    }
+
+    private final static QName XSI_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
+
+    public final void testNil() {
+        Object2OMElement t1 = new Object2OMElement();
+        TransformationContext context = new TransformationContextImpl();
+        DataType<XMLType> dataType =
+            new DataTypeImpl<XMLType>(int.class, new XMLType(new QName("http://ns1", "nilElement"),
+                                                             SimpleTypeMapperImpl.XSD_INT));
+        context.setTargetDataType(dataType);
+        OMElement element = t1.transform(null, context);
+        OMAttribute attribute = element.getAttribute(XSI_NIL);
+        Assert.assertNotNull(attribute);
+        Assert.assertEquals("true", attribute.getAttributeValue());
     }
 
 }
