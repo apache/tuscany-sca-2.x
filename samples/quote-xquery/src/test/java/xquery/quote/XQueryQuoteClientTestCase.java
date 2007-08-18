@@ -70,7 +70,7 @@ public class XQueryQuoteClientTestCase {
 	    	
 	    	quoteJoinLocal = scaDomain.getService(QuoteJoinLocal.class, "QuoteJoinLocalComponent");
 	    	
-	    	server =  new SCATestCaseRunner(XQueryQuoteServerTest.class);
+	    	server =  new SCATestCaseRunner(XQueryQuoteTestServer.class);
 	    	server.before();
     	} catch(Throwable t) {
     		 t.printStackTrace();
