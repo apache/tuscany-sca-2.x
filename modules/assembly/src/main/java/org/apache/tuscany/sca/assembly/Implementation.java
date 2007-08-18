@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents a component implementation.
