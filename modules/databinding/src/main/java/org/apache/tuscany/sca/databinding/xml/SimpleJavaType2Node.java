@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.databinding.impl.Java2SimpleTypeTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.Java2XMLMapperException;
-import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -50,7 +50,13 @@ public class SimpleJavaType2Node extends Java2SimpleTypeTransformer<Node> {
             element = DOMDataBinding.ROOT_ELEMENT;
         }
         Node root = DOMHelper.createElement(factory, element);
-        root.appendChild(factory.createTextNode(text));
+        if (text != null) {
+            root.appendChild(factory.createTextNode(text));
+        } else {
+            Attr nil = factory.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:nil");
+            nil.setValue("true");
+            root.appendChild(nil);
+        }
         return root;
     }
 

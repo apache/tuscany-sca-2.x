@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.databinding.axiom;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.Java2SimpleTypeTransformer;
 
@@ -40,7 +42,13 @@ public class Object2OMElement extends Java2SimpleTypeTransformer<OMElement> {
 
     protected OMElement createElement(QName element, String text, TransformationContext context) {
         OMElement omElement = AxiomHelper.createOMElement(factory, element);
-        factory.createOMText(omElement, text);
+        if (text == null) {
+            OMNamespace xsi = factory.createOMNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
+            OMAttribute nil = factory.createOMAttribute("nil", xsi, "true");
+            omElement.addAttribute(nil);
+        } else {
+            factory.createOMText(omElement, text);
+        }
         return omElement;
     }
 

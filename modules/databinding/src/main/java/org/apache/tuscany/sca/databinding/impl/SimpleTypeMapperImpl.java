@@ -352,6 +352,10 @@ public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements Simple
     }
 
     public String toXMLLiteral(QName simpleType, Object obj, TransformationContext context) {
+        if(obj == null) {
+            // It could be null if nilable=true
+            return null;
+        }
         if (obj instanceof Float || obj instanceof Double) {
             if (obj instanceof Float) {
                 return printDouble(((Float)obj).floatValue());

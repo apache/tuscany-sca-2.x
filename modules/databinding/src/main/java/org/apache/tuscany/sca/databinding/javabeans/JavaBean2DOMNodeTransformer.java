@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -57,7 +58,13 @@ public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
 
     @Override
     public Node createText(String textData) throws Java2XMLMapperException {
-        return factory.createTextNode(textData);
+        if (textData != null) {
+            return factory.createTextNode(textData);
+        } else {
+            Attr nil = factory.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:nil");
+            nil.setValue("true");
+            return nil;
+        }        
     }
 
     public Class getTargetType() {
