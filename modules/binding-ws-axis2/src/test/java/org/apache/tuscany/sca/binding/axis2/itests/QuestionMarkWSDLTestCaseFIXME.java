@@ -35,7 +35,7 @@ import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * TODO: This doesn't work right now as it seems to cause hangs when running
+ * FIXME: This doesn't work right now as it seems to cause hangs when running
  * from mvn. Also running in eclipse mostly only works if you comment out
  * one of the test methods.
  */
