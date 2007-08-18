@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.CallableReference;
@@ -276,25 +275,6 @@ public class ComponentContextImpl implements ComponentContext {
         componentReference.setMultiplicity(Multiplicity.ONE_ONE);
         // component.getReferences().add(componentReference);
         return componentReference;
-    }
-
-    /**
-     * Get the effective interface contract for a reference binding
-     * 
-     * @param reference
-     * @param binding
-     * @return
-     */
-    private InterfaceContract getInterfaceContract(ComponentReference reference, Binding binding) {
-        InterfaceContract interfaceContract = reference.getInterfaceContract();
-        ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
-        if (provider != null) {
-            InterfaceContract bindingContract = provider.getBindingInterfaceContract();
-            if (bindingContract != null) {
-                interfaceContract = bindingContract;
-            }
-        }
-        return interfaceContract.makeUnidirectional(false);
     }
 
     /**
