@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
-import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 

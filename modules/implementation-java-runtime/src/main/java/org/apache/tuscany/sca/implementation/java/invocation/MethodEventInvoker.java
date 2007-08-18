@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.injection;
+package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 
 /**
  * Performs an wire on a method of a given instance
@@ -37,18 +38,18 @@ public class MethodEventInvoker<T> implements EventInvoker<T> {
         this.method = method;
     }
 
-    public void invokeEvent(T instance) throws ObjectCallbackException {
+    public void invokeEvent(T instance) throws EventInvocationException {
         try {
             method.invoke(instance, (Object[]) null);
         } catch (IllegalArgumentException e) {
             String name = method.getName();
-            throw new ObjectCallbackException("Exception thrown by callback method [" + name + "]", e.getCause());
+            throw new EventInvocationException("Exception thrown by event method [" + name + "]", e.getCause());
         } catch (IllegalAccessException e) {
             String name = method.getName();
-            throw new AssertionError("Method is not accessible [" + name + "]");
+            throw new EventInvocationException("Method is not accessible [" + name + "]");
         } catch (InvocationTargetException e) {
             String name = method.getName();
-            throw new ObjectCallbackException("Exception thrown by callback method [" + name + "]", e.getCause());
+            throw new EventInvocationException("Exception thrown by event method [" + name + "]", e.getCause());
         }
     }
 

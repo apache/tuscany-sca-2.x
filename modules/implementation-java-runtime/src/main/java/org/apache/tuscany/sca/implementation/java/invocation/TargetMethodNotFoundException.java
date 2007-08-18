@@ -6,23 +6,40 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.sca.implementation.java.mock;
+package org.apache.tuscany.sca.implementation.java.invocation;
+
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface OrderedInitPojo {
-    int getNumberInstantiated();
+public class TargetMethodNotFoundException extends TargetInvokerCreationException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8565552977647191863L;
+    private Operation operation;
 
-    int getInitOrder();
+    /**
+     * @param operation
+     */
+    public TargetMethodNotFoundException(Operation operation) {
+        super("Target method not found for operation");
+        this.operation = operation;
+    }
+
+    public Operation getOperation() {
+        return operation;
+    }
 }

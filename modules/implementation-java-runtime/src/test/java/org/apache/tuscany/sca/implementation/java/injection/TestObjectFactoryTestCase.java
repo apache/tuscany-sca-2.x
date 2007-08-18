@@ -29,14 +29,14 @@ import org.apache.tuscany.sca.factory.ObjectFactory;
 /**
  * @version $Rev$ $Date$
  */
-public class PojoObjectFactoryTestCase extends TestCase {
+public class TestObjectFactoryTestCase extends TestCase {
 
     private Constructor<Foo> ctor;
 
     public void testConstructorInjection() throws Exception {
         List<ObjectFactory> initializers = new ArrayList<ObjectFactory>();
         initializers.add(new SingletonObjectFactory<String>("foo"));
-        PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(ctor, initializers);
+        TestObjectFactory<Foo> factory = new TestObjectFactory<Foo>(ctor, initializers);
         Foo foo = factory.getInstance();
         assertEquals("foo", foo.foo);
     }
@@ -48,13 +48,13 @@ public class PojoObjectFactoryTestCase extends TestCase {
     public void testConstructorInjectionOptionalParam() throws Exception {
         List<ObjectFactory> initializers = new ArrayList<ObjectFactory>();
         initializers.add(null);
-        PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(ctor, initializers);
+        TestObjectFactory<Foo> factory = new TestObjectFactory<Foo>(ctor, initializers);
         Foo foo = factory.getInstance();
         assertNull(foo.foo);
     }
 
     public void testConstructorInitializerInjection() throws Exception {
-        PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(ctor);
+        TestObjectFactory<Foo> factory = new TestObjectFactory<Foo>(ctor);
         factory.setInitializerFactory(0, new SingletonObjectFactory<String>("foo"));
         Foo foo = factory.getInstance();
         assertEquals("foo", foo.foo);

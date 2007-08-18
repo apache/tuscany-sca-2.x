@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.databinding.saxon.SaxonNodeDataBinding;
 import org.apache.tuscany.sca.databinding.saxon.SaxonValueDataBinding;
 import org.apache.tuscany.sca.factory.ObjectFactory;
-import org.apache.tuscany.sca.implementation.java.context.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;

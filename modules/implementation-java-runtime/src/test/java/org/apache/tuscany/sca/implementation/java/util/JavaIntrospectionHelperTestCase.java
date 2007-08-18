@@ -28,14 +28,13 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
-import org.apache.tuscany.sca.implementation.java.mock.Target;
 
 public class JavaIntrospectionHelperTestCase extends TestCase {
 
     private List testNoGenericsList;
     private List<String> testList;
     private Map<String, Bean1> testMap;
-    private Target[] testArray;
+    private Entry[] testArray;
     private String[] testStringArray;
 
     public JavaIntrospectionHelperTestCase() {
@@ -152,7 +151,7 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
 
     }
 
-    public void setTestArray(Target[] array) {
+    public void setTestArray(Entry[] array) {
     }
 
     private interface W {

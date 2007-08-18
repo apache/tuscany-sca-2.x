@@ -16,16 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.mock;
-
-import org.osoa.sca.annotations.Scope;
+package org.apache.tuscany.sca.implementation.java.invocation;
 
 /**
+ * Performs an invocation on an instance
+ *
  * @version $Rev$ $Date$
  */
-@Scope("COMPOSITE")
-public interface CompositeScopeComponent {
+public interface EventInvoker<T> {
 
-    //public boolean isInit();
+    /**
+     * Performs the invocation on a given instance
+     *
+     * @throws EventInvocationException
+     */
+    void invokeEvent(T instance) throws EventInvocationException;
 }
-
