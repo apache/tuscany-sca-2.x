@@ -19,8 +19,18 @@
 
 package org.apache.tuscany.sca.core.runtime;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -35,6 +45,8 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.context.RequestContextFactory;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.component.ComponentContextImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
@@ -71,10 +83,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final WorkScheduler workScheduler;
     private final RuntimeWireProcessor wireProcessor;
     private final ProviderFactoryExtensionPoint providerFactories;
+    private final StAXArtifactProcessorExtensionPoint staxProcessors;
 
     private final RequestContextFactory requestContextFactory;
     private final ProxyFactory proxyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
+
     /**
      * @param assemblyFactory
      * @param interfaceContractMapper
@@ -91,7 +105,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                   RuntimeWireProcessor wireProcessor,
                                   RequestContextFactory requestContextFactory,
                                   ProxyFactory proxyFactory,
-                                  ProviderFactoryExtensionPoint providerFactories) {
+                                  ProviderFactoryExtensionPoint providerFactories,
+                                  StAXArtifactProcessorExtensionPoint processors) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.scopeRegistry = scopeRegistry;
@@ -101,6 +116,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         this.javaInterfaceFactory = javaInterfaceFactory;
         this.requestContextFactory = requestContextFactory;
         this.proxyFactory = proxyFactory;
+        this.staxProcessors = processors;
     }
 
     /**
@@ -166,8 +182,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
     }
 
+
     /**
-     * @param ref
+     * @see org.apache.tuscany.sca.core.runtime.CompositeActivator#activate(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.runtime.RuntimeComponentReference)
      */
     public void activate(RuntimeComponent component, RuntimeComponentReference ref) {
         addReferenceBindingProviders(component, ref, ref.getBindings());
@@ -183,9 +200,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private void addReferenceBindingProviders(RuntimeComponent component,
                                               RuntimeComponentReference reference,
                                               List<Binding> bindings) {
-    
+
         List<Binding> unresolvedTargetBindings = new ArrayList<Binding>();
-    
+
         // create binding providers for all of the bindings for resolved targets
         // or for all of the bindings where no targets are specified
         for (Binding binding : bindings) {
@@ -204,9 +221,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
             }
         }
-    
+
         // Support for distributed domain follows
-    
+
         // go over any targets that have not been resolved yet (as they are running on other nodes)
         // and try an resolve them remotely
         // TODO - this should work for any kind of wired binding but the only wireable binding 
@@ -219,15 +236,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     //        its currently the only wireable one
                     if (binding instanceof SCABinding) {
                         SCABinding scaBinding = (SCABinding)binding;
-    
+
                         BindingProviderFactory providerFactory =
                             (BindingProviderFactory)providerFactories.getProviderFactory(SCABinding.class);
-    
+
                         if (providerFactory == null) {
                             throw new IllegalStateException("Provider factory not found for class: " + scaBinding
                                 .getClass().getName());
                         }
-    
+
                         // clone the SCA binding and fill in service details 
                         SCABinding clonedSCABinding = null;
                         try {
@@ -237,7 +254,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         } catch (Exception e) {
                             // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
                         }
-    
+
                         @SuppressWarnings("unchecked")
                         ReferenceBindingProvider bindingProvider =
                             providerFactory.createReferenceBindingProvider((RuntimeComponent)component,
@@ -246,7 +263,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         if (bindingProvider != null) {
                             ((RuntimeComponentReference)reference)
                                 .setBindingProvider(clonedSCABinding, bindingProvider);
-    
+
                             // add the cloned SCA binding to the reference as it will be used to look up the 
                             // provider later
                             reference.getBindings().remove(binding);
@@ -276,7 +293,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-    
+
         // create wire if binding has an endpoint
         Component targetComponent = null;
         ComponentService targetComponentService = null;
@@ -287,10 +304,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
             targetComponentService = endpoint.getTargetComponentService();
             targetBinding = endpoint.getTargetBinding();
         }
-    
+
         // create a forward wire, either static or dynamic
         addReferenceWire(component, reference, binding, targetComponent, targetComponentService, targetBinding);
-    
+
         /*
         // if static forward wire (not from self-reference), try to create a static callback wire 
         if (targetComponentService != null && !reference.getName().startsWith("$self$.")) {
@@ -319,7 +336,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 }
                 if (callbackBinding != null && callbackServiceBinding != null) {
                     // end-to-end match, so create a static callback wire as well as the static forward wire
-    
+        
                     addReferenceWire(targetComponent, callbackReference, callbackBinding, component, reference
                         .getCallbackService(), callbackServiceBinding);
                 } else {
@@ -346,13 +363,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                          Binding serviceBinding) {
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
         InterfaceContract bindingContract = getInterfaceContract(reference, refBinding);
-    
+
         // Use the interface contract of the reference on the component type
         Reference componentTypeRef = reference.getReference();
         InterfaceContract sourceContract =
             componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
         sourceContract = sourceContract.makeUnidirectional(false);
-    
+
         EndpointReference wireSource =
             new EndpointReferenceImpl((RuntimeComponent)refComponent, reference, refBinding, sourceContract);
         ComponentService callbackService = reference.getCallbackService();
@@ -377,14 +394,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                           callbackContract);
             wireSource.setCallbackEndpoint(callbackEndpoint);
         }
-    
+
         EndpointReference wireTarget =
             new EndpointReferenceImpl((RuntimeComponent)serviceComponent, service, serviceBinding, bindingContract);
-    
+
         RuntimeWire wire =
             new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor);
         runtimeRef.getRuntimeWires().add(wire);
-    
+
         return wire;
     }
 
@@ -399,7 +416,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 component.setImplementationProvider(implementationProvider);
             }
         } else {
-            throw new IllegalStateException("Provider factory not found for class: " + implementation.getClass().getName());
+            throw new IllegalStateException("Provider factory not found for class: " + implementation.getClass()
+                .getName());
         }
     }
 
@@ -408,8 +426,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     private void addServiceBindingProviders(RuntimeComponent component,
-                                               RuntimeComponentService service,
-                                               List<Binding> bindings) {
+                                            RuntimeComponentService service,
+                                            List<Binding> bindings) {
         for (Binding binding : bindings) {
             BindingProviderFactory providerFactory =
                 (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
@@ -426,33 +444,32 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
             }
         }
-        
+
         // support for distributed domain follows
         // TODO - roll into above code but keeping separate so that it is obvious 
-        
+
         // If there is an SCA binding for the service add a second one marked as
         // remote in the case where the service interface is remotable. This
         // service binding provides a separate wire that will be active if 
         // this service is referenced remotely.  
         SCABinding clonedSCABinding = null;
-        
+
         for (Binding binding : bindings) {
-            if ((binding instanceof SCABinding) &&
-                (service.getInterfaceContract().getInterface().isRemotable())){
-                SCABinding scaBinding = (SCABinding)binding;  
+            if ((binding instanceof SCABinding) && (service.getInterfaceContract().getInterface().isRemotable())) {
+                SCABinding scaBinding = (SCABinding)binding;
 
                 BindingProviderFactory providerFactory =
                     (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
                 if (providerFactory != null) {
-                    
+
                     // clone the SCA binding and fill in service details 
                     try {
                         clonedSCABinding = (SCABinding)((WireableBinding)scaBinding).clone();
                         ((WireableBinding)clonedSCABinding).setRemote(true);
                     } catch (Exception e) {
                         // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
-                    }  
-                    
+                    }
+
                     @SuppressWarnings("unchecked")
                     ServiceBindingProvider bindingProvider =
                         providerFactory.createServiceBindingProvider((RuntimeComponent)component,
@@ -462,34 +479,34 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         ((RuntimeComponentService)service).setBindingProvider(clonedSCABinding, bindingProvider);
                     }
                 } else {
-                    throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
+                    throw new IllegalStateException("Provider factory not found for class: " + binding.getClass()
+                        .getName());
                 }
             }
             // add the cloned SCA binding to the service as it will be used to look up the provider later
-            if (clonedSCABinding != null){
+            if (clonedSCABinding != null) {
                 service.getBindings().remove(binding);
-                service.getBindings().add(clonedSCABinding);            
+                service.getBindings().add(clonedSCABinding);
             }
         }
-        
 
     }
 
     private void removeServiceBindingProviders(RuntimeComponent component,
-                                                 RuntimeComponentService service,
-                                                 List<Binding> bindings) {
-          for (Binding binding : bindings) {
-              ((RuntimeComponentService)service).setBindingProvider(binding, null);
-          }
-      }
+                                               RuntimeComponentService service,
+                                               List<Binding> bindings) {
+        for (Binding binding : bindings) {
+            ((RuntimeComponentService)service).setBindingProvider(binding, null);
+        }
+    }
 
     private void removeReferenceBindingProviders(RuntimeComponent component,
-                                                   RuntimeComponentReference reference,
-                                                   List<Binding> bindings) {
-          for (Binding binding : bindings) {
-              ((RuntimeComponentReference)reference).setBindingProvider(binding, null);
-          }
-      }
+                                                 RuntimeComponentReference reference,
+                                                 List<Binding> bindings) {
+        for (Binding binding : bindings) {
+            ((RuntimeComponentReference)reference).setBindingProvider(binding, null);
+        }
+    }
 
     public void start(Composite composite) {
         for (Component component : composite.getComponents()) {
@@ -508,8 +525,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
     public void start(Component component) {
         RuntimeComponent runtimeComponent = ((RuntimeComponent)component);
         ComponentContext componentContext =
-            new ComponentContextImpl(this, assemblyFactory, proxyFactory, interfaceContractMapper, requestContextFactory,
-                                     javaInterfaceFactory, runtimeComponent);
+            new ComponentContextImpl(this, assemblyFactory, proxyFactory, interfaceContractMapper,
+                                     requestContextFactory, javaInterfaceFactory, runtimeComponent);
         runtimeComponent.setComponentContext(componentContext);
 
         for (ComponentService service : component.getServices()) {
@@ -519,15 +536,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     bindingProvider.start();
                 }
             }
-//            for (RuntimeWire wire : ((RuntimeComponentService)service).getRuntimeWires()) {
-//                wireProcessor.process(wire);
-//            }
+            //            for (RuntimeWire wire : ((RuntimeComponentService)service).getRuntimeWires()) {
+            //                wireProcessor.process(wire);
+            //            }
         }
-        
+
         for (ComponentReference reference : component.getReferences()) {
-            ((RuntimeComponentReference) reference).setComponent(runtimeComponent);
+            ((RuntimeComponentReference)reference).setComponent(runtimeComponent);
         }
-        
+
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
             start((Composite)implementation);
@@ -672,8 +689,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-        RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
-        runtimeRef.getRuntimeWires().clear();
+        // [rfeng] Comment out the following statements to avoid the on-demand activation
+        // RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
+        // runtimeRef.getRuntimeWires().clear();
     }
 
     /**
@@ -719,14 +737,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param component
      * @param referenceBinding
      */
-    private RuntimeWire addServiceWire(Component serviceComponent,
-                                       ComponentService service,
-                                       Binding serviceBinding) {
+    private RuntimeWire addServiceWire(Component serviceComponent, ComponentService service, Binding serviceBinding) {
         if (!(service instanceof RuntimeComponentService)) {
             return null;
         }
         RuntimeComponentService runtimeService = (RuntimeComponentService)service;
-    
+
         // FIXME: [rfeng] We might need a better way to get the impl interface contract
         Service targetService = service.getService();
         if (targetService == null) {
@@ -735,18 +751,17 @@ public class CompositeActivatorImpl implements CompositeActivator {
         InterfaceContract targetContract = targetService.getInterfaceContract().makeUnidirectional(false);
 
         InterfaceContract sourceContract = getInterfaceContract(service, serviceBinding);
-    
-        EndpointReference wireSource =
-            new EndpointReferenceImpl(null, null, serviceBinding,
-                                      sourceContract);
-    
+
+        EndpointReference wireSource = new EndpointReferenceImpl(null, null, serviceBinding, sourceContract);
+
         EndpointReference wireTarget =
             new EndpointReferenceImpl((RuntimeComponent)serviceComponent, (RuntimeComponentService)service,
                                       serviceBinding, targetContract);
-    
-        RuntimeWire wire = new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor);
+
+        RuntimeWire wire =
+            new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor);
         runtimeService.getRuntimeWires().add(wire);
-    
+
         return wire;
     }
 
@@ -774,13 +789,50 @@ public class CompositeActivatorImpl implements CompositeActivator {
             throw new ActivationException(e);
         }
     }
-    
+
     public void deactivate(Composite composite) throws ActivationException {
         try {
             removeRuntimeProviders(composite);
             removeRuntimeWires(composite);
         } catch (Exception e) {
             throw new ActivationException(e);
+        }
+    }
+
+    public void write(Component component, ComponentReference reference, Writer writer) throws IOException {
+        try {
+            StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
+            Composite composite = assemblyFactory.createComposite();
+            composite.setName(new QName("http://tuscany.apache.org/xmlns/sca/1.0", "default"));
+            Component comp = assemblyFactory.createComponent();
+            comp.setName("default");
+            comp.setURI(component.getURI());
+            composite.getComponents().add(comp);
+            comp.getReferences().add(reference);
+
+            XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+            XMLStreamWriter streamWriter = outputFactory.createXMLStreamWriter(writer);
+            processor.write(composite, streamWriter);
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    public String write(Component component, ComponentReference reference) throws IOException {
+        StringWriter writer = new StringWriter();
+        write(component, reference, writer);
+        return writer.toString();
+    }
+
+    public Component read(Reader reader) throws IOException {
+        try {
+            StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            XMLStreamReader streamReader = inputFactory.createXMLStreamReader(reader);
+            Composite composite = processor.read(streamReader);
+            return composite.getComponents().get(0);
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
         }
     }
 

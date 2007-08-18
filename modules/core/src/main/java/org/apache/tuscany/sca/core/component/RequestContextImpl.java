@@ -40,10 +40,10 @@ import org.osoa.sca.ServiceReference;
  */
 public class RequestContextImpl implements RequestContext {
 
-    private ProxyFactory proxyService;
+    private ProxyFactory proxyFactory;
 
-    public RequestContextImpl(ProxyFactory proxyService) {
-        this.proxyService = proxyService;
+    public RequestContextImpl(ProxyFactory proxyFactory) {
+        this.proxyFactory = proxyFactory;
     }
 
     public Subject getSecuritySubject() {
@@ -56,9 +56,11 @@ public class RequestContextImpl implements RequestContext {
 
     @SuppressWarnings("unchecked")
     public <B> ServiceReference<B> getServiceReference() {
+        // FIXME: [rfeng] Is this the service reference matching the caller side?
         EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
+        // FIXME: [rfeng] What if the interface is not a java interface? 
         JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getInterface();
         return (ServiceReference<B>) component.getComponentContext().createSelfReference(javaInterface.getJavaClass(), service.getName());
     }
@@ -79,7 +81,7 @@ public class RequestContextImpl implements RequestContext {
         JavaInterface javaInterface = (JavaInterface) callbackReference.getInterfaceContract().getInterface();
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
-        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyService, wires);
+        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
         // factory.resolveTarget();
         return new ServiceReferenceImpl<CB>(javaClass, factory);
     }

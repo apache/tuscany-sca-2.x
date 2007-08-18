@@ -134,7 +134,7 @@ public class ReallySmallRuntimeBuilder {
         // Create the composite activator
         CompositeActivator compositeActivator =
             new CompositeActivatorImpl(assemblyFactory, javaInterfaceFactory, scaBindingFactory, mapper, scopeRegistry, workScheduler,
-                                       wireProcessor, requestContextFactory, proxyFactory, providerFactories);
+                                       wireProcessor, requestContextFactory, proxyFactory, providerFactories, processors);
 
         return compositeActivator;
     }

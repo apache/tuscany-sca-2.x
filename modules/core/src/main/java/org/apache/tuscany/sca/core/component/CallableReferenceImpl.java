@@ -22,15 +22,21 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.StringReader;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
+import org.apache.tuscany.sca.core.runtime.CompositeActivator;
+import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -44,15 +50,15 @@ import org.osoa.sca.Conversation;
  * @param <B> the type of the business interface
  */
 public abstract class CallableReferenceImpl<B> implements CallableReference<B>, Externalizable {
-//    protected transient AssemblyFactory assemblyFactory;
-//    protected transient JavaInterfaceFactory javaInterfaceFactory;
-//    protected transient InterfaceContractMapper interfaceContractMapper;
-//    protected transient RuntimeWireProcessor wireProcessor;
-//    protected transient WorkScheduler workScheduler;
+    protected transient CompositeActivator compositeActivator;
+    protected transient ProxyFactory proxyFactory;
 
-//    protected transient EndpointReference endpointReference;
     protected transient Class<B> businessInterface;
     protected transient Conversation conversation;
+
+    protected transient RuntimeComponent component;
+    protected transient RuntimeComponentReference reference;
+    protected transient Binding binding;
 
     protected String baseURI;
     protected List<QName> bindingTypes;
@@ -60,19 +66,39 @@ public abstract class CallableReferenceImpl<B> implements CallableReference<B>, 
     protected Object conversationID; // The conversationID should be serializable
     protected Object callbackID; // The callbackID should be serializable
 
-    private final WireObjectFactory<B> factory;
+    protected transient WireObjectFactory<B> factory;
 
     protected CallableReferenceImpl(Class<B> businessInterface,
                                     RuntimeComponent component,
                                     RuntimeComponentReference reference,
                                     Binding binding,
                                     ProxyFactory proxyFactory) {
+        this.proxyFactory = proxyFactory;
         this.businessInterface = businessInterface;
+        this.component = component;
+        this.reference = reference;
+        this.binding = binding;
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
         // sca:component1/component11/component112/service1?
         String componentURI = component.getURI(); // The target will be relative to this base URI
         this.baseURI = componentURI;
+        this.factory = getObjectFactory();
+    }
 
+    protected CallableReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {
+        this.proxyFactory = factory.getProxyFactory();
+        this.businessInterface = businessInterface;
+        this.factory = factory;
+        this.component = factory.getRuntimeWire().getSource().getComponent();
+        this.reference = (RuntimeComponentReference) factory.getRuntimeWire().getSource().getContract();
+        this.binding = factory.getRuntimeWire().getSource().getBinding();
+        // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
+        // sca:component1/component11/component112/service1?
+        String componentURI = component.getURI(); // The target will be relative to this base URI
+        this.baseURI = componentURI;
+    }
+
+    private WireObjectFactory<B> getObjectFactory() {
         // FIXME: The SCA spec is not clear how we should handle multiplicty for CallableReference
         if (binding == null) {
             binding = reference.getBinding(SCABinding.class);
@@ -81,14 +107,9 @@ public abstract class CallableReferenceImpl<B> implements CallableReference<B>, 
             }
         }
         RuntimeWire wire = reference.getRuntimeWire(binding);
-        this.factory = new WireObjectFactory<B>(businessInterface, wire, proxyFactory);
+        return new WireObjectFactory<B>(businessInterface, wire, proxyFactory);
     }
-
-    protected CallableReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {
-        this.businessInterface = businessInterface;
-        this.factory = factory;
-    }
-
+    
     public B getService() {
         return factory.getInstance();
     }
@@ -113,6 +134,16 @@ public abstract class CallableReferenceImpl<B> implements CallableReference<B>, 
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        String scdl = in.readUTF();
+        Component c = ((CompositeActivatorImpl)compositeActivator).read(new StringReader(scdl));
+        this.component = (RuntimeComponent)c;
+        this.reference = (RuntimeComponentReference)c.getReferences().get(0);
+        Interface i = reference.getInterfaceContract().getInterface();
+        if (i instanceof JavaInterface) {
+            this.businessInterface = (Class<B>)((JavaInterface)i).getJavaClass();
+        }
+        this.factory = getObjectFactory();
+        
         String uri = in.readUTF();
         int index = uri.indexOf('?');
         if (index == -1) {
@@ -137,20 +168,26 @@ public abstract class CallableReferenceImpl<B> implements CallableReference<B>, 
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
     public void writeExternal(ObjectOutput out) throws IOException {
-        StringBuffer uri = new StringBuffer(baseURI);
-        boolean first = true;
-        if (conversationID != null) {
-            uri.append("?sca.conversationID=").append(conversationID);
-            first = false;
-        }
-        if (callbackID != null) {
-            if (!first) {
-                uri.append("&");
-            } else {
-                uri.append("?");
+        try {
+            String scdl = ((CompositeActivatorImpl)compositeActivator).write(component, reference);
+            out.writeUTF(scdl);
+            StringBuffer uri = new StringBuffer(baseURI);
+            boolean first = true;
+            if (conversationID != null) {
+                uri.append("?sca.conversationID=").append(conversationID);
+                first = false;
             }
-            uri.append("sca.callbackID=").append(callbackID);
+            if (callbackID != null) {
+                if (!first) {
+                    uri.append("&");
+                } else {
+                    uri.append("?");
+                }
+                uri.append("sca.callbackID=").append(callbackID);
+            }
+            out.writeUTF(uri.toString());
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
         }
-        out.writeUTF(uri.toString());
     }
 }

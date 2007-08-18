@@ -75,4 +75,18 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
         return conversation;
     }
 
+    /**
+     * @return the wire
+     */
+    public RuntimeWire getRuntimeWire() {
+        return wire;
+    }
+
+    /**
+     * @return the proxyFactory
+     */
+    public ProxyFactory getProxyFactory() {
+        return proxyFactory;
+    }
+
 }
