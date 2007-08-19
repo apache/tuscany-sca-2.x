@@ -26,10 +26,10 @@ import org.osoa.sca.annotations.Reference;
 public class HelloWorldClient implements HelloWorld {
 
     @Reference
-    public HelloWorldRemote helloWorldWS;
+    public HelloWorldRemote helloWorldService;
     
     public String getGreetings(String s) {
-        return helloWorldWS.getGreetings(s);
+        return helloWorldService.getGreetings(s);
     }
 
 }

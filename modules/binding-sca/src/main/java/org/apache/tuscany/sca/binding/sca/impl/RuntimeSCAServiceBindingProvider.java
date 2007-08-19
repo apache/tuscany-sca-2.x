@@ -80,54 +80,62 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
             // - distributed implementation of the sca binding available
             // - distributed domain in which to look for remote endpoints 
             // - remotable interface on the service
-            if (distributedProviderFactory == null) {
+            if (distributedProviderFactory != null) {
+                if (((SCABindingImpl)binding).getDistributedDomain() != null) {
+                    if (!service.getInterfaceContract().getInterface().isRemotable()) {
+                        throw new IllegalStateException("Reference interface not remoteable for component: "+
+                                                        component.getName() +
+                                                        " and service: " + 
+                                                        service.getName());
+                    }           
+                    
+                    //  create a nested provider to handle the remote case
+                    distributedBinding = new DistributedSCABindingImpl();
+                    distributedBinding.setSCABinging(binding);
+                    
+                    distributedProvider = (ServiceBindingProvider2)
+                                          distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
+                    
+                    // get the url out of the binding and send it to the registry if
+                    // a distributed domain is configured
+                    DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
+                    
+                    ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
+                    
+                    // register endpoint twice to take account the formats 
+                    //  ComponentName
+                    //  ComponentName/ServiceName
+                    // TODO - Can't we get this from somewhere? What happens with nested components. 
+                    serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
+                                                             distributedDomain.getNodeName(), 
+                                                             component.getName(), 
+                                                             SCABinding.class.getName(), 
+                                                             binding.getURI());
+                    serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
+                                                             distributedDomain.getNodeName(), 
+                                                             component.getName() + "/" + service.getName(), 
+                                                             SCABinding.class.getName(), 
+                                                             binding.getURI());
+                
+                } else {
+                     /* do nothing at the moment as only apps using the node inplementation
+                      * will currently have the distributed domain set. 
+                      * 
+                    throw new IllegalStateException("No distributed domain available for component: "+
+                            component.getName() +
+                            " and service: " + 
+                            service.getName());
+                    */
+                }
+            } else {
+                /* do nothing at the moment as all services with remotable interfaces
+                 * are marked as remote
                 throw new IllegalStateException("No distributed SCA binding available for component: "+
-                                                component.getName() +
-                                                " and service: " + 
-                                                service.getName());
+                        component.getName() +
+                        " and service: " + 
+                        service.getName());
+                */
             }
-            
-            if (((SCABindingImpl)binding).getDistributedDomain() == null) {
-                throw new IllegalStateException("No distributed domain available for component: "+
-                                                component.getName() +
-                                                " and service: " + 
-                                                service.getName());
-            }
-            
-            if (!service.getInterfaceContract().getInterface().isRemotable()) {
-                throw new IllegalStateException("Reference interface not remoteable for component: "+
-                                                component.getName() +
-                                                " and service: " + 
-                                                service.getName());
-            }           
-            
-            //  create a nested provider to handle the remote case
-            distributedBinding = new DistributedSCABindingImpl();
-            distributedBinding.setSCABinging(binding);
-            
-            distributedProvider = (ServiceBindingProvider2)
-                                  distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
-            
-            // get the url out of the binding and send it to the registry if
-            // a distributed domain is configured
-            DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
-            
-            ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
-            
-            // register endpoint twice to take account the formats 
-            //  ComponentName
-            //  ComponentName/ServiceName
-            // TODO - Can't we get this from somewhere? What happens with nested components. 
-            serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
-                                                     distributedDomain.getNodeName(), 
-                                                     component.getName(), 
-                                                     SCABinding.class.getName(), 
-                                                     binding.getURI());
-            serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
-                                                     distributedDomain.getNodeName(), 
-                                                     component.getName() + "/" + service.getName(), 
-                                                     SCABinding.class.getName(), 
-                                                     binding.getURI());
         } 
     }
 

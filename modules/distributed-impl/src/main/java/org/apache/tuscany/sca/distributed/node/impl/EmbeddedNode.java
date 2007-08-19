@@ -157,7 +157,7 @@ public class EmbeddedNode {
                 contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
             } 
          
-            addContribution(domainName, contributionURL);
+            loadContribution(domainName, contributionURL);
         
         } catch(ActivationException ex) {
             throw ex;

@@ -126,8 +126,8 @@ public class BaseTest {
 
         // get a reference to the calculator service from domainA
         // which will be running this component
-        helloWorldClientA = domainA.getService(HelloWorld.class, "HelloWorldClient");
-        //helloWorldClientB = domainB.getService(HelloWorld.class, "HelloWorldClient");       
+        helloWorldClientA = domainA.getService(HelloWorld.class, "HelloWorldClientRemote");
+        helloWorldClientB = domainB.getService(HelloWorld.class, "HelloWorldClientLocal");       
 
     }
 
