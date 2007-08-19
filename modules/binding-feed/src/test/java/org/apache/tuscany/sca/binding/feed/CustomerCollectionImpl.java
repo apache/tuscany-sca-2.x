@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.tuscany.sca.feed.Collection;
+import org.apache.tuscany.sca.feed.NotFoundException;
 import org.osoa.sca.annotations.Scope;
 
 import com.sun.syndication.feed.atom.Content;
@@ -134,11 +136,4 @@ public class CustomerCollectionImpl implements Collection {
         return feed;
     }
 
-    public Entry postMedia(String title, String slug, String contentType, InputStream media) {
-        return null;
-    }
-
-    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
-        return null;
-    }
 }
