@@ -31,7 +31,7 @@ public class SampleServer {
             System.out.println("Sample server started (press enter to shutdown)");
             System.out.println();
             System.out.println("To get the Web resource, point your Web browser to the following address:");
-            System.out.println("http://localhost:8083/myWeb/index.html");
+            System.out.println("http://localhost:8080/MyWeb/index.html");
             System.out.println();
             System.in.read();
         } catch (IOException e) {

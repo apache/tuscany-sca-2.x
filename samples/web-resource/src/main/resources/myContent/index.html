@@ -35,11 +35,10 @@
   targetNamespace=&quot;http://web&quot;
   name=&quot;WebResource&quot;&gt;
 
-  &lt;service name=&quot;WebResource&quot; promote=&quot;WebResourceComponent&quot;&gt;
-    &lt;binding.resource uri=&quot;http://localhost:8083/myWeb&quot;/&gt;
-  &lt;/service&gt;
-
-  &lt;component name=&quot;WebResourceComponent&quot;&gt;
+  &lt;component name=&quot;myWeb&quot;&gt;
+    &lt;service name=&quot;Resource&quot;&gt;
+	  &lt;binding.resource&gt;
+	&lt;/service&gt;
     &lt;implementation.resource location=&quot;myContent&quot;/&gt;
   &lt;/component&gt;      
 
