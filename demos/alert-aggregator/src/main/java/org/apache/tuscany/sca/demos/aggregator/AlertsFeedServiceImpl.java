@@ -19,16 +19,19 @@
 
 package org.apache.tuscany.sca.demos.aggregator;
 
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.binding.feed.Collection;
+import org.apache.tuscany.sca.binding.feed.NotFoundException;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
@@ -89,5 +92,46 @@ public class AlertsFeedServiceImpl implements Collection {
         feed.setEntries(entries);
         
         return (Feed)feed.createWireFeed("atom_1.0");
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.binding.feed.Collection#delete(java.lang.String)
+     */
+    public void delete(String id) throws NotFoundException {
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.binding.feed.Collection#get(java.lang.String)
+     */
+    public Entry get(String id) throws NotFoundException {
+        return null;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.binding.feed.Collection#post(com.sun.syndication.feed.atom.Entry)
+     */
+    public Entry post(Entry entry) {
+        return null;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.binding.feed.Collection#postMedia(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream)
+     */
+    public Entry postMedia(String title, String slug, String contentType, InputStream media) {
+        return null;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.binding.feed.Collection#put(java.lang.String, com.sun.syndication.feed.atom.Entry)
+     */
+    public Entry put(String id, Entry entry) throws NotFoundException {
+        return null;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.binding.feed.Collection#putMedia(java.lang.String, java.lang.String, java.io.InputStream)
+     */
+    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
+        return null;
     }    
 }
