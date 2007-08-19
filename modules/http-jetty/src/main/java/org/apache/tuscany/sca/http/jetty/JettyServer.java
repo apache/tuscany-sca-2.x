@@ -206,6 +206,9 @@ public class JettyServer implements ServletHost {
             if (servletPath.endsWith("/")) {
                 servletPath = servletPath.substring(0, servletPath.length()-1);
             }
+            if (!servletPath.startsWith("/")) {
+                servletPath = '/' + servletPath;
+            }
             DefaultResourceServlet resourceServlet = (DefaultResourceServlet)servlet;
             DefaultServlet defaultServlet = new JettyDefaultServlet(servletPath, resourceServlet.getDocumentRoot());
             holder = new ServletHolder(defaultServlet);
