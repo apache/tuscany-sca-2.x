@@ -150,15 +150,22 @@ public class CompositeConfigurationBuilderImpl {
 
             // Initialize binding names and URIs
             for (Binding binding : service.getBindings()) {
+                
+                // Binding name defaults to the service name
                 if (binding.getName() == null) {
                     binding.setName(service.getName());
                 }
+                
                 String bindingURI;
                 if (binding.getURI() == null) {
+                    
+                    // Binding URI defaults to the binding name
                     bindingURI = String.valueOf(binding.getName());
                 } else {
                     bindingURI = binding.getURI();
                 }
+                
+                // Combine with the parent URI
                 if (parentURI != null) {
                     bindingURI = parentURI.resolve(bindingURI).toString();
                 }
@@ -234,9 +241,10 @@ public class CompositeConfigurationBuilderImpl {
                 component.setAutowire(true);
             }
 
-            // inherit intents defined at the composite level
+            // Inherit intents defined at the composite level
             addInheritedPolicies(compositeIntents, component.getRequiredIntents());
-            // inherit policysets defined at the composite level
+            
+            // Inherit policysets defined at the composite level
             addInheritedPolicies(compositePolicySets, component.getPolicySets());
 
             if (component.getImplementation() instanceof ComponentPreProcessor) {
@@ -266,10 +274,9 @@ public class CompositeConfigurationBuilderImpl {
                                                           componentProperties);
 
             // Reconcile component services/references/properties and
-            // implementation
-            // services/references and create component
-            // services/references/properties
-            // for the services/references declared by the implementation
+            // implementation services/references and create component
+            // services/references/properties for the services/references
+            // declared by the implementation
             reconcileServices(component, services, componentServices);
             reconcileReferences(component, references, componentReferences);
             reconcileProperties(component, properties, componentProperties);
@@ -298,16 +305,29 @@ public class CompositeConfigurationBuilderImpl {
 
                 // Set binding names and URIs
                 for (Binding binding : componentService.getBindings()) {
+                    
+                    // Binding name defaults to the service name
                     if (binding.getName() == null) {
                         binding.setName(componentService.getName());
                     }
+
                     String bindingURI;
                     if (binding.getURI() == null) {
-                        bindingURI = String.valueOf(binding.getName());
+                        if (componentServices.size() > 1) {
+                            // Binding URI defaults component URI / binding name
+                            bindingURI = String.valueOf(binding.getName());
+                            bindingURI = componentURI.resolve(bindingURI).toString();
+                        } else {
+                            // If there's only one service then binding URI defaults
+                            // to the component URI
+                            bindingURI = componentURI.toString();
+                        }
                     } else {
+                        // Combine the specified binding URI with the component URI
                         bindingURI = binding.getURI();
+                        bindingURI = componentURI.resolve(bindingURI).toString();
                     }
-                    bindingURI = componentURI.resolve(bindingURI).toString();
+                    
                     binding.setURI(bindingURI);
                 }
                 if (componentService.getCallback() != null) {
@@ -1009,8 +1029,7 @@ public class CompositeConfigurationBuilderImpl {
                             }
 
                             // Create a new component service to represent this
-                            // composite
-                            // service on the promoted component
+                            // composite service on the promoted component
                             ComponentService newComponentService =
                                 assemblyFactory.createComponentService();
                             newComponentService.setName("$promoted$." + compositeService.getName());
@@ -1041,8 +1060,8 @@ public class CompositeConfigurationBuilderImpl {
                             selfReference.getTargets().clear();
 
                             // Change the composite service to now promote the
-                            // newly
-                            // created component service directly
+                            // newly created component service directly
+                            compositeService.setPromotedComponent(promotedComponent);
                             compositeService.setPromotedService(newComponentService);
                         }
                     }
@@ -1084,6 +1103,7 @@ public class CompositeConfigurationBuilderImpl {
 
                 // Change the composite service to now promote the newly
                 // created component service directly
+                compositeService.setPromotedComponent(promotedComponent);
                 compositeService.setPromotedService(newComponentService);
             }
         }

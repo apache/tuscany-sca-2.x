@@ -134,16 +134,33 @@ public class CompositeWireBuilderImpl {
                                               Map<String, ComponentReference> componentReferences) {
 
         for (Component component : composite.getComponents()) {
+            
+            // Index components by name
             components.put(component.getName(), component);
-            int i = 0;
+            
+            ComponentService nonCallbackService = null;
+            int nonCallbackServices = 0;
             for (ComponentService componentService : component.getServices()) {
+                
+                // Index component services by component name / service name
                 String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
-                if (i == 0) {
-                    componentServices.put(component.getName(), componentService);
+                if (!componentService.isCallback()) {
+                    
+                    // Check how many non callback services we have
+                    if (nonCallbackServices == 0) {
+                        nonCallbackService = componentService;
+                    }
+                    nonCallbackServices++;
                 }
-                i++;
             }
+            if (nonCallbackServices == 1) {
+                // If we have a single non callback service, index it by
+                // component name as well
+                componentServices.put(component.getName(), nonCallbackService);
+            }
+            
+            // Index references by component name / reference name
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
                 componentReferences.put(uri, componentReference);
