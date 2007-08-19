@@ -39,15 +39,32 @@ public abstract interface DistributedSCADomain {
      * @return the node name
      */
     public abstract String getNodeName();
-    
     public abstract void setNodeName(String nodeName);    
     
+    /**
+     * Returns the name of the distributed domain that this node
+     * is part of.
+     * 
+     * @return the domain name
+     */
     public abstract String getDomainName();
-    
     public abstract void setDomainName(String domainName);
     
+    /**
+     * Associates this distributed domain representation to all of the 
+     * sca binding objects within a composite. The sca binding uses this
+     * distributed domain representation for domain level operations like
+     * find the enpoints of remote services. 
+     * 
+     * @param composite the composite that this object will be added to 
+     */    
     public void addDistributedDomainToBindings(Composite composite);
     
+    /**
+     * Return an interface for registering and looking up remote services
+     * 
+     * @return The service discovery interface
+     */
     public abstract ServiceDiscovery getServiceDiscovery();
     
 }

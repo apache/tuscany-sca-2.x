@@ -51,6 +51,9 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
+ * The service binding provider for the remote sca binding implementation. Relies on the 
+ * binding-ws-axis implementation for providing a remote message endpoint for this service
+ * 
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */
 public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
@@ -78,9 +81,9 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
         
-        wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
+        // fix up the minimal things required to get the ws binding going.
         
-        // fix up the minimal things required to get the ws binding going. 
+        wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
         // Turn the java interface contract into a wsdl interface contract
         InterfaceContract contract = service.getInterfaceContract();

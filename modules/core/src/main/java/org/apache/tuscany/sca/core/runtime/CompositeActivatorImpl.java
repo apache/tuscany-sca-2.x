@@ -270,11 +270,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
                             reference.getBindings().add(clonedSCABinding);
                         } else {
                             throw new IllegalStateException(
-                                                            "No distributed SCA Binding implementation found for reference: " + reference
-                                                                .getName()
+                                                            "Unable to create a distributed SCA binding provider for reference: " + 
+                                                             reference.getName()
                                                                 + " and target: "
-                                                                + service.getName()
-                                                                + " or the referenced interface is not remoteable");
+                                                                + service.getName());
                         }
                     }
                 }

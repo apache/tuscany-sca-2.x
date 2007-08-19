@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
+ * The local SCA Binding provider implementation. It is not currently used. 
+ * 
  * @version $Rev$ $Date$
  */
 public class RuntimeSCABindingProvider implements ReferenceBindingProvider {

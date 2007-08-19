@@ -25,6 +25,12 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.osoa.sca.ServiceUnavailableException;
 
+/**
+ * A wrapper for the Axis2BindingInvoker that ensures that the url of the target
+ * service is correct by looking it up in the service registry if it is not provided
+ * 
+ * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
+ */
 public class Axis2SCABindingInvoker implements Interceptor {
 
     private Invoker axis2Invoker;
@@ -42,12 +48,15 @@ public class Axis2SCABindingInvoker implements Interceptor {
         return null;
     }
 
+    /**
+     * Fix up the URL for the message. The "to" EndPoint comes from the wire
+     * target and needs to b replaced with the endpoint from the registry. 
+     * The default URL for an Endpoint URI where there is no 
+     * target component or service information, as in the case of a 
+     * wire crossing a node boundary, is "/"
+     */
     public Message invoke(Message msg) {
-        // fix up the URL for the message. The "to" EndPoint comes from the wire
-        // target and needs to b replaced with the endpoint from the registry
-        // The default URL for an Endpoint URI where there is no 
-        // target component or service information, as in the case of a 
-        // wire crossing a node boundary, is "/"
+
         EndpointReference ep = msg.getTo();
         
         if ((ep == null) || 

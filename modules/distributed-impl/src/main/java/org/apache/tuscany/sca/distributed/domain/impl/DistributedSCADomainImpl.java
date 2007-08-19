@@ -62,6 +62,12 @@ public class DistributedSCADomainImpl implements DistributedSCADomain {
         this.nodeName = nodeName;
     }    
     
+    /**
+     * Returns the name of the distributed domain that this node
+     * is part of.
+     * 
+     * @return the domain name
+     */
     public String getDomainName(){
         return domainName;
     }
@@ -70,14 +76,23 @@ public class DistributedSCADomainImpl implements DistributedSCADomain {
         this.domainName = domainName;
     }    
     
-    public void setLocalDomain(EmbeddedSCADomain localDomain){
-        this.domain = localDomain;
-    }
-    
+    /**
+     * Return an interface for registering and looking up remote services
+     * 
+     * @return The service discovery interface
+     */    
     public ServiceDiscovery getServiceDiscovery(){
         return null;
     }
     
+    /**
+     * Associates this distributed domain representation to all of the 
+     * sca binding objects within a composite. The sca binding uses this
+     * distributed domain representation for domain level operations like
+     * find the enpoints of remote services. 
+     * 
+     * @param composite the composite that this object will be added to 
+     */      
     public void addDistributedDomainToBindings(Composite composite){
         // traverse the composite adding in the distributed domain
         // reference into all sca bindings. 
@@ -121,6 +136,10 @@ public class DistributedSCADomainImpl implements DistributedSCADomain {
                 }  
             }   
         }        
+    }    
+    
+    public void setManagementDomain(EmbeddedSCADomain localDomain){
+        this.domain = localDomain;
     }    
     
 }

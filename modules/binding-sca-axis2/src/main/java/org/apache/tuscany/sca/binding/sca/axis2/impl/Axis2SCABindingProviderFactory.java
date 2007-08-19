@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
+ * The factory for the Axis2 based implementation of the distributed sca binding
+ * 
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */
 public class Axis2SCABindingProviderFactory implements BindingProviderFactory<DistributedSCABinding> {

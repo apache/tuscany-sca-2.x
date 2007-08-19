@@ -36,6 +36,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
+ * The sca reference binding provider mediates between the twin requirements of 
+ * local sca bindings and remote sca bindings. In the local case is does 
+ * very little. When the sca binding model is set as being remote (because a 
+ * reference target can't be resolved in the current model) this binding will 
+ * try and create a remote connection to it
+ * 
  * @version $Rev$ $Date$
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider2 {
@@ -50,36 +56,56 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeComponent component,
                                               RuntimeComponentReference reference,
-                                              SCABinding binding) throws BindingNotDistributedException {
+                                              SCABinding binding) {
         this.reference = reference;
         this.binding = binding;
 
-        // look to see if a distributed SCA binding implementation has
-        // been included on the classpath. This will be needed by the 
-        // provider itself to do it's thing
-        ProviderFactoryExtensionPoint factoryExtensionPoint =
-            extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        BindingProviderFactory<DistributedSCABinding> distributedProviderFactory =
-            (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
-                .getProviderFactory(DistributedSCABinding.class);
-
-        // if there is a wire to this service that crosses the node boundary 
+        // if there is a wire from this reference that crosses the node boundary 
+        // then we need to create a remote binding
         if (((WireableBinding)binding).isRemote() == true) {
-            // Make sure that we have a distributed sca binding and 
-            // that the interface is remoteable
-
-            if ((distributedProviderFactory != null) && (((SCABindingImpl)binding).getDistributedDomain() != null)
-                && (reference.getInterfaceContract().getInterface().isRemotable())) {
-                DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
-                distributedBinding.setSCABinging(binding);
-
-                distributedProvider =
-                    (ReferenceBindingProvider2)distributedProviderFactory
-                        .createReferenceBindingProvider(component, reference, distributedBinding);
-
-            } else {
-                throw new BindingNotDistributedException();
+            
+            // look to see if a distributed SCA binding implementation has
+            // been included on the classpath. This will be needed by the 
+            // provider itself to do it's thing
+            ProviderFactoryExtensionPoint factoryExtensionPoint =
+                extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+            BindingProviderFactory<DistributedSCABinding> distributedProviderFactory =
+                (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
+                    .getProviderFactory(DistributedSCABinding.class);
+            
+            // Check the things that will generally be required to set up a 
+            // distributed sca domain reference provider. I.e. make sure that we have a
+            // - distributed implementation of the sca binding available
+            // - distributed domain in which to look for remote endpoints 
+            // - remotable interface on the target service
+            if (distributedProviderFactory == null) {
+                throw new IllegalStateException("No distributed SCA binding available for component: "+
+                                                component.getName() +
+                                                " and reference: " + 
+                                                reference.getName());
             }
+            
+            if (((SCABindingImpl)binding).getDistributedDomain() == null) {
+                throw new IllegalStateException("No distributed domain available for component: "+
+                        component.getName() +
+                        " and reference: " + 
+                        reference.getName());
+            }
+            
+            if (!reference.getInterfaceContract().getInterface().isRemotable()) {
+                throw new IllegalStateException("Reference interface not remoteable for component: "+
+                        component.getName() +
+                        " and reference: " + 
+                        reference.getName());
+            }
+
+            DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
+            distributedBinding.setSCABinging(binding);
+
+            distributedProvider =
+                (ReferenceBindingProvider2)distributedProviderFactory
+                    .createReferenceBindingProvider(component, reference, distributedBinding);
+
         }
     }
 
