@@ -18,14 +18,13 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	   targetNamespace="http://web"
-           name="WebResource">
+	targetNamespace="http://web"
+	name="WebResource">
 
-	<service name="WebResource" promote="WebResourceComponent">
-		<binding.resource uri="http://localhost:8083/myWeb"/>
-	</service>
-
-    <component name="WebResourceComponent">
+    <component name="myWeb">
+		<service name="Resource">
+			<binding.resource/>
+		</service>
         <implementation.resource location="myContent"/>
     </component>      
 
