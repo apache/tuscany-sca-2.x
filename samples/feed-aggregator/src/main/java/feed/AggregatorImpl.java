@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.feed.NotFoundException;
+import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -38,12 +38,12 @@ import com.sun.syndication.feed.atom.Person;
  *
  * @version $Rev$ $Date$
  */
-public class AggregatorImpl implements org.apache.tuscany.sca.feed.Collection {
+public class AggregatorImpl implements org.apache.tuscany.sca.binding.feed.collection.Collection {
 
     @Reference
-    public org.apache.tuscany.sca.feed.Collection feed1;
+    public org.apache.tuscany.sca.binding.feed.collection.Collection feed1;
     @Reference
-    public org.apache.tuscany.sca.feed.Collection feed2;
+    public org.apache.tuscany.sca.binding.feed.collection.Collection feed2;
     @Reference(required = false)
     public Sort sort;
 

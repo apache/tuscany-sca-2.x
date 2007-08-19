@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.tuscany.sca.feed.Collection;
-import org.apache.tuscany.sca.feed.NotFoundException;
+import org.apache.tuscany.sca.binding.feed.collection.Collection;
+import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.data.DATA;
 import org.osoa.sca.annotations.Reference;
 
