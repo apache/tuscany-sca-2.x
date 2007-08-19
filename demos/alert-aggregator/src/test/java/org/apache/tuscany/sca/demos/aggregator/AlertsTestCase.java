@@ -61,19 +61,19 @@ public class AlertsTestCase extends TestCase  {
 
     public void testGetAllNewAlerts() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[\"sometext\"],\"method\":\"getAllNewAlerts\",\"id\":2}");
-        JSONObject jsonResp    = callService ("http://localhost:8080/SCADomain/AlertsServiceJSONRPC",
+        JSONObject jsonResp    = callService ("http://localhost:8080/AlertsServiceJSONRPC",
                                               jsonRequest);                                  
     }   
     
     public void testAddAlertSources() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[{\"name\":\"news\",\"id\":\"2\",\"address\":\"www.news.com\",\"feedAddress\":\"http://news.com.com/2547-1_3-0-20.xml\",\"feedType\":\"rss\",\"lastChecked\":\"lastChecked\",\"javaClass\":\"org.apache.tuscany.sca.demos.aggregator.types.impl.SourceTypeImpl\"}],\"method\":\"addAlertSource\",\"id\":2}");
-        JSONObject jsonResp    = callService ("http://localhost:8080/SCADomain/AlertsSourcesServiceJSONRPC",
+        JSONObject jsonResp    = callService ("http://localhost:8080/AlertsSourcesServiceJSONRPC",
                                               jsonRequest);  
     }
   
     public void testGetAlertSources() throws Exception {  
         JSONObject jsonRequest = new JSONObject("{\"params\":[\"sometext\"],\"method\":\"getAlertSources\",\"id\":2}");
-        JSONObject jsonResp    = callService ("http://localhost:8080/SCADomain/AlertsSourcesServiceJSONRPC",
+        JSONObject jsonResp    = callService ("http://localhost:8080/AlertsSourcesServiceJSONRPC",
                                               jsonRequest);                                 
         assertEquals("BBC News", jsonResp.getJSONObject("result").getJSONObject("source").optJSONArray("list").getJSONObject(0).getString("name")); 
     }    
