@@ -79,10 +79,28 @@
     		 <exclude>**/var/journal</exclude>
     		 <exclude>**/build.out*</exclude>
     		 <exclude>velocity.log</exclude>
+    		 <exclude>distribution/target-last-successful</exclude>
+    		 <exclude>distribution/target-last-successful/**/*</exclude>
     		 <exclude>itest/velocity.log</exclude>
     		 <exclude>itest/databindings/jaxbgen/velocity.log</exclude>
+             <exclude>itest/old</exclude>
+             <exclude>itest/old/**/*</exclude>
              <exclude>modules/http-tomcat/work</exclude>
              <exclude>modules/http-tomcat/work/**/*</exclude>
+             <exclude>modules/binding-jms</exclude>
+             <exclude>modules/binding-jms/**/*</exclude>
+             <exclude>modules/implementation-das</exclude>
+             <exclude>modules/implementation-das/**/*</exclude>
+             <exclude>modules/implementation-data</exclude>
+             <exclude>modules/implementation-data/**/*</exclude>
+             <exclude>modules/implementation-osgi/.felix</exclude>
+             <exclude>modules/implementation-osgi/.felix/**/*</exclude>
+             <exclude>samples/bigbank</exclude>
+             <exclude>samples/bigbank/**/*</exclude>
+             <exclude>samples/company-das</exclude>
+             <exclude>samples/company-das/**/*</exclude>
+             <exclude>samples/company-das-webapp</exclude>
+             <exclude>samples/company-das-webapp/**/*</exclude>
              <exclude>samples/das-service</exclude>
              <exclude>samples/das-service/**/*</exclude>
              <exclude>samples/das-service-web</exclude>
@@ -95,8 +113,8 @@
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service/work</exclude>
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
-             <exclude>samples/bigbank</exclude>
-             <exclude>samples/bigbank/**/*</exclude>
+             <exclude>samples/osgi-supplychain/.felix</exclude>
+             <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
              <exclude>demos/alert-aggregator/src/main/webapp/dojo</exclude>
              <exclude>demos/alert-aggregator/src/main/webapp/dojo/**/*</exclude>
              <exclude>demos/bigbank-account/src/main/resources/web/dojo</exclude> 
@@ -105,6 +123,7 @@
              <exclude>*/**/*.ruleset</exclude>
              <exclude>*/**/*.pmd</exclude>
              <exclude>*/**/*.checkstyle</exclude>
+             <exclude>*/**/*.settings</exclude>
          </excludes>
 	 </fileSet>
      </fileSets>
