@@ -160,9 +160,7 @@
                         <configuration>
                             <descriptors>
                                 <descriptor>src/main/assembly/bin.xml</descriptor>
-                                <!--
                                 <descriptor>src/main/assembly/src.xml</descriptor>
-                                -->
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
                             <finalName>apache-tuscany-sca-${pom.version}</finalName>
