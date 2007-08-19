@@ -19,28 +19,19 @@
 
 package org.apache.tuscany.sca.demos.aggregator;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 
-import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
 import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
 import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
-import org.apache.tuscany.sca.demos.aggregator.types.impl.ConfigTypeImpl;
 import org.apache.tuscany.sca.demos.aggregator.types.impl.SourceTypeImpl;
-import org.apache.tuscany.sdo.helper.XMLStreamHelper;
-import org.apache.tuscany.sdo.util.SDOUtil;
-
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XMLHelper;
 import commonj.sdo.impl.HelperProvider;
 
 /**

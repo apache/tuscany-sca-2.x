@@ -24,8 +24,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.Collection;
-import org.apache.tuscany.sca.binding.feed.NotFoundException;
+import org.apache.tuscany.sca.binding.feed.collection.Collection;
+import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.osoa.sca.annotations.Reference;

@@ -19,11 +19,9 @@
 package org.apache.tuscany.sca.demos.aggregator;
 
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;

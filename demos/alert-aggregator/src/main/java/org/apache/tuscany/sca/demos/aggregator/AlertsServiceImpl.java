@@ -20,26 +20,15 @@
 package org.apache.tuscany.sca.demos.aggregator;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
+import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
 import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
-import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
-import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
-import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
-import org.apache.tuscany.sca.demos.aggregator.types.impl.AlertsTypeImpl;
-
-import org.osoa.sca.annotations.Service;
 import org.osoa.sca.annotations.Reference;
-
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
-
-import org.apache.tuscany.sca.binding.feed.Collection;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Read all new alerts from the specified sources
