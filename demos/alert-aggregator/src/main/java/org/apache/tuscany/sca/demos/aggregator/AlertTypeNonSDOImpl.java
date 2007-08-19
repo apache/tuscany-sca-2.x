@@ -18,12 +18,7 @@
  */
 package org.apache.tuscany.sca.demos.aggregator;
 
-import commonj.sdo.Type;
-
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
-import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
-
-import org.apache.tuscany.sdo.impl.DataObjectBase;
 
  
 public class AlertTypeNonSDOImpl implements AlertType
