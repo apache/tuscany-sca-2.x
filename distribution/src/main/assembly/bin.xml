@@ -85,6 +85,8 @@
                 <exclude>helloworld-ws-service/work/**/*</exclude>
                 <exclude>helloworld-ws-service-webapp/target/sample-helloworld-jsonrpc</exclude>
                 <exclude>helloworld-ws-service-webapp/target/sample-helloworld-jsonrpc/**/*</exclude>
+                <exclude>helloworld-ws-sdo/work</exclude>
+                <exclude>helloworld-ws-sdo/work/**/*</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-jsonrpc</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-jsonrpc/**/*</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
@@ -99,6 +101,8 @@
                 <exclude>helloworld-jsonrpc/target/sample-helloworld-jsonrpc/**/*</exclude>
                 <exclude>loanapplication</exclude>
                 <exclude>loanapplication/**/*</exclude>
+                <exclude>simple-callback-ws/work</exclude>
+                <exclude>simple-callback-ws/work/**/*</exclude>
                 <exclude>*/.classpath</exclude>
                 <exclude>*/.project</exclude>
                 <exclude>*/.settings</exclude>
@@ -129,6 +133,8 @@
                 <exclude>alert-aggregator/target/demo-alert-aggregator/**/*</exclude>
                 <exclude>alert-aggregator/target/sdo-source</exclude>
                 <exclude>alert-aggregator/target/sdo-source/**/*</exclude>
+                <exclude>helloworld-ws-sdo/work</exclude>
+                <exclude>helloworld-ws-sdo/work/**/*</exclude>
                 <exclude>bigbank-account/src/main/resources/web/dojo</exclude> 
                 <exclude>bigbank-account/src/main/resources/web/dojo/**/*</exclude>
                 <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck</exclude>
