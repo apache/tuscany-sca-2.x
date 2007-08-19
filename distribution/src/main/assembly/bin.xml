@@ -102,12 +102,15 @@
                 <exclude>*/.classpath</exclude>
                 <exclude>*/.project</exclude>
                 <exclude>*/.settings</exclude>
+                <exclude>*/target/mvn-eclipse-cache.properties</exclude>
                 <exclude>*/target/classes</exclude>
                 <exclude>*/target/classes/**/*</exclude>
                 <exclude>*/target/test-classes</exclude>
                 <exclude>*/target/test-classes/**/*</exclude>
                 <exclude>*/target/surefire-reports</exclude>
                 <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>*/target/sdo-source</exclude>
+                <exclude>*/target/sdo-source/**/*</exclude>
                 <exclude>*/**/*.svg</exclude>
             </excludes>
         </fileSet>
@@ -133,6 +136,8 @@
                 <exclude>*/.classpath</exclude>
                 <exclude>*/.project</exclude>
                 <exclude>*/.settings</exclude>
+                <exclude>*/work</exclude>
+                <exclude>*/work/**/*</exclude>
                 <exclude>*/target/classes</exclude>
                 <exclude>*/target/classes/**/*</exclude>
                 <exclude>*/target/test-classes</exclude>
