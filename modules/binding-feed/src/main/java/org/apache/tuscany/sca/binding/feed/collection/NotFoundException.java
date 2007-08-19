@@ -16,40 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.feed;
 
-import java.io.InputStream;
-
-import org.osoa.sca.annotations.Remotable;
-
-import com.sun.syndication.feed.atom.Entry;
+package org.apache.tuscany.sca.binding.feed.collection;
 
 /**
- * Provides access to a collection of resources using Atom.
+ * Indicates that a resource could not be found.
  * 
  * @version $Rev$ $Date$
  */
-@Remotable
-public interface MediaCollection extends Collection {
+public class NotFoundException extends Exception {
+    private static final long serialVersionUID = -5046027674128627383L;
 
-    /**
-     * Creates a new media entry
-     * 
-     * @param title
-     * @param slug
-     * @param contentType
-     * @param media
-     */
-    Entry postMedia(String title, String slug, String contentType, InputStream media);
+    public NotFoundException() {
+    }
 
-    /**
-     * Update a media entry.
-     * 
-     * @param id
-     * @param contentType
-     * @param media
-     * @return
-     */
-    Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException;
+    public NotFoundException(String message) {
+        super(message);
+    }
+
+    public NotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    public NotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

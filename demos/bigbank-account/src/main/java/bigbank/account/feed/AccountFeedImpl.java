@@ -21,8 +21,8 @@ package bigbank.account.feed;
 import java.io.InputStream;
 import java.util.Collections;
 
-import org.apache.tuscany.sca.feed.Collection;
-import org.apache.tuscany.sca.feed.NotFoundException;
+import org.apache.tuscany.sca.binding.feed.collection.Collection;
+import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 

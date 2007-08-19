@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.feed.Collection;
-import org.apache.tuscany.sca.feed.NotFoundException;
+import org.apache.tuscany.sca.binding.feed.collection.Collection;
+import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.osoa.sca.annotations.Scope;
 
 import com.sun.syndication.feed.atom.Content;
