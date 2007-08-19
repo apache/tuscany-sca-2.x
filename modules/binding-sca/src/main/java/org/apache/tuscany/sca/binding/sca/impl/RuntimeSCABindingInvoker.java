@@ -22,6 +22,12 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
+/**
+ * The local SCA Binding invoker implementation. It is a no op as it passes message
+ * invocations onto the next invoker in the chain. 
+ * 
+ * * @version $Rev$
+ */
 public class RuntimeSCABindingInvoker implements Interceptor {
 
     private Invoker next;

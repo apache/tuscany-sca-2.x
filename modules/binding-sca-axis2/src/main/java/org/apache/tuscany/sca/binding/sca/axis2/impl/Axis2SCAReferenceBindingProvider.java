@@ -47,6 +47,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
+ * The reference binding provider for the remote sca binding implementation. Relies on the 
+ * binding-ws-axis implementation for sending messages to remote services to this provider
+ * just uses the ws-axis provider. 
+ * 
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */
 public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider2 {
@@ -64,20 +68,20 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     private EndpointReference serviceEPR = null;
 
     public Axis2SCAReferenceBindingProvider(RuntimeComponent component,
-                                              RuntimeComponentReference reference,
-                                              DistributedSCABinding binding,
-                                              ServletHost servletHost,
-                                              MessageFactory messageFactory) {
+                                            RuntimeComponentReference reference,
+                                            DistributedSCABinding binding,
+                                            ServletHost servletHost,
+                                            MessageFactory messageFactory) {
         this.component = component;
         this.reference = reference;
         this.binding = binding.getSCABinding();
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
         
-        wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
-        
         // fix up the minimal things required to get the ws binding going. 
         
+        wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
+       
         // Turn the java interface contract into a wsdl interface contract
         InterfaceContract contract = reference.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
@@ -106,7 +110,6 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     }
 
     public Invoker createInvoker(Operation operation) {
-        //return axisReferenceBindingProvider.createInvoker(operation);
         return new Axis2SCABindingInvoker(this, axisReferenceBindingProvider.createInvoker(operation));
     }
 
@@ -119,6 +122,12 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         }
     }
     
+    /**
+     * Uses the distributed domain service discovery feature to locate remote
+     * service endpoints
+     * 
+     * @return An EPR for the target service that this reference refers to 
+     */
     public EndpointReference getServiceEndpoint(){
         
         if ( serviceEPR == null ){
@@ -151,10 +160,13 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     }    
 
     public void start() {
+        // Try and resolve the service endpoint just in case it is available now
         getServiceEndpoint();
+        axisReferenceBindingProvider.start();
     }
 
     public void stop() {
+        axisReferenceBindingProvider.stop();
     }
 
 }

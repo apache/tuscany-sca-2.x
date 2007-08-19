@@ -33,100 +33,95 @@ import org.apache.tuscany.sca.policy.PolicySet;
 /**
  * The Distributed SCA binding wrapper for the SCA binding model object. This is currently
  * just used to locate the remote binding extension and pass the SCA binding to the remote
- * extentsion. It isn't used in the model itself
+ * extension. It isn't used in the model itself
  * 
  * @version $Rev: 564307 $ $Date: 2007-08-09 18:48:29 +0100 (Thu, 09 Aug 2007) $
  */
 public class DistributedSCABindingImpl implements DistributedSCABinding {
     
     private SCABinding scaBinding;
-
     
-    public Component getComponent() {
-        return null;
-    }
-    
-    public void setComponent(Component component) {
-    }
-
-    public String getName() {
-        return null;
-    }
-
-    public String getURI() {
-        return null;
-    }
-
-    public void setName(String name) {
-    }
-
-    public void setURI(String uri) {
-    }
-
-    public List<Object> getExtensions() {
-        return null;
-    }
-    
-    public boolean isUnresolved() {
-        return false;
-    }
-    
-    public void setUnresolved(boolean unresolved) {
-    }
-
     /**
-     * @see java.lang.Object#clone()
+     * Getter for the wrapped sca binding model object
+     * 
+     * @return the sca binding model element
      */
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    /**
-     * @return the targetComponent
-     */
-    public Component getTargetComponent() {
-        return null;
-    }
-
-    /**
-     * @param targetComponent the targetComponent to set
-     */
-    public void setTargetComponent(Component targetComponent) {
-    }
-
-    /**
-     * @return the targetComponentService
-     */
-    public ComponentService getTargetComponentService() {
-        return null;
-    }
-
-    /**
-     * @param targetComponentService the targetComponentService to set
-     */
-    public void setTargetComponentService(ComponentService targetComponentService) {
-        
-    }
-
-    /**
-     * @return the targetBinding
-     */
-    public Binding getTargetBinding() {
-        return null;
-    }
-
-    /**
-     * @param targetBinding the targetBinding to set
-     */
-    public void setTargetBinding(Binding targetBinding) {
-    }
-    
     public SCABinding getSCABinding(){
         return scaBinding;
     }
     
+    /**
+     * Setter for the wrapped sca binding model element
+     * 
+     * @param the sca binding model element
+     */
     public void setSCABinging(SCABinding scaBinding){
         this.scaBinding = scaBinding;
     }
+
+    
+    // Operation implementations provided to make this class a 
+    // valid Binding
+    
+    /**
+     * Returns the binding URI.
+     * 
+     * @return the binding uri
+     */
+    public String getURI(){
+        return null;
+    }
+
+    /**
+     * Sets the binding URI.
+     * 
+     * @param uri the binding uri
+     */
+    public void setURI(String uri){
+    }
+
+    /**
+     * Returns the binding name.
+     * 
+     * @return the binding name
+     */
+    public String getName(){
+        return null;
+    }
+
+    /**
+     * Sets the binding name.
+     * 
+     * @param name the binding name
+     */
+    public void setName(String name){
+    }
+    
+    /**
+     * Returns a list of extension objects contained in this model object.
+     * 
+     * @return a list of extension objects container in this model object
+     */
+    public List<Object> getExtensions(){
+        return null;
+    }
+
+    /**
+     * Returns true if the model element is unresolved.
+     * 
+     * @return true if the model element is unresolved.
+     */
+    public boolean isUnresolved(){
+        return false;
+    }
+
+    /**
+     * Sets whether the model element is unresolved.
+     * 
+     * @param unresolved whether the model element is unresolved
+     */
+    public void setUnresolved(boolean unresolved){
+    }
+    
+
 }

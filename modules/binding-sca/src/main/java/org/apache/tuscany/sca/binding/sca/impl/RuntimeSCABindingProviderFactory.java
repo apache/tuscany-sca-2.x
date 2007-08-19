@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
+ * The factory for creating SCA Binding providers
+ * 
  * @version $Rev$ $Date$
  */
 public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<SCABinding> {
@@ -52,18 +54,8 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    SCABinding binding) {
-        RuntimeSCAReferenceBindingProvider provider = null;
-               
-        try {
-            provider = new RuntimeSCAReferenceBindingProvider(extensionPoints, component, reference, binding);
-        } catch (Exception ex) {
-            // The binding could not create a reference provider because either
-            // the sca binding does not have remote support or the interface
-            // in question is not remotable null will be returned
-            // TODO - throw and appropriate exception here SCARuntime?
-        }
-       
-        return provider;
+              
+        return  new RuntimeSCAReferenceBindingProvider(extensionPoints, component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,

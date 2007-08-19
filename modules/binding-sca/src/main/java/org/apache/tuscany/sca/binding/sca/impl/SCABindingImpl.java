@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 
 /**
- * Represents an SCA binding.
+ * he assemly mode object for an SCA binding.
  * 
  * @version $Rev$ $Date$
  */
@@ -47,47 +47,78 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     
     private DistributedSCADomain distributedDomain;
 
-    
-    public void setDistributedDomain(DistributedSCADomain distributedDomain){
-        this.distributedDomain = distributedDomain;
-    }
-    
-    public DistributedSCADomain getDistributedDomain(){
-        return distributedDomain;
-    }
-
-   
     /**
      * Constructs a new SCA binding.
      */
     protected SCABindingImpl() {
     }
     
+    // SCA Binding operations
+    
+    /**
+     * Setters for the binding name. Defaults to the
+     * name of the service or reference with which the binding is
+     * associated
+     * 
+     * @return the biniding name
+     */
     public String getName() {
         return name;
     }
-
-    public String getURI() {
-        return uri;
-    }
-
+    
+    /**
+     * Setter for the binding name
+     * 
+     * @param name the binding name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getters for the binding URI. The computed URI for the 
+     * service that the reference is targetting or which the service represents
+     * depending on whether the biding is associated with a reference or
+     * service
+     * 
+     * @return the binding uri
+     */
+    public String getURI() {
+        return uri;
+    }
+
+    /**
+     * Setter for the binding uri
+     * 
+     * @para uri the binding uri
+     */
     public void setURI(String uri) {
         this.uri = uri;
     }
-
-
+    
+    /**
+     * Returns a list of extension objects contained in this model object.
+     * 
+     * @return a list of extension objects container in this model object
+     */
     public List<Object> getExtensions() {
         return extensions;
     }
     
+    /**
+     * Returns true if the model element is unresolved.
+     * 
+     * @return true if the model element is unresolved.
+     */
     public boolean isUnresolved() {
         return false;
     }
     
+    /**
+     * Sets whether the model element is unresolved.
+     * 
+     * @param unresolved whether the model element is unresolved
+     */    
     public void setUnresolved(boolean unresolved) {
     }
 
@@ -98,6 +129,8 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+    
+    // Wireable binding operations
 
     /**
      * @return the targetComponent
@@ -142,8 +175,9 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
     }
     
     /**
-     * If a reference targets in a component running in a separate
-     * node then its binding will be set remote until runtime
+     * If a reference targets a component running in a separate
+     * node then its binding will be set remote to kick
+     * off runtime resolution
      * 
      * @param isRemote
      */
@@ -156,5 +190,16 @@ public class SCABindingImpl implements SCABinding, WireableBinding {
      */
     public boolean isRemote(){
         return isRemote;
+    }
+    
+    // Operations needed by the distributed SCA binding
+    // TODO - these are really runtime reference so need a better place for them 
+    
+    public void setDistributedDomain(DistributedSCADomain distributedDomain){
+        this.distributedDomain = distributedDomain;
+    }
+    
+    public DistributedSCADomain getDistributedDomain(){
+        return distributedDomain;
     }
 }

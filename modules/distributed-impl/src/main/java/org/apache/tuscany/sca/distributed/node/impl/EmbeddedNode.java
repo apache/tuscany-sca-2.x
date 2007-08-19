@@ -83,16 +83,16 @@ public class EmbeddedNode {
             } else {
                 throw new ActivationException("Can't find the management contribution on the classpath");
             }
-                        
+        } catch(ActivationException ex) {
+            throw ex;                        
         } catch(Exception ex) {
-            System.err.println("Exception when creating management components " + ex.getMessage());
-            domain = null;
             throw new ActivationException(ex);
         } 
 
     }
     
-    public SCADomain attachDomain(DistributedSCADomain distributedDomain){
+    public SCADomain attachDomain(DistributedSCADomain distributedDomain)
+      throws ActivationException {
         this.distributedDomain = (DistributedSCADomainImpl) distributedDomain;
         domainName = distributedDomain.getDomainName();
         
@@ -102,16 +102,15 @@ public class EmbeddedNode {
             // create and start the local domain
             domain = new EmbeddedSCADomain(cl, domainName);   
             domain.start();
-                     
+        } catch(ActivationException ex) {
+            throw ex;                     
         } catch(Exception ex) {
-            System.err.println("Exception when creating domain " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            domain = null;
+            throw new ActivationException(ex);
         }
         
         // add local information into the distributed domain
         this.distributedDomain.setNodeName(nodeName);
-        this.distributedDomain.setLocalDomain(management); 
+        this.distributedDomain.setManagementDomain(management); 
         
         // add domain information into the management components that need it
         
@@ -120,8 +119,8 @@ public class EmbeddedNode {
     }
       
     
-    protected void loadContribution(String domainName, URL contributionURL){
-        
+    protected void loadContribution(String domainName, URL contributionURL)
+      throws ActivationException {        
         try {        
             // Get ready to add contributions to the domain
             ContributionService contributionService = domain.getContributionService();
@@ -139,59 +138,47 @@ public class EmbeddedNode {
             
             distributedDomain.addDistributedDomainToBindings(composite);
             
-            domain.getCompositeActivator().activate(composite);            
+            domain.getCompositeActivator().activate(composite);     
+        } catch(ActivationException ex) {
+            throw ex;            
         } catch(Exception ex) {
-            System.err.println("Exception when loading contribution " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            domain = null;
+            throw new ActivationException(ex);
         }             
     }
     
-    public void addContribution(String domainName, String contributionURLString) {
+    public void addContribution(String domainName, URL contributionURL) 
+      throws ActivationException {
         try {
             
-            URL contributionURL = null;
             
-            if (contributionURLString == null){
+            if (contributionURL == null){
                 // find the current directory as a URL. This is where our contribution 
                 // will come from
                 contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
-            } else {
-                contributionURL = new URL(contributionURLString);
-            }
+            } 
          
-            loadContribution(domainName, contributionURL);
+            addContribution(domainName, contributionURL);
         
+        } catch(ActivationException ex) {
+            throw ex;
         } catch(Exception ex) {
-            System.err.println("Exception when adding contribution " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            domain = null;
+            throw new ActivationException(ex);
         }         
         
     }
     
-    public void start(){
-        
-        // start the domain composite
-        try {        
-            for (Composite composite : domain.getDomainComposite().getIncludes() ){
-                domain.getCompositeActivator().start(composite);
-            }
-        } catch(Exception ex) {
-            System.err.println("Exception when loading contribution " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            domain = null;
-        } 
+    public void start()
+      throws ActivationException {
+      
+        for (Composite composite : domain.getDomainComposite().getIncludes() ){
+            domain.getCompositeActivator().start(composite);
+        }
     }
 
-    public void stop(){
-        try {
-            domain.stop();
-        } catch(Exception ex) {
-            System.err.println("Exception when stopping domain " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            domain = null;
-        }        
+    public void stop() 
+        throws ActivationException {
+        domain.stop();
+       
     }
     
 }

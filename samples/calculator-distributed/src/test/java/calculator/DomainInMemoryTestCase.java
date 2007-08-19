@@ -38,7 +38,7 @@ public class DomainInMemoryTestCase {
         System.out.println("Setting up distributed nodes");
         
         File currentDirectory = new File (".");
-        String contributionURL = null;
+        URL contributionURL = null;
 
         // Create the distributed domain representation
         distributedDomain = new DistributedSCADomainMemoryImpl(DEFULT_DOMAIN_NAME);
@@ -46,22 +46,22 @@ public class DomainInMemoryTestCase {
         // create the node that runs the 
         // calculator component
         nodeA = new EmbeddedNode("nodeA");
-        domainA = nodeA.attachDomain(distributedDomain);
-        contributionURL = "file:/" + currentDirectory.getCanonicalPath() + "/src/main/resources/nodeA/";        
+        domainA = nodeA.attachDomain(distributedDomain); 
+        contributionURL = Thread.currentThread().getContextClassLoader().getResource("nodeA/");
         nodeA.addContribution(DEFULT_DOMAIN_NAME, contributionURL);
 
         // create the node that runs the 
         // add component
         nodeB = new EmbeddedNode("nodeB");
         domainB = nodeB.attachDomain(distributedDomain);
-        contributionURL = "file:/" + currentDirectory.getCanonicalPath() + "/src/main/resources/nodeB/";
+        contributionURL = Thread.currentThread().getContextClassLoader().getResource("nodeB/");
         nodeB.addContribution(DEFULT_DOMAIN_NAME, contributionURL);         
  
         // create the node that runs the 
         // subtract component      
         nodeC = new EmbeddedNode("nodeC");
         domainC = nodeC.attachDomain(distributedDomain);
-        contributionURL = "file:/" + currentDirectory.getCanonicalPath() + "/src/main/resources/nodeC/";
+        contributionURL = Thread.currentThread().getContextClassLoader().getResource("nodeC/");
         nodeC.addContribution(DEFULT_DOMAIN_NAME, contributionURL);  
      
         
