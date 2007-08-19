@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.feed;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.feed.Collection;
 import org.osoa.sca.annotations.Reference;
 
 import com.sun.syndication.feed.atom.Content;

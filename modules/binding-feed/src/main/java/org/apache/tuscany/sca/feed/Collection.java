@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.feed;
 
-import java.io.InputStream;
+import org.osoa.sca.annotations.Remotable;
 
 import com.sun.syndication.feed.atom.Entry;
 
@@ -27,6 +27,7 @@ import com.sun.syndication.feed.atom.Entry;
  * 
  * @version $Rev$ $Date$
  */
+@Remotable
 public interface Collection {
 
     /**
@@ -46,16 +47,6 @@ public interface Collection {
     Entry post(Entry entry);
 
     /**
-     * Creates a new media entry
-     * 
-     * @param title
-     * @param slug
-     * @param contentType
-     * @param media
-     */
-    Entry postMedia(String title, String slug, String contentType, InputStream media);
-
-    /**
      * Retrieves an entry.
      * 
      * @param id
@@ -71,16 +62,6 @@ public interface Collection {
      * @return
      */
     Entry put(String id, Entry entry) throws NotFoundException;
-
-    /**
-     * Update a media entry.
-     * 
-     * @param id
-     * @param contentType
-     * @param media
-     * @return
-     */
-    Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException;
 
     /**
      * Delete an entry.

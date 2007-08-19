@@ -21,8 +21,8 @@ package bigbank.account.feed;
 import java.io.InputStream;
 import java.util.Collections;
 
-import org.apache.tuscany.sca.binding.feed.Collection;
-import org.apache.tuscany.sca.binding.feed.NotFoundException;
+import org.apache.tuscany.sca.feed.Collection;
+import org.apache.tuscany.sca.feed.NotFoundException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -94,11 +94,4 @@ public class AccountFeedImpl implements Collection {
         return null;
     }
 
-    public Entry postMedia(String title, String slug, String contentType, InputStream media) {
-        return null;
-    }
-    
-    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
-        return null;
-    }
 }

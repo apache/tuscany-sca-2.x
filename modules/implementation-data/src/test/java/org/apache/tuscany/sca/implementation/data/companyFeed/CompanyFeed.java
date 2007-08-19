@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.Collection;
-import org.apache.tuscany.sca.binding.feed.NotFoundException;
+import org.apache.tuscany.sca.feed.Collection;
+import org.apache.tuscany.sca.feed.NotFoundException;
 import org.apache.tuscany.sca.implementation.data.DATA;
 import org.osoa.sca.annotations.Reference;
 
@@ -96,15 +96,7 @@ public class CompanyFeed implements Collection {
         return null;
     }
 
-    public Entry postMedia(String title, String slug, String contentType, InputStream media) {
-        return null;
-    }
-
     public Entry put(String id, Entry entry) throws NotFoundException {
-        return null;
-    }
-
-    public Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException {
         return null;
     }
 

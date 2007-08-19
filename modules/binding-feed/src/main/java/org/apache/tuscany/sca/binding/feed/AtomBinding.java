@@ -19,13 +19,10 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Implementation of the Atom binding model.
