@@ -26,6 +26,7 @@
     <component name="ServiceDiscoveryComponent">
         <implementation.java class="org.apache.tuscany.sca.distributed.management.impl.ServiceDiscoveryNetworkImpl" />
         <reference name="serviceDiscovery">
+            <interface.java interface="org.apache.tuscany.sca.distributed.management.ServiceDiscovery" />
             <binding.ws uri="http://localhost:8080/ServiceDiscoveryComponent/ServiceDiscovery"/>
         </reference>
     </component>

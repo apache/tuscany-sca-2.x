@@ -25,13 +25,18 @@ import org.junit.Test;
 public class SimpleTestCase extends BaseTest {
     
     @Test
-    public void testHelloWorld() throws Exception {    
+    public void testHelloWorldRemote() throws Exception {    
         
-        System.out.println(helloWorldClientA.getGreetings("fred"));
+        //System.out.println(helloWorldClientA.getGreetings("fred"));
         
-        // Calculate
         Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
         
     }
-
+    
+    @Test
+    public void testHelloWorldLocalAndRemote() throws Exception {    
+                
+        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
+    }    
+  
 }

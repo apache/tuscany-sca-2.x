@@ -139,7 +139,8 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
                                                                      binding.getURI(), 
                                                                      SCABinding.class.getName());
             
-            if (!serviceUrl.equals("")){
+            if ( (serviceUrl != null ) &&
+                 (!serviceUrl.equals(""))){
                 serviceEPR = new EndpointReferenceImpl(serviceUrl);
             }
         }

@@ -22,9 +22,9 @@
            xmlns:sample="http://sample"
            name="HelloWorld">
 
-    <component name="HelloWorldClient">
+    <component name="HelloWorldClientRemote">
 		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClient" />
-        <reference name="helloWorldWS" target="HelloWorldService" />
+        <reference name="helloWorldService" target="HelloWorldServiceRemote" />
     </component>
 
 </composite>
