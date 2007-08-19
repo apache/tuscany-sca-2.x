@@ -242,7 +242,7 @@
                         <configuration>
                             <tasks>
                                 <copy file="${basedir}/target/apache-tuscany-sca-1.0-incubating-SNAPSHOT.zip" tofile="${basedir}/target-last-successful/apache-tuscany-sca-1.0-incubating-SNAPSHOT.zip" overwrite="yes"/>
-                                <copy file="${basedir}/target/apache-tuscany-sca-1.0-incubating-SNAPSHOT.tar.gz" tofile="${basedir}/target-last-succesful/apache-tuscany-sca-1.0-incubating-SNAPSHOT.tar.gz" overwrite="yes"/>
+                                <copy file="${basedir}/target/apache-tuscany-sca-1.0-incubating-SNAPSHOT.tar.gz" tofile="${basedir}/target-last-successful/apache-tuscany-sca-1.0-incubating-SNAPSHOT.tar.gz" overwrite="yes"/>
                             </tasks>
                         </configuration>
                         <goals>
