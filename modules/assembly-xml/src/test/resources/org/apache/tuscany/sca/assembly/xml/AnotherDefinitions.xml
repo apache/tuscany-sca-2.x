@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sca:definitions xmlns="http://test"
+ 			targetNamespace="http://test"
+ 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+
+<!-- simple intent -->
+ <sca:intent name="tuscanyIntent_1" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_2" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_3" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_4" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+<sca:intent name="tuscanyIntent_5" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_6" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_7" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_8" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+  <!-- qualified intents -->
+ <sca:intent name="tuscanyIntent_1.qualified" />
+ <sca:intent name="tuscanyIntent_2.qualified" />
+</sca:definitions>
