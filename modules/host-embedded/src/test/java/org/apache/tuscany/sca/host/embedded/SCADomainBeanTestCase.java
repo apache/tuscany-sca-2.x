@@ -23,7 +23,8 @@ import junit.framework.TestCase;
 
 import org.osoa.sca.ServiceReference;
 
-import crud.CRUD;
+import test.crud.CRUD;
+
 
 /**
  * @version $Rev$ $Date$

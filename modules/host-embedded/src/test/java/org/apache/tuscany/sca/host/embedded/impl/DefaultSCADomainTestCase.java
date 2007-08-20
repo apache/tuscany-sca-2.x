@@ -21,8 +21,9 @@ package org.apache.tuscany.sca.host.embedded.impl;
 
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 
+import test.crud.CRUD;
+
 import junit.framework.TestCase;
-import crud.CRUD;
 
 /**
  * @version $Rev$ $Date$

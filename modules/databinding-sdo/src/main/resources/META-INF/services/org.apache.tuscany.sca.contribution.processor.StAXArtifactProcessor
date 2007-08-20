@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.databinding.sdo.ImportSDOProcessor;type=http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0#import.sdo,model=org.apache.tuscany.sca.databinding.sdo.ImportSDO
+org.apache.tuscany.sca.databinding.sdo.ImportSDOProcessor;qname=http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0#import.sdo,model=org.apache.tuscany.sca.databinding.sdo.ImportSDO

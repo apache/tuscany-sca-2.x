@@ -17,31 +17,22 @@
  * under the License.    
  */
 
-package crud;
+package test.crud;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-
-import crud.impl.CRUDImplementationImpl;
+import test.crud.CRUDImplementation;
 
 /**
- * A default factory for the CRUD implementation model.
+ * A factory for the sample CRUD implementation model.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultCRUDImplementationFactory implements CRUDImplementationFactory {
+public interface CRUDImplementationFactory {
     
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    
-    public DefaultCRUDImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
-    }
-
-    public CRUDImplementation createCRUDImplementation() {
-        return new CRUDImplementationImpl(assemblyFactory, javaFactory);
-    }
+    /**
+     * Creates a new CRUD implementation.
+     * 
+     * @return
+     */
+    CRUDImplementation createCRUDImplementation();
 
 }

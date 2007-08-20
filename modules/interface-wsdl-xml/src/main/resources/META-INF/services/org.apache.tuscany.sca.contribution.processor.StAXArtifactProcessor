@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLInterfaceProcessor;type=http://www.osoa.org/xmlns/sca/1.0#interface.wsdl,model=org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract
+org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLInterfaceProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#interface.wsdl,model=org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract

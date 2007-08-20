@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package crud.module;
+package test.crud.module;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -28,10 +28,11 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
-import crud.CRUDImplementationFactory;
-import crud.DefaultCRUDImplementationFactory;
-import crud.impl.CRUDImplementationProcessor;
-import crud.provider.CRUDImplementationProviderFactory;
+import test.crud.CRUDImplementationFactory;
+import test.crud.DefaultCRUDImplementationFactory;
+import test.crud.impl.CRUDImplementationProcessor;
+import test.crud.provider.CRUDImplementationProviderFactory;
+
 
 /**
  * Implements a module activator for the CRUD implementation extension module.

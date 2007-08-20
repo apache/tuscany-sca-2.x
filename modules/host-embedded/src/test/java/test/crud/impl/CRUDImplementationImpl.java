@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package crud.impl;
+package test.crud.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +30,9 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import crud.CRUD;
-import crud.CRUDImplementation;
+
+import test.crud.CRUD;
+import test.crud.CRUDImplementation;
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.

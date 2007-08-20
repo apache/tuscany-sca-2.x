@@ -96,17 +96,23 @@ public class DefaultStAXArtifactProcessorExtensionPoint
             String className = attributes.get("class");
             
             // Load a StAX artifact processor
+            
+            // Get the model qname
             QName artifactType = null;
-            String qname = attributes.get("type");
+            String qname = attributes.get("qname");
             if (qname != null) {
                 int h = qname.indexOf('#');
                 artifactType = new QName(qname.substring(0, h), qname.substring(h+1));
             }
             
+            // Get the model class name
             String modelTypeName = attributes.get("model");
             
+            // Get the model factory class name 
+            String factoryName = attributes.get("factory");
+            
             // Create a processor wrapper and register it
-            StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, className);
+            StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, factoryName, className);
             addArtifactProcessor(processor);
         }
         
@@ -122,14 +128,16 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         private ModelFactoryExtensionPoint modelFactories;
         private QName artifactType;
         private String modelTypeName;
+        private String factoryName;
         private String className;
         private StAXArtifactProcessor processor;
         private Class modelType;
         
-        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, QName artifactType, String modelTypeName, String className) {
+        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, QName artifactType, String modelTypeName, String factoryName, String className) {
             this.modelFactories = modelFactories;
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
+            this.factoryName = factoryName;
             this.className = className;
         }
 
@@ -149,8 +157,15 @@ public class DefaultStAXArtifactProcessorExtensionPoint
                     try {
                         ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
                         Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader);
-                        Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(AssemblyFactory.class, PolicyFactory.class, QName.class, Class.class);
-                        processor = constructor.newInstance(assemblyFactory, policyFactory, artifactType, getModelType());
+                        Object modelFactory;
+                        if (factoryName != null) {
+                            Class<?> factoryClass = (Class<?>)Class.forName(factoryName, true, classLoader);
+                            modelFactory = modelFactories.getFactory(factoryClass);
+                        } else {
+                            modelFactory = null;
+                        }
+                        Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(AssemblyFactory.class, PolicyFactory.class, QName.class, Class.class, Object.class);
+                        processor = constructor.newInstance(assemblyFactory, policyFactory, artifactType, getModelType(), modelFactory);
                     } catch (Exception e) {
                         throw new IllegalStateException(e);
                     }
