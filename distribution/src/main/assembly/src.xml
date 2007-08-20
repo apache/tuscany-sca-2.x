@@ -85,6 +85,10 @@
     		 <exclude>itest/databindings/jaxbgen/velocity.log</exclude>
              <exclude>itest/old</exclude>
              <exclude>itest/old/**/*</exclude>
+             <exclude>itest/contribution-import-export/import-wsdl/work</exclude>
+             <exclude>itest/contribution-import-export/import-wsdl/work/**/*</exclude>
+             <exclude>itest/contribution-import-export/import-composite/work</exclude>
+             <exclude>itest/contribution-import-export/import-composite/work/**/*</exclude>
              <exclude>modules/http-tomcat/work</exclude>
              <exclude>modules/http-tomcat/work/**/*</exclude>
              <exclude>modules/binding-jms</exclude>
@@ -111,10 +115,16 @@
              <exclude>samples/helloworld-dojo/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-ws-reference/work</exclude>
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
+             <exclude>samples/helloworld-ws-sdo/work</exclude>
+             <exclude>samples/helloworld-ws-sdo/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service/work</exclude>
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
              <exclude>samples/osgi-supplychain/.felix</exclude>
              <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
+             <exclude>samples/quote-xquery</exclude>
+             <exclude>samples/quote-xquery/**/*</exclude>
+             <exclude>samples/simple-callback-ws/work</exclude>
+             <exclude>samples/simple-callback-ws/work/**/*</exclude>
              <exclude>demos/alert-aggregator/src/main/webapp/dojo</exclude>
              <exclude>demos/alert-aggregator/src/main/webapp/dojo/**/*</exclude>
              <exclude>demos/bigbank-account/src/main/resources/web/dojo</exclude> 
@@ -124,6 +134,7 @@
              <exclude>*/**/*.pmd</exclude>
              <exclude>*/**/*.checkstyle</exclude>
              <exclude>*/**/*.settings</exclude>
+             <exclude>*/**/.settings</exclude>
          </excludes>
 	 </fileSet>
      </fileSets>
