@@ -77,7 +77,6 @@
                 <include name="tuscany-policy-0.90-incubating-SNAPSHOT.jar"/>
             </zipfileset>
             <lib dir="../../lib">
-                <include name="commonj-api-0.90-incubating-SNAPSHOT.jar"/>
                 <include name="json-rpc-1.0.jar"/>
                 <include name="stax-api-1.0.1.jar"/>
                 <include name="wsdl4j-1.6.2.jar"/>
