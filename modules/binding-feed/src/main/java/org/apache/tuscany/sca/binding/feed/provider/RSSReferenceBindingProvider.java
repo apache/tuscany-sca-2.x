@@ -30,12 +30,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 /**
  * Implementation of the RSS binding provider.
  */
-public class RSSReferenceBindingProvider implements ReferenceBindingProvider {
+class RSSReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
     private RSSBinding binding;
 
-    public RSSReferenceBindingProvider(RuntimeComponent component,
+    RSSReferenceBindingProvider(RuntimeComponent component,
                                        RuntimeComponentReference reference,
                                        RSSBinding binding) {
         this.reference = reference;

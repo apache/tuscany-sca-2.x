@@ -17,12 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.feed.impl;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.feed.AtomBinding;
+import org.apache.tuscany.sca.binding.feed.AtomBindingFactory;
 
 /**
- * Atom binding model.
+ * Factory for the Atom binding model.
+ *
+ * @version $Rev$ $Date$
  */
-public interface AtomBinding extends Binding {
+public class AtomBindingFactoryImpl implements AtomBindingFactory {
+
+    public AtomBinding createAtomBinding() {
+        return new AtomBindingImpl();
+    }
+
 }

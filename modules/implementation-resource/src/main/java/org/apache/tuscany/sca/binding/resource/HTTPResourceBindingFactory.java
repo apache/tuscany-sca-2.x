@@ -17,12 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
-
-import org.apache.tuscany.sca.assembly.Binding;
+package org.apache.tuscany.sca.binding.resource;
 
 /**
- * Atom binding model.
+ * Factory for the HTTP resource binding model.
+ *
+ * @version $Rev$ $Date$
  */
-public interface AtomBinding extends Binding {
+public interface HTTPResourceBindingFactory {
+    
+    /**
+     * Creates a new HTTP resource binding.
+     * @return a new HTTP resource binding
+     */
+    HTTPResourceBinding createHTTPResourceBinding();
+
 }

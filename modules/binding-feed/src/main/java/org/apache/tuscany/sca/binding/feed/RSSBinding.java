@@ -19,46 +19,10 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.Binding;
 
 /**
- * Implementation of the Feed binding model.
+ * RSS Feed binding model.
  */
-public class RSSBinding implements Binding {
-
-    private String name;
-    private String uri;
-
-    public String getName() {
-        return name;
-    }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    public List<Object> getExtensions() {
-        // The binding does not support extensions
-        return Collections.emptyList();
-    }
-
-    public boolean isUnresolved() {
-        return false;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        // The binding is always resolved
-    }
-
+public interface RSSBinding extends Binding {
 }

@@ -38,14 +38,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 /**
  * Implementation of the Atom binding provider.
  */
-public class AtomReferenceBindingProvider implements ReferenceBindingProvider {
+class AtomReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
     private AtomBinding binding;
     private String authorizationHeader;
     private HttpClient httpClient;
 
-    public AtomReferenceBindingProvider(RuntimeComponent component,
+    AtomReferenceBindingProvider(RuntimeComponent component,
                                         RuntimeComponentReference reference,
                                         AtomBinding binding) {
         this.reference = reference;

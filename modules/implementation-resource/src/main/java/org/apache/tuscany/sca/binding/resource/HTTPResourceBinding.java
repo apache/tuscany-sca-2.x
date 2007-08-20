@@ -19,49 +19,11 @@
 
 package org.apache.tuscany.sca.binding.resource;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
 
 
 /**
- * Implementation of the HTTP resource binding model.
+ * HTTP resource binding model.
  */
-public class HTTPResourceBinding implements Binding {
-    
-    private String name;
-    private String uri;
-
-    public String getName() {
-        return name;
-    }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    
-    public List<Object> getExtensions() {
-        // The sample binding does not support extensions
-        return Collections.emptyList();
-    }
-
-    public boolean isUnresolved() {
-        return false;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        // The sample binding is always resolved
-    }
-
+public interface HTTPResourceBinding extends Binding {
 }

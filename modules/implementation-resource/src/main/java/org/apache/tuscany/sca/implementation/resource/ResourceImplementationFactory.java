@@ -17,12 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
-
-import org.apache.tuscany.sca.assembly.Binding;
+package org.apache.tuscany.sca.implementation.resource;
 
 /**
- * Atom binding model.
+ * Factory for the resource implementation model.
+ *
+ * @version $Rev$ $Date$
  */
-public interface AtomBinding extends Binding {
+public interface ResourceImplementationFactory {
+    
+    /**
+     * Creates a new resource implementation.
+     * @return a new resource implementation
+     */
+    ResourceImplementation createResourceImplementation();
+
 }

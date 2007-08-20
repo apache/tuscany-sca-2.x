@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.resource,model=org.apache.tuscany.sca.binding.resource.HTTPResourceBinding
-org.apache.tuscany.sca.implementation.resource.ResourceImplementationProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#implementation.resource,model=org.apache.tuscany.sca.implementation.resource.ResourceImplementation
+org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.resource,model=org.apache.tuscany.sca.binding.resource.HTTPResourceBinding,factory=org.apache.tuscany.sca.binding.resource.HTTPResourceBindingFactory
+org.apache.tuscany.sca.implementation.resource.impl.ResourceImplementationProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#implementation.resource,model=org.apache.tuscany.sca.implementation.resource.ResourceImplementation
