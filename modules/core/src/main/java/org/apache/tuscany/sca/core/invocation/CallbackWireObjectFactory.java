@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
