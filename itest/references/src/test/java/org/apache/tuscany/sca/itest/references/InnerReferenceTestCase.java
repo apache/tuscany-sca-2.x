@@ -75,9 +75,4 @@ public class InnerReferenceTestCase {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        InnerReferenceTestCase.init();
-        InnerReferenceTestCase tester = new InnerReferenceTestCase();
-        InnerReferenceTestCase.destroy();
-    }
 }

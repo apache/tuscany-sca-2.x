@@ -33,6 +33,7 @@ public class ConversationsTestCaseFIXME extends TestCase {
         aConversationsClient.run();
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("ConversationsTest.composite");
 
@@ -42,6 +43,7 @@ public class ConversationsTestCaseFIXME extends TestCase {
 
     }
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

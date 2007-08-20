@@ -27,8 +27,9 @@ import stockexceptiontestservice.scatesttool.InvalidSymbolFault;
  * 
  */
 public class InvalidSymbolSDOException extends Exception {
-
-   public static final QName FAULT_ELEMENT = new QName("http://scatesttool.stockexceptiontestservice", "InvalidSymbolFault");
+    private static final long serialVersionUID = -3824848763300476741L;
+    
+    public static final QName FAULT_ELEMENT = new QName("http://scatesttool.stockexceptiontestservice", "InvalidSymbolFault");
 
     /**
      * 

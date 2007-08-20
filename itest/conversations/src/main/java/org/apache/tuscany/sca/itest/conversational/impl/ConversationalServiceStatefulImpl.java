@@ -19,16 +19,12 @@
 package org.apache.tuscany.sca.itest.conversational.impl;
 
 import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
-import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 

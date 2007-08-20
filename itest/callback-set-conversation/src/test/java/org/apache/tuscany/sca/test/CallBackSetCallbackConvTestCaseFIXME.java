@@ -32,6 +32,7 @@ public class CallBackSetCallbackConvTestCaseFIXME extends TestCase {
         aCallBackClient.run();
     }
 
+    @Override
     protected void setUp() throws Exception {
     	domain = SCADomain.newInstance("CallBackSetCallbackConvTest.composite");
     	
@@ -40,6 +41,7 @@ public class CallBackSetCallbackConvTestCaseFIXME extends TestCase {
                                                                "CallBackSetCallbackConvClient");
     }
     
+    @Override
     protected void tearDown() throws Exception {
     	domain.close();
     }

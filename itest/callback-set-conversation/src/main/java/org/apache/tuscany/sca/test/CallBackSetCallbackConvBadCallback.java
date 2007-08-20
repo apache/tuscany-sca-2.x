@@ -18,11 +18,9 @@
  */
 package org.apache.tuscany.sca.test;
 
-import java.io.Serializable;
-
 import junit.framework.Assert;
 
-public class CallBackSetCallbackConvBadCallback implements Serializable {
+public class CallBackSetCallbackConvBadCallback {
 
     public CallBackSetCallbackConvBadCallback() {
         super();

@@ -31,12 +31,14 @@ public class CallbackMultiWireTestCase extends TestCase {
     private MyClient myClient1;
     private MyClient myClient2;
 
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("CallbackMultiWireTest.composite");
         myClient1 = scaDomain.getService(MyClient.class, "MyClientComponent1");
         myClient2 = scaDomain.getService(MyClient.class, "MyClientComponent2");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

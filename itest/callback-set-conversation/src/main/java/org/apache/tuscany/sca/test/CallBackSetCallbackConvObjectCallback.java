@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.sca.test;
 
-import java.io.Serializable;
 
-public class CallBackSetCallbackConvObjectCallback implements CallBackSetCallbackConvCallback, Serializable {
+public class CallBackSetCallbackConvObjectCallback implements CallBackSetCallbackConvCallback {
 
     private int callBackCount = 0;
     private Object monitor;

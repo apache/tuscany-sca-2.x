@@ -85,10 +85,12 @@ public class SDOWSDLTestCase extends TestCase {
         assertEquals(dataIn.getPassword(), dataOut.getPassword());
     }
 
+    @Override
     protected void setUp() throws Exception {
     	domain = SCADomain.newInstance("SDOWSDLTest.composite");
     }
 
+    @Override
     protected void tearDown() throws Exception {
     	domain.close();
     }

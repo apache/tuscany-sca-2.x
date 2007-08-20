@@ -28,6 +28,7 @@ public class RecursiveCompositeTestCaseFIXME extends TestCase {
     private SCADomain domain;
     private Service1 tracker, tracker2;
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("http://localhost", "/", "Composite1.composite", "Composite2.composite");
         tracker = domain.getService(Service1.class, "ComponentC");
@@ -35,6 +36,7 @@ public class RecursiveCompositeTestCaseFIXME extends TestCase {
 
     }
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

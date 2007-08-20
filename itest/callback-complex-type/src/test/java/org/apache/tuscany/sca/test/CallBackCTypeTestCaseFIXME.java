@@ -32,6 +32,7 @@ public class CallBackCTypeTestCaseFIXME extends TestCase {
         aCallBackClient.run();
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("CallBackCTypeClient.composite");
 
@@ -39,6 +40,7 @@ public class CallBackCTypeTestCaseFIXME extends TestCase {
             domain.getService(CallBackCTypeClient.class, "CallBackCTypeClient");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

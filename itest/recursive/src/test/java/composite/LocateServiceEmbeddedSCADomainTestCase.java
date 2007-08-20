@@ -34,6 +34,7 @@ public class LocateServiceEmbeddedSCADomainTestCase extends TestCase {
     private EmbeddedSCADomain domain;
     private Contribution contribution;
 
+    @Override
     protected void setUp() throws Exception {
         // Create a test embedded SCA domain
         cl = getClass().getClassLoader();
@@ -91,6 +92,7 @@ public class LocateServiceEmbeddedSCADomainTestCase extends TestCase {
         }
     }
 
+    @Override
     public void tearDown() throws Exception {
         ContributionService contributionService = domain.getContributionService();
 

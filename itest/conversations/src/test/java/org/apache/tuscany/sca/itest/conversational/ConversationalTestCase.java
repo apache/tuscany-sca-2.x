@@ -97,7 +97,7 @@ public class ConversationalTestCase {
     
     @Test
     public void testStatelessStatefulConversationCheckingScope() {
-        int count = conversationalStatelessClientStatefulService.runConversationCheckingScope();
+        conversationalStatelessClientStatefulService.runConversationCheckingScope();
         Assert.assertEquals("init,initializeCount,incrementCount,retrieveCount,endConversation,destroy,", 
                             ConversationalServiceStatefulImpl.calls.toString());
     }     
@@ -168,7 +168,7 @@ public class ConversationalTestCase {
     
     @Test
     public void testStatelessStatelessConversationCheckingScope() {
-        int count = conversationalStatelessClientStatelessService.runConversationCheckingScope();
+        conversationalStatelessClientStatelessService.runConversationCheckingScope();
         Assert.assertEquals("init,initializeCount,destroy,init,incrementCount,destroy,init,retrieveCount,destroy,init,endConversation,destroy,", 
                             ConversationalServiceStatelessImpl.calls.toString());
     }       
@@ -227,7 +227,7 @@ public class ConversationalTestCase {
     
     @Test
     public void testStatefulStatefulConversationCheckingScope() {
-        int count = conversationalStatefulClientStatefulService.runConversationCheckingScope();
+        conversationalStatefulClientStatefulService.runConversationCheckingScope();
         Assert.assertEquals("init,initializeCount,incrementCount,retrieveCount,endConversation,destroy,", 
                             ConversationalServiceStatefulImpl.calls.toString());
     }  
@@ -287,7 +287,7 @@ public class ConversationalTestCase {
     
     @Test
     public void testStatefulStatelessConversationCheckingScope() {
-        int count = conversationalStatefulClientStatelessService.runConversationCheckingScope();
+        conversationalStatefulClientStatelessService.runConversationCheckingScope();
         Assert.assertEquals("init,initializeCount,destroy,init,incrementCount,destroy,init,retrieveCount,destroy,init,endConversation,destroy,", 
                             ConversationalServiceStatelessImpl.calls.toString());
     } 

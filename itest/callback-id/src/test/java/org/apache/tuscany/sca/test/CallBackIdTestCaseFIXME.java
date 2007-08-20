@@ -32,12 +32,14 @@ public class CallBackIdTestCaseFIXME extends TestCase {
         aCallBackClient.run();
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("CallBackIdClient.composite");
 
         aCallBackClient = domain.getService(CallBackIdClient.class, "CallBackIdClient");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

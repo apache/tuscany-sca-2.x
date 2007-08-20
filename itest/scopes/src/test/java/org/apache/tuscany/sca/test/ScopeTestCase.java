@@ -57,7 +57,8 @@ public class ScopeTestCase extends TestCase {
     }
 
     private  class ModuleScopeTestThread extends Thread {
-      public void run() {
+      @Override
+    public void run() {
         StateVerifier moduleScopeService = domain.getService(StateVerifier.class, "ModuleScopeComponent");
         for(int i=1; i<=iterations; i++) {
           moduleScopeService.setState(i);
@@ -68,7 +69,8 @@ public class ScopeTestCase extends TestCase {
     }
 
     private class RequestScopeTestThread extends Thread {
-      public void run() {
+      @Override
+    public void run() {
         StateVerifier requestScopeService = domain.getService(StateVerifier.class, "RequestScopeComponent");
         for(int i=1; i<=iterations; i++) {
           requestScopeService.setState(i);
@@ -78,14 +80,14 @@ public class ScopeTestCase extends TestCase {
       }
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("scopes.composite");
     }
 
+    @Override
     protected void tearDown() throws Exception {
-        if (domain != null) {
-            domain.close();
-        }
+        domain.close();
     }
     
 }

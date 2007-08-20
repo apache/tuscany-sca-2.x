@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package helloworld;
+package org.apache.tuscany.sca.test.contribution;
+
+import helloworld.HelloWorldService;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +41,7 @@ public class HelloWorldServerTestCase extends TestCase{
     private Contribution wsdlContribution;
     private Contribution consumerContribution;
 
+    @Override
     protected void setUp() throws Exception {
         // Create a test embedded SCA domain
         cl = getClass().getClassLoader();
@@ -84,6 +87,7 @@ public class HelloWorldServerTestCase extends TestCase{
         assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
     }
 
+    @Override
     public void tearDown() throws Exception {
         ContributionService contributionService = domain.getContributionService();
 
