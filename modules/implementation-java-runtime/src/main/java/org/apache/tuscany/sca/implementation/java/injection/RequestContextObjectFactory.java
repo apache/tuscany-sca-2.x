@@ -20,9 +20,9 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.component.RequestContextImpl;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.factory.ObjectCreationException;
-import org.apache.tuscany.sca.factory.ObjectFactory;
 import org.osoa.sca.RequestContext;
 
 /**

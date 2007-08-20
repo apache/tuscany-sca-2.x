@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import org.apache.tuscany.sca.factory.ObjectCreationException;
-import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$

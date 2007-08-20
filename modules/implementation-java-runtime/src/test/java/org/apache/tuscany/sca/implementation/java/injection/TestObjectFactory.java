@@ -22,8 +22,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.apache.tuscany.sca.factory.ObjectCreationException;
-import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
 /**
  * Creates new instances of a Java class

@@ -21,11 +21,11 @@ package org.apache.tuscany.sca.implementation.java.injection;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.factory.ObjectCreationException;
-import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
 /**
- * Injects a value created by an {@link org.apache.tuscany.sca.factory.ObjectFactory} using a given method
+ * Injects a value created by an {@link org.apache.tuscany.sca.core.factory.ObjectFactory} using a given method
  *
  * @version $Rev$ $Date$
  */
