@@ -60,6 +60,7 @@
                 <module>references</module>
                 <module>scopes</module>
                 <module>wsdl</module>
+                <module>wsdlless</module>
             </modules>
         </profile>
 
