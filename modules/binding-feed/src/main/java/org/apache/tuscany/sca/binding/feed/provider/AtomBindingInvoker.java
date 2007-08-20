@@ -41,14 +41,14 @@ import com.sun.syndication.io.XmlReader;
 /**
  * Invoker for the Atom binding.
  */
-public class AtomBindingInvoker implements Invoker {
+class AtomBindingInvoker implements Invoker {
 
     Operation operation;
     String uri;
     HttpClient httpClient;
     String authorizationHeader;
 
-    public AtomBindingInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
+    AtomBindingInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
         this.operation = operation;
         this.uri = uri;
         this.httpClient = httpClient;

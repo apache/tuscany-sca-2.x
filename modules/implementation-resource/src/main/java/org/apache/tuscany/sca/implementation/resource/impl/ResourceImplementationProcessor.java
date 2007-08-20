@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.resource;
+package org.apache.tuscany.sca.implementation.resource.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -37,7 +36,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
+import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFactory;
 
 
 /**
@@ -47,13 +47,11 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     private static final QName IMPLEMENTATION_RESOURCE = new QName("http://www.osoa.org/xmlns/sca/1.0", "implementation.resource");
     
     private ContributionFactory contributionFactory;
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
+    private ResourceImplementationFactory implementationFactory;
     
     public ResourceImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        implementationFactory = modelFactories.getFactory(ResourceImplementationFactory.class);
     }
 
     public QName getArtifactType() {
@@ -76,7 +74,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
             String location = reader.getAttributeValue(null, "location");
 
             // Create an initialize the resource implementationmodel
-            ResourceImplementation implementation = new ResourceImplementation(assemblyFactory, javaFactory);
+            ResourceImplementation implementation = implementationFactory.createResourceImplementation();
             implementation.setLocation(location);
             implementation.setUnresolved(true);
             

@@ -17,12 +17,27 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.implementation.resource.provider;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import java.net.URL;
+
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
- * Atom binding model.
+ * Implements an invoker for resource component implementations.
  */
-public interface AtomBinding extends Binding {
+class ResourceImplementationInvoker implements Invoker {
+    private URL locationURL;
+    
+    ResourceImplementationInvoker(URL locationURL) {
+        this.locationURL = locationURL;
+    }
+    
+    public Message invoke(Message msg) {
+        // Return the location URL
+        msg.setBody(locationURL);
+        return msg;
+    }
+
 }

@@ -19,10 +19,17 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import org.apache.tuscany.sca.assembly.Binding;
-
 /**
- * Atom binding model.
+ * Factory for the RSS binding
+ *
+ * @version $Rev$ $Date$
  */
-public interface AtomBinding extends Binding {
+public interface RSSBindingFactory {
+
+    /**
+     * Creates a new RSS binding.
+     * @return the new RSS binding
+     */
+    RSSBinding createRSSBinding();
+
 }

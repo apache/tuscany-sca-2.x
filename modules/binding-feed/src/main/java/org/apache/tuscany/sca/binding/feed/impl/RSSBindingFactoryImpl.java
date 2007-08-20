@@ -17,12 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.feed.impl;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.feed.RSSBinding;
+import org.apache.tuscany.sca.binding.feed.RSSBindingFactory;
 
 /**
- * Atom binding model.
+ * Factory for the RSS binding model.
+ *
+ * @version $Rev$ $Date$
  */
-public interface AtomBinding extends Binding {
+public class RSSBindingFactoryImpl implements RSSBindingFactory {
+
+    public RSSBinding createRSSBinding() {
+        return new RSSBindingImpl();
+    }
+
 }

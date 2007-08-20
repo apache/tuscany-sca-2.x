@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 /**
  * Implementation of the RSS binding provider.
  */
-public class RSSServiceBindingProvider implements ServiceBindingProvider {
+class RSSServiceBindingProvider implements ServiceBindingProvider {
 
     private RuntimeComponentService service;
     private RSSBinding binding;
@@ -39,7 +39,7 @@ public class RSSServiceBindingProvider implements ServiceBindingProvider {
     private MessageFactory messageFactory;
     private String uri;
 
-    public RSSServiceBindingProvider(RuntimeComponent component,
+    RSSServiceBindingProvider(RuntimeComponent component,
                                      RuntimeComponentService service,
                                      RSSBinding binding,
                                      ServletHost servletHost,

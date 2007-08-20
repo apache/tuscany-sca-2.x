@@ -28,19 +28,19 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * The model representing a resource implementation in an SCA assembly model.
  */
-public class ResourceImplementationProvider implements ImplementationProvider {
+class ResourceImplementationProvider implements ImplementationProvider {
     
     private ResourceImplementation implementation;
 
     /**
      * Constructs a new resource implementation provider.
      */
-    public ResourceImplementationProvider(RuntimeComponent component, ResourceImplementation implementation) {
+    ResourceImplementationProvider(RuntimeComponent component, ResourceImplementation implementation) {
         this.implementation = implementation;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        ResourceInvoker invoker = new ResourceInvoker(implementation.getLocationURL());
+        ResourceImplementationInvoker invoker = new ResourceImplementationInvoker(implementation.getLocationURL());
         return invoker;
     }
 

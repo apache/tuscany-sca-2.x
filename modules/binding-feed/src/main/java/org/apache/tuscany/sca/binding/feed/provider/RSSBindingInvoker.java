@@ -35,12 +35,12 @@ import com.sun.syndication.io.XmlReader;
 /**
  * Invoker for the RSS binding.
  */
-public class RSSBindingInvoker implements Invoker {
+class RSSBindingInvoker implements Invoker {
 
     private String feedType;
     private String uri;
 
-    public RSSBindingInvoker(String uri, String feedType) {
+    RSSBindingInvoker(String uri, String feedType) {
         this.uri = uri;
         this.feedType = feedType;
     }
