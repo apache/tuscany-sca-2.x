@@ -43,6 +43,7 @@ public class CheckingAccount {
         this.balance = b;
     }
 
+    @Override
     public String toString() {
         return accountNumber + ", balance:" + balance;
     }

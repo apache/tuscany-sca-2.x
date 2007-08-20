@@ -29,6 +29,7 @@ public class MortgageClientTestCase extends TestCase {
     private SCADomain domain;
     private LoanApproval loanApproval;
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("Mortgage.composite");
         loanApproval = domain.getService(LoanApproval.class, "LoanApprovalComponent");

@@ -38,8 +38,9 @@ import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
  */
 public class AlertsTypeNonSDOImpl implements AlertsType
 {
-
-  /**
+    private static final long serialVersionUID = -3784576466148158776L;
+    
+/**
    * The cached value of the '{@link #getAlert() <em>Alert</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

@@ -26,8 +26,9 @@ import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
 
 public class ConfigTypeNonSDOImpl implements ConfigType
 {
-  
-  protected List source = new ArrayList();
+    private static final long serialVersionUID = 2522843951360675364L;
+    
+    protected List source = new ArrayList();
   
   /**
    * <!-- begin-user-doc -->

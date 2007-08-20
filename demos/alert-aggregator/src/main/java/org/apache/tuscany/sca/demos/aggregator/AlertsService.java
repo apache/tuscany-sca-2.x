@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.demos.aggregator;
 
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
-import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
-
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
