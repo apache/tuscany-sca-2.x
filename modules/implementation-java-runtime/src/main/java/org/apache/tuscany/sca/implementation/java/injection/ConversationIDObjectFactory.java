@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
-import org.apache.tuscany.sca.factory.ObjectFactory;
 
 public class ConversationIDObjectFactory implements ObjectFactory<String> {
 

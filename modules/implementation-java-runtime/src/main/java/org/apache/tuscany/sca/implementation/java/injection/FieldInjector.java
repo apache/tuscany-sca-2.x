@@ -20,11 +20,11 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.lang.reflect.Field;
 
-import org.apache.tuscany.sca.factory.ObjectCreationException;
-import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
 /**
- * Injects a value created by an {@link org.apache.tuscany.sca.factory.ObjectFactory} on a given field
+ * Injects a value created by an {@link org.apache.tuscany.sca.core.factory.ObjectFactory} on a given field
  *
  * @version $Rev$ $Date$
  */
