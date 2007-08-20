@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://crud2#implementation.crud,model=crud2.extension.CRUDImplementation
+org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://crud#implementation.crud,model=crud.CRUDImplementation,factory=crud.CRUDImplementationFactory

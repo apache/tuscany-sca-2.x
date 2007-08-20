@@ -16,12 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package pojo2.extension;
+package pojo.provider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+
+import pojo.POJOImplementation;
 
 /**
  * The model representing a sample POJO implementation in an SCA assembly model.

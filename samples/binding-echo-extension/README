@@ -22,15 +22,11 @@ binding-echo-extension/
       java/
         echo/                    - The binding interfaces
           impl/                  - The bindings model classes
-          module/                - The activator that loads the binding into the 
-                                   SCA runtime
           provider/              - The bindings runtime classes
           server/                - A dummy server that the binding is plugged into
       resources/
         META-INF/
-          services/
-            org.apache.sca.tuscany.sca.core.ModuleActivator - specifies the
-                                 module activation class to call
+          services/              - The extension declaration
     test/
       java/
         echo/                    - test code

@@ -23,6 +23,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+import crud.CRUD;
+
 /**
  * Tests the CRUD service
  */
@@ -38,7 +40,6 @@ public class CRUDTestCase extends TestCase {
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("crud.composite");
         crudService = scaDomain.getService(CRUD.class, "CRUDServiceComponent");
-
     }
 
     /**

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package crud.model;
+package crud;
 
 import org.apache.tuscany.sca.assembly.Implementation;
 

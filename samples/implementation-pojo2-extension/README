@@ -1,4 +1,4 @@
-Implementation CRUD Sample
+Implementation POJO Sample
 ==========================
 This sample demonstrates how new implementation types are constructed for 
 Apache Tuscany SCA. 
@@ -7,24 +7,16 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you want to try out the CRUD implementation type that this sample provides
-please see the implementation-crud sample that provides the necessary client
-code to bring up an application that uses this implementation extension.
-
 Sample Overview
 ---------------
-This sample contains a CRUD implementation type as an example of how to create
-new implementation types. Components using this implementation type always
-expose the same Create, Retrieve, Update and Delete interface. This sample
-uses a singleton ResourceManager to perform the CRUD operations but of course
-a real component would provide a real implementation. 
+This sample contains a POJO implementation type as an example of how to create
+new implementation types.
 
-implementation-crud-extension/
+implementation-pojo-extension/
   src/
     main/
       java/
-        crud/                  - implementation model interfaces
-          backend/             - fake component implementation
+        pojo/                  - implementation model interfaces
           impl/                - implementations of the model interfaces
           provider/            - runtime implementation
       resources/
@@ -32,10 +24,10 @@ implementation-crud-extension/
           services/            - declares the extension
     test/
       java/
-        crud/
-          CRUDTestCase.java    - JUnit test case
+        helloworld/
+          HelloWorldTestCase.java - JUnit test case
       resources/
-        crud.composite         - the SCA assembly used during unit testing
+        helloworld.composite   - the SCA assembly used during unit testing
 
   build.xml                    - the Ant build file
   pom.xml                      - the Maven build file
@@ -45,18 +37,15 @@ Building The Sample Extension Using Ant
 With the binary distribution the sample extension can be built using Ant as 
 follows
 
-cd implementation-crud-extension
+cd implementation-pojo-extension
 ant compile
-
-See the implementation-crud sample to run a sample that uses this
-implementation extension.
 
 Building The Sample Using Maven 
 -------------------------------------------
 With either the binary or source distributions the sample can be built 
 using Maven as follows. 
 
-cd implementation-crud-extension
+cd implementation-pojo-extension
 mvn
 
 Maven will also test that the sample extension built properly. You should see 
@@ -65,19 +54,17 @@ the following output from the test phase.
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running crud.CRUDTestCase
-Starting CRUDServiceComponent
-create(ABC) in tmp
-retrieve(0)
-update(0)
-retrieve(0)
-delete(0)
-retrieve(0)
-Stopping CRUDServiceComponent
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.212 sec
+Running helloworld.HelloWorldTestCase
+Initializing POJO
+Initializing POJO
+Executing POJO sayHello
+Initializing POJO
+Initializing POJO
+Executing POJO sayHello
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.616 sec
 
 Results :
 
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 
 This shows that the Junit test cases have run successfully. 

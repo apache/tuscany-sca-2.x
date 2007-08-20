@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-implementation-pojo2-extension</artifactId>
+    <artifactId>sample-implementation-pojo-extension</artifactId>
     <name>Apache Tuscany Java Implementation Extension Sample</name>
 
     <repositories>

@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-pojo2.extension.POJOImplementationProcessor;type=http://pojo#implementation.pojo,model=pojo2.extension.POJOImplementation
+pojo.impl.POJOImplementationProcessor;qname=http://pojo#implementation.pojo,model=pojo.POJOImplementation,factory=pojo.POJOImplementationFactory

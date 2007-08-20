@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package pojo2.extension;
+package pojo.provider;
 
 import java.lang.reflect.Method;
 
@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ServiceRuntimeException;
 
+import pojo.POJOImplementation;
+
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
  * The sample CRUD implementation is not a full blown implementation, it only
@@ -36,7 +38,7 @@ import org.osoa.sca.ServiceRuntimeException;
  * going to persist resources - no references or properties - no policy intents
  * or policy sets
  */
-public class POJOImplementationProvider implements ImplementationProvider {
+class POJOImplementationProvider implements ImplementationProvider {
     
     private POJOImplementation implementation;
     private Object pojoInstance;
@@ -44,7 +46,7 @@ public class POJOImplementationProvider implements ImplementationProvider {
     /**
      * Constructs a new CRUD implementation.
      */
-    public POJOImplementationProvider(RuntimeComponent component, POJOImplementation implementation) {
+    POJOImplementationProvider(RuntimeComponent component, POJOImplementation implementation) {
         this.implementation = implementation;
         
         // Create a new instance of the POJO

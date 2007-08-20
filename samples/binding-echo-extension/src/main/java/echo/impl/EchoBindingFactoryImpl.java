@@ -17,14 +17,15 @@
  * under the License.    
  */
 
-package echo;
+package echo.impl;
 
-import echo.impl.EchoBindingImpl;
+import echo.EchoBinding;
+import echo.EchoBindingFactory;
 
 /**
  * A factory for the sample Echo binding model.
  */
-public class DefaultEchoBindingFactory implements EchoBindingFactory {
+public class EchoBindingFactoryImpl implements EchoBindingFactory {
 
     public EchoBinding createEchoBinding() {
         return new EchoBindingImpl();

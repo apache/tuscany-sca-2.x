@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package pojo2.extension;
+package pojo.impl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,12 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
+
+import pojo.POJOImplementation;
 
 
 /**
@@ -40,7 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  *
  * @version $Rev$ $Date$
  */
-public class POJOImplementation implements Implementation {
+class POJOImplementationImpl implements POJOImplementation {
     
     private String pojoName;
     private Class<?> pojoClass;
@@ -51,6 +50,9 @@ public class POJOImplementation implements Implementation {
     private List<Property> properties = new ArrayList<Property>();
     private boolean unresolved;
 
+    POJOImplementationImpl() {
+    }
+    
     /**
      * Returns the POJO class name
      * @return
@@ -129,26 +131,6 @@ public class POJOImplementation implements Implementation {
         this.uri = uri;
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The sample POJO implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample POJO implementation does not support intents
-        return Collections.emptyList();
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        // The sample POJO implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getComputedIntents() {
-        // The sample POJO implementation does not support intents
-        return Collections.emptyList();
-    }
-
     public List<Object> getExtensions() {
         // The sample POJO implementation does not support extensions
         return Collections.emptyList();
@@ -169,8 +151,8 @@ public class POJOImplementation implements Implementation {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof POJOImplementation) {
-            return ((POJOImplementation)obj).getURI().equals(uri);
+        if (obj instanceof POJOImplementationImpl) {
+            return ((POJOImplementationImpl)obj).getURI().equals(uri);
         } else {
             return false;
         }

@@ -16,32 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo.provider;
 
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
+package pojo;
+
 
 /**
- * Invoker for the sample echo binding.
+ * Factory for the POJO implementation model. 
+ *
+ * @version $Rev$ $Date$
  */
-class EchoBindingInvoker implements Invoker {
+public interface POJOImplementationFactory {
+
+    /**
+     * Creates a new POJO implementation model object.
+     * @return a new POJO implementation model object
+     */
+    POJOImplementation createPOJOImplementation();
     
-    EchoBindingInvoker() {
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object[] args = msg.getBody();
-
-            // echo back the first parameter, a real binding would invoke some API for flowing the request
-            Object result = args[0];
-                                 
-            msg.setBody(result);
-            
-        } catch (Exception e) {
-            msg.setFaultBody(e);
-        }
-        return msg;
-    }  
-
 }

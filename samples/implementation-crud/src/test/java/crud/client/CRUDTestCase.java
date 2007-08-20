@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 import crud.CRUD;
 
+
 public class CRUDTestCase extends TestCase {
     
     private SCADomain scaDomain;

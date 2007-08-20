@@ -33,8 +33,6 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 import crud2.CRUD;
 
@@ -117,27 +115,6 @@ public class CRUDImplementation implements Implementation {
     public void setURI(String uri) {
         // The sample CRUD implementation does not have a URI
     }
-
-    public List<PolicySet> getPolicySets() {
-        // The sample CRUD implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample CRUD implementation does not support intents
-        return Collections.emptyList();
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        // The sample CRUD implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getComputedIntents() {
-        // The sample CRUD implementation does not support intents
-        return Collections.emptyList();
-    }
-
 
     public List<Object> getExtensions() {
         // The sample CRUD implementation does not support extensions

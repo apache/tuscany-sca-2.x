@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.invocation.Message;
 
 import crud.backend.ResourceManager;
 
+
 /**
  * Implements a target invoker for CRUD component implementations.
  * 
@@ -33,11 +34,11 @@ import crud.backend.ResourceManager;
  * CRUD operation invocations to the corresponding methods on our fake
  * resource manager.
  */
-public class CRUDInvoker implements Invoker {
+class CRUDImplementationInvoker implements Invoker {
     private Operation operation;
     private ResourceManager resourceManager;
     
-    public CRUDInvoker(Operation operation, ResourceManager resourceManager) {
+    CRUDImplementationInvoker(Operation operation, ResourceManager resourceManager) {
         this.operation = operation;
         this.resourceManager = resourceManager;
     }
