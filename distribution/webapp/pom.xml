@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-ajax</artifactId>
+            <artifactId>tuscany-binding-dwr</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
