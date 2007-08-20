@@ -31,6 +31,8 @@ import org.junit.Test;
 import bigbank.account.services.accountdata.AccountDataService;
 
 import com.bigbank.account.AccountFactory;
+import com.bigbank.account.AccountReport;
+import com.bigbank.account.AccountSummary;
 import com.bigbank.account.CustomerProfileData;
 
 /**
@@ -146,6 +148,12 @@ public class SDOWSDLTestCase {
         assertEquals(dataIn.getLastName(), dataOut.getLastName());
         assertEquals(dataIn.getLoginID(), dataOut.getLoginID());
         assertEquals(dataIn.getPassword(), dataOut.getPassword());
+        
+        AccountReport report = client.getAccountReport(12345);
+        AccountSummary summary1 = (AccountSummary)report.getAccountSummaries().get(0);
+        assertEquals(summary1.getAccountType(), "checking");
+        AccountSummary summary2 = (AccountSummary)report.getAccountSummaries().get(1);
+        assertEquals(summary2.getBalance(), 2000.f);
     }
 
     @BeforeClass

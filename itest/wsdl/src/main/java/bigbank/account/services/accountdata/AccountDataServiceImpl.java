@@ -25,6 +25,7 @@ import org.osoa.sca.annotations.Service;
 import com.bigbank.account.AccountFactory;
 import com.bigbank.account.AccountLog;
 import com.bigbank.account.AccountReport;
+import com.bigbank.account.AccountSummary;
 import com.bigbank.account.CustomerProfileData;
 import com.bigbank.account.StockSummary;
 
@@ -37,8 +38,20 @@ public class AccountDataServiceImpl implements AccountDataService {
     }
 
     public AccountReport getAccountReport(int customerID) {
+
+        AccountReport report =AccountFactory.INSTANCE.createAccountReport();
+        AccountSummary summary1 = AccountFactory.INSTANCE.createAccountSummary();
+        summary1.setAccountNumber("123");
+        summary1.setAccountType("checking");
+        summary1.setBalance(1000.0f);
+        report.getAccountSummaries().add(summary1);
+        AccountSummary summary2 = AccountFactory.INSTANCE.createAccountSummary();
+        summary2.setAccountNumber("456");
+        summary2.setAccountType("savings");
+        summary2.setBalance(2000.0f);
+        report.getAccountSummaries().add(summary2);
         
-        return null;
+        return report;
     }
 
     public CustomerProfileData createAccount(CustomerProfileData customerProfile, boolean createSavings, boolean createCheckings)
