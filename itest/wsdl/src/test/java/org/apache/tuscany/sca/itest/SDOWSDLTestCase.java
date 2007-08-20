@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.itest;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.rmi.RemoteException;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import bigbank.account.services.accountdata.AccountDataService;
 
@@ -39,27 +42,87 @@ import com.bigbank.account.CustomerProfileData;
  * interface.java (a) or interface.wsdl (b). This results in 16 different
  * combinations 1a2a3a4a thru 1b2b3b4b.
  */
-public class SDOWSDLTestCase extends TestCase {
+public class SDOWSDLTestCase {
 
-    private SCADomain domain;
-    
+    private static SCADomain domain;
+
+    @Test
     public void testClient1a2a3a4a() throws RemoteException  {
-        
         doit("Client1a2a3a4a");
+    }
+
+    @Test
+    public void testClient1a2a3a4b() throws RemoteException  {
         doit("Client1a2a3a4b");
+    }
+
+    @Test
+    public void testClient1a2a3b4a() throws RemoteException  {
         doit("Client1a2a3b4a");
+    }
+
+    @Test
+    public void testClient1a2a3b4b() throws RemoteException  {
         doit("Client1a2a3b4b");
+    }
+
+    @Test
+    public void testClient1a2b3a4a() throws RemoteException  {
         doit("Client1a2b3a4a");
+    }
+
+    @Test
+    public void testClient1a2b3a4b() throws RemoteException  {
         doit("Client1a2b3a4b");
+    }
+
+    @Test
+    public void testClient1a2b3b4a() throws RemoteException  {
         doit("Client1a2b3b4a");
+    }
+
+    @Test
+    public void testClient1a2b3b4b() throws RemoteException  {
         doit("Client1a2b3b4b");
+    }
+
+    @Test
+    public void testClient1b2a3a4a() throws RemoteException  {
         doit("Client1b2a3a4a");
+    }
+
+    @Test
+    public void testClient1b2a3a4b() throws RemoteException  {
         doit("Client1b2a3a4b");
+    }
+
+    @Test
+    public void testClient1b2a3b4a() throws RemoteException  {
         doit("Client1b2a3b4a");
+    }
+
+    @Test
+    public void testClient1b2a3b4b() throws RemoteException  {
         doit("Client1b2a3b4b");
+    }
+
+    @Test
+    public void testClient1b2b3a4a() throws RemoteException  {
         doit("Client1b2b3a4a");
+    }
+
+    @Test
+    public void testClient1b2b3a4b() throws RemoteException  {
         doit("Client1b2b3a4b");
+    }
+
+    @Test
+    public void testClient1b2b3b4a() throws RemoteException  {
         doit("Client1b2b3b4a");
+    }
+
+    @Test
+    public void testClient1b2b3b4b() throws RemoteException  {
         doit("Client1b2b3b4b");
     }
 
@@ -85,14 +148,14 @@ public class SDOWSDLTestCase extends TestCase {
         assertEquals(dataIn.getPassword(), dataOut.getPassword());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("SDOWSDLTest.composite");
+    @BeforeClass
+    public static void setUp() throws Exception {
+        domain = SCADomain.newInstance("SDOWSDLTest.composite");
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-    	domain.close();
+    @AfterClass
+    public static void tearDown() throws Exception {
+        domain.close();
     }
 
 }
