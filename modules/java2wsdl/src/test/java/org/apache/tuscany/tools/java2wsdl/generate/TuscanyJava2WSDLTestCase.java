@@ -27,84 +27,78 @@ import junit.framework.TestCase;
  */
 public class TuscanyJava2WSDLTestCase extends TestCase {
 
-	/**
-	 * setup the pre-requisites for the test case to run
-	 * 
-	 * @exception Exception
-	 */
-	@Override
+    /**
+     * setup the pre-requisites for the test case to run
+     * 
+     * @exception Exception
+     */
+    @Override
     protected void setUp() throws Exception {
-		// System.out.println("inside setup");
-		super.setUp();
-	}
+        super.setUp();
+    }
 
-	/**
-	 * @exception Exception
-	 */
-	@Override
+    /**
+     * @exception Exception
+     */
+    @Override
     protected void tearDown() throws Exception {
-		// System.out.println("inside tearDown");
-		super.tearDown();
-	}
+        super.tearDown();
+    }
 
-   
-	/**
-	 * Simple WSDL generation test.
-	 */
-	public void testSimpleWSDLGeneration() {
-		String[] arguments = new String[] { "-cn","org.apache.tuscany.tools.java2wsdl.generate.CustomerValue",
-				"-o", "target/java2wsdl-source",
-                "-xc", "org.apache.tuscany.tools.java2wsdl.generate.extra.GoldCustomer"};
-                
+    /**
+     * Simple WSDL generation test.
+     */
+    public void testSimpleWSDLGeneration() {
+        String[] arguments =
+            new String[] {"-cn", "org.apache.tuscany.tools.java2wsdl.generate.CustomerValue", 
+                          "-o", "target/java2wsdl-source", "-xc",
+                          "org.apache.tuscany.tools.java2wsdl.generate.extra.GoldCustomer"};
 
-		Java2WSDL.main(arguments);
+        Java2WSDL.main(arguments);
 
-		File file = new File("target/java2wsdl-source/CustomerValue.wsdl");
-		assertTrue(file.exists() && file.isFile());
-	}
+        File file = new File("target/java2wsdl-source/CustomerValue.wsdl");
+        assertTrue(file.exists() && file.isFile());
+    }
 
-	/**
-	 * Test WSDL generation where a parameter Object[] is involved.
-	 */
-	public void testWsdlGeneration2() {
+    /**
+     * Test WSDL generation where a parameter Object[] is involved.
+     */
+    public void testWsdlGeneration2() {
 
-		String[] arguments = new String[] 
-        {
-				"-cn",
-				"org.apache.tuscany.tools.java2wsdl.generate.CustomerWithAccount",
-				"-o", "target/java2wsdl-source", };
-		Java2WSDL.main(arguments);
+        String[] arguments =
+            new String[] {"-cn", "org.apache.tuscany.tools.java2wsdl.generate.CustomerWithAccount", 
+                          "-o", "target/java2wsdl-source",};
+        Java2WSDL.main(arguments);
 
-		File file = new File("target/java2wsdl-source/CustomerWithAccount.wsdl");
-		assertTrue(file.exists() && file.isFile());
-	}
+        File file = new File("target/java2wsdl-source/CustomerWithAccount.wsdl");
+        assertTrue(file.exists() && file.isFile());
+    }
 
-    public void testWsdlGeneration_SDO_Static()
-    {
-        //tests for SDOs where XSD exist.  Hence no XSDs must be generated
-        String[] arguments = new String[] {
-                "-cn",
-                "org.soapinterop.CreditScoreDocLit",
-                "-o", "target/java2wsdl-source", 
-                "-ixsd", "[http://www.example.org/creditscore/doclit/," +
-                "http://www.example.org/creditscore/doclit/xsd]"};
+    public void testWsdlGeneration_SDO_Static() {
+        // tests for SDOs where XSD exist. Hence no XSDs must be generated
+        String[] arguments =
+            new String[] {
+                          "-cn",
+                          "org.soapinterop.CreditScoreDocLit",
+                          "-o",
+                          "target/java2wsdl-source",
+                          "-ixsd",
+                          "[http://www.example.org/creditscore/doclit/," + "http://www.example.org/creditscore/doclit/xsd]"};
         Java2WSDL.main(arguments);
 
         File file = new File("target/java2wsdl-source/CreditScoreDocLit.wsdl");
         assertTrue(file.exists() && file.isFile());
     }
-    
-    
-    
-	/**
-	 * Test WSDL generation from a java interface and then generate the java
-	 * interface using the generated WSDL.
-	 */
-	public void _testRoundTrip() {
-		// TODO implement round trip
-		// this should re-generate java interfaces from the generated wsdl
-		// and compile (?) the generated java code.
-		// fail();
 
-	}
+    /**
+     * Test WSDL generation from a java interface and then generate the java
+     * interface using the generated WSDL.
+     */
+    public void _testRoundTrip() {
+        // TODO implement round trip
+        // this should re-generate java interfaces from the generated wsdl
+        // and compile (?) the generated java code.
+        // fail();
+
+    }
 }
