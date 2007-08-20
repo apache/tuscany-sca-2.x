@@ -33,11 +33,13 @@ public class BigBankTestCase extends TestCase {
     private SCADomain scaDomain;
     AccountService accountService;
 
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("BigBank.composite");
         accountService = scaDomain.getService(AccountService.class, "AccountServiceComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

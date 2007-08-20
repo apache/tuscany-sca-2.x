@@ -37,6 +37,7 @@ public class TrafficAdvisoryTestCase extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         try {
             domain = SCADomain.newInstance("TrafficAdvisoryNotification.composite");
@@ -52,6 +53,7 @@ public class TrafficAdvisoryTestCase extends TestCase {
         }
     }
     
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

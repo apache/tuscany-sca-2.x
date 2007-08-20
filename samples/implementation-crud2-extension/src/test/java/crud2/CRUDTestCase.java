@@ -36,6 +36,7 @@ public class CRUDTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("crud2.composite");
         crudService = scaDomain.getService(CRUD.class, "CRUDServiceComponent");
@@ -45,6 +46,7 @@ public class CRUDTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

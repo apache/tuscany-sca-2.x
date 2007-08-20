@@ -25,17 +25,9 @@ import org.osoa.sca.annotations.Reference;
 /**
  * @version $Rev$ $Date$
  */
-@SuppressWarnings("unused")
 public class ComponentAImpl implements Interface1 {
 
     private Interface1 componentBReference;
-    
-    @SuppressWarnings("unused")
-    private String prefix;
-    
-    private String prefix1;
-    
-    private String bar;
     
     @Constructor
     public ComponentAImpl(@Reference(name = "componentBReference", required = true)
@@ -64,13 +56,11 @@ public class ComponentAImpl implements Interface1 {
     @Property(name="prefix")
     public void setPrefix(String prefix) {
         System.out.println("[Property] prefix: " + prefix);
-        this.prefix = prefix;
     }
 
     @Property(name="prefix1")
     public void setPrefix1(String prefix1) {
         System.out.println("[Property] prefix1: " + prefix1);
-        this.prefix1 = prefix1;
     }  
     
     /**
@@ -79,7 +69,6 @@ public class ComponentAImpl implements Interface1 {
     @Property(name="bar")
     public void setBar(String bar) {
         System.out.println("[Property] bar: " + bar);
-        this.bar = bar;
     }
 
 }
