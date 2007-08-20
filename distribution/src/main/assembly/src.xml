@@ -69,6 +69,7 @@
     		 <exclude>**/build</exclude>
     		 <exclude>**/build/**/*</exclude>
     		 <exclude>**/.settings</exclude>
+    		 <exclude>**/.settings/**/*</exclude>
     		 <exclude>**/.classpath</exclude>
     		 <exclude>**/.project</exclude>
     		 <exclude>**/.wtpmodules</exclude>
@@ -133,8 +134,6 @@
              <exclude>*/**/*.ruleset</exclude>
              <exclude>*/**/*.pmd</exclude>
              <exclude>*/**/*.checkstyle</exclude>
-             <exclude>*/**/*.settings</exclude>
-             <exclude>*/**/.settings</exclude>
          </excludes>
 	 </fileSet>
      </fileSets>
