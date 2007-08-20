@@ -32,10 +32,12 @@ public class AssemblyFactoryTestCase extends TestCase {
 
     AssemblyFactory factory;
 
+    @Override
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
     }
 
+    @Override
     public void tearDown() throws Exception {
         factory = null;
     }

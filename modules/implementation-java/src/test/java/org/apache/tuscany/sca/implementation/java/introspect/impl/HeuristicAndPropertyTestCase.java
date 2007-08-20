@@ -55,6 +55,7 @@ public class HeuristicAndPropertyTestCase extends TestCase {
         assertEquals("foo", type.getProperties().get(0).getName());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         propertyProcessor = new PropertyProcessor(assemblyFactory);

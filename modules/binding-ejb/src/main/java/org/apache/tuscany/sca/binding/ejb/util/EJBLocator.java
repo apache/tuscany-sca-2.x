@@ -28,13 +28,10 @@ import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NamingContextExt;
-import org.omg.CosNaming.NamingContextExtHelper;
 
 /**
  * CosNaming utility
@@ -147,26 +144,6 @@ public class EJBLocator {
      */
 
     /**
-     * Compose a corbaloc URI
-     * 
-     * @param hostName
-     * @param port
-     * @param service
-     * @return
-     */
-    private static String getCorbaloc(String hostName, int port, String service) {
-        if (service == null) {
-            return "corbaloc:iiop:" + hostName + ":" + port;
-        } else {
-            return "corbaloc:iiop:" + hostName + ":" + port + "/" + service;
-        }
-    }
-
-    private String getCorbaloc(String service) {
-        return getCorbaloc(hostName, port, service);
-    }
-
-    /**
      * corbaname Syntax The full corbaname BNF is: &lt;corbaname&gt; =
      * "corbaname:"&lt;corbaloc_obj&gt;["#"&lt;string_name&gt;]
      * &lt;corbaloc_obj&gt; = &lt;obj_addr_list&gt; ["/"&lt;key_string&gt;]
@@ -272,36 +249,6 @@ public class EJBLocator {
             return initCtx.resolve_str(name);
         } catch (Exception e) {
             NamingException ne = new NamingException(e.getMessage());
-            ne.setRootCause(e);
-            throw ne;
-        }
-    }
-
-    private NamingContextExt getCosNamingContext(String namingRoot) throws NamingException {
-        /*
-         * Using an ORB reference to get an initial naming reference There are
-         * two basic ways to get an initial CosNaming context. Both ways involve
-         * an ORB method invocation. The first way is to invoke the
-         * resolve_initial_references method on the ORB with an initial
-         * reference key. For this call to work, the ORB must be initialized
-         * with an initial reference for that key. The other way is to invoke
-         * the string_to_object method on the ORB, passing in a CORBA object URL
-         * with the host and port of the bootstrap server. The following
-         * examples illustrate both approaches.
-         */
-
-        /*
-         * Invoking resolve_initial_references Once an ORB reference is
-         * obtained, invoke the resolve_initial_references method on the ORB to
-         * obtain a reference to the initial context. The following code example
-         * invokes resolve_initial_reference on an ORB reference
-         */
-        try {
-            connect();
-            org.omg.CORBA.Object rootCtx = orb.resolve_initial_references(namingRoot);
-            return NamingContextExtHelper.narrow(rootCtx);
-        } catch (InvalidName e) {
-            InvalidNameException ne = new InvalidNameException(e.getMessage());
             ne.setRootCause(e);
             throw ne;
         }
@@ -508,10 +455,6 @@ public class EJBLocator {
             this.context = new InitialContext();
         }
 
-        private JndiLocator(Context context) {
-            this.context = context;
-        }
-
         public Object locate(String name) throws NamingException {
             return context.lookup(name);
         }
@@ -521,10 +464,6 @@ public class EJBLocator {
         private NamingContextExt context;
 
         private CosNamingLocator() {
-        }
-
-        private CosNamingLocator(NamingContextExt context) {
-            this.context = context;
         }
 
         public Object locate(String name) throws NamingException {

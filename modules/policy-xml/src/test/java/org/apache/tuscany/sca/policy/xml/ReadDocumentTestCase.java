@@ -52,7 +52,6 @@ import org.apache.tuscany.sca.policy.impl.DefaultIntentAttachPointTypeFactoryImp
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    private SCADefinitionsBuilder builder = null;
     private ModelResolver resolver; 
     private SCADefinitionsDocumentProcessor scaDefnDocProcessor = null;
     private SCADefinitionsProcessor scaDefnProcessor = null;
@@ -76,12 +75,12 @@ public class ReadDocumentTestCase extends TestCase {
     private static final QName javaImpl = new QName(namespace, "implementation.java");
     
 
+    @Override
     public void setUp() throws Exception {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactoryImpl();
         this.resolver = new SCADefinitionsResolver();
-        this.builder = new SCADefinitionsBuilderImpl();
         
         // Create Stax processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
@@ -101,7 +100,7 @@ public class ReadDocumentTestCase extends TestCase {
         
         URL url = getClass().getResource("definitions.xml");
         URI uri = URI.create("definitions.xml");
-        scaDefinitions = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
+        scaDefinitions = scaDefnDocProcessor.read(null, uri, url);
         
         for ( Intent intent : scaDefinitions.getPolicyIntents() ) {
             intentTable.put(intent.getName(), intent);
@@ -120,6 +119,7 @@ public class ReadDocumentTestCase extends TestCase {
         }
     }
 
+    @Override
     public void tearDown() throws Exception {
         resolver = null;
         scaDefnDocProcessor = null;

@@ -38,14 +38,17 @@ public class JavaBean2XMLStreamReader extends BaseTransformer<Object, XMLStreamR
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Object.class;
     }
 
+    @Override
     public Class getTargetType() {
         return XMLStreamReader.class;
     }
 
+    @Override
     public int getWeight() {
         return 50;
     }

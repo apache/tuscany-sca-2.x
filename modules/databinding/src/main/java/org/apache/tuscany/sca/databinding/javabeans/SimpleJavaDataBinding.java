@@ -36,6 +36,7 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
         super(NAME, Object.class);
     }
 
+    @Override
     public Object copy(Object arg) {
         return arg;
     }

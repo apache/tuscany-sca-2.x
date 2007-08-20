@@ -56,7 +56,7 @@ public abstract class InterfaceContractImpl implements InterfaceContract {
 
         // contract is bidrectional, so create a new unidirectional contract        
         try {
-            InterfaceContract newContract = (InterfaceContract)clone();
+            InterfaceContract newContract = clone();
             if (!isCallback) {
                 newContract.setCallbackInterface(null); // create unidirectional forward interface contract
             } else {

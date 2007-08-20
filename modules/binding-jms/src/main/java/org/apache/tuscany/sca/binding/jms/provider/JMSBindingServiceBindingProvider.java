@@ -28,9 +28,7 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
-import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -43,7 +41,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class JMSBindingServiceBindingProvider implements ServiceBindingProvider {
 
 
-    private RuntimeComponent        component;
     private RuntimeComponentService service;
     private JMSBinding              jmsBinding;
     private JMSResourceFactory      jmsResourceFactory; 
@@ -52,7 +49,6 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     public JMSBindingServiceBindingProvider(RuntimeComponent component,
                                             RuntimeComponentService service,
                                             JMSBinding binding) {
-        this.component     = component;
         this.service       = service;
         this.jmsBinding    = binding;
         
@@ -118,13 +114,5 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
         jmsResourceFactory.startConnection();
 
-    }    
-
-    private Class<?> getTargetJavaClass(Interface targetInterface) {
-        // TODO: right now assume that the target is always a Java
-        // Implementation. Need to figure out
-        // how to generate Java Interface in cases where the target is not a
-        // Java Implementation
-        return ((JavaInterface)targetInterface).getJavaClass();
     }
 }

@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.invocation.Message;
 public final class ThreadMessageContext {
 
     private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>() {
+        @Override
         protected synchronized Message initialValue() {
             return new MessageImpl();
         }

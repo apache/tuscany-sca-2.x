@@ -141,6 +141,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertEquals(0, type.getResources().size());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         javaImplementationFactory = new DefaultJavaImplementationFactory();

@@ -68,6 +68,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
         this.callbackClass = callbackClass;
     }
     
+    @Override
     public String toString() {
         return getName();
     }

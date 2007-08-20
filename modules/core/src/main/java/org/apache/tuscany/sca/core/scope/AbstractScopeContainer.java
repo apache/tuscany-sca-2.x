@@ -108,6 +108,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         throws TargetDestructionException {
     }    
 
+    @Override
     public synchronized void start() {
         int lifecycleState = getLifecycleState();
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
@@ -126,6 +127,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         }
     }
 
+    @Override
     public synchronized void stop() {
         int lifecycleState = getLifecycleState();
         if (lifecycleState != RUNNING) {
@@ -138,6 +140,7 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         wrappers.remove(contextId);
     }
 
+    @Override
     public String toString() {
         return "In state [" + super.toString() + ']';
     }

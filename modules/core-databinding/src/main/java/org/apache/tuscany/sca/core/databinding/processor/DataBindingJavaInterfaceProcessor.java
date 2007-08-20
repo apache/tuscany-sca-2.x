@@ -57,25 +57,6 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
         processInterface(javaInterface, operations);
     }
 
-    private void introspectWrapperStyle(Operation operation) {
-        if (operation.isWrapperStyle()) {
-            return;
-        }
-        DataType outputType = operation.getOutputType();
-        DataType<List<DataType>> inputType = operation.getInputType();
-        if (outputType == null || inputType == null) {
-            return;
-        }
-        if (inputType.getLogical().size() != 1) {
-            return;
-        }
-        DataType wrapperType = inputType.getLogical().get(0);
-        if (outputType.getDataBinding().equals(wrapperType.getDataBinding())) {
-            operation.setWrapperStyle(true);
-            operation.setDataBinding(outputType.getDataBinding());
-        }
-    }
-
     private void processInterface(JavaInterface javaInterface, List<Operation> operations) {
         Class<?> clazz = javaInterface.getJavaClass();
         DataBinding dataBinding = clazz.getAnnotation(DataBinding.class);

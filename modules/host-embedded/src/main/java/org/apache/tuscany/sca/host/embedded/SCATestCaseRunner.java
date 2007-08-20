@@ -52,7 +52,7 @@ public class SCATestCaseRunner {
      */
     public SCATestCaseRunner(Class testClass) {
         try {
-            classLoader = (URLClassLoader)testClass.getClassLoader();
+            classLoader = testClass.getClassLoader();
             if (classLoader instanceof URLClassLoader) {
                 URL[] urls = ((URLClassLoader)classLoader).getURLs();
                 classLoader = new URLClassLoader(urls, classLoader.getParent());

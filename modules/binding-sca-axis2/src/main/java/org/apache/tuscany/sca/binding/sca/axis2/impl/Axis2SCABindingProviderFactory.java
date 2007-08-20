@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -40,13 +39,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class Axis2SCABindingProviderFactory implements BindingProviderFactory<DistributedSCABinding> {
     
-    private ExtensionPointRegistry extensionPoints;
     private MessageFactory messageFactory;
     private ServletHost servletHost;
 
     public Axis2SCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        this.extensionPoints = extensionPoints;
-        
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);

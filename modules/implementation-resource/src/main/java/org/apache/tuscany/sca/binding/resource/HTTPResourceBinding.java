@@ -19,14 +19,11 @@
 
 package org.apache.tuscany.sca.binding.resource;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 
 /**

@@ -73,11 +73,13 @@ public class ReferencePropertiesEnDeCoder extends AbstractEnDeCoder<ReferencePro
         }
     }
 
+    @Override
     protected QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
+    @Override
     protected Class<ReferenceProperties> getEncodingObjectType() {
         
         return ReferenceProperties.class;

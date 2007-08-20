@@ -45,6 +45,7 @@ public class TraxTransformerTestCase extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         url = getClass().getResource("foo.xml");

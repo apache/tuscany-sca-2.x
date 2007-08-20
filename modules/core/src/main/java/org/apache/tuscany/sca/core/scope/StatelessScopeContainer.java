@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.core.scope;
 
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.PersistenceException;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.TargetDestructionException;
 import org.apache.tuscany.sca.scope.TargetResolutionException;
@@ -36,6 +35,7 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         super(Scope.STATELESS, component);
     }
 
+    @Override
     public  InstanceWrapper getWrapper(KEY contextId)
         throws TargetResolutionException {
         InstanceWrapper ctx = createInstanceWrapper();
@@ -43,11 +43,13 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         return ctx;
     }
 
+    @Override
     public  InstanceWrapper getAssociatedWrapper(KEY contextId)
         throws TargetResolutionException {
         return getWrapper(contextId);
     }
 
+    @Override
     public  void returnWrapper(InstanceWrapper wrapper, KEY contextId)
         throws TargetDestructionException {
         wrapper.stop();

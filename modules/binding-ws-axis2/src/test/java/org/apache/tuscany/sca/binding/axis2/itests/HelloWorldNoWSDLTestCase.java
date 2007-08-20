@@ -64,10 +64,12 @@ public class HelloWorldNoWSDLTestCase extends TestCase {
        
     }
    
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/HelloWorldNoWSDL.composite");
     }
    
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

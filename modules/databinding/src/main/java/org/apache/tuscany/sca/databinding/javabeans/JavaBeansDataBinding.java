@@ -47,6 +47,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
         super(NAME, Object.class);
     }
     
+    @Override
     public Object copy(Object arg) {
         if (arg == null) {
             return null;
@@ -84,6 +85,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
         }
     }
 
+    @Override
     public ExceptionHandler getExceptionHandler() {
         return new JavaBeansExceptionHandler();
     }

@@ -19,36 +19,22 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
-import java.net.URI;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.axis2.Axis2ServiceClient;
 import org.apache.tuscany.sca.binding.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.binding.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.impl.WebServiceBindingFactoryImpl;
-import org.apache.tuscany.sca.binding.ws.impl.WebServiceBindingImpl;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * The service binding provider for the remote sca binding implementation. Relies on the 
@@ -58,12 +44,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
 
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
     private SCABinding binding;
-    private ServletHost servletHost;
-    private MessageFactory messageFactory;
-   
     private Axis2ServiceProvider axisProvider;
     private WebServiceBinding wsBinding;
     
@@ -75,14 +56,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
                                           DistributedSCABinding binding,
                                           ServletHost servletHost,
                                           MessageFactory messageFactory) {
-        this.component = component;
-        this.service = service;
         this.binding = binding.getSCABinding();
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
-        
-        // fix up the minimal things required to get the ws binding going.
-        
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
         // Turn the java interface contract into a wsdl interface contract

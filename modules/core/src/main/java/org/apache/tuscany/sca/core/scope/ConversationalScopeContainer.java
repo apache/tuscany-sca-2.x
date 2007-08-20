@@ -107,6 +107,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     }    
     
 
+    @Override
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
@@ -119,6 +120,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         lifecycleState = RUNNING;        
        }
 
+    @Override
     public synchronized void stop() {
         
         // Prevent the scheduler from submitting any additional reapers, initiate an orderly shutdown if a reaper task is in progress. 
@@ -178,6 +180,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     // In this case the instance is immediately removed.  A new conversation will be started on the next operation
     // associated with this conversationId's service reference. 
     //
+    @Override
     public void remove(Object contextId) throws TargetDestructionException {
         if (this.instanceLifecycleCollection.containsKey(contextId)) 
         {

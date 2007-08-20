@@ -29,6 +29,7 @@ import org.apache.ws.java2wsdl.utils.Java2WSDLOptionsValidator;
  * Axis2 is also enhanced to support these additional options.
  */
 public class TuscanyJava2WSDLOptionsValidator extends Java2WSDLOptionsValidator implements TuscanyJava2WSDLConstants {
+    @Override
     public boolean isInvalid(Java2WSDLCommandLineOption option) {
         boolean invalid;
         String optionType = option.getOptionType();

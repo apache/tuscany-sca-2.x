@@ -32,6 +32,7 @@ public class CompanyServiceTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void setUp() throws Exception {
         /*
         scaDomain = SCADomain.newInstance("company.composite");
@@ -42,6 +43,7 @@ public class CompanyServiceTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void tearDown() throws Exception {
         /*
         scaDomain.close();

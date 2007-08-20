@@ -38,6 +38,7 @@ import net.sf.cglib.proxy.NoOp;
 public class DynamicStubClassLoader extends ClassLoader {
     private final static String PACKAGE_PREFIX = "org.omg.stub.";
 
+    @Override
     public synchronized Class loadClass(final String name) throws ClassNotFoundException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -96,13 +97,16 @@ public class DynamicStubClassLoader extends ClassLoader {
         } catch (ClassNotFoundException e) {
             // don't log exceptions from CosNaming because it attempts to load every
             // class bound into the name server
-            boolean shouldLog = true;
+            
+            //FIXME this variable is never read, can we remove the
+            // whole block of code??
+            //boolean shouldLog = true;
             StackTraceElement[] stackTrace = e.getStackTrace();
             for (int i = 0; i < stackTrace.length; i++) {
                 StackTraceElement stackTraceElement = stackTrace[i];
                 if (stackTraceElement.getClassName().equals("org.omg.CosNaming.NamingContextExtPOA") && stackTraceElement
                     .getMethodName().equals("_invoke")) {
-                    shouldLog = false;
+                    //shouldLog = false;
                     break;
                 }
             }

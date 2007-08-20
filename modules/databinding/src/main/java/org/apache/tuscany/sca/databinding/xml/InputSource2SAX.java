@@ -45,14 +45,17 @@ public class InputSource2SAX extends BaseTransformer<InputSource, ContentHandler
         }
     }
 
+    @Override
     public Class getSourceType() {
         return InputSource.class;
     }
 
+    @Override
     public Class getTargetType() {
         return ContentHandler.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

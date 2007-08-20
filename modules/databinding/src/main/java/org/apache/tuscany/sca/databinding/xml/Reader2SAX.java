@@ -40,14 +40,17 @@ public class Reader2SAX extends BaseTransformer<Reader, ContentHandler> implemen
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Reader.class;
     }
 
+    @Override
     public Class getTargetType() {
         return ContentHandler.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

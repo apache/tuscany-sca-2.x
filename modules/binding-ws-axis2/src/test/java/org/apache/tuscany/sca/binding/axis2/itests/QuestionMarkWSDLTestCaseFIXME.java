@@ -89,10 +89,12 @@ public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
         throw new RuntimeException("no SOAPAddress");
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/questionmark-wsdl.composite");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

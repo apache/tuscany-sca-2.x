@@ -48,14 +48,17 @@ public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node>
         }
     }
 
+    @Override
     public Class getSourceType() {
         return XMLStreamReader.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

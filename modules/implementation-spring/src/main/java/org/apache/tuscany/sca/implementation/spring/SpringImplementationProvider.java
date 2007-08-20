@@ -34,10 +34,8 @@ import org.springframework.context.support.AbstractApplicationContext;
  * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
 public class SpringImplementationProvider implements ImplementationProvider {
-    private SpringImplementation implementation;
     private RuntimeComponent component;
-    private ProxyFactory proxyService;
-
+    
     // A Spring application context object
     private AbstractApplicationContext springContext;
 
@@ -52,9 +50,7 @@ public class SpringImplementationProvider implements ImplementationProvider {
                                         ProxyFactory proxyService,
                                         JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         super();
-        this.implementation = implementation;
         this.component = component;
-        this.proxyService = proxyService;
         SCAParentApplicationContext scaParentContext =
             new SCAParentApplicationContext(component, implementation, proxyService, propertyValueObjectFactory);
         springContext = new SCAApplicationContext(scaParentContext, implementation.getResource());

@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.jms.Destination;
@@ -50,7 +49,7 @@ public class JMSBindingListener implements MessageListener {
     private JMSMessageProcessor     responseMessageProcessor;
     private String                  correlationScheme;
     private MessageFactory          messageFactory;
-    private Method                  operationMethod;    
+    //private Method                  operationMethod;    
 
     public JMSBindingListener(JMSBinding              jmsBinding,
                               JMSResourceFactory      jmsResourceFactory,

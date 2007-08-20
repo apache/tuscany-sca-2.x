@@ -38,6 +38,7 @@ public class DestroyProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         Destroy annotation = method.getAnnotation(Destroy.class);
         if (annotation == null) {

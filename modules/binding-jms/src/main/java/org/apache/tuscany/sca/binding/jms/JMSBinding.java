@@ -25,11 +25,8 @@ import java.util.List;
 import javax.jms.DeliveryMode;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 
 /**
@@ -58,9 +55,9 @@ public class JMSBinding implements Binding {
     private String correlationScheme         = JMSBindingConstants.CORRELATE_MSG_ID;    
     private String initialContextFactoryName = JMSBindingConstants.DEFAULT_CONTEXT_FACTORY_NAME;
     private String jndiURL                   = JMSBindingConstants.DEFAULT_JNDI_URL;  
-    private String requestConnection         = null;
-    private String responseConnection        = null;
-    private String operationProperties       = null;
+    //private String requestConnection         = null;
+    //private String responseConnection        = null;
+    //private String operationProperties       = null;
     // 
     //     <destination name="xs:anyURI"                   
     //                  type="string"?                     Not yet implemented in binding
@@ -120,7 +117,7 @@ public class JMSBinding implements Binding {
     //         <property name="NMTOKEN"                    Not yet implemented in binding
     //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </resourceAdapter>?
-    private String resourceAdapterName       = null;
+    //private String resourceAdapterName       = null;
     // 
     //     <headers JMSType="string"?                      Not yet implemented in binding
     //              JMSCorrelationId="string"?             Not yet implemented in binding
@@ -130,8 +127,8 @@ public class JMSBinding implements Binding {
     //         <property name="NMTOKEN"                    Not yet implemented in binding
     //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </headers>?
-    private String jmsType                   = null;
-    private String jmsCorrelationId          = null;
+    //private String jmsType                   = null;
+    //private String jmsCorrelationId          = null;
     private int    jmsDeliveryMode           = DeliveryMode.NON_PERSISTENT; // Maps to javax.jms.DeliveryMode
     private int    jmsTimeToLive             = JMSBindingConstants.DEFAULT_TIME_TO_LIVE;
     private int    jmsPriority               = JMSBindingConstants.DEFAULT_PRIORITY;    

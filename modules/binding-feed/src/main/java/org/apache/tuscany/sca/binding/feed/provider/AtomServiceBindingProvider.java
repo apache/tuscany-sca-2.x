@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class AtomServiceBindingProvider implements ServiceBindingProvider {
 
-    private RuntimeComponent component;
     private RuntimeComponentService service;
     private AtomBinding binding;
     private ServletHost servletHost;
@@ -45,7 +44,6 @@ public class AtomServiceBindingProvider implements ServiceBindingProvider {
                                       AtomBinding binding,
                                       ServletHost servletHost,
                                       MessageFactory messageFactory) {
-        this.component = component;
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;

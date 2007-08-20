@@ -55,8 +55,8 @@ public class PackageTypeDescriberImplTestCase extends TestCase {
                 packageTypeDescriber.getType(artifactURL, "application/vnd.tuscany.ext"));        
     }
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
         packageTypeDescriber = new PackageTypeDescriberImpl();
     }
 

@@ -36,6 +36,7 @@ public class BeanReferenceImpl extends RuntimeBeanReference {
         this.reference = reference;
     }
 
+    @Override
     public String getBeanName() {
         SCABinding binding = reference.getBinding(SCABinding.class);
         String name = binding.getURI();
@@ -46,6 +47,7 @@ public class BeanReferenceImpl extends RuntimeBeanReference {
         return name;
     }
 
+    @Override
     public boolean equals(Object other) {
         if (this != other) {
             if (other instanceof RuntimeBeanReference) {
@@ -57,6 +59,7 @@ public class BeanReferenceImpl extends RuntimeBeanReference {
             return true;
     }
 
+    @Override
     public int hashCode() {
         return getBeanName().hashCode() * 29 + (this.isToParent() ? 1 : 0);
     }

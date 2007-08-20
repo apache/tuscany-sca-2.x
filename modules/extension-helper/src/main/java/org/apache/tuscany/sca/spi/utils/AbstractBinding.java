@@ -19,12 +19,9 @@
 
 package org.apache.tuscany.sca.spi.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Helper for implementing Bindings, implements all the

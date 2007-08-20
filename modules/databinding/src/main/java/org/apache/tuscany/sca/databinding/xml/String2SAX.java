@@ -41,14 +41,17 @@ public class String2SAX extends BaseTransformer<String, ContentHandler> implemen
         }
     }
 
+    @Override
     public Class getSourceType() {
         return String.class;
     }
 
+    @Override
     public Class getTargetType() {
         return ContentHandler.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

@@ -48,14 +48,17 @@ public class XMLDocument2XMLStreamReader extends BaseTransformer<XMLDocument, XM
         }
     }
 
+    @Override
     public Class getSourceType() {
         return XMLDocument.class;
     }
 
+    @Override
     public Class getTargetType() {
         return XMLStreamReader.class;
     }
 
+    @Override
     public int getWeight() {
         return 10;
     }

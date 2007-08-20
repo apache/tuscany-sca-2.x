@@ -62,6 +62,7 @@ public class ResolvePolicyTestCase extends TestCase {
     private TestModelResolver resolver; 
     SCADefinitionsDocumentProcessor scaDefnDocProcessor;
 
+    @Override
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
@@ -93,9 +94,8 @@ public class ResolvePolicyTestCase extends TestCase {
         documentProcessors.addArtifactProcessor(scaDefnDocProcessor);
     }
 
+    @Override
     public void tearDown() throws Exception {
-        documentProcessor = null;
-        resolver = null;
     }
 
     public void testResolveConstrainingType() throws Exception {

@@ -19,12 +19,8 @@
 package org.apache.tuscany.sca.binding.notification;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.impl.BaseImpl;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * @version $Rev$ $Date$
@@ -35,6 +31,7 @@ public class NotificationBindingImpl extends BaseImpl implements NotificationBin
     protected String ntmAddress;
     protected URI notificationType;
     
+    @Override
     public Object clone() {
         return this;
     }

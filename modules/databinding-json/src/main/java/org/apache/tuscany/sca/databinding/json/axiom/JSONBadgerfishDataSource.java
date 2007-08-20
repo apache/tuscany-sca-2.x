@@ -45,6 +45,7 @@ public class JSONBadgerfishDataSource extends JSONDataSource {
      * @return The XMLStreamReader according to the JSON String.
      * @throws javax.xml.stream.XMLStreamException if there is an error while making the StAX reader.
      */
+    @Override
     public javax.xml.stream.XMLStreamReader getReader() throws XMLStreamException {
         try {
             return new BadgerFishXMLStreamReader(json);

@@ -50,6 +50,7 @@ public class ConversationIDProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("cid"));
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         javaImplementationFactory = new DefaultJavaImplementationFactory();

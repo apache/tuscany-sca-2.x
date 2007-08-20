@@ -27,7 +27,6 @@ public class InMemoryTestCase {
     private static EmbeddedNode nodeB;
     private static SCADomain domainB;
     private static EmbeddedNode nodeC;
-    private static SCADomain domainC;    
     private static CalculatorService calculatorServiceA;
     private static CalculatorService calculatorServiceB;
 
@@ -53,7 +52,7 @@ public class InMemoryTestCase {
         // create the node that runs the 
         // subtract component      
         nodeC = new EmbeddedNode("nodeC");
-        domainC = nodeC.attachDomain(distributedDomain);
+        nodeC.attachDomain(distributedDomain);
         nodeC.addContribution(DEFULT_DOMAIN_NAME, null);  
      
         

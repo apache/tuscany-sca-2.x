@@ -42,14 +42,17 @@ public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implement
         return new Pipe();
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }
 
+    @Override
     public Class getSourceType() {
         return ContentHandler.class;
     }
 
+    @Override
     public int getWeight() {
         return 30;
     }

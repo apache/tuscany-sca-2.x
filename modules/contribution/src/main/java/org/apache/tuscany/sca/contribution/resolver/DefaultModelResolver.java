@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class DefaultModelResolver implements ModelResolver {
     private static final long serialVersionUID = -7826976465762296634L;
     
@@ -42,6 +43,7 @@ public class DefaultModelResolver implements ModelResolver {
      * @deprecated Please use the other constructor.
      * @param contribution
      */
+    @Deprecated
     public DefaultModelResolver(Contribution contribution) {
         this.contribution = contribution;
     }

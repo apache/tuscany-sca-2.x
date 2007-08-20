@@ -47,14 +47,17 @@ public class InputSource2Node extends BaseTransformer<InputSource, Node> impleme
         }
     }
 
+    @Override
     public Class getSourceType() {
         return InputSource.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

@@ -101,6 +101,7 @@ public class InterfaceInfo implements Serializable {
         return name;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("interface ").append(name).append("{ \n");

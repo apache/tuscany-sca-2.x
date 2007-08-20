@@ -57,7 +57,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      * @param staxProcessor
      */
     public SCADefinitionsDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
-        this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
+        this.extensionProcessor = staxProcessor;
         this.inputFactory = inputFactory;
         defnBuilder = new SCADefinitionsBuilderImpl();
     }

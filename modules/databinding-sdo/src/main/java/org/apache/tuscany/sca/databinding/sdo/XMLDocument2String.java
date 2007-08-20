@@ -44,14 +44,17 @@ public class XMLDocument2String extends BaseTransformer<XMLDocument, String> imp
         }
     }
 
+    @Override
     public Class getSourceType() {
         return XMLDocument.class;
     }
 
+    @Override
     public Class getTargetType() {
         return String.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

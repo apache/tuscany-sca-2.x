@@ -44,11 +44,13 @@ public class HelloWorldOMTestCase extends TestCase {
         Assert.assertEquals("Hello petra", ((OMText)child.getFirstOMChild()).getText());
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/helloworld-om.composite");
         helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

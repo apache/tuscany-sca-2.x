@@ -36,6 +36,7 @@ public class Node2SimpleJavaType extends SimpleType2JavaTransformer<Node> {
 
     }
 
+    @Override
     public Class getSourceType() {
         return Node.class;
     }

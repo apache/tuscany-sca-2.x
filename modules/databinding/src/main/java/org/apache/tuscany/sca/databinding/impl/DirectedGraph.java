@@ -53,6 +53,7 @@ public class DirectedGraph<V, E> {
             this.target = target;
         }
 
+        @Override
         public boolean equals(Object object) {
             if (!VertexPair.class.isInstance(object)) {
                 return false;
@@ -61,6 +62,7 @@ public class DirectedGraph<V, E> {
             return source == pair.source && target == pair.target;
         }
 
+        @Override
         public int hashCode() {
             int x = source == null ? 0 : source.hashCode();
             int y = target == null ? 0 : target.hashCode();
@@ -85,6 +87,7 @@ public class DirectedGraph<V, E> {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return "(" + value + ")";
         }
@@ -118,6 +121,7 @@ public class DirectedGraph<V, E> {
             this.weight = weight;
         }
 
+        @Override
         public String toString() {
             return sourceVertex + "->" + targetVertex + "[" + value + "," + weight + "]";
         }
@@ -316,6 +320,7 @@ public class DirectedGraph<V, E> {
             weight += edge.weight;
         }
 
+        @Override
         public String toString() {
             return edges + ", " + weight;
         }
@@ -335,6 +340,7 @@ public class DirectedGraph<V, E> {
         return path;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         for (Vertex v : vertices.values()) {

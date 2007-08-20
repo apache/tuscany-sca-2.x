@@ -18,14 +18,9 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A test component implementation model.

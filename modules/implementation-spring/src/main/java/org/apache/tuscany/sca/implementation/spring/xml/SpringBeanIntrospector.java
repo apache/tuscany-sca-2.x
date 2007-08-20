@@ -18,12 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.spring.xml;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -129,11 +127,11 @@ public class SpringBeanIntrospector {
             throw new ContributionResolveException(e);
         } // end try
 
-        List<Service> services = javaImplementation.getServices();
-        for (Service service : services) {
-            String name = service.getName();
+        //List<Service> services = javaImplementation.getServices();
+        //for (Service service : services) {
+            //String name = service.getName();
             //System.out.println("Spring Bean: found service with name: " + name);
-        } // end for
+        //} // end for
 
         return javaImplementation.getPropertyMembers();
 

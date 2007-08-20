@@ -142,6 +142,7 @@ public class MethodInfo implements Serializable {
         return exceptionTypes;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(getName(returnType)).append(" ").append(name).append("(");

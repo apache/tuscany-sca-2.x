@@ -34,6 +34,7 @@ public class Bean1 extends SuperBean {
     public void setMethod1(int param) {
     }
 
+    @Override
     public void override(String param) throws Exception {
     }
 

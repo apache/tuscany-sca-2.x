@@ -44,6 +44,7 @@ public class AxiomDataBinding extends BaseDataBinding {
         return new OMElementWrapperHandler();
     }
 
+    @Override
     public Object copy(Object source) {
         if ( OMElement.class.isAssignableFrom(source.getClass()) ) {
             try {

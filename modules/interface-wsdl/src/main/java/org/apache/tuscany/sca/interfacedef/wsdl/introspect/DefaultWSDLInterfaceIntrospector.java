@@ -32,6 +32,7 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
  * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
  * @deprecated Please use WSDLInterfaceFactory instead.
  */
+@Deprecated
 public class DefaultWSDLInterfaceIntrospector extends WSDLInterfaceIntrospectorImpl implements WSDLInterfaceIntrospector {
     
     private WSDLFactory wsdlFactory;

@@ -42,6 +42,7 @@ public class RequestScopeContainer extends AbstractScopeContainer<Thread> {
         contexts = new ConcurrentHashMap<Thread, InstanceWrapper>();
     }
 
+    @Override
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof RequestEnd) {
@@ -49,6 +50,7 @@ public class RequestScopeContainer extends AbstractScopeContainer<Thread> {
         }
     }
 
+    @Override
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
@@ -56,6 +58,7 @@ public class RequestScopeContainer extends AbstractScopeContainer<Thread> {
         lifecycleState = RUNNING;
     }
 
+    @Override
     public synchronized void stop() {
         contexts.clear();
         // synchronized (destroyQueues) {

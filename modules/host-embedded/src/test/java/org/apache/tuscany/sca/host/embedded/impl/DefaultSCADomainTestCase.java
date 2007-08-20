@@ -33,6 +33,7 @@ public class DefaultSCADomainTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void setUp() throws Exception {
         domain = new DefaultSCADomain(getClass().getClassLoader(), getClass().getClassLoader(),
                                       "http://localhost", ".", "crud.composite");
@@ -57,6 +58,7 @@ public class DefaultSCADomainTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

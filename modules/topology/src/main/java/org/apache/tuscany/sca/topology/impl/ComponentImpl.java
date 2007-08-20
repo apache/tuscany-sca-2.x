@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.topology.impl;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.topology.Component;
 
 /**

@@ -39,6 +39,7 @@ public class OSGiTestCase extends TestCase {
     
     protected String className;
    
+    @Override
     protected void setUp() throws Exception {
 
         className = OSGiTestImpl.class.getName();
@@ -46,6 +47,7 @@ public class OSGiTestCase extends TestCase {
         
     }
     
+    @Override
     protected void tearDown() throws Exception {
         OSGiRuntime.getRuntime().shutdown();
     }

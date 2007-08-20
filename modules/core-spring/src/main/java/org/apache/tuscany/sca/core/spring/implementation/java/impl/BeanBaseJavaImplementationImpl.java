@@ -26,9 +26,6 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.java.BaseJavaImplementation;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
@@ -109,6 +106,7 @@ public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implement
 		private static final long serialVersionUID = 1L;
 		
 		// Add a property
+                @Override
 		public boolean add(Property property) {
 			
 			// Add corresponding bean property value
@@ -127,6 +125,7 @@ public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implement
 		private static final long serialVersionUID = 1L;
 
 		// Add a reference
+                @Override
 		public boolean add(Reference reference) {
 			
 			// Add corresponding bean property value

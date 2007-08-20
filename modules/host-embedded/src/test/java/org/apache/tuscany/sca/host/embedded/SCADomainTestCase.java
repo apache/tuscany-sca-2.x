@@ -32,6 +32,7 @@ public class SCADomainTestCase extends TestCase {
 
     private SCADomain domain;
     
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("crud.composite");
     }
@@ -54,6 +55,7 @@ public class SCADomainTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

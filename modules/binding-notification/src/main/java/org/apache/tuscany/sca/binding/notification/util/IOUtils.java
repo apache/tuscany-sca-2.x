@@ -119,6 +119,11 @@ public class IOUtils {
     @SuppressWarnings("serial")
     public static class IOUtilsException extends Exception {
         
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         public IOUtilsException(String message) {
             super(message);
         }

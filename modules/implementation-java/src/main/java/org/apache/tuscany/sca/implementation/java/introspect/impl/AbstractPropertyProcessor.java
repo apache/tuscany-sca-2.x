@@ -46,6 +46,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         this.annotationClass = annotationClass;
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         A annotation = method.getAnnotation(annotationClass);
         if (annotation == null) {
@@ -83,6 +84,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         properties.put(name, element);
     }
 
+    @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
 
         A annotation = field.getAnnotation(annotationClass);
@@ -110,6 +112,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         properties.put(name, element);    
     }
 
+    @Override
     public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
 

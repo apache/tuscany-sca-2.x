@@ -42,14 +42,17 @@ public class String2Node extends BaseTransformer<String, Node> implements PullTr
         }
     }
 
+    @Override
     public Class getSourceType() {
         return String.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }
 
+    @Override
     public int getWeight() {
         return 50;
     }

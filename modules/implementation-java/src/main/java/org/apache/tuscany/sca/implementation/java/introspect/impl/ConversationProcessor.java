@@ -42,6 +42,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
 
         ConversationAttributes conversation = clazz.getAnnotation(ConversationAttributes.class);
@@ -81,6 +82,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
 
     }
 
+    @Override
     public void visitMethod(Method method,
                             JavaImplementation type) throws IntrospectionException {
         ConversationID conversationID = method.getAnnotation(ConversationID.class);
@@ -90,6 +92,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         type.addConversationIDMember(method);
     }
 
+    @Override
     public void visitField(Field field,
                            JavaImplementation type) throws IntrospectionException {
         ConversationID conversationID = field.getAnnotation(ConversationID.class);

@@ -53,6 +53,7 @@ public class ReadDocumentTestCase extends TestCase {
     private ExtensibleURLArtifactProcessor documentProcessor;
     private TestModelResolver resolver; 
 
+    @Override
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
@@ -77,9 +78,8 @@ public class ReadDocumentTestCase extends TestCase {
         resolver = new TestModelResolver();
     }
 
+    @Override
     public void tearDown() throws Exception {
-        documentProcessor = null;
-        resolver = null;
     }
 
     public void testResolveConstrainingType() throws Exception {

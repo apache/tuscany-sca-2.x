@@ -28,6 +28,8 @@ import com.example.stock.sdo.InvalidSymbolFault;
  *
  */
 public class InvalidSymbolFault_Exception extends Exception {
+    private static final long serialVersionUID = 8602157311925253920L;
+    
     /**
      * Generated QName for the fault element
      */

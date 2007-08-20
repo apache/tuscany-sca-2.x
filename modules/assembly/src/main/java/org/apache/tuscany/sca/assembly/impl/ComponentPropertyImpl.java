@@ -19,12 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.policy.Intent;
 
 /**
  * Represents a component property.
@@ -35,12 +31,7 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     private String file;
     private Property property;
     private String source;
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
     
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
     /**
      * Constructs a new component property.
      */
@@ -52,6 +43,10 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
         return super.clone();
     }
     
+    // FIXME getValue should not delegate to property.getValue()
+    // Doing this violates the setValue/getValue semantics, as you
+    // can call setValue() then get a different value from getValue()
+    @Override
     public Object getValue() {
         if (super.getValue() == null && property != null) {
             return property.getValue();

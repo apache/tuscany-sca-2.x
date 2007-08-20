@@ -55,6 +55,7 @@ public class MethodInjectorTestCase extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         fooMethod = Foo.class.getMethod("foo", String.class);

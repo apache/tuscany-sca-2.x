@@ -289,6 +289,7 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
     
     public abstract T getRootElement(T element) throws XML2JavaMapperException;
 
+    @Override
     public Class getTargetType() {
         return Object.class;
     }

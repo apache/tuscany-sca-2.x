@@ -31,6 +31,7 @@ public class OMElement2Object extends SimpleType2JavaTransformer<OMElement> {
         return source.getText();
     }
 
+    @Override
     public Class getSourceType() {
         return OMElement.class;
     }

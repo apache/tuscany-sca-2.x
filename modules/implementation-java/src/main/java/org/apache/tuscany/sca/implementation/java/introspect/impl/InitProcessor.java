@@ -38,6 +38,7 @@ public class InitProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         Init annotation = method.getAnnotation(Init.class);
         if (annotation == null) {

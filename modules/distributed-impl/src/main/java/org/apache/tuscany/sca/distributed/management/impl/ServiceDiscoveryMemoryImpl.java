@@ -61,6 +61,7 @@ public class ServiceDiscoveryMemoryImpl implements ServiceDiscovery{
             return url;
         }     
         
+        @Override
         public String toString (){
             return "[" +
                    domainUri + " " +

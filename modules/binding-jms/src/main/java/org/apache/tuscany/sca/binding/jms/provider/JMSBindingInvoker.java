@@ -26,7 +26,6 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;

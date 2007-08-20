@@ -59,6 +59,7 @@ public class TestServiceDiscoveryImpl implements ServiceDiscovery{
             return url;
         }     
         
+        @Override
         public String toString (){
             return "[" +
                    domainUri + " " +

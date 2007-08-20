@@ -154,6 +154,7 @@ public class JavaElementImpl {
         return null;
     }
 
+    @Override
     public String toString() {
         return anchor.toString() + (elementType == ElementType.PARAMETER ? "[" + index + "]" : "");
     }

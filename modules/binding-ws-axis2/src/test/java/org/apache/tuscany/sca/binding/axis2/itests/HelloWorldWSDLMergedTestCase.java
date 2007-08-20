@@ -44,11 +44,13 @@ public class HelloWorldWSDLMergedTestCase extends TestCase {
         Assert.assertEquals("Hello petra", ((OMText)child.getFirstOMChild()).getText());
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/helloworld-om-merged.composite");
         helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldWSDLMergedComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

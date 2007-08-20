@@ -69,6 +69,7 @@ public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
         return element.getNodeType() == Node.TEXT_NODE;
     }
 
+    @Override
     public Class getSourceType() {
         return Node.class;
     }

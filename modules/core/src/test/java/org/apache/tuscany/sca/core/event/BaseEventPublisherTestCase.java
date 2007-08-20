@@ -75,8 +75,8 @@ public class BaseEventPublisherTestCase extends TestCase {
         EasyMock.verify(listener);
     }
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
         publisher = new BaseEventPublisher() {
         };
     }

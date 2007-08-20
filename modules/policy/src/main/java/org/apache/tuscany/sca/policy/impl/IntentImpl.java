@@ -139,6 +139,7 @@ public class IntentImpl implements Intent {
         return true;
     }
 
+    @Override
     public String toString() {
         return String.valueOf(getName());
     }

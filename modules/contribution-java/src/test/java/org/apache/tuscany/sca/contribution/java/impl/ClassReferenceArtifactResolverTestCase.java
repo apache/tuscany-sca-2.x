@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 public class ClassReferenceArtifactResolverTestCase extends TestCase {
     private ExtensibleModelResolver resolver;
     
+    @Override
     protected void setUp() throws Exception {
         
         ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint();
@@ -46,6 +47,7 @@ public class ClassReferenceArtifactResolverTestCase extends TestCase {
         resolver = new ExtensibleModelResolver(null, resolvers, factories);
     }
     
+    @Override
     protected void tearDown() throws Exception {
     }
     

@@ -51,6 +51,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         this.javaFactory = javaFactory;
     }
 
+    @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
         if (annotation == null) {
@@ -93,6 +94,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
 
         Callback annotation = method.getAnnotation(Callback.class);
@@ -116,6 +118,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         type.getCallbackMembers().put(callbackClass.getName(), new JavaElementImpl(method, 0));
     }
 
+    @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
 
         Callback annotation = field.getAnnotation(Callback.class);

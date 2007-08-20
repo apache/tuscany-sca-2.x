@@ -32,6 +32,7 @@ public class NestedCalculatorTestCase extends TestCase {
     private SCADomainContext context;
     private CalculatorService calculatorService;
 
+    @Override
     protected void setUp() throws Exception {
         context = new SCADomainContext(
                           "org/apache/tuscany/sca/core/spring/OuterCalculator.composite",
@@ -41,9 +42,8 @@ public class NestedCalculatorTestCase extends TestCase {
         calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent/InnerCalculatorServiceComponent");
     }
 
+    @Override
     protected void tearDown() throws Exception {
-        context = null;
-        calculatorService = null;
     }
 
     public void testCalculator() throws Exception {

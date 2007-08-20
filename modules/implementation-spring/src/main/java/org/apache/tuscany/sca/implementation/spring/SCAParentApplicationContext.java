@@ -59,7 +59,6 @@ class SCAParentApplicationContext implements ApplicationContext {
     // The Spring implementation for which this is the parent application context
     private SpringImplementation implementation;
     private RuntimeComponent component;
-    private ProxyFactory proxyService;
     private JavaPropertyValueObjectFactory propertyFactory;
 
     private static final String[] EMPTY_ARRAY = new String[0];
@@ -70,7 +69,6 @@ class SCAParentApplicationContext implements ApplicationContext {
                                        JavaPropertyValueObjectFactory propertyValueObjectFactory) {
         this.implementation = implementation;
         this.component = component;
-        this.proxyService = proxyService;
         this.propertyFactory = propertyValueObjectFactory;
     } // end constructor
 

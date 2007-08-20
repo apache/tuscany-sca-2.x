@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 public class DefaultExtensionPointRegistryTestCase extends TestCase {
     private ExtensionPointRegistry registry;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         registry = new DefaultExtensionPointRegistry();

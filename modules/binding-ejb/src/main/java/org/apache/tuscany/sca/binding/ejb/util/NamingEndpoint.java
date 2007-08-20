@@ -97,6 +97,7 @@ public class NamingEndpoint {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof NamingEndpoint) {
             NamingEndpoint endpoint = (NamingEndpoint)obj;
@@ -108,6 +109,7 @@ public class NamingEndpoint {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return jndiName.hashCode();
     }
@@ -115,6 +117,7 @@ public class NamingEndpoint {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return jndiName;
     }

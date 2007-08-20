@@ -52,6 +52,7 @@ public class MethodEventInvokerTestCase extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         privateMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("hidden");

@@ -323,9 +323,6 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
             }
         }
 
-        // the following lines are executed only if a prefix was not found which implies that the
-        // schemaTypeName was not imported earlier and also it does not belong to the targetnamespace
-        String schemaLocation = null;
         XmlSchemaImport importElement = new XmlSchemaImport();
         importElement.setNamespace(schemaTypeName.getNamespaceURI());
         xmlSchema.getItems().add(importElement);
@@ -577,7 +574,7 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
 
         Class factoryClass = null;
         try {
-            factoryClass = Class.forName((String)factoryBaseName, true, classLoader);
+            factoryClass = Class.forName(factoryBaseName, true, classLoader);
             if (!alreadyPrintedDefaultSDOFactoryFound) {
                 System.out.println("Found default generated SDO Factory with name: " + factoryBaseName + "; Registering.");
                 alreadyPrintedDefaultSDOFactoryFound = true;

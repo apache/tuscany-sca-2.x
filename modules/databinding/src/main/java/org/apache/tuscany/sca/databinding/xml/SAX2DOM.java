@@ -85,7 +85,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
     }
 
     public void characters(char[] ch, int start, int length) {
-        final Node last = (Node)nodeStk.peek();
+        final Node last = nodeStk.peek();
 
         // No text nodes can be children of root (DOM006 exception)
         if (last != document) {
@@ -110,18 +110,18 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
     }
 
     public void startElement(String namespace, String localName, String qName, Attributes attrs) {
-        final Element tmp = (Element)document.createElementNS(namespace, qName);
+        final Element tmp = document.createElementNS(namespace, qName);
 
         // Add namespace declarations first
         if (namespaceDecls != null) {
             final int nDecls = namespaceDecls.size();
             for (int i = 0; i < nDecls; i++) {
-                final String prefix = (String)namespaceDecls.get(i++);
+                final String prefix = namespaceDecls.get(i++);
 
                 if (prefix == null || prefix.equals(EMPTYSTRING)) {
-                    tmp.setAttributeNS(XMLNS_URI, XMLNS_PREFIX, (String)namespaceDecls.get(i));
+                    tmp.setAttributeNS(XMLNS_URI, XMLNS_PREFIX, namespaceDecls.get(i));
                 } else {
-                    tmp.setAttributeNS(XMLNS_URI, XMLNS_STRING + prefix, (String)namespaceDecls.get(i));
+                    tmp.setAttributeNS(XMLNS_URI, XMLNS_STRING + prefix, namespaceDecls.get(i));
                 }
             }
             namespaceDecls.clear();
@@ -138,7 +138,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
         }
 
         // Append this new node onto current stack node
-        Node last = (Node)nodeStk.peek();
+        Node last = nodeStk.peek();
 
         // If the SAX2DOM is created with a non-null next sibling node,
         // insert the result nodes before the next sibling under the root.
@@ -180,7 +180,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
      * adds processing instruction node to DOM.
      */
     public void processingInstruction(String target, String data) {
-        final Node last = (Node)nodeStk.peek();
+        final Node last = nodeStk.peek();
         ProcessingInstruction pi = document.createProcessingInstruction(target, data);
         if (pi != null) {
             if (last == root && nextSibling != null) {
@@ -209,7 +209,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
      * Lexical Handler method to create comment node in DOM tree.
      */
     public void comment(char[] ch, int start, int length) {
-        final Node last = (Node)nodeStk.peek();
+        final Node last = nodeStk.peek();
         Comment comment = document.createComment(new String(ch, start, length));
         if (comment != null) {
             if (last == root && nextSibling != null) {

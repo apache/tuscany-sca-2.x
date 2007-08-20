@@ -42,7 +42,6 @@ import org.osoa.sca.Conversation;
  */
 @SuppressWarnings("unused")
 public class CglibProxyFactory implements ProxyFactory {
-    private InterfaceContractMapper contractMapper;
     private MessageFactory messageFactory;
 
     public CglibProxyFactory() {
@@ -50,7 +49,6 @@ public class CglibProxyFactory implements ProxyFactory {
     }
 
     public CglibProxyFactory(MessageFactory messageFactory, InterfaceContractMapper mapper) {
-        this.contractMapper = mapper;
         this.messageFactory = messageFactory;
 
     }

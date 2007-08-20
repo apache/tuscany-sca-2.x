@@ -53,10 +53,12 @@ public abstract class SimpleType2JavaTransformer<T> extends BaseTransformer<T, O
         return mapper.toJavaObject(type, getText(source), context);
     }
 
+    @Override
     public Class getTargetType() {
         return Object.class;
     }
 
+    @Override
     public int getWeight() {
         // Cannot be used for imtermediate
         return 10000;

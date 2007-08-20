@@ -19,37 +19,36 @@
 
 package org.apache.tuscany.sca.contribution.services;
 
-import javax.xml.stream.XMLInputFactory;
-
 import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
+//FIXME Why is this test case all commented out? 
+public class ContributionMetadataDocumentProcessorTestCaseFIXME extends TestCase {
 
-    private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<deployable composite=\"ns:Composite1\"/>"
-            + "<deployable composite=\"ns:Composite2\"/>"
-            + "<import namespace=\"http://ns2\" location=\"sca://contributions/002/\"/>"
-            + "<export namespace=\"http://ns1\"/>"
-            + "</contribution>";
+//    private static final String VALID_XML =
+//        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
+//            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
+//            + "<deployable composite=\"ns:Composite1\"/>"
+//            + "<deployable composite=\"ns:Composite2\"/>"
+//            + "<import namespace=\"http://ns2\" location=\"sca://contributions/002/\"/>"
+//            + "<export namespace=\"http://ns1\"/>"
+//            + "</contribution>";
+//
+//    private static final String INVALID_XML =
+//        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
+//            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
+//            + "<deployable composite=\"ns:Composite1\"/>"
+//            + "<deployable composite=\"ns3:Composite1\"/>"
+//            + "<import namespace=\"http://ns2\" location=\"sca://contributions/002/\"/>"
+//            + "<export namespace=\"http://ns1\"/>"
+//            + "</contribution>";
 
-    private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<deployable composite=\"ns:Composite1\"/>"
-            + "<deployable composite=\"ns3:Composite1\"/>"
-            + "<import namespace=\"http://ns2\" location=\"sca://contributions/002/\"/>"
-            + "<export namespace=\"http://ns1\"/>"
-            + "</contribution>";
+//    private XMLInputFactory xmlFactory;
 
-    private XMLInputFactory xmlFactory;
-
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
 //        xmlFactory = XMLInputFactory.newInstance();
     }
 

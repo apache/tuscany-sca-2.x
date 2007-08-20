@@ -31,10 +31,12 @@ public class PolicyFactoryTestCase extends TestCase {
 
     PolicyFactory factory;
 
+    @Override
     public void setUp() throws Exception {
         factory = new DefaultPolicyFactory();
     }
 
+    @Override
     public void tearDown() throws Exception {
         factory = null;
     }

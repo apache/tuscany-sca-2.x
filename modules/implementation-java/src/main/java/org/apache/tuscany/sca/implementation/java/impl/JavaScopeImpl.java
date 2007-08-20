@@ -42,6 +42,7 @@ public class JavaScopeImpl {
         return scope;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -53,10 +54,12 @@ public class JavaScopeImpl {
         return !(scope != null ? scope != scope1.scope.intern() : scope1.scope != null);
     }
 
+    @Override
     public int hashCode() {
         return scope != null ? scope.hashCode() : 0;
     }
 
+    @Override
     public String toString() {
         return scope;
     }

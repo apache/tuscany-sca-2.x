@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWireException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringXMLComponentTypeLoader;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -57,9 +56,7 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
-    // TODO: runtime needs to provide a better way to get the PropertyValueObjectFactory
-    private JavaPropertyValueObjectFactory propertyFactory;
-
+    
     public SpringArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);

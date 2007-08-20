@@ -45,6 +45,7 @@ public class SimpleJavaType2Node extends Java2SimpleTypeTransformer<Node> {
         }
     }
 
+    @Override
     protected Node createElement(QName element, String text, TransformationContext context) {
         if (element == null) {
             element = DOMDataBinding.ROOT_ELEMENT;

@@ -21,7 +21,11 @@ package org.apache.tuscany.tools.java2wsdl.generate;
 import java.util.EventObject;
 
 public class WSDLGenEvent extends EventObject {
-	private int generationPhase = WSDLGenListener.UNKNOWN;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = -356100754190514245L;
+    private int generationPhase = WSDLGenListener.UNKNOWN;
 
 	public WSDLGenEvent(Object source, int genPhase) {
 		super(source);

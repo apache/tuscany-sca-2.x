@@ -131,6 +131,7 @@ class WorkItemImpl implements WorkItem {
     /**
      * @see Object#hashCode() 
      */
+    @Override
     public int hashCode() {
         return id.hashCode();
     }
@@ -142,6 +143,7 @@ class WorkItemImpl implements WorkItem {
      * @return true if this object is the same as the obj argument; false
      *         otherwise..
      */
+    @Override
     public boolean equals(final Object obj) {
         return (obj != null) && (obj.getClass() == WorkItemImpl.class) && ((WorkItemImpl) obj).id.equals(id);
     }

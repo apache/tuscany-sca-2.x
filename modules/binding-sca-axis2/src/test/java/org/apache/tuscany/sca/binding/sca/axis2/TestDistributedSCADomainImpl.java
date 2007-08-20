@@ -28,8 +28,6 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
 /**
  * A local representation of the sca domain distributed across a number

@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.interfacedef;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents an operation on a service interface.

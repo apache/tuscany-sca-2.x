@@ -61,6 +61,7 @@ public class WriteTestCase extends TestCase {
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
 
+    @Override
     public void setUp() throws Exception {
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         factory = new DefaultAssemblyFactory();
@@ -80,6 +81,7 @@ public class WriteTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 
+    @Override
     public void tearDown() throws Exception {
         inputFactory = null;
         staxProcessors = null;

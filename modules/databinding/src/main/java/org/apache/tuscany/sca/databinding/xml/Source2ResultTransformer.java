@@ -43,14 +43,17 @@ public class Source2ResultTransformer extends BaseTransformer<Source, Result> im
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Source.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Result.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

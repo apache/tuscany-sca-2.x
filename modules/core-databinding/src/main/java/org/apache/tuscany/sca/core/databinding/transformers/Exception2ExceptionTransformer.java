@@ -81,6 +81,7 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Ob
     /**
      * @see org.apache.tuscany.sca.databinding.Transformer#getWeight()
      */
+    @Override
     public int getWeight() {
         return 10000;
     }

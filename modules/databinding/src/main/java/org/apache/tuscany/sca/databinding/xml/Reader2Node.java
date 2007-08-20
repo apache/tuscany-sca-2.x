@@ -47,14 +47,17 @@ public class Reader2Node extends BaseTransformer<Reader, Node> implements PullTr
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Reader.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

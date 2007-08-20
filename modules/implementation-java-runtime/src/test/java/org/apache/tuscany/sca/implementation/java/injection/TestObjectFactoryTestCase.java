@@ -60,6 +60,7 @@ public class TestObjectFactoryTestCase extends TestCase {
         assertEquals("foo", foo.foo);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ctor = Foo.class.getConstructor(String.class);

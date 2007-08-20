@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 public class JarContributionPackageProcessorTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
     
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
     }
     
     public final void testProcessPackageArtifacts() throws Exception {

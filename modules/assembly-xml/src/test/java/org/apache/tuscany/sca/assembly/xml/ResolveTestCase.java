@@ -55,6 +55,7 @@ public class ResolveTestCase extends TestCase {
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
 
+    @Override
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
@@ -65,13 +66,8 @@ public class ResolveTestCase extends TestCase {
         resolver = new TestModelResolver();
     }
 
+    @Override
     public void tearDown() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        resolver = null;
-        policyFactory = null;
-        factory = null;
-        mapper = null;
     }
 
     public void testResolveConstrainingType() throws Exception {

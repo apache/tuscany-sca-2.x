@@ -228,6 +228,7 @@ public class TomcatServerTestCase extends TestCase {
         boolean invoked;
         String sessionId;
 
+        @Override
         protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
             invoked = true;
             sessionId = req.getSession().getId();

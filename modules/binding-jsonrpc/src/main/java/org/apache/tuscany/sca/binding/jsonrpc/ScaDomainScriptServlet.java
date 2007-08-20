@@ -47,6 +47,7 @@ public class ScaDomainScriptServlet extends HttpServlet {
         serviceNames = new ArrayList<String>();
     }
 
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         
         ServletOutputStream os = response.getOutputStream();

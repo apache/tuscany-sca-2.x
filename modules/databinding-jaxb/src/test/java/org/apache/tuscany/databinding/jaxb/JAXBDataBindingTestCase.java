@@ -45,6 +45,7 @@ public class JAXBDataBindingTestCase extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         binding = new JAXBDataBinding();
@@ -112,7 +113,7 @@ public class JAXBDataBindingTestCase extends TestCase {
         poType.setComment("Comment");
         PurchaseOrderType copy = (PurchaseOrderType)binding.copy(poType);
         assertTrue(copy instanceof PurchaseOrderType);
-        assertEquals("Comment", ((PurchaseOrderType)copy).getComment());
+        assertEquals("Comment", (copy).getComment());
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +123,7 @@ public class JAXBDataBindingTestCase extends TestCase {
         address.setCity("San Jose");
         USAddress copy = (USAddress)binding.copy(address);
         assertTrue(copy instanceof USAddress);
-        assertEquals("San Jose", ((USAddress)copy).getCity());
+        assertEquals("San Jose", (copy).getCity());
 
     }
 }

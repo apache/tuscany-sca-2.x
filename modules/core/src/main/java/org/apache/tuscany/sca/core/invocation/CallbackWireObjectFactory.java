@@ -51,6 +51,7 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
         resolvedEndpoint = msgContext.getFrom();
     }
 
+    @Override
     public B getInstance() throws ObjectCreationException {
         if (wire != null) {
             // wire and endpoint already resolved, so return a pre-wired proxy

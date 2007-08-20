@@ -25,5 +25,6 @@ package org.apache.tuscany.sca.core;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface ModelFactoryExtensionPoint extends org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint {
 }

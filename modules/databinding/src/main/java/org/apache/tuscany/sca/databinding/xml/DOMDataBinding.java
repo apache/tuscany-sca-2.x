@@ -50,6 +50,7 @@ public class DOMDataBinding extends BaseDataBinding {
         return new DOMWrapperHandler();
     }
 
+    @Override
     public Object copy(Object source) {
         if (Node.class.isAssignableFrom(source.getClass())) {
             Node nodeSource = (Node) source;

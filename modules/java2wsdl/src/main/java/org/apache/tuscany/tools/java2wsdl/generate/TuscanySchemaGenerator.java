@@ -132,7 +132,6 @@ public class TuscanySchemaGenerator implements TuscanyJava2WSDLConstants {
             HashMap uniqueMethods = new HashMap();
             XmlSchemaComplexType methodSchemaType = null;
             XmlSchemaSequence sequence = null;
-            QName methodPartSchemaTypeName = null;
             for (int i = 0; i < methods.length; i++) {
                 String methodName = methods[i].getSimpleName();
                 JMethod jMethod = methods[i];
@@ -174,8 +173,6 @@ public class TuscanySchemaGenerator implements TuscanyJava2WSDLConstants {
                 }
                 // for its return type
                 JClass returnType = jMethod.getReturnType();
-                QName methodReturnSchemaTypeName = null;
-
                 if (!returnType.isVoidType()) {
                     methodSchemaType = createSchemaTypeForMethodPart(jMethod.getSimpleName() + RESPONSE);
                     sequence = new XmlSchemaSequence();

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.notification;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
@@ -26,8 +25,6 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 
 /**
@@ -71,10 +68,12 @@ public class NotificationImplementationImpl extends ComponentTypeImpl implements
         this.componentType = componentType;
     }
 
+    @Override
     public List<Service> getServices() {
         return componentType.getServices();
     }
 
+    @Override
     public List<Reference> getReferences() {
         return componentType.getReferences();
     }

@@ -109,7 +109,7 @@ public class OSGiPropertyValueObjectFactory {
                 Document doc = (Document)property;
                 Element element = doc.getDocumentElement(); 
                 if (element.getChildNodes().getLength() == 1 && 
-                    element.getChildNodes().item(0).getNodeType() == Element.TEXT_NODE) {
+                    element.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE) {
                     return true;
                 }
             }
@@ -139,7 +139,7 @@ public class OSGiPropertyValueObjectFactory {
         Element rootElement = document.getDocumentElement();
         List<Node> propValues = new ArrayList<Node>();
         for (int count = 0 ; count < rootElement.getChildNodes().getLength() ; ++count) {
-            if (rootElement.getChildNodes().item(count).getNodeType() == Document.ELEMENT_NODE) {
+            if (rootElement.getChildNodes().item(count).getNodeType() == Node.ELEMENT_NODE) {
                 propValues.add(rootElement.getChildNodes().item(count));
             }
         }

@@ -38,14 +38,17 @@ public class Node2XmlObject extends BaseTransformer<Node, XmlObject> implements
         }
     }
 
+    @Override
     public Class getTargetType() {
         return XmlObject.class;
     }
 
+    @Override
     public Class getSourceType() {
         return Node.class;
     }
 
+    @Override
     public int getWeight() {
         return 30;
     }

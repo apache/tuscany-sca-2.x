@@ -37,10 +37,12 @@ public class ServletWrapper extends StandardWrapper {
         this.servlet = servlet;
     }
 
+    @Override
     public synchronized Servlet loadServlet() {
         return servlet;
     }
 
+    @Override
     public Servlet getServlet() {
         return servlet;
     }

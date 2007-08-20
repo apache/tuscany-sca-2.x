@@ -31,8 +31,8 @@ public class FolderContributionPackageProcessorTestCase extends TestCase {
     
     private File contributionRoot;
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
         this.contributionRoot = new File(FOLDER_CONTRIBUTION);
     }
     

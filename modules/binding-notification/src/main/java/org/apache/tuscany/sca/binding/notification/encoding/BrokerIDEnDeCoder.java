@@ -77,11 +77,13 @@ public class BrokerIDEnDeCoder extends AbstractEnDeCoder<BrokerID> {
         }
     }
 
+    @Override
     protected QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
+    @Override
     protected Class<BrokerID> getEncodingObjectType() {
         
         return BrokerID.class;

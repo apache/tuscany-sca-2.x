@@ -32,14 +32,17 @@ public class XmlObject2XMLStreamReader extends BaseTransformer<XmlObject, XMLStr
         return source.newXMLStreamReader();
     }
 
+    @Override
     public Class getSourceType() {
         return XmlObject.class;
     }
 
+    @Override
     public Class getTargetType() {
         return XMLStreamReader.class;
     }
 
+    @Override
     public int getWeight() {
         return 10;
     }

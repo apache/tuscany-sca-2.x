@@ -28,6 +28,7 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class DefaultContributionPostProcessorExtensionPoint implements ContributionPostProcessorExtensionPoint {
 
     /**

@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A component type specialization for POJO implementations

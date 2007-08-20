@@ -22,7 +22,8 @@ package org.apache.tuscany.sca.binding.axis2.itests;
 import java.io.Serializable;
 
 public class Foo implements Serializable {
-
+    private static final long serialVersionUID = 4879476066850018458L;
+    
     private Bar[] bars;
 
     public Bar[] getBars() {

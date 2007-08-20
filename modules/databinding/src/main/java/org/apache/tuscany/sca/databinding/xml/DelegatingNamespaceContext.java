@@ -90,7 +90,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
         // do the corrections as per the javadoc
         int index = prefixStack.search(prefix);
         if (index != -1) {
-            return (String)uriStack.get(index);
+            return uriStack.get(index);
         }
         if (parentNsContext != null) {
             return parentNsContext.getPrefix(prefix);
@@ -106,7 +106,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
         // do the corrections as per the javadoc
         int index = uriStack.search(uri);
         if (index != -1) {
-            return (String)prefixStack.get(index);
+            return prefixStack.get(index);
         }
 
         if (parentNsContext != null) {
@@ -117,7 +117,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
 
     public Iterator getPrefixes(String uri) {
         // create an arraylist that contains the relevant prefixes
-        String[] uris = (String[])uriStack.toArray(new String[uriStack.size()]);
+        String[] uris = uriStack.toArray(new String[uriStack.size()]);
         List<String> tempList = new ArrayList<String>();
         for (int i = uris.length - 1; i >= 0; i--) {
             if (uris[i].equals(uri)) {

@@ -18,11 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ejb.tests;
 
-import java.util.Properties;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
@@ -34,9 +29,9 @@ import account.Customer;
  */
 public class EJBReferenceTestCase extends TestCase {
     private static final int MOCK_PORT = 8085;
-    private static final int OPENEJB_PORT = 4201;
     private SCADomain scaDomain;
 
+    @Override
     protected void setUp() throws Exception {
         System.setProperty("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
         System.setProperty("java.naming.provider.url", "ejbd://localhost:" + MOCK_PORT);
@@ -54,17 +49,7 @@ public class EJBReferenceTestCase extends TestCase {
         Thread.sleep(500);
     }
 
-    private InitialContext getRemoteInitialContext() throws NamingException {
-        Properties properties = new Properties();
-
-        properties.setProperty("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
-        properties.setProperty("java.naming.provider.url", "ejbd://localhost:" + OPENEJB_PORT);
-
-        InitialContext context = new InitialContext(properties);
-        // System.out.println(context.lookup("hello-addservice/AddServiceBean/calculator.AddService"));        
-        return context;
-    }
-
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

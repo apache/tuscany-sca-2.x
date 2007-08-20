@@ -20,19 +20,10 @@
 package org.apache.tuscany.sca.binding.sca.impl;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
-import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;

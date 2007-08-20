@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.data.das;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.das.rdb.ConfigHelper;
 import org.apache.tuscany.das.rdb.DAS;
 import org.apache.tuscany.sca.implementation.data.config.ConnectionInfo;

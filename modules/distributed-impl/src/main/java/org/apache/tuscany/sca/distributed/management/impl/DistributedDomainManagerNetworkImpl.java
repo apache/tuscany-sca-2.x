@@ -19,12 +19,7 @@
 
 package org.apache.tuscany.sca.distributed.management.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.sca.distributed.management.DistributedDomainManager;
-import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
-import org.apache.tuscany.sca.distributed.management.impl.ServiceDiscoveryMemoryImpl.ServiceEndpoint;
 import org.osoa.sca.annotations.Reference;
 
 

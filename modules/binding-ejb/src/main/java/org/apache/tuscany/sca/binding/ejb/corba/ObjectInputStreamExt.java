@@ -36,10 +36,12 @@ public class ObjectInputStreamExt extends ObjectInputStream {
         this.classloader = loader;
     }
 
+    @Override
     protected Class resolveClass(ObjectStreamClass classDesc) throws IOException, ClassNotFoundException {
         return ClassLoadingUtil.loadClass(classDesc.getName(), classloader);
     }
 
+    @Override
     protected Class resolveProxyClass(String[] interfaces) throws IOException, ClassNotFoundException {
         Class[] cinterfaces = new Class[interfaces.length];
         for (int i = 0; i < interfaces.length; i++)

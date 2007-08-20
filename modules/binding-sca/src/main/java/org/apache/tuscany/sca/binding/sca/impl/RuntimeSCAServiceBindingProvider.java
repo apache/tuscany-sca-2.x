@@ -44,26 +44,16 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2 {
 
-    private ExtensionPointRegistry extensionPoints;
-    private RuntimeComponent component;
     private RuntimeComponentService service;
-    private SCABinding binding;
-    
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
     private ServiceBindingProvider2 distributedProvider;
     private DistributedSCABinding distributedBinding;
     
-    private boolean started = false;
-
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
                                             RuntimeComponent component,
                                             RuntimeComponentService service,
                                             SCABinding binding) {
-        this.extensionPoints = extensionPoints;
-        this.component = component;
         this.service = service;
-        this.binding = binding;
-        
         // if there is potentially a wire to this service that crosses the node boundary 
         if (((WireableBinding)binding).isRemote()) {        
             // look to see if a distributed SCA binding implementation has

@@ -37,6 +37,7 @@ public class TransformerExtensionTestCase extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }

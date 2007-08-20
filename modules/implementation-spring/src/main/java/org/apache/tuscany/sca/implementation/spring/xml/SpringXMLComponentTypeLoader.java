@@ -78,7 +78,6 @@ public class SpringXMLComponentTypeLoader {
 
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
-    private PolicyFactory policyFactory;
     private ClassLoader cl;
 
     private SpringBeanIntrospector beanIntrospector;
@@ -89,7 +88,6 @@ public class SpringXMLComponentTypeLoader {
         super();
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
-        this.policyFactory = policyFactory;
         beanIntrospector =
             new SpringBeanIntrospector(assemblyFactory, javaFactory, policyFactory);
     }
@@ -176,7 +174,8 @@ public class SpringXMLComponentTypeLoader {
                             scaproperties.add(scaproperty);
                         } else if (BEAN_ELEMENT.equals(qname)) {
                             // TODO FIX THIS !!
-                            int count = reader.getAttributeCount();
+                            //FIXME count is never used
+                            //int count = reader.getAttributeCount();
                             bean =
                                 new SpringBeanElement(reader.getAttributeValue(null, "id"), reader
                                     .getAttributeValue(null, "class"));

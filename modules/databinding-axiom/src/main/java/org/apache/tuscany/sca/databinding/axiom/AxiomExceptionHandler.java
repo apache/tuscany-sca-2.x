@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 public class AxiomExceptionHandler implements ExceptionHandler {
 
     public Exception createException(DataType<DataType> exceptionType, String message, Object faultInfo, Throwable cause) {
-        return new FaultException(message, (OMElement)faultInfo, cause);
+        return new FaultException(message, faultInfo, cause);
     }
 
     public Object getFaultInfo(Exception exception) {

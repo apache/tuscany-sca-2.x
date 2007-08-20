@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.distributed.management;
 
-import java.util.List;
-
 
 /**
  * A management interface for contributions in the distributed domain

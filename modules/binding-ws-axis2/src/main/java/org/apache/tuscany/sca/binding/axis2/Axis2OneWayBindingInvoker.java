@@ -30,7 +30,6 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.invocation.Message;
 
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
@@ -43,6 +42,7 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
+    @Override
     protected Object invokeTarget(Message msg) throws InvocationTargetException {
         try {
             OperationClient operationClient = createOperationClient(msg);

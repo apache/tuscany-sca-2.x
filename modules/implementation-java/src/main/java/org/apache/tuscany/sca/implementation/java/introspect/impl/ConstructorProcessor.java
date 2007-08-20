@@ -39,6 +39,7 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         Constructor[] ctors = clazz.getConstructors();
         boolean found = false;
@@ -55,6 +56,7 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    @Override
     public <T> void visitConstructor(Constructor<T> constructor, JavaImplementation type)
         throws IntrospectionException {
         org.osoa.sca.annotations.Constructor annotation = constructor

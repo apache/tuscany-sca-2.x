@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.policy.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -159,46 +158,48 @@ public abstract class PolicyIntentProcessor<T extends Intent> implements StAXArt
             throw new ContributionWriteException(e);
         }
     }
-    
-    private Intent resolveRequiredIntents(ProfileIntent policyIntent, ModelResolver resolver) throws ContributionResolveException {
-        boolean isUnresolved = false;
-        //FIXME: Need to check for cyclic references first i.e an A requiring B and then B requiring A... 
-        if (policyIntent != null && policyIntent.isUnresolved()) {
-            
-            //resolve all required intents
-            List<Intent> requiredIntents = new ArrayList<Intent>(); 
-            for (Intent requiredIntent : policyIntent.getRequiredIntents()) {
-                if ( requiredIntent.isUnresolved() ) {
-                    //policyIntent.getRequiredIntents().remove(requiredIntent);
-                    requiredIntent = resolver.resolveModel(Intent.class, requiredIntent);
-                    requiredIntents.add(requiredIntent);
-                    if (requiredIntent.isUnresolved()) {
-                        isUnresolved = true;
-                    }
-                }
-            }
-            policyIntent.getRequiredIntents().clear();
-            policyIntent.getRequiredIntents().addAll(requiredIntents);
-        }
-        policyIntent.setUnresolved(isUnresolved);
-        
-        return policyIntent;
-    }
-    
-    private Intent resolveQualifiableIntent(QualifiedIntent policyIntent, ModelResolver resolver) throws ContributionResolveException {
-        boolean isUnresolved = false;
 
-        if (policyIntent != null && policyIntent.isUnresolved()) {
-            //resolve the qualifiable intent
-            Intent qualifiableIntent = 
-                resolver.resolveModel(Intent.class, policyIntent.getQualifiableIntent());
-            policyIntent.setQualifiableIntent(qualifiableIntent);
-            isUnresolved = qualifiableIntent.isUnresolved();
-        }
-        policyIntent.setUnresolved(isUnresolved);
-        
-        return policyIntent;
-    }
+    //FIXME This method is never used
+//    private Intent resolveRequiredIntents(ProfileIntent policyIntent, ModelResolver resolver) throws ContributionResolveException {
+//        boolean isUnresolved = false;
+//        //FIXME: Need to check for cyclic references first i.e an A requiring B and then B requiring A... 
+//        if (policyIntent != null && policyIntent.isUnresolved()) {
+//            
+//            //resolve all required intents
+//            List<Intent> requiredIntents = new ArrayList<Intent>(); 
+//            for (Intent requiredIntent : policyIntent.getRequiredIntents()) {
+//                if ( requiredIntent.isUnresolved() ) {
+//                    //policyIntent.getRequiredIntents().remove(requiredIntent);
+//                    requiredIntent = resolver.resolveModel(Intent.class, requiredIntent);
+//                    requiredIntents.add(requiredIntent);
+//                    if (requiredIntent.isUnresolved()) {
+//                        isUnresolved = true;
+//                    }
+//                }
+//            }
+//            policyIntent.getRequiredIntents().clear();
+//            policyIntent.getRequiredIntents().addAll(requiredIntents);
+//        }
+//        policyIntent.setUnresolved(isUnresolved);
+//        
+//        return policyIntent;
+//    }
+    
+    //FIXME This method is never used
+//    private Intent resolveQualifiableIntent(QualifiedIntent policyIntent, ModelResolver resolver) throws ContributionResolveException {
+//        boolean isUnresolved = false;
+//
+//        if (policyIntent != null && policyIntent.isUnresolved()) {
+//            //resolve the qualifiable intent
+//            Intent qualifiableIntent = 
+//                resolver.resolveModel(Intent.class, policyIntent.getQualifiableIntent());
+//            policyIntent.setQualifiableIntent(qualifiableIntent);
+//            isUnresolved = qualifiableIntent.isUnresolved();
+//        }
+//        policyIntent.setUnresolved(isUnresolved);
+//        
+//        return policyIntent;
+//    }
     
     protected void resolveContrainedArtifacts(Intent policyIntent, ModelResolver resolver) {
         //FIXME : need to figure out this resolution. 

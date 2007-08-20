@@ -32,14 +32,17 @@ public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStr
         return source.getXMLStreamReader();
     }
 
+    @Override
     public Class getSourceType() {
         return OMElement.class;
     }
 
+    @Override
     public Class getTargetType() {
         return XMLStreamReader.class;
     }
 
+    @Override
     public int getWeight() {
         return 10;
     }

@@ -45,7 +45,6 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -178,6 +177,7 @@ public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation>
     public void write(Implementation arg0, XMLStreamWriter arg1) throws ContributionWriteException, XMLStreamException {
     }
 
+    @Override
     protected void addSideFileComponentType(String name, Implementation impl, ModelResolver resolver) {
 //    protected void addSideFileComponentType(Implementation impl, ModelResolver resolver) {
 

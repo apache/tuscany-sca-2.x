@@ -38,6 +38,10 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class NotificationServlet extends HttpServlet {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private NotificationServletHandler handler;
     private NotificationServletStreamHandler servletStreamHandler;
     
@@ -51,6 +55,7 @@ public class NotificationServlet extends HttpServlet {
         this.servletStreamHandler = servletStreamHandler;
     }
 
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HashMap<String, String> headers = new HashMap<String, String>();
         Enumeration headerNames = request.getHeaderNames();

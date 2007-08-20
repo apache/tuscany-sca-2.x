@@ -97,6 +97,7 @@ public class ConvertTimeMillisTestCase extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         registy = new MockProcessor();

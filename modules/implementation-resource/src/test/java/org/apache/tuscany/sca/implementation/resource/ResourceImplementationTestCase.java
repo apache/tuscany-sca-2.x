@@ -55,10 +55,12 @@ public class ResourceImplementationTestCase extends TestCase {
 
     private SCADomain scaDomain;
     
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("resource.composite");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

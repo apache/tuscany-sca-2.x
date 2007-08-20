@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.sca.axis2.impl;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.axis2.Axis2ReferenceBindingProvider;
-import org.apache.tuscany.sca.binding.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.binding.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
@@ -35,16 +34,12 @@ import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * The reference binding provider for the remote sca binding implementation. Relies on the 
@@ -58,13 +53,9 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
-    private ServletHost servletHost;
-    private MessageFactory messageFactory;
-   
     private Axis2ReferenceBindingProvider axisReferenceBindingProvider;
     private WebServiceBinding wsBinding;
     
-    private boolean started = false;
     private EndpointReference serviceEPR = null;
 
     public Axis2SCAReferenceBindingProvider(RuntimeComponent component,
@@ -75,11 +66,6 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         this.component = component;
         this.reference = reference;
         this.binding = binding.getSCABinding();
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
-        
-        // fix up the minimal things required to get the ws binding going. 
-        
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
        
         // Turn the java interface contract into a wsdl interface contract

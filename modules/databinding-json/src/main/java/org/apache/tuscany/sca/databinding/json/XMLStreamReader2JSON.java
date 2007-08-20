@@ -60,6 +60,7 @@ public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, JSONO
         } 
     }
 
+    @Override
     public int getWeight() {
         return 500;
     }

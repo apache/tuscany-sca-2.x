@@ -91,6 +91,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
     /**
      * @see org.apache.tuscany.sca.databinding.Transformer#getWeight()
      */
+    @Override
     public int getWeight() {
         return 10;
     }

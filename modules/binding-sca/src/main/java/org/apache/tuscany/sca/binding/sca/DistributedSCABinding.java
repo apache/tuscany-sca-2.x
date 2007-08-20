@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.binding.sca;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 
 

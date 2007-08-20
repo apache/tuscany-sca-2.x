@@ -34,6 +34,7 @@ public class ScopeProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public <T> void visitClass(Class<T> clazz,
                                JavaImplementation type)
         throws IntrospectionException {

@@ -45,8 +45,8 @@ public class ContentTypeDescriberImplTestCase extends TestCase {
                 contentTypeDescriber.getType(artifactURL, "application/vnd.tuscany.ext"));        
     }
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
         contentTypeDescriber = new ArtifactTypeDescriberImpl();
     }
 

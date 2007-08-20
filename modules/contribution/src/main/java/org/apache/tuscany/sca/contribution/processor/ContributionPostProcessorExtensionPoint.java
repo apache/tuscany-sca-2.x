@@ -27,6 +27,7 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface ContributionPostProcessorExtensionPoint {
     
     /**

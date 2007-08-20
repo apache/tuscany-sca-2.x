@@ -37,14 +37,17 @@ public class XmlObject2Node extends BaseTransformer<XmlObject, Node> implements
         return source.newDomNode();
     }
 
+    @Override
     public Class getSourceType() {
         return XmlObject.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }
 
+    @Override
     public int getWeight() {
         return 30;
     }

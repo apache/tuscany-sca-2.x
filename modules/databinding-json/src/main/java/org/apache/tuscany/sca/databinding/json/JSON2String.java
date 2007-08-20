@@ -49,6 +49,7 @@ public class JSON2String extends BaseTransformer<JSONObject, String> implements
         } 
     }
 
+    @Override
     public int getWeight() {
         return 500;
     }

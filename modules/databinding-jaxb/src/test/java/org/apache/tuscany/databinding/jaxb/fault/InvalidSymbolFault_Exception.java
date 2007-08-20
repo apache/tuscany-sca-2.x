@@ -27,7 +27,8 @@ import javax.xml.ws.WebFault;
  */
 @WebFault(name = "InvalidSymbolFault", targetNamespace = "http://www.example.com/stock")
 public class InvalidSymbolFault_Exception extends Exception {
-
+    private static final long serialVersionUID = -4618497501663457633L;
+    
     /**
      * Java type that goes as soapenv:Fault detail element.
      */

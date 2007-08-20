@@ -40,11 +40,13 @@ public class SCAApplicationContext extends AbstractXmlApplicationContext {
         //refresh();
     }
 
+    @Override
     protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
         ClassLoader cl = getClassLoader();
         beanDefinitionReader.setNamespaceHandlerResolver(new SCANamespaceHandlerResolver(cl));
     }
 
+    @Override
     protected Resource[] getConfigResources() {
         return new Resource[] {appXml};
     }

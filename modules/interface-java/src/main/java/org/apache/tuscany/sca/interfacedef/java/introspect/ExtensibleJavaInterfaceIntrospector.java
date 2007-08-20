@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceIntrospectorIm
  * 
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class ExtensibleJavaInterfaceIntrospector extends JavaInterfaceIntrospectorImpl implements JavaInterfaceIntrospector {
     
     private JavaInterfaceFactory javaFactory;
