@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" name="SDOWSDLTest">
+
+    <service name="AccountService1a2a3a4a" promote="Component2a3a4a">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3a4a"/>
+    </service>
+    <service name="AccountService1a2a3a4b" promote="Component2a3a4b">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3a4b"/>
+    </service>
+    <service name="AccountService1a2a3b4a" promote="Component2a3b4a">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3b4a"/>
+    </service>
+    <service name="AccountService1a2a3b4b" promote="Component2a3b4b">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3b4b"/>
+    </service>
+    <service name="AccountService1a2b3a4a" promote="Component2b3a4a">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3a4a"/>
+    </service>
+    <service name="AccountService1a2b3a4b" promote="Component2b3a4b">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3a4b"/>
+    </service>
+    <service name="AccountService1a2b3b4a" promote="Component2b3b4a">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3b4a"/>
+    </service>
+    <service name="AccountService1a2b3b4b" promote="Component2b3b4b">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3b4b"/>
+    </service>
+    <service name="AccountService1b2a3a4a" promote="Component2a3a4a">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3a4a"/>
+    </service>
+    <service name="AccountService1b2a3a4b" promote="Component2a3a4b">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3a4b"/>
+    </service>
+    <service name="AccountService1b2a3b4a" promote="Component2a3b4a">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3b4a"/>
+    </service>
+    <service name="AccountService1b2a3b4b" promote="Component2a3b4b">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3b4b"/>
+    </service>
+    <service name="AccountService1b2b3a4a" promote="Component2b3a4a">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3a4a"/>
+    </service>
+    <service name="AccountService1b2b3a4b" promote="Component2b3a4b">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3a4b"/>
+    </service>
+    <service name="AccountService1b2b3b4a" promote="Component2b3b4a">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3b4a"/>
+    </service>
+    <service name="AccountService1b2b3b4b" promote="Component2b3b4b">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3b4b"/>
+    </service>
+
+    <component name="Component2a3a4a">
+        <implementation.java class="bigbank.account.services.accountdata.Component2aImpl" />
+        <reference name="accountService" target="Component3a4a"/>
+    </component>
+    <component name="Component2a3a4b">
+        <implementation.java class="bigbank.account.services.accountdata.Component2aImpl" />
+        <reference name="accountService" target="Component3a4b"/>
+    </component>
+    <component name="Component2a3b4a">
+        <implementation.java class="bigbank.account.services.accountdata.Component2aImpl" />
+        <reference name="accountService" target="Component3b4a"/>
+    </component>
+    <component name="Component2a3b4b">
+        <implementation.java class="bigbank.account.services.accountdata.Component2aImpl" />
+        <reference name="accountService" target="Component3b4b"/>
+    </component>
+
+    <component name="Component2b3a4a">
+        <implementation.java class="bigbank.account.services.accountdata.Component2bImpl" />
+        <reference name="accountService" target="Component3a4a"/>
+    </component>
+    <component name="Component2b3a4b">
+        <implementation.java class="bigbank.account.services.accountdata.Component2bImpl" />
+        <reference name="accountService" target="Component3a4b"/>
+    </component>
+    <component name="Component2b3b4a">
+        <implementation.java class="bigbank.account.services.accountdata.Component2bImpl" />
+        <reference name="accountService" target="Component3b4a"/>
+    </component>
+    <component name="Component2b3b4b">
+        <implementation.java class="bigbank.account.services.accountdata.Component2bImpl" />
+        <reference name="accountService" target="Component3b4b"/>
+    </component>
+
+    <component name="Component3a4a">
+        <implementation.java class="bigbank.account.services.accountdata.Component3aImpl" />
+    </component>
+    <reference name="Component3a4aRef" promote="Component3a4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService" />
+    </reference>
+
+    <component name="Component3a4b">
+        <implementation.java class="bigbank.account.services.accountdata.Component3aImpl" />
+    </component>
+    <reference name="Component3a4bRef" promote="Component3a4b/accountService">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService" />
+    </reference>
+
+    <component name="Component3b4a">
+        <implementation.java class="bigbank.account.services.accountdata.Component3bImpl" />
+    </component>
+    <reference name="Component3b4aRef" promote="Component3b4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService" />
+    </reference>
+    
+    <component name="Component3b4b">
+        <implementation.java class="bigbank.account.services.accountdata.Component3bImpl" />
+    </component>
+    <reference name="Component3b4bRef" promote="Component3b4b/accountService">
+        <interface.wsdl interface="http://www.bigbank.com/account#wsdl.interface(AccountService)"/>
+        <binding.ws uri="http://localhost:8085/AccountService" />
+    </reference>
+
+    <!-- target service -->
+
+    <service name="AccountService" promote="AccountServiceComponent">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService"/>
+    </service>
+
+    <component name="AccountServiceComponent">
+        <implementation.java class="bigbank.account.services.accountdata.AccountDataServiceImpl" />
+    </component>
+
+    <!-- test client -->
+
+    <component name="AccountServiceClient">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="AccountServiceRef" promote="AccountServiceClient/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/services/AccountService"/>
+    </reference>
+
+    <!-- clients -->
+
+    <component name="Client1a2a3a4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1a2a3a4a" promote="Client1a2a3a4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3a4a" />
+    </reference>
+
+    <component name="Client1a2a3a4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl"/>
+    </component>
+
+    <reference name="ClientRef1a2a3a4b" promote="Client1a2a3a4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3a4b" />
+    </reference>
+
+    <component name="Client1a2a3b4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1a2a3b4a" promote="Client1a2a3b4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3b4a" />
+    </reference>
+
+    <component name="Client1a2a3b4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1a2a3b4b" promote="Client1a2a3b4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2a3b4b" />
+    </reference>
+
+    <component name="Client1a2b3a4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1a2b3a4a" promote="Client1a2b3a4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3a4a" />
+    </reference>
+
+    <component name="Client1a2b3a4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1a2b3a4b" promote="Client1a2b3a4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3a4b" />
+    </reference>
+
+    <component name="Client1a2b3b4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1a2b3b4a" promote="Client1a2b3b4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3b4a" />
+    </reference>
+
+    <component name="Client1a2b3b4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1a2b3b4b" promote="Client1a2b3b4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1a2b3b4b" />
+    </reference>
+
+    <component name="Client1b2a3a4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2a3a4a" promote="Client1b2a3a4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3a4a" />
+    </reference>
+
+    <component name="Client1b2a3a4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2a3a4b" promote="Client1b2a3a4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3a4b" />
+    </reference>
+
+    <component name="Client1b2a3b4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2a3b4a" promote="Client1b2a3b4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3b4a" />
+    </reference>
+
+    <component name="Client1b2a3b4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2a3b4b" promote="Client1b2a3b4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2a3b4b" />
+    </reference>
+
+    <component name="Client1b2b3a4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2b3a4a" promote="Client1b2b3a4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3a4a" />
+    </reference>
+
+    <component name="Client1b2b3a4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2b3a4b" promote="Client1b2b3a4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3a4b" />
+    </reference>
+
+    <component name="Client1b2b3b4a">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2b3b4a" promote="Client1b2b3b4a/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3b4a" />
+    </reference>
+
+    <component name="Client1b2b3b4b">
+        <implementation.java class="bigbank.account.services.accountdata.AccountServiceClientImpl" />
+    </component>
+
+    <reference name="ClientRef1b2b3b4b" promote="Client1b2b3b4b/accountService">
+        <interface.java interface="bigbank.account.services.accountdata.AccountDataService" />
+        <binding.ws uri="http://localhost:8085/AccountService1b2b3b4b" />
+    </reference>
+
+</composite>
