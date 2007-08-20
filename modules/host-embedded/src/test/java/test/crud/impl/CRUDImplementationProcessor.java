@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package crud.impl;
+package test.crud.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -31,8 +31,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-import crud.CRUDImplementation;
-import crud.CRUDImplementationFactory;
+import test.crud.CRUDImplementation;
+import test.crud.CRUDImplementationFactory;
+
 
 /**
  * Implements a STAX artifact processor for CRUD implementations.

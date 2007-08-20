@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;type=http://www.osoa.org/xmlns/sca/1.0#implementation.java,model=org.apache.tuscany.sca.implementation.java.JavaImplementation
+org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#implementation.java,model=org.apache.tuscany.sca.implementation.java.JavaImplementation

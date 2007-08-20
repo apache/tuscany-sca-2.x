@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.contribution;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Set;
@@ -93,7 +94,17 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
                     Set<String> classNames = TempServiceDeclarationUtil.getServiceClassNames(classLoader, factoryInterface.getName());
                     if (!classNames.isEmpty()) {
                         Class<?> factoryClass = Class.forName(classNames.iterator().next(), true, classLoader);
-                        factory = factoryClass.newInstance();
+                        
+                        try {
+                            // Default empty constructor
+                            Constructor<?> constructor = factoryClass.getConstructor();
+                            factory = constructor.newInstance();
+                        } catch (NoSuchMethodException e) {
+                            
+                            // Constructor taking the model factory extension point
+                            Constructor<?> constructor = factoryClass.getConstructor(ModelFactoryExtensionPoint.class);
+                            factory = constructor.newInstance(this);
+                        }
                         
                         // Cache the loaded factory
                         addFactory(factory);

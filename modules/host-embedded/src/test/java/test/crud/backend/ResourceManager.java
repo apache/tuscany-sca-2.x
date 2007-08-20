@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package crud.backend;
+package test.crud.backend;
 
 import java.util.HashMap;
 import java.util.Map;

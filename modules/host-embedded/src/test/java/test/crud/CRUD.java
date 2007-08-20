@@ -16,21 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package crud;
+package test.crud;
 
 /**
- * A factory for the sample CRUD implementation model.
- *
+ * The service interface of the single CRUD service provided by CRUD components.
+ * 
  * @version $Rev$ $Date$
  */
-public interface CRUDImplementationFactory {
-    
+public interface CRUD {
+
     /**
-     * Creates a new CRUD implementation.
-     * 
+     * Create a new resource.
+     * @param resource
      * @return
      */
-    CRUDImplementation createCRUDImplementation();
+    String create(Object resource);
+
+    /**
+     * Retrieve a resource.
+     * @param id
+     * @return
+     */
+    Object retrieve(String id);
+
+    /**
+     * Update a resource.
+     * @param id
+     * @param resource
+     * @return
+     */
+    Object update(String id, Object resource);
+
+    /**
+     * Delete a resource.
+     * @param id
+     */
+    void delete(String id);
 
 }

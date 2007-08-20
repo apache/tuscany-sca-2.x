@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportProcessor;type=http://www.osoa.org/xmlns/sca/1.0#import,model=org.apache.tuscany.sca.contribution.namespace.NamespaceImport
-org.apache.tuscany.sca.contribution.namespace.impl.NamespaceExportProcessor;type=http://www.osoa.org/xmlns/sca/1.0#export,model=org.apache.tuscany.sca.contribution.namespace.NamespaceExport
+org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#import,model=org.apache.tuscany.sca.contribution.namespace.NamespaceImport
+org.apache.tuscany.sca.contribution.namespace.impl.NamespaceExportProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#export,model=org.apache.tuscany.sca.contribution.namespace.NamespaceExport

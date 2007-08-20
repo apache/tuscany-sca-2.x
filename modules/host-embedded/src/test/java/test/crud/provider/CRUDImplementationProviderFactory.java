@@ -16,36 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package crud;
+package test.crud.provider;
 
-import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+
+import test.crud.CRUDImplementation;
+
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
- * The sample CRUD implementation is not a full blown implementation, it only
- * supports a subset of what a component implementation can support: - a single
- * fixed service (as opposed to a list of services typed by different
- * interfaces) - a directory attribute used to specify where a CRUD component is
- * going to persist resources - no references or properties - no policy intents
- * or policy sets
  * 
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public interface CRUDImplementation extends Implementation {
+public class CRUDImplementationProviderFactory implements ImplementationProviderFactory<CRUDImplementation> {
 
     /**
-     * Returns the directory used by CRUD implementations to persist resources.
-     * 
-     * @return the directory used to persist resources
+     * Constructs a new CRUD implementation.
      */
-    public String getDirectory();
+    public CRUDImplementationProviderFactory() {
+    }
 
-    /**
-     * Sets the directory used by CRUD implementations to persist resources.
-     * 
-     * @param directory the directory used to persist resources
-     */
-    public void setDirectory(String directory);
-
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
+        return new CRUDImplementationProvider(component, implementation);
+    }
+    
+    public Class<CRUDImplementation> getModelType() {
+        return CRUDImplementation.class;
+    }
 }

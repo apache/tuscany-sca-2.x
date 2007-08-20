@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.contribution.java.impl.JavaImportProcessor;type=http://www.osoa.org/xmlns/sca/1.0#import.java,model=org.apache.tuscany.sca.contribution.java.JavaImport
-org.apache.tuscany.sca.contribution.java.impl.JavaExportProcessor;type=http://www.osoa.org/xmlns/sca/1.0#export.java,model=org.apache.tuscany.sca.contribution.java.JavaExport
+org.apache.tuscany.sca.contribution.java.impl.JavaImportProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#import.java,model=org.apache.tuscany.sca.contribution.java.JavaImport
+org.apache.tuscany.sca.contribution.java.impl.JavaExportProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#export.java,model=org.apache.tuscany.sca.contribution.java.JavaExport

@@ -32,7 +32,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 
-import crud.CRUD;
+import test.crud.CRUD;
+
 
 /**
  * @version $Rev$ $Date$

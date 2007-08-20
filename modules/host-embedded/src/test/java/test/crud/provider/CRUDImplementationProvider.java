@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package crud.provider;
+package test.crud.provider;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -24,8 +24,9 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
-import crud.CRUDImplementation;
-import crud.backend.ResourceManager;
+import test.crud.CRUDImplementation;
+import test.crud.backend.ResourceManager;
+
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.

@@ -21,10 +21,7 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,43 +45,69 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor {
 
     private QName artifactType;
-    private Class<Implementation> beanModelType;
-    private BeanInfo beanInfo;
-    private Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<String, PropertyDescriptor>();
+    private Class<Implementation> modelClass;
+    private Object modelFactory;
+    private Method factoryMethod;
+    private Map<String, Method> setterMethods = new HashMap<String, Method>();
+    private Map<String, Method> getterMethods = new HashMap<String, Method>();
 
     public DefaultBeanModelProcessor(AssemblyFactory assemblyFactory,
                                        PolicyFactory policyFactory,
                                        QName artifactType,
-                                       Class<Implementation> beanModelType) {
+                                       Class<Implementation> modelClass,
+                                       Object modelFactory) {
         super(assemblyFactory, policyFactory, null);
         this.artifactType = artifactType;
-        this.beanModelType = beanModelType;
+        this.modelClass = modelClass;
+        this.modelFactory = modelFactory;
         
-        // Introspect the bean model class
-        try {
-            beanInfo = Introspector.getBeanInfo(beanModelType);
+        // Introspect the factory class and bean model class
+        if (modelFactory != null) {
             
-            // Index the bean's property descriptors
-            PropertyDescriptor[] pd = beanInfo.getPropertyDescriptors();
-            for (int i =0; i < pd.length; i++) {
-                if (pd[i].getWriteMethod() == null) {
-                    continue;
+            // Find the model create method
+            for (Method method: modelFactory.getClass().getMethods()) {
+                if (method.getName().startsWith("create") && method.getReturnType() == modelClass) {
+                    factoryMethod = method;
+                    break;
                 }
-                
-                // Map an uppercase property name to a lowercase attribute name 
-                String name = pd[i].getName();
-                if (name.toUpperCase().equals(name)) {
-                    name = name.toLowerCase();
-                }
-                
-                // Trim trailing _ from property names
-                if (name.endsWith("_")) {
-                    name = name.substring(0, name.length()-1);
-                }
-                propertyDescriptors.put(name, pd[i]);
             }
-        } catch (IntrospectionException e) {
-            throw new IllegalArgumentException(e);
+        }
+        
+        // Index the bean's setter methods
+        for (Method method: modelClass.getMethods()) {
+            Method getter;
+            String name = method.getName();
+            if (name.startsWith("set") && name.length() > 3) {
+                
+                // Get the corresponding getter method
+                try {
+                    getter = modelClass.getMethod("get" + name.substring(3));
+                } catch (Exception e) {
+                    getter = null;
+                }
+                
+                // Get the property name
+                name = name.substring(3);
+                if (name.length() > 1) {
+                    if (!name.toUpperCase().equals(name)) {
+                        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+                    }
+                }
+            } else {
+                continue;
+            }
+            
+            // Map an uppercase property name to a lowercase attribute name 
+            if (name.toUpperCase().equals(name)) {
+                name = name.toLowerCase();
+            }
+            
+            // Trim trailing _ from property names
+            if (name.endsWith("_")) {
+                name = name.substring(0, name.length()-1);
+            }
+            setterMethods.put(name, method);
+            getterMethods.put(name, getter);
         }
     }
 
@@ -93,31 +116,40 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
         try {
 
             // Read an element
-            Object bean = beanModelType.newInstance();
+            
+            // Create a new instance of the model
+            Object model;
+            if (modelFactory != null) {
+                // Invoke the factory create method
+                model = factoryMethod.invoke(modelFactory);
+            } else {
+                // Invoke the model bean class default constructor
+                model = modelClass.newInstance();
+            }
 
             // Initialize the bean properties with the attributes found in the
             // XML element
             for (int i = 0, n = reader.getAttributeCount(); i < n; i++) {
                 String attributeName = reader.getAttributeLocalName(i);
-                PropertyDescriptor pd = propertyDescriptors.get(attributeName);
-                if (pd != null) {
+                Method setter = setterMethods.get(attributeName);
+                if (setter != null) {
                     String value = reader.getAttributeValue(i);
-                    pd.getWriteMethod().invoke(bean, value);
+                    setter.invoke(model, value);
                 }
             }
 
             // Read policies
-            if (bean instanceof PolicySetAttachPoint) {
-                readPolicies((PolicySetAttachPoint)bean, reader);
-            } else if (bean instanceof IntentAttachPoint) {
-                readIntents((IntentAttachPoint)bean, reader);
+            if (model instanceof PolicySetAttachPoint) {
+                readPolicies((PolicySetAttachPoint)model, reader);
+            } else if (model instanceof IntentAttachPoint) {
+                readIntents((IntentAttachPoint)model, reader);
             }
 
             // TODO read extension elements
             
             // By default mark the model object unresolved
-            if (bean instanceof Base) {
-                ((Base)bean).setUnresolved(true);
+            if (model instanceof Base) {
+                ((Base)model).setUnresolved(true);
             }
             
             // Skip to end element
@@ -126,7 +158,7 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
                     break;
                 }
             }
-            return bean;
+            return model;
 
         } catch (Exception e) {
             throw new ContributionReadException(e);
@@ -139,10 +171,10 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
             writer.writeStartElement(artifactType.getNamespaceURI(), artifactType.getLocalPart());
 
             // Write the bean properties as attributes
-            for (PropertyDescriptor pd: propertyDescriptors.values()) {
-                if (pd.getPropertyType() == String.class) {
-                    String value = (String)pd.getReadMethod().invoke(bean);
-                    writer.writeAttribute(pd.getName(), value);
+            for (Map.Entry<String, Method> entry: getterMethods.entrySet()) {
+                if (entry.getValue().getReturnType() == String.class) {
+                    String value = (String)entry.getValue().invoke(bean);
+                    writer.writeAttribute(entry.getKey(), value);
                 }
             }
             
@@ -208,7 +240,7 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
     }
 
     public Class<?> getModelType() {
-        return beanModelType;
+        return modelClass;
     }
 
 }

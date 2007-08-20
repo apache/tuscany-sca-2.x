@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.binding.ws.xml.WebServiceBindingProcessor;type=http://www.osoa.org/xmlns/sca/1.0#binding.ws,model=org.apache.tuscany.sca.binding.ws.WebServiceBinding
+org.apache.tuscany.sca.binding.ws.xml.WebServiceBindingProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.ws,model=org.apache.tuscany.sca.binding.ws.WebServiceBinding
