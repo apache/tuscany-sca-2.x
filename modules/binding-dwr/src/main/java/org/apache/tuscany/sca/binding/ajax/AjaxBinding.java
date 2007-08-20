@@ -23,10 +23,10 @@ package org.apache.tuscany.sca.binding.ajax;
 
 
 /**
- * The runtime representation of the <binding.ajax> SCDL
+ * The runtime representation of the <binding.dwr> SCDL
  */
 public class AjaxBinding {
 
-    // Empty as <binding.ajax> doesn't use any additional attributes or elements (yet).
+    // Empty as <binding.dwr> doesn't use any additional attributes or elements (yet).
     
 }

@@ -27,8 +27,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-binding-ajax</artifactId>
-    <name>Apache Tuscany Binding for AJAX clients</name>
+    <artifactId>tuscany-binding-dwr</artifactId>
+    <name>Apache Tuscany Binding for AJAX DWR services</name>
 
     <dependencies>
 
