@@ -17,12 +17,12 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:foo="http://foo"
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://foo" xmlns:foo="http://foo"
     xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" name="intracomposite">
 
     <component name="stockTraderSDOComponent">
         <implementation.java class="org.apache.tuscany.sca.test.exceptions.impl.StockTraderSDOImpl" />
-        <reference name="exchangeJaxb">exchangeJaxbComponent</reference>
+        <reference name="exchangeJaxb" target="exchangeJaxbComponent"></reference>
     </component>
 
     <component name="exchangeJaxbComponent">
