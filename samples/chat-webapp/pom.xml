@@ -46,7 +46,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ajax</artifactId>
+            <artifactId>tuscany-binding-dwr</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
