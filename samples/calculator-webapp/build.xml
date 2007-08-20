@@ -66,7 +66,6 @@
                 <include name="tuscany-policy-0.91-incubating-SNAPSHOT.jar"/>
             </zipfileset>
             <lib dir="../../lib">
-                <include name="commonj-api-0.91-incubating-SNAPSHOT.jar"/>
                 <include name="stax-api-1.0.1.jar"/>
                 <include name="wsdl4j-1.6.2.jar"/>
                 <include name="wstx-asl-3.2.0.jar"/>
