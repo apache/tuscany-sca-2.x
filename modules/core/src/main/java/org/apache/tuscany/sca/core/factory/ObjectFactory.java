@@ -16,32 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.factory;
-
+package org.apache.tuscany.sca.core.factory;
 
 /**
- * Denotes an error creating a new object instance
+ * Implementations create new instances of a particular type
  *
  * @version $Rev$ $Date$
  */
-public class ObjectCreationException extends RuntimeException {
-    private static final long serialVersionUID = -6423113430265944499L;
+public interface ObjectFactory<T> {
 
-    public ObjectCreationException() {
-        super();
-    }
-
-    public ObjectCreationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ObjectCreationException(String message) {
-        super(message);
-    }
-
-    public ObjectCreationException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Return a instance of the type that this factory creates.
+     *
+     * @return a instance from this factory
+     */
+    T getInstance() throws ObjectCreationException;
 
 }
-

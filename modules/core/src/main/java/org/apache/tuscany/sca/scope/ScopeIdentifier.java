@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.scope;
  * thread and keyed on scope type.
  *
  * @version $Rev$ $Date$
- * @see org.apache.tuscany.sca.factory.component.WorkContext
+ * @see org.apache.tuscany.sca.core.factory.component.WorkContext
  */
 public interface ScopeIdentifier {
 

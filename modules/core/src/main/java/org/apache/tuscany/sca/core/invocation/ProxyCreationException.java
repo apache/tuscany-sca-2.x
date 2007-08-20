@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 
 
 /**
