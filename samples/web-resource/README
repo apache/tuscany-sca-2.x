@@ -1,0 +1,72 @@
+Web Resource Component Sample
+======================================
+This sample demonstrates an SCA Web resource component.
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-web-resource.jar web.resource.SampleServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-web-resource.jar web.resource.SampleServer
+
+Now the server is started you can point your Web browser to the URL of the Web resource.
+
+Sample Overview
+---------------
+The sample provides a single component exposing a Web resource.
+
+web-resource/
+  src/
+    main/
+      java/
+        web/resource/
+          SampleServer.java               - starts the SCA Runtime and 
+                                            deploys the WebResource.composite
+      resources/
+        myContent/
+          index.html                      - a Web HTML resource
+        WebResource.composite             - the SCA assembly for this sample
+  web-resource.png                        - a pictorial representation of the 
+                                            sample .composite file
+  build.xml                               - the Ant build file
+  pom.xml                                 - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant using the 
+following commands
+
+cd web-resource
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+    [java] Added Servlet mapping: http://localhost:8080/myWeb/*
+    [java] Sample server started (press enter to shutdown)
+
+    [java] To get the Web resource, point your Web browser to the following address:
+    [java] http://localhost:8080/MyWeb/index.html
+     
+As this point the Web resource is exposed by a web server started automatically
+by the SCA runtime. To stop the server just press enter.
+
+Building The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built using
+Maven as follows.
+
+cd web-resource
+mvn
+
