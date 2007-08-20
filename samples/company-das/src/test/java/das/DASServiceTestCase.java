@@ -31,11 +31,13 @@ public class DASServiceTestCase extends TestCase {
     SCADomain scaDomain;
     private DASService dasService;
     
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("dasservice.composite");
         dasService = scaDomain.getService(DASService.class, "DASServiceComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

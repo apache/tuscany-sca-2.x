@@ -28,6 +28,7 @@ public class LoanApplication {
         this.loanAmount = loanAmount;
     }
     
+    @Override
     public String toString() {
         return "[Customer: " + customerName + ", loan amount: "
             + loanAmount + "]";

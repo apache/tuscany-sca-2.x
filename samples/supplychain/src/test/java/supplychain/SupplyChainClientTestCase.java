@@ -31,11 +31,13 @@ public class SupplyChainClientTestCase extends TestCase {
     private SCADomain scaDomain;
     private Customer customer;
 
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("supplychain.composite");
         customer = scaDomain.getService(Customer.class, "CustomerComponent");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

@@ -18,7 +18,6 @@
  */
 package simplecallback;
 
-import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 
 /**

@@ -18,10 +18,10 @@
 --%>
 
 <%@ page import="org.apache.tuscany.sca.host.embedded.SCADomain"%>
-<%@ page import="helloworld.HelloWorld" %>
-<%@ page import="helloworld.HelloworldFactory"%>
-<%@ page import="helloworld.Party"%>
-<%@ page import="helloworld.Person"%>
+<%@ page import="org.apache.tuscany.test.contribution.HelloWorld" %>
+<%@ page import="org.apache.tuscany.test.contribution.HelloworldFactory"%>
+<%@ page import="org.apache.tuscany.test.contribution.Party"%>
+<%@ page import="org.apache.tuscany.test.contribution.Person"%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%

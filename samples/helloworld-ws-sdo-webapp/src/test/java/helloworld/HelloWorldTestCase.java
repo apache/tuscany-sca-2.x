@@ -30,11 +30,13 @@ public class HelloWorldTestCase extends TestCase {
     private SCADomain scaDomain;
     private HelloWorld helloWorld;
     
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("helloworldws.composite");
         helloWorld = scaDomain.getService(HelloWorld.class, "HelloWorldImpl");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

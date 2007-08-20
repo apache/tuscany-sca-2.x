@@ -34,7 +34,4 @@ public class DASServiceException extends Exception {
         super(msg, ex);
     }
 
-    public void printStackTrace() {
-        printStackTrace(System.err);
-    }
 }

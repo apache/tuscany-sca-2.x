@@ -35,6 +35,7 @@ public class AccountReport {
     
     public String getCurrency() { return currency; }
     
+    @Override
     public String toString() {
         return "currency: "+ currency + ", " + summaries;
     }

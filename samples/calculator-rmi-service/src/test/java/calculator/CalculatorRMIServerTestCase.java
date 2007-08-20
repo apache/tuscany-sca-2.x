@@ -32,10 +32,12 @@ public class CalculatorRMIServerTestCase extends TestCase {
     private SCADomain scaDomain;
     private CalculatorService calculatorService;
 
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("CalculatorRMIServer.composite");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }

@@ -34,6 +34,7 @@ public class CalculatorRMIReferenceTestCase extends TestCase {
     private SCADomain scaDomain;
     private CalculatorService calculatorService;
 
+    @Override
     protected void setUp() throws Exception {
         CalculatorRMIServiceImpl rmiCalculatorImpl = new CalculatorRMIServiceImpl();
         Registry rmiRegistry = LocateRegistry.createRegistry(8099);
@@ -43,6 +44,7 @@ public class CalculatorRMIReferenceTestCase extends TestCase {
         calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
         LocateRegistry.getRegistry(8099).unbind("CalculatorRMIService");

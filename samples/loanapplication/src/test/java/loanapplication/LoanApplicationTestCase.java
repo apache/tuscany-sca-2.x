@@ -27,12 +27,14 @@ public class LoanApplicationTestCase extends TestCase {
     private LoanClient loanClient;
     private SCADomain domain;
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("loanapplication.composite");
 
         loanClient = domain.getService(LoanClient.class, "LoanClientComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
     	domain.close();
     }
