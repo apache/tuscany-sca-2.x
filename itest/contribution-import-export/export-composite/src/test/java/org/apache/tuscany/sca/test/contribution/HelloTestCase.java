@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package hello;
+package org.apache.tuscany.sca.test.contribution;
+
+import hello.Hello;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +40,7 @@ public class HelloTestCase extends TestCase {
     private ClassLoader cl;
     private EmbeddedSCADomain domain;
 
+    @Override
     protected void setUp() throws Exception {
         // Create a test embedded SCA domain
         cl = getClass().getClassLoader();
@@ -69,6 +72,7 @@ public class HelloTestCase extends TestCase {
         assertEquals(hello.getGreetings("lresende"), "Hello lresende");
     }
 
+    @Override
     public void tearDown() throws Exception {
         domain.close();
     }

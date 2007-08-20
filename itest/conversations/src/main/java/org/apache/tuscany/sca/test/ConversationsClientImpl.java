@@ -248,7 +248,8 @@ public class ConversationsClientImpl implements ConversationsClient, Conversatio
 	  //
 		
 	 ConversationsLifeCycleService aConversationsLifeCycleService;
-	 Object aConversationID;
+//FIXME Port to the 1.0 spec API         
+//	 Object aConversationID;
      Assert.assertNotNull("current composite context",myContext); 
      ServiceReference aServRef;
      this.removeMarkerFile();  

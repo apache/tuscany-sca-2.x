@@ -32,6 +32,7 @@ public class CallBackBasicTestCase extends TestCase {
         aCallBackClient.run(); 
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("CallBackBasicTest.composite");
         aCallBackClient = domain.getService(CallBackBasicClient.class, "CallBackBasicClient");

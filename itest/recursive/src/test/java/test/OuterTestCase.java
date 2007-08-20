@@ -27,11 +27,13 @@ public class OuterTestCase extends TestCase {
     private SCADomain domain;
     private Aggregator aggregator;
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("Outer.composite");
         aggregator = domain.getService(Aggregator.class, "Inner");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

@@ -20,9 +20,7 @@ package org.apache.tuscany.sca.itest.conversational;
 
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EndsConversation;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Remotable;
 
 

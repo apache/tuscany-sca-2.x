@@ -27,18 +27,15 @@ import junit.framework.TestCase;
  */
 public class GenerateTestCase extends TestCase {
 
-    private Generate generator = null;
-    private static boolean initalised = false;
+    //private Generate generator = null;
 
+    @Override
     protected void setUp() throws Exception {
-        if (!initalised) {
-            generator = new Generate();
-            initalised = true;
-        }
+        //generator = new Generate();
     }
 
+    @Override
     protected void tearDown() {
-
     }
 
     /**
@@ -47,6 +44,6 @@ public class GenerateTestCase extends TestCase {
      * @throws Exception
      */
     public void testGenerate() throws Exception {
-    //    generator.generate();
+        //generator.generate();
     }
 }

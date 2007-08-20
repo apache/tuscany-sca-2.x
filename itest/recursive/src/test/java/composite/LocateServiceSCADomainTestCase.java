@@ -28,10 +28,12 @@ public class LocateServiceSCADomainTestCase extends TestCase {
     private SCADomain domain;
     
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("OuterComposite.composite");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

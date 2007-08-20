@@ -21,21 +21,11 @@ package org.apache.tuscany.sca.itest.conversational.impl;
 import java.util.HashMap;
 
 import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
-import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.Conversation;
-import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 

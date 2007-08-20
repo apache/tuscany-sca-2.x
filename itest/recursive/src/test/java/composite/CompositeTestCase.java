@@ -27,11 +27,13 @@ public class CompositeTestCase extends TestCase {
     private SCADomain domain;
     private Source source;
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("OuterComposite.composite");
         source = domain.getService(Source.class, "SourceComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
     	domain.close();
     }

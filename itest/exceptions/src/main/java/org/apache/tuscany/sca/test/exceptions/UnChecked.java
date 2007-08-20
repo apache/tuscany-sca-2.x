@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.exceptions;
 
 public class UnChecked extends RuntimeException {
+    private static final long serialVersionUID = -1318118082838092244L;
 
     /**
      * 

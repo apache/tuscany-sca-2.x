@@ -25,6 +25,8 @@ import javax.xml.namespace.QName;
  * 
  */
 public class MarketClosedSDOException extends Exception {
+    private static final long serialVersionUID = 7652466275656958031L;
+
     public static final QName FAULT_ELEMENT =
                new QName("http://scatesttool.stockexceptiontestservice", "MarketClosedFault");
 

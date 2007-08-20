@@ -67,6 +67,7 @@ public class ComplexPropertyBean {
         this.numberSet = numberSet;
     }
     
+    @Override
     public String toString() {
         return Double.toString(integerNumber) + " - " + 
                 Double.toString(floatNumber) + " - " + 

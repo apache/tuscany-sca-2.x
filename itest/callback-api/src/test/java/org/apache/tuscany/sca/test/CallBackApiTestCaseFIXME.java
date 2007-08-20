@@ -32,6 +32,7 @@ public class CallBackApiTestCaseFIXME extends TestCase {
         aCallBackClient.run();
     }
 
+    @Override
     protected void setUp() throws Exception {
     	domain = SCADomain.newInstance("CallBackApiTest.composite");
     	
@@ -39,6 +40,7 @@ public class CallBackApiTestCaseFIXME extends TestCase {
             domain.getService(CallBackApiClient.class, "CallBackApiClient");
     }
     
+    @Override
     protected void tearDown() throws Exception {
     	domain.close();
     }

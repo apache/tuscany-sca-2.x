@@ -22,9 +22,6 @@ import junit.framework.Assert;
 
 public class CallBackSetCallbackBadCallback {
 
-    private String anAttribure = null;
-    private int anIntAttribute = 0;
-
     public CallBackSetCallbackBadCallback() {
         super();
     }
