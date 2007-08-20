@@ -14,5 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License. 
-# Implementation class for the ExtensionActivator
-echo.module.EchoModuleActivator
+
+# Implementation class for the implementation extension
+crud.provider.CRUDImplementationProviderFactory;model=crud.CRUDImplementation

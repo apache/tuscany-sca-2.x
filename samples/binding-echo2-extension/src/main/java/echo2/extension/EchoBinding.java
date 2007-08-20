@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Implementation of the Echo binding model.
@@ -50,25 +48,6 @@ public class EchoBinding implements Binding {
         this.uri = uri;
     }
 
-    public List<PolicySet> getPolicySets() {
-        // The sample binding does not support policies
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample binding does not support policies
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getComputedIntents() {
-        // The sample binding does not support policies
-        return Collections.emptyList();
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        // The sample binding does not support policies
-        return Collections.emptyList();    }
-    
     public List<Object> getExtensions() {
         // The sample binding does not support extensions
         return Collections.emptyList();

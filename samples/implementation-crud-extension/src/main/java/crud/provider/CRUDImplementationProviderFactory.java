@@ -18,21 +18,30 @@
  */
 package crud.provider;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-import crud.model.CRUDImplementation;
+import crud.CRUDImplementation;
+import crud.provider.CRUDImplementationProvider;
+
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
+ * The sample CRUD implementation is not a full blown implementation, it only
+ * supports a subset of what a component implementation can support: - a single
+ * fixed service (as opposed to a list of services typed by different
+ * interfaces) - a directory attribute used to specify where a CRUD component is
+ * going to persist resources - no references or properties - no policy intents
+ * or policy sets
  */
 public class CRUDImplementationProviderFactory implements ImplementationProviderFactory<CRUDImplementation> {
 
     /**
      * Constructs a new CRUD implementation.
      */
-    public CRUDImplementationProviderFactory() {
+    public CRUDImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {

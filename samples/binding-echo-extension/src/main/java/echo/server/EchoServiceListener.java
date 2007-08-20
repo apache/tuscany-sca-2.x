@@ -24,9 +24,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 
-/**
- * The EchoService
- */
 public class EchoServiceListener {
     private Invoker invoker;
     private MessageFactory messageFactory;
@@ -39,9 +36,11 @@ public class EchoServiceListener {
 
     public String sendReceive(String input) throws InvocationTargetException {
 
+        // Create a request message
         Message request = messageFactory.createMessage();
         request.setBody(new Object[] {input});
-        // dispatch and get the response
+        
+        // Dispatch and get the response
         Message response = invoker.invoke(request);
         Object body = response.getBody();
         if (response.isFault()) {

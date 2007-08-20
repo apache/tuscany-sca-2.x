@@ -17,18 +17,20 @@
  * under the License.    
  */
 
-package crud.model;
+package pojo.impl;
+
+import pojo.POJOImplementation;
+import pojo.POJOImplementationFactory;
 
 /**
- * A factory for the sample CRUD implementation model.
+ * A factory for the POJO implementation model.
+ *
+ * @version $Rev$ $Date$
  */
-public interface CRUDImplementationFactory {
-    
-    /**
-     * Creates a new CRUD implementation.
-     * 
-     * @return
-     */
-    CRUDImplementation createCRUDImplementation();
+public class POJOImplementationFactoryImpl implements POJOImplementationFactory {
+
+    public POJOImplementation createPOJOImplementation() {
+        return new POJOImplementationImpl();
+    }
 
 }

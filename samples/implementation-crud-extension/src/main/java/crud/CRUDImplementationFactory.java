@@ -16,32 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package echo.provider;
 
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
+package crud;
+
+import crud.CRUDImplementation;
+
 
 /**
- * Invoker for the sample echo binding.
+ * A factory for the sample CRUD implementation model.
  */
-class EchoBindingInvoker implements Invoker {
+public interface CRUDImplementationFactory {
     
-    EchoBindingInvoker() {
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object[] args = msg.getBody();
-
-            // echo back the first parameter, a real binding would invoke some API for flowing the request
-            Object result = args[0];
-                                 
-            msg.setBody(result);
-            
-        } catch (Exception e) {
-            msg.setFaultBody(e);
-        }
-        return msg;
-    }  
+    /**
+     * Creates a new CRUD implementation.
+     * 
+     * @return
+     */
+    CRUDImplementation createCRUDImplementation();
 
 }

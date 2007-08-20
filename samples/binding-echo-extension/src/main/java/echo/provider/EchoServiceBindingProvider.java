@@ -34,14 +34,14 @@ import echo.server.EchoServiceListener;
 /**
  * Implementation of the Echo binding provider.
  */
-public class EchoServiceBindingProvider implements ServiceBindingProvider {
+class EchoServiceBindingProvider implements ServiceBindingProvider {
     
     private RuntimeComponent component;
     private RuntimeComponentService service;  
     private EchoBinding binding;
     private MessageFactory messageFactory;
     
-    public EchoServiceBindingProvider(RuntimeComponent component,
+    EchoServiceBindingProvider(RuntimeComponent component,
                                       RuntimeComponentService service, EchoBinding binding, MessageFactory messageFactory) {
         this.component = component;
         this.service = service;

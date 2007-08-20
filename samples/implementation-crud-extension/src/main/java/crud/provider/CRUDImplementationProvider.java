@@ -24,8 +24,9 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
+import crud.CRUDImplementation;
 import crud.backend.ResourceManager;
-import crud.model.CRUDImplementation;
+
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
@@ -36,7 +37,7 @@ import crud.model.CRUDImplementation;
  * going to persist resources - no references or properties - no policy intents
  * or policy sets
  */
-public class CRUDImplementationProvider implements ImplementationProvider {
+class CRUDImplementationProvider implements ImplementationProvider {
     
     private RuntimeComponent component;
     private CRUDImplementation implementation;
@@ -44,18 +45,18 @@ public class CRUDImplementationProvider implements ImplementationProvider {
     /**
      * Constructs a new CRUD implementation.
      */
-    public CRUDImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
+    CRUDImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
         this.component = component;
         this.implementation = implementation;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
+        CRUDImplementationInvoker invoker = new CRUDImplementationInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
-        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
+        CRUDImplementationInvoker invoker = new CRUDImplementationInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
     }
 

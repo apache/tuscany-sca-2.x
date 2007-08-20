@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;type=http://echo2#binding.echo,model=echo2.extension.EchoBinding
+org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://echo2#binding.echo,model=echo2.extension.EchoBinding

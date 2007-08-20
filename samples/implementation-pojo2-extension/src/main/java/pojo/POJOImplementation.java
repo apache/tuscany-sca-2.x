@@ -17,29 +17,49 @@
  * under the License.    
  */
 
-package crud.model;
+package pojo;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import java.lang.reflect.Method;
+import java.util.Map;
 
-import crud.impl.CRUDImplementationImpl;
+import org.apache.tuscany.sca.assembly.Implementation;
+
 
 /**
- * A default factory for the CRUD implementation model.
+ * Represents a POJO implementation in an SCA assembly.
+ *
+ * @version $Rev$ $Date$
  */
-public class DefaultCRUDImplementationFactory implements CRUDImplementationFactory {
+public interface POJOImplementation extends Implementation {
     
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    
-    public DefaultCRUDImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
-    }
+    /**
+     * Returns the POJO class name
+     * @return
+     */
+    public String getPOJOName();
 
-    public CRUDImplementation createCRUDImplementation() {
-        return new CRUDImplementationImpl(assemblyFactory, javaFactory);
-    }
+    /**
+     * Sets the POJO class name
+     * @param pojoName
+     */
+    public void setPOJOName(String pojoName);
+    
+    /**
+     * Returns the POJO class.
+     * @return
+     */
+    public Class<?> getPOJOClass();
+    
+    /**
+     * Sets the POJO class.
+     * @param pojoClass
+     */
+    public void setPOJOClass(Class<?> pojoClass);
+  
+    /**
+     * Returns the POJO's methods.
+     * @return
+     */
+    public Map<String, Method> getMethods();
 
 }

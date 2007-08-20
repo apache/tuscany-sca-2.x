@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package pojo2.extension;
+package pojo.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -40,6 +40,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
+import pojo.POJOImplementation;
+import pojo.POJOImplementationFactory;
+
 /**
  * Implements a STAX based artifact processor for POJO implementations.
  * 
@@ -53,6 +56,7 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
     
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
+    private POJOImplementationFactory pojoImplementationFactory;
     
     public POJOImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         
@@ -60,6 +64,7 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
         // create model objects 
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        pojoImplementationFactory = modelFactories.getFactory(POJOImplementationFactory.class);
     }
 
     public QName getArtifactType() {
@@ -80,7 +85,7 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
         String className = reader.getAttributeValue(null, "class");
 
         // Create the POJO implementation model
-        POJOImplementation implementation = new POJOImplementation();
+        POJOImplementation implementation = pojoImplementationFactory.createPOJOImplementation();
         implementation.setPOJOName(className);
         
         // Mark the POJO model unresolved to track the fact that it's not

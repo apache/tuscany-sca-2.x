@@ -31,11 +31,11 @@ import echo.EchoBinding;
 /**
  * Implementation of the Echo binding provider.
  */
-public class EchoReferenceBindingProvider implements ReferenceBindingProvider {
+class EchoReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
 
-    public EchoReferenceBindingProvider(RuntimeComponent component,
+    EchoReferenceBindingProvider(RuntimeComponent component,
                                         RuntimeComponentReference reference,
                                         EchoBinding binding) {
         this.reference = reference;

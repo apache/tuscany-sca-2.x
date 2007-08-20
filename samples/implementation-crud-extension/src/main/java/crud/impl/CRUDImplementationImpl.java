@@ -30,16 +30,15 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 import crud.CRUD;
-import crud.model.CRUDImplementation;
+import crud.CRUDImplementation;
+
 
 /**
  * The model representing a sample CRUD implementation in an SCA assembly model.
  */
-public class CRUDImplementationImpl implements CRUDImplementation {
+class CRUDImplementationImpl implements CRUDImplementation {
 
     private Service crudService;
     private String directory;
@@ -47,7 +46,7 @@ public class CRUDImplementationImpl implements CRUDImplementation {
     /**
      * Constructs a new CRUD implementation.
      */
-    public CRUDImplementationImpl(AssemblyFactory assemblyFactory,
+    CRUDImplementationImpl(AssemblyFactory assemblyFactory,
                               JavaInterfaceFactory javaFactory) {
 
         // CRUD implementation always provide a single service exposing
@@ -104,26 +103,6 @@ public class CRUDImplementationImpl implements CRUDImplementation {
 
     public void setURI(String uri) {
         // The sample CRUD implementation does not have a URI
-    }
-
-    public List<PolicySet> getPolicySets() {
-        // The sample CRUD implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getRequiredIntents() {
-        // The sample CRUD implementation does not support intents
-        return Collections.emptyList();
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        // The sample CRUD implementation does not support policy sets
-        return Collections.emptyList();
-    }
-
-    public List<Intent> getComputedIntents() {
-        // The sample CRUD implementation does not support intents
-        return Collections.emptyList();
     }
 
     public List<Object> getExtensions() {

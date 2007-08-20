@@ -19,6 +19,8 @@
 
 package echo.provider;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -37,8 +39,9 @@ public class EchoBindingProviderFactory implements BindingProviderFactory<EchoBi
     
     private MessageFactory messageFactory;
     
-    public EchoBindingProviderFactory(MessageFactory messageFactory) {
-        this.messageFactory = messageFactory;
+    public EchoBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+        ModelFactoryExtensionPoint factories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.messageFactory = factories.getFactory(MessageFactory.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, EchoBinding binding) {

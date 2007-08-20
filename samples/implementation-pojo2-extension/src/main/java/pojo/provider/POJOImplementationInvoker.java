@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package pojo2.extension;
+package pojo.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,12 +27,12 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.osoa.sca.ServiceRuntimeException;
 
-public class POJOImplementationInvoker implements Invoker {
+class POJOImplementationInvoker implements Invoker {
 
     private Object pojoInstance;
     private Method method;
     
-    public POJOImplementationInvoker(Object pojoInstance, Operation operation, Method method) {
+    POJOImplementationInvoker(Object pojoInstance, Operation operation, Method method) {
         this.pojoInstance = pojoInstance;
         this.method = method;
     }
