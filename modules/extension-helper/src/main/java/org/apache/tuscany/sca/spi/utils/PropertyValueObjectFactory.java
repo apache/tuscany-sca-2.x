@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.spi.utils;
 
 import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.factory.ObjectFactory;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
 public interface PropertyValueObjectFactory {
 
