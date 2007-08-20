@@ -77,6 +77,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         return ref;
     }
 
+    @Override
     @SuppressWarnings( {"unchecked"})
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {

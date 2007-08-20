@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface JavaInterfaceIntrospector {
 
     /**

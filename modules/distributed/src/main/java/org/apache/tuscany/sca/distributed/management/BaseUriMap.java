@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.distributed.management;
 
-import java.util.List;
-
 
 /**
  * Represents the mapping between protocols and baseuris for a given domain 

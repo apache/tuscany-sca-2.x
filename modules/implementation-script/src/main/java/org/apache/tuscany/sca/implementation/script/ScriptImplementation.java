@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
-import org.apache.tuscany.sca.spi.utils.DynamicImplementation;
 import org.apache.tuscany.sca.spi.utils.ResourceHelper;
 
 /**

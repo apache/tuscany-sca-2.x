@@ -27,7 +27,6 @@ import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;

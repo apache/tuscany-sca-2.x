@@ -49,8 +49,8 @@ import org.apache.tuscany.sca.topology.TopologyFactory;
 public class ReadDocumentTestCase extends TestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
-    private TestModelResolver resolver; 
-
+    
+    @Override
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         TopologyFactory topologyFactory = new DefaultTopologyFactory();
@@ -66,13 +66,11 @@ public class ReadDocumentTestCase extends TestCase {
         // Create document processors
         XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
         documentProcessors.addArtifactProcessor(new TopologyDocumentProcessor(staxProcessor, inputFactory));
-
-        resolver = new TestModelResolver();
     }
 
+    @Override
     public void tearDown() throws Exception {
         documentProcessor = null;
-        resolver = null;
     }
 
     public void testReadTopology() throws Exception {

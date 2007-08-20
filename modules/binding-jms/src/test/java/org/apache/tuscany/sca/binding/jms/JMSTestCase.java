@@ -18,22 +18,13 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
-import java.io.IOException;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import junit.framework.TestCase;
-import static org.junit.Assert.*;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
-import org.apache.tuscany.sca.binding.jms.HelloWorldService;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.activemq.broker.BrokerService;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 /**

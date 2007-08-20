@@ -58,6 +58,7 @@ public class WireTestCase extends TestCase {
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
 
+    @Override
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
@@ -69,13 +70,8 @@ public class WireTestCase extends TestCase {
         mapper = new InterfaceContractMapperImpl();
     }
 
+    @Override
     public void tearDown() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        resolver = null;
-        policyFactory = null;
-        assemblyFactory = null;
-        mapper = null;
     }
 
     public void testResolveConstrainingType() throws Exception {

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,7 +28,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.binding.feed.collection.Collection;
-import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.osoa.sca.annotations.Scope;
 
 import com.sun.syndication.feed.atom.Content;

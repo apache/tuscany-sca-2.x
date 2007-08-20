@@ -139,7 +139,7 @@ public class DataObjectSerializer {
                 throw new IllegalArgumentException("Prefix is null");
             }
 
-            String ns = (String)prefixToNamespaceMapping.get(prefix);
+            String ns = prefixToNamespaceMapping.get(prefix);
             if (ns != null) {
                 return ns;
             } else {

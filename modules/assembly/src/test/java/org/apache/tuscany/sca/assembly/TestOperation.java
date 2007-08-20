@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 
 /**
@@ -26,6 +25,6 @@ import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
  * 
  * @version $Rev$ $Date$
  */
-public class TestOperation extends OperationImpl implements Operation {
+public class TestOperation extends OperationImpl {
 
 }

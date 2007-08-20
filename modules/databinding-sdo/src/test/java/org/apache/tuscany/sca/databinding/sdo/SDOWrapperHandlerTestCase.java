@@ -36,6 +36,7 @@ public class SDOWrapperHandlerTestCase extends TestCase {
     private HelperContext context;
     private SDOWrapperHandler handler;
 
+    @Override
     public void setUp() throws Exception {
         context = SDOUtil.createHelperContext();
         handler = new SDOWrapperHandler();

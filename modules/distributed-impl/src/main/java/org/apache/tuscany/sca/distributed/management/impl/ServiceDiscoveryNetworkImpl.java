@@ -19,15 +19,6 @@
 
 package org.apache.tuscany.sca.distributed.management.impl;
 
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axis2.addressing.EndpointReference;
-import org.apache.axis2.client.Options;
-import org.apache.axis2.rpc.client.RPCServiceClient;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.osoa.sca.annotations.Reference;
 

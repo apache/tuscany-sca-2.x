@@ -60,9 +60,9 @@ public class SDOExceptionHandler implements ExceptionHandler {
      * </ul>
      */
     public Exception createException(DataType<DataType> exceptionType, String message, Object faultInfo, Throwable cause) {
-        Class exceptionClass = (Class)exceptionType.getPhysical();
+        Class exceptionClass = exceptionType.getPhysical();
         DataType<?> faultBeanType = exceptionType.getLogical();
-        Class faultBeanClass = (Class)faultBeanType.getPhysical();
+        Class faultBeanClass = faultBeanType.getPhysical();
         try {
             Constructor constructor =
                 exceptionClass.getConstructor(new Class[] {String.class, faultBeanClass, Throwable.class});
@@ -85,7 +85,7 @@ public class SDOExceptionHandler implements ExceptionHandler {
     }
 
     public DataType<?> getFaultType(DataType exceptionDataType) {
-        Class exceptionType = (Class) exceptionDataType.getPhysical();
+        Class exceptionType = exceptionDataType.getPhysical();
         Class faultBeanClass = null;
         try {
             Method method = exceptionType.getMethod("getFaultInfo", EMPTY_CLASS_ARRAY);

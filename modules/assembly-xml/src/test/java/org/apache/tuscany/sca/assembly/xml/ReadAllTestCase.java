@@ -59,6 +59,7 @@ import org.w3c.dom.Element;
 public class ReadAllTestCase extends TestCase {
     private ExtensibleStAXArtifactProcessor staxProcessor;
 
+    @Override
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
@@ -73,8 +74,8 @@ public class ReadAllTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
     }
 
+    @Override
     public void tearDown() throws Exception {
-        staxProcessor = null;
     }
 
     public void testReadComposite() throws Exception {

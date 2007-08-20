@@ -48,14 +48,17 @@ public class Node2OutputStream extends BaseTransformer<Node, OutputStream> imple
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Node.class;
     }
 
+    @Override
     public Class getTargetType() {
         return OutputStream.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

@@ -36,14 +36,14 @@ public class ArtifactResolverTestCase extends TestCase {
     private ModelResolver resolver;
     private ContributionFactory factory;
     
+    @Override
     protected void setUp() throws Exception {
         resolver = new ModelResolverImpl(getClass().getClassLoader());
         factory = new ContributionFactoryImpl();
     }
     
+    @Override
     protected void tearDown() throws Exception {
-        resolver = null;
-        factory = null;
     }
     
     public void testResolved() {
@@ -90,10 +90,12 @@ public class ArtifactResolverTestCase extends TestCase {
             this.name = name;
         }
         
+        @Override
         public int hashCode() {
             return name.hashCode();
         }
         
+        @Override
         public boolean equals(Object obj) {
             return name.equals(((Model)obj).name);
         }

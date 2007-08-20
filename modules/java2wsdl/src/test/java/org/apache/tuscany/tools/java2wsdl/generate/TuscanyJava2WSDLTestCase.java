@@ -32,7 +32,8 @@ public class TuscanyJava2WSDLTestCase extends TestCase {
 	 * 
 	 * @exception Exception
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		// System.out.println("inside setup");
 		super.setUp();
 	}
@@ -40,7 +41,8 @@ public class TuscanyJava2WSDLTestCase extends TestCase {
 	/**
 	 * @exception Exception
 	 */
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		// System.out.println("inside tearDown");
 		super.tearDown();
 	}

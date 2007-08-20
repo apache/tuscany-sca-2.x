@@ -49,14 +49,17 @@ public class InputStream2Node extends BaseTransformer<InputStream, Node> impleme
         }
     }
 
+    @Override
     public Class getSourceType() {
         return InputStream.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

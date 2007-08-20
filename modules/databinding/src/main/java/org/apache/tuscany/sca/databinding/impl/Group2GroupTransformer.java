@@ -76,6 +76,7 @@ public class Group2GroupTransformer extends BaseTransformer<Object, Object> impl
     /**
      * @see org.apache.tuscany.sca.databinding.Transformer#getWeight()
      */
+    @Override
     public int getWeight() {
         return 10;
     }

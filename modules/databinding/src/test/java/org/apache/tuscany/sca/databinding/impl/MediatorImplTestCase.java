@@ -75,6 +75,7 @@ public class MediatorImplTestCase extends TestCase {
 
     private MediatorImpl mediator;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

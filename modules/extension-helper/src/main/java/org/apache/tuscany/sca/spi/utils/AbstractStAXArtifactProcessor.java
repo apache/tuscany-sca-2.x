@@ -98,6 +98,7 @@ public abstract class AbstractStAXArtifactProcessor<I extends Implementation> im
         dynamicService.setName("$dynamic$");
         InterfaceContract dynamicInterfaceContract = new InterfaceContractImpl() {};
         Interface dynamicInterface = new InterfaceImpl() {
+            @Override
             public boolean isDynamic() {
                 return true;
             }

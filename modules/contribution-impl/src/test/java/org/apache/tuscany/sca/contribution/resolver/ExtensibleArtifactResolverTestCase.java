@@ -37,6 +37,7 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
     
     private ContributionFactory factory;
     
+    @Override
     protected void setUp() throws Exception {
         
         ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint();
@@ -49,6 +50,7 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
         factory = new ContributionFactoryImpl();
     }
     
+    @Override
     protected void tearDown() throws Exception {
     }
     
@@ -97,10 +99,12 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
             this.name = name;
         }
         
+        @Override
         public int hashCode() {
             return name.hashCode();
         }
         
+        @Override
         public boolean equals(Object obj) {
             return name.equals(((Model)obj).name);
         }
@@ -113,10 +117,12 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
             this.name = name;
         }
         
+        @Override
         public int hashCode() {
             return name.hashCode();
         }
         
+        @Override
         public boolean equals(Object obj) {
             return name.equals(((OtherModel)obj).name);
         }

@@ -42,6 +42,7 @@ public class XmlObjectTestCase extends TestCase {
     + "      <ipo:comment>Want this for the holidays</ipo:comment>" + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>"
     + "</ipo:purchaseOrder>";
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -91,6 +92,7 @@ public class XmlObjectTestCase extends TestCase {
         Assert.assertNotNull(object3);
     }   
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

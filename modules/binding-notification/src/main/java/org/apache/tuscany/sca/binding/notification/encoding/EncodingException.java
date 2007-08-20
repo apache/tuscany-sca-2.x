@@ -25,6 +25,11 @@ package org.apache.tuscany.sca.binding.notification.encoding;
 public class EncodingException extends Exception {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Initializes the exception message.
      * 
      * @param message Message for the exception.

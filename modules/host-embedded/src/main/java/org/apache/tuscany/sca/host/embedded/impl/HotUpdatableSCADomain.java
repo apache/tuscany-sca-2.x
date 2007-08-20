@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
@@ -383,6 +382,7 @@ public class HotUpdatableSCADomain extends SCADomain {
         return domainURI;
     }
 
+    @Override
     public ComponentManager getComponentManager(){
         return  scaDomain.getComponentManager();
     }

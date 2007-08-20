@@ -98,6 +98,7 @@ public class DataTypeImpl<L> implements DataType<L> {
         this.dataBinding = dataBinding;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(physical).append(" ").append(dataBinding).append(" ").append(logical);

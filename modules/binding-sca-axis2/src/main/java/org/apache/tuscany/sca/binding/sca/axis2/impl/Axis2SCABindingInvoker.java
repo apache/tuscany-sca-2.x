@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
-import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;

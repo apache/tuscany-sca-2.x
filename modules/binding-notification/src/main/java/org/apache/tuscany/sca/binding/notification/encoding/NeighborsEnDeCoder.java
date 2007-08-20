@@ -75,11 +75,13 @@ public class NeighborsEnDeCoder extends AbstractEnDeCoder<Neighbors> {
         }
     }
 
+    @Override
     protected QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
+    @Override
     protected Class<Neighbors> getEncodingObjectType() {
         
         return Neighbors.class;

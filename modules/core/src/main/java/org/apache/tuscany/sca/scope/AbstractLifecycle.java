@@ -52,6 +52,7 @@ public abstract class AbstractLifecycle implements Lifecycle {
      *
      * @return the current lifecycle as a String
      */
+    @Override
     public String toString() {
         switch (lifecycleState) {
             case Lifecycle.CONFIG_ERROR:

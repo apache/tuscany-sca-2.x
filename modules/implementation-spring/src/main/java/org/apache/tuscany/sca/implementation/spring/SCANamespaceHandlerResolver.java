@@ -43,6 +43,7 @@ public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver
         handler = new ScaNamespaceHandler(/*componentType*/);
     }
 
+    @Override
     public NamespaceHandler resolve(String namespaceUri) {
         if (SCA_NAMESPACE.equals(namespaceUri)) {
             return handler;

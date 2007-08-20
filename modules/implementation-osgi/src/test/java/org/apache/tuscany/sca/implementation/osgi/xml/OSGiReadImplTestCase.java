@@ -67,6 +67,7 @@ public class OSGiReadImplTestCase extends TestCase {
     private InterfaceContractMapper mapper;
     private OSGiImplementationProcessor osgiProcessor;
     
+    @Override
     public void setUp() throws Exception {
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = new DefaultAssemblyFactory();
@@ -87,6 +88,7 @@ public class OSGiReadImplTestCase extends TestCase {
         
     }
 
+    @Override
     public void tearDown() throws Exception {
         inputFactory = null;
         staxProcessors = null;

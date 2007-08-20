@@ -28,6 +28,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     protected SCADomain domain;
     protected T service;
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance(getCompositeName());
         service = (T)domain.getService(getServiceClass(), "ClientComponent");
@@ -35,6 +36,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
 
     abstract protected Class getServiceClass();
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

@@ -36,11 +36,13 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         super(Scope.COMPOSITE, component);
     }
 
+    @Override
     public synchronized void stop() {
         super.stop();
         wrapper = null;
     }
 
+    @Override
     public synchronized InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException {
         if (wrapper == null) {
             wrapper = createInstanceWrapper();
@@ -49,6 +51,7 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
         return wrapper;
     }
 
+    @Override
     public InstanceWrapper getAssociatedWrapper(KEY contextId) throws TargetResolutionException {
         if (wrapper == null) {
             throw new TargetNotFoundException(component.getURI());

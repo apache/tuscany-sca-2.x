@@ -67,6 +67,7 @@ public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
         }        
     }
 
+    @Override
     public Class getTargetType() {
         return Node.class;
     }

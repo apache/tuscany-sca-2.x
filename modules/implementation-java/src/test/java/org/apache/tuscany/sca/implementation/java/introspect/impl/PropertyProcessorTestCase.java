@@ -103,6 +103,7 @@ public class PropertyProcessorTestCase extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();

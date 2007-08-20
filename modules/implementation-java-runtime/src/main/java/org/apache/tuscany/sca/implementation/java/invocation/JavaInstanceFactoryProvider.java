@@ -105,7 +105,7 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
     private Injector<T>[] getInjectors() {
         // work around JDK1.5 issue with allocating generic arrays
         @SuppressWarnings("unchecked")
-        Injector<T>[] injectors = (Injector<T>[])new Injector[injectionSites.size()];
+        Injector<T>[] injectors = new Injector[injectionSites.size()];
 
         int i = 0;
         for (JavaElementImpl element : injectionSites) {

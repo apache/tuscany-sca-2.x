@@ -41,6 +41,7 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         org.apache.tuscany.sca.implementation.java.introspect.impl.Resource annotation = method
             .getAnnotation(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
@@ -67,6 +68,7 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
         type.getResources().put(resource.getName(), resource);
     }
 
+    @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
 
         org.apache.tuscany.sca.implementation.java.introspect.impl.Resource annotation = field
@@ -99,6 +101,7 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
         return new JavaResourceImpl(element);
     }
 
+    @Override
     public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
         org.apache.tuscany.sca.implementation.java.introspect.impl.Resource resourceAnnotation = parameter

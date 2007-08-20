@@ -20,15 +20,12 @@ package org.apache.tuscany.sca.implementation.osgi.xml;
 
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.scope.Scope;
 import org.osoa.sca.annotations.AllowsPassByReference;
 

@@ -31,6 +31,7 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface WSDLInterfaceIntrospector {
 
     /**

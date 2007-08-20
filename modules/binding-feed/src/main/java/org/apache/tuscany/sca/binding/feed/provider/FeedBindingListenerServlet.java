@@ -509,6 +509,7 @@ public class FeedBindingListenerServlet extends HttpServlet {
     private boolean authenticate(String user, String password) {
 
         // TODO Handle this using SCA security policies
+        //FIXME Why are we using endsWith instead of equals here??
         return ("admin".endsWith(user) && "admin".equals(password));
     }
 

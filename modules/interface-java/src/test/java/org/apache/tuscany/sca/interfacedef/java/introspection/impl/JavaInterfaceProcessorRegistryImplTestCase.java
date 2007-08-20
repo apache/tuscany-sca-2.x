@@ -46,7 +46,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testSimpleInterface() throws InvalidInterfaceException {
-        JavaInterface intf = (JavaInterface)factory.createJavaInterface(Simple.class);
+        JavaInterface intf = factory.createJavaInterface(Simple.class);
 
         assertEquals(Simple.class, intf.getJavaClass());
         List<Operation> operations = intf.getOperations();
@@ -83,6 +83,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         verify(extension);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         factory = new DefaultJavaInterfaceFactory();

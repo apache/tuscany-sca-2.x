@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 public class ContributionRepositoryTestCase extends TestCase {
     private ContributionRepositoryImpl repository;
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
         // create repository (this should re-create the root directory)
         this.repository = new ContributionRepositoryImpl("target/repository/");
         repository.init();

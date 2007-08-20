@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -201,10 +200,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                               RuntimeComponentReference reference,
                                               List<Binding> bindings) {
 
-        List<Binding> unresolvedTargetBindings = new ArrayList<Binding>();
-
-        // create binding providers for all of the bindings for resolved targets
-        // or for all of the bindings where no targets are specified
         for (Binding binding : bindings) {
             BindingProviderFactory providerFactory =
                 (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());

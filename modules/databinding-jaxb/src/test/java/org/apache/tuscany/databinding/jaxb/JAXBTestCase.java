@@ -72,8 +72,7 @@ public class JAXBTestCase extends TestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
-    private String contextPath = "com.example.ipo.jaxb";
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -153,6 +152,7 @@ public class JAXBTestCase extends TestCase {
 
     }
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

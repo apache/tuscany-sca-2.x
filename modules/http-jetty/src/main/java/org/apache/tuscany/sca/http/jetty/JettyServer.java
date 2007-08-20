@@ -263,7 +263,7 @@ public class JettyServer implements ServletHost {
             }
         }
         if (removedServlet != null) {
-            servletHandler.setServletMappings((ServletMapping[])mappings.toArray(new ServletMapping[mappings.size()]));
+            servletHandler.setServletMappings(mappings.toArray(new ServletMapping[mappings.size()]));
         }
         return removedServlet;
     }

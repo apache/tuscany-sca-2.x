@@ -174,7 +174,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
                 if (attribPointer == null) {
                     throw new UnsupportedOperationException();
                 } else if (attribPointer instanceof QName) {
-                    return (QName)attribPointer;
+                    return attribPointer;
                 } else {
                     return null;
                 }
@@ -650,7 +650,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
      * Get the prefix list from the hastable and take that into an array
      */
     private String[] makePrefixArray() {
-        String[] prefixes = (String[])declaredNamespaceMap.keySet().toArray(new String[declaredNamespaceMap.size()]);
+        String[] prefixes = declaredNamespaceMap.keySet().toArray(new String[declaredNamespaceMap.size()]);
         Arrays.sort(prefixes);
         return prefixes;
     }

@@ -47,14 +47,17 @@ public class Node2Writer extends BaseTransformer<Node, Writer> implements PushTr
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Node.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Writer.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

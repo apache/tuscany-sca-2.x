@@ -89,6 +89,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     /**
      * @see org.apache.tuscany.sca.databinding.Transformer#getWeight()
      */
+    @Override
     public int getWeight() {
         return 10000;
     }

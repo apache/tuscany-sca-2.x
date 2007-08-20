@@ -18,11 +18,7 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A test interface model.

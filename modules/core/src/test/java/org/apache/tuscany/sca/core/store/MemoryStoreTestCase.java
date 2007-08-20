@@ -156,8 +156,8 @@ public class MemoryStoreTestCase extends TestCase {
         store.destroy();
     }
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
         monitor = EasyMock.createNiceMock(StoreMonitor.class);
         EasyMock.replay(monitor);
     }

@@ -46,11 +46,13 @@ public class JavaInterfaceEmitter extends JavaEmitter {
     private CodeGenConfiguration codegenConfiguration;
     private TypeMapper typeMapper;
 
+    @Override
     public void setCodeGenConfiguration(CodeGenConfiguration configuration) {
         super.setCodeGenConfiguration(configuration);
         codegenConfiguration = configuration;
     }
 
+    @Override
     public void setMapper(TypeMapper typeMapper) {
         super.setMapper(typeMapper);
         this.typeMapper = typeMapper;
@@ -65,7 +67,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
                 (SDODataBindingTypeMappingEntry)this.typeMapper.getTypeMappingObject(message.getElementQName());
             List typeMappings;
             if (wrapped) {
-                typeMappings = (List)typeMappingEntry.getPropertyClassNames();
+                typeMappings = typeMappingEntry.getPropertyClassNames();
             } else {
                 typeMappings = new ArrayList();
                 typeMappings.add(typeMappingEntry.getClassName());
@@ -99,6 +101,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         return parameterElementList;
     }
 
+    @Override
     public List getParameterElementList(Document doc, List parameters, String location) {
         List parameterElementList = new ArrayList();
 
@@ -170,6 +173,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
             WSDLConstants.WSDL_MESSAGE_DIRECTION_IN.endsWith(MEP);
     }
 
+    @Override
     protected Element getInputElement(Document doc, AxisOperation operation, List headerParameterQNameList) {
         return getElement(doc,
                           "input",
@@ -178,6 +182,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
                           headerParameterQNameList);
     }
 
+    @Override
     protected Element getOutputElement(Document doc, AxisOperation operation, List headerParameterQNameList) {
         return getElement(doc,
                           "output",
@@ -207,6 +212,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         return element;
     }
 
+    @Override
     protected void writeInterface(boolean writeDatabinders) throws Exception {
         Document interfaceModel = createDOMDocumentForInterface(writeDatabinders);
         if (!codegenConfiguration.getOutputLocation().exists()) {
@@ -229,11 +235,13 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         writeClass(interfaceModel, interfaceWriter);
     }
 
+    @Override
     protected String makeJavaClassName(String word) {
         // return XMLNameUtil.getJavaNameFromXMLName(word, true);
         return getJavaNameFromXMLName(word, true);
     }
 
+    @Override
     protected Element[] getFaultParamElements(Document doc, AxisOperation operation) {
         ArrayList params = new ArrayList();
         ArrayList faultMessages = operation.getFaultMessages();

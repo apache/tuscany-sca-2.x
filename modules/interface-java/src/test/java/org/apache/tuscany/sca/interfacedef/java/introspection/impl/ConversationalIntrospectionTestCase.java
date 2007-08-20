@@ -35,6 +35,7 @@ import org.osoa.sca.annotations.EndsConversation;
 public class ConversationalIntrospectionTestCase extends TestCase {
     private JavaInterfaceFactory javaFactory;
     
+    @Override
     protected void setUp() throws Exception {
         javaFactory = new DefaultJavaInterfaceFactory();
     }

@@ -108,6 +108,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         
         // Read intents on the Java implementation class
@@ -159,6 +160,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         
         // Read the intents specified on the given implementation method

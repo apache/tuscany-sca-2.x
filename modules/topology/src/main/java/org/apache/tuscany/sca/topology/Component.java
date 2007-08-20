@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.topology;
 
-
-import javax.xml.namespace.QName;
-
 /**
  * Represents an SCA component and is used to represent which components
  * will run on a node

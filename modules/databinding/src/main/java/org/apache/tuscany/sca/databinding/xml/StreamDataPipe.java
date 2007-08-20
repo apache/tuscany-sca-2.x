@@ -34,14 +34,17 @@ public class StreamDataPipe extends BaseTransformer<OutputStream, InputStream> i
         return new Pipe();
     }
 
+    @Override
     public Class getTargetType() {
         return InputStream.class;
     }
 
+    @Override
     public int getWeight() {
         return 50;
     }
 
+    @Override
     public Class getSourceType() {
         return OutputStream.class;
     }

@@ -23,7 +23,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -88,7 +87,7 @@ public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, Pol
                         } else {
                             Object extension = extensionProcessor.read(reader);
                             if ( extension instanceof Policy ) {
-                                policySet.getPolicies().add((Policy)extension);
+                                policySet.getPolicies().add(extension);
                             }
                         }
                         break;
@@ -243,46 +242,48 @@ public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, Pol
             writer.writeAttribute(PolicyConstants.PROVIDES, sb.toString());
         }
     }
-    
-    private void resolveProvidedIntents(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
-        boolean isUnresolved = false;
-        if (policySet != null && policySet.isUnresolved()) {
-            //resolve all provided intents
-            List<Intent> providedIntents = new ArrayList<Intent>(); 
-            for (Intent providedIntent : policySet.getProvidedIntents()) {
-                if ( providedIntent.isUnresolved() ) {
-                    //policyIntent.getRequiredIntents().remove(requiredIntent);
-                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
-                    providedIntents.add(providedIntent);
-                    if (providedIntent.isUnresolved()) {
-                        isUnresolved = true;
-                    }
-                }
-            }
-            policySet.getProvidedIntents().clear();
-            policySet.getProvidedIntents().addAll(providedIntents);
-        }
-        policySet.setUnresolved(isUnresolved);
-    }
-    
-   private void resolveIntentsInMappedPolicies(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
-       Map<Intent, List<Policy>> mappedPolicies = new Hashtable<Intent, List<Policy>>();   
-       boolean isUnresolved = false;
-       for ( Intent mappedIntent : policySet.getMappedPolicies().keySet() ) {
-           if ( mappedIntent.isUnresolved() ) {
-               //policyIntent.getRequiredIntents().remove(requiredIntent);
-               mappedIntent = resolver.resolveModel(Intent.class, mappedIntent);
-               mappedPolicies.put(mappedIntent, policySet.getMappedPolicies().get(mappedIntent));
-               if (mappedIntent.isUnresolved()) {
-                   isUnresolved = true;
-               }
-           }
-       }
-       
-       policySet.getMappedPolicies().clear();
-       policySet.getMappedPolicies().putAll(mappedPolicies);
-       policySet.setUnresolved(isUnresolved);
-   }
+
+    //FIXME This method is never used
+//    private void resolveProvidedIntents(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+//        boolean isUnresolved = false;
+//        if (policySet != null && policySet.isUnresolved()) {
+//            //resolve all provided intents
+//            List<Intent> providedIntents = new ArrayList<Intent>(); 
+//            for (Intent providedIntent : policySet.getProvidedIntents()) {
+//                if ( providedIntent.isUnresolved() ) {
+//                    //policyIntent.getRequiredIntents().remove(requiredIntent);
+//                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
+//                    providedIntents.add(providedIntent);
+//                    if (providedIntent.isUnresolved()) {
+//                        isUnresolved = true;
+//                    }
+//                }
+//            }
+//            policySet.getProvidedIntents().clear();
+//            policySet.getProvidedIntents().addAll(providedIntents);
+//        }
+//        policySet.setUnresolved(isUnresolved);
+//    }
+
+    //FIXME This method is never used
+//   private void resolveIntentsInMappedPolicies(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+//       Map<Intent, List<Policy>> mappedPolicies = new Hashtable<Intent, List<Policy>>();   
+//       boolean isUnresolved = false;
+//       for ( Intent mappedIntent : policySet.getMappedPolicies().keySet() ) {
+//           if ( mappedIntent.isUnresolved() ) {
+//               //policyIntent.getRequiredIntents().remove(requiredIntent);
+//               mappedIntent = resolver.resolveModel(Intent.class, mappedIntent);
+//               mappedPolicies.put(mappedIntent, policySet.getMappedPolicies().get(mappedIntent));
+//               if (mappedIntent.isUnresolved()) {
+//                   isUnresolved = true;
+//               }
+//           }
+//       }
+//       
+//       policySet.getMappedPolicies().clear();
+//       policySet.getMappedPolicies().putAll(mappedPolicies);
+//       policySet.setUnresolved(isUnresolved);
+//   }
   
    private void resolvePolicies(PolicySet policySet) {
        policySet.setUnresolved(false);

@@ -39,6 +39,7 @@ public class ConversationIDProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         if (method.getAnnotation(ConversationID.class) == null) {
             return;
@@ -59,6 +60,7 @@ public class ConversationIDProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
         if (field.getAnnotation(ConversationID.class) == null) {
             return;

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.helloworld;
 
-import org.osoa.sca.annotations.Remotable;
 
 public interface HelloWorld {
     

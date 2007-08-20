@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class HTTPResourceServiceBindingProvider implements ServiceBindingProvider {
     
-    private RuntimeComponent component;
     private RuntimeComponentService service;  
     private HTTPResourceBinding binding;
     private ServletHost servletHost;
@@ -47,7 +46,6 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
                                               RuntimeComponentService service,
                                               HTTPResourceBinding binding,
                                               ServletHost servletHost) {
-        this.component = component;
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;

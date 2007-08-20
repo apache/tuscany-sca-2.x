@@ -80,6 +80,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(JavaScopeImpl.STATELESS, type.getJavaScope());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         javaImplementationFactory = new DefaultJavaImplementationFactory();
@@ -100,10 +101,6 @@ public class ScopeProcessorTestCase extends TestCase {
 
     @org.osoa.sca.annotations.Scope("REQUEST")
     private class Request {
-    }
-
-    @org.osoa.sca.annotations.Scope("SYSTEM")
-    private class System {
     }
 
     @org.osoa.sca.annotations.Scope("STATELESS")

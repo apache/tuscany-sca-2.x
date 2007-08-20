@@ -52,6 +52,7 @@ public class ElementInfo {
         return type;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("Element: ").append(name).append(" ").append(type);

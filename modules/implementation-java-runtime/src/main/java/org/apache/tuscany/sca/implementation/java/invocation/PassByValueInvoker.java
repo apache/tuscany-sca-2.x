@@ -54,6 +54,7 @@ public class PassByValueInvoker extends JavaImplementationInvoker {
         this.operation = operation;
     }
 
+    @Override
     public Message invoke(Message msg) {
         Object obj = msg.getBody();
         msg.setBody(copy((Object[])obj));

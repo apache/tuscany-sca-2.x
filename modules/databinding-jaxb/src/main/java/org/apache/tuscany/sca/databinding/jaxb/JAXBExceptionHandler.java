@@ -53,9 +53,9 @@ public class JAXBExceptionHandler implements ExceptionHandler {
      * </ul>
      */
     public Exception createException(DataType<DataType> exceptionType, String message, Object faultInfo, Throwable cause) {
-        Class exceptionClass = (Class)exceptionType.getPhysical();
+        Class exceptionClass = exceptionType.getPhysical();
         DataType<?> faultBeanType = exceptionType.getLogical();
-        Class faultBeanClass = (Class)faultBeanType.getPhysical();
+        Class faultBeanClass = faultBeanType.getPhysical();
         try {
             Constructor constructor =
                 exceptionClass.getConstructor(new Class[] {String.class, faultBeanClass, Throwable.class});
@@ -78,7 +78,7 @@ public class JAXBExceptionHandler implements ExceptionHandler {
     }
 
     public DataType<?> getFaultType(DataType exDataType) {
-        Class<?> exceptionType  = (Class) exDataType.getPhysical();
+        Class<?> exceptionType  = exDataType.getPhysical();
         WebFault webFault = exceptionType.getAnnotation(WebFault.class);
         if (webFault == null) {
             return null;

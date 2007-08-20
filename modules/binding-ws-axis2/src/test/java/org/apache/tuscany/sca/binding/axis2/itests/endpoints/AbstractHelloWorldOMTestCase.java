@@ -45,11 +45,13 @@ public abstract class AbstractHelloWorldOMTestCase extends TestCase {
         Assert.assertEquals("Hello petra", ((OMText)child.getFirstOMChild()).getText());
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance(getCompositeName());
         helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

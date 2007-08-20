@@ -105,11 +105,13 @@ public class NewBrokerResponseEnDeCoder extends AbstractEnDeCoder<NewBrokerRespo
         }
     }
 
+    @Override
     protected QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
+    @Override
     protected Class<NewBrokerResponse> getEncodingObjectType() {
         
         return NewBrokerResponse.class;

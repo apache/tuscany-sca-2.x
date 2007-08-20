@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import java.net.URI;
-
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;

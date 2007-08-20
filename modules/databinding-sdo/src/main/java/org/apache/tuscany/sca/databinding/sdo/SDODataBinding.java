@@ -89,6 +89,7 @@ public class SDODataBinding extends BaseDataBinding {
         return wrapperHandler;
     }
 
+    @Override
     public SimpleTypeMapper getSimpleTypeMapper() {
         return new SDOSimpleTypeMapper();
     }

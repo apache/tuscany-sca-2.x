@@ -63,11 +63,13 @@ public class ConnectionOverrideResponseEnDeCoder extends AbstractEnDeCoder<Conne
         }
     }
 
+    @Override
     protected QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
+    @Override
     protected Class<ConnectionOverrideResponse> getEncodingObjectType() {
         
         return ConnectionOverrideResponse.class;

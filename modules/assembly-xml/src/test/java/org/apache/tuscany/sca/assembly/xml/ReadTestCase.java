@@ -52,6 +52,7 @@ public class ReadTestCase extends TestCase {
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
 
+    @Override
     public void setUp() throws Exception {
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
@@ -61,12 +62,8 @@ public class ReadTestCase extends TestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
     }
 
+    @Override
     public void tearDown() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        policyFactory = null;
-        factory = null;
-        mapper = null;
     }
 
     public void testReadComponentType() throws Exception {

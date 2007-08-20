@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.databinding.sdo;
 
 import java.io.StringReader;
-import java.net.URI;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -62,9 +61,8 @@ public class ImportSDOProcessorTestCase extends TestCase {
         assertTrue(inited);
     }
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
-        URI id = URI.create("/composite1/");
         loader = new ImportSDOProcessor(null);
         xmlFactory = XMLInputFactory.newInstance();
     }

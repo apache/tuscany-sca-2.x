@@ -34,6 +34,7 @@ public class SDODataBindingCodegenExtension extends AbstractDBProcessingExtensio
         this.typeMapper=typeMapper;
     }
     
+    @Override
     protected boolean testFallThrough(String dbFrameworkName) {
         return !dbFrameworkName.equals("sdo");
     }

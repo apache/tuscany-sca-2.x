@@ -28,6 +28,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     protected SCADomain domain;
     protected T service;
 
+    @Override
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance(getCompositeName());
@@ -36,6 +37,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     
     abstract protected Class getServiceClass();
 
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

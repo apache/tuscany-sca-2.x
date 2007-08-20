@@ -35,6 +35,7 @@ public class XSDDataTypeConverterTestCase extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -54,7 +55,7 @@ public class XSDDataTypeConverterTestCase extends TestCase {
 
         Calendar calendar = new GregorianCalendar();
         String s = c.printDate(calendar);
-        calendar = (GregorianCalendar)c.parseDate(s);
+        calendar = c.parseDate(s);
         assertEquals(s, c.printDate(calendar));
 
     }

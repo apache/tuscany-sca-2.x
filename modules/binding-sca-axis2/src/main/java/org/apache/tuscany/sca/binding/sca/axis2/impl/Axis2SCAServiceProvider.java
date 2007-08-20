@@ -19,43 +19,13 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.util.Iterator;
-
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.Constants;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.deployment.util.Utils;
-import org.apache.axis2.description.AxisOperation;
-import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.Parameter;
-import org.apache.axis2.description.WSDL2Constants;
-import org.apache.axis2.engine.MessageReceiver;
-import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.axis2.Axis2ServiceInMessageReceiver;
-import org.apache.tuscany.sca.binding.axis2.Axis2ServiceInOutSyncMessageReceiver;
 import org.apache.tuscany.sca.binding.axis2.Axis2ServiceProvider;
-import org.apache.tuscany.sca.binding.axis2.Axis2ServiceServlet;
-import org.apache.tuscany.sca.binding.axis2.TuscanyAxisConfigurator;
-import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
-import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
-import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
 import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
@@ -68,12 +38,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class Axis2SCAServiceProvider extends Axis2ServiceProvider {
 
     private SCABinding binding;
-    
-    private AbstractContract contract;
-    private WebServiceBinding wsBinding;
-    private ServletHost servletHost;
-    private MessageFactory messageFactory;
-    private ConfigurationContext configContext;    
     
     /**
      * Switch in the fake ws binding
@@ -98,11 +62,6 @@ public class Axis2SCAServiceProvider extends Axis2ServiceProvider {
                 servletHost,
                 messageFactory);
 
-        this.contract = service;
-        this.wsBinding = wsBinding;
-        this.servletHost = servletHost;
-        this.messageFactory = messageFactory;
-        
         this.binding = binding;
     }
     
@@ -113,6 +72,7 @@ public class Axis2SCAServiceProvider extends Axis2ServiceProvider {
      * 
      * @return the binding
      */
+    @Override
     protected Binding getBinding(){
         return binding;
     }    

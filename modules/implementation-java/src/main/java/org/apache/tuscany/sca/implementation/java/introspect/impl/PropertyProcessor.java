@@ -33,10 +33,12 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
         super(assemblyFactory, Property.class);
     }
 
+    @Override
     protected String getName(Property annotation) {
         return annotation.name();
     }
 
+    @Override
     protected void initProperty(org.apache.tuscany.sca.assembly.Property property, Property annotation) {
         property.setMustSupply(annotation.required());
     }

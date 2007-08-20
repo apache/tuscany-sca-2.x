@@ -32,10 +32,12 @@ public class TopologyFactoryTestCase extends TestCase {
 
     TopologyFactory topologyFactory;
     
+    @Override
     public void setUp() throws Exception {
         topologyFactory = new DefaultTopologyFactory();
     }
 
+    @Override
     public void tearDown() throws Exception {
         topologyFactory = null;
     }

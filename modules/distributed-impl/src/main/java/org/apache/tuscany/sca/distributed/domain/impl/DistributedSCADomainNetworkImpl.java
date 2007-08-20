@@ -20,9 +20,6 @@
 package org.apache.tuscany.sca.distributed.domain.impl;
 
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
-import org.apache.tuscany.sca.distributed.management.impl.ServiceDiscoveryMemoryImpl;
-import org.apache.tuscany.sca.distributed.management.impl.ServiceDiscoveryNetworkImpl;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Represents the network services and clients for the domain running on a node
@@ -39,6 +36,7 @@ public class DistributedSCADomainNetworkImpl extends DistributedSCADomainImpl {
         super(domainName); 
     }
     
+    @Override
     public ServiceDiscovery getServiceDiscovery(){
           
         if (serviceDiscovery == null){

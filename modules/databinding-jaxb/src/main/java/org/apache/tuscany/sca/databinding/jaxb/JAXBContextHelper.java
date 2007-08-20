@@ -71,7 +71,7 @@ public class JAXBContextHelper {
         if (value instanceof JAXBElement) {
             return (JAXBElement)value;
         } else {
-            Class type = (Class)dataType.getPhysical();
+            Class type = dataType.getPhysical();
             Object logical = dataType.getLogical();
             QName elementName = JAXBDataBinding.ROOT_ELEMENT;
             if (logical instanceof XMLType) {

@@ -68,6 +68,13 @@ public class ConversationProcessorTestCase extends TestCase {
         }
     }
 
+    public void testBadFooBoth() throws Exception {
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitClass(BadFooBoth.class, type);
+        assertEquals(10000L, type.getMaxAge());
+        assertEquals(10000L, type.getMaxIdleTime());
+    }
+
     public void testJustConversation() throws Exception {
         // TODO do we want these semantics
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -122,8 +129,9 @@ public class ConversationProcessorTestCase extends TestCase {
     }
 
     private class FooWithConversationIDField {
+        
         @ConversationID
-        private String conversationID;
+        String conversationID;
     }
 
     private class FooWithConversationIDMethod {

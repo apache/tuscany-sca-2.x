@@ -63,6 +63,7 @@ public class TypeInfo {
         return baseType;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("Type: ").append(name);

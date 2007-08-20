@@ -71,6 +71,7 @@ public class DATAImplementationProcessorTestCase extends TestCase {
     private XMLInputFactory xmlFactory;
     private ModelFactoryExtensionPoint modelFactories;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();

@@ -63,7 +63,7 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
     public SCADefinitionsProcessor(PolicyFactory policyFactory,
                               StAXArtifactProcessor extensionProcessor) {
         this.policyFactory = policyFactory;
-        this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
+        this.extensionProcessor = extensionProcessor;
         //this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
     }
     
@@ -77,7 +77,7 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
                               StAXArtifactProcessor extensionProcessor,
                               ModelResolver modelResolver) {
         this.policyFactory = policyFactory;
-        this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
+        this.extensionProcessor = extensionProcessor;
         //this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
         this.definitionsResolver = modelResolver;
     }

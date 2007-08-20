@@ -48,10 +48,12 @@ public abstract class Java2SimpleTypeTransformer<T> extends BaseTransformer<Obje
         return createElement(xmlType.getElementName(), text, context);
     }
 
+    @Override
     public Class getSourceType() {
         return Object.class;
     }
 
+    @Override
     public int getWeight() {
         return 10000;
     }

@@ -44,6 +44,7 @@ public abstract class GroupDataBinding extends BaseDataBinding {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
         if (markerTypes == null) {
             return false;

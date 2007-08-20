@@ -57,6 +57,7 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         assertEquals(Integer.TYPE, operation.getInputType().getLogical().get(0).getPhysical());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

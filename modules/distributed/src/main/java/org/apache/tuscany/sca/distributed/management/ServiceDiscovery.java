@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.distributed.management;
 
-import java.util.List;
 import org.osoa.sca.annotations.Remotable;
 
 

@@ -73,6 +73,7 @@ public class ReflectiveInstanceWrapperTestCase extends TestCase {
         EasyMock.verify(destroyInvoker);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();

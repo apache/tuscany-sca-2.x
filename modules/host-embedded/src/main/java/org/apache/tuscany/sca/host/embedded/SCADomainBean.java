@@ -37,6 +37,7 @@ public class SCADomainBean extends SCADomain {
     public SCADomainBean() {
     }
 
+    @Override
     public String getURI() {
         return uri;
     }

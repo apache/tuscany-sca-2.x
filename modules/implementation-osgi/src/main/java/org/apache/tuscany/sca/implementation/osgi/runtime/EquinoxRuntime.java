@@ -52,7 +52,7 @@ public class EquinoxRuntime extends OSGiRuntime  {
         
         // Equinox version 3.2 upwards have a startup method which returns BundleContext
         if (startupMethod.getReturnType() == BundleContext.class) {
-            bundleContext = (BundleContext) startupMethod.invoke(null, (Object)new String[] {"-clean", "-console"}, null );
+            bundleContext = (BundleContext) startupMethod.invoke(null, new String[] {"-clean", "-console"}, null );
         }
         else {
             

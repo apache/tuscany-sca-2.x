@@ -49,6 +49,7 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
         assertTrue(type.isAllowsPassByReference(m1));
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         javaImplementationFactory = new DefaultJavaImplementationFactory();

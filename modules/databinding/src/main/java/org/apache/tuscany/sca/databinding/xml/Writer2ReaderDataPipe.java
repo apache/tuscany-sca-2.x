@@ -33,14 +33,17 @@ public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> imple
         return new Pipe();
     }
 
+    @Override
     public Class getTargetType() {
         return Reader.class;
     }
 
+    @Override
     public int getWeight() {
         return 50;
     }
 
+    @Override
     public Class getSourceType() {
         return Writer.class;
     }

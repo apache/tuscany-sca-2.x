@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.databinding.impl.DirectedGraph.Vertex;
 public class DirectedGraphTestCase extends TestCase {
     private DirectedGraph<String, Object> graph;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         graph = new DirectedGraph<String, Object>();
@@ -82,6 +83,7 @@ public class DirectedGraphTestCase extends TestCase {
 
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

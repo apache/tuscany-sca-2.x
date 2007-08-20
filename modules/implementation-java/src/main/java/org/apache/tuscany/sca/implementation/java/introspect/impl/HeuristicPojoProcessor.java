@@ -79,6 +79,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         this.javaFactory = javaFactory;
     }
 
+    @Override
     public <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         List<org.apache.tuscany.sca.assembly.Service> services = type.getServices();
         if (services.isEmpty()) {

@@ -37,14 +37,17 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer<Object> {
         super(Scope.SESSION, component);
     }
 
+    @Override
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof HttpSessionEnd) {
-            Object key = ((HttpSessionEnd)event).getSessionID();
+            //FIXME key is not used
+            //Object key = ((HttpSessionEnd)event).getSessionID();
             // FIXME: Remove the session id
         }
     }
 
+    @Override
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
@@ -52,6 +55,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer<Object> {
         lifecycleState = RUNNING;
     }
 
+    @Override
     public synchronized void stop() {
         lifecycleState = STOPPED;
     }

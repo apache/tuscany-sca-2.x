@@ -248,6 +248,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         return transformers;
     }
 
+    @Override
     public String toString() {
         loadTransformers();
         

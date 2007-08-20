@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 
 public final class BeanUtil {
-    private static final Object[] NULL = (Object[])null;
+    private static final Object[] NULL = null;
     private static int nsCount = 1;
 
     private static final SimpleTypeMapperImpl MAPPER = new SimpleTypeMapperImpl();
@@ -46,14 +46,14 @@ public final class BeanUtil {
     }
 
     private static boolean isSimpleType(Class javaType) {
-        return MAPPER.getXMLType(javaType) != null;
+        return SimpleTypeMapperImpl.getXMLType(javaType) != null;
     }
 
     private static String getStringValue(Object o) {
         if (o == null) {
             return null;
         }
-        TypeInfo info = MAPPER.getXMLType(o.getClass());
+        TypeInfo info = SimpleTypeMapperImpl.getXMLType(o.getClass());
         if (info != null) {
             return MAPPER.toXMLLiteral(info.getQName(), o, null);
         } else {
@@ -88,7 +88,7 @@ public final class BeanUtil {
             List<NamedProperty> props = new ArrayList<NamedProperty>();
             for (int i = 0; i < properties.size(); i++) {
                 String property = properties.get(i);
-                PropertyDescriptor propDesc = (PropertyDescriptor)propertMap.get(property);
+                PropertyDescriptor propDesc = propertMap.get(property);
                 if (propDesc == null) {
                     // JAM does bad thing so I need to add this
                     continue;

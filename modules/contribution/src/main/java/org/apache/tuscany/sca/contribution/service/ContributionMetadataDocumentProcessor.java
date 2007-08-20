@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
  * 
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface ContributionMetadataDocumentProcessor {
     /**
      * Create the model object for Contribution Service metadata information

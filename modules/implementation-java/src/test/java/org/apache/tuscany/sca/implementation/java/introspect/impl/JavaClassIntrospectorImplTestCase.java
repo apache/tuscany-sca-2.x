@@ -71,6 +71,7 @@ public class JavaClassIntrospectorImplTestCase extends TestCase {
         EasyMock.verify(extension);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.data.companyFeed;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;

@@ -34,8 +34,8 @@ public class JavaExportProcessorTestCase extends TestCase {
 
     private XMLInputFactory xmlFactory;
 
+    @Override
     protected void setUp() throws Exception {
-        super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
     }
 

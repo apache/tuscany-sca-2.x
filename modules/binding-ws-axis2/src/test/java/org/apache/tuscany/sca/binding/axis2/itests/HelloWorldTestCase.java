@@ -32,11 +32,13 @@ public class HelloWorldTestCase extends TestCase {
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     }
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/axis2/itests/HelloWorld.composite");
         helloWorld = domain.getService(HelloWorld.class, "HelloWorldComponent");
     }
     
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

@@ -162,6 +162,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Object.class;
     }

@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
 /**
@@ -41,9 +40,7 @@ import org.apache.tuscany.sca.spi.ComponentLifecycle;
  */
 public class JSONRPCService implements ComponentLifecycle {
 
-    private RuntimeComponent component;
     private RuntimeComponentService service;
-    private JSONRPCBinding jsonBinding;
     private ServletHost servletHost;
     private Binding binding;
 
@@ -60,10 +57,8 @@ public class JSONRPCService implements ComponentLifecycle {
                                          Binding b,
                                          JSONRPCBinding binding,
                                          ServletHost servletHost) {
-        this.component = component;
         this.service = service;
         this.binding = b;
-        this.jsonBinding = binding;
         this.servletHost = servletHost;
     }
 

@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.distributed.domain.impl;
 
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.apache.tuscany.sca.distributed.management.impl.ServiceDiscoveryMemoryImpl;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * A local representation of the sca domain distributed across a number
@@ -42,6 +41,7 @@ public class DistributedSCADomainMemoryImpl extends DistributedSCADomainImpl {
         }
     }
     
+    @Override
     public ServiceDiscovery getServiceDiscovery(){
         return serviceDiscovery;
     }

@@ -41,6 +41,7 @@ public class TransformerRegistryImplTestCase extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         registry = new DefaultTransformerExtensionPoint();

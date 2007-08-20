@@ -42,14 +42,17 @@ public class String2OMElement extends BaseTransformer<String, OMElement> impleme
         }
     }
 
+    @Override
     public Class getTargetType() {
         return OMElement.class;
     }
 
+    @Override
     public Class getSourceType() {
         return String.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

@@ -87,6 +87,7 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component,
             return clone;
         }
 	
+        @Override
 	public String getParentName() {
 		//TODO find a better name for bean definitions representing component types
 		return String.valueOf(System.identityHashCode(implementation));
@@ -120,6 +121,7 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component,
 		private static final long serialVersionUID = 1L;
 		
 		// Add a property
+                @Override
 		public boolean add(ComponentProperty property) {
 			
 			// Add corresponding bean property value
@@ -138,6 +140,7 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component,
 		private static final long serialVersionUID = 1L;
 
 		// Add a reference
+                @Override
 		public boolean add(ComponentReference reference) {
 			
 			// Add corresponding bean property value

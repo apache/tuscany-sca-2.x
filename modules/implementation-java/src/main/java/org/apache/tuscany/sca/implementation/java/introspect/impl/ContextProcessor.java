@@ -43,6 +43,7 @@ public class ContextProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         if (method.getAnnotation(Context.class) == null) {
             return;
@@ -63,6 +64,7 @@ public class ContextProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
         if (field.getAnnotation(Context.class) == null) {
             return;

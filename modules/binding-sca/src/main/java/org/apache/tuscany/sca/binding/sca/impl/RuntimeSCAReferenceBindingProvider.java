@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider2 {
 
-    private ExtensionPointRegistry extensionPoints;
     private RuntimeComponentReference reference;
     private SCABinding binding;
     private boolean started = false;

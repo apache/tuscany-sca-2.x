@@ -47,14 +47,17 @@ public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElemen
         return element;
     }
 
+    @Override
     public Class getSourceType() {
         return XMLDocument.class;
     }
 
+    @Override
     public Class getTargetType() {
         return OMElement.class;
     }
 
+    @Override
     public int getWeight() {
         return 10;
     }

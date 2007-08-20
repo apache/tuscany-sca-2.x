@@ -43,6 +43,7 @@ public abstract class AbstractScopeContainerTestCase<T, KEY> extends TestCase {
     protected InstanceWrapper<T> wrapper;
 
     @SuppressWarnings("unchecked")
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         control = EasyMock.createStrictControl();

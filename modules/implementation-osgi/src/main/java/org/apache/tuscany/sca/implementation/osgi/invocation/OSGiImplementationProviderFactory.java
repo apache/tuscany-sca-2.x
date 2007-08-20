@@ -21,10 +21,7 @@ package org.apache.tuscany.sca.implementation.osgi.invocation;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
-import org.apache.tuscany.sca.implementation.osgi.context.OSGiPropertyValueObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -42,9 +39,12 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
     public OSGiImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
         
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
-        TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
-        MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
-        OSGiPropertyValueObjectFactory factory = new OSGiPropertyValueObjectFactory(mediator);
+        //FIXME transformers is never used
+        //TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
+        //FIXME mediator is never used
+        //MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
+        //FIXME factory is never used
+        //OSGiPropertyValueObjectFactory factory = new OSGiPropertyValueObjectFactory(mediator);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,

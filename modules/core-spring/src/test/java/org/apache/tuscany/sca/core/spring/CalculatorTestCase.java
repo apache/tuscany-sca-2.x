@@ -32,15 +32,15 @@ public class CalculatorTestCase extends TestCase {
     private SCADomainContext context;
     private CalculatorService calculatorService;
 
+    @Override
     protected void setUp() throws Exception {
         context = new SCADomainContext("org/apache/tuscany/sca/core/spring/Calculator.composite");
 
         calculatorService = context.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
+    @Override
     protected void tearDown() throws Exception {
-        context = null;
-        calculatorService = null;
     }
 
     public void testCalculator() throws Exception {

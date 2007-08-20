@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.jms.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
@@ -41,7 +40,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private RuntimeComponent          component;
     private RuntimeComponentReference reference;
     private JMSBinding                jmsBinding;
     private List<JMSBindingInvoker>   jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
@@ -49,7 +47,6 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     public JMSBindingReferenceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentReference reference,
                                               JMSBinding binding) {
-        this.component  = component;
         this.reference  = reference;
         this.jmsBinding = binding;         
         

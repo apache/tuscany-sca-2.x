@@ -115,7 +115,7 @@ public class BaseTest {
 
             // start node B
             for (Composite compositeB : domainB.getDomainComposite().getIncludes()) {
-                domainB.getCompositeActivator().start(composite);
+                domainB.getCompositeActivator().start(compositeB);
             }
 
         } catch (Exception ex) {

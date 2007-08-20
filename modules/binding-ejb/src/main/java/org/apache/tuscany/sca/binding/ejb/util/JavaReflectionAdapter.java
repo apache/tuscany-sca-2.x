@@ -51,8 +51,6 @@ public final class JavaReflectionAdapter {
         DEFAULT_VALUES.put(double.class, new Double(0.0));
     }
 
-    private Class clazz;
-
     private Map<String, Method> methodMap = new HashMap<String, Method>();
 
     /**
@@ -61,8 +59,6 @@ public final class JavaReflectionAdapter {
      * @param clazz
      */
     private JavaReflectionAdapter(final Class clazz) {
-        this.clazz = clazz;
-
         // Index the methods on the implementation class
         Method[] methods = AccessController.doPrivileged(new PrivilegedAction<Method[]>() {
             public Method[] run() {

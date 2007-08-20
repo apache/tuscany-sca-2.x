@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
  * 
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface ContributionPostProcessor {
     
     /**

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.spring;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -29,8 +28,6 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringBeanElement;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.core.io.Resource;
 
 /**
@@ -94,14 +91,17 @@ public class SpringImplementation extends ComponentTypeImpl implements Implement
         this.componentType = componentType;
     }
 
+    @Override
     public List<Service> getServices() {
         return componentType.getServices();
     }
 
+    @Override
     public List<Reference> getReferences() {
         return componentType.getReferences();
     }
 
+    @Override
     public List<Property> getProperties() {
         return componentType.getProperties();
     }

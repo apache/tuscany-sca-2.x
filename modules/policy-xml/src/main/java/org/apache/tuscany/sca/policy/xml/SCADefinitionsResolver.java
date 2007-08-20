@@ -48,6 +48,6 @@ public class SCADefinitionsResolver implements ModelResolver {
             return (T)resolved;
         }
 
-        return (T)unresolved;
+        return unresolved;
     }
 }

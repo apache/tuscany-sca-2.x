@@ -37,6 +37,7 @@ public class FieldInjectorTestCase extends TestCase {
     }
 
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         protectedField = Foo.class.getDeclaredField("hidden");

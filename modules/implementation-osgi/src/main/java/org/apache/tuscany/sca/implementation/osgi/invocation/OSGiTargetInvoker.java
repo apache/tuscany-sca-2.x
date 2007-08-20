@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.scope.Scope;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.ScopeContainer;
@@ -59,7 +58,6 @@ public class OSGiTargetInvoker<T> implements Invoker {
     protected boolean cacheable;
 
     private final RuntimeComponentService service;
-    private final RuntimeComponent component;
     private final ScopeContainer scopeContainer;
 
     public OSGiTargetInvoker(
@@ -68,7 +66,6 @@ public class OSGiTargetInvoker<T> implements Invoker {
             RuntimeComponentService service) {
         
         this.operation = operation;
-        this.component = component;
         this.service = service;
         this.scopeContainer = ((ScopedRuntimeComponent) component).getScopeContainer();
         this.cacheable = true;

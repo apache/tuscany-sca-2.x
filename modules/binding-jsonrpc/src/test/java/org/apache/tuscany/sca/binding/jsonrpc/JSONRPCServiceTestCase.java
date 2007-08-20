@@ -41,10 +41,12 @@ public class JSONRPCServiceTestCase extends TestCase {
 
     private SCADomain domain;
 
+    @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance("JSONRPCBinding.composite");
     }
 
+    @Override
     protected void tearDown() throws Exception {
     	domain.close();
     }

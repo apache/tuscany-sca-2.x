@@ -35,6 +35,7 @@ public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, Conten
     /**
      * @see org.apache.tuscany.sca.databinding.PushTransformer#getSourceType()
      */
+    @Override
     public Class getTargetType() {
         return ContentHandler.class;
     }
@@ -42,6 +43,7 @@ public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, Conten
     /**
      * @see org.apache.tuscany.sca.databinding.PushTransformer#getSourceType()
      */
+    @Override
     public Class getSourceType() {
         return XMLStreamReader.class;
     }
@@ -49,6 +51,7 @@ public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, Conten
     /**
      * @see org.apache.tuscany.sca.databinding.PushTransformer#getWeight()
      */
+    @Override
     public int getWeight() {
         return 20;
     }

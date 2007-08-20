@@ -52,6 +52,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         this.javaFactory = javaFactory;
     }
 
+    @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         Reference annotation = method.getAnnotation(Reference.class);
         if (annotation == null) {
@@ -74,6 +75,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         type.getReferenceMembers().put(name, element);
     }
 
+    @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
         Reference annotation = field.getAnnotation(Reference.class);
         if (annotation == null) {
@@ -92,6 +94,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         type.getReferenceMembers().put(name, element);
     }
 
+    @Override
     public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
         Reference refAnnotation = parameter.getAnnotation(Reference.class);

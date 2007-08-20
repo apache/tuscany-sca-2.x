@@ -19,11 +19,6 @@
 
 package org.apache.tuscany.sca.topology.xml;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
-import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,8 +27,6 @@ import java.util.StringTokenizer;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -48,10 +41,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.topology.TopologyFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 /**
  * A base class with utility methods for the other artifact processors in this module. 
@@ -78,7 +67,7 @@ public abstract class BaseArtifactProcessor implements Constants {
     public BaseArtifactProcessor(TopologyFactory topologyFactory, AssemblyFactory assemblyFactory, StAXArtifactProcessor extensionProcessor) {
         this.topologyFactory = topologyFactory;
         this.assemblyFactory = assemblyFactory;
-        this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
+        this.extensionProcessor = extensionProcessor;
     }
 
     /**

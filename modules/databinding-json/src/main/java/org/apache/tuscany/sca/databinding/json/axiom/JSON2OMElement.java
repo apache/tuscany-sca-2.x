@@ -76,6 +76,7 @@ public class JSON2OMElement extends BaseTransformer<JSONObject, OMElement> imple
         }
     }
 
+    @Override
     public int getWeight() {
         return 500;
     }

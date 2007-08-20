@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 {
 
-    private RuntimeComponentReference reference;
     private WebServiceBinding wsBinding;
     private Axis2ServiceClient axisClient;
 
@@ -43,7 +42,6 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
                                          ServletHost servletHost,
                                          MessageFactory messageFactory) {
 
-        this.reference = reference;
         this.wsBinding = wsBinding;
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();

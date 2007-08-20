@@ -43,6 +43,7 @@ public class EmbeddedSCADomainTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void setUp() throws Exception {
         
         // Create a test embedded SCA domain 
@@ -189,6 +190,7 @@ public class EmbeddedSCADomainTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void tearDown() throws Exception {
         domain.close();
     }

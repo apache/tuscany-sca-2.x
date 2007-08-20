@@ -40,6 +40,7 @@ public class StAXDataBinding extends BaseDataBinding {
         super(NAME, ALIASES, XMLStreamReader.class);
     }
 
+    @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
         if (super.introspect(type, annotations)) {
             type.setLogical(XMLType.UNKNOWN);

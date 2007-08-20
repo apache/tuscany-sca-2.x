@@ -40,14 +40,17 @@ public class String2DataObject extends BaseTransformer<String, DataObject> imple
         }
     }
 
+    @Override
     public Class getSourceType() {
         return String.class;
     }
 
+    @Override
     public Class getTargetType() {
         return DataObject.class;
     }
 
+    @Override
     public int getWeight() {
         return 50;
     }

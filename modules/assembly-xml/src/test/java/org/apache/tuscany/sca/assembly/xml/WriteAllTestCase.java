@@ -59,6 +59,7 @@ public class WriteAllTestCase extends TestCase {
     private CompositeBuilderImpl compositeUtil;
 
 
+    @Override
     public void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
         scaBindingFactory = new TestSCABindingFactoryImpl();
@@ -73,12 +74,8 @@ public class WriteAllTestCase extends TestCase {
         resolver = new TestModelResolver();
     }
 
+    @Override
     public void tearDown() throws Exception {
-        staxProcessors = null;
-        resolver = null;
-        policyFactory = null;
-        assemblyFactory = null;
-        mapper = null;
     }
 
     public void testReadWriteComposite() throws Exception {

@@ -47,14 +47,17 @@ public class Reader2JAXB extends BaseTransformer<Reader, Object> implements
         }
     }
 
+    @Override
     public Class getSourceType() {
         return Reader.class;
     }
 
+    @Override
     public Class getTargetType() {
         return Object.class;
     }
 
+    @Override
     public int getWeight() {
         return 30;
     }

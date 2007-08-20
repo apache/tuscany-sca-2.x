@@ -39,14 +39,17 @@ public class XMLStreamReader2String extends BaseTransformer<XMLStreamReader, Str
         }
     }
 
+    @Override
     public Class getSourceType() {
         return XMLStreamReader.class;
     }
 
+    @Override
     public Class getTargetType() {
         return String.class;
     }
 
+    @Override
     public int getWeight() {
         return 40;
     }

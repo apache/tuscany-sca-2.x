@@ -68,14 +68,17 @@ public class DataObject2OMElement extends BaseTransformer<DataObject, OMElement>
         return element;
     }
 
+    @Override
     public Class getSourceType() {
         return DataObject.class;
     }
 
+    @Override
     public Class getTargetType() {
         return OMElement.class;
     }
 
+    @Override
     public int getWeight() {
         return 10;
     }
