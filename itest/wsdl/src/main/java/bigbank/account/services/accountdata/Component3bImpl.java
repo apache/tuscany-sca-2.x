@@ -53,7 +53,7 @@ public class Component3bImpl implements AccountDataService {
 
     public AccountReport getAccountReport(int param19) throws RemoteException {
         
-        return null;
+        return accountService.getAccountReport(param19);
     }
 
     public CustomerProfileData getCustomerProfile(String param4) throws RemoteException {

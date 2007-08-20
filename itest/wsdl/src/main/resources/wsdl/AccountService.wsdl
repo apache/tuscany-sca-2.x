@@ -27,22 +27,8 @@
 	<wsdl:types>
 		<xsd:schema targetNamespace="http://www.bigbank.com/account"
 			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-			xmlns:account="http://www.bigbank.com/account"
+			xmlns:account="http://www.bigbank.com/account">
 			
-			> <!-- xmlns:sdojava="commonj.sdo/java" sdojava:package="org.apache.tuscany.samples.bigbank.account" -->
-			
-			
-<!--	<xsd:complexType name="DataGraphRoot">	
-	 	<xsd:sequence>
-            <xsd:element name="customerProfileData" type="account:CustomerProfileData" maxOccurs="unbounded" minOccurs="0" />
-            <xsd:element name="StockSummaries" type="account:StockSummary" maxOccurs="unbounded" minOccurs="0" />
-            <xsd:element name="AccountSummaries" type="account:AccountSummary" maxOccurs="unbounded" minOccurs="0" />
-            <xsd:element name="StockLogEntries" type="account:StockLogEntry" maxOccurs="unbounded" minOccurs="0" />
-            <xsd:element name="AccountLogEntries" type="account:AccountLogEntry" maxOccurs="unbounded" minOccurs="0" />
-        </xsd:sequence>
-	</xsd:complexType>-->
-			
-
 			<xsd:element name="getAccountReport">
 				<xsd:complexType>
 					<xsd:sequence>
