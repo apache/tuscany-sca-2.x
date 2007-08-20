@@ -181,22 +181,21 @@ public class JavaInterfaceGenerator {
     public void generate() throws CodeGenerationException {
         try {
             for (int i = 0; i < codegenExtensions.size(); i++) {
-                //CodeGenExtension 
+                // CodeGenExtension
                 Object[] pair = (Object[])codegenExtensions.get(i);
-                
-                CodeGenExtension cge= (CodeGenExtension) pair[0];
-                CodeGenConfiguration cgf= (CodeGenConfiguration)pair[1];
-                
+
+                CodeGenExtension cge = (CodeGenExtension)pair[0];
+                CodeGenConfiguration cgf = (CodeGenConfiguration)pair[1];
+
                 cge.engage(cgf);
-               
             }
 
-            for(CodeGenConfiguration codegenConfiguration : codegenConfigurations){
-            JavaInterfaceEmitter emitter = new JavaInterfaceEmitter();
-            emitter.setCodeGenConfiguration(codegenConfiguration);
-            emitter.setMapper(codegenConfiguration.getTypeMapper());
+            for (CodeGenConfiguration codegenConfiguration : codegenConfigurations) {
+                JavaInterfaceEmitter emitter = new JavaInterfaceEmitter();
+                emitter.setCodeGenConfiguration(codegenConfiguration);
+                emitter.setMapper(codegenConfiguration.getTypeMapper());
 
-            emitter.writeInterface(false);
+                emitter.writeInterface(false);
             }
 
         } catch (Exception e) {
@@ -206,24 +205,24 @@ public class JavaInterfaceGenerator {
 
     /**
      * Read the WSDL file
+     * 
      * @param uri
      * @return
      * @throws WSDLException
      */
     private Definition readWSDL(String uri) throws WSDLException {
 
-        WSDLReader reader =
-                WSDLFactory.newInstance().newWSDLReader();
+        WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
         reader.setFeature("javax.wsdl.importDocuments", true);
 
         File file = new File(uri);
         String baseURI;
 
-        if (uri.startsWith("http://")){
+        if (uri.startsWith("http://")) {
             baseURI = uri;
-        } else{
-            if(file.getParentFile() == null){
-               try {
+        } else {
+            if (file.getParentFile() == null) {
+                try {
                     baseURI = new File(".").getCanonicalFile().toURI().toString();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -237,13 +236,9 @@ public class JavaInterfaceGenerator {
         try {
             doc = XMLUtils.newDocument(uri);
         } catch (ParserConfigurationException e) {
-            throw new WSDLException(WSDLException.PARSER_ERROR,
-                    "Parser Configuration Error",
-                    e);
+            throw new WSDLException(WSDLException.PARSER_ERROR, "Parser Configuration Error", e);
         } catch (SAXException e) {
-            throw new WSDLException(WSDLException.PARSER_ERROR,
-                    "Parser SAX Error",
-                    e);
+            throw new WSDLException(WSDLException.PARSER_ERROR, "Parser SAX Error", e);
 
         } catch (IOException e) {
             throw new WSDLException(WSDLException.INVALID_WSDL, "IO Error", e);
@@ -251,6 +246,7 @@ public class JavaInterfaceGenerator {
 
         return reader.readWSDL(baseURI, doc);
     }
+    
     private void generateFaults(String packageName, PortType portType, Map<QName, SDODataBindingTypeMappingEntry> typeMapping) 
         throws CodeGenerationException{
         
