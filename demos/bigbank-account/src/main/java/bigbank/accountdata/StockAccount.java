@@ -52,6 +52,7 @@ public class StockAccount {
         this.symbol = s;
     }
 
+    @Override
     public String toString() {
         return accountNumber + ", symbol:" + symbol + ", quantity:" + quantity;
     }

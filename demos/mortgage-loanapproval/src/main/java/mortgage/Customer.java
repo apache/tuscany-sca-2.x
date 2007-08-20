@@ -69,6 +69,7 @@ public class Customer {
         this.ssn = ssn;
     }
 
+    @Override
     public String toString() {
         return firstName + " " + lastName + "[" + ssn + "]";
     }

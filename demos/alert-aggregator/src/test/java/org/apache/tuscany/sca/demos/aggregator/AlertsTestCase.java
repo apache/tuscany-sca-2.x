@@ -39,6 +39,7 @@ public class AlertsTestCase extends TestCase  {
     /**
      * Runs before each test method
      */
+    @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("alerts.composite");
         super.setUp();
@@ -47,6 +48,7 @@ public class AlertsTestCase extends TestCase  {
     /**
      * Runs after each test method
      */
+    @Override
     protected void tearDown() {
         scaDomain.close();
     }
@@ -62,13 +64,15 @@ public class AlertsTestCase extends TestCase  {
     public void testGetAllNewAlerts() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[\"sometext\"],\"method\":\"getAllNewAlerts\",\"id\":2}");
         JSONObject jsonResp    = callService ("http://localhost:8080/AlertsServiceJSONRPC",
-                                              jsonRequest);                                  
+                                              jsonRequest);
+        assertNotNull(jsonResp);
     }   
     
     public void testAddAlertSources() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[{\"name\":\"news\",\"id\":\"2\",\"address\":\"www.news.com\",\"feedAddress\":\"http://news.com.com/2547-1_3-0-20.xml\",\"feedType\":\"rss\",\"lastChecked\":\"lastChecked\",\"javaClass\":\"org.apache.tuscany.sca.demos.aggregator.types.impl.SourceTypeImpl\"}],\"method\":\"addAlertSource\",\"id\":2}");
         JSONObject jsonResp    = callService ("http://localhost:8080/AlertsSourcesServiceJSONRPC",
                                               jsonRequest);  
+        assertNotNull(jsonResp);
     }
   
     public void testGetAlertSources() throws Exception {  

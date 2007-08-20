@@ -18,17 +18,14 @@
  */
 package org.apache.tuscany.sca.demos.aggregator;
 
-import commonj.sdo.Sequence;
-import commonj.sdo.Type;
-
 import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
-import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
 
-import org.apache.tuscany.sdo.impl.DataObjectBase;
+import commonj.sdo.Sequence;
 
 
 public class SourceTypeNonSDOImpl implements SourceType
 {
+  private static final long serialVersionUID = -4986294578888767793L;
 
   public final static int NAME = 0;
 

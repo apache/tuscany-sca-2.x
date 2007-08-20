@@ -27,12 +27,6 @@ import bigbank.demo.BigBankServer;
  */
 public class BigBankTestCase extends TestCase {
 
-    protected void setUp() throws Exception {
-    }
-
-    protected void tearDown() throws Exception {
-    }
-
     public void testServer() throws Exception {
         BigBankServer.main(new String[] {"1000"});
     }

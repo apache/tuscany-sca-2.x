@@ -23,8 +23,9 @@ import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
  
 public class AlertTypeNonSDOImpl implements AlertType
 {
+    private static final long serialVersionUID = 670364038865656196L;
 
-  /**
+/**
    * The default value of the '{@link #getTitle() <em>Title</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -313,6 +314,7 @@ public class AlertTypeNonSDOImpl implements AlertType
    * <!-- end-user-doc -->
    * @generated
    */
+  @Override
   public String toString()
   {
     StringBuffer result = new StringBuffer(super.toString());
