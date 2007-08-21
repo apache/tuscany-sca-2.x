@@ -285,14 +285,21 @@ public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, Pol
 //       policySet.setUnresolved(isUnresolved);
 //   }
   
-   private void resolvePolicies(PolicySet policySet) {
-       policySet.setUnresolved(false);
+   private void resolvePolicies(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+       boolean unresolved = false;
+       for ( Object o : policySet.getPolicies() ) {
+           extensionProcessor.resolve(o, resolver);
+           if ( o instanceof Policy && ((Policy)o).isUnresolved() ) {
+              unresolved = true;
+           }
+       }
+       policySet.setUnresolved(unresolved);
    }
    
    public void resolve(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
        if ( policySet.isUnresolved() ) {
            //resolve the policy attachments
-           resolvePolicies(policySet);
+           resolvePolicies(policySet, resolver);
             
            if ( !policySet.isUnresolved() ) {
                 resolver.addModel(policySet);
