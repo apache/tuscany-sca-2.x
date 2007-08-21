@@ -44,7 +44,13 @@ public interface RuntimeWire extends Cloneable {
      * @return The end point reference of the target
      */
     EndpointReference getTarget();
+
+    /**
+     * Rebind the runtime wire with the given target
+     * @param target The target endpoint reference
+     */
     void setTarget(EndpointReference target);
+    
     /**
      * Returns the invocation chains for service operations associated with the
      * wire

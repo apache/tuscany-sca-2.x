@@ -22,7 +22,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.StringReader;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -135,7 +134,7 @@ public abstract class CallableReferenceImpl<B> implements CallableReference<B>, 
      */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         String scdl = in.readUTF();
-        Component c = ((CompositeActivatorImpl)compositeActivator).read(new StringReader(scdl));
+        Component c = ((CompositeActivatorImpl)compositeActivator).getReferenceHelper().fromXML(scdl);
         this.component = (RuntimeComponent)c;
         this.reference = (RuntimeComponentReference)c.getReferences().get(0);
         Interface i = reference.getInterfaceContract().getInterface();
@@ -169,7 +168,7 @@ public abstract class CallableReferenceImpl<B> implements CallableReference<B>, 
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
-            String scdl = ((CompositeActivatorImpl)compositeActivator).write(component, reference);
+            String scdl = ((CompositeActivatorImpl)compositeActivator).getReferenceHelper().toXML(component, reference);
             out.writeUTF(scdl);
             StringBuffer uri = new StringBuffer(baseURI);
             boolean first = true;
