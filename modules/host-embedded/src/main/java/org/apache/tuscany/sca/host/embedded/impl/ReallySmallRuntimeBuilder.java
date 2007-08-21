@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
@@ -75,6 +76,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
@@ -145,7 +147,8 @@ public class ReallySmallRuntimeBuilder {
                                                                 ContributionFactory contributionFactory,
                                                                 AssemblyFactory assemblyFactory,
                                                                 PolicyFactory policyFactory,
-                                                                InterfaceContractMapper mapper)
+                                                                InterfaceContractMapper mapper,
+                                                                ModelResolver domainModelResolver)
         throws ActivationException {
 
         XMLInputFactory xmlFactory = registry.getExtensionPoint(XMLInputFactory.class);
@@ -198,9 +201,11 @@ public class ReallySmallRuntimeBuilder {
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
-        ContributionService contributionService =
-            new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor, contributionListener,
-                    postProcessor, modelResolvers, modelFactories, assemblyFactory, contributionFactory, xmlFactory);
+        ContributionService contributionService = 
+            new ContributionServiceImpl(repository, packageProcessor, documentProcessor,
+                                        staxProcessor, contributionListener, 
+                                        postProcessor, domainModelResolver, modelResolvers, modelFactories,
+                                        assemblyFactory, contributionFactory, xmlFactory);
         return contributionService;
     }
 
@@ -221,5 +226,20 @@ public class ReallySmallRuntimeBuilder {
 
         return scopeRegistry;
     }
+    
+    public static SCADefinitionsDocumentProcessor createSCADefinitionsDocProcessor(ExtensionPointRegistry registry,
+                                                                                   PolicyFactory policyFactory) {
+        XMLInputFactory xmlFactory = registry.getExtensionPoint(XMLInputFactory.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        ExtensibleStAXArtifactProcessor staxProcessor = 
+            new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
+        SCADefinitionsDocumentProcessor scaDocDefnProcessor = new SCADefinitionsDocumentProcessor(staxProcessors,
+                                                                                                  staxProcessor,
+                                                                                                  xmlFactory,
+                                                                                                  policyFactory);
+
+        return scaDocDefnProcessor;
+    }
+
 
 }
