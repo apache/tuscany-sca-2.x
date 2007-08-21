@@ -27,4 +27,6 @@ import javax.xml.namespace.QName;
  */
 public interface Policy {
     QName getSchemaName();
+    void setUnresolved(boolean unresolved);
+    boolean isUnresolved();
 }
