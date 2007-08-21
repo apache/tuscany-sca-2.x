@@ -20,9 +20,13 @@
 package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -31,7 +35,14 @@ import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -45,7 +56,12 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.ProfileIntent;
+import org.apache.tuscany.sca.policy.QualifiedIntent;
+import org.apache.tuscany.sca.policy.SCADefinitions;
+import org.apache.tuscany.sca.policy.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
@@ -100,13 +116,17 @@ public class ReallySmallRuntime {
         factories.addFactory(scaBindingFactory);
         ContributionFactory contributionFactory = factories.getFactory(ContributionFactory.class); 
         
+        SCADefinitionsDocumentProcessor scaDocDefnProcessor = 
+            ReallySmallRuntimeBuilder.createSCADefinitionsDocProcessor(registry, policyFactory);
+        
         // Create a contribution service
         contributionService = ReallySmallRuntimeBuilder.createContributionService(classLoader,
                                                                                   registry,
                                                                                   contributionFactory,
                                                                                   assemblyFactory,
                                                                                   policyFactory,
-                                                                                  mapper);
+                                                                                  mapper,
+                                                                                  scaDocDefnProcessor.getDomainModelResolver());
 
         // Create the ScopeRegistry
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry);
@@ -125,11 +145,29 @@ public class ReallySmallRuntime {
                                                                                 scopeRegistry,
                                                                                 workScheduler);
 
+        
         // Load the runtime modules
         modules = loadModules(registry, classLoader);
         
         // Start the runtime modules
         startModules(registry, modules);
+        
+        loadDomainDefinitions(scaDocDefnProcessor);
+    }
+    
+    private void loadDomainDefinitions(SCADefinitionsDocumentProcessor scaDocDefnProcessor) throws ActivationException {
+        URL url = this.classLoader.getResource("definitions.xml");
+        
+        if ( url != null ) {
+            try {
+                SCADefinitions scaDefinitions = scaDocDefnProcessor.read(null, null, url);
+                scaDocDefnProcessor.resolve(scaDefinitions, scaDocDefnProcessor.getDomainModelResolver());
+            } catch ( ContributionReadException e ) {
+                throw new ActivationException(e);
+            } catch ( ContributionResolveException e ) {
+                throw new ActivationException(e);
+            }
+        } 
     }
 
     public void stop() throws ActivationException {
@@ -138,7 +176,7 @@ public class ReallySmallRuntime {
         stopModules(registry, modules);
 
         // Stop and destroy the work manager
-        workScheduler.destroy();
+        workScheduler.destroy(); 
 
         // Cleanup
         modules = null;
