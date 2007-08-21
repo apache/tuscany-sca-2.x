@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ajax;
+package org.apache.tuscany.sca.binding.dwr;
 
 import java.util.Collection;
 
@@ -30,11 +30,11 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.dwr.Util;
 
-public class AjaxInvoker implements Invoker {
+public class DWRInvoker implements Invoker {
 
     protected String referenceFunction;
     
-    public AjaxInvoker(String referenceName, Operation operation) {
+    public DWRInvoker(String referenceName, Operation operation) {
         this.referenceFunction = referenceName + "." + operation.getName();
     }
 
@@ -42,7 +42,7 @@ public class AjaxInvoker implements Invoker {
 
         invoke((Object[])requestMsg.getBody());
 
-        // Ajax references can not return anything 
+        // DWR references can not return anything 
         return new MessageImpl();
     }
 

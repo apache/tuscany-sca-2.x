@@ -17,49 +17,47 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ajax;
+package org.apache.tuscany.sca.binding.dwr;
+
+import static org.apache.tuscany.sca.binding.dwr.DWRService.SERVLET_PATH;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.core.invocation.JDKProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
+import org.apache.tuscany.sca.spi.InvokerFactory;
 
-public class AjaxService implements ComponentLifecycle {
+public class DWRInvokerFactory implements InvokerFactory, ComponentLifecycle {
 
-    RuntimeComponent rc;
-    RuntimeComponentService rcs;
-    Binding binding;
+    protected RuntimeComponent runtimeComponent;
+    protected RuntimeComponentReference runtimeComponentReference;
+    protected Binding binding;
     protected ServletHost servletHost;
     
-    public static final String SERVLET_PATH = AjaxServlet.AJAX_SERVLET_PATH + "/*";
-
-    public AjaxService(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding, AjaxBinding ab, ServletHost servletHost) {
-        this.rc = rc;
-        this.rcs = rcs;
-        this.binding = binding;
+    public DWRInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, DWRBinding ab, ServletHost servletHost) {
+        this.runtimeComponent = rc;
+        this.runtimeComponentReference = rcr;
+        this.binding = b;
         this.servletHost = servletHost;
     }
 
+    public Invoker createInvoker(Operation operation) {
+        return new DWRInvoker(binding.getName(), operation);
+    }
+
     public void start() {
-        
+
         // there is no "getServlet" method on ServletHost so this has to use remove/add
 
-        AjaxServlet servlet = (AjaxServlet) servletHost.removeServletMapping(SERVLET_PATH);
+        DWRServlet servlet = (DWRServlet) servletHost.removeServletMapping(SERVLET_PATH);
         if (servlet == null) {
-            servlet = new AjaxServlet();
+            servlet = new DWRServlet();
         }
         
-        Class<?> type = ((JavaInterface)rcs.getInterfaceContract().getInterface()).getJavaClass();
-
-        // Create a Java proxy to the target service
-        ProxyFactory proxyFactory = new JDKProxyFactory();
-        Object proxy = proxyFactory.createProxy(type, rcs.getRuntimeWire(binding));
-
-        servlet.addService(binding.getName(), type, proxy);
+        servlet.addReference(binding.getName());
 
         servletHost.addServletMapping(SERVLET_PATH, servlet);
     }
