@@ -19,17 +19,23 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
 
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorld;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldRemote;
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote2;
+import org.osoa.sca.annotations.Service;
 
-public class HelloWorldClient implements HelloWorld {
+@Service(interfaces={HelloWorldServiceRemote.class, HelloWorldServiceRemote2.class, HelloWorldServiceLocal.class} )
+public class HelloWorldServiceMultipleServicesImpl implements HelloWorldServiceLocal, HelloWorldServiceRemote, HelloWorldServiceRemote2  {
 
-    @Reference
-    public HelloWorldRemote helloWorldService;
-    
-    public String getGreetings(String s) {
-        return helloWorldService.getGreetings(s);
+    public String getGreetingsLocal(String s) {
+        return "Hello " + s;
     }
+    
+    public String getGreetingsRemote(String s) {
+        return "Hello " + s;
+    }    
 
+    public String getGreetingsRemote2(String s) {
+        return "Hello " + s;
+    } 
 }

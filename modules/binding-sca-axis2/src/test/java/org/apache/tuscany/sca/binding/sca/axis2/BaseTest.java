@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 import java.net.URL;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorld;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
@@ -37,8 +37,6 @@ public class BaseTest {
     public static DistributedSCADomain distributedDomainB;
     public static EmbeddedSCADomain domainA;
     public static EmbeddedSCADomain domainB;
-    public static HelloWorld helloWorldClientA;
-    public static HelloWorld helloWorldClientB;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -122,12 +120,7 @@ public class BaseTest {
             System.err.println("Exception when creating domain " + ex.getMessage());
             ex.printStackTrace(System.err);
             throw ex;
-        }
-
-        // get a reference to the calculator service from domainA
-        // which will be running this component
-        helloWorldClientA = domainA.getService(HelloWorld.class, "HelloWorldClientRemote");
-        helloWorldClientB = domainB.getService(HelloWorld.class, "HelloWorldClientLocal");       
+        }     
 
     }
 

@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.binding.sca.axis2.helloworld;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
-public interface HelloWorldRemote {
+public interface HelloWorldServiceRemote {
     
-    public String getGreetings(String s);
+    public String getGreetingsRemote(String s);
 
 }

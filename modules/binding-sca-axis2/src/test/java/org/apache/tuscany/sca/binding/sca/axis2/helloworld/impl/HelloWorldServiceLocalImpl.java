@@ -19,11 +19,11 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
 
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldRemote;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
 
-public class HelloWorldServiceRemote implements HelloWorldRemote {
+public class HelloWorldServiceLocalImpl implements HelloWorldServiceLocal {
 
-    public String getGreetings(String s) {
+    public String getGreetingsLocal(String s) {
         return "Hello " + s;
     }
 

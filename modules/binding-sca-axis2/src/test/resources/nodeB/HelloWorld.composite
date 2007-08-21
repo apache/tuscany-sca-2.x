@@ -22,17 +22,33 @@
            xmlns:sample="http://sample"
            name="HelloWorld">
            
-    <component name="HelloWorldServiceLocal">
-        <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldService" />
-    </component>
-               
-    <component name="HelloWorldServiceRemote">
-        <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemote" />
+
+    <!-- local only wire -->
+     
+     
+    <!-- unresolved remote wire --> 
+    <component name="BHelloWorldServiceRemote">
+        <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemoteImpl" />
     </component>
     
-    <component name="HelloWorldClientLocal">
-		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClient" />
-        <reference name="helloWorldService" target="HelloWorldService" />
+    <!-- local and remote wires -->
+    <component name="BHelloWorldServiceLocalAndRemote">
+        <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemoteImpl" />
+    </component>
+    
+    <component name="BHelloWorldClientLocalAndRemote">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceLocalAndRemote" />
+    </component>
+    
+    <!-- multiple services -->
+    <component name="BHelloWorldServiceMultipleServices">
+        <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceMultipleServicesImpl" />
+    </component>
+    
+    <component name="BHelloWorldClientMultipleServices">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientLocalImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceMultipleServices/HelloWorldServiceLocal" />
     </component>
     
 </composite>
