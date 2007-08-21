@@ -41,7 +41,7 @@ public class EchoBindingClient {
 
         // Call the echo server. This will dispatch the call to a service with an 
         // echo binding. The echo binding will pass the call to the echo component.
-        echoString = EchoServer.getServer().sendReceive("EchoComponent/EchoService", "bar");
+        echoString = EchoServer.getServer().sendReceive("http://tempuri.org", "bar");
         System.out.println("Echo service = " + echoString );
         
         scaDomain.close();
