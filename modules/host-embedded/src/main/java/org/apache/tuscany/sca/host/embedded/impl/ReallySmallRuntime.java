@@ -77,6 +77,7 @@ public class ReallySmallRuntime {
     private CompositeBuilder compositeBuilder;
     private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
+    private ProxyFactory proxyFactory;
 
     public ReallySmallRuntime(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -105,7 +106,7 @@ public class ReallySmallRuntime {
         factories.addFactory(messageFactory);
 
         // Create a proxy factory
-        ProxyFactory proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, mapper, messageFactory);
+        proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, mapper, messageFactory);
 
         // Create model factories
         assemblyFactory = new RuntimeAssemblyFactory(mapper, proxyFactory);
@@ -241,6 +242,13 @@ public class ReallySmallRuntime {
         for (ModuleActivator module : modules) {
             module.stop(registry);
         }
+    }
+
+    /**
+     * @return the proxyFactory
+     */
+    public ProxyFactory getProxyFactory() {
+        return proxyFactory;
     }
 
 }

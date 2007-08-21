@@ -58,6 +58,8 @@
                 <module>properties</module>
                 <module>recursive</module>
                 <module>references</module>
+                <module>services</module>
+                <module>callablereferences</module>
                 <module>scopes</module>
                 <module>wsdl</module>
                 <module>wsdlless</module>

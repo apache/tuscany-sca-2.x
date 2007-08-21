@@ -34,6 +34,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.osoa.sca.CallableReference;
+
 /**
  * Implements various reflection-related operations
  * 
@@ -321,6 +323,32 @@ public final class JavaIntrospectionHelper {
         } else {
             return cls;
         }
+    }
+    
+    public static Type getParameterType(Type type) {
+        if (type instanceof ParameterizedType) {
+            // Collection<BaseType>
+            ParameterizedType parameterizedType = (ParameterizedType)type;
+            Type baseType = parameterizedType.getActualTypeArguments()[0];
+            return baseType;
+        } else {
+            return Object.class;
+        }
+    }
+    
+    public static Class<?> getBusinessInterface(Class<?> cls, Type callableReferenceType) {
+        if (CallableReference.class.isAssignableFrom(cls) && callableReferenceType instanceof ParameterizedType) {
+            // Collection<BaseType>
+            ParameterizedType parameterizedType = (ParameterizedType)callableReferenceType;
+            Type baseType = parameterizedType.getActualTypeArguments()[0];
+            if (baseType instanceof GenericArrayType) {
+                // Base is array
+                return cls;
+            } else {
+                return getErasure(baseType);
+            }
+        }
+        return Object.class;
     }
 
     /**

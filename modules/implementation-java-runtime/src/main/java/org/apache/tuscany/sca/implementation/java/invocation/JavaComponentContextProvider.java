@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.apache.tuscany.sca.core.invocation.CallableReferenceObjectFactory;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
@@ -54,6 +56,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.scope.InstanceWrapper;
 import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.ConversationID;
 
 /**
@@ -145,10 +148,12 @@ public class JavaComponentContextProvider {
                 if (!(element.getAnchor() instanceof Constructor)) {
                     instanceFactoryProvider.getInjectionSites().add(element);
                 }
+                ComponentReference componentReference = null;
                 List<RuntimeWire> wireList = null;
                 for (ComponentReference reference : component.getReferences()) {
                     if (reference.getName().equals(ref.getName())) {
                         wireList = ((RuntimeComponentReference)reference).getRuntimeWires();
+                        componentReference = reference;
                         break;
                     }
                 }
@@ -156,7 +161,15 @@ public class JavaComponentContextProvider {
                     List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
                     Class<?> baseType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
                     for (int i = 0; i < wireList.size(); i++) {
-                        ObjectFactory<?> factory = createWireFactory(baseType, wireList.get(i));
+                        ObjectFactory<?> factory = null;
+                        if(CallableReference.class.isAssignableFrom(baseType)) {
+                            Type callableRefType = JavaIntrospectionHelper.getParameterType(element.getGenericType());
+                            Type businessType = JavaIntrospectionHelper.getParameterType(callableRefType);
+                            Class<?> businessInterface = JavaIntrospectionHelper.getBusinessInterface(baseType, businessType);
+                            factory = new CallableReferenceObjectFactory(businessInterface, component, (RuntimeComponentReference) componentReference);
+                        } else {
+                            factory = createWireFactory(baseType, wireList.get(i));
+                        }
                         factories.add(factory);
                     }
                     instanceFactoryProvider.setObjectFactories(element, factories);
@@ -165,7 +178,16 @@ public class JavaComponentContextProvider {
                         throw new IllegalStateException("Required reference is missing: " + ref.getName());
                     }
                     if (wireList != null && !wireList.isEmpty()) {
-                        ObjectFactory<?> factory = createWireFactory(element.getType(), wireList.get(0));
+                        ObjectFactory<?> factory = null;
+                        if (CallableReference.class.isAssignableFrom(element.getType())) {
+                            Class<?> businessInterface =
+                                JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
+                            factory =
+                                new CallableReferenceObjectFactory(businessInterface, component,
+                                                                   (RuntimeComponentReference)componentReference);
+                        } else {
+                            factory = createWireFactory(element.getType(), wireList.get(0));
+                        }
                         instanceFactoryProvider.setObjectFactory(element, factory);
                     }
                 }

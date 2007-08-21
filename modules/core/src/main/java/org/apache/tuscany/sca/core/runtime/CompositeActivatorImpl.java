@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -54,7 +55,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
 import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.work.WorkScheduler;
-import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -395,10 +395,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     public void start(Component component) {
         RuntimeComponent runtimeComponent = ((RuntimeComponent)component);
-        ComponentContext componentContext =
-            new ComponentContextImpl(this, assemblyFactory, proxyFactory, interfaceContractMapper,
-                                     requestContextFactory, javaInterfaceFactory, runtimeComponent);
-        runtimeComponent.setComponentContext(componentContext);
+        configureComponentContext(runtimeComponent);
 
         for (ComponentService service : component.getServices()) {
             for (Binding binding : service.getBindings()) {
@@ -434,6 +431,16 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
 
         runtimeComponent.setStarted(true);
+    }
+
+    /**
+     * @param runtimeComponent
+     */
+    public void configureComponentContext(RuntimeComponent runtimeComponent) {
+        RuntimeComponentContext componentContext =
+            new ComponentContextImpl(this, assemblyFactory, proxyFactory, interfaceContractMapper,
+                                     requestContextFactory, javaInterfaceFactory, runtimeComponent);
+        runtimeComponent.setComponentContext(componentContext);
     }
 
     /**
@@ -659,6 +666,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
      */
     public ReferenceHelper getReferenceHelper() {
         return referenceHelper;
+    }
+
+    /**
+     * @return the proxyFactory
+     */
+    public ProxyFactory getProxyFactory() {
+        return proxyFactory;
     }
 
 }

@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
-import org.apache.tuscany.sca.core.component.ComponentContextImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -51,7 +50,7 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
     public synchronized List<RuntimeWire> getRuntimeWires() {
         if (wires == null) {
             wires = new ArrayList<RuntimeWire>();
-            ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator().activate(component, this);
+            component.getComponentContext().activate(this);
         }
         return wires;
     }
