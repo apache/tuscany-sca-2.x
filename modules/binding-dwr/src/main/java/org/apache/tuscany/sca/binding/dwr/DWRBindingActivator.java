@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ajax;
+package org.apache.tuscany.sca.binding.dwr;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.http.ServletHost;
@@ -28,24 +28,24 @@ import org.apache.tuscany.sca.spi.BindingActivator;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;
 import org.apache.tuscany.sca.spi.InvokerFactory;
 
-public class AjaxBindingActivator implements BindingActivator<AjaxBinding>{
+public class DWRBindingActivator implements BindingActivator<DWRBinding>{
 
     private ServletHost servletHost;
     
-    public AjaxBindingActivator(ServletHost servletHost) {
+    public DWRBindingActivator(ServletHost servletHost) {
         this.servletHost = servletHost;
     }
 
-    public Class<AjaxBinding> getBindingClass() {
-        return AjaxBinding.class;
+    public Class<DWRBinding> getBindingClass() {
+        return DWRBinding.class;
     }
 
-    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, AjaxBinding ab) {
-        return new AjaxInvokerFactory(rc, rcr, b, ab, servletHost);
+    public InvokerFactory createInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, DWRBinding ab) {
+        return new DWRInvokerFactory(rc, rcr, b, ab, servletHost);
     }
 
-    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding b, AjaxBinding ab) {
-        return new AjaxService(rc, rcs, b, ab, servletHost);
+    public ComponentLifecycle createService(RuntimeComponent rc, RuntimeComponentService rcs, Binding b, DWRBinding ab) {
+        return new DWRService(rc, rcs, b, ab, servletHost);
     }
 
 }

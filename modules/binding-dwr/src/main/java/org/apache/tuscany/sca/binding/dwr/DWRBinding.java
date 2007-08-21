@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ajax;
+package org.apache.tuscany.sca.binding.dwr;
 
 
 
@@ -25,7 +25,7 @@ package org.apache.tuscany.sca.binding.ajax;
 /**
  * The runtime representation of the <binding.dwr> SCDL
  */
-public class AjaxBinding {
+public class DWRBinding {
 
     // Empty as <binding.dwr> doesn't use any additional attributes or elements (yet).
     

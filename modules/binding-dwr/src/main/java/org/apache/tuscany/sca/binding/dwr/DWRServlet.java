@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ajax;
+package org.apache.tuscany.sca.binding.dwr;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,12 +57,12 @@ import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.servlet.UrlProcessor;
 
 /**
- * Tuscany customized DWR Servlet to implement support for the Ajax binding
+ * Tuscany customized DWR Servlet to implement support for the DWR binding
  * 
- * Handles requests for SCA services and references that use <binding.ajax>,
- * and also the HTTP GET for the Tuscany ajax system script "scaDomain.js"  
+ * Handles requests for SCA services and references that use <binding.dwr>,
+ * and also the HTTP GET for the Tuscany DWR system script "scaDomain.js"  
  */
-public class AjaxServlet extends DwrServlet {
+public class DWRServlet extends DwrServlet {
     private static final long serialVersionUID = 1L;
 
     transient protected Map<String, ServiceHolder> services;
@@ -73,12 +73,12 @@ public class AjaxServlet extends DwrServlet {
     protected static final String SCADOMAIN_SCRIPT_PATH = "/scaDomain.js";
     public static final String AJAX_SERVLET_PATH = "/SCADomain";
 
-    public AjaxServlet() {
+    public DWRServlet() {
         this.services = new HashMap<String, ServiceHolder>();
         this.referenceNames = new ArrayList<String>();
 
         this.initParams = new HashMap<String, String>();
-        // maybe use <binding.ajax> attributes to define the init params
+        // maybe use <binding.dwr> attributes to define the init params
         initParams.put("activeReverseAjaxEnabled", "true");
     }
 
