@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.runtime.ActivationException;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.core.runtime.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.work.ThreadPoolWorkManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
@@ -48,6 +47,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
+import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntime {
 
@@ -59,7 +59,7 @@ public class ReallySmallRuntime {
     private ContributionService contributionService;
     private CompositeActivator compositeActivator;
     private CompositeBuilder compositeBuilder;
-    private ThreadPoolWorkManager workManager;
+    private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
 
     public ReallySmallRuntime(ClassLoader classLoader) {
@@ -71,8 +71,8 @@ public class ReallySmallRuntime {
         // Create our extension point registry
         registry = new DefaultExtensionPointRegistry();
 
-        // Create a work manager
-        workManager = new ThreadPoolWorkManager(10);
+//      Get work scheduler
+        workScheduler = registry.getExtensionPoint(WorkScheduler.class);
 
         // Create an interface contract mapper
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
@@ -123,7 +123,7 @@ public class ReallySmallRuntime {
                                                                                 mapper,
                                                                                 proxyFactory,
                                                                                 scopeRegistry,
-                                                                                workManager);
+                                                                                workScheduler);
 
         // Load the runtime modules
         modules = loadModules(registry, classLoader);
@@ -138,7 +138,7 @@ public class ReallySmallRuntime {
         stopModules(registry, modules);
 
         // Stop and destroy the work manager
-        workManager.destroy();
+        workScheduler.destroy();
 
         // Cleanup
         modules = null;
@@ -146,7 +146,7 @@ public class ReallySmallRuntime {
         assemblyFactory = null;
         contributionService = null;
         compositeActivator = null;
-        workManager = null;
+        workScheduler = null;
         scopeRegistry = null;
     }
 
