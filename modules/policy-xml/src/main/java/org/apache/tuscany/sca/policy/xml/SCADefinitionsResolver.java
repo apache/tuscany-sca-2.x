@@ -29,25 +29,25 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  */
 public class SCADefinitionsResolver implements ModelResolver {
     private Map<Object, Object> map = new HashMap<Object, Object>();
-    
+
     public SCADefinitionsResolver() {
     }
 
     public void addModel(Object resolved) {
         map.put(resolved, resolved);
     }
-    
+
     public Object removeModel(Object resolved) {
         return map.remove(resolved);
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        Object resolved =  map.get(unresolved);
+        Object resolved = map.get(unresolved);
         if (resolved != null) {
             return (T)resolved;
         }
 
-        return unresolved;
+        return null;
     }
 }
