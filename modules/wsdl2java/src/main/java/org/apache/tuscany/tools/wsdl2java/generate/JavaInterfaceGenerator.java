@@ -295,9 +295,9 @@ public class JavaInterfaceGenerator {
             stream.println();
             stream.println("public class " + faultWrapperClassName  + " extends Exception {");
             stream.println();
-            stream.println("    private " + faultClassName + " fault;");
+            stream.println("    private " + faultWrapperClassName + " fault;");
             stream.println();
-            stream.println("    public " + faultWrapperClassName + "(String message, " + faultClassName + " fault, Throwable cause) {");
+            stream.println("    public " + faultWrapperClassName + "(String message, " + faultWrapperClassName + " fault, Throwable cause) {");
             stream.println("        super(message, cause);");
             stream.println("        this.fault = fault;");
             stream.println("    }");
@@ -305,7 +305,7 @@ public class JavaInterfaceGenerator {
             stream.println("    public static QName FAULT_ELEMENT = new QName(\"" + faultMsgPartElementQName.getNamespaceURI() + 
                     "\",\"" + faultMsgPartElementQName.getLocalPart() + "\");");
             stream.println();
-            stream.println("    public " + faultClassName + " getFaultInfo() {");
+            stream.println("    public " + faultWrapperClassName + " getFaultInfo() {");
             stream.println("        return this.fault;");
             stream.println("    }");
             stream.println("}");
