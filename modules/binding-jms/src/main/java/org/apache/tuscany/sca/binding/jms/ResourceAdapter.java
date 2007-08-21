@@ -17,13 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
-
-import java.util.List;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
+ * Specifies name, type and properties of the Resource Adapter Java bean. This is required 
+ * when the JMS resources are to be created for a JCA 1.5-compliant JMS provider, and is 
+ * ignored otherwise. There may be a restriction, depending on the deployment platform, 
+ * about specifying properties of the RA Java Bean. For non-JCA 1.5-compliant JMS providers, 
+ * information necessary for resource creation must be done in provider-specific elements or 
+ * attributes allowed by the extensibility of the binding.jms element.
+ * 
  * @version $Rev$ $Date$
  */
-public interface Definitions {
-    List<JMSBinding> getBindings();
+public interface ResourceAdapter extends PropertyList {
+    String getName();
+
+    void setName(String name);
 }

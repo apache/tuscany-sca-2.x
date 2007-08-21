@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.binding.jms.JMSBindingProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.jms,model=org.apache.tuscany.sca.binding.jms.JMSBinding
+org.apache.tuscany.sca.binding.jms.impl.JMSBindingProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.jms,model=org.apache.tuscany.sca.binding.jms.impl.JMSBinding

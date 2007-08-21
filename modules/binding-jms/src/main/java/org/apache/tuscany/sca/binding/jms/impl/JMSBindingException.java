@@ -16,32 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.binding.jms.impl;
 
-package org.apache.tuscany.sca.binding.jms.model;
+public class JMSBindingException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-/**
- * The factory to create the JMS binding model objects
- * 
- * @version $Rev$ $Date$
- */
-public interface JMSBindingFactory {
-    JMSBinding createJMSBinding();
+    public JMSBindingException() {
+        super();
+    }
 
-    ActivationSpec createActivationSpec();
+    public JMSBindingException(String arg0, Throwable arg1) {
+        super(arg0, arg1);
+    }
 
-    ConnectionFactory createConnectionFactory();
+    public JMSBindingException(String arg0) {
+        super(arg0);
+    }
 
-    ConnectionInfo createConnectionInfo();
+    public JMSBindingException(Throwable arg0) {
+        super(arg0);
+    }
 
-    Definitions createDefinitions();
-
-    Destination createDestination();
-
-    Headers createHeaders();
-
-    OperationProperties createOperationProperties();
-
-    Property createProperty();
-
-    ResourceAdapter createResourceAdapter();
 }

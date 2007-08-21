@@ -17,14 +17,31 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
+ * The factory to create the JMS binding model objects
+ * 
  * @version $Rev$ $Date$
  */
-public interface ActivationSpec extends PropertyList {
-    String getName();
-    void setName(String name);
-    CreateResource getCreate();
-    void setCreate(CreateResource create);
+public interface JMSBindingFactory {
+    JMSBinding createJMSBinding();
+
+    ActivationSpec createActivationSpec();
+
+    ConnectionFactory createConnectionFactory();
+
+    ConnectionInfo createConnectionInfo();
+
+    Definitions createDefinitions();
+
+    Destination createDestination();
+
+    Headers createHeaders();
+
+    OperationProperties createOperationProperties();
+
+    Property createProperty();
+
+    ResourceAdapter createResourceAdapter();
 }

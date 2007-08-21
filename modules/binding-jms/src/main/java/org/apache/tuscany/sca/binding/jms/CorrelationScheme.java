@@ -17,30 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
- * Identifies the destination that is to be used to process requests/responses by this 
- * binding.
- * 
  * @version $Rev$ $Date$
  */
-public interface Destination extends PropertyList {
-    /**
-     * The name of the destination to which the binding is connected. This may be a JNDI 
-     * name or a plain destination name
-     * 
-     * @return
-     */
-    String getName();
-
-    void setName(String name);
-
-    DestinationType getType();
-
-    void setType(DestinationType type);
-
-    CreateResource getCreate();
-
-    void setCreate(CreateResource create);
+public enum CorrelationScheme {
+    RequestMsgIDToCorrelID, RequestCorrelIDToCorrelID, None
 }

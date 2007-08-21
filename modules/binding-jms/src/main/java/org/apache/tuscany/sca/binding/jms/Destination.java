@@ -17,34 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
- * this element allows JMS headers to be set to the given values for all
- * operations. These values apply to requests from a reference and responses
- * from a service.
+ * Identifies the destination that is to be used to process requests/responses by this 
+ * binding.
  * 
  * @version $Rev$ $Date$
  */
-public interface Headers extends PropertyList {
-    String getJMSType();
+public interface Destination extends PropertyList {
+    /**
+     * The name of the destination to which the binding is connected. This may be a JNDI 
+     * name or a plain destination name
+     * 
+     * @return
+     */
+    String getName();
 
-    void setJMSType(String jmsType);
+    void setName(String name);
 
-    String getJMSCorrelationId();
+    DestinationType getType();
 
-    void setJMSCorrelationId(String jmsCorrelationId);
+    void setType(DestinationType type);
 
-    String getJMSDeliveryMode();
+    CreateResource getCreate();
 
-    void setJMSDeliveryMode(String jmsDeliveryMode);
-
-    String getJMSTimeToLive();
-
-    void setJMSTimeToLive(String jmsTimeToLive);
-
-    String getJMSPriority();
-
-    void setJMSPriority(String jmsPriority);
-
+    void setCreate(CreateResource create);
 }

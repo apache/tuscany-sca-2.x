@@ -16,25 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.binding.jms;
 
-public class JMSBindingException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+/**
+ * Specifies various properties that are specific to the processing of a particular 
+ * operation.
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface OperationProperties extends PropertyList {
+    Headers getHeaders();
 
-    public JMSBindingException() {
-        super();
-    }
+    void setHeaders(Headers headers);
 
-    public JMSBindingException(String arg0, Throwable arg1) {
-        super(arg0, arg1);
-    }
+    String getNativeOperation();
 
-    public JMSBindingException(String arg0) {
-        super(arg0);
-    }
-
-    public JMSBindingException(Throwable arg0) {
-        super(arg0);
-    }
-
+    void setNativeOperation(String nativeOperation);
 }

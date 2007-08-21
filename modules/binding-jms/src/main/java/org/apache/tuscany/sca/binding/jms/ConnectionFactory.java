@@ -17,16 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
- * Indicates whether the destination should be created when the containing composite is 
- * deployed. Valid values are "always", "never" and "ifnotexist". The default value is 
- * "ifnotexist". If "always" is specified and the corresponding resource already exists, 
- * then this should be considered an error
  * 
  * @version $Rev$ $Date$
  */
-public enum CreateResource {
-    ALWAYS, NEVER, IFNOTEXIST
+public interface ConnectionFactory extends PropertyList {
+    String getName();
+    void setName(String name);
+    CreateResource getCreate();
+    void setCreate(CreateResource create);
 }

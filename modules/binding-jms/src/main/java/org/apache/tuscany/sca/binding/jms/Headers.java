@@ -17,15 +17,34 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
-
-import java.util.List;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
- * A list of properties
+ * this element allows JMS headers to be set to the given values for all
+ * operations. These values apply to requests from a reference and responses
+ * from a service.
  * 
  * @version $Rev$ $Date$
  */
-public interface PropertyList {
-    List<Property> getProperties();
+public interface Headers extends PropertyList {
+    String getJMSType();
+
+    void setJMSType(String jmsType);
+
+    String getJMSCorrelationId();
+
+    void setJMSCorrelationId(String jmsCorrelationId);
+
+    String getJMSDeliveryMode();
+
+    void setJMSDeliveryMode(String jmsDeliveryMode);
+
+    String getJMSTimeToLive();
+
+    void setJMSTimeToLive(String jmsTimeToLive);
+
+    String getJMSPriority();
+
+    void setJMSPriority(String jmsPriority);
+
 }
