@@ -17,3 +17,5 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://echo#binding.echo,model=echo.EchoBinding,factory=echo.EchoBindingFactory
+echo.provider.policy.EchoBindingEncryptionPolicyProcessor;qname=http://sample/policy#echoBindingPolicy,model=echo.provider.policy.EchoBindingEncryptionPolicy
+org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://schemas.xmlsoap.org/ws/2004/09/policy#PolicyAttachment,model=echo.provider.policy.WSPolicy

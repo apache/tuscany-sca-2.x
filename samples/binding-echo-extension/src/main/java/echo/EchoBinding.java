@@ -20,9 +20,11 @@
 package echo;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A model for the sample Echo binding.
  */
-public interface EchoBinding extends Binding {
+public interface EchoBinding extends Binding, PolicySetAttachPoint {
+    
 }
