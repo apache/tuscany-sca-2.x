@@ -38,6 +38,7 @@ public class ExtensibleModelResolver implements ModelResolver {
     private final Contribution contribution;
     private final Map<Class<?>, ModelResolver> resolverInstances = new HashMap<Class<?>, ModelResolver>();
     private Map<Object, Object> map = new HashMap<Object, Object>();
+    private ModelResolver domainResolver = null;
 
     /**
      * Constructs an extensible model resolver
@@ -120,13 +121,25 @@ public class ExtensibleModelResolver implements ModelResolver {
         if (resolver != null) {
             return resolver.resolveModel(modelClass, unresolved);
         } else {
-            Object resolved = map.get(unresolved);
-            if (resolved != null) {
-                // Return the resolved object
-                return modelClass.cast(resolved);
+            if ( domainResolver != null ) {
+                return domainResolver.resolveModel(modelClass, unresolved);
+            } else {
+                Object resolved = map.get(unresolved);
+                if (resolved != null) {
+                    // Return the resolved object
+                    return modelClass.cast(resolved);
+                }
             }
         }
         
         return unresolved;
+    }
+
+    public ModelResolver getDomainResolver() {
+        return domainResolver;
+    }
+
+    public void setDomainResolver(ModelResolver domainResolver) {
+        this.domainResolver = domainResolver;
     }
 }
