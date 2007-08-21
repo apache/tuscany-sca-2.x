@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.runtime;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
-import org.osoa.sca.ComponentContext;
 
 /**
  * The runtime component interface. Provides the bridge between the
@@ -36,24 +35,25 @@ public interface RuntimeComponent extends Component {
      * @param implementationProvider The object that manages the component implementation
      */
     void setImplementationProvider(ImplementationProvider implementationProvider);
-    
+
     /**
      * Get the implementation-specific configuation for this component
      * @return The implementation provider for this component
      */
     ImplementationProvider getImplementationProvider();
-    
+
     /**
      * Get the associated component context
      * @return
      */
-    ComponentContext getComponentContext();
+    RuntimeComponentContext getComponentContext();
+
     /**
      * Set the associated component context
      * @param context
      */
-    void setComponentContext(ComponentContext context);
-    
+    void setComponentContext(RuntimeComponentContext context);
+
     /**
      * Tests if the RuntimeComponent is started
      * @return true if the RuntimeComponent is started otherwise false

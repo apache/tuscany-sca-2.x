@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.core.component;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +44,10 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
@@ -53,7 +57,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class ComponentContextImpl implements ComponentContext {
+public class ComponentContextImpl implements RuntimeComponentContext {
     private final RuntimeComponent component;
 
     private final CompositeActivator compositeActivator;
@@ -95,7 +99,7 @@ public class ComponentContextImpl implements ComponentContext {
         try {
             for (ComponentReference ref : component.getReferences()) {
                 if (referenceName.equals(ref.getName())) {
-                    return getServiceReference(businessInterface, ref);
+                    return getServiceReference(businessInterface, (RuntimeComponentReference)ref);
                 }
             }
             throw new ServiceRuntimeException("Reference not found: " + referenceName);
@@ -119,7 +123,7 @@ public class ComponentContextImpl implements ComponentContext {
         List<ComponentService> services = component.getServices();
         List<ComponentService> regularServices = new ArrayList<ComponentService>();
         for (ComponentService service : services) {
-            if(service.isCallback()) {
+            if (service.isCallback()) {
                 continue;
             }
             String name = service.getName();
@@ -174,21 +178,24 @@ public class ComponentContextImpl implements ComponentContext {
      * @throws CloneNotSupportedException
      * @throws InvalidInterfaceException
      */
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, ComponentReference reference)
-        throws CloneNotSupportedException, InvalidInterfaceException {
-        RuntimeComponentReference ref = (RuntimeComponentReference) reference;
-        InterfaceContract interfaceContract = reference.getInterfaceContract();
-        Reference componentTypeReference = reference.getReference();
-        if (componentTypeReference != null && componentTypeReference.getInterfaceContract() != null) {
-            interfaceContract = componentTypeReference.getInterfaceContract();
+    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, RuntimeComponentReference reference) {
+        try {
+            RuntimeComponentReference ref = (RuntimeComponentReference)reference;
+            InterfaceContract interfaceContract = reference.getInterfaceContract();
+            Reference componentTypeReference = reference.getReference();
+            if (componentTypeReference != null && componentTypeReference.getInterfaceContract() != null) {
+                interfaceContract = componentTypeReference.getInterfaceContract();
+            }
+            InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
+            if (refInterfaceContract != interfaceContract) {
+                ref = (RuntimeComponentReference)reference.clone();
+                ref.setInterfaceContract(interfaceContract);
+            }
+            ref.setComponent(component);
+            return new ServiceReferenceImpl<B>(businessInterface, component, ref, proxyFactory, compositeActivator);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
         }
-        InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
-        if (refInterfaceContract != interfaceContract) {
-            ref = (RuntimeComponentReference)reference.clone();
-            ref.setInterfaceContract(interfaceContract);
-        }
-        ref.setComponent(component);
-        return new ServiceReferenceImpl<B>(businessInterface, component, ref, proxyFactory);
     }
 
     /**
@@ -202,38 +209,41 @@ public class ComponentContextImpl implements ComponentContext {
      * @throws InvalidInterfaceException
      */
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
-                                                       ComponentReference reference,
-                                                       ComponentService service) throws CloneNotSupportedException,
-        InvalidInterfaceException {
-        RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
-        InterfaceContract interfaceContract = reference.getInterfaceContract();
-        Reference componentTypeReference = reference.getReference();
-        if (componentTypeReference != null && componentTypeReference.getInterfaceContract() != null) {
-            interfaceContract = componentTypeReference.getInterfaceContract();
-        }
-        InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
-        if (refInterfaceContract != interfaceContract) {
-            ref = (RuntimeComponentReference)reference.clone();
-            ref.setInterfaceContract(interfaceContract);
-        }
-        ref.setComponent(component);
-        ref.getTargets().add(service);
-        ref.getBindings().clear();
-        for (Binding binding : service.getBindings()) {
-            if (binding instanceof WireableBinding) {
-                WireableBinding wireableBinding = (WireableBinding)((WireableBinding)binding).clone();
-                wireableBinding.setTargetBinding(binding);
-                wireableBinding.setTargetComponent(component);
-                wireableBinding.setTargetComponentService(service);
-                wireableBinding.setRemote(false);
-                ref.getBindings().add(wireableBinding);
-            } else {
-                ref.getBindings().add(binding);
+                                                       RuntimeComponentReference reference,
+                                                       RuntimeComponent component,
+                                                       RuntimeComponentService service) {
+        try {
+            RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
+            InterfaceContract interfaceContract = reference.getInterfaceContract();
+            Reference componentTypeReference = reference.getReference();
+            if (componentTypeReference != null && componentTypeReference.getInterfaceContract() != null) {
+                interfaceContract = componentTypeReference.getInterfaceContract();
             }
-        }        
-        return new ServiceReferenceImpl<B>(businessInterface, component, ref, proxyFactory);
+            InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
+            if (refInterfaceContract != interfaceContract) {
+                ref = (RuntimeComponentReference)reference.clone();
+                ref.setInterfaceContract(interfaceContract);
+            }
+            ref.getTargets().add(service);
+            ref.getBindings().clear();
+            for (Binding binding : service.getBindings()) {
+                if (binding instanceof WireableBinding) {
+                    WireableBinding wireableBinding = (WireableBinding)((WireableBinding)binding).clone();
+                    wireableBinding.setTargetBinding(binding);
+                    wireableBinding.setTargetComponent(component);
+                    wireableBinding.setTargetComponentService(service);
+                    wireableBinding.setRemote(false);
+                    ref.getBindings().add(wireableBinding);
+                } else {
+                    ref.getBindings().add(binding);
+                }
+            }
+            return new ServiceReferenceImpl<B>(businessInterface, component, ref, proxyFactory, compositeActivator);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
-    
+
     /**
      * Create a self-reference for a component service
      * @param component
@@ -303,5 +313,28 @@ public class ComponentContextImpl implements ComponentContext {
      */
     public CompositeActivator getCompositeActivator() {
         return compositeActivator;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#activate(org.apache.tuscany.sca.runtime.RuntimeComponentReference)
+     */
+    public void activate(RuntimeComponentReference reference) {
+        compositeActivator.activate(component, reference);
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#read(java.io.Reader)
+     */
+    public RuntimeComponent read(Reader reader) throws IOException {
+        RuntimeComponent component = compositeActivator.getReferenceHelper().read(reader);
+        compositeActivator.configureComponentContext(component);
+        return component;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#write(org.apache.tuscany.sca.runtime.RuntimeComponentReference, java.io.Writer)
+     */
+    public void write(RuntimeComponentReference reference, Writer writer) throws IOException {
+        compositeActivator.getReferenceHelper().write(component, reference, writer);
     }
 }

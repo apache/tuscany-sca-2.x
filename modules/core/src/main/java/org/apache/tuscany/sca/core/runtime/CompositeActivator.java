@@ -21,8 +21,11 @@ package org.apache.tuscany.sca.core.runtime;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.core.component.ReferenceHelper;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * Start/stop a composite
@@ -42,6 +45,28 @@ public interface CompositeActivator {
      * @param ref
      */
     void activate(RuntimeComponent component, RuntimeComponentReference ref);
+    
+    /**
+     * Activate a component reference
+     * @param component
+     * @param ref
+     */
+    void activate(RuntimeComponent component, RuntimeComponentService service);
+
+    /**
+     * De-activate a component reference
+     * @param component
+     * @param ref
+     */
+    void deactivate(RuntimeComponent component, RuntimeComponentReference ref);
+    
+    /**
+     * De-activate a component reference
+     * @param component
+     * @param ref
+     */
+    void deactivate(RuntimeComponent component, RuntimeComponentService service);
+    
     /**
      * Stop a composite
      * @param composite
@@ -71,5 +96,9 @@ public interface CompositeActivator {
      * @param composite
      */
     void stop(Composite composite) throws ActivationException;
+    
+    ReferenceHelper getReferenceHelper();
+    ProxyFactory getProxyFactory();
+    void configureComponentContext(RuntimeComponent component);
 
 }

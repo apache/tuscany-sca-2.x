@@ -43,11 +43,15 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -148,9 +152,9 @@ public class ReferenceHelper {
      * @throws InvalidInterfaceException
      */
     public RuntimeComponentReference bindComponentReference(Class<?> businessInterface,
-                                                          RuntimeComponentReference reference,
-                                                          RuntimeComponent component,
-                                                          RuntimeComponentService service)
+                                                            RuntimeComponentReference reference,
+                                                            RuntimeComponent component,
+                                                            RuntimeComponentService service)
         throws CloneNotSupportedException, InvalidInterfaceException {
         RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
         InterfaceContract interfaceContract = reference.getInterfaceContract();
@@ -181,7 +185,7 @@ public class ReferenceHelper {
         return ref;
     }
 
-    public void marshal(Component component, ComponentReference reference, Writer writer) throws IOException {
+    public void write(Component component, ComponentReference reference, Writer writer) throws IOException {
         try {
             StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
             Composite composite = assemblyFactory.createComposite();
@@ -202,24 +206,55 @@ public class ReferenceHelper {
 
     public String toXML(Component component, ComponentReference reference) throws IOException {
         StringWriter writer = new StringWriter();
-        marshal(component, reference, writer);
+        write(component, reference, writer);
         return writer.toString();
     }
 
-    public Component unmarshal(Reader reader) throws IOException {
+    public RuntimeComponent read(Reader reader) throws IOException {
         try {
             StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             XMLStreamReader streamReader = inputFactory.createXMLStreamReader(reader);
             Composite composite = processor.read(streamReader);
-            return composite.getComponents().get(0);
+            RuntimeComponent component = (RuntimeComponent)composite.getComponents().get(0);
+            return component;
         } catch (Exception e) {
             throw new IOException(e.getMessage());
         }
     }
 
     public Component fromXML(String xml) throws IOException {
-        return unmarshal(new StringReader(xml));
+        return read(new StringReader(xml));
+    }
+
+    public static RuntimeComponent getCurrentComponent() {
+        Message message = ThreadMessageContext.getMessageContext();
+        if (message != null) {
+            EndpointReference to = message.getTo();
+            if (to == null) {
+                return null;
+            }
+            RuntimeComponent component = message.getTo().getComponent();
+            return component;
+        }
+        return null;
+    }
+    
+    public static CompositeActivator getCurrentCompositeActivator() {
+        RuntimeComponent component = getCurrentComponent();
+        if (component != null) {
+            ComponentContextImpl context = (ComponentContextImpl)component.getComponentContext();
+            return context.getCompositeActivator();
+        }
+        return null;
+    }
+    
+    public static ReferenceHelper getCurrentReferenceHelper() {
+        CompositeActivator activator = getCurrentCompositeActivator();
+        if (activator != null) {
+            return activator.getReferenceHelper();
+        }
+        return null;
     }
 
 }

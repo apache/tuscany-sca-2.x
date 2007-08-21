@@ -23,15 +23,15 @@ import org.apache.tuscany.sca.assembly.impl.ComponentImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.scope.ScopeContainer;
 import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
-import org.osoa.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RuntimeComponentImpl extends ComponentImpl implements RuntimeComponent, ScopedRuntimeComponent {
-    protected ComponentContext componentContext;
+    protected RuntimeComponentContext componentContext;
     protected ImplementationProvider implementationProvider;
     protected ProxyFactory proxyService;
     protected ScopeContainer scopeContainer;
@@ -72,14 +72,14 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     /**
      * @return the componentContext
      */
-    public ComponentContext getComponentContext() {
+    public RuntimeComponentContext getComponentContext() {
         return componentContext;
     }
 
     /**
      * @param componentContext the componentContext to set
      */
-    public void setComponentContext(ComponentContext componentContext) {
+    public void setComponentContext(RuntimeComponentContext componentContext) {
         this.componentContext = componentContext;
     }
 }

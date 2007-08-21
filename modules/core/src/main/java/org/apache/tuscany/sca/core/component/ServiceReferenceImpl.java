@@ -23,6 +23,7 @@ import java.util.UUID;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
+import org.apache.tuscany.sca.core.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.Conversation;
@@ -39,19 +40,25 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
 
     protected transient Object callback;
 
+    public ServiceReferenceImpl() {
+        super();
+    }
+    
     public ServiceReferenceImpl(Class<B> businessInterface,
                                 RuntimeComponent component,
                                 RuntimeComponentReference reference,
-                                ProxyFactory proxyFactory) {
-        super(businessInterface, component, reference, null, proxyFactory);
+                                ProxyFactory proxyFactory,
+                                CompositeActivator compositeActivator) {
+        super(businessInterface, component, reference, null, proxyFactory, compositeActivator);
     }
 
     public ServiceReferenceImpl(Class<B> businessInterface,
                                 RuntimeComponent component,
                                 RuntimeComponentReference reference,
                                 Binding binding,
-                                ProxyFactory proxyFactory) {
-        super(businessInterface, component, reference, binding, proxyFactory);
+                                ProxyFactory proxyFactory,
+                                CompositeActivator compositeActivator) {
+        super(businessInterface, component, reference, binding, proxyFactory, compositeActivator);
     }
 
     public ServiceReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {

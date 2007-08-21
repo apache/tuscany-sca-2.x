@@ -313,8 +313,7 @@ public class DefaultSCADomain extends SCADomain {
 
     @Override
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        return null;
+        return (R) runtime.getProxyFactory().cast(target);
     }
 
     @Override
