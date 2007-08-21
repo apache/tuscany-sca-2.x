@@ -22,9 +22,38 @@
            xmlns:sample="http://sample"
            name="HelloWorld">
 
-    <component name="HelloWorldClientRemote">
-		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClient" />
-        <reference name="helloWorldService" target="HelloWorldServiceRemote" />
+    <!-- local only wire -->
+    <component name="AHelloWorldClientLocal">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientLocalImpl" />
+        <reference name="helloWorldService" target="AHelloWorldServiceLocal" />
     </component>
+    
+    <component name="AHelloWorldServiceLocal">
+        <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceLocalImpl" />
+    </component> 
+    
+    <!-- unresolved remote wire -->   
+    <component name="AHelloWorldClientRemote">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceRemote" />
+    </component>
+    
+    <!-- local and remote wires -->    
+    <component name="AHelloWorldClientLocalAndRemote">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceLocalAndRemote" />
+    </component>  
+    
+    <!-- multiple services -->
+    <component name="AHelloWorldClientMultipleServices">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceMultipleServices/HelloWorldServiceRemote" />
+    </component>  
+    
+    <component name="AHelloWorldClientMultipleServices2">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemote2Impl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceMultipleServices/HelloWorldServiceRemote2" />
+    </component> 
+    
 
 </composite>

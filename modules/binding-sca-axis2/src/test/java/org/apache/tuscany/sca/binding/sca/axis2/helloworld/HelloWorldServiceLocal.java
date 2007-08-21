@@ -17,14 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
+package org.apache.tuscany.sca.binding.sca.axis2.helloworld;
 
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorld;
 
-public class HelloWorldService implements HelloWorld {
-
-    public String getGreetings(String s) {
-        return "Hello " + s;
-    }
+public interface HelloWorldServiceLocal {
+    
+    public String getGreetingsLocal(String s);
 
 }

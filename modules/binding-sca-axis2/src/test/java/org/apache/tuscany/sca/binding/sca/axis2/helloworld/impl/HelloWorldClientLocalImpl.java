@@ -17,11 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca.axis2.helloworld;
+package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
 
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote;
+import org.osoa.sca.annotations.Reference;
 
-public interface HelloWorld {
+public class HelloWorldClientLocalImpl implements HelloWorldClient {
+
+    @Reference
+    public HelloWorldServiceLocal helloWorldService;
     
-    public String getGreetings(String s);
+    public String getGreetings(String s) {
+        return helloWorldService.getGreetingsLocal(s);
+    }
 
 }
