@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.axis2.Axis2ReferenceBindingProvider;
-import org.apache.tuscany.sca.binding.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
+import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
