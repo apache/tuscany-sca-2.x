@@ -72,6 +72,9 @@ public class JettyServerTestCase extends TestCase {
         public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
             scheduleWork(work);
         }
+
+        public void destroy() {
+        }
     };
 
     /**

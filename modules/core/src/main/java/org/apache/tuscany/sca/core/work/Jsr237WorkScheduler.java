@@ -40,18 +40,15 @@ public class Jsr237WorkScheduler implements WorkScheduler {
     /**
      * Underlying JSR-237 work manager
      */
-    private WorkManager jsr237WorkManager;
+    private ThreadPoolWorkManager jsr237WorkManager;
 
     /**
      * Initializes the JSR 237 work manager.
      *
      * @param jsr237WorkManager JSR 237 work manager.
      */
-    public Jsr237WorkScheduler(WorkManager jsr237WorkManager) {
-        if (jsr237WorkManager == null) {
-            throw new IllegalArgumentException("Work manager cannot be null");
-        }
-        this.jsr237WorkManager = jsr237WorkManager;
+    public Jsr237WorkScheduler() {
+        jsr237WorkManager = new ThreadPoolWorkManager(10);
     }
 
     /**
@@ -95,6 +92,10 @@ public class Jsr237WorkScheduler implements WorkScheduler {
             throw new WorkSchedulerException(ex);
         }
 
+    }
+
+    public void destroy() {
+        jsr237WorkManager.destroy();
     }
 
     /*

@@ -71,7 +71,6 @@ import org.apache.tuscany.sca.core.scope.ConversationalScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
-import org.apache.tuscany.sca.core.work.Jsr237WorkScheduler;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -82,8 +81,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.scope.ScopeRegistry;
 import org.apache.tuscany.sca.work.WorkScheduler;
-
-import commonj.work.WorkManager;
 
 public class ReallySmallRuntimeBuilder {
 
@@ -106,12 +103,7 @@ public class ReallySmallRuntimeBuilder {
                                                               InterfaceContractMapper mapper,
                                                               ProxyFactory proxyFactory,
                                                               ScopeRegistry scopeRegistry,
-                                                              WorkManager workManager) {
-
-        // Create a work scheduler
-        //FIXME Pass the work scheduler differently as it's not an extension point
-        WorkScheduler workScheduler = new Jsr237WorkScheduler(workManager);
-        registry.addExtensionPoint(workScheduler);
+                                                              WorkScheduler workScheduler) {
 
         // Create a wire post processor extension point
         RuntimeWireProcessorExtensionPoint wireProcessors = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);

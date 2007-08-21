@@ -49,4 +49,9 @@ public interface WorkScheduler {
      */
     <T extends Runnable>void scheduleWork(T work);
 
+    /**
+     * Destroys the work scheduler
+     */
+    void destroy();
+
 }
