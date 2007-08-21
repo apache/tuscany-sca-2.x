@@ -63,6 +63,13 @@ public class MockPolicyProcessor implements StAXArtifactProcessor<Policy> {
         public QName getSchemaName() {
             return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
         }
+
+        public boolean isUnresolved() {
+            return false;
+        }
+
+        public void setUnresolved(boolean unresolved) {
+        }
         
     }
 }

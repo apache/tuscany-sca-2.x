@@ -33,7 +33,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
@@ -52,9 +51,8 @@ import org.apache.tuscany.sca.policy.impl.DefaultIntentAttachPointTypeFactoryImp
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    private ModelResolver resolver; 
+    //private ModelResolver resolver; 
     private SCADefinitionsDocumentProcessor scaDefnDocProcessor = null;
-    private SCADefinitionsProcessor scaDefnProcessor = null;
     private SCADefinitions scaDefinitions;
     Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
@@ -80,14 +78,18 @@ public class ReadDocumentTestCase extends TestCase {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactoryImpl();
-        this.resolver = new SCADefinitionsResolver();
         
         // Create Stax processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
         
-        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessor, inputFactory);
-        scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, staxProcessor, resolver);
+        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, 
+                                                                  staxProcessor, 
+                                                                  inputFactory, 
+                                                                  policyFactory);
+        
+        /*scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, staxProcessor, resolver);
         
         staxProcessors.addArtifactProcessor(scaDefnProcessor);
         staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, staxProcessor));
@@ -97,6 +99,7 @@ public class ReadDocumentTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ImplementationTypeProcessor(policyFactory, intentAttachPointFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new BindingTypeProcessor(policyFactory, intentAttachPointFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
+        */
         
         URL url = getClass().getResource("definitions.xml");
         URI uri = URI.create("definitions.xml");
@@ -121,9 +124,7 @@ public class ReadDocumentTestCase extends TestCase {
 
     @Override
     public void tearDown() throws Exception {
-        resolver = null;
         scaDefnDocProcessor = null;
-        scaDefnProcessor = null;
     }
 
     public void testReadSCADefinitions() throws Exception {
@@ -179,7 +180,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
         assertNull(javaImplType.getMayProvideIntents().get(0).getDescription());
         
-        scaDefnDocProcessor.resolve(scaDefinitions, resolver);
+        scaDefnDocProcessor.resolve(scaDefinitions, null);
         //builder.build(scaDefinitions);
         
         //testing if policy intents have been linked have property been linked up 

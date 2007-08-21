@@ -30,11 +30,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.SCADefinitions;
+import org.apache.tuscany.sca.policy.impl.DefaultIntentAttachPointTypeFactoryImpl;
 
 /**
  * A SCA Definitions Document processor.
@@ -43,6 +47,7 @@ import org.apache.tuscany.sca.policy.SCADefinitions;
 public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SCADefinitions> {
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected SCADefinitionsBuilder defnBuilder = null;
+    protected ModelResolver domainModelResolver;
 
     private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     static {
@@ -55,12 +60,36 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      * @param assemblyFactory
      * @param policyFactory
      * @param staxProcessor
-     */
+    
     public SCADefinitionsDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
         this.extensionProcessor = staxProcessor;
         this.inputFactory = inputFactory;
         defnBuilder = new SCADefinitionsBuilderImpl();
+        this.domainModelResolver =  new SCADefinitionsResolver();
+    } */
+     
+    public SCADefinitionsDocumentProcessor(StAXArtifactProcessorExtensionPoint staxProcessors,
+                                           StAXArtifactProcessor staxProcessor,
+                                           XMLInputFactory inputFactory,
+                                           PolicyFactory policyFactory) {
+        this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
+        this.inputFactory = inputFactory;
+        defnBuilder = new SCADefinitionsBuilderImpl();
+        this.domainModelResolver = new SCADefinitionsResolver();
+        
+        IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactoryImpl();
+            
+        SCADefinitionsProcessor scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, extensionProcessor, domainModelResolver);
+        
+        staxProcessors.addArtifactProcessor(scaDefnProcessor);
+        staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, extensionProcessor));
+        staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, extensionProcessor));
+        staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, extensionProcessor));
+        staxProcessors.addArtifactProcessor(new PolicySetProcessor(policyFactory, extensionProcessor));
+        staxProcessors.addArtifactProcessor(new ImplementationTypeProcessor(policyFactory, intentAttachPointFactory, extensionProcessor));
+        staxProcessors.addArtifactProcessor(new BindingTypeProcessor(policyFactory, intentAttachPointFactory, extensionProcessor));
     }
+    
 
     public SCADefinitions read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
@@ -90,6 +119,9 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     
     public void resolve(SCADefinitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
         try {
+            if ( resolver == null ) {
+                resolver = this.domainModelResolver;
+            }
             defnBuilder.build(scaDefinitions);
             extensionProcessor.resolve(scaDefinitions, resolver);
         } catch (SCADefinitionsBuilderException e) {
@@ -103,5 +135,13 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     
     public Class<SCADefinitions> getModelType() {
         return SCADefinitions.class;
+    }
+
+    public ModelResolver getDomainModelResolver() {
+        return domainModelResolver;
+    }
+
+    public void setDomainModelResolver(ModelResolver scaDefnsModelResolver) {
+        this.domainModelResolver = scaDefnsModelResolver;
     }
 }
