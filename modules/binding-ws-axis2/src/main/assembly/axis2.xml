@@ -93,15 +93,15 @@
     <!--Note : You can ovride this for particular service by adding the same element with your requirement-->
     <messageReceivers>
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
-                         class="org.apache.tuscany.sca.binding.axis2.Axis2ServiceInMessageReceiver"/>
+                         class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
                          class="org.apache.axis2.receivers.RawXMLINOnlyMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
                          class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
-                         class="org.apache.tuscany.sca.binding.axis2.Axis2ServiceInOutAsyncMessageReceiver"/>
+                         class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInOutAsyncMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
-                         class="org.apache.tuscany.sca.binding.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
+                         class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
     </messageReceivers>
     <!-- ================================================= -->
     <!-- Transport Ins -->
@@ -224,7 +224,7 @@
         <!--  System pre defined phases       -->
         <phase name="Transport">
             <handler name="TuscanyDispatcher"
-                     class="org.apache.tuscany.sca.binding.axis2.TuscanyDispatcher">
+                     class="org.apache.tuscany.sca.binding.ws.axis2.TuscanyDispatcher">
                 <order phase="Transport"/>
             </handler>
             <handler name="RequestURIBasedDispatcher"
