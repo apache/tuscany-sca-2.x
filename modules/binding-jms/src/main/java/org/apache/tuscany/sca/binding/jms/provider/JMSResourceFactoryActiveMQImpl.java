@@ -29,7 +29,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 
 /**
  * Abstracts away any JMS provide specific feature from the JMS binding

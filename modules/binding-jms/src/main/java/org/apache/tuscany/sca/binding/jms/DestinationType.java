@@ -17,15 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
+ * The type of the request destination. Must take one of the values "queue" or "topic". 
+ * The default value is "queue". When "topic" is specified, then all the operations in 
+ * the interface that corresponds to the binding must be one-way.
  * 
  * @version $Rev$ $Date$
  */
-public interface ConnectionFactory extends PropertyList {
-    String getName();
-    void setName(String name);
-    CreateResource getCreate();
-    void setCreate(CreateResource create);
+public enum DestinationType {
+    QUEUE, TOPIC
 }

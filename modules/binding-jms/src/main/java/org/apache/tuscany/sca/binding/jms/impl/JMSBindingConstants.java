@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms;
+package org.apache.tuscany.sca.binding.jms.impl;
 
 import java.util.Arrays;
 import java.util.List;

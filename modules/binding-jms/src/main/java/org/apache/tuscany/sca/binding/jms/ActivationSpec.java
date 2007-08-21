@@ -17,11 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
  * @version $Rev$ $Date$
  */
-public enum CorrelationScheme {
-    RequestMsgIDToCorrelID, RequestCorrelIDToCorrelID, None
+public interface ActivationSpec extends PropertyList {
+    String getName();
+    void setName(String name);
+    CreateResource getCreate();
+    void setCreate(CreateResource create);
 }

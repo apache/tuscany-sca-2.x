@@ -17,20 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.model;
+package org.apache.tuscany.sca.binding.jms;
+
+import java.util.List;
 
 /**
- * Specifies various properties that are specific to the processing of a particular 
- * operation.
+ * A list of properties
  * 
  * @version $Rev$ $Date$
  */
-public interface OperationProperties extends PropertyList {
-    Headers getHeaders();
-
-    void setHeaders(Headers headers);
-
-    String getNativeOperation();
-
-    void setNativeOperation(String nativeOperation);
+public interface PropertyList {
+    List<Property> getProperties();
 }
