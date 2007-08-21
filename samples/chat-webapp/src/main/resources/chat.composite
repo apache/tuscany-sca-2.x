@@ -24,7 +24,7 @@
 
     <service name="ChatService" promote="ChatComponent">
         <interface.java interface="sample.ChatService"/>
-        <binding.ajax/>
+        <binding.dwr/>
     </service>
 
     <component name="ChatComponent">
@@ -33,7 +33,7 @@
 
     <reference name="ChatReference" promote="ChatComponent/chatters">
         <interface.java interface="sample.ChatService" />
-        <binding.ajax/>
+        <binding.dwr/>
     </reference>
 
 </composite>

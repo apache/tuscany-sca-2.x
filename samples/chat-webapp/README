@@ -1,6 +1,6 @@
 Chat WebApp Sample
 ==================
-This sample demonstrates the SCA Ajax binding to implement the classic Ajax sample
+This sample demonstrates the SCA DWR binding to implement the classic Ajax sample
 of a chat application which allows multiple users to chat from their browsers.
 
 The README in the samples directory (the directory above this) provides 
@@ -20,8 +20,8 @@ The port and hostname will of course vary depending on your local installation.
 
 Sample Overview
 ---------------
-The sample provides an SCA component which has an SCA service using the SCA Ajax
-binding and an SCA reference also using the Ajax binding. The component implementation 
+The sample provides an SCA component which has an SCA service using the SCA DWR
+binding and an SCA reference also using the DWR binding. The component implementation 
 simply forwards every invocation of the service as an invocation on the reference. The
 component reference is scoped by the composite so every active client of the composite
 will receive every message sent to the component service, thus implementing the chat
