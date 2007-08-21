@@ -50,13 +50,23 @@ public class ExtensibleURLArtifactProcessor
         URLArtifactProcessor<Object> processor = null;
         
         // Delegate to the processor associated with file extension
-        String extension = sourceURL.getFile();
-        int extensionStart = extension.lastIndexOf('.');
-        //handle files without extension (e.g NOTICE)
-        if (extensionStart > 0) {
-            extension = extension.substring(extensionStart);
-            processor = (URLArtifactProcessor<Object>)processors.getProcessor(extension);            
+        String fileName = getFileName(sourceURL);
+        
+        //try to retrieve a processor for the specific filename
+        processor = (URLArtifactProcessor<Object>)processors.getProcessor(fileName);
+        
+        if (processor == null) {
+            //try to find my file type (extension)
+            String extension = sourceURL.getPath();
+            
+            int extensionStart = extension.lastIndexOf('.');
+            //handle files without extension (e.g NOTICE)
+            if (extensionStart > 0) {
+                extension = extension.substring(extensionStart);
+                processor = (URLArtifactProcessor<Object>)processors.getProcessor(extension);            
+            }
         }
+        
         if (processor == null) {
             return null;
         }
@@ -94,5 +104,15 @@ public class ExtensibleURLArtifactProcessor
     public Class<Object> getModelType() {
         return null;
     }
-
+    
+    /**
+     * Utility functions
+     */
+    
+    private String getFileName(URL url){
+        String fileName = url.getPath();
+        int pos = fileName.lastIndexOf("/");
+        
+        return fileName.substring(pos +1);
+    }
 }

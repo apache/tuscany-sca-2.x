@@ -28,6 +28,13 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 
+/**
+ * JAR Package Processor test case
+ * Verifies proper handle of JAR Archives contributions
+ * 
+ * @version $Rev$ $Date$
+ */
+
 public class JarContributionPackageProcessorTestCase extends TestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
     

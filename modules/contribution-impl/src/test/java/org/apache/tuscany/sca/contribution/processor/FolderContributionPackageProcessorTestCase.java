@@ -26,6 +26,12 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
 
+/**
+ * Folder Package Processor test case
+ * Verifies proper handle of File System structured contributions
+ * 
+ * @version $Rev$ $Date$
+ */
 public class FolderContributionPackageProcessorTestCase extends TestCase {
     private static final String FOLDER_CONTRIBUTION = ".";
     
