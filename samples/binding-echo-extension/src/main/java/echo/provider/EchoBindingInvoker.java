@@ -31,6 +31,7 @@ class EchoBindingInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
+            System.out.println("Passing thro invoker...");
             Object[] args = msg.getBody();
 
             // echo back the first parameter, a real binding would invoke some API for flowing the request

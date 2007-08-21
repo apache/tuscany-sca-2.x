@@ -19,9 +19,15 @@
 
 package echo.provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -34,18 +40,24 @@ import echo.EchoBinding;
 class EchoReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
+    private EchoBinding binding;
 
     EchoReferenceBindingProvider(RuntimeComponent component,
                                         RuntimeComponentReference reference,
                                         EchoBinding binding) {
         this.reference = reference;
+        this.binding = binding;
     }
 
     public Invoker createInvoker(Operation operation, boolean isCallback) {
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {
-            return new EchoBindingInvoker();
+            if ( !binding.getPolicySets().isEmpty() ){
+                return new EchoBindingPoliciedInvoker(((PolicySetAttachPoint)binding).getPolicySets());
+            } else {
+                return new EchoBindingInvoker();
+            }
         }
     }
 

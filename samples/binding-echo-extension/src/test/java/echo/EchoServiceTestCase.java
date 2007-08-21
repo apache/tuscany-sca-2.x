@@ -43,7 +43,7 @@ public class EchoServiceTestCase extends TestCase {
 
     public void testEchoBinding() throws Exception {
         String result = EchoServer.getServer().sendReceive("http://tempuri.org", "foo");
-        assertEquals(result, "foo");
+        assertEquals(result, "oof");
     }
 
 

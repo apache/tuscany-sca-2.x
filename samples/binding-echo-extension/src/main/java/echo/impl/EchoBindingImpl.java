@@ -19,22 +19,35 @@
 
 package echo.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 import echo.EchoBinding;
 
 /**
  * Implementation of the Echo binding model.
  */
-class EchoBindingImpl implements EchoBinding {
+public class EchoBindingImpl implements EchoBinding {
     
     private String name;
     private String uri;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType bindingType = null;
 
-    EchoBindingImpl() {
+    public IntentAttachPointType getType() {
+        return bindingType;
     }
-    
+
+    public void setType(IntentAttachPointType type) {
+        this.bindingType = type;
+    }
+
     public String getName() {
         return name;
     }
@@ -49,6 +62,14 @@ class EchoBindingImpl implements EchoBinding {
 
     public void setURI(String uri) {
         this.uri = uri;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
     }
 
     public List<Object> getExtensions() {

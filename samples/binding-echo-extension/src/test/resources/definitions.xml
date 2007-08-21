@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sca:definitions xmlns="http://test"
+ 			targetNamespace="http://test"
+ 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+
+ <!-- qualified intents -->
+ <sca:intent name="confidentiality.transport" />
+ <sca:intent name="confidentiality.message" />
+ <sca:intent name="confidentiality.message.whole" />
+ <sca:intent name="confidentiality.message.body" /> 
+ 
+ <!-- POLICY SETS -->
+ <sca:policySet name="p:EncryptionPolicy"
+ 	provides="confidentiality"
+ 	appliesTo="sca:binding.echo"
+ 	xmlns="http://test"
+ 	xmlns:p="http://sample/policy">
+ 		<p:echoBindingPolicy name="Encryption" strategy="echo.provider.policy.ReverseEncryptionStrategy" />
+ </sca:policySet>
+ 
+  <sca:policySet name="SecureReliablePolicy"
+ 	provides="confidentiality.transport integrity"
+ 	appliesTo="sca:binding.ws"
+ 	xmlns="http://test"
+ 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+ 		<wsp:PolicyAttachment>
+ 			<!-- policy expression and policy subject for
+				 "basic authentication" -->
+		</wsp:PolicyAttachment>
+     	<wsp:PolicyAttachment>
+		 	<!-- policy expression and policy subject for
+		 		"reliability" -->
+		</wsp:PolicyAttachment>
+ </sca:policySet>
+ 
+ <sca:policySet name="SecureReliablePolicy"
+ 	provides="confidentiality.transport integrity"
+ 	appliesTo="sca:binding.ws"
+ 	xmlns="http://test"
+ 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+ 		<wsp:PolicyAttachment>
+ 			<!-- policy expression and policy subject for
+				 "basic authentication" -->
+		</wsp:PolicyAttachment>
+     	<wsp:PolicyAttachment>
+		 	<!-- policy expression and policy subject for
+		 		"reliability" -->
+		</wsp:PolicyAttachment>
+ </sca:policySet>
+ 
+ <sca:policySet name="SecureMessagingPolicies"
+	 provides="confidentiality"
+	 appliesTo="binding.ws"
+	 xmlns="http://test"
+ 	 xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+     <sca:intentMap provides="confidentiality" default="transport">
+        <sca:qualifier name="transport">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "transport" alternative -->
+                </wsp:PolicyAttachment>
+            <wsp:PolicyAttachment>...</wsp:PolicyAttachment>
+        </sca:qualifier>
+        <sca:qualifier name="message">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "message" alternative" -->
+            </wsp:PolicyAttachment>
+        </sca:qualifier>
+    </sca:intentMap>
+</sca:policySet>
+
+<sca:policySet name="SecurityPolicy" provides="confidentiality"
+	xmlns="http://test"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
+    <sca:intentMap provides="confidentiality" default="message">
+        <sca:qualifier name="message">
+            <sca:intentMap provides="message" default="whole">
+                <sca:qualifier name="body">
+                	<wsp:PolicyAttachment>
+                		<!-- policy attachment for body encryption --> 
+               		</wsp:PolicyAttachment>
+           		</sca:qualifier>
+                <sca:qualifier name="whole">
+                	<wsp:PolicyAttachment>
+                		<!-- policy attachment for whole message encryption --> 
+               		</wsp:PolicyAttachment>
+             	</sca:qualifier>
+            </sca:intentMap>
+        </sca:qualifier>
+        <sca:qualifier name="transport">
+        	<wsp:PolicyAttachment>
+        		<!-- policy attachment for transport encryption --> 
+       		</wsp:PolicyAttachment>
+        </sca:qualifier>
+    </sca:intentMap>
+</sca:policySet>
+
+<sca:policySet name="BasicAuthMsgProtSecurity"
+     provides="authentication confidentiality"
+     appliesTo="binding.ws"
+ 		xmlns="http://test">
+    <sca:policySetReference name="AuthenticationPolicies"/>
+    <sca:policySetReference name="ConfidentialityPolicies"/>
+</sca:policySet>
+
+<sca:policySet name="AuthenticationPolicies"
+	provides="authentication"
+	appliesTo="binding.ws"
+	xmlns="http://test"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    <wsp:PolicyAttachment>
+        <!-- policy expression and policy subject for "basic
+        authentication" -->
+    </wsp:PolicyAttachment>
+</sca:policySet>
+
+<sca:policySet name="ConfidentialityPolicies"
+ provides="confidentiality"
+ bindings="binding.ws"
+ xmlns="http://test"
+    xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    <sca:intentMap provides="confidentiality"  default="transport">
+        <sca:qualifier name="transport">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "transport"
+                alternative -->
+            </wsp:PolicyAttachment>
+            <wsp:PolicyAttachment>...</wsp:PolicyAttachment>
+        </sca:qualifier>
+        <sca:qualifier name="message">
+            <wsp:PolicyAttachment>
+                <!-- policy expression and policy subject for "message"
+                alternative" -->...
+            </wsp:PolicyAttachment>
+        </sca:qualifier>
+    </sca:intentMap>
+</sca:policySet>
+
+<!-- profile intent -->
+ <sca:intent name="reliableMessageProtection" 
+ 			 constrains="sca:binding"
+ 			 requires="messageProtection">
+ 			 <sca:description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="messageProtection" 
+ 			 constrains="sca:binding"
+ 			 requires="confidentiality integrity">
+ 			 <sca:description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </sca:description>
+ </sca:intent>
+
+<!-- simple intent -->
+ <sca:intent name="confidentiality" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Communitcation thro this binding must prevent
+ 			 unauthorized users from reading the messages.
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="integrity" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Communitcation thro this binding must prevent
+ 			 unauthorized modification of the messages.
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="authentication" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Communitcation thro this binding required
+ 			 Authentication.
+ 			 </sca:description>
+ </sca:intent>
+ 
+</sca:definitions>
