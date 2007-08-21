@@ -90,7 +90,7 @@ public class ResolvePolicyTestCase extends TestCase {
         documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
-        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessor, inputFactory);
+        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
         documentProcessors.addArtifactProcessor(scaDefnDocProcessor);
     }
 
