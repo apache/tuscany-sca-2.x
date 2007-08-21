@@ -45,12 +45,14 @@ public class ExtensibleModelResolver implements ModelResolver {
      * @param resolvers
      * @param contribution
      */
-    public ExtensibleModelResolver(Contribution contribution, ModelResolverExtensionPoint resolvers, ModelFactoryExtensionPoint factories) {
+    public ExtensibleModelResolver(Contribution contribution,
+                                   ModelResolverExtensionPoint resolvers,
+                                   ModelFactoryExtensionPoint factories) {
         this.contribution = contribution;
         this.resolvers = resolvers;
         this.factories = factories;
     }
-    
+
     /**
      * Returns the proper resolver instance based on the interfaces of the model
      * If one is not available on the registry, instantiate on demand
@@ -62,28 +64,29 @@ public class ExtensibleModelResolver implements ModelResolver {
         // Look up a model resolver instance for the model class or
         // each implemented interface
         Class<?>[] interfaces = modelType.getInterfaces();
-        Class<?>[] classes = new Class<?>[interfaces.length +1];
+        Class<?>[] classes = new Class<?>[interfaces.length + 1];
         classes[0] = modelType;
-        if (interfaces.length !=0) {
+        if (interfaces.length != 0) {
             System.arraycopy(interfaces, 0, classes, 1, interfaces.length);
         }
         for (Class<?> c : classes) {
-            
+
             // Look up an existing model resolver instance 
             ModelResolver resolverInstance = resolverInstances.get(c);
             if (resolverInstance != null) {
                 return resolverInstance;
             }
-            
+
             // We don't have an instance, lookup a model resolver class
             // and instantiate it
             Class<? extends ModelResolver> resolverClass = resolvers.getResolver(c);
             if (resolverClass != null) {
                 try {
-                    Constructor<? extends ModelResolver> constructor = resolverClass.getConstructor(
-                                                                                                    new Class[]{Contribution.class, ModelFactoryExtensionPoint.class});
+                    Constructor<? extends ModelResolver> constructor =
+                        resolverClass
+                            .getConstructor(new Class[] {Contribution.class, ModelFactoryExtensionPoint.class});
                     if (constructor != null) {
-                        
+
                         // Construct the model resolver instance and cache it
                         resolverInstance = constructor.newInstance(contribution, factories);
                         resolverInstances.put(c, resolverInstance);
@@ -91,13 +94,13 @@ public class ExtensibleModelResolver implements ModelResolver {
                     }
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
-                } 
+                }
             }
-        }            
+        }
 
         return null;
     }
-    
+
     public void addModel(Object resolved) {
         ModelResolver resolver = getModelResolverInstance(resolved.getClass());
         if (resolver != null) {
@@ -115,23 +118,25 @@ public class ExtensibleModelResolver implements ModelResolver {
             return map.remove(resolved);
         }
     }
-    
+
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         ModelResolver resolver = getModelResolverInstance(unresolved.getClass());
         if (resolver != null) {
             return resolver.resolveModel(modelClass, unresolved);
         } else {
-            if ( domainResolver != null ) {
-                return domainResolver.resolveModel(modelClass, unresolved);
-            } else {
-                Object resolved = map.get(unresolved);
+            if (domainResolver != null) {
+                Object resolved = domainResolver.resolveModel(modelClass, unresolved);
                 if (resolved != null) {
-                    // Return the resolved object
                     return modelClass.cast(resolved);
                 }
             }
+            Object resolved = map.get(unresolved);
+            if (resolved != null) {
+                // Return the resolved object
+                return modelClass.cast(resolved);
+            }
         }
-        
+
         return unresolved;
     }
 
