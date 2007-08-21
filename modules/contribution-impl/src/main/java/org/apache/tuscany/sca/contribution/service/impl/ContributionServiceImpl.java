@@ -117,7 +117,9 @@ public class ContributionServiceImpl implements ContributionService {
      * Contribution model facotry
      */
     private ContributionFactory contributionFactory;
-
+    
+    private ModelResolver domainResolver;
+    
 
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
@@ -125,6 +127,7 @@ public class ContributionServiceImpl implements ContributionService {
                                    StAXArtifactProcessor staxProcessor,
                                    ExtensibleContributionListener contributionListener,
                                    ContributionPostProcessor postProcessor,
+                                   ModelResolver domainResolver,
                                    ModelResolverExtensionPoint modelResolvers,
                                    ModelFactoryExtensionPoint modelFactories,
                                    AssemblyFactory assemblyFactory,
@@ -142,6 +145,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.xmlFactory = xmlFactory;
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
+        this.domainResolver = domainResolver;
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)
@@ -276,6 +280,10 @@ public class ContributionServiceImpl implements ContributionService {
         // Create contribution model resolver
         if (modelResolver == null) {
             modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+        }
+        
+        if ( modelResolver instanceof ExtensibleModelResolver ) {
+            ((ExtensibleModelResolver)modelResolver).setDomainResolver(domainResolver);
         }
         
         //set contribution initial information
