@@ -25,6 +25,7 @@ import javax.security.auth.Subject;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -82,7 +83,7 @@ public class RequestContextImpl implements RequestContext {
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
-        // factory.resolveTarget();
-        return new ServiceReferenceImpl<CB>(javaClass, factory);
+        factory.resolveTarget();
+        return (CallableReference<CB>) new CallableReferenceImpl<CB>(javaClass, (WireObjectFactory<CB>)factory);
     }
 }

@@ -69,7 +69,7 @@ public class CallBackApiServiceImpl implements CallBackApiService {
         System.out.println("CallBackApiServiceImpl getting request context");
         RequestContext rc = componentContext.getRequestContext();
         System.out.println("CallBackApiServiceImpl getting callback from request context");
-        callback = (CallBackApiCallBack) ((ServiceReference) rc.getServiceReference()).getCallback();
+        callback = rc.getCallback();
         System.out.println("CallBackApiServiceImpl returning callback");
         return callback;
 

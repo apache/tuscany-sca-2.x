@@ -69,7 +69,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         super();
     }
 
-    public CallableReferenceImpl(Class<B> businessInterface,
+    protected CallableReferenceImpl(Class<B> businessInterface,
                                     RuntimeComponent component,
                                     RuntimeComponentReference reference,
                                     Binding binding,
@@ -88,7 +88,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         this.factory = getObjectFactory();
     }
 
-    public CallableReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {
+    protected CallableReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {
         this.proxyFactory = factory.getProxyFactory();
         this.businessInterface = businessInterface;
         this.factory = factory;
