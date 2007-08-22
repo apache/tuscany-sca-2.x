@@ -25,7 +25,11 @@ import java.beans.PropertyDescriptor;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -39,14 +43,15 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class PrintUtil {
-
+    private boolean useGetters = false;
     private PrintWriter out;
     private int indent;
 
-    public PrintUtil(PrintWriter out) {
+    public PrintUtil(PrintWriter out, boolean useGetters) {
         this.out = out;
+        this.useGetters = useGetters;
     }
-    
+
     public PrintUtil(OutputStream out) {
         this.out = new PrintWriter(new OutputStreamWriter(out), true);
     }
@@ -66,7 +71,7 @@ public class PrintUtil {
         Set<Integer> objects = new HashSet<Integer>();
         print(object, objects);
     }
-    
+
     /**
      * Print an object.
      * 
@@ -91,16 +96,12 @@ public class PrintUtil {
                 out.println(object.getClass().getSimpleName() + " {");
 
                 // Get the object's properties
-                BeanInfo beanInfo = Introspector.getBeanInfo(object.getClass());
-                for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
+                ValueAccessor accessor = useGetters ? new PropertyAccessor(object) : new FieldAccessor(object);
+                for (int i = 0; i < accessor.size(); i++) {
                     try {
 
                         // Get the value of each property
-                        Method getter = propertyDescriptor.getReadMethod();
-                        if (getter == null) {
-                            continue;
-                        }
-                        Object value = getter.invoke(object);
+                        Object value = accessor.getValue(i);
                         if (value != null) {
 
                             // Convert array value into a list
@@ -113,7 +114,7 @@ public class PrintUtil {
                                 if (!((List)value).isEmpty()) {
                                     indent++;
                                     indent();
-                                    out.println(propertyDescriptor.getName() + "= [");
+                                    out.println(accessor.getName(i) + "= [");
 
                                     // Print each element, recursively
                                     for (Object element : (List)value) {
@@ -133,25 +134,25 @@ public class PrintUtil {
                                 if (valueClass.isPrimitive() || valueClass.getName().startsWith("java.")
                                     || valueClass.getName().startsWith("javax.")
                                     || valueClass.isEnum()) {
-                                    if (!propertyDescriptor.getName().equals("class")) {
+                                    if (!accessor.getName(i).equals("class")) {
                                         if (!(Boolean.FALSE.equals(value))) {
                                             indent++;
                                             indent();
-                                            out.println(propertyDescriptor.getName() + "=" + value.toString());
+                                            out.println(accessor.getName(i) + "=" + value.toString());
                                             indent--;
                                         }
                                     }
                                 } else if (value instanceof Node) {
                                     indent++;
                                     indent();
-                                    out.println(propertyDescriptor.getName() + "=" + value.toString());
+                                    out.println(accessor.getName(i) + "=" + value.toString());
                                     indent--;
                                 } else {
 
                                     // Print an object, recursively
                                     indent++;
                                     indent();
-                                    out.println(propertyDescriptor.getName() + "= {");
+                                    out.println(accessor.getName(i) + "= {");
                                     indent++;
                                     print(value, printed);
                                     indent--;
@@ -166,11 +167,107 @@ public class PrintUtil {
                 }
                 indent();
                 out.println("}");
-            } catch (IntrospectionException e) {
+            } catch (Exception e) {
                 indent();
                 out.println(e);
             }
         }
+    }
+
+    public static interface ValueAccessor {
+        int size();
+
+        String getName(int i);
+
+        Object getValue(int i) throws Exception;
+    }
+
+    /**
+     * Java field reflection based value accessor
+     */
+    private static class FieldAccessor implements ValueAccessor {
+
+        private Object object;
+        private List<Field> fields;
+
+        public FieldAccessor(Object object) {
+            this.fields = getAllFields(object.getClass());
+            this.object = object;
+        }
+
+        public String getName(int i) {
+            return fields.get(i).getName();
+        }
+
+        public Object getValue(int i) throws Exception {
+            return fields.get(i).get(object);
+        }
+
+        public int size() {
+            return fields.size();
+        }
+
+    }
+
+    /**
+     * JavaBean-based value accessor
+     */
+    private static class PropertyAccessor implements ValueAccessor {
+
+        private Object object;
+        private PropertyDescriptor[] fields;
+
+        public PropertyAccessor(Object object) throws IntrospectionException {
+            BeanInfo beanInfo = Introspector.getBeanInfo(object.getClass());
+            this.fields = beanInfo.getPropertyDescriptors();
+            this.object = object;
+        }
+
+        public String getName(int i) {
+            return fields[i].getName();
+        }
+
+        public Object getValue(int i) throws Exception {
+            Method getter = fields[i].getReadMethod();
+            if (getter != null) {
+                return getter.invoke(object);
+            }
+            return null;
+        }
+
+        public int size() {
+            return fields.length;
+        }
+
+    }
+
+    /**
+     * Returns a collection of fields declared by a class
+     * or one of its supertypes
+     */
+    private static List<Field> getAllFields(Class<?> clazz) {
+        return getAllFields(clazz, new ArrayList<Field>());
+    }
+
+    /**
+     * Recursively evaluates the type hierachy to return all fields 
+     */
+    private static List<Field> getAllFields(Class<?> clazz, List<Field> fields) {
+        if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
+            return fields;
+        }
+        fields = getAllFields(clazz.getSuperclass(), fields);
+        Field[] declaredFields = clazz.getDeclaredFields();
+        for (final Field field : declaredFields) {
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                public Object run() {
+                    field.setAccessible(true); // ignore Java accessibility
+                    return null;
+                }
+            });
+            fields.add(field);
+        }
+        return fields;
     }
 
 }
