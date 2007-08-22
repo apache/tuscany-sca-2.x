@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -61,7 +62,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *        jars, would be nice to find a way to avoid that
  */
 public class HotUpdatableSCADomain extends SCADomain {
-
+    private static final Logger logger = Logger.getLogger(HotUpdatableSCADomain.class.getName());
     protected String domainURI;
     protected File contributionRepository;
     
@@ -90,7 +91,7 @@ public class HotUpdatableSCADomain extends SCADomain {
             activateHotUpdate();
             for (URL url : existingContributions.keySet()) {
                 File f = new File(url.toURI());
-                System.out.println("added contribution: " + f.getName());
+                logger.info("added contribution: " + f.getName());
             }
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
@@ -265,7 +266,7 @@ public class HotUpdatableSCADomain extends SCADomain {
 
         Runnable runable = new Runnable() {
             public void run() {
-                System.out.println("Tuscany contribution hotupdate running");
+                logger.info("Tuscany contribution hotupdate running");
                 while (hotUpdateActive) {
                     try {
                         Thread.sleep(hotUpdateInterval);
@@ -275,7 +276,7 @@ public class HotUpdatableSCADomain extends SCADomain {
                         checkForUpdates();
                     }
                 }
-                System.out.println("Tuscany contribution hotupdate stopped");
+                logger.info("Tuscany contribution hotupdate stopped");
             }
         };
         hotUpdateThread = new Thread(runable, "TuscanyHotUpdate");
@@ -330,7 +331,7 @@ public class HotUpdatableSCADomain extends SCADomain {
                 File curentFile = new File(url.toURI());
                 if (curentFile.lastModified() != existingContributions.get(url)) {
                     urls.add(url);
-                    System.out.println("updated contribution: " + curentFile.getName());
+                    logger.info("updated contribution: " + curentFile.getName());
                 }
             }
         }
@@ -346,7 +347,7 @@ public class HotUpdatableSCADomain extends SCADomain {
             }
         }
         for (URL url : urls) {
-            System.out.println("removed contributions: " + new File(url.toURI()).getName());
+            logger.info("removed contributions: " + new File(url.toURI()).getName());
         }
         return urls;
     }
@@ -356,7 +357,7 @@ public class HotUpdatableSCADomain extends SCADomain {
         for (URL url : currentContrabutions) {
             if (!existingContributions.containsKey(url)) {
                 urls.add(url);
-                System.out.println("added contribution: " + new File(url.toURI()).getName());
+                logger.info("added contribution: " + new File(url.toURI()).getName());
             }
         }
         return urls;

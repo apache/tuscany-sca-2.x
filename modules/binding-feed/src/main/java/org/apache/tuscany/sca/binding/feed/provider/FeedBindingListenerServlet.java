@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -57,6 +58,7 @@ import com.sun.syndication.io.WireFeedOutput;
  * registered in a servlet host provided by the SCA hosting runtime.
  */
 class FeedBindingListenerServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(FeedBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
     private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
@@ -125,7 +127,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         if (requestFeedType == null)
             requestFeedType = feedType;
 
-        System.out.println(">>> FeedEndPointServlet (" + requestFeedType + ") " + request.getRequestURI());
+        logger.info(">>> FeedEndPointServlet (" + requestFeedType + ") " + request.getRequestURI());
 
         // Handle an Atom request
         if (requestFeedType.startsWith("atom_")) {

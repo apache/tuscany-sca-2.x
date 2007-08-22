@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.feed.provider;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -36,7 +37,8 @@ import com.sun.syndication.io.XmlReader;
  * Invoker for the RSS binding.
  */
 class RSSBindingInvoker implements Invoker {
-
+    private final static Logger logger = Logger.getLogger(RSSBindingInvoker.class.getName());
+    
     private String feedType;
     private String uri;
 
@@ -47,7 +49,7 @@ class RSSBindingInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
-            System.out.println(">>> RSSBindingInvoker (" + feedType + ") " + uri);
+            logger.info(">>> RSSBindingInvoker (" + feedType + ") " + uri);
 
             // Read the configured feed URI into a Feed object
             Feed feed;

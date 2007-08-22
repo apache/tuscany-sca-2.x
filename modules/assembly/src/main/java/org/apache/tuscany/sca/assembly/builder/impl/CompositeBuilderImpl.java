@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.logging.Logger;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -25,6 +27,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
+import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
@@ -34,7 +37,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
  * @version $Rev$ $Date$
  */
 public class CompositeBuilderImpl implements CompositeBuilder {
-
+    private final static Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
     private CompositeIncludeBuilderImpl includeBuilder;
     private CompositeWireBuilderImpl wireBuilder;
     private CompositeCloneBuilderImpl cloneBuilder;
@@ -55,6 +58,13 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             // Create a default monitor that does nothing.
             monitor = new CompositeBuilderMonitor() {
                 public void problem(Problem problem) {
+                    if (problem.getSeverity() == Severity.INFO) {
+                        logger.info(problem.toString());
+                    } else if (problem.getSeverity() == Severity.WARNING) {
+                        logger.warning(problem.toString());
+                    } else if (problem.getSeverity() == Severity.ERROR) {
+                        logger.severe(problem.toString());
+                    }
                 }
             };
         }

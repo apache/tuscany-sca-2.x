@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -54,7 +55,7 @@ import org.mortbay.thread.ThreadPool;
  *          2007) $$
  */
 public class JettyServer implements ServletHost {
-
+    private final static Logger logger = Logger.getLogger(JettyServer.class.getName());
     private static final String ROOT = "/";
     private static final int DEFAULT_PORT = 8080;
 
@@ -227,7 +228,7 @@ public class JettyServer implements ServletHost {
         servletHandler.addServletMapping(mapping);
         
         URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
-        System.out.println("Added Servlet mapping: " + addedURI);
+        logger.info("Added Servlet mapping: " + addedURI);
     }
 
     public Servlet removeServletMapping(String uriStr) {
