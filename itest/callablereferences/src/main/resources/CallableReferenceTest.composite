@@ -29,12 +29,10 @@
         <reference name="cReference" target="CComponent" />
         <reference name="cServiceReference" target="CComponent" />
         <reference name="dReference1" target="DComponent" />
-        <reference name="DReference2" target="DComponent" />
     </component>
 
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.callableref.BComponentImpl" />
-        <reference name="cReference" target="CComponent" />
     </component>
 
     <component name="CComponent">
