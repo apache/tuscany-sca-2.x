@@ -300,7 +300,15 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
 
                                     // <service><interface> and
                                     // <reference><interface>
-                                    contract.setInterfaceContract((InterfaceContract)extension);
+                                    if (contract != null) {
+                                        contract.setInterfaceContract((InterfaceContract)extension);
+                                    } else {
+                                        if (name.getNamespaceURI().equals(SCA10_NS)){
+                                            throw new ContributionReadException("Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
+                                        } else {
+                                            composite.getExtensions().add(extension);
+                                        }
+                                    }
 
                                 } else if (extension instanceof Binding) {
                                     // <service><binding> and
@@ -308,13 +316,29 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                                     if (callback != null) {
                                         callback.getBindings().add((Binding)extension);
                                     } else {
-                                        contract.getBindings().add((Binding)extension);
+                                        if (contract != null) {
+                                            contract.getBindings().add((Binding)extension);
+                                        } else {
+                                            if (name.getNamespaceURI().equals(SCA10_NS)){
+                                                throw new ContributionReadException("Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
+                                            } else {
+                                                composite.getExtensions().add(extension);
+                                            }
+                                        }
                                     }
 
                                 } else if (extension instanceof Implementation) {
 
                                     // <component><implementation>
-                                    component.setImplementation((Implementation)extension);
+                                    if (component != null) {
+                                        component.setImplementation((Implementation)extension);
+                                    } else {
+                                        if (name.getNamespaceURI().equals(SCA10_NS)){
+                                            throw new ContributionReadException("Unexpected <implementation> element found. It should appear inside a <component> element");
+                                        } else {
+                                            composite.getExtensions().add(extension);
+                                        }
+                                    }
                                 } else {
 
                                     // Add the extension element to the current
