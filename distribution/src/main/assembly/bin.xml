@@ -83,12 +83,12 @@
                 <exclude>helloworld-ws-reference/work/**/*</exclude>
                 <exclude>helloworld-ws-service/work</exclude>
                 <exclude>helloworld-ws-service/work/**/*</exclude>
-                <exclude>helloworld-ws-service-webapp/target/sample-helloworld-jsonrpc</exclude>
-                <exclude>helloworld-ws-service-webapp/target/sample-helloworld-jsonrpc/**/*</exclude>
+                <exclude>helloworld-ws-service-webapp/target/sample-helloworld-webapp</exclude>
+                <exclude>helloworld-ws-service-webapp/target/sample-helloworld-webapp/**/*</exclude>
                 <exclude>helloworld-ws-sdo/work</exclude>
                 <exclude>helloworld-ws-sdo/work/**/*</exclude>
-                <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-jsonrpc</exclude>
-                <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-jsonrpc/**/*</exclude>
+                <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-webapp</exclude>
+                <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-webapp/**/*</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
                 <exclude>calculator-webapp-ws/target/sample-calculator-webapp-ws</exclude>
