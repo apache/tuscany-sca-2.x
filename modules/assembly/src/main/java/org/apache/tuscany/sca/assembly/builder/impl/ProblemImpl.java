@@ -103,7 +103,7 @@ public class ProblemImpl implements Problem {
         StringWriter sw = new StringWriter();
         PrintWriter writer = new PrintWriter(sw);
         writer.format("[%s] %s %s", severity, message, resource);
-        PrintUtil util = new PrintUtil(writer);
+        PrintUtil util = new PrintUtil(writer, false);
         if (model != null) {
             writer.println();
            // util.print(model);
