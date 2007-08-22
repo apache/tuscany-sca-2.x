@@ -72,7 +72,7 @@ public class SpringImplementationProvider implements ImplementationProvider {
         // is complete...
         springContext.refresh();
         springContext.start();
-        System.out.println("SpringImplementationProvider: Spring context started");
+        // System.out.println("SpringImplementationProvider: Spring context started");
     } // end method start()
 
     /**

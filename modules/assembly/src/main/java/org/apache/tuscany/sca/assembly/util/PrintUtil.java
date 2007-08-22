@@ -43,6 +43,10 @@ public class PrintUtil {
     private PrintWriter out;
     private int indent;
 
+    public PrintUtil(PrintWriter out) {
+        this.out = out;
+    }
+    
     public PrintUtil(OutputStream out) {
         this.out = new PrintWriter(new OutputStreamWriter(out), true);
     }

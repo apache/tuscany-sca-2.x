@@ -71,11 +71,11 @@ public class DATAImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-        System.out.println("Starting " + component.getName());
+        // System.out.println("Starting " + component.getName());
     }
 
     public void stop() {
-        System.out.println("Stopping " + component.getName());
+        // System.out.println("Stopping " + component.getName());
     }
 
 }

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.webapp;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -40,7 +41,7 @@ import org.apache.tuscany.sca.http.ServletMappingException;
  *       
  */
 public class WebAppServletHost implements ServletHost {
-
+    private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
     private static WebAppServletHost instance = new WebAppServletHost();
 
     private Map<String, Servlet> servlets;
@@ -64,7 +65,7 @@ public class WebAppServletHost implements ServletHost {
             
         // For webapps just use the path and ignore the host and port
         servlets.put(pathURI.getPath(), servlet);
-        System.out.println("addServletMapping: " + pathURI.getPath());
+        logger.info("addServletMapping: " + pathURI.getPath());
     }
 
     public Servlet removeServletMapping(String path) throws ServletMappingException {

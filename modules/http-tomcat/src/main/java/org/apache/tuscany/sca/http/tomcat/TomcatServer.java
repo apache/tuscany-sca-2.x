@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.Executor;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -52,7 +53,8 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 @SuppressWarnings("deprecation")
 public class TomcatServer implements ServletHost {
-
+    private final static Logger logger = Logger.getLogger(TomcatServer.class.getName());
+    
     private static final int DEFAULT_PORT = 8080;
     
     /**
@@ -209,7 +211,7 @@ public class TomcatServer implements ServletHost {
         }
 
         URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
-        System.out.println("Added Servlet mapping: " + addedURI);
+        logger.info("Added Servlet mapping: " + addedURI);
     }
 
     public Servlet removeServletMapping(String uriStr) {
