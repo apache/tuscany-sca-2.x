@@ -28,7 +28,7 @@ import java.util.Map;
 import org.apache.tuscany.sca.binding.notification.encoding.BrokerID;
 import org.apache.tuscany.sca.binding.notification.encoding.EncodingRegistry;
 import org.apache.tuscany.sca.binding.notification.encoding.EndpointReference;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;

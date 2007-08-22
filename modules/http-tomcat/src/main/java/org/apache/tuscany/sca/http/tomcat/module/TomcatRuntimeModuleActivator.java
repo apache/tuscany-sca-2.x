@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.http.tomcat.module;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.http.tomcat.TomcatServer;
 import org.apache.tuscany.sca.work.WorkScheduler;
 

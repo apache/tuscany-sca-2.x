@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.binding.notification.util.IOUtils.IOUtilsException
 import org.apache.tuscany.sca.binding.notification.util.IOUtils.Writeable;
 import org.apache.tuscany.sca.binding.notification.util.NotificationServlet.NotificationServletStreamHandler;
 import org.apache.tuscany.sca.core.invocation.MessageImpl;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;

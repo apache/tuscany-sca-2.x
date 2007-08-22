@@ -19,35 +19,18 @@
 
 package org.apache.tuscany.sca.http;
 
-import javax.servlet.Servlet;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 
 /**
  * Default implementation of an extensible servlet host.
+ * @deprecated
  * 
  * @version $Rev$ $Date$
  */
-public class ExtensibleServletHost implements ServletHost {
-    
-    private ServletHostExtensionPoint servletHosts;
-    
+@Deprecated
+public class ExtensibleServletHost extends org.apache.tuscany.sca.host.http.ExtensibleServletHost {
+
     public ExtensibleServletHost(ServletHostExtensionPoint servletHosts) {
-        this.servletHosts = servletHosts;
+        super(servletHosts);
     }
-
-    public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
-        if (servletHosts.getServletHosts().isEmpty()) {
-            throw new ServletMappingException("No servlet host available");
-        }
-
-        // TODO implement selection of the correct servlet host based on the mapping
-        // For now just select the first one
-        servletHosts.getServletHosts().get(0).addServletMapping(uri, servlet);
-    }
-
-    public Servlet removeServletMapping(String uri) throws ServletMappingException {
-        // TODO implement selection of the correct servlet host based on the mapping
-        // For now just select the first one
-        return servletHosts.getServletHosts().get(0).removeServletMapping(uri);
-    }
-    
 }

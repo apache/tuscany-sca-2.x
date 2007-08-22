@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.jsonrpc;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;

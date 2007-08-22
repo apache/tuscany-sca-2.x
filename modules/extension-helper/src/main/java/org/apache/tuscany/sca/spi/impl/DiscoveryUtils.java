@@ -63,7 +63,7 @@ public class DiscoveryUtils {
         Object[] extensions = new Object[paramTypes.length];
 
         for (int i=0; i< paramTypes.length; i++) {
-            if ("org.apache.tuscany.sca.http.ServletHost".equals(paramTypes[i].getName())) {
+            if ("org.apache.tuscany.sca.host.http.ServletHost".equals(paramTypes[i].getName())) {
                 extensions[i] = getServletHost(registry);
             } else {
                 extensions[i] = registry.getExtensionPoint(paramTypes[i]);
@@ -82,9 +82,9 @@ public class DiscoveryUtils {
     private static Object getServletHost(ExtensionPointRegistry registry) {
         try {
 
-            Class<?> servletHostEPClass = Class.forName("org.apache.tuscany.sca.http.ServletHostExtensionPoint");
+            Class<?> servletHostEPClass = Class.forName("org.apache.tuscany.sca.host.http.ServletHostExtensionPoint");
             Object servletHostEP = registry.getExtensionPoint(servletHostEPClass);
-            Class<?> extensibleServletHost = Class.forName("org.apache.tuscany.sca.http.ExtensibleServletHost");
+            Class<?> extensibleServletHost = Class.forName("org.apache.tuscany.sca.host.http.ExtensibleServletHost");
             return extensibleServletHost.getConstructor(new Class[] {servletHostEPClass}).newInstance(servletHostEP);
 
         } catch (ClassNotFoundException e) {

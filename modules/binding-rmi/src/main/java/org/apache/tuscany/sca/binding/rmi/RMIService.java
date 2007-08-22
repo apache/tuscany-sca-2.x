@@ -33,13 +33,13 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.host.rmi.RMIHost;
+import org.apache.tuscany.sca.host.rmi.RMIHostException;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.rmi.RMIHost;
-import org.apache.tuscany.sca.rmi.RMIHostException;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.spi.ComponentLifecycle;

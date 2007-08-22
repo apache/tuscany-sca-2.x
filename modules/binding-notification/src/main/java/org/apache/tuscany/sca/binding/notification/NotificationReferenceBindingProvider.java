@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.binding.notification.encoding.Subscribe;
 import org.apache.tuscany.sca.binding.notification.util.NotificationServlet;
 import org.apache.tuscany.sca.binding.notification.util.URIUtil;
 import org.apache.tuscany.sca.binding.notification.util.NotificationServlet.NotificationServletStreamHandler;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;

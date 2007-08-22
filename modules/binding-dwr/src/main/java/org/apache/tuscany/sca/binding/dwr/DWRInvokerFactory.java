@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.dwr;
 import static org.apache.tuscany.sca.binding.dwr.DWRService.SERVLET_PATH;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;

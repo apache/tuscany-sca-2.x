@@ -23,23 +23,9 @@ package org.apache.tuscany.sca.rmi;
  * This exception relates to cases where there is a problem with the
  * Host runtime
  *
+ * @deprecated
  */
-public class RMIHostRuntimeException extends RuntimeException {
-   
-    private static final long serialVersionUID = -2639598547028423686L;
-
-    public RMIHostRuntimeException() {
-    }
-
-    public RMIHostRuntimeException(String message) {
-        super(message);
-    }
-    
-    public RMIHostRuntimeException(Throwable e) {
-        super(e);
-    }
-
-    public RMIHostRuntimeException(String message, Throwable cause) {
-        super(message, cause);
-    }
+@Deprecated
+public class RMIHostRuntimeException extends org.apache.tuscany.sca.host.rmi.RMIHostRuntimeException {
+    private static final long serialVersionUID = 446663906959900578L;
 }

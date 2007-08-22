@@ -19,31 +19,14 @@
 
 package org.apache.tuscany.sca.rmi;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Default implementation of an RMI host extension point.
  * 
+ * @deprecated
+ * 
  * @version $Rev$ $Date$
  */
-public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint {
-
-    private List<RMIHost> rmiHosts = new ArrayList<RMIHost>();
-    
-    public DefaultRMIHostExtensionPoint() {
-        addRMIHost(new DefaultRMIHost());
-    }
-
-    public void addRMIHost(RMIHost rmiHost) {
-        rmiHosts.add(rmiHost);
-    }
-
-    public void removeRMIHost(RMIHost rmiHost) {
-        rmiHosts.remove(rmiHost);
-    }
-
-    public List<RMIHost> getRMIHosts() {
-        return rmiHosts;
-    }
+@Deprecated
+public class DefaultRMIHostExtensionPoint extends org.apache.tuscany.sca.host.rmi.DefaultRMIHostExtensionPoint {
 }

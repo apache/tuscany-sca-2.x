@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.webapp;
+package org.apache.tuscany.sca.host.webapp;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -28,9 +28,9 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
-import org.apache.tuscany.sca.http.DefaultResourceServlet;
-import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.http.ServletMappingException;
+import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletMappingException;
 
 /**
  * ServletHost impl singleton thats shared between the SCADomain

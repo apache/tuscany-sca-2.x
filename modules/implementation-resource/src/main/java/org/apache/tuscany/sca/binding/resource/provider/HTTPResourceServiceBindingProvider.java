@@ -23,8 +23,8 @@ import java.net.URL;
 
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
-import org.apache.tuscany.sca.http.DefaultResourceServlet;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
