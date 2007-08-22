@@ -21,25 +21,12 @@ package org.apache.tuscany.sca.rmi;
 
 /**
  * This exception will relate to situations where the end applicaition's input is the cause of the exception
+ * 
+ * @deprecated
  *
  * @version $Rev: 486986 $ $Date: 2006-12-14 11:48:28 +0530 (Thu, 14 Dec 2006) $
  */
-public class RMIHostException extends RuntimeException {
- 
-    private static final long serialVersionUID = 3378300080918544410L;
-
-    public RMIHostException() {
-    }
-
-    public RMIHostException(String message) {
-        super(message);
-    }
-
-    public RMIHostException(Throwable e) {
-        super(e);
-    }
-
-    public RMIHostException(String message, Throwable cause) {
-        super(message, cause);
-    }
+@Deprecated
+public class RMIHostException extends org.apache.tuscany.sca.host.rmi.RMIHostException {
+    private static final long serialVersionUID = -3357830119983238735L;
 }

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.webapp;
+package org.apache.tuscany.sca.host.webapp;
 
 import java.io.File;
 import java.net.MalformedURLException;

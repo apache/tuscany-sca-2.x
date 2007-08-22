@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.feed.provider;
 
 import org.apache.tuscany.sca.binding.feed.RSSBinding;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;

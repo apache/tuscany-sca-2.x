@@ -32,9 +32,9 @@ import java.util.logging.Logger;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.apache.tuscany.sca.http.DefaultResourceServlet;
-import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.http.ServletMappingException;
+import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;

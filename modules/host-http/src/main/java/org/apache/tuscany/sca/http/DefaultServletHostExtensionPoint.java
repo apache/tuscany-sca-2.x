@@ -19,27 +19,13 @@
 
 package org.apache.tuscany.sca.http;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Default implementation of a servlet host extension point.
+ * @deprecated
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoint {
-
-    private List<ServletHost> servletHosts = new ArrayList<ServletHost>();
-
-    public void addServletHost(ServletHost servletHost) {
-        servletHosts.add(servletHost);
-    }
-
-    public void removeServletHost(ServletHost servletHost) {
-        servletHosts.remove(servletHost);
-    }
-
-    public List<ServletHost> getServletHosts() {
-        return servletHosts;
-    }
+@Deprecated
+public class DefaultServletHostExtensionPoint extends org.apache.tuscany.sca.host.http.DefaultServletHostExtensionPoint {
 }

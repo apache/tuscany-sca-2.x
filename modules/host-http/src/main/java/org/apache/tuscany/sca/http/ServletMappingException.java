@@ -20,25 +20,11 @@ package org.apache.tuscany.sca.http;
 
 /**
  * Indicates an exception while registering a servlet mapping.
+ * @deprecated
  * 
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class ServletMappingException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
-
-    public ServletMappingException() {
-        super();
-    }
-
-    public ServletMappingException(String message) {
-        super(message);
-    }
-
-    public ServletMappingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ServletMappingException(Throwable cause) {
-        super(cause);
-    }
+    private static final long serialVersionUID = 5463950431053092670L;
 }

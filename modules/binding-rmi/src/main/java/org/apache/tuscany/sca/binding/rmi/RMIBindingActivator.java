@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.binding.rmi;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.rmi.ExtensibleRMIHost;
-import org.apache.tuscany.sca.rmi.RMIHost;
-import org.apache.tuscany.sca.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.sca.host.rmi.ExtensibleRMIHost;
+import org.apache.tuscany.sca.host.rmi.RMIHost;
+import org.apache.tuscany.sca.host.rmi.RMIHostExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;

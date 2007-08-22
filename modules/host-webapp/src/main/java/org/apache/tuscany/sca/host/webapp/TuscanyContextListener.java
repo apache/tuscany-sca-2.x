@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.webapp;
+package org.apache.tuscany.sca.host.webapp;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;

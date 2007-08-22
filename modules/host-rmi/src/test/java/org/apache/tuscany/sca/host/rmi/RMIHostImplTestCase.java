@@ -16,9 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.rmi;
+package org.apache.tuscany.sca.host.rmi;
 
 import java.rmi.Remote;
+
+import org.apache.tuscany.sca.host.rmi.DefaultRMIHost;
+import org.apache.tuscany.sca.host.rmi.RMIHostException;
+import org.apache.tuscany.sca.host.rmi.RMIHostRuntimeException;
 
 import junit.framework.TestCase;
 

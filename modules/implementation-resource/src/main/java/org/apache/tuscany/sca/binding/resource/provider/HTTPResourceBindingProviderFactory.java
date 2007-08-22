@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.binding.resource.provider;
 
 import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.http.ServletHost;
-import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;

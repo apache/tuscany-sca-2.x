@@ -19,16 +19,6 @@
 
 package org.apache.tuscany.sca.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * A minimal implementation of a servlet that serves documents in a document root
@@ -37,49 +27,21 @@ import javax.servlet.http.HttpServletResponse;
  * A servlet host implementation is not required to use this implementation and can map
  * the URI and document root to a more complete and more efficient implementation of  
  * a resource servlet, for example the Tomcat or Jetty default servlets.
+ * 
+ * @deprecated use org.apache.tuscany.sca.host.http
  *
  * @version $Rev$ $Date$
  */
-public class DefaultResourceServlet extends HttpServlet implements Servlet {
-    private static final long serialVersionUID = 2865466417329430610L;
-    
-    private String documentRoot;
-    
+@Deprecated
+public class DefaultResourceServlet extends org.apache.tuscany.sca.host.http.DefaultResourceServlet {
+    private static final long serialVersionUID = 4118826069821911041L;
+
     /**
      * Constructs a new ResourceServlet
      * @param documentRoot the document root
      */
     public DefaultResourceServlet(String documentRoot) {
-        this.documentRoot = documentRoot;
+        super(documentRoot);
     }
     
-    /**
-     * Returns the document root.
-     * @return the document root
-     */
-    public String getDocumentRoot() {
-        return documentRoot;
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        // Determine the resource path
-        String requestPath = request.getPathInfo();
-        if (requestPath.startsWith("/")) {
-            requestPath = requestPath.substring(1);
-        }
-        URL url = new URL(documentRoot + '/' + requestPath);
-        
-        // Write the resource
-        InputStream is = url.openStream();
-        OutputStream os = response.getOutputStream(); 
-        byte[] buffer = new byte[2048];
-        for (;;) {
-            int n = is.read(buffer);
-            if (n <= 0)
-                break;
-            os.write(buffer, 0, n);
-        }
-    }
 }

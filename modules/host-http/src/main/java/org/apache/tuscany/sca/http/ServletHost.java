@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.http;
 
-import javax.servlet.Servlet;
 
 /**
  * Interface implemented by host environments that allow Servlets to be
@@ -26,28 +25,10 @@ import javax.servlet.Servlet;
  * <p/> 
  * This interface allows a system service to register a servlet
  * to handle inbound requests.
+ * @deprecated
  * 
  * @version $Rev$ $Date$
  */
-public interface ServletHost {
-    /**
-     * Add a mapping for an instance of a Servlet. This requests that the
-     * servlet container direct all requests to the designated mapping to the
-     * supplied Servlet instance.
-     * 
-     * @param uri the uri-mapping for the Servlet
-     * @param servlet the Servlet that should be invoked
-     */
-    void addServletMapping(String uri, Servlet servlet) throws ServletMappingException;
-
-    /**
-     * Remove a servlet mapping. This directs the servlet contain not to direct
-     * any more requests to a previously registered Servlet.
-     * 
-     * @param uri the uri-mapping for the Servlet
-     * @return the servlet that was registered to the mapping, null if nothing
-     *         was registered to the mapping
-     */
-    Servlet removeServletMapping(String uri) throws ServletMappingException;
-
+@Deprecated
+public interface ServletHost extends org.apache.tuscany.sca.host.http.ServletHost {
 }

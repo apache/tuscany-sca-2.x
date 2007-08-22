@@ -19,55 +19,22 @@
 
 package org.apache.tuscany.sca.rmi;
 
-import java.rmi.Remote;
+import org.apache.tuscany.sca.host.rmi.RMIHostExtensionPoint;
+
 
 
 /**
- * Default implementation of an extensible servlet host.
+ * Default implementation of an extensible RMI host.
+ * 
+ * @deprecated
  * 
  * @version $Rev$ $Date$
  */
-public class ExtensibleRMIHost implements RMIHost {
-    
-    private RMIHostExtensionPoint rmiHosts;
-    
-    public ExtensibleRMIHost(RMIHostExtensionPoint rmiHosts) {
-        this.rmiHosts = rmiHosts;
-    }
-    
-    public void registerService(String serviceName, int port, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
-        if (rmiHosts.getRMIHosts().isEmpty()) {
-            throw new RMIHostException("No RMI host available");
-        }
-        rmiHosts.getRMIHosts().get(0).registerService(serviceName, port, serviceObject);
-    }
-    
-    public Remote findService(String host, String port, String svcName) throws RMIHostException, RMIHostRuntimeException {
-        if (rmiHosts.getRMIHosts().isEmpty()) {
-            throw new RMIHostException("No RMI host available");
-        }
-        return rmiHosts.getRMIHosts().get(0).findService(host, port, svcName);
-    }
-    
-    public void registerService(String serviceName, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
-        if (rmiHosts.getRMIHosts().isEmpty()) {
-            throw new RMIHostException("No RMI host available");
-        }
-        rmiHosts.getRMIHosts().get(0).registerService(serviceName, serviceObject);
-    }
-    
-    public void unregisterService(String serviceName) throws RMIHostException, RMIHostRuntimeException {
-        if (rmiHosts.getRMIHosts().isEmpty()) {
-            throw new RMIHostException("No RMI host available");
-        }
-        rmiHosts.getRMIHosts().get(0).unregisterService(serviceName);
-    }
-    
-    public void unregisterService(String serviceName, int port) throws RMIHostException, RMIHostRuntimeException {
-        if (rmiHosts.getRMIHosts().isEmpty()) {
-            throw new RMIHostException("No RMI host available");
-        }
-        rmiHosts.getRMIHosts().get(0).unregisterService(serviceName, port);
-    }
+@Deprecated
+public class ExtensibleRMIHost extends org.apache.tuscany.sca.host.rmi.ExtensibleRMIHost {
 
+    public ExtensibleRMIHost(RMIHostExtensionPoint rmiHosts) {
+        super(rmiHosts);
+    }
+    
 }

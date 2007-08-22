@@ -64,7 +64,7 @@ import org.apache.tuscany.sca.binding.notification.util.IOUtils.IOUtilsException
 import org.apache.tuscany.sca.binding.notification.util.IOUtils.ReadableContinuation;
 import org.apache.tuscany.sca.binding.notification.util.IOUtils.Writeable;
 import org.apache.tuscany.sca.binding.notification.util.NotificationServlet.NotificationServletStreamHandler;
-import org.apache.tuscany.sca.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHost;
 
 /**
  * A notification type manager serves as a registry of producers and consumers, or brokers, for

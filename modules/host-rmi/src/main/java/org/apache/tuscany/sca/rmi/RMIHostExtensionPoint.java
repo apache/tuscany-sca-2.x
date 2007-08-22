@@ -18,34 +18,14 @@
  */
 package org.apache.tuscany.sca.rmi;
 
-import java.util.List;
 
 /**
  * An extension point for RMI hosts.
  * 
+ * @deprecated
+ * 
  * @version $Rev$ $Date$
  */
-public interface RMIHostExtensionPoint {
-
-    /**
-     * Adds a servlet host extension.
-     * 
-     * @param rmiHost
-     */
-    void addRMIHost(RMIHost rmiHost);
-
-    /**
-     * Removes a servlet host extension.
-     * 
-     * @param rmiHost
-     */
-    void removeRMIHost(RMIHost rmiHost);
-    
-    /**
-     * Returns a list of servlet host extensions.
-     * 
-     * @return
-     */
-    List<RMIHost> getRMIHosts();
-
+@Deprecated
+public interface RMIHostExtensionPoint extends org.apache.tuscany.sca.host.rmi.RMIHostExtensionPoint {
 }

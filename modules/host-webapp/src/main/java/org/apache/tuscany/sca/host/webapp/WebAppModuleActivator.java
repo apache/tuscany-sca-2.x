@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.webapp;
+package org.apache.tuscany.sca.host.webapp;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 
 /**
  * Activates the webapp host by registering the webapp ServletHost impl

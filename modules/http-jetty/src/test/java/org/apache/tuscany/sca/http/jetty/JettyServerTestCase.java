@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.http.DefaultResourceServlet;
+import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
