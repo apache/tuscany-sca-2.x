@@ -126,7 +126,7 @@ public class ExtensibleModelResolver implements ModelResolver {
         } else {
             if (domainResolver != null) {
                 Object resolved = domainResolver.resolveModel(modelClass, unresolved);
-                if (resolved != null) {
+                if (resolved != null && resolved != unresolved) {
                     return modelClass.cast(resolved);
                 }
             }

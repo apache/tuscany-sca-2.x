@@ -35,14 +35,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  */
 public abstract class EchoBindingPolicyProcessor<T extends EchoBindingPolicy> implements StAXArtifactProcessor<T> {
     public static final String ENCRYPTION = "Encryption";
-    
+
     public QName getArtifactType() {
         return new QName("http://sample/policy", "echoBindingPolicy");
     }
 
     public T read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
-        if ( name != null && name.equals(ENCRYPTION) ) {
+        if (name != null && name.equals(ENCRYPTION)) {
             EchoBindingEncryptionPolicy policy = new EchoBindingEncryptionPolicy();
             policy.setEncryptionStrategyClassName(reader.getAttributeValue(null, "strategy"));
             return (T)policy;
@@ -50,25 +50,25 @@ public abstract class EchoBindingPolicyProcessor<T extends EchoBindingPolicy> im
         return null;
     }
 
-    public void write(T arg0, XMLStreamWriter arg1) throws ContributionWriteException,
-                                                        XMLStreamException {
+    public void write(T arg0, XMLStreamWriter arg1) throws ContributionWriteException, XMLStreamException {
     }
 
     public void resolve(T policy, ModelResolver resolver) throws ContributionResolveException {
-        if ( policy instanceof EchoBindingEncryptionPolicy ) {
+        if (policy instanceof EchoBindingEncryptionPolicy) {
             EchoBindingEncryptionPolicy ePolicy = (EchoBindingEncryptionPolicy)policy;
-        
+
             ClassReference classReference = new ClassReference(ePolicy.getEncryptionStrategyClassName());
             classReference = resolver.resolveModel(ClassReference.class, classReference);
-            Class javaClass = classReference.getJavaClass();
+            Class javaClass = classReference != null ? classReference.getJavaClass() : null;
             if (javaClass == null) {
                 //throw new ContributionResolveException(new ClassNotFoundException(ePolicy.getEncryptionStrategyClass()));
             }
             //ePolicy.setStrategyClass(javaClass);
             //FIXME: need to resolve this thro resolver
             try {
-                ePolicy.setStrategyClass((Class<? extends EncryptionStrategy>)Class.forName(ePolicy.getEncryptionStrategyClassName()));
-            } catch ( Exception e ) {
+                ePolicy.setStrategyClass((Class<? extends EncryptionStrategy>)Class.forName(ePolicy
+                    .getEncryptionStrategyClassName()));
+            } catch (Exception e) {
                 throw new ContributionResolveException(e);
             }
             ePolicy.setStrategyClass(ePolicy.getStrategyClass());
