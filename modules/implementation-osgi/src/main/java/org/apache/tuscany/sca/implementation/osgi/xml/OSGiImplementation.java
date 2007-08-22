@@ -165,4 +165,35 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
         
     }
 
+    private boolean areEqual(Object obj1, Object obj2) {
+        if (obj1 == obj2)
+            return true;
+        if (obj1 == null || obj2 == null)
+            return false;
+        return obj1.equals(obj2);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        
+        if (!(obj instanceof OSGiImplementation))
+            return super.equals(obj);
+        OSGiImplementation impl = (OSGiImplementation)obj;
+        if (!areEqual(bundleName, impl.bundleName))
+            return false;
+        if (!areEqual(bundleLocation, impl.bundleLocation))
+            return false;
+        if (!areEqual(serviceProperties, impl.serviceProperties))
+            return false;
+        if (!areEqual(serviceCallbackProperties, impl.serviceCallbackProperties))
+            return false;
+        if (!areEqual(referenceProperties, impl.referenceProperties))            
+            return false;
+        if (!areEqual(referenceCallbackProperties, impl.referenceCallbackProperties))            
+                return false;
+        return super.equals(obj);
+    }
+    
+
+    
 }
