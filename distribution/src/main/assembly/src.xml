@@ -124,6 +124,8 @@
              <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
              <exclude>samples/quote-xquery</exclude>
              <exclude>samples/quote-xquery/**/*</exclude>
+             <exclude>samples/spi-implementation-pojo</exclude>
+             <exclude>samples/spi-implementation-pojo/**/*</exclude>
              <exclude>samples/simple-callback-ws/work</exclude>
              <exclude>samples/simple-callback-ws/work/**/*</exclude>
              <exclude>demos/alert-aggregator/src/main/webapp/dojo</exclude>
