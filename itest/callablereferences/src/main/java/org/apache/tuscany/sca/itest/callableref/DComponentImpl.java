@@ -19,10 +19,15 @@
 package org.apache.tuscany.sca.itest.callableref;
 
 import org.osoa.sca.CallableReference;
+import org.osoa.sca.RequestContext;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Service;
 
 @Service(DComponent.class)
 public class DComponentImpl implements DComponent {
+
+    @Context
+    protected RequestContext requestContext;
 
     public String foo(CallableReference<AComponent> aReference) {
         /*
@@ -37,6 +42,7 @@ public class DComponentImpl implements DComponent {
             e.printStackTrace();
         }
         */
+        System.out.println("Invoking service: " + requestContext.getServiceName());
         return "D" + aReference.getService().foo();
     }
 
