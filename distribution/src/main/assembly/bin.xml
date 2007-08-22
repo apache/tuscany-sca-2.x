@@ -105,6 +105,8 @@
                 <exclude>quote-xquery/**/*</exclude>
                 <exclude>simple-callback-ws/work</exclude>
                 <exclude>simple-callback-ws/work/**/*</exclude>
+                <exclude>spi-implementation-pojo</exclude>
+                <exclude>spi-implementation-pojo/**/*</exclude>
                 <exclude>*/.classpath</exclude>
                 <exclude>*/.project</exclude>
                 <exclude>*/.settings</exclude>
