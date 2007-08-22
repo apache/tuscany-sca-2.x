@@ -90,6 +90,8 @@
              <exclude>itest/contribution-import-export/import-wsdl/work/**/*</exclude>
              <exclude>itest/contribution-import-export/import-composite/work</exclude>
              <exclude>itest/contribution-import-export/import-composite/work/**/*</exclude>
+             <exclude>itest/osgi-implementation</exclude>
+             <exclude>itest/osgi-implementation/**/*</exclude>
              <exclude>modules/http-tomcat/work</exclude>
              <exclude>modules/http-tomcat/work/**/*</exclude>
              <exclude>modules/binding-jms</exclude>
@@ -120,8 +122,8 @@
              <exclude>samples/helloworld-ws-sdo/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service/work</exclude>
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
-             <exclude>samples/osgi-supplychain/.felix</exclude>
-             <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
+             <exclude>samples/osgi-supplychain</exclude>
+             <exclude>samples/osgi-supplychain/**/*</exclude>
              <exclude>samples/quote-xquery</exclude>
              <exclude>samples/quote-xquery/**/*</exclude>
              <exclude>samples/spi-implementation-pojo</exclude>
