@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.core.component;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -120,23 +118,10 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     }
 
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
-        List<ComponentService> services = component.getServices();
-        List<ComponentService> regularServices = new ArrayList<ComponentService>();
-        for (ComponentService service : services) {
-            if (service.isCallback()) {
-                continue;
-            }
-            String name = service.getName();
-            if (!name.startsWith("$") || name.startsWith("$dynamic$")) {
-                regularServices.add(service);
-            }
-        }
-        if (regularServices.size() != 1) {
-            throw new ServiceRuntimeException("The component doesn't have exactly one service");
-        }
+        ComponentService service = ComponentContextHelper.getSingleService(component);
         try {
             RuntimeComponentReference ref =
-                (RuntimeComponentReference)createSelfReference(component, regularServices.get(0), businessInterface);
+                (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
             ref.setComponent(component);
 
             return getServiceReference(businessInterface, ref);
@@ -326,7 +311,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#read(java.io.Reader)
      */
     public RuntimeComponent read(Reader reader) throws IOException {
-        RuntimeComponent component = compositeActivator.getReferenceHelper().read(reader);
+        RuntimeComponent component = compositeActivator.getComponentContextHelper().read(reader);
         compositeActivator.configureComponentContext(component);
         return component;
     }
@@ -335,6 +320,6 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#write(org.apache.tuscany.sca.runtime.RuntimeComponentReference, java.io.Writer)
      */
     public void write(RuntimeComponentReference reference, Writer writer) throws IOException {
-        compositeActivator.getReferenceHelper().write(component, reference, writer);
+        compositeActivator.getComponentContextHelper().write(component, reference, writer);
     }
 }

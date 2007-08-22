@@ -21,8 +21,9 @@ package org.apache.tuscany.sca.core.runtime;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.core.component.ReferenceHelper;
+import org.apache.tuscany.sca.core.component.ComponentContextHelper;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -33,19 +34,19 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * @version $Rev$ $Date$
  */
 public interface CompositeActivator {
-
     /**
      * Activate a composite
      * @param composite
      */
     void activate(Composite composite) throws ActivationException;
+
     /**
      * Activate a component reference
      * @param component
      * @param ref
      */
     void activate(RuntimeComponent component, RuntimeComponentReference ref);
-    
+
     /**
      * Activate a component reference
      * @param component
@@ -59,14 +60,14 @@ public interface CompositeActivator {
      * @param ref
      */
     void deactivate(RuntimeComponent component, RuntimeComponentReference ref);
-    
+
     /**
      * De-activate a component reference
      * @param component
      * @param ref
      */
     void deactivate(RuntimeComponent component, RuntimeComponentService service);
-    
+
     /**
      * Stop a composite
      * @param composite
@@ -96,9 +97,48 @@ public interface CompositeActivator {
      * @param composite
      */
     void stop(Composite composite) throws ActivationException;
-    
-    ReferenceHelper getReferenceHelper();
+
+    /**
+     * Get the component context helper
+     * @return
+     */
+    ComponentContextHelper getComponentContextHelper();
+
+    /**
+     * Get the proxy factory
+     * @return
+     */
     ProxyFactory getProxyFactory();
+
+    /**
+     * Get the java interface factory
+     * @return
+     */
+    JavaInterfaceFactory getJavaInterfaceFactory();
+
+    /**
+     * Configure the runtime component with component context
+     * @param component
+     */
     void configureComponentContext(RuntimeComponent component);
+
+    /**
+     * Resolve a component by URI in the domain
+     * @param componentURI
+     * @return
+     */
+    Component resolve(String componentURI);
+
+    /**
+     * Set the domain composite
+     * @param domainComposite
+     */
+    void setDomainComposite(Composite domainComposite);
+
+    /**
+     * Get the domain composite
+     * @return
+     */
+    Composite getDomainComposite();
 
 }

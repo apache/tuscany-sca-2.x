@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.component.ComponentContextImpl;
-import org.apache.tuscany.sca.core.component.ReferenceHelper;
+import org.apache.tuscany.sca.core.component.ComponentContextHelper;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -74,7 +74,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final ProxyFactory proxyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
 
-    private final ReferenceHelper referenceHelper;
+    private final ComponentContextHelper componentContextHelper;
+
+    private Composite domainComposite;
 
     /**
      * @param assemblyFactory
@@ -103,7 +105,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         this.javaInterfaceFactory = javaInterfaceFactory;
         this.requestContextFactory = requestContextFactory;
         this.proxyFactory = proxyFactory;
-        this.referenceHelper = new ReferenceHelper(assemblyFactory, javaInterfaceFactory, processors);
+        this.componentContextHelper = new ComponentContextHelper(assemblyFactory, javaInterfaceFactory, processors);
     }
 
     /**
@@ -374,8 +376,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     private void removeReferenceBindingProvider(RuntimeComponent component,
-                                                 RuntimeComponentReference reference,
-                                                 Binding binding) {
+                                                RuntimeComponentReference reference,
+                                                Binding binding) {
         reference.setBindingProvider(binding, null);
     }
 
@@ -664,8 +666,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
     /**
      * @return the referenceHelper
      */
-    public ReferenceHelper getReferenceHelper() {
-        return referenceHelper;
+    public ComponentContextHelper getComponentContextHelper() {
+        return componentContextHelper;
     }
 
     /**
@@ -673,6 +675,55 @@ public class CompositeActivatorImpl implements CompositeActivator {
      */
     public ProxyFactory getProxyFactory() {
         return proxyFactory;
+    }
+
+    /**
+     * @return the domainComposite
+     */
+    public Composite getDomainComposite() {
+        return domainComposite;
+    }
+
+    /**
+     * @param domainComposite the domainComposite to set
+     */
+    public void setDomainComposite(Composite domainComposite) {
+        this.domainComposite = domainComposite;
+    }
+
+    public Component resolve(String componentURI) {
+        for (Composite composite : domainComposite.getIncludes()) {
+            Component component = resolve(composite, componentURI);
+            if (component != null) {
+                return component;
+            }
+        }
+        return null;
+    }
+
+    public Component resolve(Composite composite, String componentURI) {
+        String prefix = componentURI + "/";
+        for (Component component : composite.getComponents()) {
+            String uri = component.getURI();
+            if (uri.equals(componentURI)) {
+                return component;
+            }
+            if (componentURI.startsWith(prefix)) {
+                Implementation implementation = component.getImplementation();
+                if (!(implementation instanceof Composite)) {
+                    return null;
+                }
+                return resolve((Composite)implementation, componentURI);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return the javaInterfaceFactory
+     */
+    public JavaInterfaceFactory getJavaInterfaceFactory() {
+        return javaInterfaceFactory;
     }
 
 }

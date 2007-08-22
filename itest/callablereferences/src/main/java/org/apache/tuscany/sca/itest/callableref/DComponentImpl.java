@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.itest.callableref;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
@@ -30,7 +35,6 @@ public class DComponentImpl implements DComponent {
     protected RequestContext requestContext;
 
     public String foo(CallableReference<AComponent> aReference) {
-        /*
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -41,7 +45,6 @@ public class DComponentImpl implements DComponent {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        */
         System.out.println("Invoking service: " + requestContext.getServiceName());
         return "D" + aReference.getService().foo();
     }

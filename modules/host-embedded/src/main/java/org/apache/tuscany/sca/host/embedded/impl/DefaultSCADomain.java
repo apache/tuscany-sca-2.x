@@ -153,6 +153,7 @@ public class DefaultSCADomain extends SCADomain {
         
         // Build the SCA composites
         CompositeBuilder compositeBuilder = runtime.getCompositeBuilder();
+        
         for (Composite composite: domainComposite.getIncludes()) {
             try {
                 compositeBuilder.build(composite);
@@ -163,6 +164,7 @@ public class DefaultSCADomain extends SCADomain {
 
         // Activate and start composites
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
+        compositeActivator.setDomainComposite(domainComposite);
         for (Composite composite: domainComposite.getIncludes()) {
             try {
                 compositeActivator.activate(composite);
