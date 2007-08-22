@@ -47,7 +47,6 @@ public class SCADefinitionsResolver implements ModelResolver {
         if (resolved != null) {
             return (T)resolved;
         }
-
-        return null;
+        return unresolved;
     }
 }
