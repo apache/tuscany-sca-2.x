@@ -48,6 +48,7 @@
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
                 <module>calculator-webapp</module>
+                <module>calculator-webapp-ws</module>
                 <module>chat-webapp</module>
                 <module>company-das</module>
                 <module>company-das-webapp</module>
