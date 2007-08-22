@@ -51,4 +51,20 @@
         <reference name="helloWorldService" target="BHelloWorldServiceMultipleServices/HelloWorldServiceLocal" />
     </component>
     
+    <!-- multiple bindings --> 
+    <!--component name="BHelloWorldMultipleBindings">
+        <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemoteImpl" />
+        <service name="HelloWorldServiceRemote">
+            <interface.java interface="org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote" />
+            <binding.ws/>
+            <binding.sca/>
+        </service>
+    </component-->
+     
+    
+    <!-- Dynamic interfaces -->
+    <!--component name="BHelloWorldServiceScript">
+        <implementation.script script="calculator/AddServiceImpl.js"/>
+    </component--> 
+    
 </composite>

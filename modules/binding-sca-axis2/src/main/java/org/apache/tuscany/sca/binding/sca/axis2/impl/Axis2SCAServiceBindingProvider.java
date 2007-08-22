@@ -22,10 +22,13 @@ package org.apache.tuscany.sca.binding.sca.axis2.impl;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
+import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
+import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.apache.tuscany.sca.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -80,6 +83,27 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
                                                    messageFactory);
         
         this.binding.setURI(wsBinding.getURI());
+        
+        // get the url out of the binding and send it to the registry if
+        // a distributed domain is configured
+        DistributedSCADomain distributedDomain = ((SCABindingImpl)this.binding).getDistributedDomain();
+        
+        ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
+        
+        // register endpoint twice to take account the formats 
+        //  ComponentName
+        //  ComponentName/ServiceName
+        // TODO - Can't we get this from somewhere? What happens with nested components. 
+        serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
+                                                 distributedDomain.getNodeName(), 
+                                                 component.getName(), 
+                                                 SCABinding.class.getName(), 
+                                                 this.binding.getURI());
+        serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
+                                                 distributedDomain.getNodeName(), 
+                                                 component.getName() + "/" + this.binding.getName(), 
+                                                 SCABinding.class.getName(), 
+                                                 this.binding.getURI());
     }
 
     public InterfaceContract getBindingInterfaceContract() {

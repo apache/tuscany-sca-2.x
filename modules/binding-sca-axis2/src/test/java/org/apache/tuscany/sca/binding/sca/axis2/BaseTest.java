@@ -33,30 +33,21 @@ public class BaseTest {
 
     public static String DEFULT_DOMAIN_NAME = "mydomain";
 
-    public static DistributedSCADomain distributedDomainA;
-    public static DistributedSCADomain distributedDomainB;
-    public static EmbeddedSCADomain domainA;
-    public static EmbeddedSCADomain domainB;
-
-    @BeforeClass
-    public static void init() throws Exception {
-        System.out.println("Setting up distributed nodes");
+    public static EmbeddedSCADomain createDomain(String nodeName) throws Exception {
         ClassLoader cl = BaseTest.class.getClassLoader();
+        EmbeddedSCADomain domain = null;
 
         try {
-            // create nodeA to run clients
-            String nodeName = "nodeA";
-
             // Create the distributed domain representation
-            distributedDomainA = new TestDistributedSCADomainImpl(DEFULT_DOMAIN_NAME);
-            distributedDomainA.setNodeName(nodeName);
+            TestDistributedSCADomainImpl distributedDomain = new TestDistributedSCADomainImpl(DEFULT_DOMAIN_NAME);
+            distributedDomain.setNodeName(nodeName);
 
             // create and start domainA
-            domainA = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);
-            domainA.start();
+            domain = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);
+            domain.start();
 
-            // add a contribution to A
-            ContributionService contributionService = domainA.getContributionService();
+            // add a contribution to the domain
+            ContributionService contributionService = domain.getContributionService();
 
             // find the current directory as a URL. This is where our contribution 
             // will come from
@@ -68,52 +59,26 @@ public class BaseTest {
             Composite composite = contribution.getDeployables().get(0);
 
             // Add the deployable composite to the domain
-            domainA.getDomainComposite().getIncludes().add(composite);
-            domainA.getCompositeBuilder().build(composite);
+            domain.getDomainComposite().getIncludes().add(composite);
+            domain.getCompositeBuilder().build(composite);
 
-            distributedDomainA.addDistributedDomainToBindings(composite);
+            distributedDomain.addDistributedDomainToBindings(composite);
 
-            domainA.getCompositeActivator().activate(composite);
+            domain.getCompositeActivator().activate(composite);
+        } catch (Exception ex) {
+            System.err.println("Exception when creating domain " + ex.getMessage());
+            ex.printStackTrace(System.err);
+            throw ex;
+        }   
+        return domain;
+    }
 
-            // create nodeB to run remote services
-            nodeName = "nodeB";
-
-            // Create the distributed domain representation
-            distributedDomainB = new TestDistributedSCADomainImpl(DEFULT_DOMAIN_NAME);
-            distributedDomainB.setNodeName(nodeName);
-
-            // create and start domainB
-            domainB = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);
-            domainB.start();
-
-            // add a contribution to B
-            contributionService = domainB.getContributionService();
-
-            // find the current directory as a URL. This is where our contribution 
-            // will come from
-            contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
-
-            // Contribute the SCA application
-            contribution = contributionService.contribute("http://calculator", contributionURL, null, //resolver, 
-                                                          false);
-            composite = contribution.getDeployables().get(0);
-
-            // Add the deployable composite to the domain
-            domainB.getDomainComposite().getIncludes().add(composite);
-            domainB.getCompositeBuilder().build(composite);
-
-            distributedDomainB.addDistributedDomainToBindings(composite);
-
-            domainB.getCompositeActivator().activate(composite);
-
-            // Start node A
-            for (Composite compositeA : domainA.getDomainComposite().getIncludes()) {
-                domainA.getCompositeActivator().start(compositeA);
-            }
-
-            // start node B
-            for (Composite compositeB : domainB.getDomainComposite().getIncludes()) {
-                domainB.getCompositeActivator().start(compositeB);
+    public static void startDomain(EmbeddedSCADomain domain) 
+      throws Exception {
+        try {
+            // Start domain
+            for (Composite composite : domain.getDomainComposite().getIncludes()) {
+                domain.getCompositeActivator().start(composite);
             }
 
         } catch (Exception ex) {
@@ -121,14 +86,11 @@ public class BaseTest {
             ex.printStackTrace(System.err);
             throw ex;
         }     
-
     }
 
-    @AfterClass
-    public static void destroy() throws Exception {
-        // stop the nodes and hence the domains they contain        
-        domainA.stop();
-        domainB.stop();
+    public static void stopDomain(EmbeddedSCADomain domain) throws Exception {
+        // stop the domain     
+        domain.stop();
     }
 
 }
