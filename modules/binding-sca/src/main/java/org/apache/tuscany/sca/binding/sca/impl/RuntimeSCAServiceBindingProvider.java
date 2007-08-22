@@ -86,26 +86,6 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
                     distributedProvider = (ServiceBindingProvider2)
                                           distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
                     
-                    // get the url out of the binding and send it to the registry if
-                    // a distributed domain is configured
-                    DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
-                    
-                    ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
-                    
-                    // register endpoint twice to take account the formats 
-                    //  ComponentName
-                    //  ComponentName/ServiceName
-                    // TODO - Can't we get this from somewhere? What happens with nested components. 
-                    serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
-                                                             distributedDomain.getNodeName(), 
-                                                             component.getName(), 
-                                                             SCABinding.class.getName(), 
-                                                             binding.getURI());
-                    serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
-                                                             distributedDomain.getNodeName(), 
-                                                             component.getName() + "/" + service.getName(), 
-                                                             SCABinding.class.getName(), 
-                                                             binding.getURI());
                 
                 } else {
                      /* do nothing at the moment as only apps using the node inplementation

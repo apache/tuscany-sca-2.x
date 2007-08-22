@@ -22,9 +22,10 @@
            xmlns:sample="http://sample"
            name="HelloWorld">
 
+	
     <!-- local only wire -->
     <component name="AHelloWorldClientLocal">
-		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientLocalImpl" />
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientLocalImpl"/>
         <reference name="helloWorldService" target="AHelloWorldServiceLocal" />
     </component>
     
@@ -54,6 +55,17 @@
 		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemote2Impl" />
         <reference name="helloWorldService" target="BHelloWorldServiceMultipleServices/HelloWorldServiceRemote2" />
     </component> 
+    
+    <!-- multiple bindings -->   
+    <!--component name="AHelloWorldClientMultipleBindings">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceRemote" >
+            <interface.java interface="org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote" />        
+            <binding.sca/>
+            <binding.ws/>
+        </reference>
+    </component-->
+    
     
 
 </composite>

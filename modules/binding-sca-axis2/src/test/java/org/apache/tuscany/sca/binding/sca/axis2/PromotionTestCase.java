@@ -34,7 +34,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SimpleTestCase extends BaseTest {
+public class PromotionTestCase extends BaseTest {
     
     public static EmbeddedSCADomain domainA;
     public static EmbeddedSCADomain domainB;
@@ -45,8 +45,8 @@ public class SimpleTestCase extends BaseTest {
 
         try {
             // create and start domainA
-            domainA = createDomain("nodeA");
-            domainB = createDomain("nodeB");
+            domainA = createDomain("nodeC");
+            domainB = createDomain("nodeD");
             startDomain(domainA);
             startDomain(domainB);
 
@@ -65,44 +65,11 @@ public class SimpleTestCase extends BaseTest {
     }    
     
     @Test
-    public void testHelloWorldLocal() throws Exception {  
-        HelloWorldClient helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientLocal");
-        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
-        
-    }
-    
-    @Test
-    public void testHelloWorldRemote() throws Exception {  
+    public void testHelloWorldPromotion() throws Exception {  
         HelloWorldClient helloWorldClientA;
-        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientRemote");
+        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");
         Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
         
-    }    
-    
-    @Test
-    public void testHelloWorldLocalAndRemote() throws Exception {
-        HelloWorldClient helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientLocalAndRemote"); 
-        HelloWorldClient helloWorldClientB = domainB.getService(HelloWorldClient.class, "BHelloWorldClientLocalAndRemote"); 
-        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
-        Assert.assertEquals(helloWorldClientB.getGreetings("fred"), "Hello fred");
-    }   
-    
-    @Test
-    public void testHelloWorldMultipleServices() throws Exception {
-        HelloWorldClient helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientMultipleServices"); 
-        HelloWorldClient helloWorldClientA2 = domainA.getService(HelloWorldClient.class, "AHelloWorldClientMultipleServices2");
-        HelloWorldClient helloWorldClientB = domainB.getService(HelloWorldClient.class, "BHelloWorldClientMultipleServices");        
-        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
-        Assert.assertEquals(helloWorldClientA2.getGreetings("fred"), "Hello fred");
-        Assert.assertEquals(helloWorldClientB.getGreetings("fred"), "Hello fred");
-    }   
-    
-    //@Test
-    public void testHelloWorldMultipleBindings() throws Exception {  
-        HelloWorldClient helloWorldClientA;
-        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientMultipleBindings");
-        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
-        
-    }   
+    }      
   
 }
