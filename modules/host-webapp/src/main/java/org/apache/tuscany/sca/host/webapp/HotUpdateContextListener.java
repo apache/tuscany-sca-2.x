@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.host.embedded.impl.HotUpdatableSCADomain;
  */
 public class HotUpdateContextListener extends TuscanyContextListener {
 
-    protected static final String REPOSITORY_FOLDER_NAME = "sca-contributions";
+    public static final String REPOSITORY_FOLDER_NAME = "sca-contributions";
     
     @Override
     public void contextInitialized(ServletContextEvent event) {
