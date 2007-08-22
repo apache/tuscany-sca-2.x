@@ -46,6 +46,7 @@
     
     <component name="AtomAggregator">
         <implementation.java class="feed.AggregatorImpl"/>        
+        <reference name="sort" target="Sort"/>          
 		<reference name="feed1">
    	 		<binding.atom uri="http://www.oreillynet.com/pub/feed/1"/>
    		</reference>
