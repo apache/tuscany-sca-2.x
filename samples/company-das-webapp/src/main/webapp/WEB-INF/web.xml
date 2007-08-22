@@ -25,7 +25,7 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     <display-name>Tuscany DAS Service Client Application</display-name>
 
     <listener>
-        <listener-class>org.apache.tuscany.sca.webapp.TuscanyContextListener</listener-class>
+        <listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class>
     </listener>
 
     <welcome-file-list id="WelcomeFileList">
