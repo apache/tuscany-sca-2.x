@@ -20,9 +20,14 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
@@ -60,7 +65,8 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
             // wire not yet selected, so return a proxy that resolves the target dynamically
             return proxyFactory.createCallbackProxy(interfaze, wires);
         }
-     }
+    }
+
     public static RuntimeWire selectCallbackWire(Message msgContext, List<RuntimeWire> wires) {
         EndpointReference from = msgContext.getFrom();
         if (from == null) {
@@ -70,7 +76,7 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
         //FIXME: need a cache for better performance.  This requires making this
         // method non-static, which means changing the signature of createCallbackProxy().
 
-        // first choice is wire with matching desination endpoint
+        // first choice is wire with matching destination endpoint
         for (RuntimeWire wire : wires) {
             if (from.getURI().equals(wire.getTarget().getURI())) {
                 return wire;
@@ -87,7 +93,8 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
             if (wire.getSource().getBinding().getName().equals(to.getBinding().getName())) {
                 //FIXME: need better way to represent dynamic wire
                 if (wire.getTarget().getURI().equals("/")) {  // dynamic wire
-                    return wire;
+                    //FIXME: avoid doing this for genuine dynamic wires
+                    return cloneAndBind(msgContext, wire);
                 }
                 //FIXME: no dynamic wire, so should attempt to create a static wire 
             }
@@ -98,7 +105,8 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
             if (wire.getSource().getBinding().getClass() == to.getBinding().getClass()) {
                 //FIXME: need better way to represent dynamic wire
                 if (wire.getTarget().getURI().equals("/")) {  // dynamic wire
-                    return wire;
+                    //FIXME: avoid doing this for genuine dynamic wires
+                    return cloneAndBind(msgContext, wire);
                 }
                 //FIXME: no dynamic wire, so should attempt to create a static wire 
             }
@@ -106,6 +114,46 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
 
         // no suitable callback wire was found
         return null;
+    }
+
+    private static RuntimeWire cloneAndBind(Message msgContext, RuntimeWire wire) {
+        try {
+            RuntimeWire resolvedWire = (RuntimeWire)wire.clone();
+            EndpointReference callback = msgContext.getFrom().getCallbackEndpoint();
+            if (callback != null) {
+                RuntimeComponentReference ref =
+                    bind((RuntimeComponentReference)wire.getSource().getContract(),
+                         callback.getComponent(),
+                         (RuntimeComponentService)callback.getContract());
+                resolvedWire = ref.getRuntimeWires().get(0);
+            }
+            return resolvedWire;
+        } catch (CloneNotSupportedException e) {
+            // will not happen
+            return null;
+        }
+    }
+
+    private static RuntimeComponentReference bind(RuntimeComponentReference reference,
+                                                  RuntimeComponent component,
+                                                  RuntimeComponentService service)
+                   throws CloneNotSupportedException {
+        RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
+        ref.getTargets().add(service);
+        ref.getBindings().clear();
+        for (Binding binding : service.getBindings()) {
+            if (binding instanceof WireableBinding) {
+                WireableBinding wireableBinding = (WireableBinding)((WireableBinding)binding).clone();
+                wireableBinding.setTargetBinding(binding);
+                wireableBinding.setTargetComponent(component);
+                wireableBinding.setTargetComponentService(service);
+                wireableBinding.setRemote(false);
+                ref.getBindings().add(wireableBinding);
+            } else {
+                ref.getBindings().add(binding);
+            }
+        }
+        return ref;
     }
 
 }

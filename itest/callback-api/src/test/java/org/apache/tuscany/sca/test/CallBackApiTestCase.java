@@ -22,8 +22,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-//FIXME Fix this test case
-public class CallBackApiTestCaseFIXME extends TestCase {
+public class CallBackApiTestCase extends TestCase {
 
     private SCADomain domain;
     private CallBackApiClient aCallBackClient;
@@ -34,15 +33,14 @@ public class CallBackApiTestCaseFIXME extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("CallBackApiTest.composite");
-    	
-        aCallBackClient =
-            domain.getService(CallBackApiClient.class, "CallBackApiClient");
+        domain = SCADomain.newInstance("CallBackApiTest.composite");
+
+        aCallBackClient = domain.getService(CallBackApiClient.class, "CallBackApiClient");
     }
-    
+
     @Override
     protected void tearDown() throws Exception {
-    	domain.close();
+        domain.close();
     }
 
 }
