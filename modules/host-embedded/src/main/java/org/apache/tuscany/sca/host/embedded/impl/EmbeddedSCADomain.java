@@ -75,6 +75,8 @@ public class EmbeddedSCADomain extends SCADomain {
         domainComposite = assemblyFactory.createComposite();
         domainComposite.setName(new QName(Constants.SCA_NS, "domain"));
         domainComposite.setURI(uri);
+        
+        getCompositeActivator().setDomainComposite(domainComposite);
     }
 
     public void stop() throws ActivationException {

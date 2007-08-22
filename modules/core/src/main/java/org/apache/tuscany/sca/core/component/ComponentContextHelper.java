@@ -24,6 +24,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -55,11 +57,12 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ReferenceHelper {
+public class ComponentContextHelper {
 
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
@@ -69,7 +72,7 @@ public class ReferenceHelper {
      * @param assemblyFactory The factory to create assembly models
      * @param processors The extension point for stax artifact processors
      */
-    public ReferenceHelper(AssemblyFactory assemblyFactory,
+    public ComponentContextHelper(AssemblyFactory assemblyFactory,
                            JavaInterfaceFactory javaInterfaceFactory,
                            StAXArtifactProcessorExtensionPoint processors) {
         this.assemblyFactory = assemblyFactory;
@@ -249,12 +252,35 @@ public class ReferenceHelper {
         return null;
     }
     
-    public static ReferenceHelper getCurrentReferenceHelper() {
+    public static ComponentContextHelper getCurrentComponentContextHelper() {
         CompositeActivator activator = getCurrentCompositeActivator();
         if (activator != null) {
-            return activator.getReferenceHelper();
+            return activator.getComponentContextHelper();
         }
         return null;
+    }
+
+    /**
+     * @param component
+     */
+    public static ComponentService getSingleService(Component component) {
+        ComponentService targetService;
+        List<ComponentService> services = component.getServices();
+        List<ComponentService> regularServices = new ArrayList<ComponentService>();
+        for (ComponentService service : services) {
+            if (service.isCallback()) {
+                continue;
+            }
+            String name = service.getName();
+            if (!name.startsWith("$") || name.startsWith("$dynamic$")) {
+                regularServices.add(service);
+            }
+        }
+        if (regularServices.size() != 1) {
+            throw new ServiceRuntimeException("The component doesn't have exactly one service");
+        }
+        targetService = regularServices.get(0);
+        return targetService;
     }
 
 }

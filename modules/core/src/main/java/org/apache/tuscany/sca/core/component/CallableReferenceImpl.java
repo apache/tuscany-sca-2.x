@@ -22,11 +22,14 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.net.URI;
 import java.util.StringTokenizer;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.core.runtime.CompositeActivator;
@@ -171,22 +174,58 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     /**
      * @throws IOException
      */
-    private synchronized void resolve() throws IOException, ClassNotFoundException {
+    private synchronized void resolve() throws Exception {
         if (scdl != null && reference == null) {
-            ReferenceHelper referenceHelper = ReferenceHelper.getCurrentReferenceHelper();
-            if (referenceHelper != null) {
-                CompositeActivator currentActivator = ReferenceHelper.getCurrentCompositeActivator();
+            ComponentContextHelper componentContextHelper = ComponentContextHelper.getCurrentComponentContextHelper();
+            if (componentContextHelper != null) {
+                CompositeActivator currentActivator = ComponentContextHelper.getCurrentCompositeActivator();
                 this.compositeActivator = currentActivator;
-                Component c = referenceHelper.fromXML(scdl);
+                Component c = componentContextHelper.fromXML(scdl);
                 this.component = (RuntimeComponent)c;
                 currentActivator.configureComponentContext(this.component);
                 this.reference = (RuntimeComponentReference)c.getReferences().get(0);
                 this.reference.setComponent(this.component);
+                URI uri = URI.create("/" + componentURI);
+                for (Binding binding : reference.getBindings()) {
+                    if (binding instanceof WireableBinding) {
+                        String targetURI = uri.resolve(binding.getURI()).toString();
+                        int index = targetURI.lastIndexOf('/');
+                        String serviceName = targetURI.substring(index+1);
+                        targetURI = targetURI.substring(1, index);
+                        Component targetComponet = compositeActivator.resolve(targetURI);
+                        ComponentService targetService = null;
+                        if (targetComponet != null) {
+                            if ("".equals(serviceName)) {
+                                targetService = ComponentContextHelper.getSingleService(targetComponet);
+                            } else {
+                                for (ComponentService service : targetComponet.getServices()) {
+                                    if (service.getName().equals(serviceName)) {
+                                        targetService = service;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        WireableBinding wireableBinding = (WireableBinding)binding;
+                        wireableBinding.setTargetComponent(targetComponet);
+                        wireableBinding.setTargetComponentService(targetService);
+                        if (targetService != null) {
+                            for (Binding serviceBinding : targetService.getBindings()) {
+                                if (serviceBinding.getClass() == binding.getClass()) {
+                                    wireableBinding.setTargetBinding(serviceBinding);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
                 Interface i = reference.getInterfaceContract().getInterface();
                 if (i instanceof JavaInterface) {
                     JavaInterface javaInterface = (JavaInterface)i;
-                    if(javaInterface.isUnresolved()) {
-                        javaInterface.setJavaClass(Thread.currentThread().getContextClassLoader().loadClass(javaInterface.getName()));
+                    if (javaInterface.isUnresolved()) {
+                        javaInterface.setJavaClass(Thread.currentThread().getContextClassLoader()
+                            .loadClass(javaInterface.getName()));
+                        currentActivator.getJavaInterfaceFactory().createJavaInterface(javaInterface, javaInterface.getJavaClass());
                     }
                     this.businessInterface = (Class<B>)javaInterface.getJavaClass();
                 }
@@ -196,12 +235,13 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         }
     }
 
+
     /**
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
-            String scdl = ((CompositeActivatorImpl)compositeActivator).getReferenceHelper().toXML(component, reference);
+            String scdl = ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper().toXML(component, reference);
             out.writeUTF(scdl);
             StringBuffer uri = new StringBuffer(componentURI);
             boolean first = true;
