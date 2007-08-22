@@ -25,7 +25,7 @@ import org.junit.Assert;
 
 import junit.framework.TestCase;
 
-public class HelloWorldTestCase extends TestCase {
+public class HelloWorldTestCaseFIXME extends TestCase {
 
     private SCADomain scaDomain;
     private HelloWorld helloWorld;
