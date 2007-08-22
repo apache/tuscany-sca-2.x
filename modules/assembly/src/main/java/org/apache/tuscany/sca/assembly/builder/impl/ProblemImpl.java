@@ -106,7 +106,7 @@ public class ProblemImpl implements Problem {
         PrintUtil util = new PrintUtil(writer);
         if (model != null) {
             writer.println();
-            util.print(model);
+           // util.print(model);
         }
         if (cause != null) {
             writer.println();
