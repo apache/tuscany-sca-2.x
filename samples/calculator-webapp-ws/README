@@ -23,7 +23,7 @@ depending on which app server you are using.
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-calculator-webapp-ws/calc.jsp
+http://localhost:8085/sample-calculator-webapp-ws/calc.jsp
 
 The port and hostname will of course vary depending on your local installation. 
 
@@ -90,7 +90,7 @@ of copying the WAR file to the webapps directory.
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-calculator-webapp/calc.jsp
+http://localhost:8085/sample-calculator-webapp/calc.jsp
 
 The port and hostname will of course vary depending on your local installation. 
 
