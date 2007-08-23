@@ -16,14 +16,91 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="calculator" default="compile">
+<project name="calculator" default="runDomainNode">
     <property name="node.class" value="node.CalculatorNode" />
 	<property name="domain.class" value="node.DomainNode" />
 	<property name="test.jar"   value="sample-calculator.jar" />
 	
-	<!-- a classpath so I can test without building the distribution jars -->
-	<property name="m2.repo"   value="C:\Documents and Settings\slaws\.m2\repository" />
-    <path id="test.classpath">
+    <target name="init">
+        <mkdir dir="target/classes"/>
+    </target>
+	
+    <target name="compile" depends="init">
+        <javac srcdir="src/main/java"
+               destdir="target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </javac> 
+        <copy todir="target/classes">
+            <fileset dir="src/main/resources"/>
+        </copy>
+        <jar destfile="target/${test.jar}" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
+        </jar>    	
+    </target>
+	
+    <target name="runDomainNode">
+        <java classname="${domain.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="target/classes"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>    	        	
+        </java>
+    </target>
+	
+    <target name="runNodeA">
+        <java classname="${node.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="target/classes"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        	<arg value="mydomain"/>
+        	<arg value="nodeA"/>        	        	
+        </java>
+    </target>
+	
+    <target name="runNodeB">
+        <java classname="${node.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="target/classes"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        	<arg value="mydomain"/>
+        	<arg value="nodeB"/>        	
+        </java>
+    </target>	
+	
+    <target name="runNodeC">
+        <java classname="${node.class}"
+              fork="true">
+            <classpath>
+                <pathelement path="target/classes"/>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        	<arg value="mydomain"/>
+        	<arg value="nodeC"/>        	
+        </java>
+    </target>	
+	
+    <target name="clean">
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="target"/>
+        </delete>
+    </target>	
+	
+	<!-- If you want to test without building the distribution jars set the       -->
+	<!-- localtion value of the m2.repo on your machine and use the targets below -->
+	<property name="m2.repo"   value="your dir here\.m2\repository" />
+    <path id="repo.classpath">
         <!--pathelement location="${classpath}"/-->
     	<pathelement location="${m2.repo}\annogen\annogen\0.1.0\annogen-0.1.0.jar"/>
         <pathelement location="${m2.repo}\avalon-framework\avalon-framework\4.1.3\avalon-framework-4.1.3.jar"/>
@@ -80,6 +157,7 @@
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-interface-wsdl\1.0-incubating-SNAPSHOT\tuscany-interface-wsdl-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-interface-wsdl-xml\1.0-incubating-SNAPSHOT\tuscany-interface-wsdl-xml-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-policy\1.0-incubating-SNAPSHOT\tuscany-policy-1.0-incubating-SNAPSHOT.jar"/>
+    	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-policy-xml\1.0-incubating-SNAPSHOT\tuscany-policy-xml-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-topology\1.0-incubating-SNAPSHOT\tuscany-topology-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-topology-xml\1.0-incubating-SNAPSHOT\tuscany-topology-xml-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\woden\woden\1.0-incubating-M7a\woden-1.0-incubating-M7a.jar"/>
@@ -96,84 +174,47 @@
         <pathelement location="${m2.repo}\xml-apis\xml-apis\1.3.03\xml-apis-1.3.03.jar"/>    	
     	<pathelement location="target/classes"/>    	
     </path>	
-    		
-    <target name="init">
-        <mkdir dir="target/classes"/>
-    </target>
-	
-    <target name="compile" depends="init">
-        <javac srcdir="src/main/java"
-               destdir="target/classes"
-               debug="on"
-               source="1.5"
-               target="1.5">
-            <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </javac> 
-        <copy todir="target/classes">
-            <fileset dir="src/main/resources"/>
-        </copy>
-        <jar destfile="target/${test.jar}" basedir="target/classes">
-            <manifest>
-                <attribute name="Main-Class" value="${test.class}" /> 
-            </manifest>
-        </jar>    	
-    </target>	
-	
-    <target name="runDomainNode">
+    	
+    <target name="runDomainNodeRepo">
         <java classname="${domain.class}"
               fork="true">
             <classpath>
-                <!--pathelement path="target/classes"/-->
-            	<!--pathelement location="../../lib/tuscany-sca-manifest.jar"/-->
-            	<path refid="test.classpath"/>
+            	<path refid="repo.classpath"/>
             </classpath>    	        	
         </java>
     </target>
 	
-    <target name="runNodeA">
+    <target name="runNodeARepo">
         <java classname="${node.class}"
               fork="true">
             <classpath>
-                <!--pathelement path="target/classes"/-->
-            	<!--pathelement location="../../lib/tuscany-sca-manifest.jar"/-->
-            	<path refid="test.classpath"/>
+            	<path refid="repo.classpath"/>
             </classpath>
         	<arg value="mydomain"/>
         	<arg value="nodeA"/>        	        	
         </java>
     </target>
 	
-    <target name="runNodeB">
+    <target name="runNodeBRepo">
         <java classname="${node.class}"
               fork="true">
             <classpath>
-                <!--pathelement path="target/classes"/-->
-            	<!--pathelement location="../../lib/tuscany-sca-manifest.jar"/-->
-            	<path refid="test.classpath"/>
+            	<path refid="repo.classpath"/>
             </classpath>
         	<arg value="mydomain"/>
         	<arg value="nodeB"/>        	
         </java>
     </target>	
 	
-    <target name="runNodeC">
+    <target name="runNodeCRepo">
         <java classname="${node.class}"
               fork="true">
             <classpath>
-                <!--pathelement path="target/classes"/-->
-            	<!--pathelement location="../../lib/tuscany-sca-manifest.jar"/-->
-            	<path refid="test.classpath"/>
+            	<path refid="repo.classpath"/>
             </classpath>
         	<arg value="mydomain"/>
         	<arg value="nodeC"/>        	
         </java>
     </target>	
 	
-    <target name="clean">
-        <delete quiet="true" includeemptydirs="true">
-            <fileset dir="target"/>
-        </delete>
-    </target>
 </project>
