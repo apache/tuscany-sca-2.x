@@ -19,24 +19,18 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
 
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceCallbackRemote;
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldCallbackRemote;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceCallbackOnewayRemote;
+import org.osoa.sca.annotations.Callback;
 
-public class HelloWorldClientCallbackRemoteImpl implements HelloWorldClient {
-    
-    public static String result;
 
-    @Reference
-    public HelloWorldServiceCallbackRemote helloWorldService;
-    
-    public String getGreetings(String s) {
-        return helloWorldService.getGreetingsRemote(s);
-    }
-    
-    public String getGreetingsCallbackRemote(String s) {
-        result =  "callback " + s;
-        return result;
+public class HelloWorldServiceCallbackOnewayRemoteImpl implements HelloWorldServiceCallbackOnewayRemote {
+
+    @Callback
+    protected HelloWorldCallbackRemote theCallback;
+
+    public void getGreetingsRemote(String s) {
+        theCallback.getGreetingsCallbackRemote(s);
     }
 
 }

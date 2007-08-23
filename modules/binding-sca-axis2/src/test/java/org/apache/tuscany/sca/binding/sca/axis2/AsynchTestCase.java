@@ -18,17 +18,11 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import java.net.URL;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientCallbackOnewayRemoteImpl;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -45,8 +39,8 @@ public class AsynchTestCase extends BaseTest {
 
         try {
             // create and start domainA
-            domainA = createDomain("nodeE");
-            domainB = createDomain("nodeF");
+            domainA = createDomain("nodeG");
+            domainB = createDomain("nodeH");
             startDomain(domainA);
             startDomain(domainB);
 
@@ -65,12 +59,15 @@ public class AsynchTestCase extends BaseTest {
     }   
     
     @Test
-    public void testHelloWorldAsynch() throws Exception {  
-/*        
+    public void testHelloWorldAsynch() throws Exception {        
         HelloWorldClient helloWorldClientB;
-        helloWorldClientB = domainB.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
-        Assert.assertEquals("Hello callback fred", helloWorldClientB.getGreetings("fred"));  
-*/        
+        helloWorldClientB = domainA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
+        helloWorldClientB.getGreetings("fred");
+        System.out.println("Sleeping ...");
+        Thread.sleep(2000);
+        System.out.println("... Done");
+        Assert.assertEquals("callback fred", HelloWorldClientCallbackOnewayRemoteImpl.result );
+        
     }      
        
     

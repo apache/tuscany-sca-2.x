@@ -17,26 +17,17 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
+package org.apache.tuscany.sca.binding.sca.axis2.helloworld;
 
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceCallbackRemote;
-import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.OneWay;
+import org.osoa.sca.annotations.Remotable;
 
-public class HelloWorldClientCallbackRemoteImpl implements HelloWorldClient {
+@Remotable
+@Callback(HelloWorldCallbackRemote.class)
+public interface HelloWorldServiceCallbackOnewayRemote {
     
-    public static String result;
-
-    @Reference
-    public HelloWorldServiceCallbackRemote helloWorldService;
-    
-    public String getGreetings(String s) {
-        return helloWorldService.getGreetingsRemote(s);
-    }
-    
-    public String getGreetingsCallbackRemote(String s) {
-        result =  "callback " + s;
-        return result;
-    }
+    @OneWay
+    public void getGreetingsRemote(String s);
 
 }

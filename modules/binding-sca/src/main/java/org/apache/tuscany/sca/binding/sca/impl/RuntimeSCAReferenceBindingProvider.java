@@ -164,7 +164,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public boolean supportsAsyncOneWayInvocation() {
-        return false;
+        if (isTargetRemote()) {
+            return distributedProvider.supportsAsyncOneWayInvocation();
+        } else {
+            return false;
+        }        
     }
     
     /**

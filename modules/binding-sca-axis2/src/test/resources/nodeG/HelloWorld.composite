@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,28 +16,16 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-
-package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
-
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceCallbackRemote;
-import org.osoa.sca.annotations.Reference;
-
-public class HelloWorldClientCallbackRemoteImpl implements HelloWorldClient {
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
+           name="HelloWorld">
+   
+    <!-- callback remote wire -->   
+    <component name="AHelloWorldClientCallbackRemote">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientCallbackOnewayRemoteImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceCallbackRemote" />
+    </component>
     
-    public static String result;
-
-    @Reference
-    public HelloWorldServiceCallbackRemote helloWorldService;
-    
-    public String getGreetings(String s) {
-        return helloWorldService.getGreetingsRemote(s);
-    }
-    
-    public String getGreetingsCallbackRemote(String s) {
-        result =  "callback " + s;
-        return result;
-    }
-
-}
+</composite>
