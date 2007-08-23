@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
 
 /**
  * Base interface for all assembly model objects.
@@ -26,13 +25,6 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public interface Base {
-
-    /**
-     * Returns a list of extension objects contained in this model object.
-     * 
-     * @return a list of extension objects container in this model object
-     */
-    List<Object> getExtensions();
 
     /**
      * Returns true if the model element is unresolved.

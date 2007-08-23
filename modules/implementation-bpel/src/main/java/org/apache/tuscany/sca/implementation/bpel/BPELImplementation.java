@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.bpel;
 
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.ode.bpel.iapi.ProcessConf;
 
@@ -28,7 +29,7 @@ import javax.xml.namespace.QName;
  * 
  * @version $Rev$ $Date$
  */
-public interface BPELImplementation extends Implementation {
+public interface BPELImplementation extends Implementation, Extensible {
 
     /**
      * Builds the process configuration used by ODE to get deployment and configuration

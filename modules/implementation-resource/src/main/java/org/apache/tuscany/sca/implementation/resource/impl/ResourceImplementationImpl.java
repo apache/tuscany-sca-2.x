@@ -118,11 +118,6 @@ class ResourceImplementationImpl implements ResourceImplementation {
     }
 
 
-    public List<Object> getExtensions() {
-        // The resource implementation does not support extensions
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         return unresolved;
     }

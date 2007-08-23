@@ -48,11 +48,6 @@ class RSSBindingImpl implements RSSBinding {
         this.uri = uri;
     }
 
-    public List<Object> getExtensions() {
-        // The binding does not support extensions
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         return false;
     }

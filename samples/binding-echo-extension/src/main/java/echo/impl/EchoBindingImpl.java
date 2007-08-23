@@ -20,7 +20,6 @@
 package echo.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.sca.policy.Intent;
@@ -70,11 +69,6 @@ public class EchoBindingImpl implements EchoBinding {
 
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
-    }
-
-    public List<Object> getExtensions() {
-        // The sample binding does not support extensions
-        return Collections.emptyList();
     }
 
     public boolean isUnresolved() {

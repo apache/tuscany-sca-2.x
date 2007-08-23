@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentImpl extends BaseImpl implements Component, Cloneable {
+public class ComponentImpl extends ExtensibleImpl implements Component, Cloneable {
     private ConstrainingType constrainingType;
     private Implementation implementation;
     private String name;

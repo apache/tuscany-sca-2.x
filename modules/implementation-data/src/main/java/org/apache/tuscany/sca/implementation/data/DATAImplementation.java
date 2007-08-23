@@ -116,11 +116,6 @@ public class DATAImplementation implements Implementation {
     }
 
 
-    public List<Object> getExtensions() {
-        // The sample DATA implementation does not support extensions
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         // The sample DATA implementation is always resolved
         return false;

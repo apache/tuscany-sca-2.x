@@ -22,6 +22,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -35,7 +36,7 @@ import org.springframework.core.io.Resource;
  * 
  * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
-public class SpringImplementation extends ComponentTypeImpl implements Implementation {
+public class SpringImplementation extends ComponentTypeImpl implements Implementation, Extensible {
 
     // The location attribute which points to the Spring application-context XML file
     private String springLocation;

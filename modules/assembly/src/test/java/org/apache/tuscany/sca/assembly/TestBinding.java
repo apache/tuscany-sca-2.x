@@ -43,10 +43,6 @@ public class TestBinding implements Binding {
     public void setURI(String uri) {
     }
 
-    public List<Object> getExtensions() {
-        return null;
-    }
-    
     public void setUnresolved(boolean unresolved) {
     }
     

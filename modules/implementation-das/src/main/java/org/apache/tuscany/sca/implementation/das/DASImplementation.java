@@ -114,11 +114,6 @@ public class DASImplementation implements Implementation {
         // The sample DAS implementation does not have a URI
     }
 
-    public List<Object> getExtensions() {
-        // The sample DAS implementation does not support extensions
-        return Collections.emptyList();
-    }
-    
     public boolean isUnresolved() {
         // The sample DAS implementation is always resolved
         return false;

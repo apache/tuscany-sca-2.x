@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.Base;
 
 /**
@@ -29,7 +26,6 @@ import org.apache.tuscany.sca.assembly.Base;
  * @version $Rev$ $Date$
  */
 public abstract class BaseImpl implements Base {
-    private List<Object> extensions = new ArrayList<Object>();
     private boolean unresolved;
 
     /**
@@ -38,10 +34,6 @@ public abstract class BaseImpl implements Base {
     protected BaseImpl() {
     }
     
-    public List<Object> getExtensions() {
-        return extensions;
-    }
-
     public boolean isUnresolved() {
         return unresolved;
     }

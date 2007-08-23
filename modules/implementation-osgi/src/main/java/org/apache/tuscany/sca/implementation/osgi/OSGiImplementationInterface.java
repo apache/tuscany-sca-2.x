@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.osgi;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.scope.Scope;
 
@@ -29,7 +30,7 @@ import org.apache.tuscany.sca.core.scope.Scope;
  * The model representing an OSGi implementation in an SCA assembly model.
  *
  */
-public interface OSGiImplementationInterface extends Implementation {
+public interface OSGiImplementationInterface extends Implementation, Extensible {
     
     public String getBundleName();
     

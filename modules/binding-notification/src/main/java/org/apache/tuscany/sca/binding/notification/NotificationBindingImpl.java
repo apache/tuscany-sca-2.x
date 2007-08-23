@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.assembly.impl.BaseImpl;
 /**
  * @version $Rev$ $Date$
  */
-public class NotificationBindingImpl extends BaseImpl implements NotificationBinding {
+public class NotificationBindingImpl implements NotificationBinding {
     private String name;
     private String uri;
     protected String ntmAddress;
@@ -66,5 +66,12 @@ public class NotificationBindingImpl extends BaseImpl implements NotificationBin
     
     public void setNotificationType(URI notificationType) {
         this.notificationType = notificationType;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+    }
+    
+    public boolean isUnresolved() {
+        return false;
     }
 }

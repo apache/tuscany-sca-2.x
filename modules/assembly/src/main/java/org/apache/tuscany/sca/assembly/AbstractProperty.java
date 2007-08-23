@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
  * property has a data type, which may be either simple or complex. An
  * implementation may also define a default value for a property.
  */
-public interface AbstractProperty extends Base, IntentAttachPoint {
+public interface AbstractProperty extends Base, Extensible, IntentAttachPoint {
 
     /**
      * Returns the property name.

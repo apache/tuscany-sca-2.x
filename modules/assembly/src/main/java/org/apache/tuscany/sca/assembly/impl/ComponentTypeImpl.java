@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl extends BaseImpl implements ComponentType, Cloneable, PolicySetAttachPoint {
+public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable, PolicySetAttachPoint {
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();

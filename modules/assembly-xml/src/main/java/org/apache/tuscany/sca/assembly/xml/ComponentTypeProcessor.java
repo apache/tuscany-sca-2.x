@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -170,7 +171,9 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                                     } else if (property != null) {
                                         property.getExtensions().add(extension);
                                     } else {
-                                        componentType.getExtensions().add(extension);
+                                        if (componentType instanceof Extensible) {
+                                            ((Extensible)componentType).getExtensions().add(extension);
+                                        }
                                     }
                                 }
                             }
@@ -302,8 +305,10 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 writeEnd(writer);
             }
     
-            for (Object extension: componentType.getExtensions()) {
-                extensionProcessor.write(extension, writer);
+            if (componentType instanceof Extensible) {
+                for (Object extension: ((Extensible)componentType).getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
             }
             
             writeEndDocument(writer);
