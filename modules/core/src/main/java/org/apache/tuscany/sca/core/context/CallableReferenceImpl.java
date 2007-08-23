@@ -50,8 +50,6 @@ import org.osoa.sca.ServiceRuntimeException;
  * @param <B> the type of the business interface
  */
 public class CallableReferenceImpl<B> implements CallableReference<B>, Externalizable {
-    private static final long serialVersionUID = -4340454651451953916L;
-    
     protected transient CompositeActivator compositeActivator;
     protected transient ProxyFactory proxyFactory;
 
@@ -91,6 +89,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         this.componentURI = componentURI;
         this.compositeActivator = compositeActivator;
         this.factory = getObjectFactory();
+        this.callbackID = this.factory.getCallbackID();
     }
 
     protected CallableReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {
@@ -105,6 +104,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         String componentURI = component.getURI(); // The target will be relative to this base URI
         this.componentURI = componentURI;
         this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
+        this.callbackID = factory.getCallbackID();
     }
 
     private WireObjectFactory<B> getObjectFactory() {

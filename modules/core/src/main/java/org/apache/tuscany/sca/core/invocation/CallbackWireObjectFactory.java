@@ -53,7 +53,12 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
             //FIXME: need better exception
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
         }
-        resolvedEndpoint = msgContext.getFrom();
+        EndpointReference from = msgContext.getFrom();
+        if (from != null && from.getCallbackEndpoint() != null) {
+            resolvedEndpoint = from.getCallbackEndpoint();
+        } else {
+            resolvedEndpoint = from;
+        }
     }
 
     @Override

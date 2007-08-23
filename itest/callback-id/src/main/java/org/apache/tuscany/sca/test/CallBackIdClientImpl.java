@@ -32,8 +32,9 @@ public class CallBackIdClientImpl implements CallBackIdClient, CallBackIdCallBac
 
     @Context
     protected ComponentContext componentContext;
+
     @Reference
-    protected CallBackIdService aCallBackService;
+    protected ServiceReference<CallBackIdService> aCallBackService;
 
     private static String returnMessage = null;
     private static Object monitor = new Object();
@@ -61,8 +62,8 @@ public class CallBackIdClientImpl implements CallBackIdClient, CallBackIdCallBac
         // received the callback ID will be compared with the one
         // returned. Equal is good.
 
-        Object origCallBackId = ((ServiceReference)aCallBackService).getCallbackID();
-        aCallBackService.knockKnock("Knock Knock - Test1");
+        Object origCallBackId = aCallBackService.getCallbackID();
+        aCallBackService.getService().knockKnock("Knock Knock - Test1");
         int count = 0;
 
         // 
@@ -90,9 +91,9 @@ public class CallBackIdClientImpl implements CallBackIdClient, CallBackIdCallBac
         // returned. Equal is good.
 
         String origCallBackId = "CallBackId1";
-        ((ServiceReference)aCallBackService).setCallbackID(origCallBackId);
+        aCallBackService.setCallbackID(origCallBackId);
 
-        aCallBackService.knockKnock("Knock Knock - Test2");
+        aCallBackService.getService().knockKnock("Knock Knock - Test2");
         int count = 0;
 
         // 

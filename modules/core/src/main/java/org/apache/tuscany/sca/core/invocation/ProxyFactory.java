@@ -71,6 +71,23 @@ public interface ProxyFactory {
                      throws ProxyCreationException;
 
     /**
+     * Creates a Java proxy for the given wire and accepts
+     * a conversation object to represent conversational state, an endpoint
+     * that should be used instead of the wire's target endpoint, and a
+     * callback ID.
+     *
+     * @param interfaze the interface the proxy implements
+     * @param wire      the wire to proxy
+     * @param conversation the conversation object
+     * @param endpoint the target endpoint
+     * @param callbackID the callback ID
+     * @return the proxy
+     * @throws ProxyCreationException
+     */
+    <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation, EndpointReference endpoint,
+                      Object callbackID) throws ProxyCreationException;
+
+    /**
      * Creates a Java proxy for the service contract callback
      *
      * @param interfaze the interface the proxy should implement
