@@ -17,7 +17,10 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://mortgage" name="MortgageComposite">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+	targetNamespace="http://mortgage" 
+	name="MortgageComposite">
 
     <component name="LoanApprovalComponent">
         <implementation.java class="mortgage.LoanApprovalImpl" />
