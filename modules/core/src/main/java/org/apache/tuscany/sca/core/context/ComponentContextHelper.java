@@ -73,8 +73,8 @@ public class ComponentContextHelper {
      * @param processors The extension point for stax artifact processors
      */
     public ComponentContextHelper(AssemblyFactory assemblyFactory,
-                           JavaInterfaceFactory javaInterfaceFactory,
-                           StAXArtifactProcessorExtensionPoint processors) {
+                                  JavaInterfaceFactory javaInterfaceFactory,
+                                  StAXArtifactProcessorExtensionPoint processors) {
         this.assemblyFactory = assemblyFactory;
         this.javaInterfaceFactory = javaInterfaceFactory;
         this.staxProcessors = processors;
@@ -242,7 +242,7 @@ public class ComponentContextHelper {
         }
         return null;
     }
-    
+
     public static CompositeActivator getCurrentCompositeActivator() {
         RuntimeComponent component = getCurrentComponent();
         if (component != null) {
@@ -251,7 +251,7 @@ public class ComponentContextHelper {
         }
         return null;
     }
-    
+
     public static ComponentContextHelper getCurrentComponentContextHelper() {
         CompositeActivator activator = getCurrentCompositeActivator();
         if (activator != null) {
@@ -276,8 +276,12 @@ public class ComponentContextHelper {
                 regularServices.add(service);
             }
         }
+        if (regularServices.size() == 0) {
+            throw new ServiceRuntimeException("No service is declared on component " + component.getURI());
+        }
         if (regularServices.size() != 1) {
-            throw new ServiceRuntimeException("The component doesn't have exactly one service");
+            throw new ServiceRuntimeException("More than one service is declared on component " + component.getURI()
+                + ". Service name is required to get the service.");
         }
         targetService = regularServices.get(0);
         return targetService;
