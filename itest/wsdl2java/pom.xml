@@ -94,13 +94,29 @@
                 <version>1.0-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <id>generate-sdo</id>
+                        <id>generate-sdo-account-service</id>
                         <phase>generate-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/AccountService.wsdl</schemaFile>
                             <targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
                             <javaPackage>com.bigbank.account</javaPackage>
                             <prefix>Account</prefix>
+                            <noNotification>true</noNotification>
+                            <noContainer>true</noContainer>
+                            <noUnsettable>true</noUnsettable>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-sdo-stock-exception</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <schemaFile>${basedir}/src/test/resources/StockExceptionTest.wsdl</schemaFile>
+                            <targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
+                            <prefix>Stock</prefix>
+                            <noInterfaces>true</noInterfaces>
                             <noNotification>true</noNotification>
                             <noContainer>true</noContainer>
                             <noUnsettable>true</noUnsettable>
@@ -125,6 +141,9 @@
 								</wsdlFile>
 								<wsdlFile>
 									<fileName>${basedir}/src/test/resources/AccountServiceWithFault.wsdl</fileName>
+								</wsdlFile>
+								<wsdlFile>
+									<fileName>${basedir}/src/test/resources/StockExceptionTest.wsdl</fileName>
 								</wsdlFile>
 							</wsdlFiles>
 						</configuration>
