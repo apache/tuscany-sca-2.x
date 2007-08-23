@@ -18,13 +18,14 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://supplychain"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:sp="http://supplychain"
 	name="supplychain">
 	
     <component name="CustomerComponent">
-        <implementation.osgi 
+        <tuscany:implementation.osgi 
             bundle="Customer" 
             bundleLocation="file:target/Customer.jar" 
             scope="COMPOSITE"
@@ -53,7 +54,7 @@
     </component>
 
     <component name="ShipperComponent">
-        <implementation.osgi
+        <tuscany:implementation.osgi
             bundle="Shipper" 
             bundleLocation="file:target/Shipper.jar" 
         />
