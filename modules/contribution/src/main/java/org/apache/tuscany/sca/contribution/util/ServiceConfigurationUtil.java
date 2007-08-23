@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.interfacedef.java;
+
+package org.apache.tuscany.sca.contribution.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,62 +26,12 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
-import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
-
-/**
- * A factory for the Java interface model.
- */
-public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
-    
-    private boolean loadedVisitors; 
-    
-    public DefaultJavaInterfaceFactory() {
-    }
-    
-    @Override
-    public List<JavaInterfaceVisitor> getInterfaceVisitors() {
-        loadVisitors();
-        return super.getInterfaceVisitors();
-    }
-    
-    /**
-     * Load visitors declared under META-INF/services
-     */
-    @SuppressWarnings("unchecked")
-    private void loadVisitors() {
-        if (loadedVisitors)
-            return;
-
-        // Get the databinding service declarations
-        ClassLoader classLoader = JavaInterfaceVisitor.class.getClassLoader();
-        List<String> visitorDeclarations; 
-        try {
-            visitorDeclarations = getServiceClassNames(classLoader, JavaInterfaceVisitor.class.getName());
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        
-        // Load data bindings
-        for (String visitorDeclaration: visitorDeclarations) {
-            JavaInterfaceVisitor visitor;
-            try {
-                Class<JavaInterfaceVisitor> visitorClass = (Class<JavaInterfaceVisitor>)Class.forName(visitorDeclaration, true, classLoader);
-                visitor = visitorClass.newInstance();
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
-            }
-            addInterfaceVisitor(visitor);
-        }
-        
-        loadedVisitors = true;
-    }
+public class ServiceConfigurationUtil {
 
     /**
      * Read the service name from a configuration file
@@ -90,7 +41,7 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
      * @return A class name which extends/implements the service class
      * @throws IOException
      */
-    private List<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
+    public static List<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
         List<String> classNames = new ArrayList<String>();
         for (URL url: Collections.list(classLoader.getResources("META-INF/services/" + name))) {
             InputStream is = url.openStream();
@@ -117,6 +68,31 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
             }
         }
         return classNames;
+    }
+
+    /**
+     * Parse a service declaration in the form class;attr=value,attr=value and
+     * return a map of attributes
+     * 
+     * @param declaration
+     * @return a map of attributes
+     */
+    public static Map<String, String> parseServiceDeclaration(String declaration) {
+        Map<String, String> attributes = new HashMap<String, String>();
+        StringTokenizer tokens = new StringTokenizer(declaration);
+        String className = tokens.nextToken(";");
+        if (className != null)
+            attributes.put("class", className);
+        for (; tokens.hasMoreTokens(); ) {
+            String key = tokens.nextToken("=").substring(1);
+            if (key == null)
+                break;
+            String value = tokens.nextToken(",").substring(1);
+            if (value == null)
+                break;
+            attributes.put(key, value);
+        }
+        return attributes;
     }
 
 }

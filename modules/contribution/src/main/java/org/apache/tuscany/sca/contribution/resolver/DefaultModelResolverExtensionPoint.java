@@ -20,10 +20,10 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 
 /**
  * The default implementation of a model resolver Class registry.
@@ -93,16 +93,16 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
 
         // Get the model resolver service declarations
         ClassLoader classLoader = ModelResolver.class.getClassLoader();
-        Set<String> modelResolverDeclarations; 
+        List<String> modelResolverDeclarations; 
         try {
-            modelResolverDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, ModelResolver.class.getName());
+            modelResolverDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, ModelResolver.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         // Load model resolvers
         for (String dataBindingDeclaration: modelResolverDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(dataBindingDeclaration);
+            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(dataBindingDeclaration);
             String className = attributes.get("class");
             String model = attributes.get("model");
 

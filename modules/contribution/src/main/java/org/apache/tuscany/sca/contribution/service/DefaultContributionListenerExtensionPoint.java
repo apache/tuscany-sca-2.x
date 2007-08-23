@@ -22,9 +22,8 @@ package org.apache.tuscany.sca.contribution.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 
 /**
  * Default implementation of a contribution listener extension point.
@@ -58,9 +57,9 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
 
         // Get the databinding service declarations
         ClassLoader classLoader = ContributionListener.class.getClassLoader();
-        Set<String> listenerDeclarations; 
+        List<String> listenerDeclarations; 
         try {
-            listenerDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, ContributionListener.class.getName());
+            listenerDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, ContributionListener.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
