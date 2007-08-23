@@ -182,11 +182,11 @@
             <artifactId>tuscany-host-rmi</artifactId>
             <version>${pom.version}</version>
         </dependency>
-        <dependency>
+        <!-- dependency> removed for now, see TUSCANY-1572 and TUSCANY-1568
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-webapp</artifactId>
             <version>${pom.version}</version>
-        </dependency>
+        </dependency -->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-http-jetty</artifactId>
