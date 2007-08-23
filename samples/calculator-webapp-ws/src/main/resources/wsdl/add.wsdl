@@ -80,7 +80,7 @@
 
     <wsdl:service name="AddService">
         <wsdl:port binding="tns:AddSoapBinding" name="AddSoapPort">
-            <wsdlsoap:address location="http://localhost:8080/sample-calculator-webapp-ws/services/AddService"/>
+            <wsdlsoap:address location="http://localhost:8085/sample-calculator-webapp-ws/services/AddService"/>
         </wsdl:port>
     </wsdl:service>
 
