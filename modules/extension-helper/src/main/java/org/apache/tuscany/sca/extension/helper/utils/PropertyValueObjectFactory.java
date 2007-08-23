@@ -17,26 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.impl;
+package org.apache.tuscany.sca.extension.helper.utils;
 
-import org.apache.tuscany.sca.spi.utils.DynamicImplementation;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
-/**
- * Enables Implementation extensions to use a simple POJO
- * for the implementation object instead of requiring
- * implementing the Implementation interface. 
- */
-public class PojoImplementation<Implementation> extends DynamicImplementation {
-    
-    Object userImpl;
-    
-    public PojoImplementation(Object userImpl) {
-        this.userImpl = userImpl;
-    }
+public interface PropertyValueObjectFactory {
 
-    public Object getUserImpl() {
-        return userImpl;
-    }
-    
+    public abstract ObjectFactory createValueFactory(Property property);
 
 }

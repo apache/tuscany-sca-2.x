@@ -17,20 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.impl;
+package org.apache.tuscany.sca.extension.helper.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.extension.helper.ImplementationActivator;
+import org.apache.tuscany.sca.extension.helper.InvokerFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.spi.ImplementationActivator;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 
 /**
  * The ImplementationProvider createInvoker method is called before the start method

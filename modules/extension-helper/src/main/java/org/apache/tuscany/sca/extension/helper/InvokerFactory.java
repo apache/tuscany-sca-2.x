@@ -17,13 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.utils;
+package org.apache.tuscany.sca.extension.helper;
 
-import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
 
-public interface PropertyValueObjectFactory {
+public interface InvokerFactory {
 
-    public abstract ObjectFactory createValueFactory(Property property);
-
+    public Invoker createInvoker(Operation operation);
+    
 }

@@ -22,13 +22,13 @@ package org.apache.tuscany.sca.binding.dwr;
 import static org.apache.tuscany.sca.binding.dwr.DWRService.SERVLET_PATH;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
+import org.apache.tuscany.sca.extension.helper.InvokerFactory;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.spi.ComponentLifecycle;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 
 public class DWRInvokerFactory implements InvokerFactory, ComponentLifecycle {
 

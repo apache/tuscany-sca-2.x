@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.spi.impl;
+package org.apache.tuscany.sca.extension.helper.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +34,9 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.extension.helper.BindingActivator;
+import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
+import org.apache.tuscany.sca.extension.helper.InvokerFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -46,9 +49,6 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.ComponentLifecycle;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 
 public class BindingsActivator implements ModuleActivator {
 

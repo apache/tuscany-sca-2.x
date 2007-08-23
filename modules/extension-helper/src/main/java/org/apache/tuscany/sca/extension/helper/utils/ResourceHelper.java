@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.utils;
+package org.apache.tuscany.sca.extension.helper.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

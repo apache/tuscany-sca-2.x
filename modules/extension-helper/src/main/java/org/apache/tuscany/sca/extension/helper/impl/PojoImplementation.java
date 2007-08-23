@@ -17,13 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi;
+package org.apache.tuscany.sca.extension.helper.impl;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.extension.helper.utils.DynamicImplementation;
 
-public interface InvokerFactory {
-
-    public Invoker createInvoker(Operation operation);
+/**
+ * Enables Implementation extensions to use a simple POJO
+ * for the implementation object instead of requiring
+ * implementing the Implementation interface. 
+ */
+public class PojoImplementation<Implementation> extends DynamicImplementation {
     
+    Object userImpl;
+    
+    public PojoImplementation(Object userImpl) {
+        this.userImpl = userImpl;
+    }
+
+    public Object getUserImpl() {
+        return userImpl;
+    }
+    
+
 }

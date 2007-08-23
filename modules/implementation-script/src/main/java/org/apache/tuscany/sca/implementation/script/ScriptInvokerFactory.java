@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.apache.tuscany.sca.extension.helper.InvokerFactory;
+import org.apache.tuscany.sca.extension.helper.utils.PropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -42,8 +44,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.spi.InvokerFactory;
-import org.apache.tuscany.sca.spi.utils.PropertyValueObjectFactory;
 
 public class ScriptInvokerFactory implements InvokerFactory {
 

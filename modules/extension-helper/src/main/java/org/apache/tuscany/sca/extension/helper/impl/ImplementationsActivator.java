@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.impl;
+package org.apache.tuscany.sca.extension.helper.impl;
 
 import java.util.List;
 
@@ -34,13 +34,13 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
+import org.apache.tuscany.sca.extension.helper.ImplementationActivator;
+import org.apache.tuscany.sca.extension.helper.utils.DefaultPropertyValueObjectFactory;
+import org.apache.tuscany.sca.extension.helper.utils.PropertyValueObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.spi.ImplementationActivator;
-import org.apache.tuscany.sca.spi.utils.DefaultPropertyValueObjectFactory;
-import org.apache.tuscany.sca.spi.utils.PropertyValueObjectFactory;
 
 /**
  * A Tuscany ModuleActivator which acitvates all the ImplementationActivators

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
-import org.apache.tuscany.sca.spi.utils.ResourceHelper;
+import org.apache.tuscany.sca.extension.helper.utils.ResourceHelper;
 
 /**
  * Represents a Script implementation.
