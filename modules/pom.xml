@@ -81,7 +81,9 @@
                 <module>distributed-impl</module>
                 <module>extension-helper</module>
                 <module>host-embedded</module>
+                <!--
                 <module>host-home</module>
+                -->
                 <module>host-http</module>
                 <module>host-rmi</module>
                 <module>host-webapp</module>
