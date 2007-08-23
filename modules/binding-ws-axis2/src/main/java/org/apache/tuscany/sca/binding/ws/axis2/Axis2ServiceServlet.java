@@ -35,13 +35,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.axis2.transport.http.server.HttpUtils;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.transport.http.ListingAgent;
-import org.apache.axis2.transport.http.server.HttpUtils;
 
 /**
  * This overrides the servlet init of the AxisServlet so Tuscany can use
@@ -267,6 +267,7 @@ public class Axis2ServiceServlet extends AxisServlet {
 
     /**
      * Override the AxisServlet method so as to not add "/services" into the url
+     * and to work with Tuscany service names. can go once moved to Axis2 1.3
      */
     @Override
     public EndpointReference[] getEPRsForService(String serviceName, String ip) throws AxisFault {
@@ -286,14 +287,26 @@ public class Axis2ServiceServlet extends AxisServlet {
             }
         }
 
-
-        StringBuilder eprString = new StringBuilder("http://");
-        eprString.append(ip).append(":").append(port);
-        if (!serviceName.startsWith("/")) {
-            eprString.append('/');
+        String cp = configContext.getServiceContextPath();
+        if (cp.endsWith("_null_")) {
+            cp = cp.substring(0, cp.length()-6);    
         }
-        eprString.append(serviceName);
-        EndpointReference endpoint = new EndpointReference(eprString.toString());
+        if (!serviceName.startsWith("/")) {
+            serviceName = "/" + serviceName;
+        }
+        String name;
+        if (cp.equals("/")) {
+            name = serviceName;
+        } else {
+            name = cp + serviceName;
+        }
+
+        EndpointReference endpoint =
+            new EndpointReference("http://" + ip
+                + ":"
+                + port
+                + (name.startsWith("/")? "" : "/")
+                + name);
 
         return new EndpointReference[]{endpoint};
     }
