@@ -50,11 +50,6 @@ class HTTPResourceBindingImpl implements HTTPResourceBinding {
     }
 
     
-    public List<Object> getExtensions() {
-        // The sample binding does not support extensions
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         return false;
     }

@@ -131,11 +131,6 @@ class POJOImplementationImpl implements POJOImplementation {
         this.uri = uri;
     }
 
-    public List<Object> getExtensions() {
-        // The sample POJO implementation does not support extensions
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         return unresolved;
     }

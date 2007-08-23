@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class CallbackImpl extends BaseImpl implements Callback {
+public class CallbackImpl extends ExtensibleImpl implements Callback {
     private List<Binding> bindings = new ArrayList<Binding>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();

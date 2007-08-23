@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface ConstrainingType extends Base, IntentAttachPoint {
+public interface ConstrainingType extends Base, Extensible, IntentAttachPoint {
 
     /**
      * Returns the name of the constrainingType.

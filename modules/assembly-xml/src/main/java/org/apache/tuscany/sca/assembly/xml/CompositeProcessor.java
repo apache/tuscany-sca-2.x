@@ -653,12 +653,10 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
             }
         }
 
-        // resolve and extensions to the standard SCDL that appear in the
-        // SCDL.
-        for (int i = 0, n = composite.getExtensions().size(); i < n; i++) {
-            Object model = composite.getExtensions().get(i);
-            if (model != null) {
-                extensionProcessor.resolve(model, resolver);
+        // Resolve extensions
+        for (Object extension: composite.getExtensions()) {
+            if (extension != null) {
+                extensionProcessor.resolve(extension, resolver);
             }
         }
 

@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Callback extends Base, IntentAttachPoint, PolicySetAttachPoint {
+public interface Callback extends Extensible, IntentAttachPoint, PolicySetAttachPoint {
 
     /**
      * Returns the bindings supported for callbacks.

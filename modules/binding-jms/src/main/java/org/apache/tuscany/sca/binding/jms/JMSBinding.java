@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Extensible;
 
 /**
  * This is the generic JMS binding type. The type is extensible so that JMS
@@ -30,7 +31,7 @@ import org.apache.tuscany.sca.assembly.Binding;
  * 
  * @version $Rev$ $Date$
  */
-public interface JMSBinding extends Binding, Base {
+public interface JMSBinding extends Binding, Extensible {
     /**
      * Identifies the correlation scheme used when sending reply or callback
      * messages. Valid values are "RequestMsgIDToCorrelID" (the default),

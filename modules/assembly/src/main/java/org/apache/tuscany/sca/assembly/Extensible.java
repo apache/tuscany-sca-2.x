@@ -16,45 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.assembly;
 
-package org.apache.tuscany.sca.binding.feed.impl;
-
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.AtomBinding;
-
 /**
- * Implementation of the Atom Feed binding model.
+ * Base interface for extensible assembly model objects.
+ * 
+ * @version $Rev$ $Date$
  */
-class AtomBindingImpl implements AtomBinding {
+public interface Extensible {
 
-    private String name;
-    private String uri;
+    /**
+     * Returns a list of extension objects contained in this model object.
+     * 
+     * @return a list of extension objects container in this model object
+     */
+    List<Object> getExtensions();
 
-    public String getName() {
-        return name;
-    }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-
-    public boolean isUnresolved() {
-        // The binding is always resolved
-        return false;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        // The binding is always resolved
-    }
 }

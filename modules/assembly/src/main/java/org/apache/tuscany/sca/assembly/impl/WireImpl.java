@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class WireImpl extends BaseImpl implements Wire, Cloneable {
+public class WireImpl extends ExtensibleImpl implements Wire, Cloneable {
     private ComponentReference source;
     private ComponentService target;
     private List<Intent> requiredIntents = new ArrayList<Intent>();

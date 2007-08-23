@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
@@ -33,7 +34,7 @@ import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, WireableBinding {
+public class SCABindingImpl implements SCABinding, Extensible, WireableBinding {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();

@@ -48,11 +48,6 @@ public class EchoBinding implements Binding {
         this.uri = uri;
     }
 
-    public List<Object> getExtensions() {
-        // The sample binding does not support extensions
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         // The sample binding is always resolved
         return false;

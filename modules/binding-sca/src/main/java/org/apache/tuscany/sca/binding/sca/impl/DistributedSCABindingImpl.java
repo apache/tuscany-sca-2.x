@@ -91,15 +91,6 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     }
     
     /**
-     * Returns a list of extension objects contained in this model object.
-     * 
-     * @return a list of extension objects container in this model object
-     */
-    public List<Object> getExtensions(){
-        return null;
-    }
-
-    /**
      * Returns true if the model element is unresolved.
      * 
      * @return true if the model element is unresolved.

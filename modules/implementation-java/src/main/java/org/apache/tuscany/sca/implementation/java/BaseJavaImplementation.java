@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java;
 
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
@@ -25,7 +26,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * 
  * @version $Rev$ $Date$
  */
-public interface BaseJavaImplementation extends Implementation {
+public interface BaseJavaImplementation extends Implementation, Extensible {
 
     /**
      * Returns the name of the Java implementation class.

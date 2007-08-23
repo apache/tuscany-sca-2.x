@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
  * 
  * @version $Rev$ $Date$
  */
-public class AbstractPropertyImpl extends BaseImpl implements AbstractProperty {
+public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProperty {
     private Object value;
     private String name;
     private QName xsdType;

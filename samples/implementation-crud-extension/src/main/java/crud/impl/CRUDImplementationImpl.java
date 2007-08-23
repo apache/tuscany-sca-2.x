@@ -105,11 +105,6 @@ class CRUDImplementationImpl implements CRUDImplementation {
         // The sample CRUD implementation does not have a URI
     }
 
-    public List<Object> getExtensions() {
-        // The sample CRUD implementation does not support extensions
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         // The sample CRUD implementation is always resolved
         return false;

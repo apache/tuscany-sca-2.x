@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
  * 
  * @version $Rev$ $Date$
  */
-public class ConstrainingTypeImpl extends BaseImpl implements ConstrainingType {
+public class ConstrainingTypeImpl extends ExtensibleImpl implements ConstrainingType {
     private QName name;
     private List<AbstractProperty> properties = new ArrayList<AbstractProperty>();
     private List<AbstractReference> references = new ArrayList<AbstractReference>();

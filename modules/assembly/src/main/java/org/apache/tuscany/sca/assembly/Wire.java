@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Wire extends Base, IntentAttachPoint, PolicySetAttachPoint, Cloneable {
+public interface Wire extends Base, Extensible, IntentAttachPoint, PolicySetAttachPoint, Cloneable {
 
     /**
      * Returns the source of the wire.
