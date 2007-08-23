@@ -37,7 +37,7 @@ public class CallBackIdServiceImpl implements CallBackIdService {
         System.out.println("CallBackIdServiceImpl message received: " + aString);
         RequestContext rc = compositeContext.getRequestContext();
         Object callBackId = rc.getServiceReference().getCallbackID();
-        System.out.println("CallBackIdServiceImpl callbackID: " + callBackId.toString());
+        System.out.println("CallBackIdServiceImpl callbackID: " + callBackId);
 
         callback.callBackMessage("Who's There");
         System.out.println("CallBackIdServiceImpl response sent");

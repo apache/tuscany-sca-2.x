@@ -132,6 +132,20 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
 
     /**
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
+     *      org.apache.tuscany.sca.runtime.RuntimeWire,
+     *      org.osoa.sca.Conversation)
+     */
+    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation, EndpointReference endpoint,
+                             Object callbackID) throws ProxyCreationException {
+        if (interfaze.isInterface()) {
+            return interfaceFactory.createProxy(interfaze, wire, conversation, endpoint, callbackID);
+        } else {
+            return classFactory.createProxy(interfaze, wire, conversation, endpoint, callbackID);
+        }
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
      *      org.apache.tuscany.sca.runtime.RuntimeWire)
      */
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {

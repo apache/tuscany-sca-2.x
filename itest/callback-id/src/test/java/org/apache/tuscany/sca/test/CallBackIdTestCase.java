@@ -22,8 +22,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-//FIXME Fix this test case
-public class CallBackIdTestCaseFIXME extends TestCase {
+public class CallBackIdTestCase extends TestCase {
 
     private SCADomain domain;
     private CallBackIdClient aCallBackClient;

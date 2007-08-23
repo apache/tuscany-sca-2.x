@@ -49,6 +49,7 @@ public class JDKInvocationHandler implements InvocationHandler {
     private MessageFactory messageFactory;
     private EndpointReference endpoint;
     private RuntimeWire wire;
+    private Object callbackID;
 
     public JDKInvocationHandler(MessageFactory messageFactory, Class<?> proxyInterface, RuntimeWire wire) {
         this.conversational = false;
@@ -132,14 +133,18 @@ public class JDKInvocationHandler implements InvocationHandler {
         return null;
     }
 
-    public void setConversation(Conversation conversation){
+    public void setConversation(Conversation conversation) {
         this.conversation = (ConversationImpl)conversation;
     }
 
-    public void setEndpoint(EndpointReference endpoint){
+    public void setEndpoint(EndpointReference endpoint) {
         this.endpoint = endpoint;
     }
-    
+
+    public void setCallbackID(Object callbackID) {
+        this.callbackID = callbackID;
+    }
+ 
     protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
 
         Message msgContext = ThreadMessageContext.getMessageContext();
@@ -194,7 +199,7 @@ public class JDKInvocationHandler implements InvocationHandler {
         }
 
         Invoker headInvoker = chain.getHeadInvoker();
-        msg.setCorrelationID(msgContext.getCorrelationID());
+        msg.setCorrelationID(callbackID);
         Operation operation = chain.getTargetOperation();
         msg.setOperation(operation);
         Interface contract = operation.getInterface();

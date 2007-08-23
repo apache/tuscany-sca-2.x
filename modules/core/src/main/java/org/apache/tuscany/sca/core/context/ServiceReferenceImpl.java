@@ -87,6 +87,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
 
     public void setCallbackID(Object callbackID) {
         this.callbackID = callbackID;
+        factory.setCallbackID(callbackID);
     }
 
     public Object getCallback() {

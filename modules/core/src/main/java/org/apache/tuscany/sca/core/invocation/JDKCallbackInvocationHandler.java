@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -71,7 +72,13 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
         }
         setConversational(wire);
-        setEndpoint(msgContext.getFrom());
+        setCallbackID(msgContext.getCorrelationID());
+        EndpointReference from = msgContext.getFrom();
+        if (from != null && from.getCallbackEndpoint() != null) {
+            setEndpoint(from.getCallbackEndpoint());
+        } else {
+            setEndpoint(from);
+        }
 
         //FIXME: can we use the same code as JDKInvocationHandler to select the chain? 
         InvocationChain chain = getInvocationChain(method, wire);

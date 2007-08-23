@@ -63,7 +63,10 @@ public class RequestContextImpl implements RequestContext {
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         // FIXME: [rfeng] What if the interface is not a java interface? 
         JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getInterface();
-        return (ServiceReference<B>) component.getComponentContext().createSelfReference(javaInterface.getJavaClass(), service.getName());
+        ServiceReference<B> ref = (ServiceReference<B>) component.getComponentContext()
+                                       .createSelfReference(javaInterface.getJavaClass(), service.getName());
+        ref.setCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
+        return ref;
     }
 
     @SuppressWarnings("unchecked")
@@ -84,6 +87,7 @@ public class RequestContextImpl implements RequestContext {
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
         factory.resolveTarget();
+        factory.setCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
         return (CallableReference<CB>) new CallableReferenceImpl<CB>(javaClass, (WireObjectFactory<CB>)factory);
     }
 }

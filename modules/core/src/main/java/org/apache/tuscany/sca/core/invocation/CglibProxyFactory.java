@@ -54,11 +54,16 @@ public class CglibProxyFactory implements ProxyFactory {
     }
 
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        return createProxy(interfaze, wire, null, null);
+        return createProxy(interfaze, wire, null, null, null);
     }
 
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation) throws ProxyCreationException {
-        return createProxy(interfaze, wire, conversation, null);
+        return createProxy(interfaze, wire, conversation, null, null);
+    }
+    
+    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation,
+                             EndpointReference endpoint) throws ProxyCreationException {
+        return createProxy(interfaze, wire, conversation, endpoint, null);
     }
     
     /**
@@ -66,7 +71,7 @@ public class CglibProxyFactory implements ProxyFactory {
      * JDKProxyService.
      */
     public <T> T createProxy(final Class<T> interfaze, final RuntimeWire wire, final Conversation conversation,
-                             final EndpointReference endpoint) throws ProxyCreationException {
+                             final EndpointReference endpoint, final Object callbackID) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(interfaze);
         enhancer.setCallback(new MethodInterceptor() {
@@ -75,6 +80,7 @@ public class CglibProxyFactory implements ProxyFactory {
                 JDKInvocationHandler invocationHandler = new JDKInvocationHandler(messageFactory, interfaze, wire);
                 invocationHandler.setConversation(conversation);
                 invocationHandler.setEndpoint(endpoint);
+                invocationHandler.setCallbackID(callbackID);
                 Object result = invocationHandler.invoke(proxy, method, args);
                 return result;
             }
