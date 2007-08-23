@@ -18,12 +18,13 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://data"
 	name="data-feed">
 
      
     <service name="CompanyFeed" promote="CompanyFeedComponent">
-   		<binding.atom uri="http://localhost:8085/comnpanyfeed/*"/>
+   		<tuscany:binding.atom uri="http://localhost:8085/comnpanyfeed/*"/>
    	</service>
    	
     <component name="CompanyFeedComponent">
@@ -36,14 +37,14 @@
      </service -->
 
     <component name="CompanyDataComponent">
-        <implementation.data table="company">
-           <connectionInfo>
-		      <connectionProperties 
+        <tuscany:implementation.data table="company">
+           <tuscany:connectionInfo>
+		      <tuscany:connectionProperties 
 			   driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
 			   databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
 			   loginTimeout="600000"/>
-	       </connectionInfo>
-        </implementation.data>
+	       </tuscany:connectionInfo>
+        </tuscany:implementation.data>
     </component>
 
 </composite>

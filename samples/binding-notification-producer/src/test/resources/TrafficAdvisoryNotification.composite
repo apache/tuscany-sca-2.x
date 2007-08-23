@@ -19,6 +19,7 @@
 -->
 
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	       xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            targetNamespace="http://tuscany.apache.org/xmlns/notification/1.0/samples"
            xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
            name="TrafficAdvisoryNotificationRemoteProducerComposite">
@@ -29,7 +30,7 @@
     </component>
 
     <component name="TrafficAdvisoryNotificationComponent">
-        <implementation.notification name="TrafficAdvisoryNotification"/>
+        <tuscany:implementation.notification name="TrafficAdvisoryNotification"/>
     </component>
     
     <reference name="TrafficAdvisoryNotificationCompositeReference"
@@ -38,7 +39,7 @@
             wsdli:wsdlLocation="http://example.com/TrafficAdvisory.wsdl wsdl/TrafficAdvisory.wsdl">
             <db:databinding xmlns:db="http://tuscany.apache.org/xmlns/sca/databinding/1.0" name="org.apache.axiom.om.OMElement" />
         </interface.wsdl>
-        <binding.notification notificationType="trafficAdvisory"/>
+        <tuscany:binding.notification notificationType="trafficAdvisory"/>
     </reference>
 
 </composite>

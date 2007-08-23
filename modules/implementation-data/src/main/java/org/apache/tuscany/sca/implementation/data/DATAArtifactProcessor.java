@@ -50,10 +50,10 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * @version $Rev$ $Date$
  */
 public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplementation> {
-    protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_NS, "implementation.data");
+    protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
     
-    private static final QName CONNECTION_INFO = new QName(Constants.SCA10_NS, "connectionInfo");
-    private static final QName CONNECTION_PROPERTIES = new QName(Constants.SCA10_NS, "connectionProperties");
+    private static final QName CONNECTION_INFO = new QName(Constants.SCA10_TUSCANY_NS, "connectionInfo");
+    private static final QName CONNECTION_PROPERTIES = new QName(Constants.SCA10_TUSCANY_NS, "connectionProperties");
 
     
     private DATAImplementationFactory dataFactory;

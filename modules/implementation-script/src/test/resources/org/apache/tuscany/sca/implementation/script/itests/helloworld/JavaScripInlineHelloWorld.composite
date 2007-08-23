@@ -18,16 +18,17 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="JavaScriptHelloWorld">
 
     <component name="ClientComponent">
-        <implementation.script language="js">
+        <tuscany:implementation.script language="js">
 
            function sayHello(s) {
               return "Hello " + s;
            }
 
-        </implementation.script>
+        </tuscany:implementation.script>
     </component>
 
 </composite>

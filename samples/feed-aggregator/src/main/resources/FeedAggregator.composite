@@ -18,23 +18,24 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://aggregator"
     name="FeedAggregator">
 
 	<service name="rssSample" promote="RssAggregator">
-		<binding.rss uri="http://localhost:8083/rssAggregator"/>
+		<tuscany:binding.rss uri="http://localhost:8083/rssAggregator"/>
 	</service>
 	<service name="atomSample" promote="AtomAggregator">
-		<binding.atom  uri="http://localhost:8083/atomAggregator"/>
+		<tuscany:binding.atom  uri="http://localhost:8083/atomAggregator"/>
 	</service>	
 
     <component name="RssAggregator">
         <implementation.java class="feed.AggregatorImpl"/>             
 		<reference name="feed1">
-   	 		<binding.rss uri="http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml"/>
+   	 		<tuscany:binding.rss uri="http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml"/>
    		</reference>
    		<reference name="feed2"> 	
-   	 		<binding.rss uri="http://www.engadget.com/rss.xml"/>
+   	 		<tuscany:binding.rss uri="http://www.engadget.com/rss.xml"/>
    		</reference>
    		<reference name="sort" target="Sort"/> 	 		
         <property name="feedTitle">Rss Sample</property> 

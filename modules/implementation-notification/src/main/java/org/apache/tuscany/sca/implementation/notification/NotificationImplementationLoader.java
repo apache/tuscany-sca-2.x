@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 public class NotificationImplementationLoader implements StAXArtifactProcessor<NotificationImplementationImpl> {
 
     protected static final QName IMPLEMENTATION_NOTIFICATION =
-        new QName(Constants.SCA10_NS, "implementation.notification");
+        new QName(Constants.SCA10_TUSCANY_NS, "implementation.notification");
     
     private NotificationImplementationFactory implementationFactory;
 

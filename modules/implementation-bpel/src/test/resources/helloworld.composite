@@ -18,6 +18,7 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://bpel"
     xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
     name="bpel">
@@ -28,7 +29,7 @@
     </service>
     
     <component name="BPELHelloWorldComponent">
-        <implementation.bpel process="hns:HelloWorld" file="HelloWorld.bpel"/>
+        <tuscany:implementation.bpel process="hns:HelloWorld" file="HelloWorld.bpel"/>
     </component>
 
 </composite>

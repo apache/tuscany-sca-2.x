@@ -18,8 +18,8 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	   targetNamespace="http://stockquote"
-           name="StockQuote">
+	targetNamespace="http://stockquote"
+    name="StockQuote">
 
     <service name="StockQuoteService" promote="StockQuoteServiceComponent"/>
 

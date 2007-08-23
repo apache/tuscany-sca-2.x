@@ -18,6 +18,7 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	       xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            targetNamespace="http://sample"
            xmlns:sample="http://sample"
            name="Calculator">
@@ -25,16 +26,16 @@
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
 		<reference name="addService">
-	    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	    	<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
 		</reference>
         <reference name="subtractService">
-    		<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+    		<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
         </reference>
         <reference name="multiplyService">
-    		<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+    		<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
         </reference>
         <reference name="divideService">
-    		<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+    		<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
         </reference>
     </component>
     

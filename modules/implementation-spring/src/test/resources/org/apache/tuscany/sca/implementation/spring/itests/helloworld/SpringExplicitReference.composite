@@ -18,15 +18,16 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="SpringExplicitReference">
 
     <component name="ClientComponent">
-        <implementation.spring location="META-INF/sca/SpringExplicitReference-context.xml"/>
-        <reference name="testReference" target="ReferenceComponent"></reference>
+        <tuscany:implementation.spring location="META-INF/sca/SpringExplicitReference-context.xml"/>
+        <reference name="testReference" target="ReferenceComponent"/>
     </component>
 
     <component name="ReferenceComponent">
-		<implementation.java class="org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorldImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorldImpl"/>
     </component>
 
 </composite>

@@ -43,29 +43,29 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  */
 public class DATAImplementationProcessorTestCase extends TestCase {
     
-    protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_NS, "implementation.data");
+    protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
 
     private static final String COMPOSITE_USING_DATASOURCE =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
+            + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
             + " <component name=\"DataComponent\">"
-            + "   <implementation.data table=\"tableName\">"
-            + "      <connectionInfo datasource=\"dataSource\"/>"
-            + "   </implementation.data>"
+            + "   <tuscany:implementation.data table=\"tableName\">"
+            + "      <tuscany:connectionInfo datasource=\"dataSource\"/>"
+            + "   </tuscany:implementation.data>"
             + "</component>";
 
     private static final String COMPOSITE_USING_CONNECTION_PROPERTIES =            
             "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
+            + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
             + " <component name=\"DataComponent\">"
-            + "   <implementation.data table=\"tableName\">"
-            + "      <connectionInfo>"
-            + "         <connectionProperties"
+            + "   <tuscany:implementation.data table=\"tableName\">"
+            + "      <tuscany:connectionInfo>"
+            + "         <tuscany:connectionProperties"
             + "            driverClass=\"driverClass\""
             + "            databaseURL=\"databaseURL\""
             + "            loginTimeout=\"1\"/>"
-            + "      </connectionInfo>"
-            + "   </implementation.data>"
+            + "      </tuscany:connectionInfo>"
+            + "   </tuscany:implementation.data>"
             + "</component>";
 
     private XMLInputFactory xmlFactory;

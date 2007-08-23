@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -44,7 +45,7 @@ import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFact
  * Implements a STAX artifact processor for resource implementations.
  */
 public class ResourceImplementationProcessor implements StAXArtifactProcessor<ResourceImplementation> {
-    private static final QName IMPLEMENTATION_RESOURCE = new QName("http://www.osoa.org/xmlns/sca/1.0", "implementation.resource");
+    private static final QName IMPLEMENTATION_RESOURCE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.resource");
     
     private ContributionFactory contributionFactory;
     private ResourceImplementationFactory implementationFactory;
