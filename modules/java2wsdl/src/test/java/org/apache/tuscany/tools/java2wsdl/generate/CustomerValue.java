@@ -22,22 +22,20 @@ import org.apache.tuscany.tools.java2wsdl.generate.customer.Customer;
 
 public class CustomerValue {
 
-	public int getValue(String custId, String stockSymbol) {
-		return 0;
-	}
-
-	public Customer getCustomerDetails(String custId) {
-		return new Customer();
-	}
-
-	public String noArgsServiceMethod()
-    {
-      return new String();   
+    public int getValue(String custId, String stockSymbol) {
+        return 0;
     }
-    
-    private void privateServiceMethod()
-    {
-        
+
+    public Customer getCustomerDetails(String custId) {
+        return new Customer();
     }
-	
+
+    public String noArgsServiceMethod() {
+        return new String();
+    }
+
+    private void privateServiceMethod() {
+
+    }
+
 }
