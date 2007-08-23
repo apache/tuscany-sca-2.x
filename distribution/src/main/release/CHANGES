@@ -1,3 +1,19 @@
+Changes With Apache Tuscany SCA 0.99 (incubating) August 2007 
+=============================================================
+
+The following are the significant additions to release 0.99 
+over and above all of what was offered in release 0.91.
+
+- A version of the default sca binding that works between
+  components runing in separate Java vistual machines
+       binding-sca-axis
+
+- A simple node implementation and a service discovery 
+  funtion for running sca applications distributed 
+  across more than one node
+       distributed
+       distributed-impl 
+
 Changes With Apache Tuscany SCA 0.91 (incubating) July 2007 
 ===========================================================
 
