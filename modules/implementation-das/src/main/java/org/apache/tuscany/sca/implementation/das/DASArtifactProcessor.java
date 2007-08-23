@@ -47,7 +47,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * @version $Rev$ $Date$
  */
 public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementation> {
-    private static final QName IMPLEMENTATION_DAS = new QName(Constants.SCA10_NS, "implementation.das");
+    private static final QName IMPLEMENTATION_DAS = new QName(Constants.SCA10_TUSCANY_NS, "implementation.das");
     
     private DASImplementationFactory dasFactory;
     

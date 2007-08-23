@@ -18,13 +18,14 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://jsonrpc"
 	xmlns:jsonrpc="http://jsonrpc"
 	name="JSONRPCBinding">
 
     <service name="EchoService" promote="EchoComponent">
         <interface.java interface="org.apache.tuscany.sca.binding.jsonrpc.Echo"/>
-        <binding.jsonrpc uri="http://localhost:8085/SCADomain/EchoService"/>
+        <tuscany:binding.jsonrpc uri="http://localhost:8085/SCADomain/EchoService"/>
     </service>
 
     <component name="EchoComponent">

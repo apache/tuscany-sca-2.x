@@ -18,11 +18,12 @@
  * under the License.    
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	       xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="HelloWorldRmiComposite">
 
 	<service name="HelloWorldRmiService" promote="HelloWorldServiceComponent">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
+        <tuscany:binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
         <reference target="HelloWorldServiceComponent">HelloWorldServiceComponent</reference>
     </service>
       
@@ -37,7 +38,7 @@
            
   	<reference name="HelloWorldRmiReference" promote="HelloWorldRmiServiceComponent/extService">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
+        <tuscany:binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
     </reference>
 
 </composite>

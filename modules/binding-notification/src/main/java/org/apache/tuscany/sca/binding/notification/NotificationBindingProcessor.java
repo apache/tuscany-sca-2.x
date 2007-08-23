@@ -41,8 +41,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class NotificationBindingProcessor implements StAXArtifactProcessor<NotificationBinding> {
 
-    protected static final QName BINDING_NOTIFICATION =
-        new QName(Constants.SCA10_NS, "binding.notification");
+    protected static final QName BINDING_NOTIFICATION = new QName(Constants.SCA10_TUSCANY_NS, "binding.notification");
     
     private NotificationBindingFactory bindingFactory;
 

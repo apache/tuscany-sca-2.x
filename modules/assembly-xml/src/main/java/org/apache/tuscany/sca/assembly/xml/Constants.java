@@ -26,34 +26,53 @@ import javax.xml.namespace.QName;
  */
 public interface Constants {
     String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    
     String COMPONENT_TYPE = "componentType";
     QName COMPONENT_TYPE_QNAME = new QName(SCA10_NS, COMPONENT_TYPE);
+    
     String SERVICE = "service";
     QName SERVICE_QNAME = new QName(SCA10_NS, SERVICE);
+    
     String REFERENCE = "reference";
     QName REFERENCE_QNAME = new QName(SCA10_NS, REFERENCE);
+    
     String PROPERTY = "property";
     QName PROPERTY_QNAME = new QName(SCA10_NS, PROPERTY);
+    
     String CONSTRAINING_TYPE = "constrainingType";
     QName CONSTRAINING_TYPE_QNAME = new QName(SCA10_NS, CONSTRAINING_TYPE);
+    
     String COMPOSITE = "composite";
     QName COMPOSITE_QNAME = new QName(SCA10_NS, COMPOSITE);
+    
     String INCLUDE = "include";
     QName INCLUDE_QNAME = new QName(SCA10_NS, INCLUDE);
+    
     String COMPONENT = "component";
     QName COMPONENT_QNAME = new QName(SCA10_NS, COMPONENT);
+    
     String WIRE = "wire";
     QName WIRE_QNAME = new QName(SCA10_NS, WIRE);
+
+    String OPERATION = "operation";
+    QName OPERATION_QNAME = new QName(SCA10_NS, OPERATION);
+    
+    String CALLBACK = "callback";
+    QName CALLBACK_QNAME = new QName(SCA10_NS, CALLBACK);
+
+    String IMPLEMENTATION_COMPOSITE = "implementation.composite";
+    QName IMPLEMENTATION_COMPOSITE_QNAME = new QName(SCA10_NS, IMPLEMENTATION_COMPOSITE);
+    
+    String IMPLEMENTATION = "implementation";
+    QName IMPLEMENTATION_QNAME = new QName(SCA10_NS, IMPLEMENTATION);
+    
     String NAME = "name";
     String TARGET_NAMESPACE = "targetNamespace";
     String LOCAL = "local";
     String AUTOWIRE = "autowire";
     String REQUIRES = "requires";
-    String POLICY_SETS = "policySets";
-    String OPERATION = "operation";
-    QName OPERATION_QNAME = new QName(SCA10_NS, OPERATION);
-    String CALLBACK = "callback";
-    QName CALLBACK_QNAME = new QName(SCA10_NS, CALLBACK);
+    String POLICY_SETS = "policySets";    
     String PROMOTE = "promote";
     String TARGET = "target";
     String WIRED_BY_IMPL = "wiredByImpl";
@@ -69,8 +88,4 @@ public interface Constants {
     String ZERO_N = "0..n";
     String ONE_ONE = "1..1";
     String ONE_N = "1..n";
-    String IMPLEMENTATION_COMPOSITE = "implementation.composite";
-    QName IMPLEMENTATION_COMPOSITE_QNAME = new QName(SCA10_NS, IMPLEMENTATION_COMPOSITE);
-    String IMPLEMENTATION = "implementation";
-    QName IMPLEMENTATION_QNAME = new QName(SCA10_NS, IMPLEMENTATION);
 }

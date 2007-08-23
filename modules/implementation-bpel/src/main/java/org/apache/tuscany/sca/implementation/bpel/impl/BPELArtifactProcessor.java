@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.ode.bpel.compiler.BpelC;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -42,7 +43,6 @@ import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.osoa.sca.Constants;
 
 /**
  * Implements a STAX artifact processor for BPEL implementations.
@@ -55,7 +55,7 @@ import org.osoa.sca.Constants;
  *  @version $Rev$ $Date$
  */
 public class BPELArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
-    private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA_NS, "implementation.bpel");
+    private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA10_TUSCANY_NS, "implementation.bpel");
     
     private BPELImplementationFactory bpelFactory;
     

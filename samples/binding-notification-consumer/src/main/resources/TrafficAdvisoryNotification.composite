@@ -19,6 +19,7 @@
 -->
 
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            targetNamespace="http://tuscany.apache.org/xmlns/notification/1.0/samples"
            xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
            name="TrafficAdvisoryNotificationRemoteConsumerComposite">
@@ -29,11 +30,11 @@
             wsdli:wsdlLocation="http://example.com/TrafficAdvisory.wsdl wsdl/TrafficAdvisory.wsdl">
             <db:databinding xmlns:db="http://tuscany.apache.org/xmlns/sca/databinding/1.0" name="org.apache.axiom.om.OMElement" />
         </interface.wsdl>
-        <binding.notification ntm="http://localhost:8083/ntm" notificationType="http://example.com/trafficAdvisory"/>
+        <tuscany:binding.notification ntm="http://localhost:8083/ntm" notificationType="http://example.com/trafficAdvisory"/>
     </service>
              
     <component name="TrafficAdvisoryNotificationComponent">
-        <implementation.notification name="TrafficAdvisoryNotification"/>
+        <tuscany:implementation.notification name="TrafficAdvisoryNotification"/>
         <!-- Never use > 1 reference elements here !! -->
         <reference name="TrafficAdvisoryNotificationReference"
                    multiplicity="0..n"

@@ -130,7 +130,7 @@ public class ImplementationsActivator implements ModuleActivator {
                 break;
             }
         }
-        return new QName(Constants.SCA10_NS, "implementation." + sb.toString());
+        return new QName(Constants.SCA10_TUSCANY_NS, "implementation." + sb.toString());
     }
 
 }

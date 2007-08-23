@@ -18,15 +18,16 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="SpringHelloWorld">
 
     <component name="ClientComponent">
-		<implementation.java class="org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorldProxy"/>
-        <reference name="delegate" target="HelloWorldComponent"></reference>
+        <implementation.java class="org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorldProxy"/>
+        <reference name="delegate" target="HelloWorldComponent"/>
     </component>
 
     <component name="HelloWorldComponent">
-        <implementation.spring location="META-INF/sca/SpringHelloWorld-context.xml"/>
+        <tuscany:implementation.spring location="META-INF/sca/SpringHelloWorld-context.xml"/>
     </component>
 
 </composite>

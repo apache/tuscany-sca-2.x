@@ -18,15 +18,16 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="JRubyProperties">
 
     <component name="ClientComponent">
-		<implementation.java class="org.apache.tuscany.sca.implementation.script.itests.properties.HelloWorldProxy"/>
+        <implementation.java class="org.apache.tuscany.sca.implementation.script.itests.properties.HelloWorldProxy"/>
         <reference name="delegate" target="HelloWorldComponent" />
     </component>
 
     <component name="HelloWorldComponent">
-        <implementation.script script="org/apache/tuscany/sca/implementation/script/itests/properties/helloworld.rb"/>
+        <tuscany:implementation.script script="org/apache/tuscany/sca/implementation/script/itests/properties/helloworld.rb"/>
     </component>
 
 </composite>

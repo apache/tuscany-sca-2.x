@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.spi.impl;
@@ -75,7 +75,7 @@ public class BindingsActivator implements ModuleActivator {
             bindingActivatorMap.put(bindingClass, bindingActivator);
             QName scdlQName = getBindingQName(bindingClass);
             staxProcessors.addArtifactProcessor(new BindingSCDLProcessor(scdlQName, bindingClass));
-            
+
             // Check if the binding extends from Binding interface
             if (Binding.class.isAssignableFrom(bindingClass)) {
                 // Add provider factory against the binding class
@@ -137,7 +137,7 @@ public class BindingsActivator implements ModuleActivator {
                 break;
             }
         }
-        return new QName(Constants.SCA10_NS, "binding." + sb.toString());
+        return new QName(Constants.SCA10_TUSCANY_NS, "binding." + sb.toString());
     }
 
     private final class DelegatingBindingProviderFactory implements BindingProviderFactory {

@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -70,7 +71,7 @@ import org.w3c.dom.Node;
  */
 public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
     
-    public static final QName IMPLEMENTATION_OSGI  = new QName(SCA_NS, "implementation.osgi");
+    public static final QName IMPLEMENTATION_OSGI  = new QName(Constants.SCA10_TUSCANY_NS, "implementation.osgi");
     
     private static final String BUNDLE             = "bundle";
     private static final String BUNDLE_LOCATION    = "bundleLocation";
@@ -81,8 +82,8 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private static final String INJECT_PROPERTIES  = "injectProperties";
 
    
-    private static final QName PROPERTIES_QNAME    = new QName(SCA_NS, "properties");
-    private static final QName PROPERTY_QNAME      = new QName(SCA_NS, "property");
+    private static final QName PROPERTIES_QNAME    = new QName(Constants.SCA10_NS, "properties");
+    private static final QName PROPERTY_QNAME      = new QName(Constants.SCA10_NS, "property");
     
     private JavaInterfaceFactory javaInterfaceFactory;
     private AssemblyFactory assemblyFactory;

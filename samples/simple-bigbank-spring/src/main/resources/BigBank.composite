@@ -18,12 +18,13 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://bigbank"
 	xmlns:s="http://stockquote"
 	name="BigBank">
 
     <component name="AccountServiceComponent">
-        <implementation.spring location="Account-spring-context.xml"/>
+        <tuscany:implementation.spring location="Account-spring-context.xml"/>
         <reference name="stockQuoteService" target="StockQuoteServiceComponent"/>
     </component>
 

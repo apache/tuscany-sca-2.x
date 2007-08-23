@@ -18,6 +18,7 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://sample/resource"
 	xmlns:sr="http://sample/resource"
 	name="resource">
@@ -26,15 +27,15 @@
 	as 8080 is already in use -->
 	<!--
     <component name="ResourceServiceComponent">
-        <implementation.resource location="content"/>
+        <tuscany:implementation.resource location="content"/>
     </component>
     -->
 
     <component name="ResourceServiceComponent2">
     	<service name="Resource">
-    		<binding.resource uri="http://localhost:8085/webcontent"/>
+    		<tuscany:binding.resource uri="http://localhost:8085/webcontent"/>
     	</service>
-        <implementation.resource location="content"/>
+        <tuscany:implementation.resource location="content"/>
     </component>
 
 </composite>

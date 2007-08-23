@@ -19,6 +19,7 @@
 -->
 
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            targetNamespace="http://sample"
            xmlns:sample="http://sample"
            name="TrafficAdvisoryNotificationLocalComposite">
@@ -29,7 +30,7 @@
     </component>
 
     <component name="TrafficAdvisoryNotificationComponent">
-        <implementation.notification name="TrafficAdvisoryNotification"/>
+        <tuscany:implementation.notification name="TrafficAdvisoryNotification"/>
         <!-- Never use > 1 reference elements here !! -->
         <reference name="TrafficAdvisoryNotificationReference"
                    multiplicity="0..n"
