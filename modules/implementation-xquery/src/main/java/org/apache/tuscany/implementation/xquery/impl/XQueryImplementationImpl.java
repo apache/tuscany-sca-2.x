@@ -19,17 +19,13 @@
 package org.apache.tuscany.implementation.xquery.impl;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.sf.saxon.query.XQueryExpression;
 
 import org.apache.tuscany.implementation.xquery.XQueryImplementation;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Actual implementation of the XQuery implementation
@@ -44,20 +40,9 @@ public class XQueryImplementationImpl extends ComponentTypeImpl implements
 	private Map<String, XQueryExpression> compiledExpressionsCache = new HashMap<String, XQueryExpression>();
 	private Map<Method, String> xqExpressionExtensionsMap = new HashMap<Method, String>();
 	
-    private List<Intent> computedIntents = new ArrayList<Intent>();;
-    private List<PolicySet> computedPolicySets = new ArrayList<PolicySet>();;
-
 	public XQueryImplementationImpl () {
 		setUnresolved(true);
 	}
-	
-    public List<Intent> getComputedIntents() {
-        return computedIntents;
-    }
-
-    public List<PolicySet> getComputedPolicySets() {
-        return computedPolicySets;
-    }
 	
 	public String getLocation() {
 		return location;
