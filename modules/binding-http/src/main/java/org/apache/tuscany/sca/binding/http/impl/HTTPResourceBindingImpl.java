@@ -17,12 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.resource.impl;
+package org.apache.tuscany.sca.binding.http.impl;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
+import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
 
 
 /**

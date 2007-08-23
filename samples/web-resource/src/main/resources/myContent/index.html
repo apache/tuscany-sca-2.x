@@ -26,7 +26,7 @@
 
   	<p>Tuscany allows you to publish Web resources using SCA components declared with an
 	<b>&lt;implementation.resource&gt;</b> component implementation type and made available
-	to HTTP clients using a <b>&lt;binding.resource&gt;</b> binding.</p>
+	to HTTP clients using a <b>&lt;binding.http&gt;</b> binding.</p>
 
   	<p>Here is the SCA composite that publishes this page:</p>
   	
@@ -37,8 +37,8 @@
 
   &lt;component name=&quot;myWeb&quot;&gt;
     &lt;service name=&quot;Resource&quot;&gt;
-	  &lt;binding.resource&gt;
-	&lt;/service&gt;
+      &lt;binding.http/&gt;
+    &lt;/service&gt;
     &lt;implementation.resource location=&quot;myContent&quot;/&gt;
   &lt;/component&gt;      
 

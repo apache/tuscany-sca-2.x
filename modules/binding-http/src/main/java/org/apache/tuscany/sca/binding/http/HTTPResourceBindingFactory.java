@@ -16,29 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package web.resource;
 
-import java.io.IOException;
+package org.apache.tuscany.sca.binding.http;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+/**
+ * Factory for the HTTP resource binding model.
+ *
+ * @version $Rev$ $Date$
+ */
+public interface HTTPResourceBindingFactory {
+    
+    /**
+     * Creates a new HTTP resource binding.
+     * @return a new HTTP resource binding
+     */
+    HTTPResourceBinding createHTTPResourceBinding();
 
-public class SampleServer {
-    public static void main(String[] args) throws Exception {
-
-        SCADomain scaDomain = SCADomain.newInstance("WebResource.composite");
-
-        try {
-            System.out.println("Sample server started (press enter to shutdown)");
-            System.out.println();
-            System.out.println("To get the Web resource, point your Web browser to the following address:");
-            System.out.println("http://localhost:8080/myWeb/index.html");
-            System.out.println();
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        scaDomain.close();
-        System.out.println("Sample server stopped");
-    }
 }

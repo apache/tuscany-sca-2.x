@@ -23,18 +23,7 @@
 	xmlns:sr="http://sample/resource"
 	name="resource">
 
-	<!--  This works with port 8080 but we can't test this on the build machine
-	as 8080 is already in use -->
-	<!--
     <component name="ResourceServiceComponent">
-        <tuscany:implementation.resource location="content"/>
-    </component>
-    -->
-
-    <component name="ResourceServiceComponent2">
-    	<service name="Resource">
-    		<tuscany:binding.resource uri="http://localhost:8085/webcontent"/>
-    	</service>
         <tuscany:implementation.resource location="content"/>
     </component>
 

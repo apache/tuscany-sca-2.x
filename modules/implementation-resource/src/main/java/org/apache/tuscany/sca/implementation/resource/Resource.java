@@ -24,7 +24,7 @@ import java.net.URL;
 /**
  * The service interface of resource implementations.
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 548609 $ $Date: 2007-06-18 23:31:03 -0700 (Mon, 18 Jun 2007) $
  */
 public interface Resource {
     

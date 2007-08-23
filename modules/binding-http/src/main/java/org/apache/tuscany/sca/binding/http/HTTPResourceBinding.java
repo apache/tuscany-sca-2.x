@@ -17,19 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.resource;
+package org.apache.tuscany.sca.binding.http;
+
+import org.apache.tuscany.sca.assembly.Binding;
+
 
 /**
- * Factory for the HTTP resource binding model.
- *
- * @version $Rev$ $Date$
+ * HTTP resource binding model.
  */
-public interface HTTPResourceBindingFactory {
-    
-    /**
-     * Creates a new HTTP resource binding.
-     * @return a new HTTP resource binding
-     */
-    HTTPResourceBinding createHTTPResourceBinding();
-
+public interface HTTPResourceBinding extends Binding {
 }

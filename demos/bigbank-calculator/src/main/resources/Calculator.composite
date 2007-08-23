@@ -18,13 +18,14 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://calc"
 	xmlns:c="http://calc"
 	name="Calculator">
 
     <component name="CalculatorServiceComponent">
 	    <service name="CalculatorService">
-	        <binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	        <tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
 	    </service>
 
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
@@ -36,19 +37,19 @@
     </component>
 
     <component name="AddServiceComponent">
-        <implementation.script script="calculator/AddServiceImpl.js"/>
+        <tuscany:implementation.script script="calculator/AddServiceImpl.js"/>
     </component>
 
     <component name="SubtractServiceComponent">
-        <implementation.script script="calculator/SubtractServiceImpl.rb"/>
+        <tuscany:implementation.script script="calculator/SubtractServiceImpl.rb"/>
     </component>
 
     <component name="MultiplyServiceComponent">
-        <implementation.script script="calculator/MultiplyServiceImpl.py"/>
+        <tuscany:implementation.script script="calculator/MultiplyServiceImpl.py"/>
     </component>
 
     <component name="DivideServiceComponent">
-        <implementation.script script="calculator/DivideServiceImpl.groovy"/>
+        <tuscany:implementation.script script="calculator/DivideServiceImpl.groovy"/>
     </component>
 
 </composite>

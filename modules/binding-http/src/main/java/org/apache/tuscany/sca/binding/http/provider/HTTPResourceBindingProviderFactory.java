@@ -17,12 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.resource.provider;
+package org.apache.tuscany.sca.binding.http.provider;
 
-import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
+import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -35,12 +37,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * Implementation of the Echo binding model.
  */
 public class HTTPResourceBindingProviderFactory implements BindingProviderFactory<HTTPResourceBinding> {
-    
+
+    private MessageFactory messageFactory;
     private ServletHost servletHost;
     
     public HTTPResourceBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, HTTPResourceBinding binding) {
@@ -48,7 +53,7 @@ public class HTTPResourceBindingProviderFactory implements BindingProviderFactor
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, HTTPResourceBinding binding) {
-        return new HTTPResourceServiceBindingProvider(component, service, binding, servletHost);
+        return new HTTPResourceServiceBindingProvider(component, service, binding, messageFactory, servletHost);
     }
     
     public Class<HTTPResourceBinding> getModelType() {
