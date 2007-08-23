@@ -348,6 +348,9 @@
                                     <resource>META-INF/services/org.apache.tuscany.sca.provider.BindingProviderFactory</resource>
                                 </transformer>
                                 <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.provider.ImplementationProviderFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.java.JavaImportExportFactory</resource>
                                 </transformer>
                                 <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
