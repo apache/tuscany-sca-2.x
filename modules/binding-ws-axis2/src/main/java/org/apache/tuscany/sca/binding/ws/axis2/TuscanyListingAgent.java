@@ -99,6 +99,7 @@ public class TuscanyListingAgent extends ListingAgent {
 // this line is the only change to to Axis2 code
 
         String serviceName = findAxisServiceName(filePart);
+        setContextRoot(filePart, serviceName);
 
         String query = req.getQueryString();
         int wsdl2 = query.indexOf("wsdl2");
@@ -268,6 +269,25 @@ public class TuscanyListingAgent extends ListingAgent {
         }
 
         renderView(LIST_SINGLE_SERVICE_JSP_NAME, req, res);
+    }
+
+    /**
+     * Hack for Tuscany to get ?wsdl working with Tuscany service names
+     * Can go once moved up to Axis2 1.3
+     */
+    private void setContextRoot(String filePart, String serviceName) {
+        String contextRoot = configContext.getContextRoot();
+        if (contextRoot != null && contextRoot.length() > 0) {
+            if (contextRoot.equals("/")) {
+                configContext.setServicePath("_null_");
+            } else {
+                int i = filePart.indexOf(contextRoot) + contextRoot.length();
+                int j = filePart.lastIndexOf(serviceName);
+                String mapping = filePart.substring(i+1, j);
+                configContext.setServicePath(mapping);
+            }
+            configContext.setContextRoot(contextRoot);
+        }
     }
 
     private String extractHostAndPort(String filePart, boolean isHttp) {
