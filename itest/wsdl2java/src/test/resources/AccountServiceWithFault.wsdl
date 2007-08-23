@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.    
+	* Licensed to the Apache Software Foundation (ASF) under one
+	* or more contributor license agreements.  See the NOTICE file
+	* distributed with this work for additional information
+	* regarding copyright ownership.  The ASF licenses this file
+	* to you under the Apache License, Version 2.0 (the
+	* "License"); you may not use this file except in compliance
+	* with the License.  You may obtain a copy of the License at
+	* 
+	*   http://www.apache.org/licenses/LICENSE-2.0
+	* 
+	* Unless required by applicable law or agreed to in writing,
+	* software distributed under the License is distributed on an
+	* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	* KIND, either express or implied.  See the License for the
+	* specific language governing permissions and limitations
+	* under the License.    
 -->
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
@@ -28,12 +28,11 @@
 		<xsd:schema targetNamespace="http://www.bigbank.com/account"
 			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 			xmlns:account="http://www.bigbank.com/account">
-			
+
 			<xsd:element name="getAccountReport">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="customerID"
-							type="xsd:int" />
+						<xsd:element name="customerID" type="xsd:int" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
@@ -61,7 +60,7 @@
 			</xsd:complexType>
 
 			<xsd:complexType name="StockSummary">
-			    <!-- xsd:attribute name="id" type="xsd:int" / -->
+				<!-- xsd:attribute name="id" type="xsd:int" / -->
 				<xsd:attribute name="purchaseLotNumber" type="xsd:int" />
 				<!-- unique id for this purchase -->
 				<xsd:attribute name="symbol" type="xsd:string" />
@@ -72,7 +71,7 @@
 				<xsd:attribute name="company" type="xsd:string" />
 				<xsd:attribute name="highPrice" type="xsd:float" />
 				<xsd:attribute name="lowPrice" type="xsd:float" />
-				
+
 			</xsd:complexType>
 
 			<!-- Profile in data base  -->
@@ -120,16 +119,16 @@
 						<xsd:element name="balance" type="xsd:float" />
 					</xsd:sequence>
 				</xsd:complexType>
-                        </xsd:element>
-                        <!-- @start added fault -->
-                        <xsd:element name="insufficientFundsFault">
-                            <xsd:complexType name="insufficientFundsFault">
-                                <xsd:sequence>
-                                    <xsd:element name="message" type="xsd:string"/>
-                                </xsd:sequence>
-                            </xsd:complexType>
-                        </xsd:element>
-                        <!-- @end added fault -->
+			</xsd:element>
+			<!-- @start added fault -->
+			<xsd:element name="insufficientFundsFault">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="message" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<!-- @end added fault -->
 
 			<xsd:element name="deposit">
 				<xsd:complexType>
@@ -152,7 +151,8 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="id" type="xsd:int" />
-						<xsd:element name="stock" type="account:StockSummary" />
+						<xsd:element name="stock"
+							type="account:StockSummary" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
@@ -183,13 +183,13 @@
 					<xsd:sequence>
 						<xsd:element name="customerProfile"
 							type="account:CustomerProfileData" />
-                        <xsd:element name="createSavings"
+						<xsd:element name="createSavings"
 							type="xsd:boolean" />
-                        <xsd:element name="createCheckings"
+						<xsd:element name="createCheckings"
 							type="xsd:boolean" />
 					</xsd:sequence>
 				</xsd:complexType>
-			</xsd:element>	
+			</xsd:element>
 			<xsd:element name="createAccountResponse">
 				<xsd:complexType>
 					<xsd:sequence>
@@ -197,14 +197,13 @@
 							type="account:CustomerProfileData" />
 					</xsd:sequence>
 				</xsd:complexType>
-				
+
 			</xsd:element>
 
 			<xsd:element name="getAccountLog">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="customerID"
-							type="xsd:int" />
+						<xsd:element name="customerID" type="xsd:int" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
@@ -223,7 +222,7 @@
 						type="account:AccountLogEntry" maxOccurs="unbounded" />
 					<xsd:element name="stockLogEntries"
 						type="account:StockLogEntry" maxOccurs="unbounded" />
-						
+
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -271,13 +270,14 @@
 	<wsdl:message name="withdrawResponse">
 		<wsdl:part element="account:withdrawResponse"
 			name="withdrawResponse" />
-        </wsdl:message>
+	</wsdl:message>
 
-        <!-- @start added fault -->
-        <wsdl:message name="insufficientFundsFault">
-            <wsdl:part element="account:insufficientFundsFault" name="insufficientFundsFault" />
-        </wsdl:message>
-        <!-- @end added fault -->
+	<!-- @start added fault -->
+	<wsdl:message name="insufficientFundsFault">
+		<wsdl:part element="account:insufficientFundsFault"
+			name="insufficientFundsFault" />
+	</wsdl:message>
+	<!-- @end added fault -->
 
 	<wsdl:message name="depositRequest">
 		<wsdl:part element="account:deposit" name="depositRequest" />
@@ -301,20 +301,22 @@
 	<wsdl:message name="sellStockRequest">
 		<wsdl:part element="account:sellStock" name="sellStockRequest" />
 	</wsdl:message>
-	
+
 	<wsdl:message name="createAccountRequest">
-		<wsdl:part element="account:createAccount" name="createAccountRequest" />
+		<wsdl:part element="account:createAccount"
+			name="createAccountRequest" />
 	</wsdl:message>
 
 	<wsdl:message name="createAccountResponse">
-		<wsdl:part element="account:createAccountResponse" name="createAccountResponse" />
+		<wsdl:part element="account:createAccountResponse"
+			name="createAccountResponse" />
 	</wsdl:message>
 
 	<wsdl:message name="getAccountLogRequest">
 		<wsdl:part element="account:getAccountLog"
 			name="getAccountLogRequest" />
 	</wsdl:message>
-	
+
 	<wsdl:message name="getAccountLogResponse">
 		<wsdl:part element="account:getAccountLogResponse"
 			name="getAccountLogResponse" />
@@ -333,10 +335,11 @@
 
 		<wsdl:operation name="withdraw">
 			<wsdl:input message="account:withdrawRequest" />
-                        <wsdl:output message="account:withdrawResponse" />
-                        <!-- @start added fault -->
-                        <wsdl:fault message="account:insufficientFundsFault" name="insufficientFundsFault"/>
-                        <!-- @end added fault -->
+			<wsdl:output message="account:withdrawResponse" />
+			<!-- @start added fault -->
+			<wsdl:fault message="account:insufficientFundsFault"
+				name="insufficientFundsFault" />
+			<!-- @end added fault -->
 		</wsdl:operation>
 
 		<wsdl:operation name="deposit">
@@ -369,7 +372,8 @@
 
 
 
-	<wsdl:binding name="AccountServiceWithFaultSOAP" type="account:AccountServiceWithFault">
+	<wsdl:binding name="AccountServiceWithFaultSOAP"
+		type="account:AccountServiceWithFault">
 		<soap:binding style="document"
 			transport="http://schemas.xmlsoap.org/soap/http" />
 		<wsdl:operation name="getAccountReport">
@@ -401,12 +405,12 @@
 			</wsdl:input>
 			<wsdl:output>
 				<soap:body use="literal" />
-                        </wsdl:output>
-                        <!-- @start added fault -->
-                        <wsdl:fault name="insufficientFundsFault">
-                            <soap:fault name="insufficientFundsFault" use="literal"/>
-                        </wsdl:fault>
-                        <!-- @end added fault -->
+			</wsdl:output>
+			<!-- @start added fault -->
+			<wsdl:fault name="insufficientFundsFault">
+				<soap:fault name="insufficientFundsFault" use="literal" />
+			</wsdl:fault>
+			<!-- @end added fault -->
 		</wsdl:operation>
 
 		<wsdl:operation name="deposit">
