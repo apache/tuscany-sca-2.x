@@ -245,7 +245,11 @@ The following components come under Apache Software License 2.0
  log4j-1.2.12.jar
  logkit-1.0.1.jar
  neethi-2.0.1.jar
- spring-beans-2.0.3.jar
+ org.apache.felix.bundlerepository-1.0.0.jar
+ org.apache.felix.framework-1.0.0.jar
+ org.apache.felix.main-1.0.0.jar
+ org.apache.felix.shell-1.0.0.jar
+ org.apache.felix.shell.tui-1.0.0.jar spring-beans-2.0.3.jar
  spring-context-2.0.3.jar
  spring-core-2.0.3.jar
  stax-api-1.0.1.jar
