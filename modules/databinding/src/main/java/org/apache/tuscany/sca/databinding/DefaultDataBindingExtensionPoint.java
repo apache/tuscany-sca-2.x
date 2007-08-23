@@ -23,13 +23,13 @@ import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 
 /**
  * The default implementation of a data binding extension point.
@@ -90,17 +90,17 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
 
         // Get the databinding service declarations
         ClassLoader classLoader = DataBinding.class.getClassLoader();
-        Set<String> dataBindingDeclarations;
+        List<String> dataBindingDeclarations;
         try {
             dataBindingDeclarations =
-                TempServiceDeclarationUtil.getServiceClassNames(classLoader, DataBinding.class.getName());
+                ServiceConfigurationUtil.getServiceClassNames(classLoader, DataBinding.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
 
         // Load data bindings
         for (String dataBindingDeclaration : dataBindingDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(dataBindingDeclaration);
+            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(dataBindingDeclaration);
             String className = attributes.get("class");
             String type = attributes.get("type");
             String name = attributes.get("name");

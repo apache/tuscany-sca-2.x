@@ -22,14 +22,14 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 
 /**
  * The default implementation of a StAX artifact processor registry.
@@ -78,15 +78,15 @@ public class DefaultURLArtifactProcessorExtensionPoint
 
         // Get the processor service declarations
         ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
-        Set<String> processorDeclarations; 
+        List<String> processorDeclarations; 
         try {
-            processorDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, URLArtifactProcessor.class.getName());
+            processorDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, URLArtifactProcessor.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         for (String processorDeclaration: processorDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(processorDeclaration);
+            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(processorDeclaration);
             String className = attributes.get("class");
             
             // Load a URL artifact processor

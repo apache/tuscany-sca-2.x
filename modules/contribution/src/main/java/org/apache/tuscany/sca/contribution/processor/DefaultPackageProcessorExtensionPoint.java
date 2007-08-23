@@ -28,10 +28,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.service.ContributionException;
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 
 /**
  * Default implementation of ContributionProcessorRegistry
@@ -65,15 +64,15 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
 
         // Get the processor service declarations
         ClassLoader classLoader = PackageProcessor.class.getClassLoader();
-        Set<String> processorDeclarations; 
+        List<String> processorDeclarations; 
         try {
-            processorDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, PackageProcessor.class.getName());
+            processorDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, PackageProcessor.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         for (String processorDeclaration: processorDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(processorDeclaration);
+            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(processorDeclaration);
             String className = attributes.get("class");
             
             // Load a URL artifact processor

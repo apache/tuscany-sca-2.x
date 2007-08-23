@@ -17,21 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.impl;
+package org.apache.tuscany.sca.databinding.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
-public class TempServiceDeclarationUtil {
+public class ServiceConfigurationUtil {
 
     /**
      * Read the service name from a configuration file
@@ -41,50 +41,33 @@ public class TempServiceDeclarationUtil {
      * @return A class name which extends/implements the service class
      * @throws IOException
      */
-    public static Set<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
-        Set<String> set = new HashSet<String>();
-        Enumeration<URL> urls = classLoader.getResources("META-INF/services/" + name);
-        while (urls.hasMoreElements()) {
-            URL url = urls.nextElement();
-            Set<String> service = getServiceClassNames(url);
-            if (service != null) {
-                set.addAll(service);
-    
-            }
-        }
-        return set;
-    }
-
-    private static Set<String> getServiceClassNames(URL url) throws IOException {
-        Set<String> names = new HashSet<String>();
-        InputStream is = url.openStream();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(is));
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
+    public static List<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
+        List<String> classNames = new ArrayList<String>();
+        for (URL url: Collections.list(classLoader.getResources("META-INF/services/" + name))) {
+            InputStream is = url.openStream();
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new InputStreamReader(is));
+                while (true) {
+                    String line = reader.readLine();
+                    if (line == null)
+                        break;
+                    line = line.trim();
+                    if (!line.startsWith("#") && !"".equals(line)) {
+                        classNames.add(line.trim());
+                    }
                 }
-                line = line.trim();
-                if (!line.startsWith("#") && !"".equals(line)) {
-                    names.add(line.trim());
-                }
-            }
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-    
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ioe) {
-                    //ignore
+            } finally {
+                if (reader != null)
+                    reader.close();
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException ioe) {}
                 }
             }
         }
-        return names;
+        return classNames;
     }
 
     /**
@@ -98,12 +81,9 @@ public class TempServiceDeclarationUtil {
         Map<String, String> attributes = new HashMap<String, String>();
         StringTokenizer tokens = new StringTokenizer(declaration);
         String className = tokens.nextToken(";");
-        if (className != null) {
+        if (className != null)
             attributes.put("class", className);
-        }
-        for (;;) {
-            if (!tokens.hasMoreTokens())
-                break;
+        for (; tokens.hasMoreTokens(); ) {
             String key = tokens.nextToken("=").substring(1);
             if (key == null)
                 break;

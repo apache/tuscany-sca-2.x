@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -35,6 +34,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -200,7 +199,7 @@ public class ReallySmallRuntime {
         // Load and instantiate the modules found on the classpath
         modules = new ArrayList<ModuleActivator>();
         try {
-            Set<String> classNames = TempServiceDeclarationUtil.getServiceClassNames(classLoader, ModuleActivator.class.getName());
+            List<String> classNames = ServiceConfigurationUtil.getServiceClassNames(classLoader, ModuleActivator.class.getName());
             for (String className : classNames) {       
                 Class moduleClass = Class.forName(className, true, classLoader);
                 ModuleActivator module = (ModuleActivator)moduleClass.newInstance();

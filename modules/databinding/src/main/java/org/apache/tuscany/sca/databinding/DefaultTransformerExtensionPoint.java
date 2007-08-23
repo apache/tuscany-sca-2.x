@@ -24,10 +24,9 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph;
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
+import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
 
 /**
  * @version $Rev$ $Date$
@@ -84,16 +83,16 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
 
         // Get the transformer service declarations
         ClassLoader classLoader = transformerClass.getClassLoader();
-        Set<String> transformerDeclarations; 
+        List<String> transformerDeclarations; 
         try {
-            transformerDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, transformerClass.getName());
+            transformerDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, transformerClass.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         // Load transformers
         for (String transformerDeclaration: transformerDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(transformerDeclaration);
+            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(transformerDeclaration);
             String className = attributes.get("class");
             String source = attributes.get("source");
             String target = attributes.get("target");

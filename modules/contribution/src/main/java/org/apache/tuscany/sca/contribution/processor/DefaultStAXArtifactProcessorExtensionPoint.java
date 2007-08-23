@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.contribution.processor;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -84,15 +84,15 @@ public class DefaultStAXArtifactProcessorExtensionPoint
 
         // Get the processor service declarations
         ClassLoader classLoader = StAXArtifactProcessor.class.getClassLoader();
-        Set<String> processorDeclarations; 
+        List<String> processorDeclarations; 
         try {
-            processorDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, StAXArtifactProcessor.class.getName());
+            processorDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, StAXArtifactProcessor.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         for (String processorDeclaration: processorDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(processorDeclaration);
+            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(processorDeclaration);
             String className = attributes.get("class");
             
             // Load a StAX artifact processor

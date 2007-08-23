@@ -25,12 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.interfacedef.impl.TempServiceDeclarationUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -113,10 +112,10 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
     private List<ProviderFactory> loadProviderFactories(Class<?> factoryClass) {
 
         // Get the provider factory service declarations
-        Set<String> factoryDeclarations; 
+        List<String> factoryDeclarations; 
         try {
             ClassLoader classLoader = factoryClass.getClassLoader();
-            factoryDeclarations = TempServiceDeclarationUtil.getServiceClassNames(classLoader, factoryClass.getName());
+            factoryDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, factoryClass.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -126,7 +125,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         List<ProviderFactory> factories = new ArrayList<ProviderFactory>();
         
         for (String factoryDeclaration: factoryDeclarations) {
-            Map<String, String> attributes = TempServiceDeclarationUtil.parseServiceDeclaration(factoryDeclaration);
+            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(factoryDeclaration);
             String className = attributes.get("class");
             
             // Load an implementation provider factory
