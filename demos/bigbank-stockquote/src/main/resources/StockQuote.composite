@@ -24,7 +24,7 @@
 
     <component name="StockQuoteServiceComponent">
 	    <service name="StockQuoteService">
-	        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
+	        <binding.ws uri="http://localhost:8081/services/StockQuoteWebService"/>
 	    </service>
         <implementation.java class="stockquote.StockQuoteImpl" />
     </component>
