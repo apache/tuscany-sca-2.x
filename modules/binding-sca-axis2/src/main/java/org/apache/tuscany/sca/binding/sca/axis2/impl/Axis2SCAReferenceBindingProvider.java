@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
@@ -57,6 +58,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     private WebServiceBinding wsBinding;
     
     private EndpointReference serviceEPR = null;
+    private EndpointReference callbackEPR = null;
 
     public Axis2SCAReferenceBindingProvider(RuntimeComponent component,
                                             RuntimeComponentReference reference,
@@ -121,18 +123,43 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
             DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
             ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
             
-            String serviceUrl = serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(), 
-                                                                     binding.getURI(), 
-                                                                     SCABinding.class.getName());
-            
-            if ( (serviceUrl != null ) &&
-                 (!serviceUrl.equals(""))){
-                serviceEPR = new EndpointReferenceImpl(serviceUrl);
+            // The binding URI might be null in the case where this reference is completely
+            // dynamic, for example, in the case of callbacks
+            if (binding.getURI() != null) {
+                String serviceUrl = serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(), 
+                                                                         binding.getURI(), 
+                                                                         SCABinding.class.getName());
+                
+                if ( (serviceUrl != null ) &&
+                     (!serviceUrl.equals(""))){
+                    serviceEPR = new EndpointReferenceImpl(serviceUrl);
+                }
             }
         }
         
         return serviceEPR;
     }
+    
+    /**
+     * Retrieves the uri of the callback service (that this reference has created)
+     * returns null if there is no callback service for the sca binding
+     * 
+     * @return the callback endpoint
+     */
+    public EndpointReference getCallbackEndpoint(){
+        if (callbackEPR == null) {
+            if (reference.getCallbackService() != null) {
+                for (Binding callbackBinding : reference.getCallbackService().getBindings()) {
+                    if (callbackBinding instanceof SCABinding) {
+                        callbackEPR = new EndpointReferenceImpl(reference.getName() + "/" + callbackBinding.getName());
+                        continue;
+                    }
+                }
+            }    
+        }
+        return callbackEPR;
+    }
+    
     
     public SCABinding getSCABinding () {
         return binding;

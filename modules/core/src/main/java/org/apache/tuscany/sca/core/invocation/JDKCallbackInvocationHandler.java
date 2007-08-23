@@ -22,10 +22,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.NoRegisteredCallbackException;
 
@@ -78,7 +80,21 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             setEndpoint(from.getCallbackEndpoint());
         } else {
             setEndpoint(from);
-        }
+        } 
+        
+        // need to set the endpoint on the binding also so that when the chains are created next
+        // the sca binding can decide whether to provide local or remote invokers. 
+        // TODO - there is a problem here though in that I'm setting a target on a 
+        //        binding that may possibly be trying to point at two things in the multi threaded 
+        //        case. Need to confirm the general model here and how the clone and bind part
+        //        is intended to work
+        wire.getSource().getBinding().setURI(from.getURI());
+        
+        // also need to set the target contract as it varies for the sca binding depending on 
+        // whether it is local or remote
+        RuntimeComponentReference ref = (RuntimeComponentReference)wire.getSource().getContract();
+        Binding binding = wire.getSource().getBinding();
+        wire.getTarget().setInterfaceContract(ref.getBindingProvider(binding).getBindingInterfaceContract()); 
 
         //FIXME: can we use the same code as JDKInvocationHandler to select the chain? 
         InvocationChain chain = getInvocationChain(method, wire);

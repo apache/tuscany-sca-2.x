@@ -88,7 +88,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
                     
                 
                 } else {
-                     /* do nothing at the moment as only apps using the node inplementation
+                     /* do nothing at the moment as only apps using the node implementation
                       * will currently have the distributed domain set. 
                       * 
                     throw new IllegalStateException("No distributed domain available for component: "+

@@ -71,7 +71,9 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
             
             // if target has a callback interface, create a default callback ID
             Contract targetContract = wireTarget.getContract();
-            if (targetContract != null && targetContract.getInterfaceContract().getCallbackInterface() != null) {
+            if (targetContract != null && 
+                targetContract.getInterfaceContract() != null &&
+                targetContract.getInterfaceContract().getCallbackInterface() != null) {
                 callbackID = createCallbackID();
             }
         }

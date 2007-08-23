@@ -373,6 +373,10 @@ public class CompositeWireBuilderImpl {
 
                             Target target = new Target(targetComponent, targetComponentService);
                             targets.add(target);
+
+                            // mark the reference target as resolved. Used later when we are looking to 
+                            // see if an sca binding is associated with a resolved target or not
+                            componentService.setUnresolved(false);
                         } else {
                             warning("Incompatible interfaces on component reference and target: " + componentReference
                                         .getName()
@@ -381,7 +385,7 @@ public class CompositeWireBuilderImpl {
                                     composite);
                         }
                     } else {
-                        // put all the reference bindings into the target so that they
+                        // clone all the reference bindings into the target so that they
                         // can be used for comparison when the target is resolved at runtime
                         componentService.getBindings().addAll(componentReference.getBindings());
                         
@@ -415,6 +419,10 @@ public class CompositeWireBuilderImpl {
 
                             Target target = new Target(targetComponent, targetComponentService);
                             targets.add(target);
+                            
+                            // mark the reference target as resolved. Used later when we are looking to 
+                            // see if an sca binding is associated with a resolved target or not
+                            componentService.setUnresolved(false);
                         } else {
                             warning("Incompatible interfaces on component reference and target: " + componentReference
                                         .getName()

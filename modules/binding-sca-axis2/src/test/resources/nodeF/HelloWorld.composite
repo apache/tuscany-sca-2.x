@@ -31,5 +31,11 @@
             <binding.sca uri="http://localhost:8086/BHelloWorldServiceCallbackRemote"/>
         </service>
     </component>
+    
+    <!-- callback local wire -->   
+    <!--component name="BHelloWorldClientCallbackLocal">
+		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientCallbackRemoteImpl" />
+        <reference name="helloWorldService" target="BHelloWorldServiceCallbackRemote" />
+    </component-->
 
 </composite>
