@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.core.scope.Scope;
 
 /**
  * 

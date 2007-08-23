@@ -26,8 +26,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.core.runtime.ActivationException;
-import org.apache.tuscany.sca.core.runtime.RuntimeComponentImpl;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
+import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
 import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 

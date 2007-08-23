@@ -23,12 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.scope.ScopeContainer;
-import org.apache.tuscany.sca.scope.ScopeContainerFactory;
-import org.apache.tuscany.sca.scope.ScopeRegistry;
-import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
-import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
 
 /**
  * The default implementation of a scope registry

@@ -18,11 +18,8 @@
  */
 package org.apache.tuscany.sca.core.scope;
 
+import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.scope.TargetDestructionException;
-import org.apache.tuscany.sca.scope.TargetResolutionException;
 
 /**
  * A scope context which manages stateless atomic component instances in a non-pooled fashion.

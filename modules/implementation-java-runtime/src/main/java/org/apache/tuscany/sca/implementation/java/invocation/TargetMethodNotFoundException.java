@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import org.apache.tuscany.sca.core.invocation.TargetInvokerCreationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.scope.TargetInvokerCreationException;
 
 /**
  * @version $Rev$ $Date$

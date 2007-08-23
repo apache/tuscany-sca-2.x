@@ -61,15 +61,17 @@ import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryIm
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
+import org.apache.tuscany.sca.core.assembly.CompositeActivator;
+import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.invocation.DefaultProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.runtime.ActivationException;
-import org.apache.tuscany.sca.core.runtime.CompositeActivator;
-import org.apache.tuscany.sca.core.runtime.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ConversationalScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
+import org.apache.tuscany.sca.core.scope.ScopeContainerFactory;
+import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -80,8 +82,6 @@ import org.apache.tuscany.sca.policy.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
-import org.apache.tuscany.sca.scope.ScopeContainerFactory;
-import org.apache.tuscany.sca.scope.ScopeRegistry;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntimeBuilder {

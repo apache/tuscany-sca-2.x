@@ -21,11 +21,11 @@ package org.apache.tuscany.sca.implementation.java.context;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.Injector;
 import org.apache.tuscany.sca.implementation.java.invocation.EventInvoker;
-import org.apache.tuscany.sca.scope.InstanceWrapper;
 
 /**
  * @version $Rev$ $Date$

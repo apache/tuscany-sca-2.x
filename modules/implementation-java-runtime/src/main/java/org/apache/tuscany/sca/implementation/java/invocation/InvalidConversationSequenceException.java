@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import org.apache.tuscany.sca.scope.TargetInvocationException;
+import org.apache.tuscany.sca.core.invocation.TargetInvocationException;
 
 /**
  * Denotes an unknown operation sequence in a conversation

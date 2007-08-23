@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.core.runtime.ActivationException;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.host.embedded.management.variation.ComponentInfo;
 import org.apache.tuscany.sca.host.embedded.management.variation.ComponentManager;
 import org.apache.tuscany.sca.host.embedded.management.variation.ComponentManagerService;
