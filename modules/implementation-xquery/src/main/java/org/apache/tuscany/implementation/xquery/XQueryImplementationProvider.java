@@ -107,7 +107,7 @@ public class XQueryImplementationProvider implements ImplementationProvider {
 				continue;
 			}
 			Class interfaze = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
-			Object refProxy = component.getService(interfaze, refName);
+			Object refProxy = component.getComponentContext().getService(interfaze, refName);
 			referenceProxies.put(refName, refProxy);
 		}
 		
