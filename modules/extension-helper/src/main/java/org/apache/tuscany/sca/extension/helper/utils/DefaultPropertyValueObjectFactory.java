@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.spi.utils;
+package org.apache.tuscany.sca.extension.helper.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class DefaultPropertyValueObjectFactory implements PropertyValueObjectFac
     }
     
     /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.spi.utils.PVOF#createValueFactory(org.apache.tuscany.sca.assembly.Property)
+     * @see org.apache.tuscany.sca.extension.helper.utils.PVOF#createValueFactory(org.apache.tuscany.sca.assembly.Property)
      */
     public ObjectFactory createValueFactory(Property property) {
         isSimpleType = isSimpleType(property);

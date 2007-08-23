@@ -24,12 +24,12 @@ import java.net.URI;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.invocation.JDKProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.spi.ComponentLifecycle;
 
 /**
  * Implementation of the JSONRPC binding provider.

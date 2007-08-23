@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi;
+package org.apache.tuscany.sca.extension.helper;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -53,7 +53,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * BindingActivator implementations are discovered by the Tuscany runtime
  * using the J2SE jar file extensions for service provider discovery. All
  * that means is packaging the new binding type in a jar which contains a  
- * file META-INF/services/org.apache.tuscany.sca.spi.BindingActivator and
+ * file META-INF/services/org.apache.tuscany.sca.extension.helper.BindingActivator and
  * that file lists the BindingActivator implementation class name.
  */
 public interface BindingActivator<B> {

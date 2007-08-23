@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.spi.impl.BindingsActivator;
+import org.apache.tuscany.sca.extension.helper.impl.BindingsActivator;
 
 public class EJBBindingsActivator extends BindingsActivator implements ModuleActivator {
 

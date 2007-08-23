@@ -17,20 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.impl;
+package org.apache.tuscany.sca.extension.helper;
 
-import org.apache.tuscany.sca.spi.utils.AbstractBinding;
 
-public class PojoBinding extends AbstractBinding {
-
-    Object userBinding;
+public interface ComponentLifecycle {
     
-    public PojoBinding(Object userImpl) {
-        this.userBinding = userImpl;
-    }
-
-    public Object getUserBinding() {
-        return userBinding;
-    }
+    void start();
+    void stop();
 
 }

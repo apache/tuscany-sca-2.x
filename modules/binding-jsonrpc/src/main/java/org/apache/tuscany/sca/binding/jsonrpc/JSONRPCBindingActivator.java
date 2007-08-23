@@ -20,13 +20,13 @@
 package org.apache.tuscany.sca.binding.jsonrpc;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.extension.helper.BindingActivator;
+import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
+import org.apache.tuscany.sca.extension.helper.InvokerFactory;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.spi.BindingActivator;
-import org.apache.tuscany.sca.spi.ComponentLifecycle;
-import org.apache.tuscany.sca.spi.InvokerFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class JSONRPCBindingActivator implements BindingActivator<JSONRPCBinding> {

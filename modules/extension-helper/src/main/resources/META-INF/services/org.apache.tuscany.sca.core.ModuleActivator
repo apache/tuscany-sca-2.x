@@ -16,5 +16,5 @@
 # under the License.
 
 # Implementation class for the ExtensionActivator
-org.apache.tuscany.sca.spi.impl.ImplementationsActivator
-org.apache.tuscany.sca.spi.impl.BindingsActivator
+org.apache.tuscany.sca.extension.helper.impl.ImplementationsActivator
+org.apache.tuscany.sca.extension.helper.impl.BindingsActivator

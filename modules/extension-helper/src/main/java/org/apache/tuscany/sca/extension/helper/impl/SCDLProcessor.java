@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.impl;
+package org.apache.tuscany.sca.extension.helper.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -48,8 +48,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.spi.utils.AbstractStAXArtifactProcessor;
-import org.apache.tuscany.sca.spi.utils.DynamicImplementation;
+import org.apache.tuscany.sca.extension.helper.utils.AbstractStAXArtifactProcessor;
+import org.apache.tuscany.sca.extension.helper.utils.DynamicImplementation;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**

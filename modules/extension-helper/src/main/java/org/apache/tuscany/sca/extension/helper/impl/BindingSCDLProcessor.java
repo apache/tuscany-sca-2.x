@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.spi.impl;
+package org.apache.tuscany.sca.extension.helper.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.spi.utils.AbstractBinding;
+import org.apache.tuscany.sca.extension.helper.utils.AbstractBinding;
 
 /**
  * An SCDL ArtifactProcessor which uses the Binding class getters/setters
