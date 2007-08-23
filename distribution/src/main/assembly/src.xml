@@ -122,8 +122,8 @@
              <exclude>samples/helloworld-ws-sdo/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service/work</exclude>
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
-             <exclude>samples/osgi-supplychain</exclude>
-             <exclude>samples/osgi-supplychain/**/*</exclude>
+             <exclude>samples/osgi-supplychain/.felix</exclude>
+             <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
              <exclude>samples/quote-xquery</exclude>
              <exclude>samples/quote-xquery/**/*</exclude>
              <exclude>samples/spi-implementation-pojo</exclude>
