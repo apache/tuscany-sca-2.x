@@ -29,8 +29,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.apache.tuscany.sca.binding.jsonrpc.JSONRPCService.SERVICE_PREFIX;
-
 /**
  * Servlet to handle requests for the scaDomain.js script.
  * 
@@ -42,20 +40,20 @@ public class ScaDomainScriptServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected transient List<String> serviceNames;
-    
+
     public ScaDomainScriptServlet() {
         serviceNames = new ArrayList<String>();
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
+
         ServletOutputStream os = response.getOutputStream();
 
         os.println();
         os.println("/* Apache Tuscany scaDomain.js Header */");
         os.println();
-        
+
         writeJSONRPCJavaScript(os);
         writeScaDomainCode(os, request.getServletPath());
     }
@@ -69,16 +67,16 @@ public class ScaDomainScriptServlet extends HttpServlet {
         out.println("/* Apache Tuscany scaDomain.js Footer  */");
         out.println();
         out.println("function scaDomain() {}");
-        
+
         // remove the leading slash '/' character
         path = path.substring(1);
-        
+
         for (String serviceName : serviceNames) {
             out.println();
-            
+
             // A slight hack to make the service function available with a variable named 'serviceName'
-            // to do that the JSONRpcClient is added to the scaDomain and then the service function is got from that 
-            out.println("scaDomain." + serviceName + " = new JSONRpcClient(\"" + path + SERVICE_PREFIX + serviceName +"\");");
+            // to do that the JSONRpcClient is added to the scaDomain and then the service function is got from that
+            out.println("scaDomain." + serviceName + " = " + "new JSONRpcClient(\"" + path + "/" + serviceName + "\");");
             out.println(serviceName + " = scaDomain." + serviceName + "." + serviceName + ";");
         }
 
