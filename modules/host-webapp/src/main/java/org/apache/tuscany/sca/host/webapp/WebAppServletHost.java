@@ -52,7 +52,7 @@ public class WebAppServletHost implements ServletHost {
 
     public void addServletMapping(String path, Servlet servlet) throws ServletMappingException {
         URI pathURI = URI.create(path);
-        
+
         // Ignore registrations of our default resource servlet, as resources
         // are already served by the web container
         if (servlet instanceof DefaultResourceServlet) {
@@ -62,26 +62,40 @@ public class WebAppServletHost implements ServletHost {
             // in the web container that we are running in.
             return;
         }
-            
+
         // For webapps just use the path and ignore the host and port
-        servlets.put(pathURI.getPath(), servlet);
-        logger.info("addServletMapping: " + pathURI.getPath());
+        path = pathURI.getPath();
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        servlets.put(path, servlet);
+        logger.info("addServletMapping: " + path);
     }
 
     public Servlet removeServletMapping(String path) throws ServletMappingException {
         URI pathURI = URI.create(path);
+        path = pathURI.getPath();
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
         // for webapps just use the path and ignore the host and port
-        return servlets.remove(pathURI.getPath());
+        return servlets.remove(path);
     }
 
     public Servlet getServlet(String path) {
+        if (path == null) {
+            return null;
+        }
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
         Servlet servlet = servlets.get(path);
         if (servlet != null) {
             return servlet;
         }
         for (String servletPath : servlets.keySet()) {
             if (servletPath.endsWith("*")) {
-                if (path.startsWith(servletPath.substring(0, servletPath.length()-1))) { 
+                if (path.startsWith(servletPath.substring(0, servletPath.length() - 1))) {
                     return servlets.get(servletPath);
                 }
             }
@@ -92,7 +106,7 @@ public class WebAppServletHost implements ServletHost {
     public static WebAppServletHost getInstance() {
         return instance;
     }
-    
+
     public void init(ServletConfig config) throws ServletException {
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
