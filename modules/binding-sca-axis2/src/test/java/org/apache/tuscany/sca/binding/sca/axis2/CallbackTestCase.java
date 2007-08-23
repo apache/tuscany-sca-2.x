@@ -34,7 +34,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class PromotionTestCase extends BaseTest {
+public class CallbackTestCase extends BaseTest {
     
     public static EmbeddedSCADomain domainA;
     public static EmbeddedSCADomain domainB;
@@ -45,8 +45,8 @@ public class PromotionTestCase extends BaseTest {
 
         try {
             // create and start domainA
-            domainA = createDomain("nodeC");
-            domainB = createDomain("nodeD");
+            domainA = createDomain("nodeE");
+            domainB = createDomain("nodeF");
             startDomain(domainA);
             startDomain(domainB);
 
@@ -62,15 +62,21 @@ public class PromotionTestCase extends BaseTest {
         // stop the nodes and hence the domains they contain        
         stopDomain(domainA);
         stopDomain(domainB);
-    }    
+    }   
+    
+    //@Test
+    public void testHelloWorldCallbackLocal() throws Exception {  
+        HelloWorldClient helloWorldClientB;
+        helloWorldClientB = domainB.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
+        Assert.assertEquals("Hello callback fred", helloWorldClientB.getGreetings("fred"));  
+    }      
     
     @Test
-    public void testHelloWorldPromotion() throws Exception {  
-/*        
+    public void testHelloWorldCallbackRemote() throws Exception {  
         HelloWorldClient helloWorldClientA;
-        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");
-        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
-*/
-    }      
-  
+        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
+        Assert.assertEquals("Hello callback fred", helloWorldClientA.getGreetings("fred"));
+        
+    }    
+    
 }

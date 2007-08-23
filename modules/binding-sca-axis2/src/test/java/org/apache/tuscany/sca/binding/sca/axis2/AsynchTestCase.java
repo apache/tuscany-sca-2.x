@@ -45,10 +45,10 @@ public class AsynchTestCase extends BaseTest {
 
         try {
             // create and start domainA
-//            domainA = createDomain("nodeE");
-//            domainB = createDomain("nodeF");
-//            startDomain(domainA);
-//            startDomain(domainB);
+            domainA = createDomain("nodeE");
+            domainB = createDomain("nodeF");
+            startDomain(domainA);
+            startDomain(domainB);
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -60,17 +60,18 @@ public class AsynchTestCase extends BaseTest {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
-//        stopDomain(domainA);
-//        stopDomain(domainB);
-    }    
+        stopDomain(domainA);
+        stopDomain(domainB);
+    }   
     
-   
     @Test
-    public void testHelloWorldCallbackRemote() throws Exception {  
-        HelloWorldClient helloWorldClientA;
-//        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
-//        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
-        
-    }    
+    public void testHelloWorldAsynch() throws Exception {  
+/*        
+        HelloWorldClient helloWorldClientB;
+        helloWorldClientB = domainB.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
+        Assert.assertEquals("Hello callback fred", helloWorldClientB.getGreetings("fred"));  
+*/        
+    }      
+       
     
 }

@@ -50,8 +50,24 @@ public class TestServiceDiscoveryImpl implements ServiceDiscovery{
         }
         
         public boolean match(String domainUri, String serviceName, String bindingName) {
+            // trap the case where the we are trying to map
+            //   ComponentName/Service name with a registered ComponentName             - this is OK
+            //   ComponentName              with a registered ComponentName/ServiceName - this should fail
+            
+            boolean serviceNameMatch = false;
+            
+            if (this.serviceName.equals(serviceName)) {
+                serviceNameMatch = true;
+            } else {
+                int s = serviceName.indexOf('/');
+                if ((s != -1) &&
+                    (this.serviceName.equals(serviceName.substring(0, s)))){
+                    serviceNameMatch = true;
+                }
+            }
+            
             return ((this.domainUri.equals(domainUri)) &&
-                    (this.serviceName.equals(serviceName)) &&
+                    (serviceNameMatch) &&
                     (this.bindingName.equals(bindingName)));
         }
         
@@ -81,7 +97,14 @@ public class TestServiceDiscoveryImpl implements ServiceDiscovery{
      * @param url the enpoint url
      */
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
-        ServiceEndpoint serviceEndpoint = new ServiceEndpoint (domainUri, nodeUri, serviceName, bindingName, URL);
+        // if the service name ends in a "/" remove it
+        String modifiedServiceName = null;
+        if ( serviceName.endsWith("/") ) {
+            modifiedServiceName = serviceName.substring(0, serviceName.length() - 1);
+        } else {
+            modifiedServiceName = serviceName;
+        }        
+        ServiceEndpoint serviceEndpoint = new ServiceEndpoint (domainUri, nodeUri, modifiedServiceName, bindingName, URL);
         serviceEndpoints.add(serviceEndpoint);
         System.err.println("Registering service: " + serviceEndpoint.toString());
         return "";

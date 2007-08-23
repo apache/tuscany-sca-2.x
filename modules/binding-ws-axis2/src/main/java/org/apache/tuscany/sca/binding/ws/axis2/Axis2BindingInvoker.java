@@ -158,6 +158,17 @@ public class Axis2BindingInvoker implements Invoker {
                                        AddressingConstants.WSA_FROM,
                                        AddressingConstants.WSA_DEFAULT_PREFIX);
             sh.addChild(el);
+        } else if (msg.getFrom() != null)  {
+            EndpointReference fromEpr = new EndpointReference(msg.getFrom().getURI());
+            requestMC.setFrom(fromEpr);
+            SOAPEnvelope sev = requestMC.getEnvelope();
+            SOAPHeader sh = sev.getHeader();
+            OMElement el = fromEpr.toOM(AddressingConstants.Final.WSA_NAMESPACE,
+                                        AddressingConstants.WSA_FROM,
+                                        AddressingConstants.WSA_DEFAULT_PREFIX);
+            sh.addChild(el);
+        } else {
+            // the from field remains blank
         }
         operationClient.addMessageContext(requestMC);
 

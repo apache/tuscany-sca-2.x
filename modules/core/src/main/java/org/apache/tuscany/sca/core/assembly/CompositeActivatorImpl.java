@@ -175,11 +175,19 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         WireableBinding scaBinding = (WireableBinding)binding;
 
                         // clone the SCA binding and fill in service details 
+                        // its cloned as each target 
                         SCABinding clonedSCABinding = null;
                         try {
                             clonedSCABinding = (SCABinding)((WireableBinding)scaBinding).clone();
                             clonedSCABinding.setURI(service.getName());
-                            ((WireableBinding)clonedSCABinding).setRemote(true);
+                            // wireable binding stuff needs to go. SCA binding uses it
+                            // currently to get to the service to work out if the service
+                            // is resolved. 
+                            WireableBinding endpoint = ((WireableBinding)clonedSCABinding);
+                            endpoint.setTargetComponentService(service);
+                            //endpoint.setTargetComponent(component); - not known for unresolved target
+                            //endpoint.setTargetBinding(serviceBinding); - not known for unresolved target
+
                             // add the cloned SCA binding to the reference as it will be used to look up the 
                             // provider later
                             reference.getBindings().remove(binding);
