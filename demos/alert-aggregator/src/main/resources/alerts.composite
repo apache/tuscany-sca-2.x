@@ -17,7 +17,8 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+        xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
 	xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
 	targetNamespace="http://sample"
@@ -29,12 +30,12 @@
 
     <!-- The alerts rss service -->
     <service name="AlertsFeedServiceRSS" promote="AlertsFeedServiceComponent/Collection">
-        <binding.rss />
+        <tuscany:binding.rss />
     </service>    
     
     <!-- The alerts atom service -->
     <service name="AlertsFeedServiceAtom" promote="AlertsFeedServiceComponent/Collection">
-        <binding.atom />
+        <tuscany:binding.atom />
     </service> 
     
     <component name="AlertsFeedServiceComponent">
@@ -51,7 +52,7 @@
     <!-- The alerts jsonrpc service -->
     <service name="AlertsServiceJSONRPC" promote="AlertsServiceComponent/AlertsService">
         <interface.java interface="org.apache.tuscany.sca.demos.aggregator.AlertsService" />
-        <binding.jsonrpc />
+        <tuscany:binding.jsonrpc />
     </service>     
 
     <component name="AlertsServiceComponent">
@@ -69,7 +70,7 @@
     <!-- The alerts jsonrpc service -->
     <service name="AlertsSourcesServiceJSONRPC" promote="AlertsSourcesServiceComponent/AlertsSourcesService">
         <interface.java interface="org.apache.tuscany.sca.demos.aggregator.AlertsSourcesService" />
-        <binding.jsonrpc />
+        <tuscany:binding.jsonrpc />
     </service>    
         
     <component name="AlertsSourcesServiceComponent">
