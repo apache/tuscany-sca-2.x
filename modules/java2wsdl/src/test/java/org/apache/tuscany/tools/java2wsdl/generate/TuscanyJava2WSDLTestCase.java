@@ -51,7 +51,7 @@ public class TuscanyJava2WSDLTestCase extends TestCase {
     public void testSimpleWSDLGeneration() {
         String[] arguments =
             new String[] {"-cn", "org.apache.tuscany.tools.java2wsdl.generate.CustomerValue", 
-                          "-o", "target/java2wsdl-source", "-xc",
+                          "-o",  "target/java2wsdl-source", "-xc",
                           "org.apache.tuscany.tools.java2wsdl.generate.extra.GoldCustomer"};
 
         Java2WSDL.main(arguments);
@@ -77,13 +77,9 @@ public class TuscanyJava2WSDLTestCase extends TestCase {
     public void testWsdlGeneration_SDO_Static() {
         // tests for SDOs where XSD exist. Hence no XSDs must be generated
         String[] arguments =
-            new String[] {
-                          "-cn",
-                          "org.soapinterop.CreditScoreDocLit",
-                          "-o",
-                          "target/java2wsdl-source",
-                          "-ixsd",
-                          "[http://www.example.org/creditscore/doclit/," + "http://www.example.org/creditscore/doclit/xsd]"};
+            new String[] {"-cn", "org.soapinterop.CreditScoreDocLit",
+                          "-o", "target/java2wsdl-source",
+                          "-ixsd", "[http://www.example.org/creditscore/doclit/," + "http://www.example.org/creditscore/doclit/xsd]"};
         Java2WSDL.main(arguments);
 
         File file = new File("target/java2wsdl-source/CreditScoreDocLit.wsdl");
