@@ -36,7 +36,7 @@
 	    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
 	   	</reference>
 	    <reference name="stockQuoteService">
-	        <binding.ws wsdlElement="http://stockquote#wsdl.port(StockQuoteService/StockQuoteSoapPort)"/>
+	        <binding.ws uri="http://localhost:8081/services/StockQuoteWebService"/>
 	    </reference>
 	   	
         <property name="currency">EURO</property>
