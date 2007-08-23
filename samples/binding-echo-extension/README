@@ -60,10 +60,10 @@ the following output from the test phase.
  T E S T S
 -------------------------------------------------------
 Running echo.EchoServiceTestCase
-Returned message: foo
+Returned message: oof
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.011 sec
 Running echo.EchoReferenceTestCase
-Returned message: foo
+Returned message: oof
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.06 sec
 
 Results :
