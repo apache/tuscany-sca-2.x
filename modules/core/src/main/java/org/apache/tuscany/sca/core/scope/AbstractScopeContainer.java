@@ -21,28 +21,23 @@ package org.apache.tuscany.sca.core.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.scope.AbstractLifecycle;
-import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.PersistenceException;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.scope.ScopeContainer;
-import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
-import org.apache.tuscany.sca.scope.TargetDestructionException;
-import org.apache.tuscany.sca.scope.TargetResolutionException;
 
 /**
  * Implements functionality common to scope contexts.
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle implements ScopeContainer<KEY> {
+public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY> {
     protected Map<KEY, InstanceWrapper<?>> wrappers = new ConcurrentHashMap<KEY, InstanceWrapper<?>>();
     protected final Scope scope;
 
     protected RuntimeComponent component;
+    protected volatile int lifecycleState = UNINITIALIZED;
+
 
     public AbstractScopeContainer(Scope scope, RuntimeComponent component) {
         this.scope = scope;
@@ -102,13 +97,11 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
      * Default implmentation of remove which does nothing 
      * 
      * @param contextId the identifier of the context to remove. 
-     * @throws PersistenceException if there was a problem removing the instance 
      */
     public void remove(KEY contextId) 
         throws TargetDestructionException {
     }    
 
-    @Override
     public synchronized void start() {
         int lifecycleState = getLifecycleState();
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
@@ -127,7 +120,6 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
         }
     }
 
-    @Override
     public synchronized void stop() {
         int lifecycleState = getLifecycleState();
         if (lifecycleState != RUNNING) {
@@ -142,7 +134,37 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
 
     @Override
     public String toString() {
-        return "In state [" + super.toString() + ']';
+        String s;
+        switch (lifecycleState) {
+            case ScopeContainer.CONFIG_ERROR:
+                s = "CONFIG_ERROR";
+                break;
+            case ScopeContainer.ERROR:
+                s = "ERROR";
+                break;
+            case ScopeContainer.INITIALIZING:
+                s = "INITIALIZING";
+                break;
+            case ScopeContainer.INITIALIZED:
+                s = "INITIALIZED";
+                break;
+            case ScopeContainer.RUNNING:
+                s = "RUNNING";
+                break;
+            case ScopeContainer.STOPPING:
+                s = "STOPPING";
+                break;
+            case ScopeContainer.STOPPED:
+                s = "STOPPED";
+                break;
+            case ScopeContainer.UNINITIALIZED:
+                s = "UNINITIALIZED";
+                break;
+            default:
+                s = "UNKNOWN";
+                break;
+        }
+        return "In state [" + s + ']';
     }
 
     public RuntimeComponent getComponent() {
@@ -152,4 +174,18 @@ public abstract class AbstractScopeContainer<KEY> extends AbstractLifecycle impl
     public void setComponent(RuntimeComponent component) {
         this.component = component;
     }
+
+    public int getLifecycleState() {
+        return lifecycleState;
+    }
+
+    /**
+     * Set the current state of the Lifecycle.
+     *
+     * @param lifecycleState the new state
+     */
+    protected void setLifecycleState(int lifecycleState) {
+        this.lifecycleState = lifecycleState;
+    }
+
 }

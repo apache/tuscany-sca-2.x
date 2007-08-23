@@ -24,7 +24,7 @@ import java.net.URL;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.core.runtime.ActivationException;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.domain.impl.DistributedSCADomainImpl;
 import org.apache.tuscany.sca.host.embedded.SCADomain;

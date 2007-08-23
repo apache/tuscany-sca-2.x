@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.scope;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.scope.Scope;
+import org.apache.tuscany.sca.core.scope.Scope;
 
 /**
  * @version $Rev$ $Date$

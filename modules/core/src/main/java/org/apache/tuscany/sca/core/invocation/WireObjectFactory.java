@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.core.component.ConversationImpl;
+import org.apache.tuscany.sca.core.context.ConversationImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;

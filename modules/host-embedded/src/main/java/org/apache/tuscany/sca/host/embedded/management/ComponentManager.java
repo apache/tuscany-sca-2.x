@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.host.embedded.management;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.core.runtime.ActivationException;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
 
 public interface ComponentManager {
 

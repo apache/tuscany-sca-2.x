@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
-import org.apache.tuscany.sca.scope.Scope;
 import org.osoa.sca.annotations.AllowsPassByReference;
 
 

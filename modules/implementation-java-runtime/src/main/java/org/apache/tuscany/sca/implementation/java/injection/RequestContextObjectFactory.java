@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.injection;
 
 import org.apache.tuscany.sca.context.RequestContextFactory;
-import org.apache.tuscany.sca.core.component.RequestContextImpl;
+import org.apache.tuscany.sca.core.context.RequestContextImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -27,7 +27,7 @@ import org.osoa.sca.RequestContext;
 
 /**
  * Creates instances of
- * {@link org.apache.tuscany.sca.core.component.RequestContextImpl} for
+ * {@link org.apache.tuscany.sca.core.context.RequestContextImpl} for
  * injection on component implementation instances
  * 
  * @version $Rev$ $Date$

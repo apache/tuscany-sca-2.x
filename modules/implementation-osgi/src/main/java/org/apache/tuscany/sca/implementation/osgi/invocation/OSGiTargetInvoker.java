@@ -23,7 +23,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.tuscany.sca.core.context.InstanceWrapper;
+import org.apache.tuscany.sca.core.invocation.TargetInvocationException;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.core.scope.Scope;
+import org.apache.tuscany.sca.core.scope.ScopeContainer;
+import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
+import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
@@ -33,12 +39,6 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.ScopeContainer;
-import org.apache.tuscany.sca.scope.ScopedRuntimeComponent;
-import org.apache.tuscany.sca.scope.TargetInvocationException;
-import org.apache.tuscany.sca.scope.TargetResolutionException;
 
 /**
  * Java->OSGi references use OSGiTargetInvoker to call methods from OSGi bundles

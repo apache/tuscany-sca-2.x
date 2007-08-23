@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
-import org.apache.tuscany.sca.core.runtime.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
 import org.apache.tuscany.sca.host.http.ServletHost;

@@ -24,7 +24,6 @@ import org.apache.tuscany.sca.work.WorkSchedulerException;
 
 import commonj.work.WorkEvent;
 import commonj.work.WorkListener;
-import commonj.work.WorkManager;
 
 /**
  * A work scheduler implementation based on a JSR 237 work manager.

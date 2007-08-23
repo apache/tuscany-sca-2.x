@@ -28,14 +28,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.scope.InstanceWrapper;
-import org.apache.tuscany.sca.scope.Scope;
-import org.apache.tuscany.sca.scope.ScopedImplementationProvider;
-import org.apache.tuscany.sca.scope.TargetDestructionException;
-import org.apache.tuscany.sca.scope.TargetResolutionException;
 import org.apache.tuscany.sca.store.Store;
 import org.osoa.sca.ConversationEndedException;
 

@@ -25,7 +25,7 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.core.component.ConversationImpl;
+import org.apache.tuscany.sca.core.context.ConversationImpl;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
