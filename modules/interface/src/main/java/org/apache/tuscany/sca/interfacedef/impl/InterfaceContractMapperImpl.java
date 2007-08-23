@@ -55,6 +55,10 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source == target) {
             return true;
         }
+        
+        if(source.isDynamic() || target.isDynamic()) {
+            return true;
+        }
 
         // Check name
         if (!source.getName().equals(target.getName())) {
@@ -263,6 +267,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      *      org.apache.tuscany.sca.interfacedef.Operation)
      */
     public Operation map(Interface target, Operation source) {
+        // TODO: How to handle the case that source operation is dynamic?
         if (target.isDynamic()) {
             return source;
         } else if (target.isRemotable()) {
