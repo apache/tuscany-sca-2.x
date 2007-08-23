@@ -87,6 +87,11 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-sca-axis2</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-binding-sca-xml</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -163,6 +168,16 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-databinding-sdo-axiom</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-distributed</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-distributed-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
