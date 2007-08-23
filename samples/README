@@ -35,6 +35,7 @@ helloworld-ws-reference  - The client side of a hello world sample that uses a
                            web service binding
 helloworld-ws-service    - The server side of a hello world sample that uses a 
                            web service binding
+helloworld-ws-sdo	 - helloworld using ws binding and SDO
 calculator-rmi-reference - The calculator configured to talk RMI to the 
                            calculator-rmi-service sample
 calculator-rmi-service   - The calculator configured to accept RMI requests 
@@ -260,5 +261,4 @@ In a new or existing workspace
 
 The details of how to do this for other development environments will
 vary but the process will be similar. 
-
 
