@@ -42,6 +42,7 @@
                 <module>binding-dwr</module>
                 <module>binding-ejb</module>
                 <module>binding-feed</module>
+                <module>binding-http</module>
                 <module>binding-jms</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-notification</module>

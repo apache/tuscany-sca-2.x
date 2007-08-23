@@ -17,16 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.resource.provider;
+package org.apache.tuscany.sca.binding.http.provider;
 
 import java.net.URL;
 
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.binding.resource.HTTPResourceBinding;
+import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
 import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -39,15 +41,18 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
     
     private RuntimeComponentService service;  
     private HTTPResourceBinding binding;
+    private MessageFactory messageFactory;
     private ServletHost servletHost;
     private String uri; 
     
     public HTTPResourceServiceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentService service,
                                               HTTPResourceBinding binding,
+                                              MessageFactory messageFactory,
                                               ServletHost servletHost) {
         this.service = service;
         this.binding = binding;
+        this.messageFactory = messageFactory;
         this.servletHost = servletHost;
 
         uri = binding.getURI();
@@ -69,11 +74,23 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
         // that it's an implementation.resource
         RuntimeComponentService componentService = (RuntimeComponentService) service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
-        Implementation implementation = wire.getTarget().getComponent().getImplementation();
-        ResourceImplementation resourceImplementation = (ResourceImplementation)implementation;
         
-        // Get the resource location URL
-        URL locationURL = resourceImplementation.getLocationURL();
+        // Get the getLocationURL invoker
+        Invoker getLocationInvoker = null;
+        for (InvocationChain invocationChain : wire.getInvocationChains()) {
+            String operationName = invocationChain.getSourceOperation().getName();
+            if (operationName.equals("getLocationURL")) {
+                getLocationInvoker = invocationChain.getHeadInvoker();
+            }
+        }
+        if (getLocationInvoker == null) {
+            throw new IllegalStateException("No getLocationURL operation found on target component");
+        }
+
+        // Get the location URL
+        Message message = messageFactory.createMessage();
+        message = getLocationInvoker.invoke(message);
+        URL locationURL = message.getBody();
         
         // Register the default resource servlet with the servlet host
         DefaultResourceServlet resourceServlet = new DefaultResourceServlet(locationURL.toString());

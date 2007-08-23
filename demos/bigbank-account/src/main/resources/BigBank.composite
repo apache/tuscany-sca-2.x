@@ -18,13 +18,14 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://bigbank"
 	xmlns:bb="http://bigbank"
 	name="BigBank">
 
     <component name="AccountServiceComponent">
 	    <service name="AccountService">
-	        <binding.jsonrpc uri="/AccountJSONService"/>
+	        <tuscany:binding.jsonrpc uri="/AccountJSONService"/>
 			<binding.ws wsdlElement="http://bigbank#wsdl.port(AccountService/AccountServiceSoap)"/>
 			<binding.sca/>
 	    </service>
@@ -33,7 +34,7 @@
 
         <reference name="accountDataService" target="AccountDataServiceComponent"/>
 	    <reference name="calculatorService">
-	    	<binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	    	<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
 	   	</reference>
 	    <reference name="stockQuoteService">
 	        <binding.ws uri="http://localhost:8081/services/StockQuoteWebService"/>
@@ -44,8 +45,8 @@
 
     <component name="AccountFeedComponent">
 	   	<service name="Collection">
-	   		<binding.rss uri="/rss"/>
-	   		<binding.atom uri="/atom"/>
+	   		<tuscany:binding.rss uri="/rss"/>
+	   		<tuscany:binding.atom uri="/atom"/>
 	   	</service>
         <implementation.java class="bigbank.account.feed.AccountFeedImpl"/>
         <reference name="accountService" target="AccountServiceComponent"/>
@@ -57,9 +58,9 @@
 
     <component name="WebResourceComponent">
 	   	<service name="Resource">
-	   		<binding.resource uri="/"/>
+	   		<tuscany:binding.http uri="/"/>
 	   	</service>
-        <implementation.resource location="web"/>
+        <tuscany:implementation.resource location="web"/>
     </component>
 
 </composite>

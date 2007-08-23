@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.resource.provider.HTTPResourceBindingProviderFactory;model=org.apache.tuscany.sca.binding.resource.HTTPResourceBinding
+org.apache.tuscany.sca.binding.http.provider.HTTPResourceBindingProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPResourceBinding
