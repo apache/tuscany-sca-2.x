@@ -23,9 +23,9 @@ import java.util.UUID;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.Conversation;
 import org.osoa.sca.ServiceReference;
 
@@ -43,6 +43,15 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     public ServiceReferenceImpl() {
         super();
     }
+
+    /**
+     * @param businessInterface
+     * @param wire
+     * @param proxyFactory
+     */
+    public ServiceReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
+        super(businessInterface, wire, proxyFactory);
+    }
     
     public ServiceReferenceImpl(Class<B> businessInterface,
                                 RuntimeComponent component,
@@ -59,10 +68,6 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
                                 ProxyFactory proxyFactory,
                                 CompositeActivator compositeActivator) {
         super(businessInterface, component, reference, binding, proxyFactory, compositeActivator);
-    }
-
-    public ServiceReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {
-        super(businessInterface, factory);
     }
 
     public Object getConversationID() {
@@ -87,7 +92,6 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
 
     public void setCallbackID(Object callbackID) {
         this.callbackID = callbackID;
-        factory.setCallbackID(callbackID);
     }
 
     public Object getCallback() {

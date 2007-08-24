@@ -22,18 +22,19 @@ package org.apache.tuscany.sca.core.invocation;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.Conversation;
+import org.osoa.sca.ServiceReference;
 
 /**
  * The implementation of a wire service that uses cglib dynamic proxies
@@ -54,37 +55,22 @@ public class CglibProxyFactory implements ProxyFactory {
     }
 
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        return createProxy(interfaze, wire, null, null, null);
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(interfaze);
+        enhancer.setCallback(new CglibMethodInterceptor<T>(interfaze, wire));
+        Object proxy = enhancer.create();
+        return interfaze.cast(proxy);
     }
 
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation) throws ProxyCreationException {
-        return createProxy(interfaze, wire, conversation, null, null);
-    }
-    
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation,
-                             EndpointReference endpoint) throws ProxyCreationException {
-        return createProxy(interfaze, wire, conversation, endpoint, null);
-    }
-    
     /**
      * create the proxy with cglib. use the same JDKInvocationHandler as
      * JDKProxyService.
      */
-    public <T> T createProxy(final Class<T> interfaze, final RuntimeWire wire, final Conversation conversation,
-                             final EndpointReference endpoint, final Object callbackID) throws ProxyCreationException {
+    public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
+        Class<T> interfaze = callableReference.getBusinessInterface();
         enhancer.setSuperclass(interfaze);
-        enhancer.setCallback(new MethodInterceptor() {
-            public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy)
-                throws Throwable {
-                JDKInvocationHandler invocationHandler = new JDKInvocationHandler(messageFactory, interfaze, wire);
-                invocationHandler.setConversation(conversation);
-                invocationHandler.setEndpoint(endpoint);
-                invocationHandler.setCallbackID(callbackID);
-                Object result = invocationHandler.invoke(proxy, method, args);
-                return result;
-            }
-        });
+        enhancer.setCallback(new CglibMethodInterceptor<T>(callableReference));
         Object proxy = enhancer.create();
         return interfaze.cast(proxy);
     }
@@ -96,21 +82,24 @@ public class CglibProxyFactory implements ProxyFactory {
     public <T> T createCallbackProxy(Class<T> interfaze, final List<RuntimeWire> wires) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(interfaze);
-        enhancer.setCallback(new MethodInterceptor() {
-            public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy)
-                throws Throwable {
-                JDKCallbackInvocationHandler invocationHandler =
-                    new JDKCallbackInvocationHandler(messageFactory, wires);
-                Object result = invocationHandler.invoke(proxy, method, args);
-                return result;
-            }
-        });
+        enhancer.setCallback(new CglibMethodInterceptor<T>(wires));
         Object proxy = enhancer.create();
         return interfaze.cast(proxy);
     }
 
+    @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if (isProxyClass(target.getClass())) {
+            Factory factory = (Factory)target;
+            Callback[] callbacks = factory.getCallbacks();
+            if (callbacks.length != 1 || !(callbacks[0] instanceof CglibMethodInterceptor)) {
+                throw new IllegalArgumentException("The object is not a known proxy.");
+            }
+            CglibMethodInterceptor interceptor = (CglibMethodInterceptor)callbacks[0];
+            return (R)interceptor.invocationHandler.getCallableReference();
+        } else {
+            throw new IllegalArgumentException("The object is not a known proxy.");
+        }
     }
 
     /**
@@ -118,6 +107,32 @@ public class CglibProxyFactory implements ProxyFactory {
      */
     public boolean isProxyClass(Class<?> clazz) {
         return Factory.class.isAssignableFrom(clazz);
+    }
+
+    private class CglibMethodInterceptor<T> implements MethodInterceptor {
+        private JDKInvocationHandler invocationHandler;
+
+        public CglibMethodInterceptor(CallableReference<T> callableReference) {
+            invocationHandler = new JDKInvocationHandler(messageFactory, callableReference);
+        }
+
+        public CglibMethodInterceptor(Class<T> interfaze, RuntimeWire wire) {
+            ServiceReference<T> serviceRef = new ServiceReferenceImpl<T>(interfaze, wire, CglibProxyFactory.this);
+            invocationHandler = new JDKInvocationHandler(messageFactory, serviceRef);
+        }
+
+        public CglibMethodInterceptor(List<RuntimeWire> wires) {
+            invocationHandler = new JDKCallbackInvocationHandler(messageFactory, wires);
+        }
+
+        /**
+         * @see net.sf.cglib.proxy.MethodInterceptor#intercept(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], net.sf.cglib.proxy.MethodProxy)
+         */
+        public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+            Object result = invocationHandler.invoke(proxy, method, args);
+            return result;
+        }
+
     }
 
 }

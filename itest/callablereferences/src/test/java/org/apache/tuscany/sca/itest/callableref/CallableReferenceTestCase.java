@@ -47,6 +47,11 @@ public class CallableReferenceTestCase {
     }
 
     @Test
+    public void testBCast() {
+        assertEquals("BComponent", acomponent.fooB1());
+    }
+    
+    @Test
     public void testCReference() {
         assertEquals("CComponent", acomponent.fooC());
     }

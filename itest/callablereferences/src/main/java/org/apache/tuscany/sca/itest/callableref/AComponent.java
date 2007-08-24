@@ -22,6 +22,7 @@ public interface AComponent {
     String foo();
     
     String fooB();
+    String fooB1();
 
     String fooC();
     String fooC1();

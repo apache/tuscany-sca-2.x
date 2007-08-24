@@ -37,7 +37,6 @@ public class AComponentImpl implements AComponent {
     @Reference
     protected CComponent cReference;
     
-    // TODO: to be implemented
     @Reference
     protected ServiceReference<CComponent> cServiceReference;
 
@@ -59,6 +58,11 @@ public class AComponentImpl implements AComponent {
         return b.foo();
     }
 
+    public String fooB1() {
+        CallableReference<BComponent> bRef = componentContext.cast(b);
+        return bRef.getService().foo();
+    }
+    
     public String fooC() {
         return cReference.foo();
     }
