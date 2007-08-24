@@ -11,14 +11,8 @@ As this sample provides a web app there is a manual step where the WAR file
 that contains the sample is copied to your web app container. If you just want 
 to give this sample a go deploy the WAR file (target/sample-calculator-webapp.war)
 to you web application server. 
-
-The war file that is build here contains a Tuscany JETTY binding to allow the
-sample to be tested as part of the main maven build. This needs to be removed.
-Once the war has been expanded remove.
-
-  tuscnay-host-jetty-*.jar file from WEB-INF/lib
   
-You may also find that you need to remove the servlet-api jars in WEB-INF/lib
+You may find that you need to remove the servlet-api jars in WEB-INF/lib
 depending on which app server you are using. 
 
 Once the web app is deployed use your browser to visit the following URL;

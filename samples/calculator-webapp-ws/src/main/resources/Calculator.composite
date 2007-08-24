@@ -26,7 +26,7 @@
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" >
            <interface.java interface="calculator.AddService" />        
-           <binding.ws wsdlElement="http://calculator#wsdl.port(AddService/AddSoapPort)"/>        
+            <binding.ws wsdlElement="http://calculator#wsdl.port(AddService/AddSoapPort)"/>        
         </reference>   
         <reference name="subtractService" target="SubtractServiceComponent"></reference>
         <reference name="multiplyService" target="MultiplyServiceComponent"></reference>
@@ -36,7 +36,8 @@
     <component name="AddServiceComponent">
         <implementation.java class="calculator.AddServiceImpl"/>
         <service name="AddService">
-            <interface.java interface="calculator.AddService" />
+             <interface.java interface="calculator.AddService" />  
+            <!--interface.wsdl interface="http://calculator#wsdl.interface(Add)" /-->
             <binding.ws wsdlElement="http://calculator#wsdl.port(AddService/AddSoapPort)"/>
         </service>        
     </component>
