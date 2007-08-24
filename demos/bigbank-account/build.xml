@@ -17,65 +17,56 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<project name="DojoZipInstaller">
+<project name="demo-alert-aggregator" default="run">
+    <property name="localRepository" value="./target/repo" />
+    <property name="artifactId" value="sample-feed-aggregator" />	
+    <property name="test.class" value="bigbank.demo.BigBankServer" />
 	
-
-    <property name="dojo.version" value="0.4.0"/>
-    <property name="dojo.distro" value="ajax"/>
-    <property name="unpack.location" value="${basedir}/src/main/resources/web/dojo"/>
+    <path id="test.classpath">
+    	<pathelement location="target/classes"/>
+        <pathelement location="../../modules/tuscany-http-jetty-1.0-incubating-SNAPSHOT.jar"/>
+        <pathelement location="../../modules/tuscany-binding-jsonrpc-1.0-incubating-SNAPSHOT.jar"/>
+        <pathelement location="../../modules/tuscany-binding-rmi-1.0-incubating-SNAPSHOT.jar"/>
+    	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
+    	<pathelement location="target/demo-bigbank-account.jar"/>    
+    </path>
 	
-
-    <target name="check-dojo-installed">
-        <condition property="already.installed" >
-            <available file="${localRepository}/dojo/dojo-${dojo.distro}/${dojo.version}/dojo-${dojo.distro}-${dojo.version}.zip"/>
-        </condition>
-        <condition property="maven.suffix" value="">
-            <os family="unix"/>
-        </condition>
-        <condition property="maven.suffix" value=".bat">
-            <os family="windows"/>
-        </condition>
+    <target name="init">
+        <mkdir dir="target/classes"/>
+        <mkdir dir="target/classes/web"/>
+    	<mkdir dir="target/repo"/>
     </target>
 	
-
-    <target name="check-dojo-unpacked">
-        <condition property="already.unpacked" >
-            <available file="${unpack.location}"/>
-        </condition>
-    </target>
-
-    <target name="install-dojo" depends="check-dojo-installed" unless="already.installed">
-        <mkdir dir="${basedir}/target/dojo-download/"/>
-        <get src="http://download.dojotoolkit.org/release-${dojo.version}/dojo-${dojo.version}-${dojo.distro}.zip"
-            dest="${basedir}/target/dojo-download/dojo-${dojo.version}-${dojo.distro}.zip"
-            verbose="true"
-            usetimestamp="true"/>
-        <exec executable="mvn${maven.suffix}" dir="${basedir}" failonerror="false">
-            <arg line="install:install-file -DgroupId=dojo  -DartifactId=dojo-${dojo.distro} -Dversion=${dojo.version} -Dpackaging=zip -DgeneratePom=true -Dfile=${basedir}/target/dojo-download/dojo-${dojo.version}-${dojo.distro}.zip"/>
-        </exec>
+    <target name="compile" depends="init">
+        <javac srcdir="src/main/java"
+               destdir="target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </javac> 
+        <copy todir="target/classes">
+            <fileset dir="src/main/resources"/>
+        </copy>
+        <copy todir="target/classes/web">
+            <fileset dir="src/main/webapp"/>
+        </copy>
+        <jar destfile="target/demo-bigbank-account.jar" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
+        </jar>    	
+    </target>		
+	
+    <target name="run" depends="compile">
+        <java classname="${test.class}"
+              fork="true">
+            <classpath>
+                <path refid="test.classpath"/>
+            </classpath>
+        </java>    	
     </target>
 	
-
-    <target name="unpack-dojo-files" depends="check-dojo-installed, check-dojo-unpacked" unless="already.unpacked">
-        <fail message="dojo zip file not installed in local repository" unless="already.installed"/>
-        <mkdir dir="${basedir}/target/dojo-unpack-temp/"/>
-        <unzip src="${localRepository}/dojo/dojo-${dojo.distro}/${dojo.version}/dojo-${dojo.distro}-${dojo.version}.zip"
-               dest="${basedir}/target/dojo-unpack-temp/"
-               overwrite="false">
-            <patternset>
-                <include name="dojo-${dojo.version}-${dojo.distro}/**"/>
-                <exclude name="dojo-${dojo.version}-${dojo.distro}/demos/**"/>
-                <exclude name="dojo-${dojo.version}-${dojo.distro}/tests/**"/>
-            </patternset>
-        </unzip>
-        <move file="${basedir}/target/dojo-unpack-temp/dojo-${dojo.version}-${dojo.distro}"
-              tofile="${unpack.location}"
-              verbose="true"/>
-        <delete dir="${basedir}/target/dojo-unpack-temp/"/>
-    </target>
-	
-
-    <target name="clean-dojo-files">
-        <delete dir="${unpack.location}"/>
-    </target>
 </project>
