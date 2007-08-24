@@ -50,7 +50,9 @@
         <java classname="${domain.class}"
               fork="true">
             <classpath>
+            	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
+            	<pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>    	        	
         </java>
@@ -60,7 +62,9 @@
         <java classname="${node.class}"
               fork="true">
             <classpath>
+            	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
+            	<pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         	<arg value="mydomain"/>
@@ -72,7 +76,9 @@
         <java classname="${node.class}"
               fork="true">
             <classpath>
+            	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
+            	<pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         	<arg value="mydomain"/>
@@ -84,7 +90,9 @@
         <java classname="${node.class}"
               fork="true">
             <classpath>
+            	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
+            	<pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         	<arg value="mydomain"/>
