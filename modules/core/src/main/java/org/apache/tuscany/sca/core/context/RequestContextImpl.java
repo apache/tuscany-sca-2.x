@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
-import org.osoa.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
@@ -60,14 +59,10 @@ public class RequestContextImpl implements RequestContext {
         EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
-        // FIXME: [rfeng] What if the interface is not a java interface? 
-        JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getInterface();
-        Class<B> javaClass = (Class<B>)javaInterface.getJavaClass();
-        ServiceReference<B> ref = (ServiceReference<B>) component.getComponentContext()
-                                       .createSelfReference(javaClass, service.getName());
-
-        ref.setCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
-        return ref;
+        
+        CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
+        ((CallableReferenceImpl<B>) callableReference).attachCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
+        return callableReference;
     }
 
     @SuppressWarnings("unchecked")
@@ -88,7 +83,7 @@ public class RequestContextImpl implements RequestContext {
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
         factory.resolveTarget();
-        factory.setCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
+        factory.attachCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
         return factory;
     }
 }
