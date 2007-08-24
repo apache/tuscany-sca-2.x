@@ -245,6 +245,8 @@ public class DefaultSCADomain extends SCADomain {
     private URL getContributionLocation(ClassLoader classLoader, String contributionPath, String[] composites)
         throws MalformedURLException {
         if (contributionPath != null && contributionPath.length() > 0) {
+            //encode spaces as they would cause URISyntaxException
+            contributionPath = contributionPath.replace(" ", "%20");
             URI contributionURI = URI.create(contributionPath);
             if (contributionURI.isAbsolute() || composites.length == 0) {
                 return new URL(contributionPath);
