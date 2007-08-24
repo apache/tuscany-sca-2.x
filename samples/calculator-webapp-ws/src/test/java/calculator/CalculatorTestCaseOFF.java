@@ -25,8 +25,12 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * This shows how to test the Calculator service component.
+ * 
+ * This test is turned off so as not to mess up the daily build. It assumes
+ * that the web services will run on port 8080 (see the wsdl) which is already
+ * in the use on the build machine. 
  */
-public class CalculatorTestCaseFIXME extends TestCase {
+public class CalculatorTestCaseOFF extends TestCase {
 
     private SCADomain scaDomain;
     private CalculatorService calculatorService;
@@ -48,10 +52,6 @@ public class CalculatorTestCaseFIXME extends TestCase {
         //System.out.println(eprInspector.eprAsString());
         
         // Calculate
-        /* 
-           These will only work in the context of an external web container
-           that we don;t have here
-*/
         assertEquals(calculatorService.add(3, 2), 5.0);
         assertEquals(calculatorService.subtract(3, 2), 1.0);
         assertEquals(calculatorService.multiply(3, 2), 6.0);
