@@ -6,9 +6,69 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens you need to run the server first 
+If you just want to run it to see what happens, you need to run the server first 
 so open a command prompt, navigate to the helloworld-ws-service sample directory 
 and do 
+
+ant run-server
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-sdo.jar helloworld-ws-sdo.HelloWorldServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-sdo.jar helloworld-ws-sdo.HelloWorldServer
+
+You should see the following output:
+
+Buildfile: build.xml
+
+run-server:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Aug 24, 2007 11:17:33 AM org.apache.catalina.core.StandardEngine sta
+rt
+     [java] INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.ContextConfig d
+efaultWebConfig
+     [java] INFO: No default web.xml
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.
+xsd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/web-jspt
+aglibrary_1_1.dtd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/web-jspt
+aglibrary_1_2.dtd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/web-jspt
+aglibrary_2_0.xsd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/resources/j2ee_web_ser
+vices_1_1.xsd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.coyote.http11.Http11Protocol ini
+t
+     [java] INFO: Initializing Coyote HTTP/1.1 on http-8085
+     [java] Aug 24, 2007 11:17:34 AM org.apache.coyote.http11.Http11Protocol sta
+rt
+     [java] INFO: Starting Coyote HTTP/1.1 on http-8085
+     [java] Aug 24, 2007 11:17:34 AM org.apache.tuscany.sca.http.tomcat.TomcatSe
+rver addServletMapping
+     [java] INFO: Added Servlet mapping: http://localhost:8085/HelloWorldService
+
+     [java] HelloWorld server started (press enter to shutdown)
+
+The server is now ready.
+
+Then open another command window to run the client:
 
 ant run
 
@@ -20,6 +80,20 @@ and on *nix do
 
 java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-sdo.jar helloworld-ws-sdo.HelloWorldClient
 
+You should be able to see the following result:
+
+Buildfile: build.xml
+
+run:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Injected helloWorldService
+     [java] Called getGreetings
+     [java] Hello David Haney
+
+BUILD SUCCESSFUL
+Total time: 9 seconds
 
 
 Sample Overview
