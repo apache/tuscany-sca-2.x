@@ -40,7 +40,7 @@ public class XMLStringDataBinding extends BaseDataBinding {
 
     @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
-        if (NAME.equals(type.getDataBinding()) || ALIASES[0].equals(type.getDataBinding())) {
+        if (type.getPhysical() == String.class && NAME.equals(type.getDataBinding()) || ALIASES[0].equals(type.getDataBinding())) {
             type.setDataBinding(NAME);
             type.setLogical(XMLType.UNKNOWN);
             return true;

@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -45,6 +46,11 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
     public boolean introspect(DataType type, Annotation[] annotations) {
         Class<?> cls = type.getPhysical();
         if (cls == Object.class) {
+            return false;
+        }
+        // HACK: [rfeng] By pass the one know to XMLString
+        String db = type.getDataBinding();
+        if (db != null && (XMLStringDataBinding.NAME.equals(db) || XMLStringDataBinding.ALIASES[0].equals(db))) {
             return false;
         }
         if (SimpleTypeMapperImpl.JAVA2XML.keySet().contains(cls)) {
