@@ -69,7 +69,7 @@ public class LoanApprovalImpl implements LoanApproval {
             score = score / creditCheck.length;
         }
         if (score < minimumCreditScore) {
-            System.err.println("Credit score (" + score + ") " + "is below the minimum(" + minimumCreditScore + ")");
+            System.err.println("Credit score " + score + " is below the minimum " + minimumCreditScore + ".");
             return false;
         }
         float rate = interestRateQuote.getRate(customer.getState(), loanAmount, years);
