@@ -21,7 +21,7 @@
 	
     <path id="test.classpath">
     	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
-    	<pathelement location="target/demo-bigbank-account.jar"/>    	
+    	<pathelement location="target/classes"/>    	
     </path>
 	
     <target name="run">
