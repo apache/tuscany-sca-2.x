@@ -65,8 +65,8 @@
             </includes>
             <excludes>
                 <exclude>pom.xml</exclude>
-                <exclude>bigbank</exclude>
-                <exclude>bigbank/**/*</exclude>
+                <exclude>old</exclude>
+                <exclude>old/**/*</exclude>
                 <exclude>das-service</exclude>
                 <exclude>das-service/**/*</exclude>
                 <exclude>das-service-web</exclude>

@@ -102,8 +102,8 @@
              <exclude>modules/implementation-data/**/*</exclude>
              <exclude>modules/implementation-osgi/.felix</exclude>
              <exclude>modules/implementation-osgi/.felix/**/*</exclude>
-             <exclude>samples/bigbank</exclude>
-             <exclude>samples/bigbank/**/*</exclude>
+             <exclude>samples/old</exclude>
+             <exclude>samples/old/**/*</exclude>
              <exclude>samples/company-das</exclude>
              <exclude>samples/company-das/**/*</exclude>
              <exclude>samples/company-das-webapp</exclude>

@@ -37,7 +37,6 @@
             </activation>
             <modules>
                 <module>binding-echo</module>
-                <module>binding-echo2-extension</module>
                 <module>binding-echo-extension</module>
                 <module>binding-notification-broker</module>
                 <module>binding-notification-consumer</module>
@@ -63,7 +62,6 @@
                 <module>helloworld-ws-sdo-webapp</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
-                <module>implementation-crud2-extension</module>
                 <module>implementation-crud-extension</module>
                 <module>implementation-notification</module>
                 <module>implementation-pojo-extension</module>
