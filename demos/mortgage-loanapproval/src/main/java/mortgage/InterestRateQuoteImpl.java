@@ -23,9 +23,20 @@ import org.osoa.sca.annotations.Service;
 @Service(InterestRateQuote.class)
 public class InterestRateQuoteImpl implements InterestRateQuote {
     public float getRate(String state, double loanAmount, int termInYears) {
-        if (termInYears == 5)
-            return 5.5f;
-        else
-            return 6.5f;
+        float rate = 6.0f;
+        if (termInYears == 5) {
+            rate = 5.5f;
+        } else {
+            rate = 6.5f;
+        }
+        System.out.println("Interest rate for a " + termInYears
+            + "-year loan of $"
+            + loanAmount
+            + " in "
+            + state
+            + ": "
+            + rate
+            + "%");
+        return rate;
     }
 }
