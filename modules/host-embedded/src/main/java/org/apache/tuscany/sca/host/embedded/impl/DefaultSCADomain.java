@@ -201,16 +201,16 @@ public class DefaultSCADomain extends SCADomain {
         CompositeActivator compositeActivator = runtime.getCompositeActivator();
         for (Composite composite: domainComposite.getIncludes()) {
             try {
-                compositeActivator.deactivate(composite);
+                for (Component component : composite.getComponents()) {
+                    compositeActivator.stop(component);
+                }
             } catch (ActivationException e) {
                 throw new ServiceRuntimeException(e);
             }
         }
         for (Composite composite: domainComposite.getIncludes()) {
             try {
-                for (Component component : composite.getComponents()) {
-                    compositeActivator.stop(component);
-                }
+                compositeActivator.deactivate(composite);
             } catch (ActivationException e) {
                 throw new ServiceRuntimeException(e);
             }
