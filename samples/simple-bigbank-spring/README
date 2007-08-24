@@ -14,11 +14,11 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-spring-bigbank.jar bigbank.client.BigBankClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-simple-bigbank-spring.jar bigbank.client.BigBankClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-spring-bigbank.jar bigbank.client.BigBankClient
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-simple-bigbank-spring.jar bigbank.client.BigBankClient
 
 
 Sample Overview
@@ -28,7 +28,7 @@ with a default binding. A request to the AccountComponent results in a
 request to the AccountDataComponent to get account data. The data returns 
 back via the AccountComponent to the client.
 
-calculator/
+simple-bigbank-spring/
   src/
     main/
       java/
@@ -46,7 +46,7 @@ calculator/
       java/
         bigbank/
           BigBankTestCase.java    - JUnit test case 
-  spring-bigbank.png              - a pictorial representation of the sample 
+  simple-bigbank-spring.png       - a pictorial representation of the sample 
                                     .composite file
   build.xml                       - the Ant build file
   pom.xml                         - the Maven build file        
@@ -56,7 +56,7 @@ Building And Running The Sample Using Ant
 With the binary distribution the sample can be built and run using Ant as 
 follows
 
-cd spring-bigbank
+cd simple-bigbank-spring
 ant compile
 ant run
 
@@ -71,7 +71,7 @@ Building And Running The Sample Using Maven
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
-cd spring-bigbank
+cd simple-bigbank-spring
 mvn
 
 You should see the following output from the test phase.
