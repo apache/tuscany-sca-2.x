@@ -18,7 +18,7 @@
 -->
 <project name="spring-bigbank" default="compile">
     <property name="test.class" value="bigbank.client.BigBankClient" />
-	<property name="test.jar"   value="sample-spring-bigbank.jar" />
+	<property name="test.jar"   value="sample-simple-bigbank-spring.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
