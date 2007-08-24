@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-samples</artifactId>
+        <artifactId>tuscany-demos</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>demo-mortgage-creditcheck</artifactId>
     <packaging>war</packaging>
-    <name>Tuscany Mortgage Credit Check Demo</name>
+    <name>Apache Tuscany Mortgage Credit Check Demo</name>
     <description>A sample Mortgage application made of several SCA components wired together.</description>
 
     <dependencies>

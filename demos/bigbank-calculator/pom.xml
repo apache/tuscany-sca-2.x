@@ -21,9 +21,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <artifactId>tuscany-demos</artifactId>
         <version>1.0-incubating-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>demo-bigbank-calculator</artifactId>
     <name>Apache Tuscany BigBank Calculator Demo</name>
