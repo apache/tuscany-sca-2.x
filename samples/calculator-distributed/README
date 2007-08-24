@@ -18,23 +18,24 @@ in each command prompt:
 ant runDomainNode
 ant runNodeB
 ant runNodeC
-ant runNodeD
+ant runNodeA
 
 Please run the commands in this order. 
 
 OR if you don't have ant, on Windows use
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar node.DomainNode
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar node.CalculatorNode mydomain nodeB
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar node.CalcukatorNode mydomain nodeC
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar node.CalculatorNode mydomain nodeA
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.DomainNode
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.CalculatorNode mydomain nodeB
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.CalculatorNode mydomain nodeC
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.CalculatorNode mydomain nodeA
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar node.DomainNode
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar node.CalculatorNode mydomain nodeB
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar node.CalculatorNode mydomain nodeC
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar node.CalculatorNode mydomain nodeD
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.DomainNode
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.CalculatorNode mydomain nodeB
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.CalculatorNode mydomain nodeC
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.CalculatorNode mydomain nodeA
+
 
 Sample Overview
 ---------------
@@ -47,8 +48,13 @@ it can't find these services locally and, using the remote (web services)
 version of the default SCA binding contacts the add service running in NodeB 
 and the subtract service running in NodeC. 
 
+On the command prompt where you started NodeA, you would see output of invoking the 
+calculator functions distributed over NodeB and and NodeC.  On the command prompts 
+where you have started NodeB and NodeC, you would see log messages that indicate that
+the add and substract services where called on these nodes respectively.
+
 The sample demonstrates that the calculator application can be distributed
-across multiple nodes with no change to the application or it SCA description
+across multiple nodes with no change to the application or to the SCA description
 files. 
 
 
@@ -107,6 +113,7 @@ calculator/
   build.xml                       - the Ant build file
   pom.xml                         - the Maven build file        
 
+
 Building And Running The Sample Using Ant
 -----------------------------------------
 With the binary distribution the sample can be built and run using Ant as 
@@ -117,7 +124,7 @@ ant compile
 ant runDomainNode
 ant runNodeB
 ant runNodeC
-ant runNodeD
+ant runNodeA
 
 You should see the following output from the four separate command prompt:
 
