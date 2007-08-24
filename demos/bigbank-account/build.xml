@@ -37,7 +37,18 @@
     	<mkdir dir="target/repo"/>
     </target>
 	
-    <target name="compile" depends="init">
+    <target name="dojo" depends="init">
+        <ant antfile="./build-dojo.xml" target="install-dojo-nomaven">
+          <property name="localRepository" value="${settings.localRepository}"/>
+        </ant>
+        
+        <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
+          <property name="localRepository" value="${settings.localRepository}"/>
+          <property name="artifactId" value="${artifactId}"/>
+        </ant>
+    </target>
+	
+    <target name="compile" depends="dojo">
         <javac srcdir="src/main/java"
                destdir="target/classes"
                debug="on"
@@ -49,9 +60,6 @@
         </javac> 
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
-        </copy>
-        <copy todir="target/classes/web">
-            <fileset dir="src/main/webapp"/>
         </copy>
         <jar destfile="target/demo-bigbank-account.jar" basedir="target/classes">
             <manifest>
