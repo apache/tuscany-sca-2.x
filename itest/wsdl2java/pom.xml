@@ -89,6 +89,26 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/sdo-source</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>        
+        	
+            <plugin>
                 <groupId>org.apache.tuscany.sdo</groupId>
                 <artifactId>tuscany-sdo-plugin</artifactId>
                 <version>1.0-incubating-SNAPSHOT</version>
@@ -98,7 +118,7 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/AccountService.wsdl</schemaFile>
-                            <targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
+                            <targetDirectory>${basedir}/target/sdo-source</targetDirectory>
                             <javaPackage>com.bigbank.account</javaPackage>
                             <prefix>Account</prefix>
                             <noNotification>true</noNotification>
@@ -114,7 +134,7 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/StockExceptionTest.wsdl</schemaFile>
-                            <targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
+                            <targetDirectory>${basedir}/target/sdo-source</targetDirectory>
                             <prefix>Stock</prefix>
                             <noInterfaces>true</noInterfaces>
                             <noNotification>true</noNotification>
@@ -138,9 +158,6 @@
 							<wsdlFiles>
 								<wsdlFile>
 									<fileName>${basedir}/src/test/resources/AccountService.wsdl</fileName>
-								</wsdlFile>
-								<wsdlFile>
-									<fileName>${basedir}/src/test/resources/AccountServiceWithFault.wsdl</fileName>
 								</wsdlFile>
 								<wsdlFile>
 									<fileName>${basedir}/src/test/resources/StockExceptionTest.wsdl</fileName>
