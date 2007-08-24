@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
@@ -35,7 +36,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  *
  * @version $Rev$ $Date$
  */
-public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
+public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
     private RuntimeWire wire;
     private List<RuntimeWire> wires;
     private EndpointReference resolvedEndpoint;
@@ -155,5 +156,5 @@ public class CallbackWireObjectFactory<B> extends WireObjectFactory<B> {
         }
         return ref;
     }
-
+    
 }

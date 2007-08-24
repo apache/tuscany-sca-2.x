@@ -191,7 +191,7 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
         aCallBackService.getService().setCallbackIllegally("Try to set callback on your own service reference");
 
         // FIXME: [rfeng] Not sure why this is illegal, comment out the following test
-        // Assert.assertEquals("CallBackSetCallback - Test10", true, aFile.exists());
+        Assert.assertEquals("CallBackSetCallback - Test10", true, aFile.exists());
 
         return;
     }

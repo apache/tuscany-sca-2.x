@@ -317,5 +317,9 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     private String createCallbackID() {
         return UUID.randomUUID().toString();
     }
+    
+    public void attachCallbackID(Object callbackID) {
+        this.callbackID = callbackID;
+    }
 
 }

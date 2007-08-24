@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 
@@ -73,4 +74,16 @@ public interface RuntimeComponentContext extends ComponentContext {
                                                 RuntimeComponentReference reference,
                                                 RuntimeComponent component,
                                                 RuntimeComponentService service);
+    
+    /**
+     * Create a callable reference for the given component service
+     * @param <B>
+     * @param businessInterface
+     * @param component
+     * @param service
+     * @return
+     */
+    <B> CallableReference<B> getCallableReference(Class<B> businessInterface,
+                                                         RuntimeComponent component,
+                                                         RuntimeComponentService service);
 }

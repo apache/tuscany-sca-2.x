@@ -229,6 +229,24 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         }
     }
 
+    public <B> CallableReference<B> getCallableReference(Class<B> businessInterface,
+                                                         RuntimeComponent component,
+                                                         RuntimeComponentService service) {
+        try {
+            if (businessInterface == null) {
+                InterfaceContract contract = service.getInterfaceContract();
+                businessInterface = (Class<B>)((JavaInterface)contract.getInterface()).getJavaClass();
+            }
+            RuntimeComponentReference ref =
+                (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
+            ref.setComponent(component);
+            return new CallableReferenceImpl<B>(businessInterface, component, ref, null, proxyFactory,
+                                                compositeActivator);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
     /**
      * Create a self-reference for a component service
      * @param component
