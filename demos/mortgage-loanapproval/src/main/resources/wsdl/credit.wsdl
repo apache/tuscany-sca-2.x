@@ -74,7 +74,7 @@
 
     <wsdl:service name="CreditCheckService">
         <wsdl:port binding="tns:CreditCheckSoapBinding" name="CreditCheckSoapPort">
-            <wsdlsoap:address location="http://localhost:8085/CreditCheckServiceComponent/CreditCheckService" />
+            <wsdlsoap:address location="http://localhost:8085/CreditCheckService" />
         </wsdl:port>
     </wsdl:service>
 

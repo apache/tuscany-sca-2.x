@@ -69,11 +69,16 @@ public class LoanApprovalImpl implements LoanApproval {
             score = score / creditCheck.length;
         }
         if (score < minimumCreditScore) {
+            System.err.println("Credit score (" + score + ") " + "is below the minimum(" + minimumCreditScore + ")");
             return false;
         }
         float rate = interestRateQuote.getRate(customer.getState(), loanAmount, years);
         double monthlyPayment = mortgageCalculator.getMonthlyPayment(loanAmount, years, rate);
         double ratio = monthlyPayment / customer.getMonthlyIncome();
-        return riskAssessment.assess(score, ratio);
+        boolean approved = riskAssessment.assess(score, ratio);
+        if (!approved) {
+            System.err.println("Debt/Income ratio " + ratio + " is too high.");
+        }
+        return approved;
     }
 }

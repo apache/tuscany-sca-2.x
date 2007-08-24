@@ -27,11 +27,12 @@ import org.osoa.sca.annotations.Service;
 @Service(RiskAssessment.class)
 public class RiskAssessmentImpl implements RiskAssessment {
     public boolean assess(int creditScore, double ratio) {
-        if (creditScore >= 750)
+        if (creditScore >= 750) {
             return ratio < 0.35;
-        else if (creditScore >= 700)
+        } else if (creditScore >= 700) {
             return ratio < 0.30;
-        else
+        } else {
             return ratio < 0.25;
+        }
     }
 }

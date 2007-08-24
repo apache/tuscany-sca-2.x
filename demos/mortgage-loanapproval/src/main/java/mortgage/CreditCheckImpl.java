@@ -27,6 +27,8 @@ import org.osoa.sca.annotations.Service;
 public class CreditCheckImpl implements CreditCheck {
 
     public int getCreditScore(String ssn) {
-        return (int) (700 + (Math.random() - 0.5) * 100);
+        int score = (int)(700 + (Math.random() - 0.5) * 100);
+        System.out.println("Credit score for " + ssn + ": " + score);
+        return score;
     }
 }

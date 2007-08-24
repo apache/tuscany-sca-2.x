@@ -31,6 +31,7 @@ public class MortgageCalculatorImpl implements MortgageCalculator {
         double p = Math.pow(1 + monthlyRate, years * 12);
         double q = p / (p - 1);
         double monthlyPayment = principal * monthlyRate * q;
+        System.out.println("Monthly payment is " + monthlyPayment + " for a " + years + "-year loan of $" + principal);
         return monthlyPayment;
     }
 
