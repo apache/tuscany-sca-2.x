@@ -42,8 +42,8 @@
     <script type="text/javascript">
     
         // The proxy for the alert and alertsources services running in Tuscany
-        var alertsService       = new dojo.rpc.JsonService("services/SCADomain/AlertsServiceJSONRPC?smd");
-        var alertSourcesService = new dojo.rpc.JsonService("services/SCADomain/AlertsSourcesServiceJSONRPC?smd");
+        var alertsService       = new dojo.rpc.JsonService("services/AlertsServiceJSONRPC?smd");
+        var alertSourcesService = new dojo.rpc.JsonService("services/AlertsSourcesServiceJSONRPC?smd");
 
         // If you want to put an HTTP sniffer in the way to look at the JSONROPC packets you'll
         // need to edit the target address of the service in the smd. The only way to do this easily
