@@ -24,7 +24,7 @@
 	name="supplychain">
 
     <component name="CustomerComponent">
-        <implementation.osgi 
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
                 bundle="supplychain.CustomerServices"
                 bundleLocation="file:target/services/Customer.jar" >
             
@@ -48,7 +48,7 @@
     </component>
     
     <component name="RetailerComponent">
-        <implementation.osgi
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"
                 bundle="supplychain.RetailerServices"
                 bundleLocation="file:target/services/Retailer.jar" >
             <properties service="RetailerService1">
@@ -73,7 +73,7 @@
     
 
     <component name="ShipperComponent">
-        <implementation.osgi     
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"     
             bundle="supplychain.ShipperServices"   
             bundleLocation="file:target/services/Shipper.jar" >
             

@@ -24,7 +24,7 @@
 	name="supplychain">
 
     <component name="CustomerComponent">
-        <implementation.osgi 
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
                 bundle="supplychain.Customer"
                 bundleLocation="file:target/factory/ds/Customer.jar"
                 scope="STATELESS" >
@@ -48,7 +48,7 @@
     </component>
 
     <component name="RetailerComponent1">
-        <implementation.osgi
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"
                 bundle="supplychain.Retailer"
                 bundleLocation="file:target/factory/ds/Retailer.jar" >
             <properties service="Retailer">
@@ -62,7 +62,7 @@
     </component>
     
     <component name="RetailerComponent2">
-        <implementation.osgi
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"
                 bundle="supplychain.Retailer"
                 bundleLocation="file:target/factory/ds/Retailer.jar" >
             <properties service="Retailer">
@@ -75,7 +75,7 @@
     </component>
     
     <component name="RetailerComponent3">
-        <implementation.osgi
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"
                 bundle="supplychain.Retailer"
                 bundleLocation="file:target/factory/ds/Retailer.jar" >
             <properties service="Retailer">
@@ -102,7 +102,7 @@
     </component>
 
     <component name="ShipperComponent1">
-        <implementation.osgi     
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"     
             bundle="supplychain.Shipper"   
             bundleLocation="file:target/factory/ds/Shipper.jar"
             scope="STATELESS">
@@ -117,7 +117,7 @@
     </component>
     
      <component name="ShipperComponent2">
-        <implementation.osgi 
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
             bundle="supplychain.Shipper"   
             bundleLocation="file:target/factory/ds/Shipper.jar"
             scope="STATELESS">

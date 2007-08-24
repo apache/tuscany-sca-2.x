@@ -33,7 +33,7 @@
     <component name="HelloWorldComponent">
 		<!--implementation.java class="helloworld.HelloWorldComponent"/-->
 		
-		<implementation.osgi 
+		<implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
             bundle="helloworld.HelloWorld"
             bundleLocation="file:target/ws/HelloWorld.jar"
         />

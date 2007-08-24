@@ -27,7 +27,7 @@
     </component>
 
     <component name="OSGiGreetingsComponent">
-		<implementation.osgi 
+		<implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
             bundle="helloworld.Greetings"
             bundleLocation="file:target/passbyref/Greetings.jar"
             allowsPassByReference="helloworld.OSGiGreetingsImpl.getModifiedGreetingsFromJava 

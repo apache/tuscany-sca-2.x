@@ -24,7 +24,7 @@
 	name="supplychain">
 
     <component name="CustomerComponent1">
-        <implementation.osgi 
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
                 bundle="supplychain.CustomerServices"
                 bundleLocation="file:target/version/Customer1.jar" >
             
@@ -40,7 +40,7 @@
     
     
     <component name="CustomerComponent2">
-        <implementation.osgi 
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
                 bundle="supplychain.CustomerServices"
                 bundleLocation="file:target/version/Customer2.jar" >
             
@@ -54,7 +54,7 @@
     </component>
 
     <component name="RetailerComponent1">
-        <implementation.osgi
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"
                 bundle="supplychain.RetailerServices"
                 bundleLocation="file:target/version/Retailer1.jar" >
             <properties service="RetailerService1">
@@ -73,7 +73,7 @@
     </component>
     
     <component name="RetailerComponent2">
-        <implementation.osgi
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"
                 bundle="supplychain.RetailerServices"
                 bundleLocation="file:target/version/Retailer2.jar" >
             <properties service="RetailerService1">
@@ -107,7 +107,7 @@
     </component>
 
     <component name="ShipperComponent1">
-        <implementation.osgi     
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0"     
             bundle="supplychain.ShipperServices"   
             bundleLocation="file:target/version/Shipper1.jar">
             
@@ -126,7 +126,7 @@
     </component>
     
      <component name="ShipperComponent2">
-        <implementation.osgi 
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
             bundle="supplychain.ShipperServices"   
             bundleLocation="file:target/version/Shipper2.jar">
             
