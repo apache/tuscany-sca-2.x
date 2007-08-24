@@ -44,7 +44,7 @@
         </jar>    	
     </target>	
 	
-    <target name="run-classes">
+    <target name="run-classes" depends="compile">
         <java classname="${test.class}"
               fork="true">
             <classpath>
@@ -54,15 +54,8 @@
         </java>
     </target>
 	
-    <target name="run">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>    	
-    </target>	
+    <target name="run" depends="run-classes">
+    </target>
 	
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">
