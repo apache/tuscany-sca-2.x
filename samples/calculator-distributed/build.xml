@@ -19,7 +19,8 @@
 <project name="calculator" default="runDomainNode">
     <property name="node.class" value="node.CalculatorNode" />
 	<property name="domain.class" value="node.DomainNode" />
-	<property name="test.jar"   value="sample-calculator.jar" />
+	<property name="test.jar"   value="sample-calculator-distributed.jar" 
+/>
 	
     <target name="init">
         <mkdir dir="target/classes"/>
