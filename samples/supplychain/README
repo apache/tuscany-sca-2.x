@@ -31,7 +31,7 @@ purchaseGoods operation. This results in messages passing to
 the Retailer, Warehouse, and Shipper components and the result returned
 to the Customer service on a separate callback thread.
 
-calculator/
+supplychain/
   src/
     main/
       java/
@@ -64,7 +64,7 @@ Building And Running The Sample Using Ant
 With the binary distribution the sample can be built and run using Ant as 
 follows
 
-cd calculator
+cd supplychain
 ant compile
 ant run
 
