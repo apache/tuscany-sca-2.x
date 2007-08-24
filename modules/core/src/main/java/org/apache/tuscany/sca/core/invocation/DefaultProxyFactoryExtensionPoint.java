@@ -24,15 +24,13 @@ import java.util.List;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.Conversation;
 
 public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionPoint {
     private InterfaceContractMapper interfaceContractMapper;
     private MessageFactory messageFactory;
-    
+
     private ProxyFactory interfaceFactory;
     private ProxyFactory classFactory;
 
@@ -82,9 +80,9 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
     @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         if (interfaceFactory.isProxyClass(target.getClass())) {
-            return (R) interfaceFactory.cast(target);
+            return (R)interfaceFactory.cast(target);
         } else if (classFactory != null && classFactory.isProxyClass(target.getClass())) {
-            return (R) classFactory.cast(target);
+            return (R)classFactory.cast(target);
         } else {
             throw new IllegalArgumentException("The target is not a callable proxy");
         }
@@ -102,45 +100,11 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
         }
     }
 
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
-     *      org.apache.tuscany.sca.runtime.RuntimeWire,
-     *      org.osoa.sca.Conversation)
-     */
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation)
-        throws ProxyCreationException {
-        if (interfaze.isInterface()) {
-            return interfaceFactory.createProxy(interfaze, wire, conversation);
+    public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
+        if (callableReference.getBusinessInterface().isInterface()) {
+            return interfaceFactory.createProxy(callableReference);
         } else {
-            return classFactory.createProxy(interfaze, wire, conversation);
-        }
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
-     *      org.apache.tuscany.sca.runtime.RuntimeWire,
-     *      org.osoa.sca.Conversation)
-     */
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation, EndpointReference endpoint)
-        throws ProxyCreationException {
-        if (interfaze.isInterface()) {
-            return interfaceFactory.createProxy(interfaze, wire, conversation, endpoint);
-        } else {
-            return classFactory.createProxy(interfaze, wire, conversation, endpoint);
-        }
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
-     *      org.apache.tuscany.sca.runtime.RuntimeWire,
-     *      org.osoa.sca.Conversation)
-     */
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire, Conversation conversation, EndpointReference endpoint,
-                             Object callbackID) throws ProxyCreationException {
-        if (interfaze.isInterface()) {
-            return interfaceFactory.createProxy(interfaze, wire, conversation, endpoint, callbackID);
-        } else {
-            return classFactory.createProxy(interfaze, wire, conversation, endpoint, callbackID);
+            return classFactory.createProxy(callableReference);
         }
     }
 

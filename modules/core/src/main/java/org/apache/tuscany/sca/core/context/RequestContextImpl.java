@@ -25,7 +25,6 @@ import javax.security.auth.Subject;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
-import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -56,15 +55,17 @@ public class RequestContextImpl implements RequestContext {
     }
 
     @SuppressWarnings("unchecked")
-    public <B> ServiceReference<B> getServiceReference() {
+    public <B> CallableReference<B> getServiceReference() {
         // FIXME: [rfeng] Is this the service reference matching the caller side?
         EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         // FIXME: [rfeng] What if the interface is not a java interface? 
         JavaInterface javaInterface = (JavaInterface) service.getInterfaceContract().getInterface();
+        Class<B> javaClass = (Class<B>)javaInterface.getJavaClass();
         ServiceReference<B> ref = (ServiceReference<B>) component.getComponentContext()
-                                       .createSelfReference(javaInterface.getJavaClass(), service.getName());
+                                       .createSelfReference(javaClass, service.getName());
+
         ref.setCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
         return ref;
     }
@@ -88,6 +89,6 @@ public class RequestContextImpl implements RequestContext {
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
         factory.resolveTarget();
         factory.setCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
-        return (CallableReference<CB>) new CallableReferenceImpl<CB>(javaClass, (WireObjectFactory<CB>)factory);
+        return factory;
     }
 }

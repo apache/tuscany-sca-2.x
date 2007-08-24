@@ -19,12 +19,14 @@
 
 package org.apache.tuscany.sca.core.invocation;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ConversationImpl;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -37,26 +39,45 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.Conversation;
+import org.osoa.sca.CallableReference;
+import org.osoa.sca.NoRegisteredCallbackException;
+import org.osoa.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JDKInvocationHandler implements InvocationHandler {
-    private boolean conversational;
-    private ConversationImpl conversation;
-    private boolean conversationStarted;
-    private MessageFactory messageFactory;
-    private EndpointReference endpoint;
-    private RuntimeWire wire;
-    private Object callbackID;
+public class JDKInvocationHandler implements InvocationHandler, Serializable {
+    private static final long serialVersionUID = -3366410500152201371L;
 
-    public JDKInvocationHandler(MessageFactory messageFactory, Class<?> proxyInterface, RuntimeWire wire) {
-        this.conversational = false;
+    protected boolean conversational;
+    protected ConversationImpl conversation;
+    protected boolean conversationStarted;
+    protected MessageFactory messageFactory;
+    protected EndpointReference endpoint;
+    protected Object callbackID;
+    protected Object callbackObject;
+    protected RuntimeWire wire;
+    protected CallableReference<?> callableReference;
+
+    public JDKInvocationHandler(MessageFactory messageFactory, RuntimeWire wire) {
         this.messageFactory = messageFactory;
         this.wire = wire;
-        if (wire != null) {
-            setConversational(wire);
+        setConversational(wire);
+    }
+    
+    public JDKInvocationHandler(MessageFactory messageFactory, CallableReference<?> callableReference) {
+        this.messageFactory = messageFactory;
+        this.callableReference = callableReference;
+        if (callableReference != null) {
+            this.callbackID = callableReference.getCallbackID();
+            this.conversation = (ConversationImpl)callableReference.getConversation();
+            this.wire = ((CallableReferenceImpl<?>)callableReference).getRuntimeWire();
+            if (callableReference instanceof ServiceReference) {
+                this.callbackObject = ((ServiceReference)callableReference).getCallback();
+            }
+            if (wire != null) {
+                setConversational(wire);
+            }
         }
     }
 
@@ -82,7 +103,7 @@ public class JDKInvocationHandler implements InvocationHandler {
         }
         if (wire == null) {
             //FIXME: need better exception
-            throw new RuntimeException("Destination for callback is not known");
+            throw new RuntimeException("Destination for call is not known");
         }
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {
@@ -124,17 +145,13 @@ public class JDKInvocationHandler implements InvocationHandler {
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation operation = chain.getSourceOperation();
             if (operation.isDynamic()) {
-            	operation.setName(method.getName());
-            	return chain;
+                operation.setName(method.getName());
+                return chain;
             } else if (match(operation, method)) {
                 return chain;
             }
         }
         return null;
-    }
-
-    public void setConversation(Conversation conversation) {
-        this.conversation = (ConversationImpl)conversation;
     }
 
     public void setEndpoint(EndpointReference endpoint) {
@@ -144,14 +161,14 @@ public class JDKInvocationHandler implements InvocationHandler {
     public void setCallbackID(Object callbackID) {
         this.callbackID = callbackID;
     }
- 
+
     protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
 
         Message msgContext = ThreadMessageContext.getMessageContext();
-        Object  msgContextConversationId = msgContext.getConversationID();
-        
+        Object msgContextConversationId = msgContext.getConversationID();
+
         Message msg = messageFactory.createMessage();
-               
+
         // make sure that the conversation id is set so it can be put in the 
         // outgoing messages. The id can come from one of three places
         // 1 - Generated here (if the source is stateless)
@@ -165,18 +182,18 @@ public class JDKInvocationHandler implements InvocationHandler {
         //        conversationId in this case also means that the callback
         //        can't be correlated with the source component instance 
         if (conversational) {
-            if (conversation == null){
+            if (conversation == null) {
                 // this is a callback so create a conversation to 
                 // hold onto the conversation state for the lifetime of the
                 // stateful callback
                 conversation = new ConversationImpl();
             }
             Object conversationId = conversation.getConversationID();
-            
+
             // create a conversation id if one doesn't exist 
             // already, i.e. the conversation is just starting
             if ((conversationStarted == false) && (conversationId == null)) {
-                
+
                 // It the current component is already in a conversation
                 // the use this just in case this message has a stateful 
                 // callback. In which case the callback will come back
@@ -208,7 +225,7 @@ public class JDKInvocationHandler implements InvocationHandler {
             if (sequence == ConversationSequence.CONVERSATION_END) {
                 msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;
-                if (conversation != null){
+                if (conversation != null) {
                     conversation.setConversationID(null);
                 }
             } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
@@ -221,8 +238,25 @@ public class JDKInvocationHandler implements InvocationHandler {
             }
         }
         msg.setBody(args);
-        if (wire.getSource() != null) {
-            msg.setFrom(wire.getSource());
+        if (wire.getSource() != null && wire.getSource().getCallbackEndpoint() != null) {
+            if (callbackObject != null) {
+                if (callbackObject instanceof ServiceReference) {
+                    msg.setFrom(((CallableReferenceImpl)callbackObject).getRuntimeWire().getTarget());
+                } else {
+                    if (contract != null) {
+                        if (!contract.isConversational()) {
+                            throw new NoRegisteredCallbackException(
+                                                                    "Callback object for stateless callback is not a ServiceReference");
+                        } else {
+                            //FIXME: add callback object to scope container
+                            msg.setFrom(wire.getSource().getCallbackEndpoint());
+                        }
+                    }
+                }
+            } else {
+                //FIXME: check that the source component implements the callback interface
+                msg.setFrom(wire.getSource().getCallbackEndpoint());
+            }
         }
         if (endpoint != null) {
             msg.setTo(endpoint);
@@ -251,6 +285,20 @@ public class JDKInvocationHandler implements InvocationHandler {
      */
     private String createConversationID() {
         return UUID.randomUUID().toString();
+    }
+
+    /**
+     * @return the callableReference
+     */
+    public CallableReference<?> getCallableReference() {
+        return callableReference;
+    }
+
+    /**
+     * @param callableReference the callableReference to set
+     */
+    public void setCallableReference(CallableReference<?> callableReference) {
+        this.callableReference = callableReference;
     }
 
 }

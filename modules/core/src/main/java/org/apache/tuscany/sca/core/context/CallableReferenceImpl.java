@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.URI;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -32,10 +33,14 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
+import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -49,18 +54,18 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  * @param <B> the type of the business interface
  */
-public class CallableReferenceImpl<B> implements CallableReference<B>, Externalizable {
+public class CallableReferenceImpl<B> implements CallableReference<B>, Externalizable, ObjectFactory<B> {
     protected transient CompositeActivator compositeActivator;
     protected transient ProxyFactory proxyFactory;
 
     protected transient Class<B> businessInterface;
-    protected transient Conversation conversation;
+
+    // if the wire targets a conversational service this holds the conversation state 
+    protected transient ConversationImpl conversation;
 
     protected transient RuntimeComponent component;
     protected transient RuntimeComponentReference reference;
     protected transient Binding binding;
-
-    protected transient WireObjectFactory<B> factory;
 
     protected String componentURI; //The URI of the owning component
     protected Object conversationID; // The conversationID should be serializable
@@ -83,51 +88,78 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         this.component = component;
         this.reference = reference;
         this.binding = binding;
+        // FIXME: The SCA spec is not clear how we should handle multiplicty for CallableReference
+        if (this.binding == null) {
+            this.binding = this.reference.getBinding(SCABinding.class);
+            if (this.binding == null) {
+                this.binding = this.reference.getBindings().get(0);
+            }
+        }
+        
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
         // sca:component1/component11/component112/service1?
         String componentURI = component.getURI(); // The target will be relative to this base URI
         this.componentURI = componentURI;
         this.compositeActivator = compositeActivator;
-        this.factory = getObjectFactory();
-        this.callbackID = this.factory.getCallbackID();
+        RuntimeWire wire = this.reference.getRuntimeWire(this.binding);
+        init(wire);
     }
 
-    protected CallableReferenceImpl(Class<B> businessInterface, WireObjectFactory<B> factory) {
-        this.proxyFactory = factory.getProxyFactory();
+    public CallableReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
+        this.proxyFactory = proxyFactory;
         this.businessInterface = businessInterface;
-        this.factory = factory;
-        this.component = factory.getRuntimeWire().getSource().getComponent();
-        this.reference = (RuntimeComponentReference)factory.getRuntimeWire().getSource().getContract();
-        this.binding = factory.getRuntimeWire().getSource().getBinding();
-        // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
-        // sca:component1/component11/component112/service1?
-        String componentURI = component.getURI(); // The target will be relative to this base URI
-        this.componentURI = componentURI;
-        this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
-        this.callbackID = factory.getCallbackID();
+        bind(wire);
     }
 
-    private WireObjectFactory<B> getObjectFactory() {
-        // FIXME: The SCA spec is not clear how we should handle multiplicty for CallableReference
-        if (binding == null) {
-            binding = reference.getBinding(SCABinding.class);
-            if (binding == null) {
-                binding = reference.getBindings().get(0);
-            }
+    public RuntimeWire getRuntimeWire() {
+        return reference.getRuntimeWire(binding);
+    }
+    
+    protected void bind(RuntimeWire wire) {
+        if (wire != null) {
+            this.component = wire.getSource().getComponent();
+            this.reference = (RuntimeComponentReference)wire.getSource().getContract();
+            this.binding = wire.getSource().getBinding();
+            this.componentURI = component.getURI();
+            this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
+            init(wire);
+        }        
+    }
+    
+    protected void init(RuntimeWire wire) {
+        EndpointReference target = wire.getTarget();
+
+        // look to see if the target is conversational and if so create a conversation
+        InterfaceContract contract = target.getInterfaceContract();
+        if (contract == null) {
+            contract = reference.getInterfaceContract();
         }
-        RuntimeWire wire = reference.getRuntimeWire(binding);
-        return new WireObjectFactory<B>(businessInterface, wire, proxyFactory);
+        Interface contractInterface = contract.getInterface();
+
+        if (contractInterface != null && contractInterface.isConversational()) {
+            conversation = new ConversationImpl();
+        }
+
+        if (contract.getCallbackInterface() != null) {
+            this.callbackID = createCallbackID();
+        }
+    }
+
+    public B getInstance() throws ObjectCreationException {
+        try {
+            resolve();
+            return businessInterface.cast(proxyFactory.createProxy(this));
+        } catch (Exception e) {
+            throw new ObjectCreationException(e);
+        }
     }
 
     public B getService() {
-        if (factory == null) {
-            try {
-                resolve();
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
-            }
+        try {
+            return getInstance();
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
         }
-        return factory.getInstance();
     }
 
     public Class<B> getBusinessInterface() {
@@ -135,15 +167,19 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     }
 
     public boolean isConversational() {
-        return factory.getConversation() != null;
+        return getConversation() != null;
     }
 
     public Conversation getConversation() {
-        return factory.getConversation();
+        return conversation;
     }
 
     public Object getCallbackID() {
         return callbackID;
+    }
+
+    public EndpointReference getEndpointReference() {
+        return new EndpointReferenceImpl(component, reference, binding, reference.getInterfaceContract());
     }
 
     /**
@@ -177,7 +213,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
      * @throws IOException
      */
     private synchronized void resolve() throws Exception {
-        if (scdl != null && reference == null) {
+        if (scdl != null && component == null && reference == null) {
             ComponentContextHelper componentContextHelper = ComponentContextHelper.getCurrentComponentContextHelper();
             if (componentContextHelper != null) {
                 CompositeActivator currentActivator = ComponentContextHelper.getCurrentCompositeActivator();
@@ -192,7 +228,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                     if (binding instanceof WireableBinding) {
                         String targetURI = uri.resolve(binding.getURI()).toString();
                         int index = targetURI.lastIndexOf('/');
-                        String serviceName = targetURI.substring(index+1);
+                        String serviceName = targetURI.substring(index + 1);
                         targetURI = targetURI.substring(1, index);
                         Component targetComponet = compositeActivator.resolve(targetURI);
                         ComponentService targetService = null;
@@ -221,29 +257,36 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         }
                     }
                 }
+                // FIXME: The SCA spec is not clear how we should handle multiplicty for CallableReference
+                if (binding == null) {
+                    binding = reference.getBinding(SCABinding.class);
+                    if (binding == null) {
+                        binding = reference.getBindings().get(0);
+                    }
+                }
                 Interface i = reference.getInterfaceContract().getInterface();
                 if (i instanceof JavaInterface) {
                     JavaInterface javaInterface = (JavaInterface)i;
                     if (javaInterface.isUnresolved()) {
                         javaInterface.setJavaClass(Thread.currentThread().getContextClassLoader()
                             .loadClass(javaInterface.getName()));
-                        currentActivator.getJavaInterfaceFactory().createJavaInterface(javaInterface, javaInterface.getJavaClass());
+                        currentActivator.getJavaInterfaceFactory().createJavaInterface(javaInterface,
+                                                                                       javaInterface.getJavaClass());
                     }
                     this.businessInterface = (Class<B>)javaInterface.getJavaClass();
                 }
                 this.proxyFactory = currentActivator.getProxyFactory();
-                this.factory = getObjectFactory();
             }
         }
     }
-
 
     /**
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
-            String scdl = ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper().toXML(component, reference);
+            String scdl =
+                ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper().toXML(component, reference);
             out.writeUTF(scdl);
             StringBuffer uri = new StringBuffer(componentURI);
             boolean first = true;
@@ -265,4 +308,14 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             throw new IOException(e.getMessage());
         }
     }
+
+    /**
+     * Create a callback id
+     * 
+     * @return the callback id
+     */
+    private String createCallbackID() {
+        return UUID.randomUUID().toString();
+    }
+
 }
