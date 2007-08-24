@@ -24,6 +24,30 @@
     	<pathelement location="target/demo-bigbank-stockquote.jar"/>    	
     </path>
 	
+    <target name="init">
+        <mkdir dir="target/classes"/>
+    </target>
+	
+    <target name="compile" depends="init">
+        <javac srcdir="src/main/java"
+               destdir="target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            </classpath>
+        </javac> 
+        <copy todir="target/classes">
+            <fileset dir="src/main/resources"/>
+        </copy>
+        <jar destfile="target/demo-bigbank-stockquote.jar" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
+        </jar>    	
+    </target>		
+	
     <target name="run">
         <java classname="${test.class}"
               fork="true">
