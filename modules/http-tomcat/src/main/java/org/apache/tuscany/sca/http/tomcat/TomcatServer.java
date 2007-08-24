@@ -241,7 +241,14 @@ public class TomcatServer implements ServletHost {
         }
         if (md.wrapper instanceof ServletWrapper) {
             ServletWrapper servletWrapper = (ServletWrapper)md.wrapper;
-            context.removeServletMapping(mapping);
+            try {
+               context.removeServletMapping(mapping);
+            } catch (NegativeArraySizeException e) {
+                // JIRA TUSCANY-1599
+                //FIXME Looks like a bug in Tomcat when removing the last
+                // servlet in the list, catch the exception for now as it doesn't
+                // seem harmful, will find a better solution for the next release
+            }
             context.removeChild(servletWrapper);
             servletWrapper.destroyServlet();
             return servletWrapper.getServlet();
