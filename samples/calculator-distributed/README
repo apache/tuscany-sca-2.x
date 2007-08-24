@@ -37,6 +37,10 @@ java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-cal
 java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.CalculatorNode mydomain nodeA
 
 
+The processes started on each of these command prompts can be ended by pressing 
+the <Enter> key.
+
+
 Sample Overview
 ---------------
 The sample provides a single calculator service with a default SCA (java) 
@@ -283,3 +287,11 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 
 This shows that the Junit test cases have run successfully. 
+
+Known Bug : 
+---------
+The processes that are running NodeB and NodeC do not seem to end on pressing the
+<Enter>.  This will be fixed for the next release.  For this release you should use
+^C (Control C) to exit these processes.
+
+
