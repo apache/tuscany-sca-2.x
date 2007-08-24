@@ -49,10 +49,10 @@
         <implementation.java class="feed.AggregatorImpl"/>        
         <reference name="sort" target="Sort"/>          
 		<reference name="feed1">
-   	 		<binding.atom uri="http://www.oreillynet.com/pub/feed/1"/>
+   	 		<tuscany:binding.atom uri="http://www.oreillynet.com/pub/feed/1"/>
    		</reference>
    		<reference name="feed2"> 	
-   	 		<binding.atom uri="http://www.apachenews.org/atom.xml"/>
+   	 		<tuscany:binding.atom uri="http://www.apachenews.org/atom.xml"/>
    		</reference>
         <property name="feedTitle">Atom Sample</property>    		           
     </component>      
