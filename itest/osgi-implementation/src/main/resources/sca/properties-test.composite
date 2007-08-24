@@ -22,7 +22,7 @@
            name="StockQuoteComposite">
 
     <component name="StockQuoteComponent">
-        <implementation.osgi 
+        <implementation.osgi xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
             bundle="stockquote.StockQuote" 
             bundleLocation="file:target/properties/StockQuote.jar" 
             scope="COMPOSITE"

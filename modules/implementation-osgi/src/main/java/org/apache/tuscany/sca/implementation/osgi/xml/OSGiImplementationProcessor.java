@@ -82,8 +82,8 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private static final String INJECT_PROPERTIES  = "injectProperties";
 
    
-    private static final QName PROPERTIES_QNAME    = new QName(Constants.SCA10_NS, "properties");
-    private static final QName PROPERTY_QNAME      = new QName(Constants.SCA10_NS, "property");
+    private static final QName PROPERTIES_QNAME    = new QName(Constants.SCA10_TUSCANY_NS, "properties");
+    private static final QName PROPERTY_QNAME      = new QName(Constants.SCA10_TUSCANY_NS, "property");
     
     private JavaInterfaceFactory javaInterfaceFactory;
     private AssemblyFactory assemblyFactory;
