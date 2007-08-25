@@ -20,23 +20,19 @@ package xquery.quote;
 
 public class QuoteCalculatorImpl implements QuoteCalculator {
 
-	public float calculateTotalPrice(float taxRate, int quantity, float price,
-			boolean fillOrder) {
-		float totalTax, costNoTax, totalCost;
-        if (fillOrder)
-        {
+    public float calculateTotalPrice(float taxRate, int quantity, float price, boolean fillOrder) {
+        float totalTax, costNoTax, totalCost;
+        if (fillOrder) {
             // Calculate the total tax
             totalTax = taxRate * quantity * price;
             // Calculate the total cost without tax
             costNoTax = quantity * price;
             // Add the tax and the cost to get the total cost
             totalCost = totalTax + costNoTax;
-        }
-        else
-        {
+        } else {
             totalCost = 0;
         }
         return totalCost;
-	}
+    }
 
 }

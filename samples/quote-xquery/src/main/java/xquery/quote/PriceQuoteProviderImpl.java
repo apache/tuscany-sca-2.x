@@ -21,7 +21,7 @@ package xquery.quote;
 import org.example.price.PriceQuote;
 
 public class PriceQuoteProviderImpl implements PriceQuoteProvider {
-	public PriceQuote providePriceQuote() {
-		return TestHelper.buildPriceQuoteData();
-	}
+    public PriceQuote providePriceQuote() {
+        return TestHelper.buildPriceQuoteData();
+    }
 }

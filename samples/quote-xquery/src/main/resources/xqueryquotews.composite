@@ -20,28 +20,29 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://quote.xquery"
     xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" xmlns:xq="http://quote.xquery"
     name="xqueryquotews">
-    
-    <dbsdo:import.sdo factory="org.example.avail.AvailFactory"/>
-	<dbsdo:import.sdo factory="org.example.price.PriceFactory"/>
-	<dbsdo:import.sdo factory="org.example.quote.QuoteFactory"/>
-    
+
+    <dbsdo:import.sdo factory="org.example.avail.AvailFactory" />
+    <dbsdo:import.sdo factory="org.example.price.PriceFactory" />
+    <dbsdo:import.sdo factory="org.example.quote.QuoteFactory" />
+
     <component name="QuoteJoinServerComponent">
         <service name="QuoteJoin">
             <interface.java interface="xquery.quote.QuoteJoin" />
-            <binding.ws wsdlElement="http://quote.xquery#wsdl.port(QuoteJoinService/QuoteJoinSoapPort)"/>
+            <binding.ws wsdlElement="http://quote.xquery#wsdl.port(QuoteJoinService/QuoteJoinSoapPort)" />
         </service>
-        <implementation.xquery location="META-INF/sca/quote_join.xq"/>
+        <implementation.xquery location="META-INF/sca/quote_join.xq" />
         <reference name="quoteCalculator" target="QuoteCalculatorServerComponent" />
     </component>
-    
+
     <component name="QuoteCalculatorServerComponent">
-		<implementation.java class="xquery.quote.QuoteCalculatorImpl"/>
+        <implementation.java class="xquery.quote.QuoteCalculatorImpl" />
     </component>
-    
+
     <component name="AvailQuoteProviderComponent">
         <service name="AvailQuoteProvider">
             <interface.java interface="xquery.quote.AvailQuoteProviderService" />
-            <binding.ws wsdlElement="http://quote.xquery#wsdl.port(AvailQuoteProviderService/AvailQuoteProviderSoapPort)"/>
+            <binding.ws
+                wsdlElement="http://quote.xquery#wsdl.port(AvailQuoteProviderService/AvailQuoteProviderSoapPort)" />
         </service>
         <implementation.java class="xquery.quote.AvailQuoteProviderImpl" />
     </component>

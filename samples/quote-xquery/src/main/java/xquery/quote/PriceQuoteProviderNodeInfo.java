@@ -26,5 +26,5 @@ import org.osoa.sca.annotations.Service;
 @Remotable
 @Service
 public interface PriceQuoteProviderNodeInfo {
-	public NodeInfo providePriceQuote();
+    public NodeInfo providePriceQuote();
 }

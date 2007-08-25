@@ -80,7 +80,7 @@
             <artifactId>saxon</artifactId>
             <version>8.9</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-sdo</artifactId>
@@ -93,7 +93,7 @@
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

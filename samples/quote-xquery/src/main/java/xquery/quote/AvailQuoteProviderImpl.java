@@ -24,7 +24,7 @@ import org.osoa.sca.annotations.Service;
 @Service(AvailQuoteProviderService.class)
 public class AvailQuoteProviderImpl implements AvailQuoteProviderService {
 
-	public AvailQuote provideAvailQuote(String dummyString) {
-		return TestHelper.buildAvailQuoteData();
-	}
+    public AvailQuote provideAvailQuote(String dummyString) {
+        return TestHelper.buildAvailQuoteData();
+    }
 }
