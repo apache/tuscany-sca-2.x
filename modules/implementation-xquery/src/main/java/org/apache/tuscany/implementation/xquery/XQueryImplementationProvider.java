@@ -59,107 +59,107 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  *      again used by the invoker to configure the saxon parser
  */
 public class XQueryImplementationProvider implements ImplementationProvider {
-	
-	private RuntimeComponent component; 
-	private XQueryImplementation implementation;
-	private Map<String, Object> referenceProxies = new HashMap<String, Object>();
-	private Map<String, Object> properties = new HashMap<String, Object>();
-	private JavaPropertyValueObjectFactory javaFactory;
-	
-	public XQueryImplementationProvider(RuntimeComponent component, XQueryImplementation implementation,
-			JavaPropertyValueObjectFactory factory) {
-		this.component = component;
-		this.implementation = implementation;
-		this.javaFactory = factory;
-		init();
-	}
-	
-	private void init() {
-		List<ComponentService> services = component.getServices();
-		for(ComponentService sevice : services) {
-			InterfaceContract interfaceContract = sevice.getInterfaceContract();
-			//interfaceContract.getInterface().setDefaultDataBinding(ValueRepresentation.class.getName());
-			setDataBinding(interfaceContract.getInterface(), false);
-		}
-		
-		List<ComponentReference> references = component.getReferences();
-		for(ComponentReference reference : references) {
-			InterfaceContract interfaceContract = reference.getInterfaceContract();
-			//interfaceContract.getInterface().setDefaultDataBinding(ValueRepresentation.class.getName());
-			setDataBinding(interfaceContract.getInterface(), true);
-		}
-	}
 
-	public Invoker createCallbackInvoker(Operation operation) {
-		return new XQueryInvoker(null, operation, implementation, referenceProxies, properties);
-	}
+    private RuntimeComponent component;
+    private XQueryImplementation implementation;
+    private Map<String, Object> referenceProxies = new HashMap<String, Object>();
+    private Map<String, Object> properties = new HashMap<String, Object>();
+    private JavaPropertyValueObjectFactory javaFactory;
 
-	public Invoker createInvoker(RuntimeComponentService service,
-			Operation operation) {
-		return new XQueryInvoker(service, operation, implementation, referenceProxies, properties);
-	}
+    public XQueryImplementationProvider(RuntimeComponent component,
+                                        XQueryImplementation implementation,
+                                        JavaPropertyValueObjectFactory factory) {
+        this.component = component;
+        this.implementation = implementation;
+        this.javaFactory = factory;
+        init();
+    }
 
-	public void start() {
-		
-		for(Reference reference : component.getReferences()) {
-			String refName = reference.getName();
-			if(refName.startsWith("$self$.")) {
-				continue;
-			}
-			Class interfaze = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
-			Object refProxy = component.getComponentContext().getService(interfaze, refName);
-			referenceProxies.put(refName, refProxy);
-		}
-		
-		for(ComponentProperty property : component.getProperties()) {
-			String propName = property.getName();
-			QName xmlType = property.getXSDType();
-			Class clazz = JavaXMLMapper.getJavaType(xmlType);
-			
-			Object propertyValue = null;
-			if(clazz == null || java.lang.Object.class.equals(clazz)) {
-				propertyValue = property.getValue();
-			} else {
-				ObjectFactory objfactory = javaFactory.createValueFactory(property, property.getValue(), clazz);
-				propertyValue = objfactory.getInstance();
-			}
-			properties.put(propName, propertyValue);
-		}
-	}
-  
-  private void setDataBinding(Interface interfaze, boolean isReference) {
-	interfaze.setDefaultDataBinding(SaxonNodeDataBinding.NAME);
-	List<Operation> operations = interfaze.getOperations();
-	for(Operation operation : operations) {
-		DataType<List<DataType>> inputType = operation.getInputType();
-		if(inputType != null) {
-			List<DataType> logical = inputType.getLogical();
-			for(DataType inArg : logical) {
-				if(inArg.getPhysical().isPrimitive() || inArg.getPhysical() == java.lang.String.class) {
-					if(!isReference) {
-						inArg.setDataBinding(SaxonValueDataBinding.NAME);
-					}
-				} else {
-					inArg.setDataBinding(SaxonNodeDataBinding.NAME);
-				}
-			}
-		}
-		DataType outputType = operation.getOutputType();
-		if(outputType != null) {
-			if(outputType.getPhysical().isPrimitive() || outputType.getPhysical() == java.lang.String.class) {
-				if(!isReference) {
-					outputType.setDataBinding(SaxonValueDataBinding.NAME);
-				}
-			} else {
-				outputType.setDataBinding(SaxonNodeDataBinding.NAME);
-			}
-		}
-	}
-  }
+    private void init() {
+        List<ComponentService> services = component.getServices();
+        for (ComponentService sevice : services) {
+            InterfaceContract interfaceContract = sevice.getInterfaceContract();
+            //interfaceContract.getInterface().setDefaultDataBinding(ValueRepresentation.class.getName());
+            setDataBinding(interfaceContract.getInterface(), false);
+        }
 
-	public void stop() {
-		// TODO Auto-generated method stub
+        List<ComponentReference> references = component.getReferences();
+        for (ComponentReference reference : references) {
+            InterfaceContract interfaceContract = reference.getInterfaceContract();
+            //interfaceContract.getInterface().setDefaultDataBinding(ValueRepresentation.class.getName());
+            setDataBinding(interfaceContract.getInterface(), true);
+        }
+    }
 
-	}
+    public Invoker createCallbackInvoker(Operation operation) {
+        return new XQueryInvoker(null, operation, implementation, referenceProxies, properties);
+    }
+
+    public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
+        return new XQueryInvoker(service, operation, implementation, referenceProxies, properties);
+    }
+
+    public void start() {
+
+        for (Reference reference : component.getReferences()) {
+            String refName = reference.getName();
+            if (refName.startsWith("$self$.")) {
+                continue;
+            }
+            Class interfaze = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
+            Object refProxy = component.getComponentContext().getService(interfaze, refName);
+            referenceProxies.put(refName, refProxy);
+        }
+
+        for (ComponentProperty property : component.getProperties()) {
+            String propName = property.getName();
+            QName xmlType = property.getXSDType();
+            Class clazz = JavaXMLMapper.getJavaType(xmlType);
+
+            Object propertyValue = null;
+            if (clazz == null || java.lang.Object.class.equals(clazz)) {
+                propertyValue = property.getValue();
+            } else {
+                ObjectFactory objfactory = javaFactory.createValueFactory(property, property.getValue(), clazz);
+                propertyValue = objfactory.getInstance();
+            }
+            properties.put(propName, propertyValue);
+        }
+    }
+
+    private void setDataBinding(Interface interfaze, boolean isReference) {
+        interfaze.setDefaultDataBinding(SaxonNodeDataBinding.NAME);
+        List<Operation> operations = interfaze.getOperations();
+        for (Operation operation : operations) {
+            DataType<List<DataType>> inputType = operation.getInputType();
+            if (inputType != null) {
+                List<DataType> logical = inputType.getLogical();
+                for (DataType inArg : logical) {
+                    if (inArg.getPhysical().isPrimitive() || inArg.getPhysical() == java.lang.String.class) {
+                        if (!isReference) {
+                            inArg.setDataBinding(SaxonValueDataBinding.NAME);
+                        }
+                    } else {
+                        inArg.setDataBinding(SaxonNodeDataBinding.NAME);
+                    }
+                }
+            }
+            DataType outputType = operation.getOutputType();
+            if (outputType != null) {
+                if (outputType.getPhysical().isPrimitive() || outputType.getPhysical() == java.lang.String.class) {
+                    if (!isReference) {
+                        outputType.setDataBinding(SaxonValueDataBinding.NAME);
+                    }
+                } else {
+                    outputType.setDataBinding(SaxonNodeDataBinding.NAME);
+                }
+            }
+        }
+    }
+
+    public void stop() {
+        // TODO Auto-generated method stub
+
+    }
 
 }

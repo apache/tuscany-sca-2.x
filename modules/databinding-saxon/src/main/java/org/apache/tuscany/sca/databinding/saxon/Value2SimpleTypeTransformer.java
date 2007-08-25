@@ -31,35 +31,35 @@ import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
  * Transforms Value objects to simple types
  * @version $Rev$ $Date$
  */
-public class Value2SimpleTypeTransformer extends BaseTransformer<Value, Object>
-		implements PullTransformer<Value, Object> {
-	public Object transform(Value source, TransformationContext context) {
-		Object object;
-		try {
-			object = Value.convert(source.asItem());
-		} catch (XPathException e) {
-			throw new TransformationException(e);
-		}
-		return object;
-	}
-	
-	@Override
-	public String getTargetDataBinding() {
-		return SimpleJavaDataBinding.NAME;
-	}
+public class Value2SimpleTypeTransformer extends BaseTransformer<Value, Object> implements
+    PullTransformer<Value, Object> {
+    public Object transform(Value source, TransformationContext context) {
+        Object object;
+        try {
+            object = Value.convert(source.asItem());
+        } catch (XPathException e) {
+            throw new TransformationException(e);
+        }
+        return object;
+    }
 
-	@Override
-	protected Class getSourceType() {
-		return Value.class;
-	}
+    @Override
+    public String getTargetDataBinding() {
+        return SimpleJavaDataBinding.NAME;
+    }
 
-	@Override
-	protected Class getTargetType() {
-		return Object.class;
-	}
+    @Override
+    protected Class getSourceType() {
+        return Value.class;
+    }
 
-	@Override
-	public int getWeight() {
-		return 10000;
-	}
+    @Override
+    protected Class getTargetType() {
+        return Object.class;
+    }
+
+    @Override
+    public int getWeight() {
+        return 10000;
+    }
 }

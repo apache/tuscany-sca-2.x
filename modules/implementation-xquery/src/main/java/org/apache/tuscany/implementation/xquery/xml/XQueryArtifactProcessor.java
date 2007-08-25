@@ -41,39 +41,38 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * @version $Rev$ $Date$
  */
 public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImplementation> {
-	
-	private static final String LOCATION = "location";
+
+    private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_XQUERY = "implementation.xquery";
-    private static final QName IMPLEMENTATION_XQUERY_QNAME = 
-    	new QName(Constants.SCA10_NS, IMPLEMENTATION_XQUERY);
+    private static final QName IMPLEMENTATION_XQUERY_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_XQUERY);
     private static final String MSG_LOCATION_MISSING = "Reading implementation.xquery - location attribute missing";
-    
-    private AssemblyFactory 		assemblyFactory;
-    private JavaInterfaceFactory	javaFactory;
-    
-    public XQueryArtifactProcessor (AssemblyFactory 			assemblyFactory,
-			JavaInterfaceFactory 		javaFactory) {
-        this.assemblyFactory 	= assemblyFactory;
-        this.javaFactory 		= javaFactory;
+
+    private AssemblyFactory assemblyFactory;
+    private JavaInterfaceFactory javaFactory;
+
+    public XQueryArtifactProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
+        this.assemblyFactory = assemblyFactory;
+        this.javaFactory = javaFactory;
     }
 
-	public QName getArtifactType() {
-		return IMPLEMENTATION_XQUERY_QNAME;
-	}
+    public QName getArtifactType() {
+        return IMPLEMENTATION_XQUERY_QNAME;
+    }
 
-	/**
-	 * Reads  from the stream and sets the location attribute of the implementation correspondingly
-	 */
-	public XQueryImplementation read(XMLStreamReader inputSource) throws ContributionReadException, XMLStreamException {
-		try {
-        	/* Read the location attribute for the xquery implementation  */
+    /**
+     * Reads  from the stream and sets the location attribute of the implementation correspondingly
+     */
+    public XQueryImplementation read(XMLStreamReader inputSource) throws ContributionReadException, XMLStreamException {
+        try {
+            /* Read the location attribute for the xquery implementation  */
             String xqueryLocation = inputSource.getAttributeValue(null, LOCATION);
             if (xqueryLocation == null) {
-                throw new ContributionReadException( MSG_LOCATION_MISSING );
+                throw new ContributionReadException(MSG_LOCATION_MISSING);
             }
             /* Create the XQuery implementation and set the location into it */
-            XQueryImplementation xqueryImplementation = XQueryImplementationFactory.INSTANCE.createXQueryImplementation();
-            xqueryImplementation.setLocation( xqueryLocation );
+            XQueryImplementation xqueryImplementation =
+                XQueryImplementationFactory.INSTANCE.createXQueryImplementation();
+            xqueryImplementation.setLocation(xqueryLocation);
 
             // Skip to end element
             while (inputSource.hasNext()) {
@@ -81,7 +80,7 @@ public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImpl
                     break;
                 }
             } // end while
-            
+
             xqueryImplementation.setUnresolved(true);
 
             return xqueryImplementation;
@@ -89,39 +88,41 @@ public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImpl
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
-	}
+    }
 
-	public void write(XQueryImplementation xqueryImplementation, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
-		try {
+    public void write(XQueryImplementation xqueryImplementation, XMLStreamWriter outputSource)
+        throws ContributionWriteException, XMLStreamException {
+        try {
 
-			outputSource.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_XQUERY);
+            outputSource.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_XQUERY);
             if (xqueryImplementation.getLocation() != null) {
-            	outputSource.writeAttribute(LOCATION, xqueryImplementation.getLocation());
+                outputSource.writeAttribute(LOCATION, xqueryImplementation.getLocation());
             }
             outputSource.writeEndElement();
 
         } catch (XMLStreamException e) {
             throw new ContributionWriteException(e);
         }
-	}
+    }
 
-	public Class<XQueryImplementation> getModelType() {
-		return XQueryImplementation.class;
-	}
+    public Class<XQueryImplementation> getModelType() {
+        return XQueryImplementation.class;
+    }
 
-	/**
-	 * Resolves the implementation: its services and references, by invoking the xquery
-	 * introspector
-	 */
-	public void resolve(XQueryImplementation xqueryImplementation, ModelResolver resolver) throws ContributionResolveException {
-		
-		XQueryIntrospector introspector = new XQueryIntrospector(assemblyFactory, javaFactory);
-		
-		boolean success = introspector.introspect( xqueryImplementation );
-		
-		if(success) {
-			xqueryImplementation.setUnresolved(false);
-		}
-	}
+    /**
+     * Resolves the implementation: its services and references, by invoking the xquery
+     * introspector
+     */
+    public void resolve(XQueryImplementation xqueryImplementation, ModelResolver resolver)
+        throws ContributionResolveException {
+
+        XQueryIntrospector introspector = new XQueryIntrospector(assemblyFactory, javaFactory);
+
+        boolean success = introspector.introspect(xqueryImplementation);
+
+        if (success) {
+            xqueryImplementation.setUnresolved(false);
+        }
+    }
 
 }

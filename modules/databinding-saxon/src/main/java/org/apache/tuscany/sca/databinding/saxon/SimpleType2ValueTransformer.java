@@ -38,51 +38,51 @@ import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
  * Transforms simple types and strings to Value objects needed by Saxon parser
  * @version $Rev$ $Date$
  */
-public class SimpleType2ValueTransformer extends BaseTransformer<Object, Value>
-		implements PullTransformer<Object, Value> {
-	
-	@Override
-	public String getSourceDataBinding() {
-		return SimpleJavaDataBinding.NAME;
-	}
-	
-	@Override
-	protected Class getSourceType() {
-		return Object.class;
-	}
+public class SimpleType2ValueTransformer extends BaseTransformer<Object, Value> implements
+    PullTransformer<Object, Value> {
 
-	@Override
-	protected Class getTargetType() {
-		return Value.class;
-	}
+    @Override
+    public String getSourceDataBinding() {
+        return SimpleJavaDataBinding.NAME;
+    }
 
-	@Override
-	public int getWeight() {
-		return 10000;
-	}
+    @Override
+    protected Class getSourceType() {
+        return Object.class;
+    }
 
-	public Value transform(Object source, TransformationContext context) {
-		Value result = null;
-		if(source instanceof Integer) {
-			result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Integer)source)));
-		} else if(source instanceof Long) {
-			result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Long)source)));
-		} else if(source instanceof Short) {
-			result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Short)source)));
-		} else if(source instanceof Byte) {
-			result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Byte)source)));
-		} else if(source instanceof Double) {
-			result = new DoubleValue((Double)source);
-		} else if(source instanceof Float) {
-			result = new FloatValue((Float)source);
-		} else if(source instanceof BigDecimal) {
-			result = new DecimalValue((BigDecimal)source);
-		} else if(source instanceof String) {
-			result = new StringValue(((String)source));
-		} else {
-			result = new ObjectValue(source);
-		}
-		
-		return result;
-	}
+    @Override
+    protected Class getTargetType() {
+        return Value.class;
+    }
+
+    @Override
+    public int getWeight() {
+        return 10000;
+    }
+
+    public Value transform(Object source, TransformationContext context) {
+        Value result = null;
+        if (source instanceof Integer) {
+            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Integer)source)));
+        } else if (source instanceof Long) {
+            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Long)source)));
+        } else if (source instanceof Short) {
+            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Short)source)));
+        } else if (source instanceof Byte) {
+            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Byte)source)));
+        } else if (source instanceof Double) {
+            result = new DoubleValue((Double)source);
+        } else if (source instanceof Float) {
+            result = new FloatValue((Float)source);
+        } else if (source instanceof BigDecimal) {
+            result = new DecimalValue((BigDecimal)source);
+        } else if (source instanceof String) {
+            result = new StringValue(((String)source));
+        } else {
+            result = new ObjectValue(source);
+        }
+
+        return result;
+    }
 }

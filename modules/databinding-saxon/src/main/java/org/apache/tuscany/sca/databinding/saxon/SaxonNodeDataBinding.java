@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.saxon;
 
-
 import java.lang.annotation.Annotation;
 
 import net.sf.saxon.om.NodeInfo;
@@ -37,11 +36,11 @@ public class SaxonNodeDataBinding extends BaseDataBinding {
 
     public static final String NAME = NodeInfo.class.getName();
     public static final String[] ALIASES = new String[] {"saxon_node"};
-    
+
     public SaxonNodeDataBinding() {
-    	super(NAME, NodeInfo.class);
+        super(NAME, NodeInfo.class);
     }
-    
+
     @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
         if (super.introspect(type, annotations)) {

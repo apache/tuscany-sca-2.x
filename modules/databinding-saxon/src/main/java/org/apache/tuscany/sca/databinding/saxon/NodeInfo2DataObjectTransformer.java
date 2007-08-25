@@ -54,96 +54,98 @@ import commonj.sdo.impl.HelperProvider;
  * the DataObject (i.e. if there is a SDO factory, an instance from this factory will
  * be used, not the generic any data object)
  */
-public class NodeInfo2DataObjectTransformer extends
-		BaseTransformer<NodeInfo, DataObject> implements
-		PullTransformer<NodeInfo, DataObject> {
-	
-	private NodeInfo2NodeTransformer nodeInfo2NodeTransformer;
-	public NodeInfo2DataObjectTransformer(NodeInfo2NodeTransformer nodeInfo2NodeTransformer) {
-		this.nodeInfo2NodeTransformer = nodeInfo2NodeTransformer;
-	}
+public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, DataObject> implements
+    PullTransformer<NodeInfo, DataObject> {
 
-	@Override
-	protected Class getSourceType() {
-		return NodeInfo.class;
-	}
+    private NodeInfo2NodeTransformer nodeInfo2NodeTransformer;
 
-	@Override
-	protected Class getTargetType() {
-		return DataObject.class;
-	}
+    public NodeInfo2DataObjectTransformer(NodeInfo2NodeTransformer nodeInfo2NodeTransformer) {
+        this.nodeInfo2NodeTransformer = nodeInfo2NodeTransformer;
+    }
 
-	@Override
-	public int getWeight() {
-		return 10 + nodeInfo2NodeTransformer.getWeight();
-	}
+    @Override
+    protected Class getSourceType() {
+        return NodeInfo.class;
+    }
 
-	public DataObject transform(NodeInfo source, TransformationContext context) {
-		Document doc = (Document)nodeInfo2NodeTransformer.transform(source, context);
-		
-		Document cloneDoc = cloneDocumentWithRightNamespaces(doc, context);
+    @Override
+    protected Class getTargetType() {
+        return DataObject.class;
+    }
 
-		return produceResult(cloneDoc);
-	}
-	
-	private Document cloneDocumentWithRightNamespaces(Document doc, TransformationContext context) {
-		
-		DataType targetDataType = context.getTargetDataType();
-		String namespace = null;
-		Object logical = targetDataType.getLogical();
-		if(logical instanceof XMLType) {
-			namespace = ((XMLType)logical).getTypeName().getNamespaceURI();
-		} else {
-			Type type = HelperProvider.INSTANCE.typeHelper().getType(targetDataType.getClass());
-			
-			if(type == null) {
-				return doc;
-			}
-			namespace = type.getURI();
-		}
-		
-		if(namespace == null) {
-			return doc;
-		}
-		
-		FactoryBase factory = (FactoryBase)((TypeHelperImpl)HelperProvider.INSTANCE.typeHelper()).getExtendedMetaData().getPackage(namespace);
-		if(factory == null) {
-			return doc;
-		}
-		String prefix = factory.getNsPrefix();
-		
-		Document cloneDoc = (Document)doc.cloneNode(false);
-		
-		SaxonDataBindingHelper.setNamespacesAndPrefixesReq(doc, cloneDoc, cloneDoc, namespace, prefix);
-		
-		return cloneDoc;
-	}
+    @Override
+    public int getWeight() {
+        return 10 + nodeInfo2NodeTransformer.getWeight();
+    }
 
-	private DataObject produceResult(Document doc) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		StreamResult streamResult = new StreamResult(baos);
-		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.transform(new DOMSource(doc), streamResult);
-		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			baos.flush();
-			baos.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		DataObject resultingObject = XMLHelper.INSTANCE.load(new String(baos.toByteArray())).getRootObject();
-		
-		return resultingObject;
-	}
+    public DataObject transform(NodeInfo source, TransformationContext context) {
+        Document doc = (Document)nodeInfo2NodeTransformer.transform(source, context);
+
+        Document cloneDoc = cloneDocumentWithRightNamespaces(doc, context);
+
+        return produceResult(cloneDoc);
+    }
+
+    private Document cloneDocumentWithRightNamespaces(Document doc, TransformationContext context) {
+
+        DataType targetDataType = context.getTargetDataType();
+        String namespace = null;
+        Object logical = targetDataType.getLogical();
+        if (logical instanceof XMLType) {
+            namespace = ((XMLType)logical).getTypeName().getNamespaceURI();
+        } else {
+            Type type = HelperProvider.INSTANCE.typeHelper().getType(targetDataType.getClass());
+
+            if (type == null) {
+                return doc;
+            }
+            namespace = type.getURI();
+        }
+
+        if (namespace == null) {
+            return doc;
+        }
+
+        FactoryBase factory =
+            (FactoryBase)((TypeHelperImpl)HelperProvider.INSTANCE.typeHelper()).getExtendedMetaData()
+                .getPackage(namespace);
+        if (factory == null) {
+            return doc;
+        }
+        String prefix = factory.getNsPrefix();
+
+        Document cloneDoc = (Document)doc.cloneNode(false);
+
+        SaxonDataBindingHelper.setNamespacesAndPrefixesReq(doc, cloneDoc, cloneDoc, namespace, prefix);
+
+        return cloneDoc;
+    }
+
+    private DataObject produceResult(Document doc) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        StreamResult streamResult = new StreamResult(baos);
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.transform(new DOMSource(doc), streamResult);
+        } catch (TransformerConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (TransformerFactoryConfigurationError e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            baos.flush();
+            baos.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        DataObject resultingObject = XMLHelper.INSTANCE.load(new String(baos.toByteArray())).getRootObject();
+
+        return resultingObject;
+    }
 }

@@ -29,26 +29,25 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
  * Transforms generic java objects to Value objects needed by Saxon parser
  * @version $Rev$ $Date$
  */
-public class Object2ValueTransformer extends BaseTransformer<Object, Value>
-		implements PullTransformer<Object, Value> {
-	
-	@Override
-	protected Class getSourceType() {
-		return Object.class;
-	}
+public class Object2ValueTransformer extends BaseTransformer<Object, Value> implements PullTransformer<Object, Value> {
 
-	@Override
-	protected Class getTargetType() {
-		return Value.class;
-	}
+    @Override
+    protected Class getSourceType() {
+        return Object.class;
+    }
 
-	@Override
-	public int getWeight() {
-		return 10000;
-	}
+    @Override
+    protected Class getTargetType() {
+        return Value.class;
+    }
 
-	public Value transform(Object source, TransformationContext context) {
-		return new ObjectValue(source);
-	}
+    @Override
+    public int getWeight() {
+        return 10000;
+    }
+
+    public Value transform(Object source, TransformationContext context) {
+        return new ObjectValue(source);
+    }
 
 }

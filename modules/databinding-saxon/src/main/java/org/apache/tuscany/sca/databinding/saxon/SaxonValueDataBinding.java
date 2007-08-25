@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- package org.apache.tuscany.sca.databinding.saxon;
+package org.apache.tuscany.sca.databinding.saxon;
 
 import java.lang.annotation.Annotation;
 
@@ -33,13 +33,13 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * all simple types and strings
  */
 public class SaxonValueDataBinding extends BaseDataBinding {
-	public static final String NAME = Value.class.getName();
+    public static final String NAME = Value.class.getName();
     public static final String[] ALIASES = new String[] {"saxon_value"};
-    
+
     public SaxonValueDataBinding() {
-    	super(NAME, Value.class);
+        super(NAME, Value.class);
     }
-    
+
     @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
         if (super.introspect(type, annotations)) {
