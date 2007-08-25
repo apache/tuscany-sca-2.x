@@ -18,6 +18,7 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://quote.xquery/client"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
     xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" xmlns:xq="http://quote.xquery/client"
     name="xqueryquotewsclient">
 
@@ -33,11 +34,11 @@
     </component>
 
     <component name="QuoteJoinComponent">
-        <implementation.xquery location="META-INF/sca/quote_join.xq" />
+        <tuscany:implementation.xquery location="META-INF/sca/quote_join.xq" />
         <reference name="quoteCalculator" target="QuoteCalculatorComponent" />
     </component>
     <component name="QuoteJoinPropertiesComponent">
-        <implementation.xquery location="META-INF/sca/quote_join_properties.xq" />
+        <tuscany:implementation.xquery location="META-INF/sca/quote_join_properties.xq" />
         <property name="priceQuoteDoc">
             <pri:priceQuote xmlns:pri="http://www.example.org/price">
                 <pri:customerName>Acme Inc</pri:customerName>
@@ -84,7 +85,7 @@
         <reference name="quoteCalculator" target="QuoteCalculatorComponent" />
     </component>
     <component name="QuoteJoinExternalReferencesComponent">
-        <implementation.xquery location="META-INF/sca/quote_join_external_references.xq" />
+        <tuscany:implementation.xquery location="META-INF/sca/quote_join_external_references.xq" />
         <reference name="quoteCalculator" target="QuoteCalculatorComponent" />
         <reference name="priceQuoteProvider" target="PriceQuoteProviderComponent" />
     </component>

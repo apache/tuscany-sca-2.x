@@ -18,6 +18,7 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://quote.xquery"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
     xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" xmlns:xq="http://quote.xquery"
     name="xqueryquotews">
 
@@ -30,7 +31,7 @@
             <interface.java interface="xquery.quote.QuoteJoin" />
             <binding.ws wsdlElement="http://quote.xquery#wsdl.port(QuoteJoinService/QuoteJoinSoapPort)" />
         </service>
-        <implementation.xquery location="META-INF/sca/quote_join.xq" />
+        <tuscany:implementation.xquery location="META-INF/sca/quote_join.xq" />
         <reference name="quoteCalculator" target="QuoteCalculatorServerComponent" />
     </component>
 
