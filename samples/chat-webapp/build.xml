@@ -134,7 +134,6 @@
             	<include name="neethi-2.0.1.jar"/>
             	<include name="rome-0.9.jar"/>
             	<include name="saaj-api-1.3.jar"/>
-            	<include name="sca-api-1.0-incubating-SNAPSHOT.jar"/>
             	<include name="stax-api-1.0-2.jar"/>
             	<include name="stax-api-1.0.1.jar"/>
             	<include name="woden-1.0-incubating-M7a.jar"/>
