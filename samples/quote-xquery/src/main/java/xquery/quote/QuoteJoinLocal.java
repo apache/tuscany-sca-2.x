@@ -23,9 +23,12 @@ import org.example.price.PriceQuote;
 import org.example.quote.Quote;
 
 public interface QuoteJoinLocal {
-	public Quote joinPriceAndAvailQuotes(PriceQuote priceQuote, AvailQuote availQuote, float taxRate);
-	public Quote joinPriceAndAvailQuotesWs(PriceQuote priceQuote, AvailQuote availQuote, float taxRate);
-	public Quote joinPriceAndAvailQuotes();
-	public Quote joinPriceAndAvailQuotes(float taxRate);
-	
+    public Quote joinPriceAndAvailQuotes(PriceQuote priceQuote, AvailQuote availQuote, float taxRate);
+
+    public Quote joinPriceAndAvailQuotesWs(PriceQuote priceQuote, AvailQuote availQuote, float taxRate);
+
+    public Quote joinPriceAndAvailQuotes();
+
+    public Quote joinPriceAndAvailQuotes(float taxRate);
+
 }

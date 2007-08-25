@@ -24,44 +24,44 @@ import org.example.quote.Quote;
 import org.osoa.sca.annotations.Reference;
 
 public class QuoteJoinLocalImpl implements QuoteJoinLocal {
-	private QuoteJoin quoteJoin;
-	private QuoteJoin quoteJoinWs;
-	private PropertiesQuoteJoin propertiesQuoteJoin;
-	private ExternalReferencesQuoteJoin externalServicesQuoteJoin;
-	
-	@Reference
-	public void setQuoteJoin(QuoteJoin quoteJoin) {
-		this.quoteJoin = quoteJoin;
-	}
-	
-	@Reference
-	public void setQuoteJoinWs(QuoteJoin quoteJoinWs) {
-		this.quoteJoinWs = quoteJoinWs;
-	}
-	
-	@Reference
-	public void setPropertiesQuoteJoin(PropertiesQuoteJoin propertiesQuoteJoin) {
-		this.propertiesQuoteJoin = propertiesQuoteJoin;
-	}
-	
-	@Reference
-	public void setExternalServicesQuoteJoin(ExternalReferencesQuoteJoin externalServicesQuoteJoin) {
-		this.externalServicesQuoteJoin = externalServicesQuoteJoin;
-	}
+    private QuoteJoin quoteJoin;
+    private QuoteJoin quoteJoinWs;
+    private PropertiesQuoteJoin propertiesQuoteJoin;
+    private ExternalReferencesQuoteJoin externalServicesQuoteJoin;
 
-	public Quote joinPriceAndAvailQuotes(PriceQuote priceQuote, AvailQuote availQuote, float taxRate) {
-		return quoteJoin.joinPriceAndAvailQuotes(priceQuote, availQuote, taxRate);
-	}
-	
-	public Quote joinPriceAndAvailQuotesWs(PriceQuote priceQuote, AvailQuote availQuote, float taxRate) {
-		return quoteJoinWs.joinPriceAndAvailQuotes(priceQuote, availQuote, taxRate);
-	}
+    @Reference
+    public void setQuoteJoin(QuoteJoin quoteJoin) {
+        this.quoteJoin = quoteJoin;
+    }
 
-	public Quote joinPriceAndAvailQuotes(float taxRate) {
-		return externalServicesQuoteJoin.joinPriceAndAvailQuotes(taxRate);
-	}
+    @Reference
+    public void setQuoteJoinWs(QuoteJoin quoteJoinWs) {
+        this.quoteJoinWs = quoteJoinWs;
+    }
 
-	public Quote joinPriceAndAvailQuotes() {
-		return propertiesQuoteJoin.joinPriceAndAvailQuotes(); 
-	}
+    @Reference
+    public void setPropertiesQuoteJoin(PropertiesQuoteJoin propertiesQuoteJoin) {
+        this.propertiesQuoteJoin = propertiesQuoteJoin;
+    }
+
+    @Reference
+    public void setExternalServicesQuoteJoin(ExternalReferencesQuoteJoin externalServicesQuoteJoin) {
+        this.externalServicesQuoteJoin = externalServicesQuoteJoin;
+    }
+
+    public Quote joinPriceAndAvailQuotes(PriceQuote priceQuote, AvailQuote availQuote, float taxRate) {
+        return quoteJoin.joinPriceAndAvailQuotes(priceQuote, availQuote, taxRate);
+    }
+
+    public Quote joinPriceAndAvailQuotesWs(PriceQuote priceQuote, AvailQuote availQuote, float taxRate) {
+        return quoteJoinWs.joinPriceAndAvailQuotes(priceQuote, availQuote, taxRate);
+    }
+
+    public Quote joinPriceAndAvailQuotes(float taxRate) {
+        return externalServicesQuoteJoin.joinPriceAndAvailQuotes(taxRate);
+    }
+
+    public Quote joinPriceAndAvailQuotes() {
+        return propertiesQuoteJoin.joinPriceAndAvailQuotes();
+    }
 }

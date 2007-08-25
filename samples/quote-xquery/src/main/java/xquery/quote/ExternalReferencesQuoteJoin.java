@@ -25,5 +25,5 @@ import org.osoa.sca.annotations.Service;
 @Remotable
 @Service
 public interface ExternalReferencesQuoteJoin {
-	public Quote joinPriceAndAvailQuotes(float taxRate);
+    public Quote joinPriceAndAvailQuotes(float taxRate);
 }

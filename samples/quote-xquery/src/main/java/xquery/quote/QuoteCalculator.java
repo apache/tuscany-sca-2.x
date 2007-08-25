@@ -24,5 +24,5 @@ import org.osoa.sca.annotations.Service;
 @Remotable
 @Service
 public interface QuoteCalculator {
-	public float calculateTotalPrice(float taxRate, int quantity, float price, boolean fillOrder);
+    public float calculateTotalPrice(float taxRate, int quantity, float price, boolean fillOrder);
 }

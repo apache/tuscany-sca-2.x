@@ -25,5 +25,5 @@ import org.osoa.sca.annotations.Service;
 @Remotable
 @Service
 public interface AvailQuoteProviderService {
-	AvailQuote provideAvailQuote(String dummyString);
+    AvailQuote provideAvailQuote(String dummyString);
 }

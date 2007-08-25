@@ -55,91 +55,91 @@ import commonj.sdo.DataObject;
  *  4. SDO is used for data interchange
  */
 public class XQueryQuoteClientTestCase {
-	
-	public static boolean SHOW_DEBUG_MSG = false;
-	
+
+    public static boolean SHOW_DEBUG_MSG = false;
+
     private SCADomain scaDomain;
     private SCATestCaseRunner server;
-    
+
     private QuoteJoinLocal quoteJoinLocal;
-    
+
     @Before
     public void startClient() throws Exception {
-    	try {
-	    	scaDomain = SCADomain.newInstance("xqueryquotewsclient.composite");
-	    	
-	    	quoteJoinLocal = scaDomain.getService(QuoteJoinLocal.class, "QuoteJoinLocalComponent");
-	    	
-	    	server =  new SCATestCaseRunner(XQueryQuoteTestServer.class);
-	    	server.before();
-    	} catch(Throwable t) {
-    		 t.printStackTrace();
-    	}
+        try {
+            scaDomain = SCADomain.newInstance("xqueryquotewsclient.composite");
+
+            quoteJoinLocal = scaDomain.getService(QuoteJoinLocal.class, "QuoteJoinLocalComponent");
+
+            server = new SCATestCaseRunner(XQueryQuoteTestServer.class);
+            server.before();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
-    
+
     @Test
     public void testQuoteJoin() {
-    	AvailQuote availQuote = TestHelper.buildAvailQuoteData();
-    	PriceQuote priceQuote = TestHelper.buildPriceQuoteData();
-    	
-    	if(SHOW_DEBUG_MSG) {
-			System.out.println("Input quote for the price list:");
-			TestHelper.serializeToSystemOut((DataObject)priceQuote, "priceQuote");
-			System.out.println();
-			System.out.println("Input quote for the availability:");
-			TestHelper.serializeToSystemOut((DataObject)availQuote, "availQuote");
-			System.out.println();
-    	}
-		
-		Quote quote = quoteJoinLocal.joinPriceAndAvailQuotes(priceQuote, availQuote, 0.1f);
-		TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
-		if(SHOW_DEBUG_MSG) {
-			System.out.println();
-			System.out.println("Output quote from local join:");
-			TestHelper.serializeToSystemOut((DataObject)quote, "quote");
-			System.out.println();
-		}
-		
-		quote = quoteJoinLocal.joinPriceAndAvailQuotes(priceQuote, availQuote, 0.2f);
-		TestHelper.assertQuote(availQuote, priceQuote, quote, 0.2f);
-		if(SHOW_DEBUG_MSG) {
-			System.out.println();
-			System.out.println("Output quote from local join (second invokation):");
-			TestHelper.serializeToSystemOut((DataObject)quote, "quote");
-			System.out.println();
-		}
-		
-		quote = quoteJoinLocal.joinPriceAndAvailQuotesWs(priceQuote, availQuote, 0.1f);
-		TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
-		if(SHOW_DEBUG_MSG) {
-			System.out.println();
-			System.out.println("Output quote from web service join:");
-			TestHelper.serializeToSystemOut((DataObject)quote, "quote");
-			System.out.println();
-		}
-		
-		quote = quoteJoinLocal.joinPriceAndAvailQuotes();
-		TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
-		if(SHOW_DEBUG_MSG) {
-			System.out.println();
-			System.out.println("Output quote from properties join:");
-			TestHelper.serializeToSystemOut((DataObject)quote, "quote");
-			System.out.println();
-		}
-		
-		quote = quoteJoinLocal.joinPriceAndAvailQuotes(0.1f);
-		TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
-		if(SHOW_DEBUG_MSG) {
-			System.out.println();
-			System.out.println("Output quote from external references join:");
-			TestHelper.serializeToSystemOut((DataObject)quote, "quote");
-			System.out.println();
-		}
+        AvailQuote availQuote = TestHelper.buildAvailQuoteData();
+        PriceQuote priceQuote = TestHelper.buildPriceQuoteData();
+
+        if (SHOW_DEBUG_MSG) {
+            System.out.println("Input quote for the price list:");
+            TestHelper.serializeToSystemOut((DataObject)priceQuote, "priceQuote");
+            System.out.println();
+            System.out.println("Input quote for the availability:");
+            TestHelper.serializeToSystemOut((DataObject)availQuote, "availQuote");
+            System.out.println();
+        }
+
+        Quote quote = quoteJoinLocal.joinPriceAndAvailQuotes(priceQuote, availQuote, 0.1f);
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        if (SHOW_DEBUG_MSG) {
+            System.out.println();
+            System.out.println("Output quote from local join:");
+            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            System.out.println();
+        }
+
+        quote = quoteJoinLocal.joinPriceAndAvailQuotes(priceQuote, availQuote, 0.2f);
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.2f);
+        if (SHOW_DEBUG_MSG) {
+            System.out.println();
+            System.out.println("Output quote from local join (second invokation):");
+            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            System.out.println();
+        }
+
+        quote = quoteJoinLocal.joinPriceAndAvailQuotesWs(priceQuote, availQuote, 0.1f);
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        if (SHOW_DEBUG_MSG) {
+            System.out.println();
+            System.out.println("Output quote from web service join:");
+            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            System.out.println();
+        }
+
+        quote = quoteJoinLocal.joinPriceAndAvailQuotes();
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        if (SHOW_DEBUG_MSG) {
+            System.out.println();
+            System.out.println("Output quote from properties join:");
+            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            System.out.println();
+        }
+
+        quote = quoteJoinLocal.joinPriceAndAvailQuotes(0.1f);
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        if (SHOW_DEBUG_MSG) {
+            System.out.println();
+            System.out.println("Output quote from external references join:");
+            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            System.out.println();
+        }
     }
-    
+
     @After
     public void stopClient() throws Exception {
-    	server.after();
+        server.after();
         scaDomain.close();
     }
 }

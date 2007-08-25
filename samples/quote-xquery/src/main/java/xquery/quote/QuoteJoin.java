@@ -27,5 +27,5 @@ import org.osoa.sca.annotations.Service;
 @Remotable
 @Service
 public interface QuoteJoin {
-	public Quote joinPriceAndAvailQuotes(PriceQuote priceQuote, AvailQuote availQuote, float taxRate);
+    public Quote joinPriceAndAvailQuotes(PriceQuote priceQuote, AvailQuote availQuote, float taxRate);
 }

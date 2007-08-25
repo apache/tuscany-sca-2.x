@@ -30,21 +30,21 @@ public class XQueryQuoteTestServer {
     private SCADomain scaDomain;
 
     @Before
-	public void startServer() throws Exception {
-	        try {
-	            scaDomain = SCADomain.newInstance("xqueryquotews.composite");
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	}
-	
-	@Test
-	public void testPing() throws IOException {
-		new Socket("127.0.0.1", 8085);
-	}
-	
-	@After
-	public void stopServer() throws Exception {
-	        scaDomain.close();
-	}
+    public void startServer() throws Exception {
+        try {
+            scaDomain = SCADomain.newInstance("xqueryquotews.composite");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testPing() throws IOException {
+        new Socket("127.0.0.1", 8085);
+    }
+
+    @After
+    public void stopServer() throws Exception {
+        scaDomain.close();
+    }
 }
