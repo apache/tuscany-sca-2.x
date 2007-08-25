@@ -44,7 +44,8 @@ public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImpl
 
     private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_XQUERY = "implementation.xquery";
-    private static final QName IMPLEMENTATION_XQUERY_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_XQUERY);
+    private static final QName IMPLEMENTATION_XQUERY_QNAME =
+        new QName(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
     private static final String MSG_LOCATION_MISSING = "Reading implementation.xquery - location attribute missing";
 
     private AssemblyFactory assemblyFactory;
@@ -94,7 +95,7 @@ public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImpl
         throws ContributionWriteException, XMLStreamException {
         try {
 
-            outputSource.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_XQUERY);
+            outputSource.writeStartElement(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
             if (xqueryImplementation.getLocation() != null) {
                 outputSource.writeAttribute(LOCATION, xqueryImplementation.getLocation());
             }
