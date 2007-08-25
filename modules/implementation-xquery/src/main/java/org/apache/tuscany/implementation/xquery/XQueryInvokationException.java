@@ -25,9 +25,9 @@ package org.apache.tuscany.implementation.xquery;
  */
 public class XQueryInvokationException extends Exception {
 
-	private static final long serialVersionUID = -2674411654705699541L;
+    private static final long serialVersionUID = -2674411654705699541L;
 
-	public XQueryInvokationException( String msg ) {
-		super( msg );
-	}
+    public XQueryInvokationException(String msg) {
+        super(msg);
+    }
 }

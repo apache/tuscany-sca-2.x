@@ -38,42 +38,42 @@ import org.w3c.dom.Node;
  * Any namespaces that are defined are deleted, because otherwise
  * the SaxonB parser does not work
  */
-public class Node2NodeInfoTransformer extends BaseTransformer<Node, NodeInfo>
-		implements PullTransformer<Node, NodeInfo> {
+public class Node2NodeInfoTransformer extends BaseTransformer<Node, NodeInfo> implements
+    PullTransformer<Node, NodeInfo> {
 
-	public NodeInfo transform(Node source, TransformationContext context) {
-		if(source instanceof Document) {
-			Configuration configuration = SaxonDataBindingHelper.CURR_EXECUTING_CONFIG;
-			if(configuration == null) {
-				configuration = new Configuration();
-			}
-			Document doc = (Document)source;
-			Document cloneDoc = (Document)doc.cloneNode(false);
-			SaxonDataBindingHelper.setNamespacesAndPrefixesReq(doc, cloneDoc, cloneDoc, "", null);
-			DocumentInfo docInfo = null;
-			try {
-				docInfo = configuration.buildDocument(new DOMSource(cloneDoc));
-			} catch (XPathException e) {
-				throw new TransformationException(e);
-			}
-			return docInfo;
-		}
-		return null;
-	}
+    public NodeInfo transform(Node source, TransformationContext context) {
+        if (source instanceof Document) {
+            Configuration configuration = SaxonDataBindingHelper.CURR_EXECUTING_CONFIG;
+            if (configuration == null) {
+                configuration = new Configuration();
+            }
+            Document doc = (Document)source;
+            Document cloneDoc = (Document)doc.cloneNode(false);
+            SaxonDataBindingHelper.setNamespacesAndPrefixesReq(doc, cloneDoc, cloneDoc, "", null);
+            DocumentInfo docInfo = null;
+            try {
+                docInfo = configuration.buildDocument(new DOMSource(cloneDoc));
+            } catch (XPathException e) {
+                throw new TransformationException(e);
+            }
+            return docInfo;
+        }
+        return null;
+    }
 
-	@Override
-	protected Class getSourceType() {
-		return Node.class;
-	}
+    @Override
+    protected Class getSourceType() {
+        return Node.class;
+    }
 
-	@Override
-	protected Class getTargetType() {
-		return NodeInfo.class;
-	}
+    @Override
+    protected Class getTargetType() {
+        return NodeInfo.class;
+    }
 
-	@Override
-	public int getWeight() {
-		return 10;
-	}
+    @Override
+    public int getWeight() {
+        return 10;
+    }
 
 }

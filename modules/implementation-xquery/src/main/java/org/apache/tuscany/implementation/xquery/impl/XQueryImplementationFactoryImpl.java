@@ -25,12 +25,11 @@ import org.apache.tuscany.implementation.xquery.XQueryImplementationFactory;
  * Actual implementation of the XQuery implementation factory
  * @version $Rev$ $Date$
  */
-public class XQueryImplementationFactoryImpl implements
-		XQueryImplementationFactory {
+public class XQueryImplementationFactoryImpl implements XQueryImplementationFactory {
 
-	public XQueryImplementation createXQueryImplementation() {
-		XQueryImplementation implementation = new XQueryImplementationImpl();
-		return implementation;
-	}
+    public XQueryImplementation createXQueryImplementation() {
+        XQueryImplementation implementation = new XQueryImplementationImpl();
+        return implementation;
+    }
 
 }

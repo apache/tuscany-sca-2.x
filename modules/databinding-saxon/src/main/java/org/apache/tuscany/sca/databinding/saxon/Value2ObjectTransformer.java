@@ -30,32 +30,31 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
  * Transforms Value objects to generic java objects
  * @version $Rev$ $Date$
  */
-public class Value2ObjectTransformer extends BaseTransformer<Value, Object>
-		implements PullTransformer<Value, Object> {
+public class Value2ObjectTransformer extends BaseTransformer<Value, Object> implements PullTransformer<Value, Object> {
 
-	public Object transform(Value source, TransformationContext context) {
-		Object object;
-		try {
-			object = Value.convert(source.asItem());
-		} catch (XPathException e) {
-			throw new TransformationException(e);
-		}
-		return object;
-	}
+    public Object transform(Value source, TransformationContext context) {
+        Object object;
+        try {
+            object = Value.convert(source.asItem());
+        } catch (XPathException e) {
+            throw new TransformationException(e);
+        }
+        return object;
+    }
 
-	@Override
-	protected Class getSourceType() {
-		return Value.class;
-	}
+    @Override
+    protected Class getSourceType() {
+        return Value.class;
+    }
 
-	@Override
-	protected Class getTargetType() {
-		return Object.class;
-	}
+    @Override
+    protected Class getTargetType() {
+        return Object.class;
+    }
 
-	@Override
-	public int getWeight() {
-		return 10000;
-	}
+    @Override
+    public int getWeight() {
+        return 10000;
+    }
 
 }

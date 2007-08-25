@@ -31,39 +31,41 @@ import org.apache.tuscany.sca.assembly.Implementation;
  */
 public interface XQueryImplementation extends Implementation {
 
-	/**
-	 * Location of the xquery implementation file
-	 * @return
-	 */
-	public String getLocation();
-	public void setLocation(String location);
-	
-	/**
-	 * The XQuery expression that is loaded from the xquery implementation file
-	 * @return
-	 */
-	public String getXqExpression();
-	public void setXqExpression(String expression);
-	
-	/**
-	 * The XQuery expression should be extended for with additional
-	 * script, which provides the external variables needed to invoke
-	 * a function. In this way for each function that is defined in the 
-	 * original XQuery expression additional expression is defined, which
-	 * can invoke this function, using external variables as input.
-	 * These expression extensions are stored in this map. It provides for
-	 * each method of a service interface that is implemented by this component
-	 * type corresponding expression extension
-	 * @return
-	 */
-	public Map<Method, String> getXqExpressionExtensionsMap();
-	
-	/**
-	 * This map is a kind of cache for function invokations. If a given
-	 * xquery function of this implementation has been invoked already
-	 * its compiled expression can be reused. In this manner the preformance
-	 * can be increased
-	 * @return
-	 */
-	public Map<String, XQueryExpression> getCompiledExpressionsCache();
+    /**
+     * Location of the xquery implementation file
+     * @return
+     */
+    public String getLocation();
+
+    public void setLocation(String location);
+
+    /**
+     * The XQuery expression that is loaded from the xquery implementation file
+     * @return
+     */
+    public String getXqExpression();
+
+    public void setXqExpression(String expression);
+
+    /**
+     * The XQuery expression should be extended for with additional
+     * script, which provides the external variables needed to invoke
+     * a function. In this way for each function that is defined in the 
+     * original XQuery expression additional expression is defined, which
+     * can invoke this function, using external variables as input.
+     * These expression extensions are stored in this map. It provides for
+     * each method of a service interface that is implemented by this component
+     * type corresponding expression extension
+     * @return
+     */
+    public Map<Method, String> getXqExpressionExtensionsMap();
+
+    /**
+     * This map is a kind of cache for function invokations. If a given
+     * xquery function of this implementation has been invoked already
+     * its compiled expression can be reused. In this manner the preformance
+     * can be increased
+     * @return
+     */
+    public Map<String, XQueryExpression> getCompiledExpressionsCache();
 }

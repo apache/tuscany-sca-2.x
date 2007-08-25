@@ -31,62 +31,63 @@ import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
  * Actual implementation of the XQuery implementation
  * @version $Rev$ $Date$
  */
-public class XQueryImplementationImpl extends ComponentTypeImpl implements
-	XQueryImplementation {
-	
-	private String location;
-	private String xqExpression;
-	
-	private Map<String, XQueryExpression> compiledExpressionsCache = new HashMap<String, XQueryExpression>();
-	private Map<Method, String> xqExpressionExtensionsMap = new HashMap<Method, String>();
-	
-	public XQueryImplementationImpl () {
-		setUnresolved(true);
-	}
-	
-	public String getLocation() {
-		return location;
-	}
-	public void setLocation(String location) {
-		this.location = location;
-	}
-	public String getXqExpression() {
-		return xqExpression;
-	}
-	public void setXqExpression(String xqExpression) {
-		this.xqExpression = xqExpression;
-	}
+public class XQueryImplementationImpl extends ComponentTypeImpl implements XQueryImplementation {
 
-	public Map<String, XQueryExpression> getCompiledExpressionsCache() {
-		return compiledExpressionsCache;
-	}
+    private String location;
+    private String xqExpression;
 
-	public Map<Method, String> getXqExpressionExtensionsMap() {
-		return xqExpressionExtensionsMap;
-	}
+    private Map<String, XQueryExpression> compiledExpressionsCache = new HashMap<String, XQueryExpression>();
+    private Map<Method, String> xqExpressionExtensionsMap = new HashMap<Method, String>();
 
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = super.hashCode();
-		result = PRIME * result + ((location == null) ? 0 : location.hashCode());
-		return result;
-	}
+    public XQueryImplementationImpl() {
+        setUnresolved(true);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (getClass() != obj.getClass())
-			return false;
-		final XQueryImplementationImpl other = (XQueryImplementationImpl) obj;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
-			return false;
-		return true;
-	}
-	
-	
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getXqExpression() {
+        return xqExpression;
+    }
+
+    public void setXqExpression(String xqExpression) {
+        this.xqExpression = xqExpression;
+    }
+
+    public Map<String, XQueryExpression> getCompiledExpressionsCache() {
+        return compiledExpressionsCache;
+    }
+
+    public Map<Method, String> getXqExpressionExtensionsMap() {
+        return xqExpressionExtensionsMap;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = super.hashCode();
+        result = PRIME * result + ((location == null) ? 0 : location.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (getClass() != obj.getClass())
+            return false;
+        final XQueryImplementationImpl other = (XQueryImplementationImpl)obj;
+        if (location == null) {
+            if (other.location != null)
+                return false;
+        } else if (!location.equals(other.location))
+            return false;
+        return true;
+    }
+
 }

@@ -39,16 +39,16 @@ import org.apache.tuscany.sca.databinding.saxon.Value2SimpleTypeTransformer;
  */
 public class SaxonDataBindingModuleActivator implements ModuleActivator {
 
-	public Object[] getExtensionPoints() {
-		return null;
-	}
+    public Object[] getExtensionPoints() {
+        return null;
+    }
 
-	public void start(ExtensionPointRegistry registry) {
-        
+    public void start(ExtensionPointRegistry registry) {
+
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         dataBindings.addDataBinding(new SaxonNodeDataBinding());
         dataBindings.addDataBinding(new SaxonValueDataBinding());
-        
+
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         Node2NodeInfoTransformer node2NodeInfoTransformer = new Node2NodeInfoTransformer();
         transformers.addTransformer(node2NodeInfoTransformer);
@@ -60,11 +60,11 @@ public class SaxonDataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(new Value2SimpleTypeTransformer());
         transformers.addTransformer(new NodeInfo2DataObjectTransformer(nodeInfo2NodeTransformer));
         transformers.addTransformer(new DataObject2NodeInfoTransformer(node2NodeInfoTransformer));
-	}
+    }
 
-	public void stop(ExtensionPointRegistry registry) {
-		// TODO Auto-generated method stub
+    public void stop(ExtensionPointRegistry registry) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

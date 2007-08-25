@@ -27,21 +27,21 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * A factory for xquery implementation providers
  * @version $Rev$ $Date$
  */
-public class XQueryImplementationProviderFactory implements
-		ImplementationProviderFactory<XQueryImplementation> {
-	
-	private JavaPropertyValueObjectFactory javaFactory;
-	public XQueryImplementationProviderFactory(JavaPropertyValueObjectFactory javaFactory) {
-		this.javaFactory = javaFactory;
-	}
+public class XQueryImplementationProviderFactory implements ImplementationProviderFactory<XQueryImplementation> {
 
-	public ImplementationProvider createImplementationProvider(
-			RuntimeComponent component, XQueryImplementation implementation) {
-		return new XQueryImplementationProvider(component, implementation, javaFactory);
-	}
+    private JavaPropertyValueObjectFactory javaFactory;
 
-	public Class<XQueryImplementation> getModelType() {
-		return XQueryImplementation.class;
-	}
+    public XQueryImplementationProviderFactory(JavaPropertyValueObjectFactory javaFactory) {
+        this.javaFactory = javaFactory;
+    }
+
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component,
+                                                               XQueryImplementation implementation) {
+        return new XQueryImplementationProvider(component, implementation, javaFactory);
+    }
+
+    public Class<XQueryImplementation> getModelType() {
+        return XQueryImplementation.class;
+    }
 
 }

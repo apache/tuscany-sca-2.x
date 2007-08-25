@@ -37,34 +37,34 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class NodeInfo2NodeTransformer extends BaseTransformer<NodeInfo, Node> implements
-	PullTransformer<NodeInfo, Node> {
+    PullTransformer<NodeInfo, Node> {
 
-	public Node transform(NodeInfo source, TransformationContext context) {
-		DOMResult destination = new DOMResult();
-		try {
-	        Properties props = new Properties();
-	        props.setProperty(OutputKeys.METHOD, "xml");
-	        props.setProperty(OutputKeys.INDENT, "yes");
-			QueryResult.serialize(source, destination, props);
-		} catch (Exception e) {
-			throw new TransformationException(e);
-		}
-		return destination.getNode();
-	}
+    public Node transform(NodeInfo source, TransformationContext context) {
+        DOMResult destination = new DOMResult();
+        try {
+            Properties props = new Properties();
+            props.setProperty(OutputKeys.METHOD, "xml");
+            props.setProperty(OutputKeys.INDENT, "yes");
+            QueryResult.serialize(source, destination, props);
+        } catch (Exception e) {
+            throw new TransformationException(e);
+        }
+        return destination.getNode();
+    }
 
-	@Override
-	protected Class getSourceType() {
-		return NodeInfo.class;
-	}
+    @Override
+    protected Class getSourceType() {
+        return NodeInfo.class;
+    }
 
-	@Override
-	protected Class getTargetType() {
-		return Node.class;
-	}
+    @Override
+    protected Class getTargetType() {
+        return Node.class;
+    }
 
-	@Override
-	public int getWeight() {
-		return 10;
-	}
+    @Override
+    public int getWeight() {
+        return 10;
+    }
 
 }
