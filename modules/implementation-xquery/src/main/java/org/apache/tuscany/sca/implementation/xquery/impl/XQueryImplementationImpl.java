@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.implementation.xquery.impl;
+package org.apache.tuscany.sca.implementation.xquery.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -24,8 +24,8 @@ import java.util.Map;
 
 import net.sf.saxon.query.XQueryExpression;
 
-import org.apache.tuscany.implementation.xquery.XQueryImplementation;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.implementation.xquery.XQueryImplementation;
 
 /**
  * Actual implementation of the XQuery implementation
