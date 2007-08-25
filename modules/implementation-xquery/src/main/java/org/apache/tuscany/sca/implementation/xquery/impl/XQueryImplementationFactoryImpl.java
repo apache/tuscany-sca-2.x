@@ -16,17 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.implementation.xquery;
+package org.apache.tuscany.sca.implementation.xquery.impl;
 
-import org.apache.tuscany.implementation.xquery.impl.XQueryImplementationFactoryImpl;
+import org.apache.tuscany.sca.implementation.xquery.XQueryImplementation;
+import org.apache.tuscany.sca.implementation.xquery.XQueryImplementationFactory;
 
 /**
- * Provides instances of XQueryImplementation classes
+ * Actual implementation of the XQuery implementation factory
  * @version $Rev$ $Date$
  */
-public interface XQueryImplementationFactory {
+public class XQueryImplementationFactoryImpl implements XQueryImplementationFactory {
 
-    public XQueryImplementationFactory INSTANCE = new XQueryImplementationFactoryImpl();
+    public XQueryImplementation createXQueryImplementation() {
+        XQueryImplementation implementation = new XQueryImplementationImpl();
+        return implementation;
+    }
 
-    XQueryImplementation createXQueryImplementation();
 }

@@ -16,18 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.implementation.xquery;
+package org.apache.tuscany.sca.implementation.xquery;
+
+import org.apache.tuscany.sca.implementation.xquery.impl.XQueryImplementationFactoryImpl;
 
 /**
- * Exception class used by the XQueryInvoker to report problems in
- * xquery script invokaion
+ * Provides instances of XQueryImplementation classes
  * @version $Rev$ $Date$
  */
-public class XQueryInvokationException extends Exception {
+public interface XQueryImplementationFactory {
 
-    private static final long serialVersionUID = -2674411654705699541L;
+    public XQueryImplementationFactory INSTANCE = new XQueryImplementationFactoryImpl();
 
-    public XQueryInvokationException(String msg) {
-        super(msg);
-    }
+    XQueryImplementation createXQueryImplementation();
 }
