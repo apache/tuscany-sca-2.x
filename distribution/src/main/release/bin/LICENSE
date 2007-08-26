@@ -1210,7 +1210,7 @@ JPython version 1.1.x
 
 ===============================================================================
 
-The jars; activation, jaxb-api, jaxb-impl, jsr181-api,
+The jars; activation, jaxb-api, jaxb-impl, jaxb-xjc, jsr181-api,
 jsr250, jaxws-api, mail, saaj-api, servlet-api-2.5.jar:
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
