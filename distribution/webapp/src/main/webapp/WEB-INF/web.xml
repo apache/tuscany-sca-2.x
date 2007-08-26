@@ -25,7 +25,7 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
   <display-name>Apache Tuscany WebApp Runtime</display-name>
 
   <listener>
-    <listener-class>org.apache.tuscany.sca.webapp.HotUpdateContextListener</listener-class>
+    <listener-class>org.apache.tuscany.sca.host.webapp.HotUpdateContextListener</listener-class>
   </listener>
 
   <listener>
@@ -34,7 +34,7 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
   <servlet>
      <servlet-name>TuscanyServlet</servlet-name>
-     <servlet-class>org.apache.tuscany.sca.webapp.TuscanyServlet</servlet-class>
+     <servlet-class>org.apache.tuscany.sca.host.webapp.TuscanyServlet</servlet-class>
   </servlet>
   
   <servlet>
