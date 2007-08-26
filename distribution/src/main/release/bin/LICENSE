@@ -255,8 +255,6 @@ The following components come under Apache Software License 2.0
  spring-context-2.0.3.jar
  spring-core-2.0.3.jar
  stax-api-1.0.1.jar
- tuscany-sca-all-1.0-incubating.jar
- tuscany-sca-manifest.jar
  tuscany-sdo-api-r2.1-1.0-incubating.jar
  tuscany-sdo-impl-1.0-incubating.jar
  tuscany-sdo-lib-1.0-incubating.jar
