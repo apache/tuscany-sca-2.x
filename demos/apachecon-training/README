@@ -1,0 +1,77 @@
+Shopping Store Web Service Sample
+=================================
+This sample creates an shopping store application using Amazon's WS API interface. This sample intents to provide
+the same services provided by Amazon but implementing them as SCA components. These services are provided through
+a web service interface. 
+
+If you just want to run it to see what happens you need to run the server first. So, open a command prompt, navigate 
+to the shoppingstore sample directory and do:
+
+1 - "ant" to compile it
+2 - "ant run" to get the server up and running
+3 - You should see the following output from the run target:
+	run:
+     	[java] log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAXUtils).
+     	[java] log4j:WARN Please initialize the log4j system properly.
+     	[java] ToyApp server started (press enter to shutdown)
+
+Once the server is running, it will be expecting requests from a client through its Web Service interface.
+
+The WSDL describing the WS interface can be obtained opening a web broeser pointing to 
+http://localhost:8080/ShoppingStoreServiceComponent?wsdl
+
+
+Sample Overview
+---------------
+Currently, the sample provides two components:
+	1 - ShoppingStoreService: that is wired to a reference with a web service binding and plays the role of a proxy service which offers all the operations exposed through the WSDL API and forwards every invocation to the actual service that in fact implements the service invoked.
+	2 - CartService: currently, this is the only component offering an actual service through the Shopping Store. It provides the following operations: CartCreate, CartAdd, CartClear, CartGet.
+
+shoppingstore/
+  lib/
+    AWS2007_05_14.jar						- The jar file containing all the classes generated out of Amazon's WSDL using
+    								     	  the Axis2's wsdl2java utility (the databinding used was jaxb)
+  src/
+    main/
+      java/
+        shoppingstore/
+          server/
+            ShoppingStoreServer.java		- starts the SCA Runtime and deploys
+            								  the shoppingstore.composite.
+                                    		  In doing this, the SCA WSDL binding
+                                    		  acts to expose the ShoppingStoreService
+                                    		  over WS
+          services/
+            cart/
+              CartService.java				- Java interface description for 
+                                              CartServiceComponent
+              CartServiceImpl.java			- component implementation
+            proxy/
+              ShoppingStoreService.java		- Java interface description for 
+                                              ShoppingStoreServiceComponent
+              ShoppingStoreServiceImpl.java - component implementation
+      resources/
+        wsdl/
+          shoppingstore.wsdl                - the service description that the 
+                                              SCA reference uses to bind to. This 
+                                              wsdl file is very similar to Amazon's 
+                                              WSDL released on May 14th, 2007. Only
+                                              two modifications were done: 
+                                              1 - Non-implemented services had to be 
+                                              commented out from the WSDL
+                                              2 - Its location was modified in order 
+                                              for it to point to this sample's address
+        shoppingstore.composite      		- the SCA assembly for this sample
+    test/									- no test provided so far
+  shoppingstore.png             			- a pictorial representation of the 
+                                            current status of the sample, plus future enhancements
+  build.xml                               - the Ant build file
+
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+Take a look at the beginning of this document.
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+No maven support has been implemented yet.
