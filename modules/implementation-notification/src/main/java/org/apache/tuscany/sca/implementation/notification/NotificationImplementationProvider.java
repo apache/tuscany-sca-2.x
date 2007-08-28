@@ -18,7 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.notification;
 
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -48,6 +51,14 @@ public class NotificationImplementationProvider implements ImplementationProvide
     }
 
     public void start() {
+        for (ComponentService service : component.getServices()) {
+            if (service.getService() != null) {
+                InterfaceContract interfaceContract = service.getService().getInterfaceContract();
+                if (interfaceContract instanceof WSDLInterfaceContract) {
+                    interfaceContract.getInterface().setDefaultDataBinding("org.apache.axiom.om.OMElement");
+                }
+            }
+        }
     }
 
     public void stop() {
