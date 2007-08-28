@@ -61,6 +61,7 @@
                 <module>scopes</module>
                 <module>wsdl</module>
                 <module>wsdlless</module>
+                <module>large-sdo-ws</module>
                 <module>wsdl2java</module>
             </modules>
         </profile>

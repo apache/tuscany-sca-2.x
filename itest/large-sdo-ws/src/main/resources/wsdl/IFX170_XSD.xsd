@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+ <!--
+ http://www.ifxforum.org/standards/standard/license
+ 
+IFX License Statement
+===================== 
+IFX Forum hereby grants to all users of the IFX Business Message Specification 
+and Data Dictionary (the "Specification") a perpetual, worldwide, royalty-free, 
+nonexclusive, nontransferable license to (a) use the specification in the development 
+of software and/or data compilations which facilitate electronic transmission of 
+information in accordance with the Specification and otherwise implement the 
+Specification in user's products, and (b) market, reproduce, display, and distribute 
+(in any medium known now or in the future) the Specification as implemented in user's 
+products. The foregoing rights may be sublicensed through multiple tiers of distribution, 
+including resellers.
+
+Other than as licensed herein, the IFX Forum shall retain all right, title and interest 
+to any patent, copyrights, trade secrets or other proprietary rights ("Intellectual 
+Property Rights") in the Specification. Subject to all patent rights preserved by IFX Forum 
+members pursuant to Section 5.1 of the "Membership Rules of the Interactive Financial 
+Exchange Forum, Inc.", users shall retain all right, title and interest to the Intellectual 
+Property Rights in any products of user created using the Specification and any modifications, 
+extensions or derivative works of the Specification that user develops or has developed on 
+its behalf as permitted under this Agreement (the "Derivatives"), provided, however, that, 
+users may not hold Derivatives out as being endorsed, sponsored by or affiliated with the 
+IFX Forum. 
+ -->
+<xsd:schema xmlns="urn:ifxforum-org:XSD:1" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="urn:ifxforum-org:XSD:1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xsd:complexType name="AdditionalStatus_Type">
+        <xsd:sequence>
+            <xsd:element name="ServerStatusCode" type="xsd:string" />
+            <xsd:element name="Severity" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BankAcctTrnRec_Type">
+        <xsd:sequence>
+            <xsd:element name="TrnType" type="xsd:string" minOccurs="0" />
+            <xsd:element name="PostedDt" type="xsd:string" />
+            <xsd:element name="OrigDt" type="xsd:string" minOccurs="0" />
+            <xsd:element name="CurAmt" type="CurrencyAmount" />
+            <xsd:element name="BillRefInfo" type="xsd:string" minOccurs="0" />
+            <xsd:element name="CustPayeeInfo" type="CustPayeeInfo_Type" minOccurs="0" />
+            <xsd:element name="CSPRefId" type="xsd:string" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BankInfo_Type">
+        <xsd:sequence>
+            <xsd:element name="BankIdType" type="xsd:string" minOccurs="0" />
+            <xsd:element name="BankId" type="xsd:string" minOccurs="0" />
+            <xsd:element name="Name" type="xsd:string" minOccurs="0" />
+            <xsd:element name="BranchId" type="xsd:string" minOccurs="0" />
+            <xsd:element name="BranchName" type="xsd:string" minOccurs="0" />
+            <xsd:element name="City" type="xsd:string" minOccurs="0" />
+            <xsd:element name="StateProv" type="xsd:string" minOccurs="0" />
+            <xsd:element name="PostalCode" type="xsd:string" minOccurs="0" />
+            <xsd:element name="Country" type="xsd:string" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BillerId_Type">
+        <xsd:sequence>
+            <xsd:element name="SPName" type="xsd:string" />
+            <xsd:element name="BillerNum" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BillerPayee_Type">
+        <xsd:sequence>
+            <xsd:element name="BillerId" type="BillerId_Type" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CurrencyAmount">
+        <xsd:sequence>
+            <xsd:element name="Amt" type="xsd:decimal" />
+            <xsd:element name="CurCode" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CustPayeeInfo_Type">
+        <xsd:sequence>
+            <xsd:element name="Name" type="xsd:string" minOccurs="0" />
+            <xsd:element name="Nickname" type="xsd:string" minOccurs="0" />
+            <xsd:element name="BillerPayee" type="BillerPayee_Type" />
+            <xsd:element name="BillingAcct" type="xsd:string" minOccurs="0" />
+            <xsd:element name="AcctPayAcctId" type="xsd:string" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DepAcctTrnInqRq_Type">
+        <xsd:sequence>
+            <xsd:element name="TrnCountLimit" type="TrnCountLimit_Type" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DepAcctTrnInqRs_Type">
+        <xsd:sequence>
+            <xsd:sequence>
+                <xsd:element name="Status" type="Status_Type" />
+                <xsd:element name="DepAcctId" type="DepAcctId_Type" />
+                <xsd:element name="DepAcctTrnRec" type="DepAcctTrnRec_Type" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DepAcctTrnRec_Type">
+        <xsd:sequence>
+            <xsd:element name="BankAcctTrnRec" type="BankAcctTrnRec_Type" />
+            <xsd:element name="StmtRunningBal" type="CurrencyAmount" minOccurs="0" />
+            <xsd:element name="AvailDt" type="xsd:string" minOccurs="0" />
+            <xsd:element name="XferId" type="xsd:string" minOccurs="0" />
+            <xsd:element name="PmtId" type="xsd:string" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DepAcctId_Type">
+        <xsd:sequence>
+            <xsd:element name="BankInfo" type="BankInfo_Type" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Status_Type">
+        <xsd:sequence>
+            <xsd:element name="StatusCode" type="xsd:int" />
+            <xsd:element name="StatusDesc" type="xsd:string" />
+            <xsd:element name="AdditionalStatus" type="AdditionalStatus_Type" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="TrnCountLimit_Type">
+        <xsd:sequence>
+            <xsd:element name="Count" type="xsd:int" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="DepAcctTrnInqRq" type="DepAcctTrnInqRq_Type" />
+    <xsd:element name="DepAcctTrnInqRs" type="DepAcctTrnInqRs_Type" />
+</xsd:schema>
