@@ -88,9 +88,16 @@ public class Axis2BindingInvoker implements Invoker {
 
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
 
+            OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
+            
+            // FIXME: [rfeng] We have to pay performance penality to build the complete OM as the operationClient.complete() will
+            // release the underlying HTTP connection. 
+            // Force the response to be populated, see https://issues.apache.org/jira/browse/TUSCANY-1541
+            response.build();
+            
             operationClient.complete(requestMC);
 
-            return responseMC.getEnvelope().getBody().getFirstElement();
+            return response;
 
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
