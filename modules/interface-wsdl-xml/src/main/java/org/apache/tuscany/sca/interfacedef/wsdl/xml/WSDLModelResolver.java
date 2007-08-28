@@ -37,6 +37,7 @@ import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -58,14 +59,20 @@ import org.xml.sax.InputSource;
 public class WSDLModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<String, List<WSDLDefinition>> map = new HashMap<String, List<WSDLDefinition>>();
-    private javax.wsdl.factory.WSDLFactory wsdl4jFactory;
+    
     private ExtensionRegistry wsdlExtensionRegistry;
+    
     private WSDLFactory wsdlFactory;
+    private javax.wsdl.factory.WSDLFactory wsdl4jFactory;
+    private ContributionFactory contributionFactory;
 
     public WSDLModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
+        
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.wsdl4jFactory = modelFactories.getFactory(javax.wsdl.factory.WSDLFactory.class);
+        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        
         wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
     }
 
@@ -112,11 +119,15 @@ public class WSDLModelResolver implements ModelResolver {
                 if (importLocation.startsWith("/")) {
                     // The URI is relative to the contribution
                     String uri = importLocation.substring(1);
-                    for (DeployedArtifact a : contribution.getArtifacts()) {
-                        if (a.getURI().equals(uri)) {
-                            url = new URL(a.getLocation());
-                            break;
-                        }
+
+                    DeployedArtifact proxyArtifact = contributionFactory.createDeployedArtifact();
+                    proxyArtifact.setURI(uri);
+                    
+                    //use contribution resolution (this supports import/export)
+                    DeployedArtifact importedArtifact = contribution.getModelResolver().resolveModel(DeployedArtifact.class, proxyArtifact);
+                    if(importedArtifact.getLocation() != null) {
+                        //get the artifact URL
+                        url = new URL(importedArtifact.getLocation());
                     }
                 } else {
                     url = new URL(new URL(parentLocation), importLocation);
