@@ -71,8 +71,9 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      * Constructor with repository root
      * 
      * @param repository
+     * @param factory
      */
-    public ContributionRepositoryImpl(final String repository) throws IOException {
+    public ContributionRepositoryImpl(final String repository, XMLInputFactory factory) throws IOException {
         String root = repository;
         if (repository == null) {
             root = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -90,7 +91,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         if (!rootFile.exists() || !rootFile.isDirectory() || !rootFile.canRead()) {
             throw new IOException("The root is not a directory: " + repository);
         }
-        factory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
+        this.factory = factory;
     }
 
     public URI getDomain() {

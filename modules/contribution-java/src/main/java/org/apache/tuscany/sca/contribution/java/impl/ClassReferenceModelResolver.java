@@ -42,6 +42,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
     
     public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
+        //FIXME The classloader should be passed in
         this.classLoader = new WeakReference<ClassLoader>(Thread.currentThread().getContextClassLoader());
     }
 

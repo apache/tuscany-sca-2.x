@@ -56,7 +56,7 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
             return;
 
         // Get the databinding service declarations
-        ClassLoader classLoader = ContributionListener.class.getClassLoader();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         List<String> listenerDeclarations; 
         try {
             listenerDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, ContributionListener.class.getName());

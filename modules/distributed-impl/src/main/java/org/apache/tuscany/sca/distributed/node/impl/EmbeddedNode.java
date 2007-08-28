@@ -61,6 +61,8 @@ public class EmbeddedNode {
             
             // add management composite to the management domain
             ContributionService contributionService = management.getContributionService();
+            
+            //FIXME The classloader should be passed in
             URL contributionURL = Thread.currentThread().getContextClassLoader().getResource("management/");
             
             if ( contributionURL != null){
@@ -154,6 +156,8 @@ public class EmbeddedNode {
             if (contributionURL == null){
                 // find the current directory as a URL. This is where our contribution 
                 // will come from
+                
+                //FIXME The classloader should be passed in
                 contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
             } 
          

@@ -68,6 +68,9 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             
             // Dynamically load an extension point class declared under META-INF/services 
             ClassLoader classLoader = extensionPointType.getClassLoader();
+            if (classLoader == null) {
+                classLoader = Thread.currentThread().getContextClassLoader();
+            }
             try {
                 List<String> classNames = ServiceConfigurationUtil.getServiceClassNames(classLoader, extensionPointType.getName());
                 if (!classNames.isEmpty()) {

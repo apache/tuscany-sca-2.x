@@ -35,10 +35,8 @@ import org.apache.tuscany.sca.binding.notification.util.IOUtils.IOUtilsException
  */
 public class EncodingUtils {
 
-    private static XMLOutputFactory xof = XMLOutputFactory.newInstance("javax.xml.stream.XMLOuputFactory",
-                                                                       EncodingUtils.class.getClassLoader());
-    private static XMLInputFactory xif = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory",
-                                                                     EncodingUtils.class.getClassLoader());
+    private static XMLOutputFactory xof = XMLOutputFactory.newInstance();
+    private static XMLInputFactory xif = XMLInputFactory.newInstance();
 
     public static void encodeToStream(EncodingRegistry encodingRegistry,
                                       EncodingObject eo,

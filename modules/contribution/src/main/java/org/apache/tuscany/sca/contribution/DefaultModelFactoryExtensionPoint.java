@@ -90,6 +90,8 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
                 
                 // Dynamically load a factory class declared under META-INF/services 
                 ClassLoader classLoader = factoryInterface.getClassLoader();
+                if (classLoader == null)
+                    classLoader = ClassLoader.getSystemClassLoader();
                 try {
                     List<String> classNames = ServiceConfigurationUtil.getServiceClassNames(classLoader, factoryInterface.getName());
                     if (!classNames.isEmpty()) {

@@ -73,6 +73,8 @@ public class XQueryIntrospector {
     }
 
     public boolean introspect(XQueryImplementation xqueryImplementation) throws ContributionResolveException {
+        
+        //FIXME The classloader should be passed in
         cl = Thread.currentThread().getContextClassLoader();
 
         String xqExpression = null;

@@ -72,6 +72,8 @@ public final class BeanUtil {
         try {
             ClassLoader cl = beanObject.getClass().getClassLoader();
             if (cl == null) {
+                //FIXME Wouldn't it be better to use the current thread context
+                // classloader?
                 cl = ClassLoader.getSystemClassLoader();
             }
             String beanNS = beanName.getNamespaceURI();

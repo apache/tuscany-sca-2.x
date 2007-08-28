@@ -91,6 +91,7 @@ public class PropertyUtil {
         URI uri = URI.create(file);
         URL url = null;
         if (!uri.isAbsolute()) {
+            //FIXME Should already be given an absolute file 
             url = Thread.currentThread().getContextClassLoader().getResource(file);
         } else {
             url = uri.toURL();
