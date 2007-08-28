@@ -95,6 +95,8 @@ public class MediatorImpl implements Mediator {
         DataType targetType =
             (index == size - 1) ? targetDataType : new DataTypeImpl<Object>(transformer.getTargetDataBinding(),
                                                                             Object.class, targetDataType.getLogical());
+        
+        //FIXME The classloader should be passed in
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader, metadata);
         return context;

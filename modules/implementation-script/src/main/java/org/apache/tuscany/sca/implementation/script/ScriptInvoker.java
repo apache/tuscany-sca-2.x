@@ -53,7 +53,12 @@ public class ScriptInvoker implements Invoker {
         if (oper.getName() == null) {  // if no static setting
             oper = op;  // use dynamic setting
         }
-        Object response = ((Invocable)scriptEngine).invokeFunction(oper.getName(), objects);
+        Object response;
+        try {
+            response = ((Invocable)scriptEngine).invokeFunction(oper.getName(), objects);
+        } catch (NoSuchMethodException e) {
+            throw new ScriptException(e);
+        }
 
         if (xmlHelper != null) {
             response = xmlHelper.toOMElement(response);

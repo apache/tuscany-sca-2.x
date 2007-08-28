@@ -31,6 +31,8 @@ import java.net.URL;
 public class ResourceHelper {
 
     public static String readResource(String scriptName) {
+        
+        //FIXME The classloader should be passed in
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL scriptSrcUrl = cl.getResource(scriptName);
         if (scriptSrcUrl == null) {

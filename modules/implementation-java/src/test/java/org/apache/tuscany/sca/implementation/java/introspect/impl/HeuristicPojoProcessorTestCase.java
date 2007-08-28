@@ -55,7 +55,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
     }
 
     private <T> void visitEnd(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
-        for (Constructor<T> constructor : clazz.getConstructors()) {
+        for (Constructor<?> constructor : clazz.getConstructors()) {
             visitConstructor(constructor, type);
         }
         processor.visitEnd(clazz, type);

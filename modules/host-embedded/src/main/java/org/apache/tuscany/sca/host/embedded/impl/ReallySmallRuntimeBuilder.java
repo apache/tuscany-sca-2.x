@@ -194,7 +194,7 @@ public class ReallySmallRuntimeBuilder {
         // Create a contribution repository
         ContributionRepository repository;
         try {
-            repository = new ContributionRepositoryImpl("target");
+            repository = new ContributionRepositoryImpl("target", xmlFactory);
         } catch (IOException e) {
             throw new ActivationException(e);
         }

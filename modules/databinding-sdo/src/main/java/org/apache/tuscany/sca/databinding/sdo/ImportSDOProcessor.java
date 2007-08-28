@@ -89,6 +89,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     private void importFactory(ImportSDO importSDO) throws ContributionResolveException {
         String factoryName = importSDO.getFactoryClassName();
         if (factoryName != null) {
+            //FIXME The classloader should be passed in
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             try {
                 Class<?> factoryClass = cl.loadClass(factoryName);
@@ -119,6 +120,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                 if (uri.isAbsolute()) {
                     wsdlURL = uri.toURL();
                 }
+                //FIXME The classloader should be passed in
                 wsdlURL = Thread.currentThread().getContextClassLoader().getResource(location);
                 if (null == wsdlURL) {
                     ContributionResolveException loaderException = new ContributionResolveException(
