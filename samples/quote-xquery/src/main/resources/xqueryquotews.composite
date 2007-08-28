@@ -27,7 +27,7 @@
     <dbsdo:import.sdo factory="org.example.quote.QuoteFactory" />
 
     <component name="QuoteJoinServerComponent">
-        <service name="QuoteJoin">
+        <service name="quoteJoin">
             <interface.java interface="xquery.quote.QuoteJoin" />
             <binding.ws wsdlElement="http://quote.xquery#wsdl.port(QuoteJoinService/QuoteJoinSoapPort)" />
         </service>
@@ -40,7 +40,7 @@
     </component>
 
     <component name="AvailQuoteProviderComponent">
-        <service name="AvailQuoteProvider">
+        <service name="AvailQuoteProviderService">
             <interface.java interface="xquery.quote.AvailQuoteProviderService" />
             <binding.ws
                 wsdlElement="http://quote.xquery#wsdl.port(AvailQuoteProviderService/AvailQuoteProviderSoapPort)" />

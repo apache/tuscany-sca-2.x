@@ -18,13 +18,8 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://quote.xquery/client"
-    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
-    xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" xmlns:xq="http://quote.xquery/client"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" xmlns:xq="http://quote.xquery/client"
     name="xqueryquotewsclient">
-
-    <dbsdo:import.sdo factory="org.example.avail.AvailFactory" />
-    <dbsdo:import.sdo factory="org.example.price.PriceFactory" />
-    <dbsdo:import.sdo factory="org.example.quote.QuoteFactory" />
 
     <component name="QuoteJoinLocalComponent">
         <implementation.java class="xquery.quote.QuoteJoinLocalImpl" />
@@ -39,46 +34,51 @@
     </component>
     <component name="QuoteJoinPropertiesComponent">
         <tuscany:implementation.xquery location="META-INF/sca/quote_join_properties.xq" />
+        <!-- Reset the default namespace as the sub-elements under pri:priceQuote are
+            unqualified -->
         <property name="priceQuoteDoc">
-            <pri:priceQuote xmlns:pri="http://www.example.org/price">
-                <pri:customerName>Acme Inc</pri:customerName>
-                <pri:shipAddress pri:street="12 Springs Rd" pri:city="Morris Plains" pri:state="nj" pri:zip="07960" />
-                <pri:priceRequests>
-                    <pri:priceRequest>
-                        <pri:widgetId>12</pri:widgetId>
-                        <pri:price>1.0</pri:price>
-                    </pri:priceRequest>
-                    <pri:priceRequest>
-                        <pri:widgetId>134</pri:widgetId>
-                        <pri:price>34.1</pri:price>
-                    </pri:priceRequest>
-                    <pri:priceRequest>
-                        <pri:widgetId>211</pri:widgetId>
-                        <pri:price>10.0</pri:price>
-                    </pri:priceRequest>
-                </pri:priceRequests>
+            <pri:priceQuote xmlns:pri="http://www.example.org/price" xmlns="">
+                <customerName>Acme Inc</customerName>
+                <shipAddress street="12 Springs Rd" city="Morris Plains" state="nj" zip="07960" />
+                <priceRequests>
+                    <priceRequest>
+                        <widgetId>12</widgetId>
+                        <price>1.0</price>
+                    </priceRequest>
+                    <priceRequest>
+                        <widgetId>134</widgetId>
+                        <price>34.1</price>
+                    </priceRequest>
+                    <priceRequest>
+                        <widgetId>211</widgetId>
+                        <price>10.0</price>
+                    </priceRequest>
+                </priceRequests>
             </pri:priceQuote>
         </property>
+        <!-- Reset the default namespace as the sub-elements under ava:availQuote are
+            unqualified -->
+
         <property name="availQuoteDoc">
-            <ava:availQuote xmlns:ava="http://www.example.org/avail">
-                <ava:availRequest>
-                    <ava:widgetId>12</ava:widgetId>
-                    <ava:requestedQuantity>10</ava:requestedQuantity>
-                    <ava:quantityAvail>true</ava:quantityAvail>
-                    <ava:shipDate>2003-03-22</ava:shipDate>
-                </ava:availRequest>
-                <ava:availRequest>
-                    <ava:widgetId>134</ava:widgetId>
-                    <ava:requestedQuantity>345</ava:requestedQuantity>
-                    <ava:quantityAvail>false</ava:quantityAvail>
-                    <ava:shipDate>BackOrder</ava:shipDate>
-                </ava:availRequest>
-                <ava:availRequest>
-                    <ava:widgetId>211</ava:widgetId>
-                    <ava:requestedQuantity>100</ava:requestedQuantity>
-                    <ava:quantityAvail>true</ava:quantityAvail>
-                    <ava:shipDate>2003-04-21</ava:shipDate>
-                </ava:availRequest>
+            <ava:availQuote xmlns:ava="http://www.example.org/avail" xmlns="">
+                <availRequest>
+                    <widgetId>12</widgetId>
+                    <requestedQuantity>10</requestedQuantity>
+                    <quantityAvail>true</quantityAvail>
+                    <shipDate>2003-03-22</shipDate>
+                </availRequest>
+                <availRequest>
+                    <widgetId>134</widgetId>
+                    <requestedQuantity>345</requestedQuantity>
+                    <quantityAvail>false</quantityAvail>
+                    <shipDate>BackOrder</shipDate>
+                </availRequest>
+                <availRequest>
+                    <widgetId>211</widgetId>
+                    <requestedQuantity>100</requestedQuantity>
+                    <quantityAvail>true</quantityAvail>
+                    <shipDate>2003-04-21</shipDate>
+                </availRequest>
             </ava:availQuote>
         </property>
         <property name="taxRate">0.1</property>

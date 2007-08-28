@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
@@ -42,23 +41,17 @@ public class Node2NodeInfoTransformer extends BaseTransformer<Node, NodeInfo> im
     PullTransformer<Node, NodeInfo> {
 
     public NodeInfo transform(Node source, TransformationContext context) {
-        if (source instanceof Document) {
-            Configuration configuration = SaxonDataBindingHelper.CURR_EXECUTING_CONFIG;
-            if (configuration == null) {
-                configuration = new Configuration();
-            }
-            Document doc = (Document)source;
-            Document cloneDoc = (Document)doc.cloneNode(false);
-            SaxonDataBindingHelper.setNamespacesAndPrefixesReq(doc, cloneDoc, cloneDoc, "", null);
-            DocumentInfo docInfo = null;
-            try {
-                docInfo = configuration.buildDocument(new DOMSource(cloneDoc));
-            } catch (XPathException e) {
-                throw new TransformationException(e);
-            }
-            return docInfo;
+        Configuration configuration = SaxonDataBindingHelper.CURR_EXECUTING_CONFIG;
+        if (configuration == null) {
+            configuration = new Configuration();
         }
-        return null;
+        DocumentInfo docInfo = null;
+        try {
+            docInfo = configuration.buildDocument(new DOMSource(source));
+        } catch (XPathException e) {
+            throw new TransformationException(e);
+        }
+        return docInfo;
     }
 
     @Override
