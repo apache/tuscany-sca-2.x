@@ -6,6 +6,10 @@ declare namespace priceQuoteDoc="scaproperty:xml/http://www.example.org/price:pr
 declare namespace availQuoteDoc="scaproperty:xml/http://www.example.org/avail:availQuote";
 declare namespace taxRate="scaproperty:java/java.lang.Float";
 
+declare namespace pri="http://www.example.org/price";
+declare namespace ava="http://www.example.org/avail";
+declare namespace quo="http://www.example.org/quote";
+
 declare variable $quoteCalculator external;
 
 declare variable $priceQuoteDoc external;
@@ -13,26 +17,29 @@ declare variable $availQuoteDoc external;
 declare variable $taxRate external;
 
 declare function quoteJoin:joinPriceAndAvailQuotes() {
-<quote>
-    <name>{ data($priceQuoteDoc/priceQuote/customerName) }</name>
-    <address>{ concat($priceQuoteDoc/priceQuote/shipAddress/@street , ",", $priceQuoteDoc/priceQuote/shipAddress/@city ,",", fn:upper-case($priceQuoteDoc/priceQuote/shipAddress/@state) , ",", $priceQuoteDoc/priceQuote/shipAddress/@zip) }</address>
+<quo:quote>
+    <quo:name>{ data($priceQuoteDoc/pri:priceQuote/customerName) }</quo:name>
+    <quo:address>{ concat($priceQuoteDoc/pri:priceQuote/shipAddress/@street , ",", 
+    $priceQuoteDoc/pri:priceQuote/shipAddress/@city ,",", 
+    fn:upper-case($priceQuoteDoc/pri:priceQuote/shipAddress/@state) , ",", 
+    $priceQuoteDoc/pri:priceQuote/shipAddress/@zip) }</quo:address>
     {
-        for $priceRequest in $priceQuoteDoc/priceQuote/priceRequests/priceRequest,
-            $availRequest in $availQuoteDoc/availQuote/availRequest
+        for $priceRequest in $priceQuoteDoc/pri:priceQuote/priceRequests/priceRequest,
+            $availRequest in $availQuoteDoc/ava:availQuote/availRequest
         where data($priceRequest/widgetId) = data($availRequest/widgetId)
         return
-            <quoteResponse>
-                <widgetId>{ data($priceRequest/widgetId) }</widgetId>
-                <unitPrice>{ data($priceRequest/price) }</unitPrice>
-                <requestedQuantity>{ data($availRequest/requestedQuantity) }</requestedQuantity>
-                <fillOrder>{ data($availRequest/quantityAvail) }</fillOrder>
+            <quo:quoteResponse>
+                <quo:widgetId>{ data($priceRequest/widgetId) }</quo:widgetId>
+                <quo:unitPrice>{ data($priceRequest/price) }</quo:unitPrice>
+                <quo:requestedQuantity>{ data($availRequest/requestedQuantity) }</quo:requestedQuantity>
+                <quo:fillOrder>{ data($availRequest/quantityAvail) }</quo:fillOrder>
                 {
                     for $shipDate in $availRequest/shipDate
                     return
-                        <shipDate>{ data($shipDate) }</shipDate>
+                        <quo:shipDate>{ data($shipDate) }</quo:shipDate>
                 }
-                <taxRate>{ $taxRate }</taxRate>
-                <totalCost>{ quoteCalculator:calculateTotalPrice(
+                <quo:taxRate>{ $taxRate }</quo:taxRate>
+                <quo:totalCost>{ quoteCalculator:calculateTotalPrice(
                 				  $quoteCalculator,
                 				  
                 				  $taxRate,
@@ -41,8 +48,8 @@ declare function quoteJoin:joinPriceAndAvailQuotes() {
 
                                   $priceRequest/price,
 
-                                  $availRequest/quantityAvail) }</totalCost>
-            </quoteResponse>
+                                  $availRequest/quantityAvail) }</quo:totalCost>
+            </quo:quoteResponse>
     }
-    </quote>
+    </quo:quote>
 };

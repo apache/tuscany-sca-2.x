@@ -84,7 +84,7 @@ abstract class BaseArtifactProcessor implements Constants {
     static {
         domFactory.setNamespaceAware(true);
     }
-    
+
     /**
      * Construcst a new BaseArtifactProcessor.
      * @param contribFactory
@@ -92,7 +92,10 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    public BaseArtifactProcessor(ContributionFactory contribFactory, AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+    public BaseArtifactProcessor(ContributionFactory contribFactory,
+                                 AssemblyFactory factory,
+                                 PolicyFactory policyFactory,
+                                 StAXArtifactProcessor extensionProcessor) {
         this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
@@ -105,7 +108,9 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    public BaseArtifactProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
+    public BaseArtifactProcessor(AssemblyFactory factory,
+                                 PolicyFactory policyFactory,
+                                 StAXArtifactProcessor extensionProcessor) {
         this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
@@ -222,20 +227,20 @@ abstract class BaseArtifactProcessor implements Constants {
                 intent.setName(qname);
                 if (operation != null) {
                     //intent.getOperations().add(operation);
-}
+                }
                 requiredIntents.add(intent);
             }
         }
     }
-    
+
     /**
      * Reads policy intents and policy sets.
      * @param attachPoint
      * @param reader
      */
     protected void readPolicies(Object attachPoint, XMLStreamReader reader) {
-        if ( attachPoint instanceof PolicySetAttachPoint ) {
-            readPolicies((PolicySetAttachPoint)attachPoint, null, reader);        
+        if (attachPoint instanceof PolicySetAttachPoint) {
+            readPolicies((PolicySetAttachPoint)attachPoint, null, reader);
         }
     }
 
@@ -262,7 +267,7 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
-    
+
     /**
      * Read list of reference targets
      * @param reference
@@ -280,7 +285,7 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
-    
+
     /**
      * Read a multiplicity attribute.
      * @param reference
@@ -321,8 +326,8 @@ abstract class BaseArtifactProcessor implements Constants {
      * @throws XMLStreamException
      * @throws ContributionReadException
      */
-    protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader)
-        throws XMLStreamException, ContributionReadException {
+    protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader) throws XMLStreamException,
+        ContributionReadException {
         prop.setName(getString(reader, "name"));
         prop.setMany(getBoolean(reader, "many"));
         prop.setMustSupply(getBoolean(reader, "mustSupply"));
@@ -343,8 +348,8 @@ abstract class BaseArtifactProcessor implements Constants {
      * @throws XMLStreamException
      * @throws ContributionReadException
      */
-    protected void readProperty(Property prop, XMLStreamReader reader)
-        throws XMLStreamException, ContributionReadException {
+    protected void readProperty(Property prop, XMLStreamReader reader) throws XMLStreamException,
+        ContributionReadException {
         readAbstractProperty(prop, reader);
     }
 
@@ -387,7 +392,7 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
-    
+
     /**
      * Resolve an implementation.
      * @param implementation
@@ -395,7 +400,8 @@ abstract class BaseArtifactProcessor implements Constants {
      * @return
      * @throws ContributionResolveException
      */
-    protected Implementation resolveImplementation(Implementation implementation, ModelResolver resolver) throws ContributionResolveException {
+    protected Implementation resolveImplementation(Implementation implementation, ModelResolver resolver)
+        throws ContributionResolveException {
         if (implementation != null) {
             if (implementation.isUnresolved()) {
                 implementation = resolver.resolveModel(Implementation.class, implementation);
@@ -407,8 +413,8 @@ abstract class BaseArtifactProcessor implements Constants {
                         resolver.addModel(implementation);
                     }
                 }
-                
-                if ( implementation instanceof PolicySetAttachPoint ) {
+
+                if (implementation instanceof PolicySetAttachPoint) {
                     resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
                     resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
                 }
@@ -422,8 +428,9 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
-    protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver) throws ContributionResolveException {
-        for (Contract contract: contracts) {
+    protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver)
+        throws ContributionResolveException {
+        for (Contract contract : contracts) {
             // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
             if (interfaceContract != null) {
@@ -434,11 +441,11 @@ abstract class BaseArtifactProcessor implements Constants {
             for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
                 Binding binding = contract.getBindings().get(i);
                 extensionProcessor.resolve(binding, resolver);
-                if ( binding instanceof IntentAttachPoint ) {
+                if (binding instanceof IntentAttachPoint) {
                     IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
                     resolveIntents(policiedBinding.getRequiredIntents(), resolver);
                 }
-                if ( binding instanceof PolicySetAttachPoint ) {
+                if (binding instanceof PolicySetAttachPoint) {
                     PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                     resolvePolicySets(policiedBinding.getPolicySets(), resolver);
                 }
@@ -451,18 +458,18 @@ abstract class BaseArtifactProcessor implements Constants {
                 for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
                     Binding binding = contract.getCallback().getBindings().get(i);
                     extensionProcessor.resolve(binding, resolver);
-                    
-                    if ( binding instanceof IntentAttachPoint ) {
+
+                    if (binding instanceof IntentAttachPoint) {
                         IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
                         resolveIntents(policiedBinding.getRequiredIntents(), resolver);
                     }
-                    if ( binding instanceof PolicySetAttachPoint ) {
+                    if (binding instanceof PolicySetAttachPoint) {
                         PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                         resolvePolicySets(policiedBinding.getPolicySets(), resolver);
                     }
                 }
             }
-            
+
             resolveIntents(contract.getRequiredIntents(), resolver);
             resolvePolicySets(contract.getPolicySets(), resolver);
         }
@@ -473,8 +480,9 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
-    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ModelResolver resolver) throws ContributionResolveException {
-        for (AbstractContract contract: contracts) {
+    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ModelResolver resolver)
+        throws ContributionResolveException {
+        for (AbstractContract contract : contracts) {
 
             // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
@@ -491,7 +499,8 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param attrs
      * @throws XMLStreamException
      */
-    protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs) throws XMLStreamException {
+    protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs)
+        throws XMLStreamException {
         writeAttributePrefixes(writer, attrs);
         writer.writeStartElement(uri, name);
         writeAttributes(writer, attrs);
@@ -530,7 +539,7 @@ abstract class BaseArtifactProcessor implements Constants {
         writeStart(writer, name, attrs);
         writer.writeDefaultNamespace(SCA10_NS);
     }
-    
+
     /**
      * End a document.
      * @param writer
@@ -605,9 +614,9 @@ abstract class BaseArtifactProcessor implements Constants {
      * @throws ContributionReadException
      * @throws ParserConfigurationException 
      */
-    protected Document readPropertyValue(XMLStreamReader reader, QName type)
-        throws XMLStreamException, ParserConfigurationException {
-        
+    protected Document readPropertyValue(XMLStreamReader reader, QName type) throws XMLStreamException,
+        ParserConfigurationException {
+
         Document doc = createDocument();
 
         // root element has no namespace and local name "value"
@@ -651,8 +660,8 @@ abstract class BaseArtifactProcessor implements Constants {
      */
     private Element createElement(Document document, QName name) {
         String prefix = name.getPrefix();
-        String qname = (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name
-            .getLocalPart();
+        String qname =
+            (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name.getLocalPart();
         return document.createElementNS(name.getNamespaceURI(), qname);
     }
 
@@ -663,6 +672,12 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param ns
      */
     private void declareNamespace(Element element, String prefix, String ns) {
+        if (ns == null) {
+            ns = "";
+        }
+        if (prefix == null) {
+            prefix = "";
+        }
         String qname = null;
         if ("".equals(prefix)) {
             qname = "xmlns";
@@ -712,8 +727,6 @@ abstract class BaseArtifactProcessor implements Constants {
                     current.appendChild(child);
                     current = child;
 
-                    declareNamespace(child, name.getPrefix(), name.getNamespaceURI());
-
                     int count = reader.getNamespaceCount();
                     for (int i = 0; i < count; i++) {
                         String prefix = reader.getNamespacePrefix(i);
@@ -721,15 +734,23 @@ abstract class BaseArtifactProcessor implements Constants {
                         declareNamespace(child, prefix, ns);
                     }
 
+                    if(!"".equals(name.getNamespaceURI()))
+                    declareNamespace(child, name.getPrefix(), name.getNamespaceURI());
+
                     // add the attributes for this element
                     count = reader.getAttributeCount();
                     for (int i = 0; i < count; i++) {
                         String ns = reader.getAttributeNamespace(i);
                         String prefix = reader.getAttributePrefix(i);
-                        String localPart = reader.getAttributeLocalName(i);
+                        String qname = reader.getAttributeLocalName(i);
                         String value = reader.getAttributeValue(i);
-                        child.setAttributeNS(ns, localPart, value);
-                        declareNamespace(child, prefix, ns);
+                        if (prefix != null && prefix.length() != 0) {
+                            qname = prefix + ":" + qname;
+                        }
+                        child.setAttributeNS(ns, qname, value);
+                        if (ns != null) {
+                            declareNamespace(child, prefix, ns);
+                        }
                     }
 
                     break;
@@ -750,8 +771,7 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
-    
-    
+
     /**
      * Resolve policy intents attached to a specific SCA Artifact
      * @param policyIntents list of policy intents
@@ -760,15 +780,14 @@ abstract class BaseArtifactProcessor implements Constants {
     protected void resolveIntents(List<Intent> policyIntents, ModelResolver resolver) {
         List<Intent> requiredIntents = new ArrayList<Intent>();
         Intent resolvedIntent = null;
-        for ( Intent intent : policyIntents ) {
+        for (Intent intent : policyIntents) {
             resolvedIntent = resolver.resolveModel(Intent.class, intent);
             requiredIntents.add(resolvedIntent);
         }
         policyIntents.clear();
         policyIntents.addAll(requiredIntents);
     }
-    
-    
+
     /**
      * Resolve policy sets attached to a specific SCA Construct
      * @param policySets list of attached policy sets
@@ -777,12 +796,12 @@ abstract class BaseArtifactProcessor implements Constants {
     protected void resolvePolicySets(List<PolicySet> policySets, ModelResolver resolver) {
         List<PolicySet> resolvedPolicySets = new ArrayList<PolicySet>();
         PolicySet resolvedPolicySet = null;
-        for ( PolicySet policySet : policySets ) {
+        for (PolicySet policySet : policySets) {
             resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
             resolvedPolicySets.add(resolvedPolicySet);
         }
         policySets.clear();
         policySets.addAll(resolvedPolicySets);
     }
-   
+
 }

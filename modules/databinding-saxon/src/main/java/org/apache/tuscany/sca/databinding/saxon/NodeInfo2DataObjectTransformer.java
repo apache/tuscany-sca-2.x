@@ -34,16 +34,10 @@ import net.sf.saxon.om.NodeInfo;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sdo.helper.TypeHelperImpl;
-import org.apache.tuscany.sdo.impl.FactoryBase;
 import org.w3c.dom.Document;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.Type;
 import commonj.sdo.helper.XMLHelper;
-import commonj.sdo.impl.HelperProvider;
 
 /**
  * Transforms NodeInfo objects to SDO DataObject-s
@@ -81,44 +75,7 @@ public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, Da
     public DataObject transform(NodeInfo source, TransformationContext context) {
         Document doc = (Document)nodeInfo2NodeTransformer.transform(source, context);
 
-        Document cloneDoc = cloneDocumentWithRightNamespaces(doc, context);
-
-        return produceResult(cloneDoc);
-    }
-
-    private Document cloneDocumentWithRightNamespaces(Document doc, TransformationContext context) {
-
-        DataType targetDataType = context.getTargetDataType();
-        String namespace = null;
-        Object logical = targetDataType.getLogical();
-        if (logical instanceof XMLType) {
-            namespace = ((XMLType)logical).getTypeName().getNamespaceURI();
-        } else {
-            Type type = HelperProvider.INSTANCE.typeHelper().getType(targetDataType.getClass());
-
-            if (type == null) {
-                return doc;
-            }
-            namespace = type.getURI();
-        }
-
-        if (namespace == null) {
-            return doc;
-        }
-
-        FactoryBase factory =
-            (FactoryBase)((TypeHelperImpl)HelperProvider.INSTANCE.typeHelper()).getExtendedMetaData()
-                .getPackage(namespace);
-        if (factory == null) {
-            return doc;
-        }
-        String prefix = factory.getNsPrefix();
-
-        Document cloneDoc = (Document)doc.cloneNode(false);
-
-        SaxonDataBindingHelper.setNamespacesAndPrefixesReq(doc, cloneDoc, cloneDoc, namespace, prefix);
-
-        return cloneDoc;
+        return produceResult(doc);
     }
 
     private DataObject produceResult(Document doc) {

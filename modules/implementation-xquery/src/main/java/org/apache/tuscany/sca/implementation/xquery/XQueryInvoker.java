@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -52,6 +54,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Performs the invokation of a requested xquery function
@@ -258,14 +261,34 @@ public class XQueryInvoker implements Invoker {
         if (argument instanceof Document) {
             try {
                 Document doc = (Document)argument;
-                Document cloneDoc = (Document)doc.cloneNode(false);
                 Node valueNode = doc.getFirstChild();
+                DocumentInfo docInfo = null;
                 if (valueNode instanceof Element && valueNode.getNodeName().equals("value")) {
-                    SaxonDataBindingHelper.setNamespacesAndPrefixesReq(valueNode, cloneDoc, cloneDoc, "", null);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    StreamResult sr = new StreamResult(baos);
+                    try {
+                        Node element = null;
+                        NodeList list = valueNode.getChildNodes();
+                        for (int i = 0; i < list.getLength(); i++) {
+                            if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                                element = list.item(i);
+                                break;
+                            }
+                        }
+                        if (element == null) {
+                            element = valueNode.getFirstChild();
+                        }
+                        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                        transformer.transform(new DOMSource(element), sr);
+                        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                        docInfo = configuration.buildDocument(new StreamSource(bais));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return parameter;
+                    }
                 } else {
-                    SaxonDataBindingHelper.setNamespacesAndPrefixesReq(doc, cloneDoc, cloneDoc, "", null);
+                    docInfo = configuration.buildDocument(new DOMSource(doc));
                 }
-                DocumentInfo docInfo = configuration.buildDocument(new DOMSource(cloneDoc));
                 parameter = docInfo;
             } catch (XPathException e) {
                 e.printStackTrace();

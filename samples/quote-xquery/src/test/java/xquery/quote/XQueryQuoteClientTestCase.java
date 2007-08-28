@@ -92,49 +92,49 @@ public class XQueryQuoteClientTestCase {
         }
 
         Quote quote = quoteJoinLocal.joinPriceAndAvailQuotes(priceQuote, availQuote, 0.1f);
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from local join:");
             TestHelper.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotes(priceQuote, availQuote, 0.2f);
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.2f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from local join (second invokation):");
             TestHelper.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.2f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotesWs(priceQuote, availQuote, 0.1f);
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from web service join:");
             TestHelper.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotes();
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from properties join:");
             TestHelper.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotes(0.1f);
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from external references join:");
             TestHelper.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
+        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
     }
 
     @After
