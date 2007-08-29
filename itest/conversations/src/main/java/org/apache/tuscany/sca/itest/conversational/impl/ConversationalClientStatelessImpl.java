@@ -46,6 +46,9 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
     @Reference 
     protected ConversationalService conversationalService;
     
+    @Reference 
+    protected ConversationalService conversationalService2;
+    
     @Reference
     protected ConversationalReferenceClient conversationalReferenceClient;
     
@@ -61,6 +64,25 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         conversationalService.initializeCount(1);
         conversationalService.incrementCount();
         clientCount = conversationalService.retrieveCount();
+        conversationalService.endConversation();
+        
+        return clientCount;
+    }
+    public int runConversationFromInjectedReference2(){
+        calls.append("runConversationFromInjectedReference2,");   
+
+        // no test the second reference        
+        conversationalService2.initializeCount(1);
+        conversationalService2.incrementCount();
+        
+        // stick in a call to the first reference to 
+        // make sure the two references don't clash
+        conversationalService.initializeCount(1);
+        
+        clientCount = conversationalService2.retrieveCount();
+        conversationalService2.endConversation();
+        
+        // end the conversation through the first reference
         conversationalService.endConversation();
         
         return clientCount;
@@ -83,7 +105,9 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
     public int runConversationWithUserDefinedConversationId(){
         calls.append("runConversationWithUserDefinedConversationId,");
         ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
-                                                                                                        "conversationalService");       
+                                                                                                        "conversationalService");
+        serviceReference.setConversationID("MyConversation1");
+        
         ConversationalService callableReference = serviceReference.getService();
         
         callableReference.initializeCount(1);

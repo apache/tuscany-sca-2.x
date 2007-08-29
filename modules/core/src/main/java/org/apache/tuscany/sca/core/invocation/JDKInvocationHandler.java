@@ -28,6 +28,10 @@ import java.util.UUID;
 
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ConversationImpl;
+import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
+import org.apache.tuscany.sca.core.scope.Scope;
+import org.apache.tuscany.sca.core.scope.ScopeContainer;
+import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -38,6 +42,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.NoRegisteredCallbackException;
@@ -85,6 +90,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         InterfaceContract contract = wire.getSource().getInterfaceContract();
         this.conversational = contract.getInterface().isConversational();
     }
+    
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
@@ -170,51 +176,49 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         Message msg = messageFactory.createMessage();
 
         // make sure that the conversation id is set so it can be put in the 
-        // outgoing messages. The id can come from one of three places
-        // 1 - Generated here (if the source is stateless)
-        // 2 - Specified by the application (through a service reference)
-        // 3 - from the message context (if the source is stateful)
-        //
-        // TODO - number 3 seems a little shaky as we end up propagating
-        //        a conversationId through the source component. If we don't
-        //        do this though we can't correlate the callback call with the
-        //        current target instance. Currently specifying an application
-        //        conversationId in this case also means that the callback
-        //        can't be correlated with the source component instance 
+        // outgoing messages.        
         if (conversational) {
             if (conversation == null) {
-                // this is a callback so create a conversation to 
-                // hold onto the conversation state for the lifetime of the
-                // stateful callback
+                // this call via an automatic proxy rather than a
+                // callable/service reference so no conversation object 
+                // will have been constructed yet
                 conversation = new ConversationImpl();
             }
+            
             Object conversationId = conversation.getConversationID();
 
             // create a conversation id if one doesn't exist 
             // already, i.e. the conversation is just starting
-            if ((conversationStarted == false) && (conversationId == null)) {
-
-                // It the current component is already in a conversation
-                // the use this just in case this message has a stateful 
-                // callback. In which case the callback will come back
-                // to the correct instance. 
-                // TODO - we should always create a unique id here or
-                //        take the application defined conversation id. 
-                //        This implies we have to re-register the component 
-                //        instance against this 
-                if (msgContextConversationId == null) {
-                    conversationId = createConversationID();
-                } else {
-                    conversationId = msgContextConversationId;
+            // If this is a callback the conversation id will have been
+            // set to the conversation from the message context already
+            if (conversationId == null) {
+                // create a new conversation Id
+                conversationId = createConversationID();
+                
+                // register the calling component instance against this 
+                // new conversation id so that stateful callbacks will be
+                // able to find it
+                if (msgContextConversationId != null) {
+                    // the component instance is already registered
+                    // so add another registration
+                    ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
+                       
+                    if ( scopeContainer != null){
+                        // TODO - SPI needs extending to remove this cast
+                        ((ConversationalScopeContainer)scopeContainer).addWrapperReference(msgContextConversationId, conversationId);
+                    }
                 }
 
+                // we have just created a new conversation Id so 
+                // put it back in the conversation object
                 conversation.setConversationID(conversationId);
             }
+            
             //TODO - assuming that the conversation ID is a string here when
             //       it can be any object that is serializable to XML
             msg.setConversationID((String)conversationId);
-        }
-
+        }     
+        
         Invoker headInvoker = chain.getHeadInvoker();
         msg.setCorrelationID(callbackID);
         Operation operation = chain.getTargetOperation();
@@ -226,6 +230,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;
                 if (conversation != null) {
+                    
+                    // remove conversation id from scope container
+                    ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
+                    
+                    if ( scopeContainer != null){
+                        scopeContainer.remove(conversation.getConversationID());
+                    }
+                    
                     conversation.setConversationID(null);
                 }
             } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
@@ -278,6 +290,23 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         }
     }
 
+    private ScopeContainer<Object> getConversationalScopeContainer(RuntimeWire wire){
+        ScopeContainer<Object> scopeContainer = null;
+        
+        RuntimeComponent runtimeComponent = wire.getSource().getComponent();
+        
+        if (runtimeComponent instanceof ScopedRuntimeComponent) {
+            ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)runtimeComponent;
+            ScopeContainer<Object> tmpScopeContainer = scopedRuntimeComponent.getScopeContainer();
+            
+            if ((tmpScopeContainer != null ) &&
+                (tmpScopeContainer.getScope() == Scope.CONVERSATION)){
+                scopeContainer = tmpScopeContainer;
+            }
+        }
+        
+        return scopeContainer;
+    }
     /**
      * Creates a new conversational id
      * 

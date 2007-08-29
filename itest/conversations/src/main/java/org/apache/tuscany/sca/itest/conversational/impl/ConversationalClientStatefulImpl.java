@@ -52,6 +52,9 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
     @Reference 
     protected ConversationalService conversationalService;
     
+    @Reference 
+    protected ConversationalService conversationalService2;
+    
     @Reference
     protected ConversationalReferenceClient conversationalReferenceClient;
       
@@ -72,6 +75,24 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
 	    
 	    return clientCount;
 	}
+    public int runConversationFromInjectedReference2(){
+        calls.append("runConversationFromInjectedReference2,");
+               
+        conversationalService2.initializeCount(1);
+        conversationalService2.incrementCount();
+        
+        // stick in a call to the first reference to 
+        // make sure the two references don't clash
+        conversationalService.initializeCount(1);
+        
+        clientCount = conversationalService2.retrieveCount();
+        conversationalService2.endConversation();
+        
+        // end the conversation through the first reference
+        conversationalService.endConversation();
+        
+        return clientCount;
+    }	
     public int runConversationFromServiceReference(){
         calls.append("runConversationFromServiceReference,");
         ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 

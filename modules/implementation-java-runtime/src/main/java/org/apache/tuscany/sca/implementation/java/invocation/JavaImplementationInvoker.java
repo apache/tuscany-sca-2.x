@@ -80,9 +80,18 @@ public class JavaImplementationInvoker implements Invoker {
         Object payload = msg.getBody();
         
         // FIXME: How to deal with other scopes
-        Object contextId = ThreadMessageContext.getMessageContext().getConversationID();
+        Message messageContext = ThreadMessageContext.getMessageContext();
+        Object contextId = messageContext.getConversationID();
         try {
             InstanceWrapper wrapper = getInstance(sequence, contextId);
+            
+            // detects whether the scope container has created a conversation Id. This will
+            // happen in the case that the component has conversational scope but only the
+            // callback interface is conversational
+            boolean cleanUpComponent = (contextId == null) && 
+                                       (messageContext.getConversationID() != null);
+            contextId = messageContext.getConversationID();
+            
             Object instance = wrapper.getInstance();
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
@@ -91,8 +100,10 @@ public class JavaImplementationInvoker implements Invoker {
                 ret = method.invoke(instance, (Object[])payload);
             }
             scopeContainer.returnWrapper(wrapper, contextId);
-            if (sequence == ConversationSequence.CONVERSATION_END) {
-                // if end conversation, remove resource
+            if ((sequence == ConversationSequence.CONVERSATION_END) ||
+                (cleanUpComponent)){
+                // if end conversation, or we have the special case where a conversational
+                // object was created to service stateful callbacks, remove resource
                 scopeContainer.remove(contextId);
             }
             msg.setBody(ret);
