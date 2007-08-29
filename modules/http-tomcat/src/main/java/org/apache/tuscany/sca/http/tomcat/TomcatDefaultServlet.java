@@ -19,9 +19,16 @@
 
 package org.apache.tuscany.sca.http.tomcat;
 
-import java.net.URI;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Hashtable;
 
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.naming.resources.ProxyDirContext;
+import org.apache.naming.resources.Resource;
 
 public class TomcatDefaultServlet extends DefaultServlet {
     private static final long serialVersionUID = -7503581551326796573L;
@@ -39,9 +47,30 @@ public class TomcatDefaultServlet extends DefaultServlet {
     public TomcatDefaultServlet(String servletPath, String documentRoot) {
         this.documentRoot = documentRoot;
         
-        FileDirContext dirContext = new FileDirContext();
-        URI uri = URI.create(this.documentRoot);
-        dirContext.setDocBase(uri.getPath());
+        DirContext dirContext = new FileDirContext() {
+            
+            @Override
+            public Attributes getAttributes(String name) throws NamingException {
+                return new BasicAttributes();
+            }
+            
+            @Override
+            public Object lookup(String name) throws NamingException {
+                
+                try {
+                    final URL url = new URL(TomcatDefaultServlet.this.documentRoot + name);
+                    return new Resource() {
+                        
+                        @Override
+                        public InputStream streamContent() throws IOException {
+                            return url.openStream();
+                        }
+                    };
+                } catch (MalformedURLException e) {
+                    throw new NamingException(e.toString());
+                }
+            }
+        };
         
         proxyDirContext = new ProxyDirContext(new Hashtable(), dirContext);
         resources = proxyDirContext;

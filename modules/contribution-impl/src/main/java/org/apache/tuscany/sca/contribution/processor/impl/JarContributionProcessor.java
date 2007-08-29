@@ -25,7 +25,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -69,11 +71,10 @@ public class JarContributionProcessor implements PackageProcessor {
             throw new IllegalArgumentException("Invalid null source inputstream.");
         }
 
-        List<URI> artifacts = new ArrayList<URI>();
-
         // Assume the root is a jar file
         JarInputStream jar = new JarInputStream(inputStream);
         try {
+            Set<String> names = new HashSet<String>();
             while (true) {
                 JarEntry entry = jar.getNextJarEntry();
                 if (entry == null) {
@@ -82,13 +83,45 @@ public class JarContributionProcessor implements PackageProcessor {
                 }
 
                 // FIXME: Maybe we should externalize the filter as a property
-                if (!entry.getName().startsWith(".")) {
-                    artifacts.add(URI.create(entry.getName()));
+                String name = entry.getName(); 
+                if (!name.startsWith(".")) {
+                    
+                    // Trim trailing /
+                    if (name.endsWith("/")) {
+                        name = name.substring(0, name.length() - 1);
+                    }
+
+                    // Add the entry name
+                    if (!names.contains(name)) {
+                        names.add(name);
+                        
+                        // Add parent folder names to the list too
+                        for (;;) {
+                            int s = name.lastIndexOf('/');
+                            if (s == -1) {
+                                name = "";
+                            } else {
+                                name = name.substring(0, s);
+                            }
+                            if (!names.contains(name)) {
+                                names.add(name);
+                            } else {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
+            
+            // Return list of URIs
+            List<URI> artifacts = new ArrayList<URI>();
+            for (String name: names) {
+                artifacts.add(URI.create(name));
+            }
+            return artifacts;
+            
         } finally {
             jar.close();
         }
-        return artifacts;
     }
 }

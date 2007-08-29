@@ -73,6 +73,8 @@ public class FolderContributionProcessor implements PackageProcessor {
             }
             fileList.add(URI.create(uri));
             
+            //FIXME Do we really need to use a regexp here to filter out
+            // file names that start one or two dots?
             File[] files = file.listFiles(FileHelper.getFileFilter("[^\u002e].*", true));
             for (int i = 0; i < files.length; i++) {
                 traverse(fileList, files[i], root);
