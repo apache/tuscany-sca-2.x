@@ -45,13 +45,31 @@ public class ExtensibleServletHost implements ServletHost {
         servletHosts.getServletHosts().get(0).addServletMapping(uri, servlet);
     }
 
+    public Servlet getServletMapping(String uri) throws ServletMappingException {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
+        // TODO implement selection of the correct servlet host based on the mapping
+        // For now just select the first one
+        return servletHosts.getServletHosts().get(0).getServletMapping(uri);
+    }
+    
     public Servlet removeServletMapping(String uri) throws ServletMappingException {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
         return servletHosts.getServletHosts().get(0).removeServletMapping(uri);
     }
     
     public RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
         return servletHosts.getServletHosts().get(0).getRequestDispatcher(uri);
