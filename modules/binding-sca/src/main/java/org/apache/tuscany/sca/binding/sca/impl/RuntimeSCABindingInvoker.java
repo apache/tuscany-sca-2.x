@@ -26,8 +26,12 @@ import org.apache.tuscany.sca.invocation.Message;
  * The local SCA Binding invoker implementation. It is a no op as it passes message
  * invocations onto the next invoker in the chain. 
  * 
- * * @version $Rev$
+ * @version $Rev$
+ * 
+ * @deprecated Not necessary as it does nothing except relay to another
+ * invoker, so best is to not add it at all to the invocation chain
  */
+@Deprecated
 public class RuntimeSCABindingInvoker implements Interceptor {
 
     private Invoker next;
