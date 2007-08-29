@@ -54,7 +54,13 @@ public class ScriptInvoker implements Invoker {
             oper = op;  // use dynamic setting
         }
         Object response;
-        response = ((Invocable)scriptEngine).invokeFunction(oper.getName(), objects);
+        try {
+            response = ((Invocable)scriptEngine).invokeFunction(oper.getName(), objects);
+        } catch (ScriptException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ScriptException(e);
+        }
 
         if (xmlHelper != null) {
             response = xmlHelper.toOMElement(response);
