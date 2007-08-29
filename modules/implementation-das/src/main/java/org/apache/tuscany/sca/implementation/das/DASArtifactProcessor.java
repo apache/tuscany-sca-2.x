@@ -18,9 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.das;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -33,6 +34,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.data.engine.ConnectionInfoArtifactProcessor;
+import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 
@@ -51,10 +54,15 @@ public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementa
     
     private DASImplementationFactory dasFactory;
     
+    private StAXArtifactProcessor connectionInfoProcessor;
+    
     public DASArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        
         this.dasFactory = new DefaultDASImplementationFactory(assemblyFactory, javaFactory);
+        
+        this.connectionInfoProcessor = new ConnectionInfoArtifactProcessor(modelFactories);
     }
 
     public QName getArtifactType() {
@@ -81,33 +89,47 @@ public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementa
      */
     public DASImplementation read(XMLStreamReader reader) throws ContributionReadException {
         assert IMPLEMENTATION_DAS.equals(reader.getName());
-        
-        // Read an <implementation.das> element
-        try {
-            // Read the das config file attribute. 
-            // This is das configuration side file to use
-            String config = reader.getAttributeValue(null, "config");
-            
-            // Read the data access type attribute
-            // This is the type of data store in use (e.g rdb, xml, etc)
-            String dataAccessType = reader.getAttributeValue(null, "dataAccessType");
 
-            // Create an initialize the DAS implementation model
-            DASImplementation implementation = dasFactory.createDASImplementation();
-            implementation.setConfig(config);
-            implementation.setDataAccessType(dataAccessType);
-            
-            // Skip to end element
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && IMPLEMENTATION_DAS.equals(reader.getName())) {
+        // Read an <implementation.das> element
+
+        // Read the das config file attribute.
+        // This is das configuration side file to use
+        String config = reader.getAttributeValue(null, "config");
+
+        // Read the data access type attribute
+        // This is the type of data store in use (e.g rdb, xml, etc)
+        String dataAccessType = reader.getAttributeValue(null, "dataAccessType");
+
+        // Create an initialize the DAS implementation model
+        DASImplementation implementation = dasFactory.createDASImplementation();
+        implementation.setConfig(config);
+        implementation.setDataAccessType(dataAccessType);
+
+        try {
+            while (true) {
+                int event = reader.next();
+                switch (event) {
+
+                case START_ELEMENT:
+                    QName element = reader.getName();
+
+                    // Read an extension element
+                    ConnectionInfo connectionInfo = (ConnectionInfo) connectionInfoProcessor.read(reader);
+                    ;
+                    implementation.setConnectionInfo(connectionInfo);
+
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (IMPLEMENTATION_DAS.equals(reader.getName())) {
+                        return implementation;
+                    }
                     break;
                 }
             }
-            
-            return implementation;
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
+
     }
 
     public void resolve(DASImplementation impl, ModelResolver resolver) throws ContributionResolveException {

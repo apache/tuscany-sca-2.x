@@ -16,39 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.sca.implementation.das.provider;
-
-import org.apache.tuscany.das.rdb.Command;
-import org.apache.tuscany.das.rdb.DAS;
-
-import commonj.sdo.DataObject;
+package org.apache.tuscany.sca.data.engine.config;
 
 /**
- * Facade to hide DAS implementation details of handling commands
+ * Database connection information to be used for implementation.data
  * 
  * @version $Rev$ $Date$
  */
-public class DataAccessEngine {
-    private final DAS das;
+public class ConnectionInfo {
+    private ConnectionProperties connectionProperties;
 
-    public DataAccessEngine(DAS das) {
-        this.das = das;
+    private String dataSource;
+
+    public String getDataSource() {
+        return this.dataSource;
     }
 
-    public DataObject executeCommand(String commandName) {
-        try {
-            Command command = this.das.getCommand(commandName);
-            return command.executeQuery();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 
-    DataObject executeCommand(String commandName, String xPath) {
-        DataObject root = executeCommand(commandName);
-        return root.getDataObject(xPath);
+    public ConnectionProperties getConnectionProperties() {
+        return this.connectionProperties;
+    }
+
+    public void setConnectionProperties(ConnectionProperties connectionProperties) {
+        this.connectionProperties = connectionProperties;
     }
 
 }

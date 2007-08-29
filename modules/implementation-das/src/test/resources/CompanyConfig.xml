@@ -18,13 +18,6 @@
   under the License.
  -->
 <Config xmlns="http:///org.apache.tuscany.das.rdb/config.xsd"> 
-	
-	<ConnectionInfo>
-		<ConnectionProperties 
-			driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
-			databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
-			loginTimeout="600000"/>
-	</ConnectionInfo>
     
     <Command name="getCompanies" SQL="select * from COMPANY" kind="Select"/>
     

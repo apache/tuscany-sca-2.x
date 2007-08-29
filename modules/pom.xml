@@ -74,6 +74,7 @@
                 <module>databinding-saxon</module>
 -->
                 <module>databinding-xmlbeans</module>
+                <module>data-engine-helper</module>
                 <!--
                 <module>discovery-jms</module>
                 -->

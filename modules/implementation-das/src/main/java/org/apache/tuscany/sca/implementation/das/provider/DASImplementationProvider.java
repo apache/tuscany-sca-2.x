@@ -19,6 +19,8 @@
 package org.apache.tuscany.sca.implementation.das.provider;
 
 import org.apache.tuscany.das.rdb.DAS;
+import org.apache.tuscany.sca.data.engine.DataAccessEngine;
+import org.apache.tuscany.sca.data.engine.DataAccessEngineManager;
 import org.apache.tuscany.sca.implementation.das.DASImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -49,7 +51,7 @@ public class DASImplementationProvider implements ImplementationProvider {
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         DAS das = null;
         try {
-            das = dataAccessEngineManager.getDAS(implementation.getConfig());
+            das = dataAccessEngineManager.getDAS(implementation.getConfig(), implementation.getConnectionInfo());
         } catch(Exception e) {
             e.printStackTrace();
             //what now ?
@@ -61,7 +63,7 @@ public class DASImplementationProvider implements ImplementationProvider {
     public Invoker createCallbackInvoker(Operation operation) {
         DAS das = null;
         try {
-            das = dataAccessEngineManager.getDAS(implementation.getConfig());
+            das = dataAccessEngineManager.getDAS(implementation.getConfig(), implementation.getConnectionInfo());
         } catch(Exception e) {
             //what now ?
         }        

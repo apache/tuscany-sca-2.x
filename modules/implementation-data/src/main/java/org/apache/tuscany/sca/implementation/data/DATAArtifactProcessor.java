@@ -34,8 +34,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.implementation.data.config.ConnectionInfo;
-import org.apache.tuscany.sca.implementation.data.config.ConnectionProperties;
+import org.apache.tuscany.sca.data.engine.ConnectionInfoArtifactProcessor;
+import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 
@@ -52,16 +52,17 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplementation> {
     protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
     
-    private static final QName CONNECTION_INFO = new QName(Constants.SCA10_TUSCANY_NS, "connectionInfo");
-    private static final QName CONNECTION_PROPERTIES = new QName(Constants.SCA10_TUSCANY_NS, "connectionProperties");
-
-    
     private DATAImplementationFactory dataFactory;
+    
+    private StAXArtifactProcessor connectionInfoProcessor;
     
     public DATAArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        
         this.dataFactory = new DATAImplementationFactory(assemblyFactory, javaFactory);
+        
+        this.connectionInfoProcessor = new ConnectionInfoArtifactProcessor(modelFactories);
     }
 
     public QName getArtifactType() {
@@ -106,44 +107,9 @@ public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplemen
                 case START_ELEMENT:
                     QName element = reader.getName();
                     
-                    if (CONNECTION_INFO.equals(element)) {
-                        /* 
-                         *  <connectionInfo dataSource="jdbc:derby:target/test-classes/dastest; create = true"/>
-                         */
-                        String dataSource = reader.getAttributeValue(null, "datasource"); //exclusive with connection properties
-                        if (dataSource != null && dataSource.length() > 0) {
-                            ConnectionInfo connectionInfo = new ConnectionInfo();
-                            connectionInfo.setDataSource(dataSource);
-                            implementation.setConnectionInfo(connectionInfo);
-                        }
-                    
-                    } else if (CONNECTION_PROPERTIES.equals(element)) {
-                        /*
-                         * <connectionProperties 
-                         *  driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
-                         *  databaseURL="jdbc:derby:target/test-classes/dastest; create = true"
-                         *  username=""
-                         *  password="" 
-                         *  loginTimeout="600000"/>
-                         */
-                        String driverClass = reader.getAttributeValue(null, "driverClass");
-                        String databaseURL = reader.getAttributeValue(null, "databaseURL");
-                        String username = reader.getAttributeValue(null, "username");
-                        String password = reader.getAttributeValue(null, "password");
-                        int loginTimeout = Integer.parseInt(reader.getAttributeValue(null, "loginTimeout"));
-
-                        //FIXME: validation sending info to monitor....
-                        ConnectionInfo connectionInfo = new ConnectionInfo();
-                        ConnectionProperties connectionProperties = new ConnectionProperties();
-                        connectionProperties.setDriverClass(driverClass);
-                        connectionProperties.setDatabaseURL(databaseURL);
-                        connectionProperties.setUsername(username);
-                        connectionProperties.setPassword(password);
-                        connectionProperties.setLoginTimeout(loginTimeout);
-
-                        connectionInfo.setConnectionProperties(connectionProperties);
-                        implementation.setConnectionInfo(connectionInfo);
-                    }
+                    // Read an extension element
+                    ConnectionInfo connectionInfo = (ConnectionInfo) connectionInfoProcessor.read(reader);;
+                    implementation.setConnectionInfo(connectionInfo);
 
                     break;
                 case XMLStreamConstants.END_ELEMENT:

@@ -35,89 +35,83 @@
        </repository>
     </repositories>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.das</groupId>
-            <artifactId>tuscany-das-rdb</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-impl</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sca-api</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>  
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>                                      
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.1.2.1</version>
-            <scope>test</scope>
-        </dependency>         
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.tuscany.das</groupId>
+			<artifactId>tuscany-das-rdb</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-assembly</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-core</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-interface</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-assembly-xml</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-contribution-impl</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>sca-api</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-databinding</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-implementation-java-runtime</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-host-embedded</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-data-engine-helper</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>2.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.1.2.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
     <build>
        <finalName>${artifactId}</finalName>

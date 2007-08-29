@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.data.das;
+package org.apache.tuscany.sca.data.engine;
 
 import org.apache.tuscany.das.rdb.Command;
 import org.apache.tuscany.das.rdb.DAS;
@@ -48,5 +48,20 @@ public class DataAccessEngine {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public DataObject executeCommand(String commandName) {
+        try {
+            Command command = this.das.getCommand(commandName);
+            return command.executeQuery();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public DataObject executeCommand(String commandName, String xPath) {
+        DataObject root = executeCommand(commandName);
+        return root.getDataObject(xPath);
     }
 }
