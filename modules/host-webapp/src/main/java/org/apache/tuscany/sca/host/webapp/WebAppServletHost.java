@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
-import java.io.IOException;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -28,12 +30,10 @@ import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
@@ -46,16 +46,20 @@ import org.apache.tuscany.sca.host.http.ServletMappingException;
  */
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
-    private static WebAppServletHost instance = new WebAppServletHost();
+    
+    private static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
+
+    private static final WebAppServletHost instance = new WebAppServletHost();
 
     private Map<String, Servlet> servlets;
+    private SCADomain scaDomain;
 
     private WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
     }
 
-    public void addServletMapping(String path, Servlet servlet) throws ServletMappingException {
-        URI pathURI = URI.create(path);
+    public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
+        URI pathURI = URI.create(suri);
 
         // Ignore registrations of the Tuscany default resource servlet, as resources
         // are already served by the web container
@@ -64,107 +68,63 @@ public class WebAppServletHost implements ServletHost {
         }
 
         // Make sure that the path starts with a /
-        path = pathURI.getPath();
-        if (!path.startsWith("/")) {
-            path = '/' + path;
+        suri = pathURI.getPath();
+        if (!suri.startsWith("/")) {
+            suri = '/' + suri;
         }
         
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
-        servlets.put(path, servlet);
+        servlets.put(suri, servlet);
         
-        logger.info("addServletMapping: " + path);
+        logger.info("addServletMapping: " + suri);
     }
 
-    public Servlet removeServletMapping(String path) throws ServletMappingException {
-        URI pathURI = URI.create(path);
+    public Servlet removeServletMapping(String suri) throws ServletMappingException {
+        URI pathURI = URI.create(suri);
 
         // Make sure that the path starts with a /
-        path = pathURI.getPath();
-        if (!path.startsWith("/")) {
-            path = '/' + path;
+        suri = pathURI.getPath();
+        if (!suri.startsWith("/")) {
+            suri = '/' + suri;
         }
 
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
-        return servlets.remove(path);
+        return servlets.remove(suri);
     }
 
-    /**
-     * A servlet request dispatcher that can be used to dispath requests to a
-     * serlvet registered with this host.
-     */
-    private class MappedRequestDispatcher implements RequestDispatcher {
-        private String servletPath;
-        private Servlet servlet;
-        
-        public MappedRequestDispatcher(String mapping, Servlet servlet) {
-            if (mapping.endsWith("*")) {
-                mapping = mapping.substring(0, mapping.length()-1);
-            }
-            if (mapping.endsWith("/")) {
-                mapping = mapping.substring(0, mapping.length()-1);
-            }
-            this.servletPath = mapping;
-            this.servlet = servlet;
-        }
-
-        /**
-         * Returns a request wrapper which will return the correct servlet path
-         * and path info.
-         * 
-         * @param request
-         * @return
-         */
-        private HttpServletRequest createRequestWrapper(ServletRequest request) {
-            HttpServletRequest requestWrapper = new HttpServletRequestWrapper((HttpServletRequest)request) {
-                
-                @Override
-                public String getServletPath() {
-                    return servletPath;
-                }
-                
-                @Override
-                public String getPathInfo() {
-                    String path = super.getServletPath();
-                    path = path.substring(servletPath.length());
-                    return path;
-                }
-            };
-            return requestWrapper;
-        }
-        
-        public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-            servlet.service(createRequestWrapper(request), response);
-        }
-        
-        public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-            servlet.service(createRequestWrapper(request), response);
-        }
-        
-    }
-
-    public RequestDispatcher getRequestDispatcher(String path) throws ServletMappingException {
-
-        // Make sure that the path starts with a /
-        if (!path.startsWith("/")) {
-            path = '/' + path;
+    public Servlet getServletMapping(String suri) throws ServletMappingException {
+        if (!suri.startsWith("/")) {
+            suri = '/' + suri;
         }
         
         // Get the servlet mapped to the given path
-        Servlet servlet = servlets.get(path);
+        Servlet servlet = servlets.get(suri);
+        return servlet;
+    }
+
+    public RequestDispatcher getRequestDispatcher(String suri) throws ServletMappingException {
+
+        // Make sure that the path starts with a /
+        if (!suri.startsWith("/")) {
+            suri = '/' + suri;
+        }
+        
+        // Get the servlet mapped to the given path
+        Servlet servlet = servlets.get(suri);
         if (servlet != null) {
-            return new MappedRequestDispatcher(path, servlet);
+            return new WebAppRequestDispatcher(suri, servlet);
         }
         for (Map.Entry<String, Servlet> entry : servlets.entrySet()) {
             String servletPath = entry.getKey();
             if (servletPath.endsWith("*")) {
                 servletPath = servletPath.substring(0, servletPath.length() -1);
-                if (path.startsWith(servletPath)) {
-                    return new MappedRequestDispatcher(entry.getKey(), entry.getValue());
+                if (suri.startsWith(servletPath)) {
+                    return new WebAppRequestDispatcher(entry.getKey(), entry.getValue());
                 } else {
-                    if ((path + "/").startsWith(servletPath)) {
-                        return new MappedRequestDispatcher(entry.getKey(), entry.getValue());
+                    if ((suri + "/").startsWith(servletPath)) {
+                        return new WebAppRequestDispatcher(entry.getKey(), entry.getValue());
                     }
                 }
             }
@@ -174,13 +134,50 @@ public class WebAppServletHost implements ServletHost {
         return null;
     }
     
-    public static WebAppServletHost getInstance() {
+    static WebAppServletHost getInstance() {
         return instance;
     }
 
-    public void init(ServletConfig config) throws ServletException {
+    void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+
+        // Create an SCA domain object
+        String domainURI = "http://localhost/" + servletContext.getServletContextName().replace(' ', '.');
+        String contributionRoot = null;
+        try {
+            URL rootURL = servletContext.getResource("/");
+            if (rootURL.getProtocol().equals("jndi")) {
+                //this is tomcat case, we should use getRealPath
+                File warRootFile = new File(servletContext.getRealPath("/"));
+                contributionRoot = warRootFile.toURL().toString();
+            } else {
+                //this is jetty case
+                contributionRoot  = rootURL.toString();
+            }
+        } catch(MalformedURLException mf) {
+            //ignore, pass null
+        }
+        scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
+        
+        // Store the SCA domain in the servlet context
+        servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
+        
+        // Initialize the registered servlets
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
+        }
+    }
+    
+    void destroy() {
+        
+        // Destroy the registered servlets
+        for (Servlet servlet : servlets.values()) {
+            servlet.destroy();
+        }
+
+        // Close the SCA domain
+        if (scaDomain != null) {
+            scaDomain.close();
         }
     }
 

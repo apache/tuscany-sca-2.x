@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 public class TuscanyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected transient WebAppServletHost servletHost;
+    private transient WebAppServletHost servletHost;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
