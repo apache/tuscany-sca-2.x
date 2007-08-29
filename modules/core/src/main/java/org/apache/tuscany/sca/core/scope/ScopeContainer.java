@@ -62,6 +62,18 @@ public interface ScopeContainer<KEY> extends RuntimeEventListener {
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
      InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException;
+     
+     /**
+      * Allows a component to be registered against more than one context id. This is required in the
+      * case of stateful callbacks where we want to identify the originating client component instance 
+      * as the callback target but we don't want to reuse the clients original conversation id
+      * 
+      * @param existingContextId  an id that identifies an existing component instance
+      * @param newContextId a new id against which this component will also be registered
+      * @throws TargetResolutionException
+      */
+     public void addWrapperReference(KEY existingContextId, KEY newContextId) 
+       throws TargetResolutionException;   
 
     /**
      * Returns an implementation instance associated with the current scope context.

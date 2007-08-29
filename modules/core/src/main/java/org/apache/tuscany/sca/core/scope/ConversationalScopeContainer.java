@@ -172,15 +172,6 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         return getInstanceWrapper(true,contextId);
     } 
     
-    /**
-     * Allows a component to be registered against more than on context id. This is required in the
-     * case of stateful callbacks where we want to identify the originating client component instance 
-     * as the callback target but we don't want to reuse the clients original conversation id
-     * 
-     * @param existingContextId  an id that identifies an existing component instance
-     * @param newContextId a new id against which this component will also be registered
-     * @throws TargetResolutionException
-     */
     public void addWrapperReference(Object existingContextId, Object newContextId) throws TargetResolutionException {
         // get the instance wrapper via the existing id
         InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(existingContextId);

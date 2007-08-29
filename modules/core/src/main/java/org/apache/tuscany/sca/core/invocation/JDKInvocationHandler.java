@@ -179,7 +179,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         // outgoing messages.        
         if (conversational) {
             if (conversation == null) {
-                // this call via an automatic proxy rather than a
+                // this call is via an automatic proxy rather than a
                 // callable/service reference so no conversation object 
                 // will have been constructed yet
                 conversation = new ConversationImpl();
@@ -195,17 +195,17 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 // create a new conversation Id
                 conversationId = createConversationID();
                 
+                // If we are passing out a callback target
                 // register the calling component instance against this 
                 // new conversation id so that stateful callbacks will be
                 // able to find it
-                if (msgContextConversationId != null) {
+                if (wire.getSource().getCallbackEndpoint()!= null ) {
                     // the component instance is already registered
                     // so add another registration
                     ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
                        
                     if ( scopeContainer != null){
-                        // TODO - SPI needs extending to remove this cast
-                        ((ConversationalScopeContainer)scopeContainer).addWrapperReference(msgContextConversationId, conversationId);
+                        scopeContainer.addWrapperReference(msgContextConversationId, conversationId);
                     }
                 }
 

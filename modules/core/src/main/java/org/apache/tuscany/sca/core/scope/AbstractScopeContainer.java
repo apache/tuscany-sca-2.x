@@ -78,6 +78,12 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
     public InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException {
         return wrappers.get(contextId);
     }
+    
+    public void addWrapperReference(KEY existingContextId, KEY newContextId) 
+      throws TargetResolutionException 
+    {
+        // do nothing here. the conversational scope container implements this
+    }
 
     public void onEvent(Event event) {
     }
