@@ -32,7 +32,7 @@ import org.directwebremoting.proxy.dwr.Util;
 
 public class DWRInvoker implements Invoker {
 
-    protected String referenceFunction;
+    private String referenceFunction;
     
     public DWRInvoker(String referenceName, Operation operation) {
         this.referenceFunction = referenceName + "." + operation.getName();

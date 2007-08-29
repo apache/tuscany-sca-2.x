@@ -19,11 +19,8 @@
 
 package org.apache.tuscany.sca.binding.dwr;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,20 +28,15 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.create.AbstractCreator;
@@ -65,13 +57,12 @@ import org.directwebremoting.servlet.UrlProcessor;
 public class DWRServlet extends DwrServlet {
     private static final long serialVersionUID = 1L;
 
-    transient protected Map<String, ServiceHolder> services;
-    transient protected List<String> referenceNames;
-    transient protected boolean initialized;
-    transient protected Map<String, String> initParams;
+    transient private Map<String, ServiceHolder> services;
+    transient private List<String> referenceNames;
+    transient private boolean initialized;
+    transient private Map<String, String> initParams;
 
-    protected static final String SCADOMAIN_SCRIPT_PATH = "/scaDomain.js";
-    public static final String AJAX_SERVLET_PATH = "/SCADomain";
+    private static final String SCADOMAIN_SCRIPT_PATH = "/scaDomain.js";
 
     public DWRServlet() {
         this.services = new HashMap<String, ServiceHolder>();
@@ -84,7 +75,7 @@ public class DWRServlet extends DwrServlet {
 
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        super.service(patchRequest((HttpServletRequest)req), res);
+        super.service(req, res);
     }
 
     /**
@@ -110,7 +101,7 @@ public class DWRServlet extends DwrServlet {
      * to the DWR engine.js to define the Tuscany SCADomain control functions and
      * functions for each SCA service and reference that use <binding.dwr>.
      */
-    protected void addScriptHandler() {
+    private void addScriptHandler() {
 
         UrlProcessor urlProcessor = (UrlProcessor)getContainer().getBean(UrlProcessor.class.getName());
 
@@ -145,20 +136,12 @@ public class DWRServlet extends DwrServlet {
      * Adds the JavaScript defining SCADomain, its control functions,
      * and functions for all the available SCA services and references.
      */
-    protected void tuscanyFooter(HttpServletRequest request, PrintWriter out) {
+    private void tuscanyFooter(HttpServletRequest request, PrintWriter out) {
         out.println("/** Apache Tuscany scaDomain.js Footer */");
         out.println();
         out.println("function scaDomain() { }");
         out.println();
-
-        // Alter the value of these variables in DWR engine.js to add in this servlet's path
-        out.println("dwr.engine._ModePlainCall = '" + AJAX_SERVLET_PATH + "/call/plaincall/';");
-        out.println("dwr.engine._ModeHtmlCall = '" + AJAX_SERVLET_PATH + "/call/htmlcall/';");
-        out.println("dwr.engine._ModePlainPoll = '" + AJAX_SERVLET_PATH + "/call/plainpoll/';");
-        out.println("dwr.engine._ModeHtmlPoll = '" + AJAX_SERVLET_PATH + "/call/htmlpoll/';");
-        
-        out.println();
-        out.println("// SCA sevices");
+        out.println("// SCA services");
 
         // Use the DWR remoter to generate the JavaScipt function for each SCA service        
         Remoter remoter = (Remoter)getContainer().getBean(Remoter.class.getName());
@@ -214,7 +197,7 @@ public class DWRServlet extends DwrServlet {
     /**
      * Defines each SCA service proxy instance to DWR 
      */
-    protected void initServices() {
+    private void initServices() {
         CreatorManager creatorManager = (CreatorManager)getContainer().getBean(CreatorManager.class.getName());
 
         for (final ServiceHolder holder : services.values()) {
@@ -231,7 +214,7 @@ public class DWRServlet extends DwrServlet {
     }
 
     // utility class to aid passing around services
-    class ServiceHolder {
+    private class ServiceHolder {
         String name;
         Class type;
         Object instance;
@@ -241,7 +224,7 @@ public class DWRServlet extends DwrServlet {
      * Patch the ServletConfig to enable setting init params for DWR
      * and so DWR can't see the Tuscany servlet's init params.
      */
-    protected ServletConfig patchConfig(final ServletConfig servletConfig) {
+    private ServletConfig patchConfig(final ServletConfig servletConfig) {
         ServletConfig patchedContext = new ServletConfig() {
             public String getInitParameter(String name) {
                 return initParams.get(name);
@@ -259,186 +242,4 @@ public class DWRServlet extends DwrServlet {
         return patchedContext;
     }
 
-    /**
-     * This changes the value returned from getPathInfo so that it does not include
-     * the path prefix of this Servlet. The DWR servlet expects its handlers to be
-     * at the root, eg /call/plaincall/, so they aren't found if the value request 
-     * getPathInfo returns includes this servlets path, eg /SCADomain/call/plaincall/
-     */
-    protected HttpServletRequest patchRequest(final HttpServletRequest req) {
-
-        final String translatedPath = req.getPathInfo().substring(AJAX_SERVLET_PATH.length());
-
-        HttpServletRequest patchedRequest = new HttpServletRequest() {
-            public Object getAttribute(String arg0) {
-                return req.getAttribute(arg0);
-            }
-            public Enumeration getAttributeNames() {
-                return req.getAttributeNames();
-            }
-            public String getCharacterEncoding() {
-                return req.getCharacterEncoding();
-            }
-            public int getContentLength() {
-                return req.getContentLength();
-            }
-            public String getContentType() {
-                return req.getContentType();
-            }
-            public ServletInputStream getInputStream() throws IOException {
-                return req.getInputStream();
-            }
-            public String getLocalAddr() {
-                return req.getLocalAddr();
-            }
-            public String getLocalName() {
-                return req.getLocalName();
-            }
-            public int getLocalPort() {
-                return req.getLocalPort();
-            }
-            public Locale getLocale() {
-                return req.getLocale();
-            }
-            public Enumeration getLocales() {
-                return req.getLocales();
-            }
-            public String getParameter(String arg0) {
-                return req.getParameter(arg0);
-            }
-            public Map getParameterMap() {
-                return req.getParameterMap();
-            }
-            public Enumeration getParameterNames() {
-                return req.getParameterNames();
-            }
-            public String[] getParameterValues(String arg0) {
-                return req.getParameterValues(arg0);
-            }
-            public String getProtocol() {
-                return req.getProtocol();
-            }
-            public BufferedReader getReader() throws IOException {
-                return req.getReader();
-            }
-            @SuppressWarnings("deprecation")
-            public String getRealPath(String arg0) {
-                return req.getRealPath(arg0);
-            }
-            public String getRemoteAddr() {
-                return req.getRemoteAddr();
-            }
-            public String getRemoteHost() {
-                return req.getRemoteHost();
-            }
-            public int getRemotePort() {
-                return req.getRemotePort();
-            }
-            public RequestDispatcher getRequestDispatcher(String arg0) {
-                return req.getRequestDispatcher(arg0);
-            }
-            public String getScheme() {
-                return req.getScheme();
-            }
-            public String getServerName() {
-                return req.getServerName();
-            }
-            public int getServerPort() {
-                return req.getServerPort();
-            }
-            public boolean isSecure() {
-                return req.isSecure();
-            }
-            public void removeAttribute(String arg0) {
-                req.removeAttribute(arg0);
-            }
-            public void setAttribute(String arg0, Object arg1) {
-                req.setAttribute(arg0, arg1);
-            }
-            public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
-                req.setCharacterEncoding(arg0);
-            }
-            public String getAuthType() {
-                return req.getAuthType();
-            }
-            public String getContextPath() {
-                return req.getContextPath();
-            }
-            public Cookie[] getCookies() {
-                return req.getCookies();
-            }
-            public long getDateHeader(String arg0) {
-                return req.getDateHeader(arg0);
-            }
-            public String getHeader(String arg0) {
-                return req.getHeader(arg0);
-            }
-            public Enumeration getHeaderNames() {
-                return req.getHeaderNames();
-            }
-            public Enumeration getHeaders(String arg0) {
-                return req.getHeaders(arg0);
-            }
-            public int getIntHeader(String arg0) {
-                return req.getIntHeader(arg0);
-            }
-            public String getMethod() {
-                return req.getMethod();
-            }
-            public String getPathInfo() {
-
-                // *** return the translated path
-
-                return translatedPath;
-            }
-            public String getPathTranslated() {
-                return req.getPathTranslated();
-            }
-            public String getQueryString() {
-                return req.getQueryString();
-            }
-            public String getRemoteUser() {
-                return req.getRemoteUser();
-            }
-            public String getRequestURI() {
-                return req.getRequestURI();
-            }
-            public StringBuffer getRequestURL() {
-                return req.getRequestURL();
-            }
-            public String getRequestedSessionId() {
-                return req.getRequestedSessionId();
-            }
-            public String getServletPath() {
-                return req.getServletPath();
-            }
-            public HttpSession getSession() {
-                return req.getSession();
-            }
-            public HttpSession getSession(boolean arg0) {
-                return req.getSession(arg0);
-            }
-            public Principal getUserPrincipal() {
-                return req.getUserPrincipal();
-            }
-            public boolean isRequestedSessionIdFromCookie() {
-                return req.isRequestedSessionIdFromCookie();
-            }
-            public boolean isRequestedSessionIdFromURL() {
-                return req.isRequestedSessionIdFromURL();
-            }
-            @SuppressWarnings("deprecation")
-            public boolean isRequestedSessionIdFromUrl() {
-                return req.isRequestedSessionIdFromUrl();
-            }
-            public boolean isRequestedSessionIdValid() {
-                return req.isRequestedSessionIdValid();
-            }
-            public boolean isUserInRole(String arg0) {
-                return req.isUserInRole(arg0);
-            }
-            
-        };
-        return patchedRequest;
-    }
 }
