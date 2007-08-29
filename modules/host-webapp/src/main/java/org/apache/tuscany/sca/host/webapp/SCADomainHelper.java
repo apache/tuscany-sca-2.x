@@ -29,16 +29,19 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Utility class to initialize the SCADomian associated with a webapp
+ * 
+ * @deprecated Not necessary anymore with TuscanyServletFilter 
  */
+@Deprecated
 public class SCADomainHelper {
 
-    public static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
+    static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
 
     /**
      * Initializes the SCADomian associated with a webapp context. If a SCADomain
      * doesn't exist already then one is create based on the webapp config.
      */
-    public static SCADomain initSCADomain(ServletContext servletContext) {
+    static SCADomain initSCADomain(ServletContext servletContext) {
         SCADomain scaDomain = (SCADomain)servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE);
         
         String domainURI = "http://localhost/" + servletContext.getServletContextName().replace(' ', '.');

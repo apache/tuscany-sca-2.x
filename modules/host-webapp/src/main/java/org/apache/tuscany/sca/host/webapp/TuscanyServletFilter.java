@@ -32,8 +32,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
 /**
  * A servlet filter that forwards service requests to the servlets registered with
  * the Tuscany ServletHost.
@@ -42,14 +40,13 @@ public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
 
     private WebAppServletHost servletHost;
-    private ServletContext servletContext;
 
     public void init(final FilterConfig config) throws ServletException {
-        servletContext = config.getServletContext();
-        SCADomainHelper.initSCADomain(servletContext);
 
         // TODO: must be a better way to get this than using a static
         servletHost = WebAppServletHost.getInstance();
+        
+        // Initialize the servlet host
         servletHost.init(new ServletConfig() {
             public String getInitParameter(String name) {
                 return config.getInitParameter(name);
@@ -67,10 +64,7 @@ public class TuscanyServletFilter implements Filter {
     }
     
     public void destroy() {
-        SCADomain scaDomain = (SCADomain) servletContext.getAttribute(SCADomainHelper.SCA_DOMAIN_ATTRIBUTE);
-        if (scaDomain != null) {
-            scaDomain.close();
-        }
+        WebAppServletHost.getInstance().destroy();
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain) throws IOException ,ServletException {
@@ -83,7 +77,6 @@ public class TuscanyServletFilter implements Filter {
         
         // Get a request dispatcher for the servlet mapped to that path
         RequestDispatcher dispatcher = servletHost.getRequestDispatcher(path);
-
         if (dispatcher != null) {
 
             // Let the dispatcher forward the request to the servlet 
@@ -91,7 +84,7 @@ public class TuscanyServletFilter implements Filter {
             
         } else {
             
-            // Proceed
+            // Proceed down the filter chain
             chain.doFilter(request, response);
             
         }
