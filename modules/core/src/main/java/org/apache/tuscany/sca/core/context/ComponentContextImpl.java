@@ -120,11 +120,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
         ComponentService service = ComponentContextHelper.getSingleService(component);
         try {
-            RuntimeComponentReference ref =
-                (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
-            ref.setComponent(component);
-
-            return getServiceReference(businessInterface, ref);
+            return createSelfReference(businessInterface, service);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
@@ -134,10 +130,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         try {
             for (ComponentService service : component.getServices()) {
                 if (serviceName.equals(service.getName())) {
-                    RuntimeComponentReference ref =
-                        (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
-                    ref.setComponent(component);
-                    return getServiceReference(businessInterface, ref);
+                    return createSelfReference(businessInterface, service);
                 }
             }
             throw new ServiceRuntimeException("Service not found: " + serviceName);
@@ -145,6 +138,23 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             throw e;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * @param <B>
+     * @param businessInterface
+     * @param service
+     * @return
+     */
+    public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, ComponentService service) {
+        try {
+            RuntimeComponentReference ref =
+                (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
+            ref.setComponent(component);
+            return getServiceReference(businessInterface, ref);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
         }
     }
 

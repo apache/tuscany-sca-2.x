@@ -75,7 +75,8 @@ public class LocateServiceEmbeddedSCADomainTestCase extends TestCase {
         Source source;
         try {
             source = domain.getService(Source.class, "SourceComponentXXX");
-            assertNull(source);
+            // The source proxy can be created for the remote target but it will throw exception when a method is invoked
+            source.clientMethod("ABC");
             fail("Expected to generate org.osoa.sca.ServiceRuntimeException but did not when invoking service with async");
         } catch (org.osoa.sca.ServiceRuntimeException e) {
             // expected.

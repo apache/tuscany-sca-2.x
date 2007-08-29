@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.impl;
 
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
@@ -37,6 +36,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.ServiceUnavailableException;
 
 /**
  * The sca reference binding provider mediates between the twin requirements of 
@@ -66,8 +66,8 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         this.extensionPoints = extensionPoints;
         this.component = component;
         this.reference = reference;
-        this.binding = binding;      
-        
+        this.binding = binding;
+
         // look to see if a distributed SCA binding implementation has
         // been included on the classpath. This will be needed by the 
         // provider itself to do it's thing
@@ -76,82 +76,81 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         distributedProviderFactory =
             (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
                 .getProviderFactory(DistributedSCABinding.class);
-        
+
         // Get the distributed domain
         distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
-        
+
         // determine if the target is remote. If we can tell now then this will
         // do some initialization before we get to run time
         isTargetRemote();
     }
-    
-    
+
     public boolean isTargetRemote() {
         boolean targetIsRemote = false;
-        
+
         // first look at the target service and see if this has been resolved
-        if (((WireableBinding)binding).getTargetComponentService() != null ) {
-            if (((WireableBinding)binding).getTargetComponentService().isUnresolved() == true ) {
+        if (((WireableBinding)binding).getTargetComponentService() != null) {
+            if (((WireableBinding)binding).getTargetComponentService().isUnresolved() == true) {
                 targetIsRemote = true;
             } else {
                 targetIsRemote = false;
             }
-        } else {  
+        } else {
             // if no target is found then this could be a completely dynamic
             // reference, e.g. a callback, so check the domain to see if the service is available
             // at this node. The binding uri might be null here if the dynamic reference has been
             // fully configured yet. It won't have all of the information until invocation time
-            if ((distributedDomain != null) && 
-                (binding.getURI() != null) ) {
+            if ((distributedDomain != null) && (binding.getURI() != null)) {
                 ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
-                
-                String serviceUrl = serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(), 
-                                                                         binding.getURI(), 
-                                                                         SCABinding.class.getName());
+
+                String serviceUrl =
+                    serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(),
+                                                         binding.getURI(),
+                                                         SCABinding.class.getName());
                 if (serviceUrl == null) {
                     targetIsRemote = false;
                 } else {
                     targetIsRemote = true;
                 }
-                    
+
             }
         }
-        
+
         // if we think the target is remote check that everything is configured correctly
         if (targetIsRemote) {
             // initialize the remote provider if it hasn't been done already
-            if (distributedProvider == null) { 
+            if (distributedProvider == null) {
                 if (!reference.getInterfaceContract().getInterface().isRemotable()) {
-                    throw new IllegalStateException("Reference interface not remoteable for component: "+
-                            component.getName() +
-                            " and reference: " + 
-                            reference.getName());
+                    throw new IllegalStateException("Reference interface not remoteable for component: " + component
+                        .getName()
+                        + " and reference: "
+                        + reference.getName());
                 }
-                
+
                 if (distributedProviderFactory == null) {
-                    throw new IllegalStateException("No distributed SCA binding available for component: "+
-                            component.getName() +
-                            " and reference: " + 
-                            reference.getName());
+                    throw new IllegalStateException("No distributed SCA binding available for component: " + component
+                        .getName()
+                        + " and reference: "
+                        + reference.getName());
                 }
-                
+
                 if (distributedDomain == null) {
-                    throw new IllegalStateException("No distributed domain available for component: "+
-                            component.getName() +
-                            " and reference: " + 
-                            reference.getName());                
+                    throw new IllegalStateException("No distributed domain available for component: " + component
+                        .getName()
+                        + " and reference: "
+                        + reference.getName());
                 }
-    
+
                 // create the remote provider
                 DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
                 distributedBinding.setSCABinging(binding);
-        
+
                 distributedProvider =
                     (ReferenceBindingProvider2)distributedProviderFactory
                         .createReferenceBindingProvider(component, reference, distributedBinding);
             }
         }
-        
+
         return targetIsRemote;
     }
 
@@ -168,9 +167,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             return distributedProvider.supportsAsyncOneWayInvocation();
         } else {
             return false;
-        }        
+        }
     }
-    
+
     /**
      * @param wire
      */
@@ -184,7 +183,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             }
         }
         return null;
-    }    
+    }
 
     public Invoker createInvoker(Operation operation) {
         if (isTargetRemote()) {
@@ -193,7 +192,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             RuntimeWire wire = reference.getRuntimeWire(binding);
             Invoker invoker = getInvoker(wire, operation);
             if (invoker == null) {
-                throw new IllegalStateException("No service invoker");
+                throw new ServiceUnavailableException("No service invoker is available for: " + binding.getURI());
             }
             return new RuntimeSCABindingInvoker(invoker);
         }
@@ -215,15 +214,15 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             started = true;
         }
 
-//        ComponentService service = ((WireableBinding)binding).getTargetComponentService();
-//        if (service != null) {
-//            RuntimeWire wire = reference.getRuntimeWire(binding);
-//            InterfaceContract interfaceContract = service.getInterfaceContract();
-//            boolean dynamicService = interfaceContract.getInterface().isDynamic();
-//            if (!dynamicService) {
-//                wire.getTarget().setInterfaceContract(interfaceContract);
-//            }
-//        }
+        //        ComponentService service = ((WireableBinding)binding).getTargetComponentService();
+        //        if (service != null) {
+        //            RuntimeWire wire = reference.getRuntimeWire(binding);
+        //            InterfaceContract interfaceContract = service.getInterfaceContract();
+        //            boolean dynamicService = interfaceContract.getInterface().isDynamic();
+        //            if (!dynamicService) {
+        //                wire.getTarget().setInterfaceContract(interfaceContract);
+        //            }
+        //        }
 
         if (distributedProvider != null) {
             distributedProvider.start();

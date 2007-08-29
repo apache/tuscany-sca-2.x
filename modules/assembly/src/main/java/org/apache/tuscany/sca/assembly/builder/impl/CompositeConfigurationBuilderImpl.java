@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -319,9 +318,9 @@ public class CompositeConfigurationBuilderImpl {
             configureCallbackReferences(component, componentReferences);
 
             // Create self references to the component's services
-            if (!(component.getImplementation() instanceof Composite)) {
-                createSelfReferences(component);
-            }
+//            if (!(component.getImplementation() instanceof Composite)) {
+//                createSelfReferences(component);
+//            }
 
             // Initialize service bindings
             for (ComponentService componentService : component.getServices()) {
@@ -980,49 +979,6 @@ public class CompositeConfigurationBuilderImpl {
     }
 
     /**
-     * Create a self-reference for a component service
-     * 
-     * @param component
-     * @param service
-     */
-    private ComponentReference createSelfReference(Component component, ComponentService service) {
-        ComponentReference componentReference = assemblyFactory.createComponentReference();
-        componentReference.setName("$self$." + service.getName());
-        componentReference.getBindings().addAll(service.getBindings());
-        componentReference.setCallback(service.getCallback());
-        ComponentService componentService = assemblyFactory.createComponentService();
-        componentService.setName(component.getName() + '/' + service.getName());
-        componentService.setUnresolved(true);
-        componentReference.getTargets().add(componentService);
-        componentReference.getPolicySets().addAll(service.getPolicySets());
-        componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
-
-        // FIXME: What interface contract should be used?
-        InterfaceContract interfaceContract = service.getInterfaceContract();
-        Service componentTypeService = service.getService();
-        if (componentTypeService != null && componentTypeService.getInterfaceContract() != null) {
-            interfaceContract = componentTypeService.getInterfaceContract();
-        }
-        componentReference.setInterfaceContract(interfaceContract);
-        componentReference.setMultiplicity(Multiplicity.ONE_ONE);
-        component.getReferences().add(componentReference);
-        return componentReference;
-    }
-
-    /**
-     * For all the services, create a corresponding self-reference.
-     * 
-     * @param component
-     */
-    private void createSelfReferences(Component component) {
-        for (ComponentService service : component.getServices()) {
-            if (!service.isCallback()) {
-                createSelfReference(component, service);
-            }
-        }
-    }
-
-    /**
      * Activate composite services in nested composites.
      * 
      * @param composite
@@ -1081,17 +1037,6 @@ public class CompositeConfigurationBuilderImpl {
                                         .addAll(compositeService.getCallback().getBindings());
                                 }
                             }
-
-                            // Create a self-reference for the promoted service
-                            ComponentReference selfReference =
-                                createSelfReference(promotedComponent, newComponentService);
-                            Binding binding =
-                                BindingUtil.resolveBindings(selfReference,
-                                                            promotedComponent,
-                                                            newComponentService);
-                            selfReference.getBindings().clear();
-                            selfReference.getBindings().add(binding);
-                            selfReference.getTargets().clear();
 
                             // Change the composite service to now promote the
                             // newly created component service directly

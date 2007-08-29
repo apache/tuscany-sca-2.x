@@ -56,7 +56,8 @@ public class ServiceLocateTestCase {
      */
     @Test(expected = ServiceRuntimeException.class)
     public void badComponentName() {
-        domain.getService(BasicService.class, "IvalidServiceName");
+        BasicService service = domain.getService(BasicService.class, "IvalidServiceName");
+        service.negate(-1);
     }
 
     @Before
