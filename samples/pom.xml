@@ -53,6 +53,7 @@
                 <module>company-das-webapp</module>
                 <module>databinding-echo</module>
                 <module>feed-aggregator</module>
+                <module>feed-aggregator-webapp</module>
                 <module>helloworld-dojo</module>
                 <module>helloworld-jsonrpc</module>
                 <module>helloworld-ws-service</module>

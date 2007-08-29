@@ -1,0 +1,79 @@
+Feed Aggregator Sample
+======================================
+This sample demonstrates using the Feed binding to aggregator ATOM and RSS
+and publish a new aggregated feed.
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-feed-aggregator.jar feed.SampleServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-feed-aggregator.jar feed.SampleServer
+
+Now the server is started you can point your Web browser to the URL of the
+aggregated feeds.
+
+Sample Overview
+---------------
+The sample provides a single component exposing a Web resource.
+
+web-resource/
+  src/
+    main/
+      java/
+        feed/
+          FeedAggregatorImpl.java         - implementation of the Feed
+                                            aggregator component
+          SampleServer.java               - starts the SCA Runtime and 
+                                            publishes the aggregated feeds
+      resources/
+        FeedAggregator.composite          - the SCA assembly for this sample
+  feed-aggregator.png                     - a pictorial representation of the 
+                                            sample .composite file
+  build.xml                               - the Ant build file
+  pom.xml                                 - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant using the 
+following commands
+
+cd feed-aggregator
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+    [java] Added Servlet mapping: http://localhost:8083/rssAggregator
+    [java] Added Servlet mapping: http://localhost:8083/atomAggregator/*
+    [java] Sample Feed server started (press enter to shutdown)
+
+    [java] To read the aggregated feeds, point your Web browser to the following addresses:
+    [java] http://localhost:8083/atomAggregator
+    [java] http://localhost:8083/atomAggregator/atomsvc (for the Atom service document)
+    [java] http://localhost:8083/rssAggregator
+    [java] http://localhost:8083/atomAggregator?feedType=rss_2.0
+    [java] http://localhost:8083/rssAggregator?feedType=atom_1.0
+     
+As this point the aggregated Feeds are exposed by a web server started
+automatically by the SCA runtime. To stop the server just press enter.
+
+Building The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built using
+Maven as follows.
+
+cd feed-aggregator
+mvn
+

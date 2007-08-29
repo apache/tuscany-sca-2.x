@@ -22,23 +22,19 @@
 Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
-    <display-name>Tuscany sample HelloWorld JSON-RPC</display-name>
+    <display-name>Apache Tuscany DOJO HelloWorld Sample</display-name>
     
-    <listener>
-        <listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class>
-    </listener>
-
-    <servlet>
-        <servlet-name>TuscanyServlet</servlet-name>
-        <servlet-class>org.apache.tuscany.sca.host.webapp.TuscanyServlet</servlet-class>
-    </servlet>
+    <filter>
+        <filter-name>tuscany</filter-name>
+        <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>
+    </filter>
  
-    <servlet-mapping>
-        <servlet-name>TuscanyServlet</servlet-name>
-        <url-pattern>/SCA/*</url-pattern>
-    </servlet-mapping>
+    <filter-mapping>
+        <filter-name>tuscany</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
-    <welcome-file-list id="WelcomeFileList">
+    <welcome-file-list>
         <welcome-file>HelloWorldJSONRPC.html</welcome-file>
     </welcome-file-list>  
 

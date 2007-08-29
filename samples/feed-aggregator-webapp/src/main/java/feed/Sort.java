@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +15,24 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
+ */
+package feed;
 
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web
-Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
+import java.util.List;
 
-    <display-name>Apache Tuscany JSON-RPC HelloWorld Sample</display-name>
-    
-    <filter>
-        <filter-name>tuscany</filter-name>
-        <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>
-    </filter>
- 
-    <filter-mapping>
-        <filter-name>tuscany</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+import com.sun.syndication.feed.atom.Entry;
 
-    <welcome-file-list>
-        <welcome-file>HelloWorldJSONRPC.html</welcome-file>
-    </welcome-file-list>  
+/**
+ * The Sort service business interface.
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface Sort {
 
-</web-app>
+    /**
+     * Sort feed entries by published date.
+     * @param entries
+     * @return
+     */
+    List<Entry> sort(List<Entry> entries);
+}
