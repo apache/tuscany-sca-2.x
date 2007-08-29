@@ -19,8 +19,15 @@
 
 package org.apache.tuscany.sca.http.jetty;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.resource.Resource;
+import org.mortbay.resource.URLResource;
 
 /**
  * Customizes the Jetty default servlet.
@@ -51,7 +58,23 @@ public class JettyDefaultServlet extends DefaultServlet {
                 pathInContext = "";
             }
         }
-        return super.getResource(pathInContext);
+        
+        try {
+            URL url = new URL(documentRoot + "/" + pathInContext);
+            return new URLResource(url, url.openConnection()) {
+                private static final long serialVersionUID = 8560952113883507717L;
+                
+                @Override
+                public File getFile() throws IOException {
+                    return null;
+                }
+                
+            };
+        } catch (MalformedURLException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
     }
     
     @Override
