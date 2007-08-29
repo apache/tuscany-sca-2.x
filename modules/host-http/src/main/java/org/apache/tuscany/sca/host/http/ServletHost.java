@@ -43,7 +43,7 @@ public interface ServletHost {
     void addServletMapping(String uri, Servlet servlet) throws ServletMappingException;
 
     /**
-     * Remove a servlet mapping. This directs the servlet contain not to direct
+     * Remove a servlet mapping. This directs the servlet container not to direct
      * any more requests to a previously registered Servlet.
      * 
      * @param uri the uri-mapping for the Servlet
@@ -54,7 +54,16 @@ public interface ServletHost {
     Servlet removeServletMapping(String uri) throws ServletMappingException;
 
     /**
-     * Returns a servlet request dispatcher for the specific uri.
+     * Returns the servlet mapped to the given uri.
+     * 
+     * @param uri the uri-mapping for the Servlet
+     * @return the servlet registered with the mapping
+     * @throws ServletMappingException
+     */
+    Servlet getServletMapping(String uri) throws ServletMappingException;
+
+    /**
+     * Returns a servlet request dispatcher for the servlet mapped to the specified uri.
      * 
      * @param uri the uri mapped to a Servlet
      * @return a RequestDispatcher that can be used to dispatch requests to
