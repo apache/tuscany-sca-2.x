@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.host.http;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 
 /**
@@ -48,6 +49,12 @@ public class ExtensibleServletHost implements ServletHost {
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
         return servletHosts.getServletHosts().get(0).removeServletMapping(uri);
+    }
+    
+    public RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException {
+        // TODO implement selection of the correct servlet host based on the mapping
+        // For now just select the first one
+        return servletHosts.getServletHosts().get(0).getRequestDispatcher(uri);
     }
     
 }
