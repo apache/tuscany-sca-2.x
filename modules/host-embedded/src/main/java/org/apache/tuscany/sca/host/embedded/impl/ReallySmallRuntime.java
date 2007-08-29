@@ -239,4 +239,11 @@ public class ReallySmallRuntime {
         return proxyFactory;
     }
 
+    /**
+     * @return the registry
+     */
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return registry;
+    }
+
 }
