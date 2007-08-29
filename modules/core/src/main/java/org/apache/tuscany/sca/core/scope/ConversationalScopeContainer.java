@@ -20,7 +20,9 @@
 
 package org.apache.tuscany.sca.core.scope;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,10 +55,10 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         super(Scope.CONVERSATION, component); 
         
         // Note: aStore is here to preserve the original factory interface. It is not currently used in this 
-        // implemenation since we do not support instance persistence.
+        // implementation since we do not support instance persistence.
         
         // Check System properties to see if timeout values have been specified. All timeout values 
-        // will be specifed in seconds.
+        // will be specified in seconds.
         //
         String aProperty; 
         aProperty = System.getProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.MaxIdleTime");
@@ -140,7 +142,6 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
             if (msgContext != null){
                 msgContext.setConversationID(contextId.toString());
             }
-            
         }
         
         InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(contextId);
@@ -153,7 +154,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
             anInstanceWrapper = new InstanceLifeCycleWrapper(contextId);  
             this.instanceLifecycleCollection.put(contextId, anInstanceWrapper);
         }
-        // If an existing intsance is found return it only if its not expired and update its 
+        // If an existing instance is found return it only if its not expired and update its 
         // last referenced time. 
         else
         {
@@ -162,7 +163,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
           anInstanceWrapper.updateLastReferencedTime();
         }
         
-        return anInstanceWrapper.getInstanceWrapper();          
+        return anInstanceWrapper.getInstanceWrapper(contextId);          
                       
     }
     
@@ -171,6 +172,27 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         return getInstanceWrapper(true,contextId);
     } 
     
+    /**
+     * Allows a component to be registered against more than on context id. This is required in the
+     * case of stateful callbacks where we want to identify the originating client component instance 
+     * as the callback target but we don't want to reuse the clients original conversation id
+     * 
+     * @param existingContextId  an id that identifies an existing component instance
+     * @param newContextId a new id against which this component will also be registered
+     * @throws TargetResolutionException
+     */
+    public void addWrapperReference(Object existingContextId, Object newContextId) throws TargetResolutionException {
+        // get the instance wrapper via the existing id
+        InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(existingContextId);
+        
+        // add the id to the list of ids that the wrapper holds. Used for reference
+        // counting on destruction
+        anInstanceWrapper.addInstanceId(newContextId);
+        
+        // add the reference to the collection
+        this.instanceLifecycleCollection.put(newContextId, anInstanceWrapper);  
+    }
+    
     
     // The remove is invoked when a conversation is explicitly ended.  This can occur by using the @EndsConversation or API.  
     // In this case the instance is immediately removed.  A new conversation will be started on the next operation
@@ -178,12 +200,14 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     //
     @Override
     public void remove(Object contextId) throws TargetDestructionException {
-        if (this.instanceLifecycleCollection.containsKey(contextId)) 
-        {
-         InstanceLifeCycleWrapper anInstanceLifeCycleWrapper = this.instanceLifecycleCollection.get(contextId);
-         this.instanceLifecycleCollection.remove(contextId);
-         anInstanceLifeCycleWrapper.removeInstanceWrapper();
-        } 
+        if (contextId != null){
+            if (this.instanceLifecycleCollection.containsKey(contextId)) 
+            {
+             InstanceLifeCycleWrapper anInstanceLifeCycleWrapper = this.instanceLifecycleCollection.get(contextId);
+             this.instanceLifecycleCollection.remove(contextId);
+             anInstanceLifeCycleWrapper.removeInstanceWrapper(contextId);
+            } 
+        }
     }  
        
     
@@ -195,7 +219,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     
     private class InstanceLifeCycleWrapper 
     {
-        private Object instanceId;
+        private List<Object> instanceIds = new ArrayList<Object>();
         private long   creationTime;
         private long   lastReferencedTime;
         private long   expirationInterval;
@@ -203,12 +227,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         
         private InstanceLifeCycleWrapper(Object contextId) throws TargetResolutionException
         {
-         this.instanceId = contextId;
+         this.instanceIds.add(contextId);
          this.creationTime = System.currentTimeMillis();
          this.lastReferencedTime = this.creationTime;
          this.expirationInterval = max_age;
          this.maxIdleTime = max_idle_time;
-         this.createInstance();
+         this.createInstance(contextId);
         }
         
         private boolean isExpired() 
@@ -227,27 +251,40 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
          this.lastReferencedTime = System.currentTimeMillis();
         }
         
+        // add another instance id to this instance
+        private void addInstanceId(Object contextId){
+            InstanceWrapper ctx =  getInstanceWrapper(instanceIds.get(0));
+            instanceIds.add(contextId);
+            wrappers.put(contextId, ctx);
+        }
+        
         //
         // Return the backing implementation instance  
         //
-        private InstanceWrapper getInstanceWrapper()
+        private InstanceWrapper getInstanceWrapper(Object contextId)
         {
-          InstanceWrapper ctx = wrappers.get(this.instanceId);
+          InstanceWrapper ctx = wrappers.get(contextId);
           return ctx;
         }
         
-        private void removeInstanceWrapper() throws TargetDestructionException 
+        private void removeInstanceWrapper(Object contextId) throws TargetDestructionException 
         {
-          InstanceWrapper ctx =  getInstanceWrapper();
-          ctx.stop();
-          wrappers.remove(this.instanceId);       
+          InstanceWrapper ctx =  getInstanceWrapper(contextId);            
+          wrappers.remove(contextId);
+          instanceIds.remove(contextId);
+          
+          // stop the component if its this removes the 
+          // last reference
+          if (instanceIds.isEmpty()) {
+              ctx.stop();
+          }   
         }
         
-        private void createInstance() throws TargetResolutionException 
+        private void createInstance(Object contextId) throws TargetResolutionException 
         {
             InstanceWrapper instanceWrapper = createInstanceWrapper();
             instanceWrapper.start();
-            wrappers.put(this.instanceId, instanceWrapper);       
+            wrappers.put(contextId, instanceWrapper);       
         }
         
     }
@@ -263,27 +300,32 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         
         public ConversationalInstanceReaper(Map<Object, InstanceLifeCycleWrapper> aMap)
         {
-         this.instanceLifecycleCollection = aMap;
+            this.instanceLifecycleCollection = aMap;
         }
         
         public void run()
         {
-          Iterator<Map.Entry<Object,InstanceLifeCycleWrapper>> anIterator = this.instanceLifecycleCollection.entrySet().iterator();             
+            Iterator<Map.Entry<Object,InstanceLifeCycleWrapper>> anIterator = this.instanceLifecycleCollection.entrySet().iterator();             
         
-          while (anIterator.hasNext())
-          {
-                Map.Entry<Object,InstanceLifeCycleWrapper> anEntry = anIterator.next();   
-            InstanceLifeCycleWrapper anInstanceLifeCycleWrapper = anEntry.getValue();
-            if (anInstanceLifeCycleWrapper.isExpired())
+            while (anIterator.hasNext())
             {
-              try {
-                  anInstanceLifeCycleWrapper.removeInstanceWrapper();
-                  this.instanceLifecycleCollection.remove(anInstanceLifeCycleWrapper.instanceId);
-              } catch (Exception ex) {
-                  // TODO - what to do with any asynchronous exceptions?
-              }
-            }
-          }             
+                Map.Entry<Object,InstanceLifeCycleWrapper> anEntry = anIterator.next();   
+                InstanceLifeCycleWrapper anInstanceLifeCycleWrapper = anEntry.getValue();
+                if (anInstanceLifeCycleWrapper.isExpired())
+                {
+                    try {
+                        // cycle through all the references to this instance and
+                        // remove them from the underlying wrappers collection and
+                        // from the lifecycle wrappers collection
+                        for(Object contextId : anInstanceLifeCycleWrapper.instanceIds ){
+                            anInstanceLifeCycleWrapper.removeInstanceWrapper(contextId);
+                            this.instanceLifecycleCollection.remove(contextId);
+                        }
+                    } catch (Exception ex) {
+                      // TODO - what to do with any asynchronous exceptions?
+                    }
+                }
+            }             
         }
     }
 }

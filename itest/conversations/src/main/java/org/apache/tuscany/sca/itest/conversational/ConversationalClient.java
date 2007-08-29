@@ -30,7 +30,8 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface ConversationalClient { 
 	
-	public int runConversationFromInjectedReference(); 	
+	public int runConversationFromInjectedReference();
+	public int runConversationFromInjectedReference2();
 	public int runConversationFromServiceReference();
 	public int runConversationWithUserDefinedConversationId();
 	public String runConversationCheckUserDefinedConversationId();	

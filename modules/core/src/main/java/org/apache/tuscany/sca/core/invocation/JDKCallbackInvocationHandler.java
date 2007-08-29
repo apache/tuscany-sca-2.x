@@ -23,6 +23,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.core.context.ConversationImpl;
+import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
+import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -66,9 +69,36 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             //FIXME: need better exception
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
         }
+        
+        // set the conversational state based on the interface that
+        // is specified for the reference that this wire belongs to
         setConversational(wire);
+        
+        // set the conversation id into the conversation object. This is
+        // a special case for callbacks as, unless otherwise set manually,
+        // the callback should use the same conversation id as was received
+        // on the incoming call to this component
+        if (conversational) {
+            if (conversation == null) {
+                // this is a call via an automatic proxy rather than a
+                // callable/service reference so no conversation object 
+                // will have been constructed yet
+                conversation = new ConversationImpl();
+            }
+            
+            Object conversationId = conversation.getConversationID();
+
+            // create a conversation id if one doesn't exist 
+            // already, i.e. the conversation is just starting
+            if (conversationId == null) {
+                conversationId = msgContext.getConversationID();
+                conversation.setConversationID(conversationId);
+            } 
+        }
+        
         callbackID = msgContext.getCorrelationID();
         setEndpoint(msgContext.getFrom());
+        
         
         
         // need to set the endpoint on the binding also so that when the chains are created next
