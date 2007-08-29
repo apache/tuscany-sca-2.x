@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.das.provider;
+package org.apache.tuscany.sca.data.engine;
 
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 

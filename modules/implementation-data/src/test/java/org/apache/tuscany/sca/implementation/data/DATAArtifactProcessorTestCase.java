@@ -33,15 +33,15 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.implementation.data.config.ConnectionInfo;
-import org.apache.tuscany.sca.implementation.data.config.ConnectionProperties;
+import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
+import org.apache.tuscany.sca.data.engine.config.ConnectionProperties;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
  * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
  */
-public class DATAImplementationProcessorTestCase extends TestCase {
+public class DATAArtifactProcessorTestCase extends TestCase {
     
     protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
 

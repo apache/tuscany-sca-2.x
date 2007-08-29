@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.data;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.sca.implementation.data.das.DataAccessEngine;
+import org.apache.tuscany.sca.data.engine.DataAccessEngine;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;

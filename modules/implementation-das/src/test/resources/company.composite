@@ -27,6 +27,13 @@
     </service>
 
     <component name="CompanyComponent">
-        <tuscany:implementation.das config="/CompanyConfig.xml" dataAccessType="rdb" />
+        <tuscany:implementation.das config="/CompanyConfig.xml" dataAccessType="rdb">
+        <tuscany:connectionInfo>
+			<tuscany:connectionProperties 
+				driverClass="org.apache.derby.jdbc.EmbeddedDriver"
+				databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
+				loginTimeout="600000"/>
+			</tuscany:connectionInfo>
+		</tuscany:implementation.das>
     </component>
 </composite>

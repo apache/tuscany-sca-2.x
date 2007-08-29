@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -43,6 +44,7 @@ public class DASImplementation implements Implementation {
     private Service dasService;
     private String dasConfig;
     private String dataAccessType;
+    private ConnectionInfo connectionInfo;
 
     /**
      * Constructs a new DAS implementation.
@@ -79,6 +81,14 @@ public class DASImplementation implements Implementation {
     
     public void setDataAccessType (String dataAccessType) {
         this.dataAccessType = dataAccessType;
+    }
+    
+    public ConnectionInfo getConnectionInfo() {
+        return this.connectionInfo;
+    }
+
+    public void setConnectionInfo(ConnectionInfo connectionInfo) {
+        this.connectionInfo = connectionInfo;
     }
 
     public ConstrainingType getConstrainingType() {
