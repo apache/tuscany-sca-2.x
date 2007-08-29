@@ -32,14 +32,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 public class DWRInvokerFactory implements InvokerFactory, ComponentLifecycle {
 
-    protected RuntimeComponent runtimeComponent;
-    protected RuntimeComponentReference runtimeComponentReference;
-    protected Binding binding;
-    protected ServletHost servletHost;
+    private Binding binding;
+    private ServletHost servletHost;
     
     public DWRInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, Binding b, DWRBinding ab, ServletHost servletHost) {
-        this.runtimeComponent = rc;
-        this.runtimeComponentReference = rcr;
         this.binding = b;
         this.servletHost = servletHost;
     }
@@ -50,16 +46,13 @@ public class DWRInvokerFactory implements InvokerFactory, ComponentLifecycle {
 
     public void start() {
 
-        // there is no "getServlet" method on ServletHost so this has to use remove/add
-
-        DWRServlet servlet = (DWRServlet) servletHost.removeServletMapping(SERVLET_PATH);
+        DWRServlet servlet = (DWRServlet) servletHost.getServletMapping(SERVLET_PATH);
         if (servlet == null) {
             servlet = new DWRServlet();
+            servletHost.addServletMapping(SERVLET_PATH, servlet);
         }
         
         servlet.addReference(binding.getName());
-
-        servletHost.addServletMapping(SERVLET_PATH, servlet);
     }
 
     public void stop() {

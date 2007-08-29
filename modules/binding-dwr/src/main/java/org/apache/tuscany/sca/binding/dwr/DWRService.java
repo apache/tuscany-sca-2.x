@@ -30,15 +30,13 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class DWRService implements ComponentLifecycle {
 
-    RuntimeComponent rc;
-    RuntimeComponentService rcs;
-    Binding binding;
-    protected ServletHost servletHost;
+    private RuntimeComponentService rcs;
+    private Binding binding;
+    private ServletHost servletHost;
     
-    public static final String SERVLET_PATH = DWRServlet.AJAX_SERVLET_PATH + "/*";
+    static final String SERVLET_PATH = "/SCADomain/*";
 
     public DWRService(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding, DWRBinding ab, ServletHost servletHost) {
-        this.rc = rc;
         this.rcs = rcs;
         this.binding = binding;
         this.servletHost = servletHost;
@@ -46,11 +44,10 @@ public class DWRService implements ComponentLifecycle {
 
     public void start() {
         
-        // there is no "getServlet" method on ServletHost so this has to use remove/add
-
-        DWRServlet servlet = (DWRServlet) servletHost.removeServletMapping(SERVLET_PATH);
+        DWRServlet servlet = (DWRServlet) servletHost.getServletMapping(SERVLET_PATH);
         if (servlet == null) {
             servlet = new DWRServlet();
+            servletHost.addServletMapping(SERVLET_PATH, servlet);
         }
         
         Class<?> type = ((JavaInterface)rcs.getInterfaceContract().getInterface()).getJavaClass();
@@ -60,8 +57,6 @@ public class DWRService implements ComponentLifecycle {
         Object proxy = proxyFactory.createProxy(type, rcs.getRuntimeWire(binding));
 
         servlet.addService(binding.getName(), type, proxy);
-
-        servletHost.addServletMapping(SERVLET_PATH, servlet);
     }
 
     public void stop() {
