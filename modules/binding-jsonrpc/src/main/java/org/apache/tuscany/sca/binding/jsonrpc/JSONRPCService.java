@@ -83,11 +83,11 @@ public class JSONRPCService implements ComponentLifecycle {
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
         // this uses removeServletMapping / addServletMapping as theres no getServletMapping facility
         URI domainURI = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT);
-        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.removeServletMapping(domainURI.toString());
+        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.getServletMapping(domainURI.toString());
         if (scaDomainServlet == null) {
             scaDomainServlet = new ScaDomainScriptServlet();
+            servletHost.addServletMapping(domainURI.toString(), scaDomainServlet);
         }
-        servletHost.addServletMapping(domainURI.toString(), scaDomainServlet);
         
         // Add this service to the scadomain script servlet
         scaDomainServlet.addService(binding.getName());
@@ -105,14 +105,14 @@ public class JSONRPCService implements ComponentLifecycle {
             port = 8080;
 
         // Unregister the service from the scaDomain script servlet
-        // don't unregister the scaDomain script servlet if it still has other service names
         URI domainURI = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT);
-        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.removeServletMapping(domainURI.toString());
+        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.getServletMapping(domainURI.toString());
         if (scaDomainServlet != null) {
             scaDomainServlet.removeService(binding.getName());
-            // put it back if there are still other services registered with the servlet
-            if (scaDomainServlet.getServiceNames().size() > 0) {
-                servletHost.addServletMapping(domainURI.toString(), scaDomainServlet);
+
+            // Remove the servlet if there's no more registered services
+            if (scaDomainServlet.getServiceNames().isEmpty()) {
+                servletHost.removeServletMapping(domainURI.toString());
             }
         }
     }
