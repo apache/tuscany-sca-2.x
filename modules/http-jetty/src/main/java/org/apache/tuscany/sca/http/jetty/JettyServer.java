@@ -135,8 +135,8 @@ public class JettyServer implements ServletHost {
         }
     }
 
-    public void addServletMapping(String uriStr, Servlet servlet) throws ServletMappingException {
-        URI uri = URI.create(uriStr);
+    public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
+        URI uri = URI.create(suri);
         
         // Get the URI scheme and port
         String scheme = uri.getScheme();
@@ -231,9 +231,9 @@ public class JettyServer implements ServletHost {
         URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
         logger.info("Added Servlet mapping: " + addedURI);
     }
-
-    public Servlet removeServletMapping(String uriStr) {
-        URI uri = URI.create(uriStr);
+    
+    public Servlet getServletMapping(String suri) throws ServletMappingException {
+        URI uri = URI.create(suri);
         
         // Get the URI port
         int portNumber = uri.getPort();
@@ -244,7 +244,41 @@ public class JettyServer implements ServletHost {
         // Get the port object associated with the given port number
         Port port = ports.get(portNumber);
         if (port == null) {
-            throw new IllegalStateException("No servlet registered at this URI: " + uriStr);
+            return null;
+        }
+        
+        // Remove the servlet mapping for the given servlet 
+        ServletHandler servletHandler = port.getServletHandler();
+        Servlet servlet = null;
+        List<ServletMapping> mappings =
+            new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
+        String path = uri.getPath();
+        for (ServletMapping mapping : mappings) {
+            if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
+                try {
+                    servlet = servletHandler.getServlet(mapping.getServletName()).getServlet();
+                } catch (ServletException e) {
+                    throw new IllegalStateException(e);
+                }
+                break;
+            }
+        }
+        return servlet;
+    }
+
+    public Servlet removeServletMapping(String suri) {
+        URI uri = URI.create(suri);
+        
+        // Get the URI port
+        int portNumber = uri.getPort();
+        if (portNumber == -1) {
+            portNumber = DEFAULT_PORT;
+        }
+
+        // Get the port object associated with the given port number
+        Port port = ports.get(portNumber);
+        if (port == null) {
+            throw new IllegalStateException("No servlet registered at this URI: " + suri);
         }
         
         // Remove the servlet mapping for the given servlet 
@@ -270,7 +304,7 @@ public class JettyServer implements ServletHost {
         return removedServlet;
     }
 
-    public RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException {
+    public RequestDispatcher getRequestDispatcher(String suri) throws ServletMappingException {
         //FIXME implement this later
         return null;
     }
