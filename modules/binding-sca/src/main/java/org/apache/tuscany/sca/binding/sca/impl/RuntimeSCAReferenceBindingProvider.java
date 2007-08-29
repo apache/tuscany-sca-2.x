@@ -194,7 +194,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             if (invoker == null) {
                 throw new ServiceUnavailableException("No service invoker is available for: " + binding.getURI());
             }
-            return new RuntimeSCABindingInvoker(invoker);
+            return invoker;
         }
     }
 
