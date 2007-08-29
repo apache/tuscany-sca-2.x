@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -269,6 +270,11 @@ public class JettyServer implements ServletHost {
         return removedServlet;
     }
 
+    public RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException {
+        //FIXME implement this later
+        return null;
+    }
+    
     /**
      * A wrapper to enable use of a WorkScheduler with Jetty
      */

@@ -76,7 +76,7 @@ public class ScaDomainScriptServlet extends HttpServlet {
 
             // A slight hack to make the service function available with a variable named 'serviceName'
             // to do that the JSONRpcClient is added to the scaDomain and then the service function is got from that
-            out.println("scaDomain." + serviceName + " = " + "new JSONRpcClient(\"" + path + "/" + serviceName + "\");");
+            out.println("scaDomain." + serviceName + " = " + "new JSONRpcClient(\"" + serviceName + "\");");
             out.println(serviceName + " = scaDomain." + serviceName + "." + serviceName + ";");
         }
 

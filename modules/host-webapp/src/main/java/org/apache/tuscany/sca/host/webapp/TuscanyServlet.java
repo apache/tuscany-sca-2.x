@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.host.webapp;
 
 import java.io.IOException;
 
-import javax.servlet.Servlet;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -33,7 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * A servlet that forwards requests to the servlets registered with the Tuscany
  * ServletHost.
+ * 
+ * @deprecated Not needed anymore, TuscanyServletFilter is sufficient
  */
+@Deprecated
 public class TuscanyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -52,17 +55,12 @@ public class TuscanyServlet extends HttpServlet {
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         String path = ((HttpServletRequest)req).getPathInfo();
-        Servlet servlet = servletHost.getServlet(path);
-        if (servlet == null) {
-            path = ((HttpServletRequest)req).getRequestURI();
-            servlet = servletHost.getServlet(path);
-            
-            if (servlet == null) {
-                throw new IllegalStateException("No servlet registered for path: " + path);
-            }
+        RequestDispatcher dispatcher = servletHost.getRequestDispatcher(path);
+        if (dispatcher == null) {
+            throw new IllegalStateException("No servlet registered for path: " + path);
         }
 
-        servlet.service(req, res);
+        dispatcher.forward(req, res);
     }
 
 }

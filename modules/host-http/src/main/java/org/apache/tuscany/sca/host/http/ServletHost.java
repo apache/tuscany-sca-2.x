@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.host.http;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 
 /**
@@ -37,6 +38,7 @@ public interface ServletHost {
      * 
      * @param uri the uri-mapping for the Servlet
      * @param servlet the Servlet that should be invoked
+     * @throws ServletMappingException
      */
     void addServletMapping(String uri, Servlet servlet) throws ServletMappingException;
 
@@ -47,7 +49,17 @@ public interface ServletHost {
      * @param uri the uri-mapping for the Servlet
      * @return the servlet that was registered to the mapping, null if nothing
      *         was registered to the mapping
+     * @throws ServletMappingException
      */
     Servlet removeServletMapping(String uri) throws ServletMappingException;
 
+    /**
+     * Returns a servlet request dispatcher for the specific uri.
+     * 
+     * @param uri the uri mapped to a Servlet
+     * @return a RequestDispatcher that can be used to dispatch requests to
+     * that servlet
+     * @throws ServletMappingException
+     */
+    RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException;
 }

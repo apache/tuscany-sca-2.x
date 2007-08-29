@@ -19,26 +19,30 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 
 /**
- * ServletHost impl singleton thats shared between the SCADomain
- * instance and the TuscanyServlet instance.
- * TODO: using a static singleton seems a big hack but how 
- *       should it be shared? Need some way for TuscanyServlet
- *       to pull it out of the SCADomain instance.
- *       
+ * ServletHost implementation for use in a webapp environment.
+ * 
+ * FIXME: using a static singleton seems a big hack but how should it be shared?
+ * Need some way for TuscanyServlet to pull it out.
  */
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
@@ -53,56 +57,123 @@ public class WebAppServletHost implements ServletHost {
     public void addServletMapping(String path, Servlet servlet) throws ServletMappingException {
         URI pathURI = URI.create(path);
 
-        // Ignore registrations of our default resource servlet, as resources
+        // Ignore registrations of the Tuscany default resource servlet, as resources
         // are already served by the web container
         if (servlet instanceof DefaultResourceServlet) {
-            //TODO maybe ignore registration of the servlet only if it's
-            // mapped to "/" and still honor other registrations, to do this
-            // we will need a way to determine what's the default servlet
-            // in the web container that we are running in.
             return;
         }
 
-        // For webapps just use the path and ignore the host and port
+        // Make sure that the path starts with a /
         path = pathURI.getPath();
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
+        
+        // In a webapp just use the given path and ignore the host and port
+        // as they are fixed by the Web container
         servlets.put(path, servlet);
+        
         logger.info("addServletMapping: " + path);
     }
 
     public Servlet removeServletMapping(String path) throws ServletMappingException {
         URI pathURI = URI.create(path);
+
+        // Make sure that the path starts with a /
         path = pathURI.getPath();
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
-        // for webapps just use the path and ignore the host and port
+
+        // In a webapp just use the given path and ignore the host and port
+        // as they are fixed by the Web container
         return servlets.remove(path);
     }
 
-    public Servlet getServlet(String path) {
-        if (path == null) {
-            return null;
+    /**
+     * A servlet request dispatcher that can be used to dispath requests to a
+     * serlvet registered with this host.
+     */
+    private class MappedRequestDispatcher implements RequestDispatcher {
+        private String servletPath;
+        private Servlet servlet;
+        
+        public MappedRequestDispatcher(String mapping, Servlet servlet) {
+            if (mapping.endsWith("*")) {
+                mapping = mapping.substring(0, mapping.length()-1);
+            }
+            if (mapping.endsWith("/")) {
+                mapping = mapping.substring(0, mapping.length()-1);
+            }
+            this.servletPath = mapping;
+            this.servlet = servlet;
         }
+
+        /**
+         * Returns a request wrapper which will return the correct servlet path
+         * and path info.
+         * 
+         * @param request
+         * @return
+         */
+        private HttpServletRequest createRequestWrapper(ServletRequest request) {
+            HttpServletRequest requestWrapper = new HttpServletRequestWrapper((HttpServletRequest)request) {
+                
+                @Override
+                public String getServletPath() {
+                    return servletPath;
+                }
+                
+                @Override
+                public String getPathInfo() {
+                    String path = super.getServletPath();
+                    path = path.substring(servletPath.length());
+                    return path;
+                }
+            };
+            return requestWrapper;
+        }
+        
+        public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+            servlet.service(createRequestWrapper(request), response);
+        }
+        
+        public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+            servlet.service(createRequestWrapper(request), response);
+        }
+        
+    }
+
+    public RequestDispatcher getRequestDispatcher(String path) throws ServletMappingException {
+
+        // Make sure that the path starts with a /
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
+        
+        // Get the servlet mapped to the given path
         Servlet servlet = servlets.get(path);
         if (servlet != null) {
-            return servlet;
+            return new MappedRequestDispatcher(path, servlet);
         }
-        for (String servletPath : servlets.keySet()) {
+        for (Map.Entry<String, Servlet> entry : servlets.entrySet()) {
+            String servletPath = entry.getKey();
             if (servletPath.endsWith("*")) {
-                if (path.startsWith(servletPath.substring(0, servletPath.length() - 1))) {
-                    return servlets.get(servletPath);
+                servletPath = servletPath.substring(0, servletPath.length() -1);
+                if (path.startsWith(servletPath)) {
+                    return new MappedRequestDispatcher(entry.getKey(), entry.getValue());
+                } else {
+                    if ((path + "/").startsWith(servletPath)) {
+                        return new MappedRequestDispatcher(entry.getKey(), entry.getValue());
+                    }
                 }
             }
         }
+        
+        // No servlet found
         return null;
     }
-
+    
     public static WebAppServletHost getInstance() {
         return instance;
     }

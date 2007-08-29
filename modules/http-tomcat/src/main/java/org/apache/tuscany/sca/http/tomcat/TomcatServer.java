@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 import java.util.logging.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -257,6 +258,11 @@ public class TomcatServer implements ServletHost {
         }
     }
 
+    public RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException {
+        //FIXME implement this later
+        return null;
+    }
+    
     /**
      * A custom connector that uses our WorkScheduler to schedule
      * worker threads.
