@@ -50,7 +50,7 @@
            <p>This example uses the <a href="http://dojotoolkit.org/">Dojo Toolkit</a>
            to create a JavaScript object <code>helloWorldService</code> for the SCA service
            'HelloWorldService' using <a href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's RPC classes</a>
-           and providing them with <a href="SCA/SCADomain/HelloWorldService?smd">SCA/SCADomain/HelloWorldService?smd</a>
+           and providing them with <a href="HelloWorldService?smd">HelloWorldService?smd</a>
            for <a href="http://dojo.jot.com/SMD">Simple Method Description (SMD)</a> input.</p>
            <p>It then creates a Dojo button that will envoke the <code>getGreetings</code> method of the <code>HelloWorldService</code> object.</p>
       </tr>
@@ -83,7 +83,7 @@
     		handlerNode.innerHTML = "<p>" + result + "</p>" ;
     	}
     
-    	var helloWorldService = new dojo.rpc.JsonService("SCA/HelloWorldService?smd");
+    	var helloWorldService = new dojo.rpc.JsonService("HelloWorldService?smd");
     
     </script>
        

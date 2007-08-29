@@ -22,7 +22,7 @@
 Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
-    <display-name>Apache Tuscany JSON-RPC HelloWorld Sample</display-name>
+    <display-name>Apache Tuscany Feed Aggregator Sample</display-name>
     
     <filter>
         <filter-name>tuscany</filter-name>
@@ -33,9 +33,5 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
         <filter-name>tuscany</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
-    <welcome-file-list>
-        <welcome-file>HelloWorldJSONRPC.html</welcome-file>
-    </welcome-file-list>  
 
 </web-app>
