@@ -116,8 +116,8 @@ public class TomcatServer implements ServletHost {
         }
     }
 
-    public void addServletMapping(String strURI, Servlet servlet) {
-        URI uri = URI.create(strURI);
+    public void addServletMapping(String suri, Servlet servlet) {
+        URI uri = URI.create(suri);
         
         // Get the URI scheme and port
         String scheme = uri.getScheme();
@@ -214,9 +214,9 @@ public class TomcatServer implements ServletHost {
         URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
         logger.info("Added Servlet mapping: " + addedURI);
     }
-
-    public Servlet removeServletMapping(String uriStr) {
-        URI uri = URI.create(uriStr);
+    
+    public Servlet getServletMapping(String suri) throws ServletMappingException {
+        URI uri = URI.create(suri);
         
         // Get the URI port
         int portNumber = uri.getPort();
@@ -227,7 +227,40 @@ public class TomcatServer implements ServletHost {
         // Get the port object associated with the given port number
         Port port = ports.get(portNumber);
         if (port == null) {
-            throw new IllegalStateException("No servlet registered at this URI: " + uriStr);
+            return null;
+        }
+        
+        String mapping = uri.getPath();
+        Context context = port.getHost().map(mapping);
+        MappingData md = new MappingData();
+        MessageBytes mb = MessageBytes.newInstance();
+        mb.setString(mapping);
+        try {
+            context.getMapper().map(mb, md);
+        } catch (Exception e) {
+            return null;
+        }
+        if (md.wrapper instanceof ServletWrapper) {
+            ServletWrapper servletWrapper = (ServletWrapper)md.wrapper;
+            return servletWrapper.getServlet();
+        } else {
+            return null;
+        }
+    }
+
+    public Servlet removeServletMapping(String suri) {
+        URI uri = URI.create(suri);
+        
+        // Get the URI port
+        int portNumber = uri.getPort();
+        if (portNumber == -1) {
+            portNumber = DEFAULT_PORT;
+        }
+
+        // Get the port object associated with the given port number
+        Port port = ports.get(portNumber);
+        if (port == null) {
+            throw new IllegalStateException("No servlet registered at this URI: " + suri);
         }
         
         String mapping = uri.getPath();
@@ -258,7 +291,7 @@ public class TomcatServer implements ServletHost {
         }
     }
 
-    public RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException {
+    public RequestDispatcher getRequestDispatcher(String suri) throws ServletMappingException {
         //FIXME implement this later
         return null;
     }
