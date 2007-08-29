@@ -22,7 +22,6 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.osoa.sca.Constants.SCA_NS;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -118,7 +117,6 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     }
     
     public OSGiImplementation read(XMLStreamReader reader) throws ContributionReadException {
-        
         assert IMPLEMENTATION_OSGI.equals(reader.getName());
         
         try {

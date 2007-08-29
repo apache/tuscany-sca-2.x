@@ -56,7 +56,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * Test reading OSGi implementations.
  *
  */
-public class OSGiReadImplTestCaseFIXME extends TestCase {
+public class OSGiReadImplTestCase extends TestCase {
 
     XMLInputFactory inputFactory;
     DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
@@ -124,8 +124,8 @@ public class OSGiReadImplTestCaseFIXME extends TestCase {
     }
 
     public void testReadOSGiImplementation() throws Exception {
-
-        String str = "<implementation.osgi xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" " +
+        String str = "<?xml version=\"1.0\" encoding=\"ASCII\"?>" +
+                     "<implementation.osgi xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://osgi\" " +
                      "bundle=\"OSGiTestService\" " +
                      "bundleLocation=\"file:target/OSGiTestService.jar\" " +
                      "scope=\"COMPOSITE\" " +
