@@ -18,6 +18,8 @@
  */
 package helloworldjsonrpc;
 
+import java.util.Date;
+
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -26,11 +28,11 @@ import org.osoa.sca.annotations.Service;
 @Service(HelloWorldService.class)
 public class HelloWorldServiceImpl implements HelloWorldService {
 
-     /*
-      * @see org.apache.tuscany.samples.helloworld.HelloWorldServiceComponent#getGreetings()
-      */
+    /*
+     * @see org.apache.tuscany.samples.helloworld.HelloWorldServiceComponent#getGreetings()
+     */
     public String getGreetings(String name) {
-        return "jsonrpcHello " + name;
+        return new Date() + ": [JSONRPC] Hello " + name;
     }
 
 }

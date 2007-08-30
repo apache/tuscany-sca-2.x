@@ -17,66 +17,73 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-  <head>
-    <title>Tuscany JSON-RPC HelloWorld Example</TITLE>
-    
-    <script type="text/javascript">
+<head>
+<title>Tuscany JSON-RPC HelloWorld Example</TITLE>
+
+<script type="text/javascript">
         var djConfig = {isDebug: true,debugContainerId: "dojoDebug" };
+		djConfig.usePlainJson=true ;
         //djConfig.debugAtAllCosts = true;
     </script>
+<script type="text/javascript" src="dojo/dojo/dojo.js"> 
+    </script>
+<script type="text/javascript" src="dojo/dijit/dijit.js"> 
+    </script>
 
-    <script type="text/javascript" src="dojo/dojo.js"></script>
-
-    <script type="text/javascript">
-    	dojo.require("dojo.widget.*");
-    	dojo.require("dojo.widget.Button");
+<script type="text/javascript">
+    	dojo.require("dijit.form.Button");
     	dojo.require("dojo.rpc.JsonService");    	
     </script>
-    
-    <link rel="stylesheet" type="text/css" href="style.css" />
 
-  </head>
+<link rel="stylesheet" type="text/css" href="style.css" />
 
-  <body>
+</head>
 
-    <h2>Tuscany Dojo JSON-RPC HelloWorld Sample</h2>
-     
-    <table>
-      <tr>
-        <th colspan="2">Dojo Example</th>
-      </tr>
-      <tr>
-        <td colspan="2">
-           <p>This example uses the <a href="http://dojotoolkit.org/">Dojo Toolkit</a>
-           to create a JavaScript object <code>helloWorldService</code> for the SCA service
-           'HelloWorldService' using <a href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's RPC classes</a>
-           and providing them with <a href="HelloWorldService?smd">HelloWorldService?smd</a>
-           for <a href="http://dojo.jot.com/SMD">Simple Method Description (SMD)</a> input.</p>
-           <p>It then creates a Dojo button that will envoke the <code>getGreetings</code> method of the <code>HelloWorldService</code> object.</p>
-      </tr>
-      <tr>
-        <td>Request</td>
-        <td>Response</td>
-      </tr>
-      <tr>
-        <td>
-            <br><div id="myecho" dojoType="Button" onClick='helloWorldService.getGreetings("Dojo").addCallback(contentCallBack);'>helloWorldService.getGreetings("Dojo").addCallback(contentCallBack);</div><br>
-        </td>
-        <td>           
-            <div id="ReturnedContent">None Yet.</div>
-        </td>
-      </tr>      
-      <tr>
-        <td colspan="2">
-           <div id="dojoDebug">Dojo Debug:</div>
-        </td>
-      </tr>
-    </table>    
-    
-    
-   
-    
-    <script type="text/javascript">
+<body>
+
+<h2>Tuscany Dojo JSON-RPC HelloWorld Sample</h2>
+
+<table>
+	<tr>
+		<th colspan="2">Dojo Example</th>
+	</tr>
+	<tr>
+		<td colspan="2">
+		<p>This example uses the <a href="http://dojotoolkit.org/">Dojo
+		Toolkit</a> to create a JavaScript object <code>helloWorldService</code>
+		for the SCA service 'HelloWorldService' using <a
+			href="http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9">Dojo's
+		RPC classes</a> and providing them with <a href="HelloWorldService?smd">HelloWorldService?smd</a>
+		for <a href="http://dojo.jot.com/SMD">Simple Method Description
+		(SMD)</a> input.</p>
+		<p>It then creates a Dojo button that will envoke the <code>getGreetings</code>
+		method of the <code>HelloWorldService</code> object.</p>
+	</tr>
+	<tr>
+		<td>Request</td>
+		<td>Response</td>
+	</tr>
+	<tr>
+		<td><br>
+		<button id="myecho" dojoType="dijit.form.Button"
+			onClick='helloWorldService.getGreetings("Dojo").addCallback(contentCallBack);'>Send
+		Request</button>
+		</td>
+		<td>
+		<div id="ReturnedContent">None Yet.</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+		<div id="dojoDebug">Dojo Debug:</div>
+		</td>
+	</tr>
+</table>
+
+
+
+
+<script type="text/javascript">
     
     	function contentCallBack(result) {
     		var handlerNode = document.getElementById("ReturnedContent");
@@ -86,6 +93,6 @@
     	var helloWorldService = new dojo.rpc.JsonService("HelloWorldService?smd");
     
     </script>
-       
-  </body>
+
+</body>
 </html>
