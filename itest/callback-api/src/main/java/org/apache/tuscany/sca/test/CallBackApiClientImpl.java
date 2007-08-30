@@ -40,6 +40,8 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
         // Test3a is the basic callback where the target calls back prior to
         // returning to the client.
         test3a();
+        
+        test3a1();
 
         // Test3b is where the target does not call back to the client.
         test3b();
@@ -71,6 +73,28 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
         Assert.assertEquals("CallBackApiITest - test3a", "Who's There", this.getReturnMessage());
 
     }
+    
+    private void test3a1() {
+        aCallBackService.knockKnockByRef("Knock Knock");
+        int count = 0;
+
+        // 
+        // If we cant get a response in 30 seconds consider this a failure
+        // 
+
+        synchronized (monitor) {
+            while (returnMessage == null && count++ < 30) {
+                try {
+                    monitor.wait(1000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Assert.assertEquals("CallBackApiITest - test3a", "Who's There", this.getReturnMessage());
+
+    }    
 
     private void test3b() {
         aCallBackService.noCallBack("No Reply Desired");

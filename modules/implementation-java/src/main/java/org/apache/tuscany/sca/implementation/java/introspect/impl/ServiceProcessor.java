@@ -22,6 +22,7 @@ import static org.apache.tuscany.sca.implementation.java.introspect.impl.JavaInt
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -33,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
@@ -104,18 +106,8 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (method.getParameterTypes().length != 1) {
             throw new IllegalCallbackReferenceException("Setter must have one parameter", method);
         }
-        Service callbackService = null;
-        Class<?> callbackClass = method.getParameterTypes()[0];
-        for (Service service : type.getServices()) {
-            JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getCallbackInterface();
-            if (callbackClass == javaInterface.getJavaClass()) {
-                callbackService = service;
-            }
-        }
-        if (callbackService == null) {
-            throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface");
-        }
-        type.getCallbackMembers().put(callbackClass.getName(), new JavaElementImpl(method, 0));
+        JavaElementImpl element = new JavaElementImpl(method, 0);
+        createCallback(type, element);
     }
 
     @Override
@@ -125,18 +117,36 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (annotation == null) {
             return;
         }
+        JavaElementImpl element = new JavaElementImpl(field);
+        createCallback(type, element);
+    }
+
+    /**
+     * @param type
+     * @param element
+     * @throws IllegalCallbackReferenceException
+     */
+    private void createCallback(JavaImplementation type, JavaElementImpl element)
+        throws IllegalCallbackReferenceException {
         Service callbackService = null;
-        Class<?> callbackClass = field.getType();
+        Class<?> callbackClass = element.getType();
+        Type genericType = element.getGenericType();
+        Class<?> baseType = callbackClass;
+        if(CallableReference.class.isAssignableFrom(baseType)) {
+            // @Callback protected CallableReference<MyCallback> callback;
+            // The base type will be MyCallback
+            baseType = JavaIntrospectionHelper.getBusinessInterface(baseType, genericType);
+        }        
         for (Service service : type.getServices()) {
             JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getCallbackInterface();
-            if (callbackClass == javaInterface.getJavaClass()) {
+            if (baseType == javaInterface.getJavaClass()) {
                 callbackService = service;
             }
         }
         if (callbackService == null) {
             throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface");
         }
-        type.getCallbackMembers().put(callbackClass.getName(), new JavaElementImpl(field));
+        type.getCallbackMembers().put(baseType.getName(), element);
     }
 
     public Service createService(Class<?> interfaze) throws InvalidInterfaceException {

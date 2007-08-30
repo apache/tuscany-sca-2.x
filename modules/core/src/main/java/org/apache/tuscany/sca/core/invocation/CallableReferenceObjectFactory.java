@@ -47,6 +47,10 @@ public class CallableReferenceObjectFactory implements ObjectFactory<CallableRef
                                           RuntimeComponentReference reference) {
         this.callableReference = component.getComponentContext().getServiceReference(businessInterface, reference);
     }
+    
+    public CallableReferenceObjectFactory(CallableReference<?> callableReference) {
+        this.callableReference = callableReference;
+    }
 
     public CallableReference<?> getInstance() throws ObjectCreationException {
         return callableReference;
