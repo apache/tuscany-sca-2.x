@@ -37,9 +37,8 @@
                promote="TrafficAdvisoryNotificationComponent/TrafficAdvisoryNotificationReference">
         <interface.wsdl interface="http://example.com/TrafficAdvisory.wsdl#wsdl.interface(TrafficAdvisoryPortType)"
             wsdli:wsdlLocation="http://example.com/TrafficAdvisory.wsdl wsdl/TrafficAdvisory.wsdl">
-            <db:databinding xmlns:db="http://tuscany.apache.org/xmlns/sca/databinding/1.0" name="org.apache.axiom.om.OMElement" />
         </interface.wsdl>
-        <tuscany:binding.notification notificationType="trafficAdvisory"/>
+        <tuscany:binding.notification ntm="http://localhost:8083/ntm" notificationType="trafficAdvisory"/>
     </reference>
 
 </composite>
