@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.binding.notification;
 
 import java.net.URI;
 
-import org.apache.tuscany.sca.assembly.impl.BaseImpl;
-
 /**
  * @version $Rev$ $Date$
  */
