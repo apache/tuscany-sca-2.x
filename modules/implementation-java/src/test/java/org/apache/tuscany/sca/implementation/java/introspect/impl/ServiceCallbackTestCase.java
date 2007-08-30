@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
 
@@ -68,6 +69,17 @@ public class ServiceCallbackTestCase extends TestCase {
         assertEquals(field, type.getCallbackMembers().get(FooCallback.class.getName()).getAnchor());
     }
 
+    public void testFieldCallbackInterface1() throws Exception {
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitClass(FooImpl1.class, type);
+        org.apache.tuscany.sca.assembly.Service service = getService(type, Foo.class.getSimpleName());
+        assertNotNull(service);
+        Field field1 = FooImpl1.class.getDeclaredField("callbackRef");
+        processor.visitField(field1, type);
+        assertEquals(field1, type.getCallbackMembers().get(FooCallback.class.getName()).getAnchor());
+        
+    }
+    
     public void testMethodDoesNotMatchCallback() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadBarImpl.class, type);
@@ -129,12 +141,18 @@ public class ServiceCallbackTestCase extends TestCase {
 
         @Callback
         protected FooCallback callback;
-
+        
         @Callback
         public void setCallback(FooCallback cb) {
 
         }
     }
+    
+    @Service(Foo.class)
+    private static class FooImpl1 implements Foo {
+        @Callback
+        protected CallableReference<FooCallback> callbackRef;
+    }    
 
     private static class BadBarImpl implements Foo {
         @Callback

@@ -29,7 +29,7 @@ import org.osoa.sca.annotations.Remotable;
 public interface CallBackApiService {
 
     public void knockKnock(String aString);
-
+    public void knockKnockByRef(String aString);
     public void noCallBack(String aString);
 
     public void multiCallBack(String aString);

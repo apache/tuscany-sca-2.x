@@ -72,24 +72,24 @@ public class JavaComponentContextProvider {
     private ProxyFactory proxyFactory;
 
     public JavaComponentContextProvider(RuntimeComponent component,
-                             JavaInstanceFactoryProvider configuration,
-                             DataBindingExtensionPoint dataBindingExtensionPoint,
-                             JavaPropertyValueObjectFactory propertyValueObjectFactory,
-                             ComponentContextFactory componentContextFactory,
-                             RequestContextFactory requestContextFactory) {
+                                        JavaInstanceFactoryProvider configuration,
+                                        DataBindingExtensionPoint dataBindingExtensionPoint,
+                                        JavaPropertyValueObjectFactory propertyValueObjectFactory,
+                                        ComponentContextFactory componentContextFactory,
+                                        RequestContextFactory requestContextFactory) {
         super();
         this.instanceFactoryProvider = configuration;
         this.proxyFactory = configuration.getProxyFactory();
-//        if (componentContextFactory != null) {
-//            this.componentContext = componentContextFactory.createComponentContext(component, requestContextFactory);
-//        } else {
-//            this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
-//        }
+        //        if (componentContextFactory != null) {
+        //            this.componentContext = componentContextFactory.createComponentContext(component, requestContextFactory);
+        //        } else {
+        //            this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
+        //        }
         this.component = component;
         this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
     }
-  
+
     InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
         return instanceFactoryProvider.createFactory().newInstance();
     }
@@ -101,13 +101,15 @@ public class JavaComponentContextProvider {
     }
 
     private void configureProperty(ComponentProperty configuredProperty) {
-        JavaElementImpl element = instanceFactoryProvider.getImplementation().getPropertyMembers().get(configuredProperty.getName());
+        JavaElementImpl element =
+            instanceFactoryProvider.getImplementation().getPropertyMembers().get(configuredProperty.getName());
 
         if (element != null && !(element.getAnchor() instanceof Constructor) && configuredProperty.getValue() != null) {
             instanceFactoryProvider.getInjectionSites().add(element);
 
             Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
-            ObjectFactory<?> propertyObjectFactory = createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), propertyJavaType);
+            ObjectFactory<?> propertyObjectFactory =
+                createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), propertyJavaType);
             instanceFactoryProvider.setObjectFactory(element, propertyObjectFactory);
         }
     }
@@ -121,13 +123,14 @@ public class JavaComponentContextProvider {
                 if (callbackReference != null) {
                     List<RuntimeWire> wires = callbackReference.getRuntimeWires();
                     if (!wires.isEmpty()) {
-                        callbackWires.put(wires.get(0).getSource().getInterfaceContract().getInterface().toString(), wires);
+                        callbackWires.put(wires.get(0).getSource().getInterfaceContract().getInterface().toString(),
+                                          wires);
                     }
                 }
             }
 
-            for (Map.Entry<String, JavaElementImpl> entry : instanceFactoryProvider.getImplementation().getCallbackMembers()
-                .entrySet()) {
+            for (Map.Entry<String, JavaElementImpl> entry : instanceFactoryProvider.getImplementation()
+                .getCallbackMembers().entrySet()) {
                 List<RuntimeWire> wires = callbackWires.get(entry.getKey());
                 if (wires == null) {
                     // this can happen when there are no client wires to a
@@ -135,7 +138,16 @@ public class JavaComponentContextProvider {
                     continue;
                 }
                 JavaElementImpl element = entry.getValue();
-                ObjectFactory<?> factory = new CallbackWireObjectFactory(element.getType(), proxyFactory, wires);
+                Class<?> businessInterface = element.getType();
+                ObjectFactory<?> factory = null;
+                if (CallableReference.class.isAssignableFrom(element.getType())) {
+                    businessInterface = JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
+                    factory =
+                        new CallableReferenceObjectFactory(new CallbackWireObjectFactory(businessInterface,
+                                                                                         proxyFactory, wires));
+                } else {
+                    factory = new CallbackWireObjectFactory(businessInterface, proxyFactory, wires);
+                }
                 if (!(element.getAnchor() instanceof Constructor)) {
                     instanceFactoryProvider.getInjectionSites().add(element);
                 }
@@ -143,7 +155,8 @@ public class JavaComponentContextProvider {
             }
         }
         for (Reference ref : instanceFactoryProvider.getImplementation().getReferences()) {
-            JavaElementImpl element = instanceFactoryProvider.getImplementation().getReferenceMembers().get(ref.getName());
+            JavaElementImpl element =
+                instanceFactoryProvider.getImplementation().getReferenceMembers().get(ref.getName());
             if (element != null) {
                 if (!(element.getAnchor() instanceof Constructor)) {
                     instanceFactoryProvider.getInjectionSites().add(element);
@@ -159,14 +172,18 @@ public class JavaComponentContextProvider {
                 }
                 if (ref.getMultiplicity() == Multiplicity.ONE_N || ref.getMultiplicity() == Multiplicity.ZERO_N) {
                     List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
-                    Class<?> baseType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
+                    Class<?> baseType =
+                        JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
                     for (int i = 0; i < wireList.size(); i++) {
                         ObjectFactory<?> factory = null;
-                        if(CallableReference.class.isAssignableFrom(baseType)) {
+                        if (CallableReference.class.isAssignableFrom(baseType)) {
                             Type callableRefType = JavaIntrospectionHelper.getParameterType(element.getGenericType());
                             Type businessType = JavaIntrospectionHelper.getParameterType(callableRefType);
-                            Class<?> businessInterface = JavaIntrospectionHelper.getBusinessInterface(baseType, businessType);
-                            factory = new CallableReferenceObjectFactory(businessInterface, component, (RuntimeComponentReference) componentReference);
+                            Class<?> businessInterface =
+                                JavaIntrospectionHelper.getBusinessInterface(baseType, businessType);
+                            factory =
+                                new CallableReferenceObjectFactory(businessInterface, component,
+                                                                   (RuntimeComponentReference)componentReference);
                         } else {
                             factory = createWireFactory(baseType, wireList.get(i));
                         }
@@ -181,7 +198,8 @@ public class JavaComponentContextProvider {
                         ObjectFactory<?> factory = null;
                         if (CallableReference.class.isAssignableFrom(element.getType())) {
                             Class<?> businessInterface =
-                                JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
+                                JavaIntrospectionHelper.getBusinessInterface(element.getType(), element
+                                    .getGenericType());
                             factory =
                                 new CallableReferenceObjectFactory(businessInterface, component,
                                                                    (RuntimeComponentReference)componentReference);
@@ -196,8 +214,7 @@ public class JavaComponentContextProvider {
     }
 
     void addResourceFactory(String name, ObjectFactory<?> factory) {
-        JavaResourceImpl resource = instanceFactoryProvider.getImplementation()
-            .getResources().get(name);
+        JavaResourceImpl resource = instanceFactoryProvider.getImplementation().getResources().get(name);
 
         if (resource != null && !(resource.getElement().getAnchor() instanceof Constructor)) {
             instanceFactoryProvider.getInjectionSites().add(resource.getElement());
@@ -240,8 +257,9 @@ public class JavaComponentContextProvider {
 
         try {
             Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-            boolean passByValue = operation.getInterface().isRemotable() && (!instanceFactoryProvider.getImplementation()
-                                      .isAllowsPassByReference(method));
+            boolean passByValue =
+                operation.getInterface().isRemotable() && (!instanceFactoryProvider.getImplementation()
+                    .isAllowsPassByReference(method));
 
             Invoker invoker = new JavaImplementationInvoker(method, component);
             if (passByValue) {
@@ -259,9 +277,7 @@ public class JavaComponentContextProvider {
         return new WireObjectFactory<B>(interfaze, wire, proxyFactory);
     }
 
-    private ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,
-                                                          Object propertyValue,
-                                                          Class javaType) {
+    private ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, Class javaType) {
         return propertyValueFactory.createValueFactory(property, propertyValue, javaType);
     }
 

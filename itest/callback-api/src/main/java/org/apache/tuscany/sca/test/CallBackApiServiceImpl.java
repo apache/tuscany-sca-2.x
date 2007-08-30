@@ -18,9 +18,10 @@
  */
 package org.apache.tuscany.sca.test;
 
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
-import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Service;
 
@@ -31,6 +32,9 @@ public class CallBackApiServiceImpl implements CallBackApiService {
     protected ComponentContext componentContext;
     
     private CallBackApiCallBack callback;
+    
+    @Callback
+    protected CallableReference<CallBackApiCallBack> callbackRef;
 
     public void knockKnock(String aString) {
 
@@ -41,6 +45,15 @@ public class CallBackApiServiceImpl implements CallBackApiService {
         return;
 
     }
+    
+    public void knockKnockByRef(String aString) {
+
+        System.out.println("CallBackApiServiceImpl message received: " + aString);
+        callbackRef.getService().callBackMessage("Who's There");
+        System.out.println("CallBackApiServiceImpl response sent");
+        return;
+
+    }    
 
     public void multiCallBack(String aString) {
 
