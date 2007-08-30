@@ -21,23 +21,25 @@ package org.apache.tuscany.sca.implementation.das.company;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+
+import commonj.sdo.DataObject;
+
 /**
  * Tests the DAS service
  */
-public class CompanyServiceTestCase extends TestCase {
+public class CompanyServiceTestCaseFIXME extends TestCase {
 
-    //private SCADomain scaDomain;
-    //private CompanyService dasCompanyService;
+    private SCADomain scaDomain;
+    private CompanyService dasCompanyService;
     
     /**
      * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
-        /*
         scaDomain = SCADomain.newInstance("company.composite");
-        dasCompanyService = scaDomain.getService(CompanyService.class, "CompanyService");
-        */
+        dasCompanyService = scaDomain.getService(CompanyService.class, "CompanyComponent/$promoted$.CompanyServiceComponent");
     }
 
     /**
@@ -45,16 +47,12 @@ public class CompanyServiceTestCase extends TestCase {
      */
     @Override
     protected void tearDown() throws Exception {
-        /*
         scaDomain.close();
-        */
     }
     
-    public void testExecuteCommand() throws Exception {
-        /*
+    public void testGetCompanies() throws Exception {
         DataObject root = dasCompanyService.getCompanies();
-        assertNotNull(root);
-        */        
+        assertNotNull(root);       
     }
 
 
