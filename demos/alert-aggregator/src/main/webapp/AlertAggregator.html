@@ -17,33 +17,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-  <head>
-    <title>Apache Tuscany Alert Aggregator Sample</TITLE>
-    
-    <script type="text/javascript">
+<head>
+<title>Apache Tuscany Alert Aggregator Sample</TITLE>
+
+<script type="text/javascript">
         //var djConfig = {isDebug: true,debugContainerId: "dojoDebug" };
         //djConfig.debugAtAllCosts = true;
     </script>
- 
-    <script type="text/javascript" src="dojo/dojo.js"> 
+
+<script type="text/javascript" src="dojo/dojo/dojo.js"> 
+    </script>
+<script type="text/javascript" src="dojo/dijit/dijit.js"> 
     </script>
 
-    <script type="text/javascript">
-    	dojo.require("dojo.widget.*");
-    	dojo.require("dojo.widget.Button");
+<script type="text/javascript">
+    	dojo.require("dijit.form.Button");
     	dojo.require("dojo.rpc.JsonService");    	
     </script>
-    
-    <link rel="stylesheet" type="text/css" href="style.css" />
-  </head>
 
-  <body onload="getAlertSources()">
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
 
-    <script type="text/javascript">
+<body onload="getAlertSources()">
+
+<script type="text/javascript">
     
         // The proxy for the alert and alertsources services running in Tuscany
-        var alertsService       = new dojo.rpc.JsonService("services/AlertsServiceJSONRPC?smd");
-        var alertSourcesService = new dojo.rpc.JsonService("services/AlertsSourcesServiceJSONRPC?smd");
+        var alertsService       = new dojo.rpc.JsonService("AlertsServiceJSONRPC?smd");
+        var alertSourcesService = new dojo.rpc.JsonService("AlertsSourcesServiceJSONRPC?smd");
 
         // If you want to put an HTTP sniffer in the way to look at the JSONROPC packets you'll
         // need to edit the target address of the service in the smd. The only way to do this easily
@@ -87,7 +88,6 @@
         }
 
         function getAlertSourcesCallback(result) {
-            dojo.debug("in getAlertsCallback");
             var resultsNode = document.getElementById("alertSourcesTable");
             if ( result.error != null ) {
                 resultsNode.innerHTML = result.error;
@@ -274,7 +274,6 @@
         }
 
         function getAlertsCallback(result) {
-            dojo.debug("in getAlertsCallback");
             var resultsNode = document.getElementById("alertsTable");
             if ( result.error != null ) {
                 resultsNode.innerHTML = result.error;
@@ -314,19 +313,18 @@
     
     </script>
 
-    <h1 id="top">Apache Tuscany Alert Aggregator Demo</h1>
-    <div id="errors"></div>
-    <p>Alert Sources<span id="refreshSources"></span>:</p>
-    <!--input type="button" value="getSources" onclick="getAlertSources()"/-->
-    <div id="alertSourcesTable">Refreshing...</div>
-    <p/>
-    <input type="button" value="Refresh" onclick="getAlerts()"/>
-    <p/>
-    <div id="alertsTable">Refreshing...</div>
-    <p><a id="data" HREF="#top">Back to top</a></p>
-    <div id="alertData"></div>
-    <p/>
-    <div id="dojoDebug"></div>
-       
-  </body>
+<h1 id="top">Apache Tuscany Alert Aggregator Demo</h1>
+<div id="errors"></div>
+<p>Alert Sources<span id="refreshSources"></span>:</p>
+<!--input type="button" value="getSources" onclick="getAlertSources()"/-->
+<div id="alertSourcesTable">Refreshing...</div>
+<p /><input type="button" value="Refresh" onclick="getAlerts()" />
+<p />
+<div id="alertsTable">Refreshing...</div>
+<p><a id="data" HREF="#top">Back to top</a></p>
+<div id="alertData"></div>
+<p />
+<div id="dojoDebug"></div>
+
+</body>
 </html>
