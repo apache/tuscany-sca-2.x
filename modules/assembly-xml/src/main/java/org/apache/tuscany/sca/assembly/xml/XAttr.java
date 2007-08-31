@@ -80,7 +80,7 @@ class XAttr {
             String prefix = qname.getPrefix();
             String uri = qname.getNamespaceURI();
             prefix = writer.getPrefix(uri);
-            if (prefix != null) {
+            if (prefix != null && prefix.length() > 0) {
 
                 // Use the prefix already bound to the given uri
                 return prefix + ":" + qname.getLocalPart();

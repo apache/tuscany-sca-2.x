@@ -109,9 +109,9 @@
                 <operation name="multiplyCallback" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
             </binding.ws>
         </callback>
-    </reference>
+    </reference> 
 
-    <property name="prop1" xmlns:foo="http://foo">
+    <property name="prop1" xmlns:foo="http://foo" many="true" type="foo:MyComplexType">
     	<ext:testExtension/>
    	    <MyComplexPropertyValue1 xsi:type="foo:MyComplexType" attr="bar">
             <foo:a>AValue</foo:a>
@@ -122,5 +122,7 @@
             <bar:b xmlns:bar="http://bar">BoringURI</bar:b>
         </MyComplexPropertyValue2>
     </property>
+    
+    <property name="prop2" xmlns:foo="http://foo" mustSupply="true" element="MyComplexPropertyValue1"/>
 
 </composite>

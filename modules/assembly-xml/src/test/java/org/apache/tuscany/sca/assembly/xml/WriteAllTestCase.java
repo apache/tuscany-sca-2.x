@@ -19,9 +19,11 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
@@ -81,8 +83,18 @@ public class WriteAllTestCase extends TestCase {
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessor.read(is, Composite.class);
+        
+        verifyComposite(composite);
+        
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, bos);
+        bos.close();
+        
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        composite = staxProcessor.read(bis, Composite.class);
+        
+        verifyComposite(composite);
+        
     }
 
     public void testReadWireWriteComposite() throws Exception {
@@ -108,6 +120,15 @@ public class WriteAllTestCase extends TestCase {
         staxProcessor.resolve(constrainingType, resolver);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(constrainingType, bos);
+    }
+    
+    private void verifyComposite(Composite composite) {
+        assertEquals(composite.getProperties().get(0).getName(),"prop1");
+        assertEquals(composite.getProperties().get(0).isMany(), true);
+        assertEquals(composite.getProperties().get(1).getName(),"prop2");
+        assertEquals(composite.getProperties().get(1).isMustSupply(), true);
+        assertEquals(composite.getProperties().get(0).getXSDType(), new QName("http://foo", "MyComplexType"));
+        assertEquals(composite.getProperties().get(1).getXSDElement(), new QName("http://www.osoa.org/xmlns/sca/1.0", "MyComplexPropertyValue1"));
     }
 
 }

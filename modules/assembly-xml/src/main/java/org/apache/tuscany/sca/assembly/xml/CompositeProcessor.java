@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
+ */ 
 
 package org.apache.tuscany.sca.assembly.xml;
 
@@ -25,10 +25,12 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -59,6 +61,9 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A composite processor.
@@ -522,11 +527,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
         }
 
         for (ComponentProperty property : component.getProperties()) {
-            writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
-            for (Object extension : property.getExtensions()) {
-                extensionProcessor.write(extension, writer);
-            }
-            writeEnd(writer);
+            writeProperty(property, writer);
         }
 
         // Write the component implementation
@@ -582,6 +583,93 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
         writeEnd(writer);
     }
     
+    public void writeProperty(Property property, XMLStreamWriter writer) throws XMLStreamException, ContributionWriteException {
+        
+        if ( property instanceof ComponentProperty ) {
+            ComponentProperty componentProperty = (ComponentProperty)property;
+            writeStart(writer, PROPERTY, new XAttr(NAME, componentProperty.getName()),
+                                            new XAttr(MUST_SUPPLY, componentProperty.isMustSupply()), 
+                                            new XAttr(MANY, componentProperty.isMany()),
+                                            new XAttr(TYPE, componentProperty.getXSDType()),
+                                            new XAttr(ELEMENT, componentProperty.getXSDElement()),
+                                            new XAttr(SOURCE, componentProperty.getSource()),
+                                            new XAttr(FILE, componentProperty.getFile()));
+
+        } else {
+            writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()),
+                       new XAttr(MUST_SUPPLY, property.isMustSupply()), 
+                       new XAttr(MANY, property.isMany()),
+                       new XAttr(TYPE, property.getXSDType()),
+                       new XAttr(ELEMENT, property.getXSDElement()));
+
+        }
+        
+        if ( property.getValue() != null &&  property.getValue() instanceof Document ) {
+            try {
+                Document document = (Document)property.getValue();
+                NodeList nodeList = document.getDocumentElement().getChildNodes();
+                
+                for ( int count = 0 ; count < nodeList.getLength() ; ++count ) {
+                    if ( nodeList.item(count).getNodeType() == Node.ELEMENT_NODE ) {
+                        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(nodeList.item(count)));
+                        writeElement(reader, writer);
+                    }
+                }
+            } catch ( Exception e ) {
+                throw new ContributionWriteException(e);
+            }
+        }
+        
+        for (Object extension : property.getExtensions()) {
+            extensionProcessor.write(extension, writer);
+        }
+
+        writeEnd(writer);
+    }
+    
+    private void writeElement(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
+        while (reader.hasNext()) {
+            switch (reader.next()) {
+                case XMLStreamConstants.START_ELEMENT:
+                    QName name = reader.getName();
+                    writer.writeStartElement(name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
+
+                    int count = reader.getNamespaceCount();
+                    for (int i = 0; i < count; i++) {
+                        String prefix = reader.getNamespacePrefix(i);
+                        String ns = reader.getNamespaceURI(i);
+                        writer.writeNamespace(prefix, ns);
+                    }
+
+                    if(!"".equals(name.getNamespaceURI())) {
+                        writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
+                    }
+
+                    // add the attributes for this element
+                    count = reader.getAttributeCount();
+                    for (int i = 0; i < count; i++) {
+                        String ns = reader.getAttributeNamespace(i);
+                        String prefix = reader.getAttributePrefix(i);
+                        String qname = reader.getAttributeLocalName(i);
+                        String value = reader.getAttributeValue(i);
+                        
+                        writer.writeAttribute(prefix, ns, qname, value);
+                    }
+
+                    break;
+                case XMLStreamConstants.CDATA:
+                    writer.writeCData(reader.getText());
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    writer.writeCharacters(reader.getText());
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    writer.writeEndElement();
+                    break;
+            }
+        }
+    }
+    
     public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException {
 
         try {
@@ -604,13 +692,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
             }
 
             for (Property property : composite.getProperties()) {
-                writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
-
-                for (Object extension : property.getExtensions()) {
-                    extensionProcessor.write(extension, writer);
-                }
-
-                writeEnd(writer);
+                writeProperty(property, writer);
             }
 
             for (Wire wire : composite.getWires()) {
