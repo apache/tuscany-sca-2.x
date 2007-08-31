@@ -75,6 +75,7 @@
                 <module>simple-bigbank-spring</module>
                 <module>simple-callback</module>
                 <module>simple-callback-ws</module>
+                <module>store</module>
                 <module>supplychain</module>
                 <module>web-resource</module>
             </modules>
