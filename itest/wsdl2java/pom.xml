@@ -18,122 +18,131 @@
     * under the License.    
 -->
 <project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-itest</artifactId>
-        <version>1.0-incubating-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    <artifactId>itest-wsdl2java</artifactId>
-    <name>Apache Tuscany WSDL Integration Tests</name>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-interface-wsdl</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-sdo</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-axiom</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-http-jetty</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sdo</groupId>
-            <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <id>add-test-source</id>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.apache.tuscany.sca</groupId>
+		<artifactId>tuscany-itest</artifactId>
+		<version>1.0-incubating-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>itest-wsdl2java</artifactId>
+	<name>Apache Tuscany WSDL Integration Tests</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-host-embedded</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-implementation-java-runtime</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-interface-wsdl</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-binding-ws-axis2</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-databinding-sdo</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-databinding-axiom</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sca</groupId>
+			<artifactId>tuscany-http-jetty</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tuscany.sdo</groupId>
+			<artifactId>tuscany-sdo-impl</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target/sdo-source</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tuscany.sdo</groupId>
+				<artifactId>tuscany-sdo-plugin</artifactId>
+				<version>1.0-incubating-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>generate-sdo-account-service</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<schemaFile>
+								${basedir}/src/test/resources/AccountService.wsdl</schemaFile>
+							<targetDirectory>
+								${basedir}/target/sdo-source</targetDirectory>
+							<javaPackage>com.bigbank.account</javaPackage>
+							<prefix>Account</prefix>
+							<noNotification>true</noNotification>
+							<noContainer>true</noContainer>
+							<noUnsettable>true</noUnsettable>
+						</configuration>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate-sdo-stock-exception</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<schemaFile>
+								${basedir}/src/test/resources/StockExceptionTest.wsdl</schemaFile>
+							<targetDirectory>
+								${basedir}/target/sdo-source</targetDirectory>
+							<prefix>Stock</prefix>
+							<noInterfaces>true</noInterfaces>
+							<noNotification>true</noNotification>
+							<noContainer>true</noContainer>
+							<noUnsettable>true</noUnsettable>
+						</configuration>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+					<!--execution>
+                        <id>generate-sdo-echo-service-xsd</id>
                         <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
                         <configuration>
-                            <sources>
-                                <source>target/sdo-source</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>        
-        	
-            <plugin>
-                <groupId>org.apache.tuscany.sdo</groupId>
-                <artifactId>tuscany-sdo-plugin</artifactId>
-                <version>1.0-incubating-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>generate-sdo-account-service</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <schemaFile>${basedir}/src/test/resources/AccountService.wsdl</schemaFile>
-                            <targetDirectory>${basedir}/target/sdo-source</targetDirectory>
-                            <javaPackage>com.bigbank.account</javaPackage>
-                            <prefix>Account</prefix>
-                            <noNotification>true</noNotification>
-                            <noContainer>true</noContainer>
-                            <noUnsettable>true</noUnsettable>
-                        </configuration>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>generate-sdo-stock-exception</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <schemaFile>${basedir}/src/test/resources/StockExceptionTest.wsdl</schemaFile>
+                            <schemaFile>${basedir}/src/test/resources/EchoService.xsd</schemaFile>
                             <targetDirectory>${basedir}/target/sdo-source</targetDirectory>
                             <prefix>Stock</prefix>
                             <noInterfaces>true</noInterfaces>
@@ -144,10 +153,9 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
+                    </execution-->
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.tuscany.sca</groupId>
 				<artifactId>tuscany-maven-wsdl2java</artifactId>
@@ -157,11 +165,16 @@
 						<configuration>
 							<wsdlFiles>
 								<wsdlFile>
-									<fileName>${basedir}/src/test/resources/AccountService.wsdl</fileName>
+									<fileName>
+										${basedir}/src/test/resources/AccountService.wsdl</fileName>
 								</wsdlFile>
 								<wsdlFile>
-									<fileName>${basedir}/src/test/resources/StockExceptionTest.wsdl</fileName>
+									<fileName>
+										${basedir}/src/test/resources/StockExceptionTest.wsdl</fileName>
 								</wsdlFile>
+								<!--wsdlFile>
+									<fileName>${basedir}/src/test/resources/EchoService.wsdl</fileName>
+								</wsdlFile-->
 							</wsdlFiles>
 						</configuration>
 						<goals>
@@ -170,6 +183,6 @@
 					</execution>
 				</executions>
 			</plugin>
-        </plugins>
-    </build>
+		</plugins>
+	</build>
 </project>
