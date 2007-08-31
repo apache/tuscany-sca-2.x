@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.core.invocation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.NoRegisteredCallbackException;
+import org.osoa.sca.ServiceReference;
 
 /**
  * An interceptor applied to the forward direction of a wire that ensures the callback target implements the required
@@ -30,18 +32,17 @@ import org.osoa.sca.NoRegisteredCallbackException;
  * @version $Rev$ $Date$
  */
 public class CallbackInterfaceInterceptor implements Interceptor {
-    private boolean invokingServiceImplements;
     private Invoker next;
 
-    public CallbackInterfaceInterceptor(boolean invokingServiceImplements) {
-        this.invokingServiceImplements = invokingServiceImplements;
+    public CallbackInterfaceInterceptor() {
     }
 
     public Message invoke(Message msg) {
-        // TODO check in the context if a callback object is set, if so invoke next since the setCallback will
-        // perform the check
-        if (!invokingServiceImplements) {
-            throw new NoRegisteredCallbackException("Callback target does not implement the callback interface");
+        CallableReference<?> callableReference = msg.getCallableReference();
+        if (callableReference instanceof ServiceReference) {
+            if (((ServiceReference<?>)callableReference).getCallback() == null) {
+                throw new NoRegisteredCallbackException("Callback target does not implement the callback interface");
+            }
         }
         return next.invoke(msg);
     }

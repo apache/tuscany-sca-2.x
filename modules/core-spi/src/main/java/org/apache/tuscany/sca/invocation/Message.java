@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.invocation;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.osoa.sca.CallableReference;
 
 /**
  * Represents a request, response, or exception flowing through a wire
@@ -143,5 +144,19 @@ public interface Message {
      * @param op The operation that created the message
      */
     void setOperation(Operation op);
+
+    /**
+     * Get the associated callable reference
+     * @param <B>
+     * @return The callable reference
+     */
+    <B> CallableReference<B> getCallableReference();
+    
+    /**
+     * Set the callable reference
+     * @param <B>
+     * @param callableReference
+     */
+    <B> void setCallableReference(CallableReference<B> callableReference);
 
 }

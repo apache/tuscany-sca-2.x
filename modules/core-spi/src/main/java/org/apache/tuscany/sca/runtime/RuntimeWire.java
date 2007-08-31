@@ -50,7 +50,7 @@ public interface RuntimeWire extends Cloneable {
      * @param target The target endpoint reference
      */
     void setTarget(EndpointReference target);
-    
+
     /**
      * Returns the invocation chains for service operations associated with the
      * wire
@@ -59,9 +59,10 @@ public interface RuntimeWire extends Cloneable {
      *         wire
      */
     List<InvocationChain> getInvocationChains();
+
     /**
-     * @return
+     * @return a clone of the runtime wire
      * @throws CloneNotSupportedException
      */
-    Object clone() throws CloneNotSupportedException;   
+    Object clone() throws CloneNotSupportedException;
 }

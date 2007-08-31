@@ -48,7 +48,7 @@ public class CallBackSetCallbackServiceImpl implements CallBackSetCalbackService
 
     }
 
-    public void setCallbackIllegally(String aString) {
+    public boolean setCallbackIllegally(String aString) {
 
         System.out.println("CallBackBasicServiceImpl.setCallbackIllegally() message received: " + aString);
 
@@ -66,20 +66,10 @@ public class CallBackSetCallbackServiceImpl implements CallBackSetCalbackService
         } catch (Exception badEx) {
             System.out.println("CallBackBasicServiceImpl.setCallbackIllegally()  " + badEx.toString());
             badEx.printStackTrace();
-            return;
         }
 
-        // If we get the exception we are looking for then create the marker
-        // file.
-        if (exceptionProduced == true) {
-            File aFile = new File("target/test10_marker");
-            try {
-                aFile.createNewFile();
-            } catch (Exception ex) {
-                System.out.println("Error Creating target/test10_marker marker file");
-                ex.printStackTrace();
-            }
-        }
+        // Return a flag indicating whether we got the exception we are looking for
+        return exceptionProduced;
 
     }
 }

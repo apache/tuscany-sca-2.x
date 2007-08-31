@@ -22,6 +22,7 @@ import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.osoa.sca.CallableReference;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation
@@ -36,6 +37,7 @@ public class MessageImpl implements Message {
     private ConversationSequence conversationSequence;
     private String conversationId;
     private Operation op;
+    private CallableReference<?> callableReference;
     
     private EndpointReference from;
     private EndpointReference to;
@@ -123,4 +125,19 @@ public class MessageImpl implements Message {
     public void setOperation(Operation op) {
         this.op = op;
     }
+
+    /**
+     * @see org.apache.tuscany.sca.invocation.Message#getCallableReference()
+     */
+    public <B> CallableReference<B> getCallableReference() {
+        return (CallableReference<B>) callableReference;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.invocation.Message#setCallableReference(org.osoa.sca.CallableReference)
+     */
+    public <B> void setCallableReference(CallableReference<B> callableReference) {
+        this.callableReference = callableReference;
+    }
+
 }
