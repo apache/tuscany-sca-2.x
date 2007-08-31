@@ -26,7 +26,7 @@
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" >
            <interface.java interface="calculator.AddService" />        
-            <binding.ws wsdlElement="http://calculator#wsdl.port(AddService/AddSoapPort)"/>        
+            <binding.ws uri="http://localhost:8080/sample-calculator-webapp-ws/AddServiceComponent"/>        
         </reference>   
         <reference name="subtractService" target="SubtractServiceComponent"></reference>
         <reference name="multiplyService" target="MultiplyServiceComponent"></reference>
@@ -37,9 +37,8 @@
         <implementation.java class="calculator.AddServiceImpl"/>
         <service name="AddService">
              <interface.java interface="calculator.AddService" />  
-            <!--interface.wsdl interface="http://calculator#wsdl.interface(Add)" /-->
-            <binding.ws wsdlElement="http://calculator#wsdl.port(AddService/AddSoapPort)"/>
-        </service>        
+            <binding.ws/>
+        </service>
     </component>
 
     <component name="SubtractServiceComponent">
@@ -54,8 +53,4 @@
         <implementation.java class="calculator.DivideServiceImpl"/>
     </component>
     
-    <!--component name="ExtensionPointRegistryInspectorComponent">
-        <implementation.java class="org.apache.tuscany.sca.tools.registryinspector.inspector.ExtensionPointRegistryInspectorImpl"/>
-    </component-->    
-
 </composite>
