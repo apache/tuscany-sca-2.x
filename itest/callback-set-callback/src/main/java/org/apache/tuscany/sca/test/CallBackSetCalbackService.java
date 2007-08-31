@@ -29,6 +29,6 @@ public interface CallBackSetCalbackService {
 
     public void knockKnock(String aString);
 
-    public void setCallbackIllegally(String aString);
+    public boolean setCallbackIllegally(String aString);
 
 }

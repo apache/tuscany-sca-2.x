@@ -54,8 +54,7 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
          * NoRegisteredCallbackException is thrown.
          */
 
-        //FIXME: disabled for now as the runtime does not currently implement this check
-        //test5();
+        test5();
 
         /*
          * test6() The client calls setCallback() with an object that is not a
@@ -161,7 +160,7 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
         //
         // This should catch an appropriate exception.
         //
-        catch (NoRegisteredCallbackException NotRegEx) {
+        catch (IllegalArgumentException goodEx) {
             correctException = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -169,31 +168,23 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
 
         Assert.assertEquals("CallBackSetCallback - Test6", true, correctException);
 
-        aCallBackService.setCallback(null);  // leave this in the default state for next test
-
     }
 
     private void test10() {
+
         //
-        // Since callbacks do not synchronously return and this test results in
-        // a failure on the service
-        // side of the fence I am using a marker file to determine the outcome.
-        // The presence of the marker
-        // file will be used for the Assertion test. If it exists then all is
-        // good.
+        // The appropriate exception should be thrown and caught on the service side.
+        // If this happens, the setCallbackIllegally() method will return true.
+        // If not, this method will return false.
         //
 
-        // Make sure the marker file is not present before starting the test.
-        File aFile = new File("target/test10_marker");
-        if (aFile.exists())
-            aFile.delete();
+        aCallBackService.setCallback(callBack);  // ensure no client-side exception
 
-        aCallBackService.getService().setCallbackIllegally("Try to set callback on your own service reference");
+        boolean result = aCallBackService.getService().setCallbackIllegally
+                             ("Try to set callback on your own service reference");
 
-        // FIXME: [rfeng] Not sure why this is illegal, comment out the following test
-        Assert.assertEquals("CallBackSetCallback - Test10", true, aFile.exists());
+        Assert.assertEquals("CallBackSetCallback - Test10", true, result);
 
-        return;
     }
 
 }

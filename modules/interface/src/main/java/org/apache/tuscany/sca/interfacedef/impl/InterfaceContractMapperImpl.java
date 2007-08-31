@@ -247,7 +247,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             if (targetOperation == null) {
                 return false;
             }
-            if (!operation.equals(targetOperation)) {
+            if (!isCompatible(operation, targetOperation, source.isRemotable())) {
                 return false;
             }
         }

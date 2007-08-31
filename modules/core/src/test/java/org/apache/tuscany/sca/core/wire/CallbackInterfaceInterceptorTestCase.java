@@ -26,26 +26,37 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
 import org.easymock.EasyMock;
 import org.osoa.sca.NoRegisteredCallbackException;
+import org.osoa.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CallbackInterfaceInterceptorTestCase extends TestCase {
 
-    public void testImplements() {
-        CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor(true);
+    public void testHasCallbackObject() {
+        CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor();
         Interceptor next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(null);
         EasyMock.replay(next);
         interceptor.setNext(next);
-        interceptor.invoke(new MessageFactoryImpl().createMessage());
+        Message msg = new MessageFactoryImpl().createMessage();
+        ServiceReference callableReference = EasyMock.createMock(ServiceReference.class);
+        EasyMock.expect(callableReference.getCallback()).andReturn(new Object());
+        EasyMock.replay(callableReference);
+        msg.setCallableReference(callableReference);
+        interceptor.invoke(msg);
         EasyMock.verify(next);
     }
 
-    public void testDoesNotImplement() {
-        CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor(false);
+    public void testNoCallbackObject() {
+        CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor();
+        Message msg = new MessageFactoryImpl().createMessage();
+        ServiceReference callableReference = EasyMock.createMock(ServiceReference.class);
+        EasyMock.expect(callableReference.getCallback()).andReturn(null);
+        EasyMock.replay(callableReference);
+        msg.setCallableReference(callableReference);
         try {
-            interceptor.invoke(new MessageFactoryImpl().createMessage());
+            interceptor.invoke(msg);
             fail();
         } catch (NoRegisteredCallbackException e) {
             // expected

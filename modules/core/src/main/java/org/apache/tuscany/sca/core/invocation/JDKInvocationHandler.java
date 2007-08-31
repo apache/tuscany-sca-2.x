@@ -28,7 +28,6 @@ import java.util.UUID;
 
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ConversationImpl;
-import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
@@ -45,7 +44,6 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.ServiceReference;
 
 /**
@@ -249,25 +247,28 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 }
             }
         }
+        msg.setCallableReference(callableReference);
         msg.setBody(args);
-        if (wire.getSource() != null && wire.getSource().getCallbackEndpoint() != null) {
-            if (callbackObject != null) {
-                if (callbackObject instanceof ServiceReference) {
-                    msg.setFrom(((CallableReferenceImpl)callbackObject).getRuntimeWire().getTarget());
-                } else {
-                    if (contract != null) {
-                        if (!contract.isConversational()) {
-                            throw new NoRegisteredCallbackException(
-                                                                    "Callback object for stateless callback is not a ServiceReference");
-                        } else {
-                            //FIXME: add callback object to scope container
-                            msg.setFrom(wire.getSource().getCallbackEndpoint());
+        if (wire.getSource() != null) {
+            EndpointReference callbackEndpoint = wire.getSource().getCallbackEndpoint();
+            if (callbackEndpoint != null) {
+                if (callbackObject != null) {
+                    if (callbackObject instanceof ServiceReference) {
+                        msg.setFrom(((CallableReferenceImpl)callbackObject).getRuntimeWire().getTarget());
+                    } else {
+                        if (contract != null) {
+                            if (!contract.isConversational()) {
+                                throw new IllegalArgumentException
+                                        ("Callback object for stateless callback is not a ServiceReference");
+                            } else {
+                                //FIXME: add callback object to scope container
+                                msg.setFrom(callbackEndpoint);
+                            }
                         }
                     }
+                } else {
+                    msg.setFrom(callbackEndpoint);
                 }
-            } else {
-                //FIXME: check that the source component implements the callback interface
-                msg.setFrom(wire.getSource().getCallbackEndpoint());
             }
         }
         if (endpoint != null) {

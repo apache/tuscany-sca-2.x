@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -103,10 +104,6 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
 
-        public void setWire(RuntimeWire wire) {
-            throw new UnsupportedOperationException();
-        }
-
         @SuppressWarnings("unchecked")
         public Object getBody() {
             return null;
@@ -175,6 +172,20 @@ public class NonBlockingInterceptor implements Interceptor {
         }
 
         public void setOperation(Operation op) {
+            throw new UnsupportedOperationException();
+        }
+        
+        /**
+         * @see org.apache.tuscany.sca.invocation.Message#getCallableReference()
+         */
+        public <B> CallableReference<B> getCallableReference() {
+            return null;
+        }
+
+        /**
+         * @see org.apache.tuscany.sca.invocation.Message#setCallableReference(org.osoa.sca.CallableReference)
+         */
+        public <B> void setCallableReference(CallableReference<B> callableReference) {
             throw new UnsupportedOperationException();
         }
 
