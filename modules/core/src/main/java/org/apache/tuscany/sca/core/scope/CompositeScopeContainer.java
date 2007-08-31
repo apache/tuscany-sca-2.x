@@ -36,6 +36,13 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
     @Override
     public synchronized void stop() {
         super.stop();
+        if (wrapper != null) {
+            try {
+                wrapper.stop();
+            } catch (TargetDestructionException e) {
+                throw new IllegalStateException(e);
+            }
+        }
         wrapper = null;
     }
 
@@ -59,7 +66,7 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
     @Override
     public synchronized void start() {
         super.start();
-        if(isEagerInit()) {
+        if (isEagerInit()) {
             try {
                 getWrapper(null);
             } catch (TargetResolutionException e) {
