@@ -120,7 +120,7 @@
           <property name="artifactId" value="${artifactId}"/>
         </ant>   
 
-        <war destfile="target/demo-alert-aggregator.war" 
+        <war destfile="target/demo-alert-aggregator-webapp.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>
             <zipfileset dir="../../modules" prefix="WEB-INF/lib">
