@@ -24,38 +24,30 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 /**
+ * The runtime version of assembly factory
  * @version $Rev$ $Date$
  */
 public class RuntimeAssemblyFactory extends DefaultAssemblyFactory implements AssemblyFactory {
-    private final ProxyFactory proxyFactory;
-    private final InterfaceContractMapper interfaceContractMapper;
-    
-    /**
-     * @param proxyFactory
-     */
-    public RuntimeAssemblyFactory(InterfaceContractMapper interfaceContractMapper, ProxyFactory proxyFactory) {
+   
+    public RuntimeAssemblyFactory() {
         super();
-        this.proxyFactory = proxyFactory;
-        this.interfaceContractMapper = interfaceContractMapper;
     }
 
     @Override
     public Component createComponent() {
-        return new RuntimeComponentImpl(proxyFactory);
+        return new RuntimeComponentImpl();
     }
 
     @Override
     public ComponentReference createComponentReference() {
-        return new RuntimeComponentReferenceImpl(interfaceContractMapper);
+        return new RuntimeComponentReferenceImpl();
     }
 
     @Override
     public ComponentService createComponentService() {
-        return new RuntimeComponentServiceImpl(interfaceContractMapper);
+        return new RuntimeComponentServiceImpl();
     }
 
 }

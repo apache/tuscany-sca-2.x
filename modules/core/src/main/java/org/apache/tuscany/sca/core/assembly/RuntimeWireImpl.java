@@ -85,6 +85,23 @@ public class RuntimeWireImpl implements RuntimeWire {
         return chains;
     }
 
+    public InvocationChain getInvocationChain(Operation operation) {
+        for (InvocationChain chain : getInvocationChains()) {
+            Operation op = null;
+            if (wireSource.getContract() != null) {
+                // Reference chain
+                op = chain.getSourceOperation();
+            } else {
+                // Service chain
+                op = chain.getTargetOperation();
+            }
+            if (interfaceContractMapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
+                return chain;
+            }
+        }
+        return null;
+    }
+
     /**
      * Initialize the invocation chains
      */
@@ -128,7 +145,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     public EndpointReference getTarget() {
         return wireTarget;
     }
-    
+
     public void setTarget(EndpointReference target) {
         this.wireTarget = target;
         this.chains = null;
@@ -215,9 +232,9 @@ public class RuntimeWireImpl implements RuntimeWire {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        RuntimeWireImpl copy =(RuntimeWireImpl) super.clone();
-        copy.wireSource = (EndpointReference) wireSource.clone();
-        copy.wireTarget = (EndpointReference) wireTarget.clone();
+        RuntimeWireImpl copy = (RuntimeWireImpl)super.clone();
+        copy.wireSource = (EndpointReference)wireSource.clone();
+        copy.wireTarget = (EndpointReference)wireTarget.clone();
         copy.chains = null;
         return copy;
     }

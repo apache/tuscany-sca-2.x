@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.runtime;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 
 /**
@@ -59,6 +60,13 @@ public interface RuntimeWire extends Cloneable {
      *         wire
      */
     List<InvocationChain> getInvocationChains();
+    
+    /**
+     * Lookup the invocation chain by operation
+     * @param operation The operation
+     * @return The invocation chain for the given operation
+     */
+    InvocationChain getInvocationChain(Operation operation);
 
     /**
      * @return a clone of the runtime wire

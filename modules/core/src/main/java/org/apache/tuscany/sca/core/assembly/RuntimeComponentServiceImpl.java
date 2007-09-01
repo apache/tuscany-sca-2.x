@@ -27,7 +27,6 @@ import java.util.Map;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.impl.ComponentServiceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -37,14 +36,12 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements RuntimeComponentService {
-    private InterfaceContractMapper mapper;
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
     private List<RuntimeWire> callbackWires = new ArrayList<RuntimeWire>();
     private Map<Binding, ServiceBindingProvider> bindingProviders = new HashMap<Binding, ServiceBindingProvider>();
 
-    public RuntimeComponentServiceImpl(InterfaceContractMapper mapper) {
+    public RuntimeComponentServiceImpl() {
         super();
-        this.mapper = mapper;
     }
 
     public List<RuntimeWire> getRuntimeWires() {
@@ -98,13 +95,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
                 throw new ServiceRuntimeException(e);
             }
         }
-        for (InvocationChain chain : wire.getInvocationChains()) {
-            Operation op = chain.getTargetOperation();
-            if (mapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
-                return chain;
-            }
-        }
-        return null;
+        return wire.getInvocationChain(operation);
     }
 
     public InvocationChain getInvocationChain(Binding binding, Operation operation) {
