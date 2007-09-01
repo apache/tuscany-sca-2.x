@@ -36,7 +36,7 @@ SPI layer to faciliate rapid development of extensions
         RSS/ATOM Feeds
         
 - Demos that demonstrate the use of a mix of extensions
-         alert-aggregator
+         alert-aggregator-webapp
          bigbank-account
          bigbank-calculator
          bigbank-stockquote

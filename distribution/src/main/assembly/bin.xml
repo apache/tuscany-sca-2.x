@@ -75,8 +75,8 @@
                 <exclude>company-das/**/*</exclude>
                 <exclude>company-das-webapp</exclude>
                 <exclude>company-das-webapp/**/*</exclude>
-                <exclude>helloworld-dojo/src/main/webapp/dojo</exclude>
-                <exclude>helloworld-dojo/src/main/webapp/dojo/**/*</exclude>
+                <exclude>helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
+                <exclude>helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
                 <exclude>helloworld-ws-reference/work</exclude>
                 <exclude>helloworld-ws-reference/work/**/*</exclude>
                 <exclude>helloworld-ws-service/work</exclude>
@@ -89,14 +89,14 @@
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-webapp/**/*</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
-                <exclude>calculator-webapp-ws/target/sample-calculator-webapp-ws</exclude>
-                <exclude>calculator-webapp-ws/target/sample-calculator-webapp-ws/**/*</exclude>
+                <exclude>calculator-ws-webapp/target/sample-calculator-webapp-ws</exclude>
+                <exclude>calculator-ws-webapp/target/sample-calculator-webapp-ws/**/*</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp/**/*</exclude>
-                <exclude>helloworld-dojo/target/sample-helloworld-dojo</exclude>
-                <exclude>helloworld-dojo/target/sample-helloworld-dojo/**/*</exclude>
-                <exclude>helloworld-jsonrpc/target/sample-helloworld-jsonrpc</exclude>
-                <exclude>helloworld-jsonrpc/target/sample-helloworld-jsonrpc/**/*</exclude>
+                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo</exclude>
+                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo/**/*</exclude>
+                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc</exclude>
+                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc/**/*</exclude>
                 <exclude>osgi-supplychain/.felix</exclude>
                 <exclude>osgi-supplychain/.felix/**/*</exclude>
                 <exclude>osgi-supplychain/target/sample-osgi-supplychain</exclude>
@@ -134,12 +134,12 @@
                 <include>**/*</include>
             </includes>
             <excludes>
-                <exclude>alert-aggregator/src/main/webapp/dojo</exclude>
-                <exclude>alert-aggregator/src/main/webapp/dojo/**/*</exclude>
-                <exclude>alert-aggregator/target/demo-alert-aggregator</exclude>
-                <exclude>alert-aggregator/target/demo-alert-aggregator/**/*</exclude>
-                <exclude>alert-aggregator/target/sdo-source</exclude>
-                <exclude>alert-aggregator/target/sdo-source/**/*</exclude>
+                <exclude>alert-aggregator-webapp/src/main/webapp/dojo</exclude>
+                <exclude>alert-aggregator-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>alert-aggregator-webapp/target/demo-alert-aggregator</exclude>
+                <exclude>alert-aggregator-webapp/target/demo-alert-aggregator/**/*</exclude>
+                <exclude>alert-aggregator-webapp/target/sdo-source</exclude>
+                <exclude>alert-aggregator-webapp/target/sdo-source/**/*</exclude>
                 <exclude>helloworld-ws-sdo/work</exclude>
                 <exclude>helloworld-ws-sdo/work/**/*</exclude>
                 <exclude>bigbank-account/src/main/resources/web/dojo</exclude> 

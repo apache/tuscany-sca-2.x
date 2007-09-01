@@ -112,10 +112,10 @@
              <exclude>samples/das-service/**/*</exclude>
              <exclude>samples/das-service-web</exclude>
              <exclude>samples/das-service-web/**/*</exclude>
-             <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo</exclude>
-             <exclude>samples/helloworld-jsonrpc/src/main/webapp/dojo/**/*</exclude>
-             <exclude>samples/helloworld-dojo/src/main/webapp/dojo</exclude>
-             <exclude>samples/helloworld-dojo/src/main/webapp/dojo/**/*</exclude>
+             <exclude>samples/helloworld-jsonrpc-webapp/src/main/webapp/dojo</exclude>
+             <exclude>samples/helloworld-jsonrpc-webapp/src/main/webapp/dojo/**/*</exclude>
+             <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
+             <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-ws-reference/work</exclude>
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
              <exclude>samples/helloworld-ws-sdo/work</exclude>
@@ -130,8 +130,8 @@
              <exclude>samples/spi-implementation-pojo/**/*</exclude>
              <exclude>samples/simple-callback-ws/work</exclude>
              <exclude>samples/simple-callback-ws/work/**/*</exclude>
-             <exclude>demos/alert-aggregator/src/main/webapp/dojo</exclude>
-             <exclude>demos/alert-aggregator/src/main/webapp/dojo/**/*</exclude>
+             <exclude>demos/alert-aggregator-webapp/src/main/webapp/dojo</exclude>
+             <exclude>demos/alert-aggregator-webapp/src/main/webapp/dojo/**/*</exclude>
              <exclude>demos/bigbank-account/src/main/resources/web/dojo</exclude> 
              <exclude>demos/bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
              <exclude>*/**/*.svg</exclude>
