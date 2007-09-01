@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-helloworld-dojo</artifactId>
+    <artifactId>sample-helloworld-dojo-webapp</artifactId>
     <packaging>war</packaging>
     <name>Apache Tuscany Dojo Sample WebApp</name>
 

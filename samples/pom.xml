@@ -47,15 +47,15 @@
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
                 <module>calculator-webapp</module>
-                <module>calculator-webapp-ws</module>
+                <module>calculator-ws-webapp</module>
                 <module>chat-webapp</module>
                 <module>company-das</module>
                 <module>company-das-webapp</module>
                 <module>databinding-echo</module>
                 <module>feed-aggregator</module>
                 <module>feed-aggregator-webapp</module>
-                <module>helloworld-dojo</module>
-                <module>helloworld-jsonrpc</module>
+                <module>helloworld-dojo-webapp</module>
+                <module>helloworld-jsonrpc-webapp</module>
                 <module>helloworld-ws-service</module>
                 <module>helloworld-ws-service-webapp</module>
                 <module>helloworld-ws-reference</module>

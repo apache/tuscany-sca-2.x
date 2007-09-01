@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="helloworld-jsonrpc" default="package">
+<project name="helloworld-jsonrpc-webapp" default="package">
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -38,7 +38,7 @@
     </target>	
 	
     <target name="package" depends="compile">
-        <war destfile="target/sample-helloworld-jsonrpc.war" 
+        <war destfile="target/sample-helloworld-jsonrpc-webapp.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>
             <zipfileset dir="../../modules" prefix="WEB-INF/lib">

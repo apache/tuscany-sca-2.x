@@ -26,7 +26,7 @@
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" >
            <interface.java interface="calculator.AddService" />        
-            <binding.ws uri="http://localhost:8080/sample-calculator-webapp-ws/AddServiceComponent"/>        
+            <binding.ws uri="http://localhost:8080/sample-calculator-ws-webapp/AddServiceComponent"/>        
         </reference>   
         <reference name="subtractService" target="SubtractServiceComponent"></reference>
         <reference name="multiplyService" target="MultiplyServiceComponent"></reference>
