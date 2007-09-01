@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="helloworld-dojo" default="package">
+<project name="helloworld-dojo-webapp" default="package">
     <property name="settings.localRepository" value="./target/repo" />
-    <property name="artifactId" value="sample-helloworld-dojo" />
+    <property name="artifactId" value="sample-helloworld-dojo-webapp" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -49,7 +49,7 @@
           <property name="artifactId" value="${artifactId}"/>
         </ant>   
 
-        <war destfile="target/sample-helloworld-dojo.war" 
+        <war destfile="target/sample-helloworld-dojo-webapp.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>
             <zipfileset dir="../../modules" prefix="WEB-INF/lib">

@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-helloworld-jsonrpc</artifactId>
+    <artifactId>sample-helloworld-jsonrpc-webapp</artifactId>
     <packaging>war</packaging>
     <name>Apache Tuscany JSON-RPC Sample WebApp</name>
 

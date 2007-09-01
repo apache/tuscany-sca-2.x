@@ -40,9 +40,9 @@ calculator-rmi-reference - The calculator configured to talk RMI to the
                            calculator-rmi-service sample
 calculator-rmi-service   - The calculator configured to accept RMI requests 
                            from calculator-rmi-reference
-helloworld-jsonrpc       - An SCA application that exposes a service using 
+helloworld-jsonrpc-webapp       - An SCA application that exposes a service using 
                            JSONRPC
-helloworld-dojo          - An SCA application that exposes a service using 
+helloworld-dojo-webapp          - An SCA application that exposes a service using 
                            JSONRPC and a client using the Dojo toolkit
 simple-callback          - An SCA application with two components demonstrating
                            the callback interface

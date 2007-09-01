@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-calculator-webapp-ws</artifactId>
+    <artifactId>sample-calculator-ws-webapp</artifactId>
     <packaging>war</packaging>
     <name>Apache Tuscany Calculator Sample WebApp With WebServices</name>
 

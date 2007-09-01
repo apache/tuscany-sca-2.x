@@ -1,7 +1,7 @@
-Hello World Dojo RPC Sample
-===========================
-This sample demostrates the SCA JSONRPC binding using a simple web app that
-uses the RPC support of the Dojo Toolkit to an SCA service.  
+Hello World JSONRPC Sample
+==========================
+This sample demostrates the JSONRPC binding using a simple web app that
+talks JSONRPC to an SCA service.  
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -9,32 +9,23 @@ first.
 
 As this sample provides a web app there is a manual step where the WAR file
 that contains the sample is copied to your web app container. If you just want 
-to give this sample a go deploy the WAR file (target/sample-helloworld-dojo.war)
+to give this sample a go deploy the WAR file (target/sample-helloworld-jsonrpc-webapp.war)
 to you web application server. 
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-helloworld-dojo
+http://localhost:8080/sample-helloworld-jsonrpc-webapp
 
 The port and hostname will of course vary depending on your local installation. 
-
-See also the similar helloworld-jsonrpc sample which also uses the SCA JSONRPC binding
-but uses SCA scaDomain.js script on the client instead of the Dojo Toolkit. 
 
 Sample Overview
 ---------------
 The sample provides a single service with an operation that reflects
 a greeting back to the caller. The service is exposed using the JSONRPC
-binding. The web app provided shows how the Dojo Toolkit JSON-RPC support can be 
+binding. The web app provided shows how the SCA-provided JSON client can be 
 used to invoke the SCA service. 
 
-The web app provided shows how the service can be called by using the DOJO toolkit. 
-
-helloworld-dojo/
-  build-dojo.xml                      - This file is an Ant script used by the 
-                                        sample build process to download the Dojo Toolkit 
-                                        and get it included in the WAR file 
-                                        for use by the sample.
+helloworld-jsonrpc-webapp/
   src/
     main/
       java/
@@ -44,8 +35,6 @@ helloworld-dojo/
       resources/
         jsonrpc.composite             - the SCA assembly for this sample
       webapp
-        dojo/                         - the Dojo toolkit (this directory is created only 
-                                        when you build the samples from the source distribution)
         META-INF/
           sca-contribution.xml        - specifies the composite to be deployed
         WEB-INF/
@@ -55,7 +44,7 @@ helloworld-dojo/
                                         SCA service via JSONRPC
         style.css                     - style sheet     
            
-  helloworld-jsonrpc.png              - a pictorial representation of the 
+  helloworld-jsonrpc-webapp.png              - a pictorial representation of the 
                                         sample .composite file
   build.xml                           - the Ant build file that unpacks the
                                         dojo installation
@@ -66,10 +55,10 @@ Building And Running The Sample Using Ant
 With the binary distribution the sample can be built using Ant as 
 follows
 
-cd helloworld-dojo
+cd helloworld-jsonrpc-webapp
 ant package
 
-This should result in a war file (sample-helloworld-dojo.war) in the target 
+This should result in a war file (sample-helloworld-jsonrpc-webapp.war) in the target 
 directory. Copy this war file to your web app deployment directory in your
 web app container. 
 
@@ -79,7 +68,7 @@ of copying the WAR file to the webapps directory.
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8080/sample-helloworld-dojo
+http://localhost:8080/sample-helloworld-jsonrpc-webapp
 
 The port and hostname will of course vary depending on your local installation. 
 
@@ -91,10 +80,10 @@ Building And Running The Sample Using Maven
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
-cd helloworld-dojo 
+cd helloworld-jsonrpc-webapp 
 mvn
 
-Again this should result in a war file (sample-helloworld-dojo.war) in the target 
+Again this should result in a war file (sample-helloworld-jsonrpc-webapp.war) in the target 
 directory. Follow the steps described in the previous section for running the web 
 app and for the expected results.
 
