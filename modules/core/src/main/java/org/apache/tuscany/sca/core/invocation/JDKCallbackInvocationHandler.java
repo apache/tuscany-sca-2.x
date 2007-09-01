@@ -24,8 +24,6 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.context.ConversationImpl;
-import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
-import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -47,6 +45,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     public JDKCallbackInvocationHandler(MessageFactory messageFactory, List<RuntimeWire> wires) {
         super(messageFactory, (CallableReference<?>) null);
         this.wires = wires;
+        this.fixedWire = false;
     }
 
     @Override

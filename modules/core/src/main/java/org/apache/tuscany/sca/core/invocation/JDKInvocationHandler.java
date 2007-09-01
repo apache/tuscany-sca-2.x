@@ -23,7 +23,9 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
@@ -61,17 +63,23 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected Object callbackObject;
     protected RuntimeWire wire;
     protected CallableReference<?> callableReference;
+    protected Class<?> businessInterface;
 
-    public JDKInvocationHandler(MessageFactory messageFactory, RuntimeWire wire) {
+    protected boolean fixedWire = true;
+    protected transient Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>();
+
+    public JDKInvocationHandler(MessageFactory messageFactory, Class<?> businessInterface, RuntimeWire wire) {
         this.messageFactory = messageFactory;
         this.wire = wire;
+        this.businessInterface = businessInterface;
         setConversational(wire);
     }
-    
+
     public JDKInvocationHandler(MessageFactory messageFactory, CallableReference<?> callableReference) {
         this.messageFactory = messageFactory;
         this.callableReference = callableReference;
         if (callableReference != null) {
+            this.businessInterface = callableReference.getBusinessInterface();
             this.callbackID = callableReference.getCallbackID();
             this.conversation = (ConversationImpl)callableReference.getConversation();
             this.wire = ((CallableReferenceImpl<?>)callableReference).getRuntimeWire();
@@ -88,22 +96,10 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         InterfaceContract contract = wire.getSource().getInterfaceContract();
         this.conversational = contract.getInterface().isConversational();
     }
-    
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
-            return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
-        } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName())) {
-            Object obj = args[0];
-            if (obj == null) {
-                return false;
-            }
-            if (!Proxy.isProxyClass(obj.getClass())) {
-                return false;
-            }
-            return equals(Proxy.getInvocationHandler(obj));
-        } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
-            return hashCode();
+        if (Object.class == method.getDeclaringClass()) {
+            return invokeObjectMethod(method, args);
         }
         if (wire == null) {
             //FIXME: need better exception
@@ -118,6 +114,30 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         Object result = invoke(chain, args, wire);
 
         return result;
+    }
+
+    /**
+     * @param method
+     * @param args
+     */
+    private Object invokeObjectMethod(Method method, Object[] args) throws Throwable {
+        String name = method.getName();
+        if ("toString".equals(name)) {
+            return "[Proxy - " + toString() + "]";
+        } else if ("equals".equals(name)) {
+            Object obj = args[0];
+            if (obj == null) {
+                return false;
+            }
+            if (!Proxy.isProxyClass(obj.getClass())) {
+                return false;
+            }
+            return equals(Proxy.getInvocationHandler(obj));
+        } else if ("hashCode".equals(name)) {
+            return hashCode();
+        } else {
+            return method.invoke(this);
+        }
     }
 
     /**
@@ -145,17 +165,27 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     }
 
-    protected InvocationChain getInvocationChain(Method method, RuntimeWire wire) {
+    protected synchronized InvocationChain getInvocationChain(Method method, RuntimeWire wire) {
+        if (fixedWire && chains.containsKey(method)) {
+            return chains.get(method);
+        }
+        InvocationChain found = null;
         for (InvocationChain chain : wire.getInvocationChains()) {
             Operation operation = chain.getSourceOperation();
             if (operation.isDynamic()) {
                 operation.setName(method.getName());
-                return chain;
+                found = chain;
+                break;
             } else if (match(operation, method)) {
-                return chain;
+                chains.put(method, chain);
+                found = chain;
+                break;
             }
         }
-        return null;
+        if (fixedWire) {
+            chains.put(method, found);
+        }
+        return found;
     }
 
     public void setEndpoint(EndpointReference endpoint) {
@@ -182,7 +212,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 // will have been constructed yet
                 conversation = new ConversationImpl();
             }
-            
+
             Object conversationId = conversation.getConversationID();
 
             // create a conversation id if one doesn't exist 
@@ -192,17 +222,17 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             if (conversationId == null) {
                 // create a new conversation Id
                 conversationId = createConversationID();
-                
+
                 // If we are passing out a callback target
                 // register the calling component instance against this 
                 // new conversation id so that stateful callbacks will be
                 // able to find it
-                if (wire.getSource().getCallbackEndpoint()!= null ) {
+                if (wire.getSource().getCallbackEndpoint() != null) {
                     // the component instance is already registered
                     // so add another registration
                     ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-                       
-                    if ( scopeContainer != null){
+
+                    if (scopeContainer != null) {
                         scopeContainer.addWrapperReference(msgContextConversationId, conversationId);
                     }
                 }
@@ -211,12 +241,12 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 // put it back in the conversation object
                 conversation.setConversationID(conversationId);
             }
-            
+
             //TODO - assuming that the conversation ID is a string here when
             //       it can be any object that is serializable to XML
             msg.setConversationID((String)conversationId);
-        }     
-        
+        }
+
         Invoker headInvoker = chain.getHeadInvoker();
         msg.setCorrelationID(callbackID);
         Operation operation = chain.getTargetOperation();
@@ -228,14 +258,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;
                 if (conversation != null) {
-                    
+
                     // remove conversation id from scope container
                     ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-                    
-                    if ( scopeContainer != null){
+
+                    if (scopeContainer != null) {
                         scopeContainer.remove(conversation.getConversationID());
                     }
-                    
+
                     conversation.setConversationID(null);
                 }
             } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
@@ -258,8 +288,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                     } else {
                         if (contract != null) {
                             if (!contract.isConversational()) {
-                                throw new IllegalArgumentException
-                                        ("Callback object for stateless callback is not a ServiceReference");
+                                throw new IllegalArgumentException(
+                                                                   "Callback object for stateless callback is not a ServiceReference");
                             } else {
                                 //FIXME: add callback object to scope container
                                 msg.setFrom(callbackEndpoint);
@@ -291,23 +321,23 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         }
     }
 
-    private ScopeContainer<Object> getConversationalScopeContainer(RuntimeWire wire){
+    private ScopeContainer<Object> getConversationalScopeContainer(RuntimeWire wire) {
         ScopeContainer<Object> scopeContainer = null;
-        
+
         RuntimeComponent runtimeComponent = wire.getSource().getComponent();
-        
+
         if (runtimeComponent instanceof ScopedRuntimeComponent) {
             ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)runtimeComponent;
             ScopeContainer<Object> tmpScopeContainer = scopedRuntimeComponent.getScopeContainer();
-            
-            if ((tmpScopeContainer != null ) &&
-                (tmpScopeContainer.getScope() == Scope.CONVERSATION)){
+
+            if ((tmpScopeContainer != null) && (tmpScopeContainer.getScope() == Scope.CONVERSATION)) {
                 scopeContainer = tmpScopeContainer;
             }
         }
-        
+
         return scopeContainer;
     }
+
     /**
      * Creates a new conversational id
      * 
