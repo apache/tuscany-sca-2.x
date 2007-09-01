@@ -10,12 +10,12 @@ binding.feed
 
 The easiest way to get going is to build the demo
 
-cd alert-aggregator
+cd alert-aggregator-webapp
 mvn
 
 This will build and test the source and generate a war file 
 
-demo-alert-aggregator.war
+demo-alert-aggregator-webapp.war
 
 This war can be deployed to you web application container and tested (the war
 has been tested with Tomcat 6.0.10). 
@@ -25,7 +25,7 @@ The Web Application
 
 Once deployed point your browser at 
 
-http://localhost:8080/demo-alert-aggregator
+http://localhost:8080/demo-alert-aggregator-webapp
 
 Taking care to ensure the host name and port number match you local 
 configuration. 
@@ -37,7 +37,7 @@ these sources are providing.
 There default sources that you see are stored in a file in the following
 file
 
-demo-alert-aggregator/WEB-INF/classes/sources.xml
+demo-alert-aggregator-webapp/WEB-INF/classes/sources.xml
 
 This files has the following contents
 
@@ -66,7 +66,7 @@ As this SCA application also uses the binding.feed binding you can use your
 favourite feed reader to read the aggregated alerts. To do this point your
 feed reader at
 
-http://localhost:8080/demo-alert-aggregator/services/AlertsFeedServiceRSS
+http://localhost:8080/demo-alert-aggregator-webapp/services/AlertsFeedServiceRSS
 
 Again taking care to ensure that the host name and port number match you 
 local configuration.
