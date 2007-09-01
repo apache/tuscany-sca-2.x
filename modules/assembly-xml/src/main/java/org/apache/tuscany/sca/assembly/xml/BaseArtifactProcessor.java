@@ -178,10 +178,22 @@ abstract class BaseArtifactProcessor implements Constants {
     protected boolean getBoolean(XMLStreamReader reader, String name) {
         String value = reader.getAttributeValue(null, name);
         if (value == null) {
-            value = Boolean.toString(false);
+            return false;
         }
         return Boolean.valueOf(value);
     }
+    
+    /**
+     * Test if an attribute is explicitly set
+     * @param reader
+     * @param name
+     * @return
+     */
+    protected boolean isSet(XMLStreamReader reader, String name) {
+        return reader.getAttributeValue(null, name) != null;
+    }
+    
+    
 
     /**
      * Returns the value of an attribute as a list of qnames.

@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.itest.references;
 
 public class DComponentImpl implements DComponent {
 
-    public String foo() {
+    public String dFoo() {
         return "DComponent";
     }
 

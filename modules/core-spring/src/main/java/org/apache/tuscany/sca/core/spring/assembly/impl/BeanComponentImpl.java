@@ -40,164 +40,175 @@ import org.springframework.beans.factory.support.ChildBeanDefinition;
  *  @version $Rev$ $Date$
  */
 public class BeanComponentImpl extends ChildBeanDefinition implements Component, Cloneable {
-	public IntentAttachPointType getType() {
+    public IntentAttachPointType getType() {
         // TODO Auto-generated method stub
         return null;
     }
 
     public void setType(IntentAttachPointType type) {
         // TODO Auto-generated method stub
-        
+
     }
 
     private static final long serialVersionUID = 1L;
-	
-	private ConstrainingType constrainingType;
-	private Implementation implementation;
-	private String name;
-        private String uri;
-	private List<ComponentService> services = new ArrayList<ComponentService>();
-	private List<Intent> requiredIntents = new ArrayList<Intent>();
-	private List<PolicySet> policySets = new ArrayList<PolicySet>();
-	private List<Object> extensions = new ArrayList<Object>();
-	private boolean unresolved = false;
-	private BeanDefinitionRegistry beanRegistry;
-	
-	protected BeanComponentImpl(BeanDefinitionRegistry beanRegistry) {
-		super((String)"");
-		this.beanRegistry = beanRegistry;
-	}
-        
+
+    private ConstrainingType constrainingType;
+    private Implementation implementation;
+    private String name;
+    private String uri;
+    private List<ComponentService> services = new ArrayList<ComponentService>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Object> extensions = new ArrayList<Object>();
+    private boolean unresolved = false;
+    private BeanDefinitionRegistry beanRegistry;
+
+    protected BeanComponentImpl(BeanDefinitionRegistry beanRegistry) {
+        super((String)"");
+        this.beanRegistry = beanRegistry;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        BeanComponentImpl clone = (BeanComponentImpl)super.clone();
+
+        clone.getProperties().clear();
+        for (ComponentProperty property : getProperties()) {
+            clone.getProperties().add((ComponentProperty)property.clone());
+        }
+        clone.getReferences().clear();
+        for (ComponentReference reference : getReferences()) {
+            clone.getReferences().add((ComponentReference)reference.clone());
+        }
+        clone.getServices().clear();
+        for (ComponentService service : getServices()) {
+            clone.getServices().add((ComponentService)service.clone());
+        }
+        return clone;
+    }
+
+    @Override
+    public String getParentName() {
+        //TODO find a better name for bean definitions representing component types
+        return String.valueOf(System.identityHashCode(implementation));
+    }
+
+    public ConstrainingType getConstrainingType() {
+        return constrainingType;
+    }
+
+    public Implementation getImplementation() {
+        return implementation;
+    }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+
+        // Register this bean definition in the bean registry
+        this.beanRegistry.registerBeanDefinition(uri, this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    //TODO use a better list implementation
+    private List<ComponentProperty> properties = new ArrayList<ComponentProperty>() {
+        private static final long serialVersionUID = 1L;
+
+        // Add a property
         @Override
-        public Object clone() throws CloneNotSupportedException {
-            BeanComponentImpl clone = (BeanComponentImpl)super.clone();
+        public boolean add(ComponentProperty property) {
 
-            clone.getProperties().clear();
-            for (ComponentProperty property: getProperties()) {
-                clone.getProperties().add((ComponentProperty)property.clone());
-            }
-            clone.getReferences().clear();
-            for (ComponentReference reference: getReferences()) {
-                clone.getReferences().add((ComponentReference)reference.clone());
-            }
-            clone.getServices().clear();
-            for (ComponentService service: getServices()) {
-                clone.getServices().add((ComponentService)service.clone());
-            }
-            return clone;
+            // Add corresponding bean property value
+            getPropertyValues().addPropertyValue(property.getName(), property.getValue());
+
+            return super.add(property);
         }
-	
+    };
+
+    public List<ComponentProperty> getProperties() {
+        return properties;
+    }
+
+    //TODO use a better list implementation
+    private List<ComponentReference> references = new ArrayList<ComponentReference>() {
+        private static final long serialVersionUID = 1L;
+
+        // Add a reference
         @Override
-	public String getParentName() {
-		//TODO find a better name for bean definitions representing component types
-		return String.valueOf(System.identityHashCode(implementation));
-	}
+        public boolean add(ComponentReference reference) {
 
-	public ConstrainingType getConstrainingType() {
-		return constrainingType;
-	}
-
-	public Implementation getImplementation() {
-		return implementation;
-	}
-
-        public String getURI() {
-            return uri;
+            // Add corresponding bean property value
+            if (!reference.getName().startsWith("$self$.")) {
+                BeanReferenceImpl beanReference = new BeanReferenceImpl(reference);
+                getPropertyValues().addPropertyValue(reference.getName(), beanReference);
+            }
+            return super.add(reference);
         }
-        
-        public void setURI(String uri) {
-            this.uri = uri;
-                
-            // Register this bean definition in the bean registry
-            this.beanRegistry.registerBeanDefinition(uri, this);
+    };
+
+    public List<ComponentReference> getReferences() {
+        return references;
+    }
+
+    public List<ComponentService> getServices() {
+        return services;
+    }
+
+    public void setConstrainingType(ConstrainingType constrainingType) {
+        this.constrainingType = constrainingType;
+    }
+
+    public void setImplementation(Implementation implementation) {
+        this.implementation = implementation;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public boolean isAutowire() {
+        return super.getAutowireMode() == AUTOWIRE_BY_TYPE;
+    }
+
+    public Boolean getAutowire() {
+        int autowire = super.getAutowireMode();
+        if (autowire == AUTOWIRE_BY_TYPE) {
+            return Boolean.TRUE;
+        } else if (autowire == AUTOWIRE_NO) {
+            return Boolean.FALSE;
+        } else {
+            return null;
         }
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setAutowire(Boolean autowire) {
+        super.setAutowireMode(autowire ? AUTOWIRE_BY_TYPE : AUTOWIRE_NO);
+    }
 
-	//TODO use a better list implementation
-	private List<ComponentProperty> properties = new ArrayList<ComponentProperty>() {
-		private static final long serialVersionUID = 1L;
-		
-		// Add a property
-                @Override
-		public boolean add(ComponentProperty property) {
-			
-			// Add corresponding bean property value
-			getPropertyValues().addPropertyValue(property.getName(), property.getValue());
+    public List<Object> getExtensions() {
+        return extensions;
+    }
 
-			return super.add(property);
-		}
-	};
-	
-	public List<ComponentProperty> getProperties() {
-		return properties;
-	}
+    public boolean isUnresolved() {
+        return unresolved;
+    }
 
-	//TODO use a better list implementation
-	private List<ComponentReference> references = new ArrayList<ComponentReference>() {
-		private static final long serialVersionUID = 1L;
-
-		// Add a reference
-                @Override
-		public boolean add(ComponentReference reference) {
-			
-			// Add corresponding bean property value
-                    if (!reference.getName().startsWith("$self$.")) {
-			BeanReferenceImpl beanReference = new BeanReferenceImpl(reference);
-			getPropertyValues().addPropertyValue(reference.getName(), beanReference);
-                    }
-                    return super.add(reference);
-		}
-	};
-	
-	public List<ComponentReference> getReferences() {
-		return references;
-	}
-
-	public List<ComponentService> getServices() {
-		return services;
-	}
-
-	public void setConstrainingType(ConstrainingType constrainingType) {
-		this.constrainingType = constrainingType;
-	}
-
-	public void setImplementation(Implementation implementation) {
-		this.implementation = implementation;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public List<Intent> getRequiredIntents() {
-		return requiredIntents;
-	}
-
-	public List<PolicySet> getPolicySets() {
-		return policySets;
-	}
-
-	public boolean isAutowire() {
-		return super.getAutowireMode() == AUTOWIRE_BY_TYPE;
-	}
-	
-	public void setAutowire(boolean autowire) {
-		super.setAutowireMode(autowire? AUTOWIRE_BY_TYPE:AUTOWIRE_NO);
-	}
-
-	public List<Object> getExtensions() {
-		return extensions;
-	}
-
-	public boolean isUnresolved() {
-		return unresolved;
-	}
-
-	public void setUnresolved(boolean undefined) {
-		this.unresolved = undefined;
-	}
+    public void setUnresolved(boolean undefined) {
+        this.unresolved = undefined;
+    }
 
 }

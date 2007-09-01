@@ -20,5 +20,5 @@ package org.apache.tuscany.sca.itest.references;
 
 public interface CComponent {
 
-    String foo();
+    String cFoo();
 }

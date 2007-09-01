@@ -46,11 +46,11 @@ public class AComponentImpl implements AComponent {
     }
 
     public String fooB() {
-        return b.foo();
+        return b.bFoo();
     }
 
     public String fooC() {
-        return cReference.foo();
+        return cReference.cFoo();
     }
 
     public String fooBC() {
@@ -58,15 +58,15 @@ public class AComponentImpl implements AComponent {
     }
 
     public String fooD() {
-        return dReference1.foo();
+        return dReference1.dFoo();
     }
 
     public String fooD1() {
-        return dReference1.foo();
+        return dReference1.dFoo();
     }
 
     public String fooD2() {
-        return dReference2.foo();
+        return dReference2.dFoo();
     }
 
     public DComponent getDReference() {

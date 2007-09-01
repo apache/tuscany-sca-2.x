@@ -265,8 +265,8 @@ public class CompositeConfigurationBuilderImpl {
             }
 
             // Propagate the autowire flag from the composite to components
-            if (composite.isAutowire()) {
-                component.setAutowire(true);
+            if (component.getAutowire() == null) {
+                component.setAutowire(composite.getAutowire());
             }
 
             // Inherit intents defined at the composite level
@@ -612,8 +612,8 @@ public class CompositeConfigurationBuilderImpl {
                 }
                 
                 // Propagate autowire setting from the component
-                if (component.isAutowire()) {
-                    componentReference.setAutowire(true);
+                if (componentReference.getAutowire() == null) {
+                    componentReference.setAutowire(component.getAutowire());
                 }
 
                 // Reconcile targets

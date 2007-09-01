@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */ 
+ */
 
 package org.apache.tuscany.sca.assembly.xml;
 
@@ -70,8 +70,7 @@ import org.w3c.dom.NodeList;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeProcessor extends BaseArtifactProcessor implements
-    StAXArtifactProcessor<Composite> {
+public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
 
     /**
      * Construct a new composite processor
@@ -129,9 +128,10 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
 
                             // Read a <composite>
                             composite = assemblyFactory.createComposite();
-                            composite.setName(new QName(getString(reader, TARGET_NAMESPACE),
-                                                        getString(reader, NAME)));
-                            composite.setAutowire(getBoolean(reader, AUTOWIRE));
+                            composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
+                            if(isSet(reader, AUTOWIRE)) {
+                                composite.setAutowire(getBoolean(reader, AUTOWIRE));
+                            }
                             composite.setLocal(getBoolean(reader, LOCAL));
                             composite.setConstrainingType(getConstrainingType(reader));
                             readPolicies(composite, reader);
@@ -177,8 +177,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                                 promotedComponent.setName(promotedComponentName);
                                 compositeService.setPromotedComponent(promotedComponent);
 
-                                ComponentService promotedService =
-                                    assemblyFactory.createComponentService();
+                                ComponentService promotedService = assemblyFactory.createComponentService();
                                 promotedService.setUnresolved(true);
                                 promotedService.setName(promotedServiceName);
                                 compositeService.setPromotedService(promotedService);
@@ -194,10 +193,11 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                                 contract = componentReference;
                                 componentReference.setName(getString(reader, NAME));
                                 readMultiplicity(componentReference, reader);
-                                componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
+                                if (isSet(reader, AUTOWIRE)) {
+                                    componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
+                                }
                                 readTargets(componentReference, reader);
-                                componentReference
-                                    .setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
+                                componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
                                 component.getReferences().add(componentReference);
                                 readPolicies(contract, reader);
                             } else {
@@ -209,18 +209,15 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                                 readTargets(compositeReference, reader);
                                 String promote = reader.getAttributeValue(null, Constants.PROMOTE);
                                 if (promote != null) {
-                                    for (StringTokenizer tokens = new StringTokenizer(promote); tokens
-                                        .hasMoreTokens();) {
+                                    for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
                                         ComponentReference promotedReference =
                                             assemblyFactory.createComponentReference();
                                         promotedReference.setUnresolved(true);
                                         promotedReference.setName(tokens.nextToken());
-                                        compositeReference.getPromotedReferences()
-                                            .add(promotedReference);
+                                        compositeReference.getPromotedReferences().add(promotedReference);
                                     }
                                 }
-                                compositeReference
-                                    .setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
+                                compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
                                 composite.getReferences().add(compositeReference);
                                 readPolicies(contract, reader);
                             }
@@ -249,6 +246,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                             // Read a <component>
                             component = assemblyFactory.createComponent();
                             component.setName(getString(reader, NAME));
+                            if (isSet(reader, AUTOWIRE)) {
+                                component.setAutowire(getBoolean(reader, AUTOWIRE));
+                            }
                             component.setConstrainingType(getConstrainingType(reader));
                             composite.getComponents().add(component);
                             readPolicies(component, reader);
@@ -308,8 +308,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                                     if (contract != null) {
                                         contract.setInterfaceContract((InterfaceContract)extension);
                                     } else {
-                                        if (name.getNamespaceURI().equals(SCA10_NS)){
-                                            throw new ContributionReadException("Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
+                                        if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                            throw new ContributionReadException(
+                                                                                "Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
                                         } else {
                                             composite.getExtensions().add(extension);
                                         }
@@ -324,8 +325,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                                         if (contract != null) {
                                             contract.getBindings().add((Binding)extension);
                                         } else {
-                                            if (name.getNamespaceURI().equals(SCA10_NS)){
-                                                throw new ContributionReadException("Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
+                                            if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                                throw new ContributionReadException(
+                                                                                    "Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
                                             } else {
                                                 composite.getExtensions().add(extension);
                                             }
@@ -338,8 +340,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                                     if (component != null) {
                                         component.setImplementation((Implementation)extension);
                                     } else {
-                                        if (name.getNamespaceURI().equals(SCA10_NS)){
-                                            throw new ContributionReadException("Unexpected <implementation> element found. It should appear inside a <component> element");
+                                        if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                            throw new ContributionReadException(
+                                                                                "Unexpected <implementation> element found. It should appear inside a <component> element");
                                         } else {
                                             composite.getExtensions().add(extension);
                                         }
@@ -406,13 +409,13 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
         }
     }
 
-    public void writeComponentReference(ComponentReference reference, XMLStreamWriter writer) throws XMLStreamException,
-                                                                                             ContributionWriteException {
+    public void writeComponentReference(ComponentReference reference, XMLStreamWriter writer)
+        throws XMLStreamException, ContributionWriteException {
         // TODO handle multivalued target attribute
-        String target =
-            reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
-        writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()), new XAttr(TARGET,
-                                                                                      target));
+        String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
+        Boolean autowire = reference.getAutowire();
+        XAttr autowireAttr = autowire == null ? null : new XAttr(AUTOWIRE, autowire.toString());
+        writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()), new XAttr(TARGET, target), autowireAttr);
 
         extensionProcessor.write(reference.getInterfaceContract(), writer);
 
@@ -440,8 +443,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
 
         writeEnd(writer);
     }
-    
-    public void writeCompositeService(Service service, XMLStreamWriter writer ) throws ContributionWriteException, XMLStreamException {
+
+    public void writeCompositeService(Service service, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
         CompositeService compositeService = (CompositeService)service;
         Component promotedComponent = compositeService.getPromotedComponent();
         ComponentService promotedService = compositeService.getPromotedService();
@@ -455,8 +459,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
         } else {
             promote = null;
         }
-        writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE,
-                                                                                  promote));
+        writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote));
 
         extensionProcessor.write(service.getInterfaceContract(), writer);
 
@@ -484,8 +487,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
 
         writeEnd(writer);
     }
-    
-    public void writeComponentService(ComponentService service, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+    public void writeComponentService(ComponentService service, XMLStreamWriter writer)
+        throws ContributionWriteException, XMLStreamException {
         writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
 
         extensionProcessor.write(service.getInterfaceContract(), writer);
@@ -514,9 +518,13 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
 
         writeEnd(writer);
     }
-    
-    public void writeComponent(Composite composite, Component component, XMLStreamWriter writer)  throws ContributionWriteException, XMLStreamException {
-        writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()));
+
+    public void writeComponent(Composite composite, Component component, XMLStreamWriter writer)
+        throws ContributionWriteException, XMLStreamException {
+        Boolean autowire = component.getAutowire();
+        XAttr autowireAttr = autowire == null ? null : new XAttr(AUTOWIRE, autowire.toString());
+
+        writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()), autowireAttr);
 
         for (ComponentService service : component.getServices()) {
             writeComponentService(service, writer);
@@ -533,8 +541,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
         // Write the component implementation
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
-            writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite
-                .getName()));
+            writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite.getName()));
             writeEnd(writer);
         } else {
             extensionProcessor.write(component.getImplementation(), writer);
@@ -543,7 +550,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
         writeEnd(writer);
     }
 
-    public void writeCompositeReference(Reference reference, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void writeCompositeReference(Reference reference, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
         //TODO handle multivalued promote attribute
         CompositeReference compositeReference = (CompositeReference)reference;
         String promote;
@@ -551,10 +559,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
             promote = compositeReference.getPromotedReferences().get(0).getName();
         else
             promote = null;
-        writeStart(writer,
-                   REFERENCE,
-                   new XAttr(NAME, reference.getName()),
-                   new XAttr(PROMOTE, promote));
+        writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()), new XAttr(PROMOTE, promote));
 
         extensionProcessor.write(reference.getInterfaceContract(), writer);
 
@@ -582,51 +587,57 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
 
         writeEnd(writer);
     }
-    
-    public void writeProperty(Property property, XMLStreamWriter writer) throws XMLStreamException, ContributionWriteException {
-        
-        if ( property instanceof ComponentProperty ) {
+
+    public void writeProperty(Property property, XMLStreamWriter writer) throws XMLStreamException,
+        ContributionWriteException {
+
+        if (property instanceof ComponentProperty) {
             ComponentProperty componentProperty = (ComponentProperty)property;
-            writeStart(writer, PROPERTY, new XAttr(NAME, componentProperty.getName()),
-                                            new XAttr(MUST_SUPPLY, componentProperty.isMustSupply()), 
-                                            new XAttr(MANY, componentProperty.isMany()),
-                                            new XAttr(TYPE, componentProperty.getXSDType()),
-                                            new XAttr(ELEMENT, componentProperty.getXSDElement()),
-                                            new XAttr(SOURCE, componentProperty.getSource()),
-                                            new XAttr(FILE, componentProperty.getFile()));
+            writeStart(writer,
+                       PROPERTY,
+                       new XAttr(NAME, componentProperty.getName()),
+                       new XAttr(MUST_SUPPLY, componentProperty.isMustSupply()),
+                       new XAttr(MANY, componentProperty.isMany()),
+                       new XAttr(TYPE, componentProperty.getXSDType()),
+                       new XAttr(ELEMENT, componentProperty.getXSDElement()),
+                       new XAttr(SOURCE, componentProperty.getSource()),
+                       new XAttr(FILE, componentProperty.getFile()));
 
         } else {
-            writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()),
-                       new XAttr(MUST_SUPPLY, property.isMustSupply()), 
+            writeStart(writer,
+                       PROPERTY,
+                       new XAttr(NAME, property.getName()),
+                       new XAttr(MUST_SUPPLY, property.isMustSupply()),
                        new XAttr(MANY, property.isMany()),
                        new XAttr(TYPE, property.getXSDType()),
                        new XAttr(ELEMENT, property.getXSDElement()));
 
         }
-        
-        if ( property.getValue() != null &&  property.getValue() instanceof Document ) {
+
+        if (property.getValue() != null && property.getValue() instanceof Document) {
             try {
                 Document document = (Document)property.getValue();
                 NodeList nodeList = document.getDocumentElement().getChildNodes();
-                
-                for ( int count = 0 ; count < nodeList.getLength() ; ++count ) {
-                    if ( nodeList.item(count).getNodeType() == Node.ELEMENT_NODE ) {
-                        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(nodeList.item(count)));
+
+                for (int count = 0; count < nodeList.getLength(); ++count) {
+                    if (nodeList.item(count).getNodeType() == Node.ELEMENT_NODE) {
+                        XMLStreamReader reader =
+                            XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(nodeList.item(count)));
                         writeElement(reader, writer);
                     }
                 }
-            } catch ( Exception e ) {
+            } catch (Exception e) {
                 throw new ContributionWriteException(e);
             }
         }
-        
+
         for (Object extension : property.getExtensions()) {
             extensionProcessor.write(extension, writer);
         }
 
         writeEnd(writer);
     }
-    
+
     private void writeElement(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -641,7 +652,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                         writer.writeNamespace(prefix, ns);
                     }
 
-                    if(!"".equals(name.getNamespaceURI())) {
+                    if (!"".equals(name.getNamespaceURI())) {
                         writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
                     }
 
@@ -652,7 +663,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
                         String prefix = reader.getAttributePrefix(i);
                         String qname = reader.getAttributeLocalName(i);
                         String value = reader.getAttributeValue(i);
-                        
+
                         writer.writeAttribute(prefix, ns, qname, value);
                     }
 
@@ -669,15 +680,19 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
             }
         }
     }
-    
+
     public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException {
 
         try {
+            Boolean autowire = composite.getAutowire();
+            XAttr autowireAttr = autowire == null ? null : new XAttr(AUTOWIRE, autowire.toString());
+
             writeStartDocument(writer,
                                COMPOSITE,
                                new XAttr(CONSTRAINING_TYPE, getConstrainingTypeAttr(composite)),
                                new XAttr(TARGET_NAMESPACE, composite.getName().getNamespaceURI()),
-                               new XAttr(NAME, composite.getName().getLocalPart()));
+                               new XAttr(NAME, composite.getName().getLocalPart()),
+                               autowireAttr);
 
             for (Service service : composite.getServices()) {
                 writeCompositeService(service, writer);
@@ -696,10 +711,8 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
             }
 
             for (Wire wire : composite.getWires()) {
-                writeStart(writer,
-                           WIRE,
-                           new XAttr(SOURCE, wire.getSource().getName()),
-                           new XAttr(TARGET, wire.getTarget().getName()));
+                writeStart(writer, WIRE, new XAttr(SOURCE, wire.getSource().getName()), new XAttr(TARGET, wire
+                    .getTarget().getName()));
                 for (Object extension : wire.getExtensions()) {
                     extensionProcessor.write(extension, writer);
                 }
@@ -736,7 +749,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
         }
 
         // Resolve extensions
-        for (Object extension: composite.getExtensions()) {
+        for (Object extension : composite.getExtensions()) {
             if (extension != null) {
                 extensionProcessor.resolve(extension, resolver);
             }
@@ -758,11 +771,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements
 
             for (ComponentProperty componentProperty : component.getProperties()) {
                 if (componentProperty.getFile() != null) {
-                    DeployedArtifact deployedArtifact =
-                        contributionFactory.createDeployedArtifact();
+                    DeployedArtifact deployedArtifact = contributionFactory.createDeployedArtifact();
                     deployedArtifact.setURI(componentProperty.getFile());
-                    deployedArtifact =
-                        resolver.resolveModel(DeployedArtifact.class, deployedArtifact);
+                    deployedArtifact = resolver.resolveModel(DeployedArtifact.class, deployedArtifact);
                     if (deployedArtifact.getLocation() != null) {
                         componentProperty.setFile(deployedArtifact.getLocation());
                     }

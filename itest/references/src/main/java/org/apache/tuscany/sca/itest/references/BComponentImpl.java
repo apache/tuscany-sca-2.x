@@ -28,12 +28,12 @@ public class BComponentImpl implements BComponent {
         this.cReference = cReference;
     }
 
-    public String foo() {
+    public String bFoo() {
         return "BComponent";
     }
 
     public String fooC() {
-        return "B" + cReference.foo();
+        return "B" + cReference.cFoo();
     }
 
 }

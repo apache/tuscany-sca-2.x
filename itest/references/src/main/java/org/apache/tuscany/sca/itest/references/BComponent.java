@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.itest.references;
 
 public interface BComponent {
 
-    String foo();
+    String bFoo();
 
     String fooC();
 }

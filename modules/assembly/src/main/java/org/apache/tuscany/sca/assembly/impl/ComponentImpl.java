@@ -46,37 +46,38 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     private List<ComponentService> services = new ArrayList<ComponentService>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private boolean autowire;
-    
+    private Boolean autowire;
+    private IntentAttachPointType type;
+
     /**
      * Constructs a new component.
      */
     protected ComponentImpl() {
     }
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         ComponentImpl clone = (ComponentImpl)super.clone();
 
         clone.properties = new ArrayList<ComponentProperty>();
-        for (ComponentProperty property: getProperties()) {
+        for (ComponentProperty property : getProperties()) {
             clone.properties.add((ComponentProperty)property.clone());
         }
         clone.references = new ArrayList<ComponentReference>();
-        for (ComponentReference reference: getReferences()) {
+        for (ComponentReference reference : getReferences()) {
             clone.references.add((ComponentReference)reference.clone());
         }
         clone.services = new ArrayList<ComponentService>();
-        for (ComponentService service: getServices()) {
+        for (ComponentService service : getServices()) {
             clone.services.add((ComponentService)service.clone());
         }
         return clone;
     }
-    
+
     public String getURI() {
         return uri;
     }
-    
+
     public void setURI(String uri) {
         this.uri = uri;
     }
@@ -126,18 +127,23 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     }
 
     public boolean isAutowire() {
+        return (autowire == null) ? false : autowire.booleanValue();
+    }
+
+    public void setAutowire(Boolean autowire) {
+        this.autowire = autowire;
+    }
+    
+    public Boolean getAutowire() {
         return autowire;
     }
 
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
-    }
-
     public IntentAttachPointType getType() {
-        return null;
+        return type;
     }
 
     public void setType(IntentAttachPointType type) {
+        this.type = type;
     }
 
 }
