@@ -36,6 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>callablereferences</module>
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
@@ -51,17 +52,21 @@
                 <module>exceptions-cross-binding</module>
                 <module>exceptions-cross-binding-ws</module>
                 <module>extended-api</module>
+                <!--
+                <module>interop-soap-client</module>
+                <module>interop-soap-round2-client</module>
+                <module>interop-soap-service</module>
+                -->
+                <module>large-sdo-ws</module>
                 <module>operation-overloading</module>
                 <module>osgi-implementation</module>
                 <module>properties</module>
                 <module>recursive</module>
                 <module>references</module>
                 <module>services</module>
-                <module>callablereferences</module>
                 <module>scopes</module>
                 <module>wsdl</module>
                 <module>wsdlless</module>
-                <module>large-sdo-ws</module>
                 <module>wsdl2java</module>
             </modules>
         </profile>
