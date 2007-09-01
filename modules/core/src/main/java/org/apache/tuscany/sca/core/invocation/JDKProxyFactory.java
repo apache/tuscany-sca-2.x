@@ -52,7 +52,7 @@ public class JDKProxyFactory implements ProxyFactory {
      * share conversation state so sets the conversaton object to null
      */
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        JDKInvocationHandler handler = new JDKInvocationHandler(messageFactory, wire);
+        JDKInvocationHandler handler = new JDKInvocationHandler(messageFactory, interfaze, wire);
         ClassLoader cl = interfaze.getClassLoader();
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler));
     }
