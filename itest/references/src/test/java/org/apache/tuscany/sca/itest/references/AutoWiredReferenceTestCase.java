@@ -25,14 +25,15 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osoa.sca.ServiceUnavailableException;
 
-public class InnerReferenceTestCase {
+public class AutoWiredReferenceTestCase {
     private static SCADomain domain;
     private static AComponent acomponent;
 
     @BeforeClass
     public static void init() throws Exception {
-        domain = SCADomain.newInstance("InnerReferencesTest.composite");
+        domain = SCADomain.newInstance("AutoWiredReferencesTest.composite");
         acomponent = domain.getService(AComponent.class, "AComponent");
     }
 
@@ -56,9 +57,9 @@ public class InnerReferenceTestCase {
         assertEquals("BCComponent", acomponent.fooBC());
     }
 
-    @Test
+    @Test(expected = ServiceUnavailableException.class)
     public void testD1Reference() {
-        assertEquals("DComponent", acomponent.fooD1());
+        acomponent.fooD1();
     }
 
     @Test

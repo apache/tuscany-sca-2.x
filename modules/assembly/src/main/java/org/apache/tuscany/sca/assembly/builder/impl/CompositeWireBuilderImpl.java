@@ -330,7 +330,7 @@ public class CompositeWireBuilderImpl {
         for (ComponentReference componentReference : componentReferences.values()) {
             List<Target> targets = new ArrayList<Target>();
     
-            if (componentReference.isAutowire()) {
+            if (componentReference.getAutowire() == Boolean.TRUE) {
     
                 // Find suitable targets in the current composite for an
                 // autowired reference
@@ -345,6 +345,14 @@ public class CompositeWireBuilderImpl {
                                 break;
                             }
                         }
+                    }
+                }
+                
+                if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
+                    if (targets.size() == 0) {
+                        warning("No target services found for the component reference to be autowired: " + componentReference
+                                    .getName(),
+                                componentReference);
                     }
                 }
     

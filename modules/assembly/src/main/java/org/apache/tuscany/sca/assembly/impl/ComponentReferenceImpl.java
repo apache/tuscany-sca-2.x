@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.assembly.Reference;
  */
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference, Cloneable {
     private Reference reference;
-    private boolean autowire;
+    private Boolean autowire;
     private List<CompositeReference> promotedAs = new ArrayList<CompositeReference>();
     private ComponentService callbackService;
 
@@ -60,11 +60,15 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     }
 
     public boolean isAutowire() {
-        return autowire;
+        return (autowire == null) ? false : autowire.booleanValue();
     }
 
-    public void setAutowire(boolean autowire) {
+    public void setAutowire(Boolean autowire) {
         this.autowire = autowire;
+    }
+    
+    public Boolean getAutowire() {
+        return autowire;
     }
 
     public List<CompositeReference> promotedAs() {

@@ -85,7 +85,7 @@ public class ReadAllTestCase extends TestCase {
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
         assertTrue(composite.isLocal());
-        assertFalse(composite.isAutowire());
+        assertFalse(composite.getAutowire() == Boolean.TRUE);
         assertEquals(((PolicySetAttachPoint)composite).getRequiredIntents().get(0).getName(), new QName("http://test",
                                                                                 "confidentiality"));
         assertEquals(((PolicySetAttachPoint)composite).getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
@@ -111,7 +111,7 @@ public class ReadAllTestCase extends TestCase {
 
         Component calcComponent = composite.getComponents().get(0);
         assertEquals(calcComponent.getName(), "CalculatorServiceComponent");
-        assertEquals(calcComponent.isAutowire(), false);
+        assertEquals(calcComponent.getAutowire(), Boolean.FALSE);
         assertEquals(calcComponent.getConstrainingType().getName(), new QName("http://calc",
                                                                               "CalculatorComponent"));
         assertEquals(calcComponent.getRequiredIntents().get(0).getName(), new QName("http://test",
@@ -127,7 +127,7 @@ public class ReadAllTestCase extends TestCase {
 
         ComponentReference calcComponentReference = calcComponent.getReferences().get(0);
         assertEquals(calcComponentReference.getName(), "addService");
-        assertEquals(calcComponentReference.isAutowire(), false);
+        assertEquals(calcComponentReference.getAutowire(), Boolean.FALSE);
         assertEquals(calcComponentReference.isWiredByImpl(), false);
         assertEquals(calcComponentReference.getRequiredIntents().get(0).getName(),
                      new QName("http://test", "confidentiality"));

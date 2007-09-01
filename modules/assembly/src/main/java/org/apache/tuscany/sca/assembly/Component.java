@@ -113,14 +113,21 @@ public interface Component extends Base, Extensible, IntentAttachPoint, PolicySe
      * 
      * @return whether component references should be autowired.
      */
+    @Deprecated
     boolean isAutowire();
+    
+    /**
+     * Return the Boolean value of autowire
+     * @return null/TRUE/FALSE
+     */
+    Boolean getAutowire();
 
     /**
      * Sets whether component references should be autowired.
      * 
      * @param autowire whether component references should be autowired
      */
-    void setAutowire(boolean autowire);
+    void setAutowire(Boolean autowire);
 
     /**
      * Returns a clone of the component.

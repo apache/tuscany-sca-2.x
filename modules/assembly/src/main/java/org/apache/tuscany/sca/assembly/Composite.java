@@ -84,18 +84,26 @@ public interface Composite extends Implementation, Extensible, Cloneable {
     void setLocal(boolean local);
 
     /**
-     * Returns true if autowiring is enabled in the composite.
+     * Returns true if the component references should be autowired.
      * 
-     * @return true if autowiring is enabled in the composite
+     * @return whether component references should be autowired.
      */
+    @Deprecated
     boolean isAutowire();
+    
+    /**
+     * Return the Boolean value of autowire
+     * @return null/TRUE/FALSE
+     */
+    Boolean getAutowire();
 
     /**
-     * Sets whether autowiring is enabled in the composite.
+     * Sets whether component references should be autowired.
      * 
-     * @param autowire whether autowiring is enabled in the composite
+     * @param autowire whether component references should be autowired
      */
-    void setAutowire(boolean autowire);
+    void setAutowire(Boolean autowire);
+
 
     /**
      * Returns a clone of the component type.

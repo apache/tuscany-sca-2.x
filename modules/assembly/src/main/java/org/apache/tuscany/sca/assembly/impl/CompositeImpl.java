@@ -38,7 +38,7 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite, Clone
     private List<Composite> includes = new ArrayList<Composite>();
     private QName name;
     private List<Wire> wires = new ArrayList<Wire>();
-    private boolean autowire;
+    private Boolean autowire;
     private boolean local = true;
 
     /**
@@ -97,22 +97,26 @@ public class CompositeImpl extends ComponentTypeImpl implements Composite, Clone
         return wires;
     }
 
-    public boolean isAutowire() {
-        return autowire;
-    }
-
     public boolean isLocal() {
         return local;
-    }
-
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
     }
 
     public void setLocal(boolean local) {
         this.local = local;
     }
 
+    public boolean isAutowire() {
+        return (autowire == null) ? false : autowire.booleanValue();
+    }
+
+    public void setAutowire(Boolean autowire) {
+        this.autowire = autowire;
+    }
+    
+    public Boolean getAutowire() {
+        return autowire;
+    }
+    
     public void setName(QName name) {
         this.name = name;
     }

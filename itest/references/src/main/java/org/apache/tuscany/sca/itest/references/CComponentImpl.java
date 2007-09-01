@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.itest.references;
 
 public class CComponentImpl implements CComponent {
 
-    public String foo() {
+    public String cFoo() {
         return "CComponent";
     }
 

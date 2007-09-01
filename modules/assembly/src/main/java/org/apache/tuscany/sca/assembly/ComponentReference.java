@@ -41,18 +41,26 @@ public interface ComponentReference extends Reference {
     void setReference(Reference reference);
     
     /**
-     * Returns true if the reference should be autowired.
+     * Returns true if the component references should be autowired.
      * 
-     * @return whether the reference should be autowired.
+     * @return whether component references should be autowired.
      */
+    @Deprecated
     boolean isAutowire();
+    
+    /**
+     * Return the Boolean value of autowire
+     * @return null/TRUE/FALSE
+     */
+    Boolean getAutowire();
 
     /**
-     * Sets whether the reference should be autowired.
+     * Sets whether component references should be autowired.
      * 
-     * @param autowire whether the reference should be autowired
+     * @param autowire whether component references should be autowired
      */
-    void setAutowire(boolean autowire);
+    void setAutowire(Boolean autowire);
+
 
     /**
      * Returns the callback service created internally as a target endpoint
