@@ -97,7 +97,7 @@ public class ReallySmallRuntime {
         proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, mapper, messageFactory);
 
         // Create model factories
-        assemblyFactory = new RuntimeAssemblyFactory(mapper, proxyFactory);
+        assemblyFactory = new RuntimeAssemblyFactory();
         factories.addFactory(assemblyFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         factories.addFactory(policyFactory);

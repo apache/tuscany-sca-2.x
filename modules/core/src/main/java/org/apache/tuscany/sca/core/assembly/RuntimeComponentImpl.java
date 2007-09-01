@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.core.assembly;
 
 import org.apache.tuscany.sca.assembly.impl.ComponentImpl;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -33,16 +32,13 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 public class RuntimeComponentImpl extends ComponentImpl implements RuntimeComponent, ScopedRuntimeComponent {
     protected RuntimeComponentContext componentContext;
     protected ImplementationProvider implementationProvider;
-    protected ProxyFactory proxyService;
     protected ScopeContainer scopeContainer;
     protected boolean started;
 
     /**
-     * @param proxyService
      */
-    public RuntimeComponentImpl(ProxyFactory proxyService) {
+    public RuntimeComponentImpl() {
         super();
-        this.proxyService = proxyService;
     }
 
     public ImplementationProvider getImplementationProvider() {
