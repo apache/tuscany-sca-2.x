@@ -39,12 +39,11 @@ public class CallbackInterfaceInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         CallableReference<?> callableReference = msg.getCallableReference();
-        if (callableReference instanceof ServiceReference) {
-            if (((ServiceReference<?>)callableReference).getCallback() == null) {
-                throw new NoRegisteredCallbackException("Callback target does not implement the callback interface");
-            }
+        if (callableReference instanceof ServiceReference && ((ServiceReference<?>)callableReference).getCallback() != null) {
+            return next.invoke(msg);
+        } else {
+            throw new NoRegisteredCallbackException("Callback target does not implement the callback interface");
         }
-        return next.invoke(msg);
     }
 
     public void setNext(Invoker next) {
