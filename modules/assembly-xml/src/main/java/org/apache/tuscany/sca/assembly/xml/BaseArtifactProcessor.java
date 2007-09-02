@@ -33,10 +33,12 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
@@ -49,8 +51,8 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -67,6 +69,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A base class with utility methods for the other artifact processors in this module. 
@@ -79,11 +82,7 @@ abstract class BaseArtifactProcessor implements Constants {
     protected AssemblyFactory assemblyFactory;
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
-
-    private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-    static {
-        domFactory.setNamespaceAware(true);
-    }
+    private DocumentBuilderFactory documentBuilderFactory;
 
     /**
      * Construcst a new BaseArtifactProcessor.
@@ -219,8 +218,16 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param attachPoint
      * @param reader
      */
-    protected void readIntents(IntentAttachPoint attachPoint, XMLStreamReader reader) {
+    protected void readIntents(Object attachPoint, XMLStreamReader reader) {
         readIntents(attachPoint, null, reader);
+    }
+
+    /**
+     * Write policy intents
+     * @param attachPoint
+     */
+    protected XAttr writeIntents(Object attachPoint) {
+        return writeIntents(attachPoint, null);
     }
 
     /**
@@ -229,15 +236,20 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param operation
      * @param reader
      */
-    protected void readIntents(IntentAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
+    protected void readIntents(Object attachPoint, Operation operation, XMLStreamReader reader) {
+        if (!(attachPoint instanceof IntentAttachPoint))
+            return;
+        IntentAttachPoint intentAttachPoint = (IntentAttachPoint)attachPoint;
         String value = reader.getAttributeValue(null, Constants.REQUIRES);
         if (value != null) {
-            List<Intent> requiredIntents = attachPoint.getRequiredIntents();
+            List<Intent> requiredIntents = intentAttachPoint.getRequiredIntents();
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 Intent intent = policyFactory.createIntent();
                 intent.setName(qname);
                 if (operation != null) {
+                    //FIXME Don't we need to handle intent specification
+                    // on an operation basis?
                     //intent.getOperations().add(operation);
                 }
                 requiredIntents.add(intent);
@@ -246,33 +258,97 @@ abstract class BaseArtifactProcessor implements Constants {
     }
 
     /**
+     * Write policy intents associated with an operation.
+     * @param attachPoint
+     * @param operation
+     */
+    protected XAttr writeIntents(Object attachPoint, Operation operation) {
+        if (!(attachPoint instanceof IntentAttachPoint)) {
+            return null;
+        }
+        IntentAttachPoint intentAttachPoint = (IntentAttachPoint)attachPoint;
+        List<QName> qnames = new ArrayList<QName>();
+        for (Intent intent: intentAttachPoint.getRequiredIntents()) {
+            qnames.add(intent.getName());
+        }
+        return new XAttr(Constants.REQUIRES, qnames);
+    }
+    
+    /**
      * Reads policy intents and policy sets.
      * @param attachPoint
      * @param reader
      */
     protected void readPolicies(Object attachPoint, XMLStreamReader reader) {
-        if (attachPoint instanceof PolicySetAttachPoint) {
-            readPolicies((PolicySetAttachPoint)attachPoint, null, reader);
-        }
+        readPolicies(attachPoint, null, reader);
     }
 
+    /**
+     * Writes policy intents and policy sets.
+     * @param attachPoint
+     */
+    protected XAttr writePolicySets(Object attachPoint) {
+        return writePolicySets(attachPoint, null);
+    }
+
+    /**
+     * Write policy sets associated with an operation.
+     * @param attachPoint
+     * @param operation
+     */
+    protected XAttr writePolicySets(Object attachPoint, Operation operation) {
+        if (!(attachPoint instanceof PolicySetAttachPoint)) {
+            return null;
+        }
+        PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)attachPoint;
+        List<QName> qnames = new ArrayList<QName>();
+        for (PolicySet policySet: policySetAttachPoint.getPolicySets()) {
+            qnames.add(policySet.getName());
+        }
+        return new XAttr(Constants.POLICY_SETS, qnames);
+    }
+    
     /**
      * Reads policy intents and policy sets associated with an operation.
      * @param attachPoint
      * @param operation
      * @param reader
      */
-    protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
+    protected void readPolicies(Object attachPoint, Operation operation, XMLStreamReader reader) {
         readIntents(attachPoint, operation, reader);
+        readPolicySets(attachPoint, operation, reader);
+    }
 
+    /**
+     * Reads policy sets.
+     * @param attachPoint
+     * @param reader
+     */
+    protected void readPolicySets(Object attachPoint, XMLStreamReader reader) {
+        readPolicySets(attachPoint, null, reader);
+    }
+
+    /**
+     * Reads policy sets associated with an operation.
+     * @param attachPoint
+     * @param operation
+     * @param reader
+     */
+    protected void readPolicySets(Object attachPoint, Operation operation, XMLStreamReader reader) {
+        if (!(attachPoint instanceof PolicySetAttachPoint)) {
+            return;
+        }
+        PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)attachPoint;
         String value = reader.getAttributeValue(null, Constants.POLICY_SETS);
         if (value != null) {
-            List<PolicySet> policySets = attachPoint.getPolicySets();
+            List<PolicySet> policySets = policySetAttachPoint.getPolicySets();
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 PolicySet policySet = policyFactory.createPolicySet();
                 policySet.setName(qname);
                 if (operation != null) {
+                    //FIXME Don't we need to handle policySet specification
+                    // on an operation basis?
                     //policySet.getOperations().add(operation);
                 }
                 policySets.add(policySet);
@@ -286,7 +362,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param reader
      */
     protected void readTargets(Reference reference, XMLStreamReader reader) {
-        String value = reader.getAttributeValue(null, Constants.TARGET);
+        String value = reader.getAttributeValue(null, TARGET);
         ComponentService target = null;
         if (value != null) {
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
@@ -296,6 +372,19 @@ abstract class BaseArtifactProcessor implements Constants {
                 reference.getTargets().add(target);
             }
         }
+    }
+    
+    /**
+     * Write a list of targets into an attribute
+     * @param reference
+     * @return
+     */
+    protected XAttr writeTargets(Reference reference) {
+        List<String> targets = new ArrayList<String>();
+        for (Service target: reference.getTargets()) {
+            targets.add(target.getName());
+        }
+        return new XAttr(TARGET, targets);
     }
 
     /**
@@ -319,8 +408,8 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param reader
      * @return
      */
-    protected ConstrainingType getConstrainingType(XMLStreamReader reader) {
-        QName constrainingTypeName = getQName(reader, "constrainingType");
+    protected ConstrainingType readConstrainingType(XMLStreamReader reader) {
+        QName constrainingTypeName = getQName(reader, Constants.CONSTRAINING_TYPE);
         if (constrainingTypeName != null) {
             ConstrainingType constrainingType = assemblyFactory.createConstrainingType();
             constrainingType.setName(constrainingTypeName);
@@ -333,36 +422,19 @@ abstract class BaseArtifactProcessor implements Constants {
 
     /**
      * Reads an abstract property element.
-     * @param prop
+     * @param property
      * @param reader
      * @throws XMLStreamException
      * @throws ContributionReadException
      */
-    protected void readAbstractProperty(AbstractProperty prop, XMLStreamReader reader) throws XMLStreamException,
-        ContributionReadException {
-        prop.setName(getString(reader, "name"));
-        prop.setMany(getBoolean(reader, "many"));
-        prop.setMustSupply(getBoolean(reader, "mustSupply"));
-        prop.setXSDElement(getQName(reader, "element"));
-        prop.setXSDType(getQName(reader, "type"));
-        try {
-            Document value = readPropertyValue(reader, prop.getXSDType());
-            prop.setValue(value);
-        } catch (ParserConfigurationException e) {
-            throw new ContributionReadException(e);
-        }
-    }
-
-    /**
-     * Reads a property element.
-     * @param prop
-     * @param reader
-     * @throws XMLStreamException
-     * @throws ContributionReadException
-     */
-    protected void readProperty(Property prop, XMLStreamReader reader) throws XMLStreamException,
-        ContributionReadException {
-        readAbstractProperty(prop, reader);
+    protected void readAbstractProperty(AbstractProperty property, XMLStreamReader reader)
+        throws XMLStreamException, ContributionReadException {
+        
+        property.setName(getString(reader, NAME));
+        property.setMany(getBoolean(reader, MANY));
+        property.setMustSupply(getBoolean(reader, MUST_SUPPLY));
+        property.setXSDElement(getQName(reader, ELEMENT));
+        property.setXSDType(getQName(reader, TYPE));
     }
 
     /**
@@ -588,53 +660,46 @@ abstract class BaseArtifactProcessor implements Constants {
     }
 
     /**
-     * Write an SCA abstract property declaration.
-     * @param writer
-     * @param prop
-     */
-    protected void writeAbstractProperty(XMLStreamWriter writer, AbstractProperty prop) throws XMLStreamException {
-    }
-
-    /**
-     * Write an SCA property declaration.
-     * @param writer
-     * @param prop
-     */
-    protected void writeProperty(XMLStreamWriter writer, Property prop) throws XMLStreamException {
-        writeAbstractProperty(writer, prop);
-    }
-
-    /**
      * Returns a constrainingType attribute.
      * @param componentType
      * @return
      */
-    protected QName getConstrainingTypeAttr(ComponentType componentType) {
+    protected XAttr writeConstrainingType(ComponentType componentType) {
         ConstrainingType constrainingType = componentType.getConstrainingType();
         if (constrainingType != null)
-            return constrainingType.getName();
+            return new XAttr(Constants.CONSTRAINING_TYPE, constrainingType.getName());
         else
             return null;
     }
 
     /**
      * Read a property value into a DOM document.
-     * @param reader
+     * @param element
      * @param type
+     * @param reader
      * @return
      * @throws XMLStreamException
      * @throws ContributionReadException
      * @throws ParserConfigurationException 
      */
-    protected Document readPropertyValue(XMLStreamReader reader, QName type) throws XMLStreamException,
-        ParserConfigurationException {
+    protected Document readPropertyValue(QName element, QName type, XMLStreamReader reader)
+        throws XMLStreamException, ContributionReadException {
 
-        Document doc = createDocument();
+        Document document;
+        try {
+            if (documentBuilderFactory == null) {
+                documentBuilderFactory = DocumentBuilderFactory.newInstance();
+                documentBuilderFactory.setNamespaceAware(true);
+            }
+            document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new ContributionReadException(e);
+        }
 
         // root element has no namespace and local name "value"
-        Element root = doc.createElementNS(null, "value");
+        Element root = document.createElementNS(null, "value");
         if (type != null) {
-            org.w3c.dom.Attr xsi = doc.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
+            org.w3c.dom.Attr xsi = document.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
             xsi.setValue(W3C_XML_SCHEMA_INSTANCE_NS_URI);
             root.setAttributeNodeNS(xsi);
 
@@ -645,23 +710,14 @@ abstract class BaseArtifactProcessor implements Constants {
 
             declareNamespace(root, prefix, type.getNamespaceURI());
 
-            org.w3c.dom.Attr xsiType = doc.createAttributeNS(W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
+            org.w3c.dom.Attr xsiType = document.createAttributeNS(W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
             xsiType.setValue(prefix + ":" + type.getLocalPart());
             root.setAttributeNodeNS(xsiType);
         }
-        doc.appendChild(root);
+        document.appendChild(root);
 
         loadElement(reader, root);
-        return doc;
-    }
-
-    /**
-     * Create a new DOM document.
-     * @return
-     * @throws ContributionReadException
-     */
-    private Document createDocument() throws ParserConfigurationException {
-        return domFactory.newDocumentBuilder().newDocument();
+        return document;
     }
 
     /**
@@ -815,5 +871,68 @@ abstract class BaseArtifactProcessor implements Constants {
         policySets.clear();
         policySets.addAll(resolvedPolicySets);
     }
+    
+    /**
+     * Write the value of a property 
+     * @param document
+     * @param element
+     * @param type
+     * @param writer
+     * @throws XMLStreamException
+     */
+    protected void writePropertyValue(Object propertyValue, QName element, QName type, XMLStreamWriter writer) throws XMLStreamException {
+        
+        if (propertyValue instanceof Document) {
+            Document document = (Document)propertyValue;
+            NodeList nodeList = document.getDocumentElement().getChildNodes();
 
+            for (int item = 0; item < nodeList.getLength(); ++item) {
+                if (nodeList.item(item).getNodeType() == Node.ELEMENT_NODE) {
+                    XMLStreamReader reader =
+                        XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(nodeList.item(item)));
+
+                    while (reader.hasNext()) {
+                        switch (reader.next()) {
+                            case XMLStreamConstants.START_ELEMENT:
+                                QName name = reader.getName();
+                                writer.writeStartElement(name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
+
+                                int namespaces = reader.getNamespaceCount();
+                                for (int i = 0; i < namespaces; i++) {
+                                    String prefix = reader.getNamespacePrefix(i);
+                                    String ns = reader.getNamespaceURI(i);
+                                    writer.writeNamespace(prefix, ns);
+                                }
+
+                                if (!"".equals(name.getNamespaceURI())) {
+                                    writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
+                                }
+
+                                // add the attributes for this element
+                                namespaces = reader.getAttributeCount();
+                                for (int i = 0; i < namespaces; i++) {
+                                    String ns = reader.getAttributeNamespace(i);
+                                    String prefix = reader.getAttributePrefix(i);
+                                    String qname = reader.getAttributeLocalName(i);
+                                    String value = reader.getAttributeValue(i);
+
+                                    writer.writeAttribute(prefix, ns, qname, value);
+                                }
+
+                                break;
+                            case XMLStreamConstants.CDATA:
+                                writer.writeCData(reader.getText());
+                                break;
+                            case XMLStreamConstants.CHARACTERS:
+                                writer.writeCharacters(reader.getText());
+                                break;
+                            case XMLStreamConstants.END_ELEMENT:
+                                writer.writeEndElement();
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

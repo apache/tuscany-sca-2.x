@@ -22,16 +22,12 @@ package org.apache.tuscany.sca.assembly.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentType;
@@ -47,8 +43,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.w3c.dom.Document;
 
 /**
  * A componentType processor.
@@ -89,8 +87,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
     
                             // Read a <componentType>
                             componentType = assemblyFactory.createComponentType();
-                            componentType.setConstrainingType(getConstrainingType(reader));
-                            readPolicies(componentType, reader);
+                            componentType.setConstrainingType(readConstrainingType(reader));
     
                         } else if (Constants.SERVICE_QNAME.equals(name)) {
     
@@ -102,6 +99,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                             readPolicies(service, reader);
     
                         } else if (Constants.REFERENCE_QNAME.equals(name)) {
+
                             // Read a <reference>
                             reference = assemblyFactory.createReference();
                             contract = reference;
@@ -116,8 +114,13 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
     
                             // Read a <property>
                             property = assemblyFactory.createProperty();
+                            readAbstractProperty(property, reader);
                             readPolicies(property, reader);
-                            readProperty(property, reader);
+                            
+                            // Read the property value
+                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                            property.setValue(value);
+                            
                             componentType.getProperties().add(property);
                             
                         } else if (Constants.IMPLEMENTATION_QNAME.equals(name)) {
@@ -210,31 +213,21 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
         return componentType;
     }
     
-    public void validate(ComponentType componentType, List<Base> problems) {
-        if (problems == null) {
-            problems = new ArrayList<Base>();
-        }
-        validatePropertyDefinitions(componentType.getProperties(), problems);
-    }
-    
-    public void validatePropertyDefinitions(List<Property> properties, List<Base> problems) {
-        for(Property aProperty : properties) {
-            if (aProperty.isMustSupply() && aProperty.getValue() != null) {
-                problems.add(aProperty);
-            }
-        }
-    }
-
     public void write(ComponentType componentType, XMLStreamWriter writer) throws ContributionWriteException {
         
         try {
+            // Write <componentType> element
             writeStartDocument(writer, COMPONENT_TYPE,
-                   new XAttr(CONSTRAINING_TYPE, getConstrainingTypeAttr(componentType)));
+                   writeConstrainingType(componentType));
     
+            // Write <service> elements
             for (Service service : componentType.getServices()) {
-                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
+                           writeIntents(service), writePolicySets(service));
 
-                extensionProcessor.write(service.getInterfaceContract(), writer);
+                if (service.getInterfaceContract() != null) {
+                    extensionProcessor.write(service.getInterfaceContract(), writer);
+                }
                 
                 for (Binding binding: service.getBindings()) {
                     extensionProcessor.write(binding, writer);
@@ -242,7 +235,7 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 
                 if (service.getCallback() != null) {
                     Callback callback = service.getCallback();
-                    writeStart(writer, CALLBACK);
+                    writeStart(writer, CALLBACK, writeIntents(callback), writePolicySets(callback));
 
                     for (Binding binding: callback.getBindings()) {
                         extensionProcessor.write(binding, writer);
@@ -253,20 +246,21 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                     
                     writeEnd(writer);
                 }
-
+                
                 for (Object extension: service.getExtensions()) {
                     extensionProcessor.write(extension, writer);
                 }
                 
                 writeEnd(writer);
             }
-    
+
+            // Write <reference> elements
             for (Reference reference : componentType.getReferences()) {
-                // TODO handle multivalued target attribute
-                String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
+                
                 writeStart(writer, REFERENCE,
                       new XAttr(NAME, reference.getName()),
-                      new XAttr(TARGET, target));
+                      writeTargets(reference),
+                      writeIntents(reference), writePolicySets(reference));
 
                 extensionProcessor.write(reference.getInterfaceContract(), writer);
                 
@@ -276,7 +270,8 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 
                 if (reference.getCallback() != null) {
                     Callback callback = reference.getCallback();
-                    writeStart(writer, CALLBACK);
+                    writeStart(writer, CALLBACK,
+                               writeIntents(callback), writePolicySets(callback));
 
                     for (Binding binding: callback.getBindings()) {
                         extensionProcessor.write(binding, writer);
@@ -295,20 +290,51 @@ public class ComponentTypeProcessor extends BaseArtifactProcessor implements StA
                 writeEnd(writer);
             }
     
+            // Write <property> elements
             for (Property property : componentType.getProperties()) {
-                writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
+                writeStart(writer,
+                           PROPERTY,
+                           new XAttr(NAME, property.getName()),
+                           new XAttr(MUST_SUPPLY, property.isMustSupply()),
+                           new XAttr(MANY, property.isMany()),
+                           new XAttr(TYPE, property.getXSDType()),
+                           new XAttr(ELEMENT, property.getXSDElement()),
+                           writeIntents(property));
 
-                for (Object extension: property.getExtensions()) {
+                // Write property value
+                writePropertyValue(property.getValue(), property.getXSDElement(), property.getXSDType(), writer);
+
+                // Write extensions
+                for (Object extension : property.getExtensions()) {
                     extensionProcessor.write(extension, writer);
                 }
-                
+
                 writeEnd(writer);
             }
     
+            // Write extension elements
             if (componentType instanceof Extensible) {
                 for (Object extension: ((Extensible)componentType).getExtensions()) {
                     extensionProcessor.write(extension, writer);
                 }
+            }
+            
+            // Write <implementation> elements if the componentType has
+            // any intents or policySets
+            boolean writeImplementation = false;
+            if (componentType instanceof IntentAttachPoint) {
+                if (!((IntentAttachPoint)componentType).getRequiredIntents().isEmpty()) {
+                    writeImplementation = true;
+                }
+            }
+            if (componentType instanceof PolicySetAttachPoint) {
+                if (!((PolicySetAttachPoint)componentType).getPolicySets().isEmpty()) {
+                    writeImplementation = true;
+                }
+            }
+            if (writeImplementation) {
+                writeStart(writer, IMPLEMENTATION,
+                           writeIntents(componentType), writePolicySets(componentType));
             }
             
             writeEndDocument(writer);

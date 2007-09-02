@@ -22,15 +22,15 @@ package org.apache.tuscany.sca.assembly.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -62,8 +62,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A composite processor.
@@ -133,7 +131,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                                 composite.setAutowire(getBoolean(reader, AUTOWIRE));
                             }
                             composite.setLocal(getBoolean(reader, LOCAL));
-                            composite.setConstrainingType(getConstrainingType(reader));
+                            composite.setConstrainingType(readConstrainingType(reader));
                             readPolicies(composite, reader);
 
                         } else if (INCLUDE_QNAME.equals(name)) {
@@ -224,20 +222,31 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
 
                         } else if (PROPERTY_QNAME.equals(name)) {
                             if (component != null) {
+
                                 // Read a <component><property>
                                 componentProperty = assemblyFactory.createComponentProperty();
                                 property = componentProperty;
                                 componentProperty.setSource(getString(reader, SOURCE));
                                 componentProperty.setFile(getString(reader, FILE));
                                 readPolicies(property, reader);
-                                readProperty(componentProperty, reader);
+                                readAbstractProperty(componentProperty, reader);
+                                
+                                // Read the property value
+                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                                property.setValue(value);
+                                
                                 component.getProperties().add(componentProperty);
                             } else {
 
                                 // Read a <composite><property>
                                 property = assemblyFactory.createProperty();
                                 readPolicies(property, reader);
-                                readProperty(property, reader);
+                                readAbstractProperty(property, reader);
+                                
+                                // Read the property value
+                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                                property.setValue(value);
+                                
                                 composite.getProperties().add(property);
                             }
 
@@ -249,7 +258,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                             if (isSet(reader, AUTOWIRE)) {
                                 component.setAutowire(getBoolean(reader, AUTOWIRE));
                             }
-                            component.setConstrainingType(getConstrainingType(reader));
+                            component.setConstrainingType(readConstrainingType(reader));
                             composite.getComponents().add(component);
                             readPolicies(component, reader);
 
@@ -409,310 +418,270 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         }
     }
 
-    public void writeComponentReference(ComponentReference reference, XMLStreamWriter writer)
-        throws XMLStreamException, ContributionWriteException {
-        // TODO handle multivalued target attribute
-        String target = reference.getTargets().isEmpty() ? null : reference.getTargets().get(0).getName();
-        Boolean autowire = reference.getAutowire();
-        XAttr autowireAttr = autowire == null ? null : new XAttr(AUTOWIRE, autowire.toString());
-        writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()), new XAttr(TARGET, target), autowireAttr);
-
-        extensionProcessor.write(reference.getInterfaceContract(), writer);
-
-        for (Binding binding : reference.getBindings()) {
-            extensionProcessor.write(binding, writer);
-        }
-
-        if (reference.getCallback() != null) {
-            Callback callback = reference.getCallback();
-            writeStart(writer, CALLBACK);
-
-            for (Binding binding : callback.getBindings()) {
-                extensionProcessor.write(binding, writer);
-            }
-            for (Object extension : callback.getExtensions()) {
-                extensionProcessor.write(extension, writer);
-            }
-
-            writeEnd(writer);
-        }
-
-        for (Object extension : reference.getExtensions()) {
-            extensionProcessor.write(extension, writer);
-        }
-
-        writeEnd(writer);
-    }
-
-    public void writeCompositeService(Service service, XMLStreamWriter writer) throws ContributionWriteException,
-        XMLStreamException {
-        CompositeService compositeService = (CompositeService)service;
-        Component promotedComponent = compositeService.getPromotedComponent();
-        ComponentService promotedService = compositeService.getPromotedService();
-        String promote;
-        if (promotedService != null) {
-            if (promotedService.getName() != null) {
-                promote = promotedComponent.getName() + '/' + promotedService.getService();
-            } else {
-                promote = promotedComponent.getName();
-            }
-        } else {
-            promote = null;
-        }
-        writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote));
-
-        extensionProcessor.write(service.getInterfaceContract(), writer);
-
-        for (Binding binding : service.getBindings()) {
-            extensionProcessor.write(binding, writer);
-        }
-
-        if (service.getCallback() != null) {
-            Callback callback = service.getCallback();
-            writeStart(writer, CALLBACK);
-
-            for (Binding binding : callback.getBindings()) {
-                extensionProcessor.write(binding, writer);
-            }
-            for (Object extension : callback.getExtensions()) {
-                extensionProcessor.write(extension, writer);
-            }
-
-            writeEnd(writer);
-        }
-
-        for (Object extension : service.getExtensions()) {
-            extensionProcessor.write(extension, writer);
-        }
-
-        writeEnd(writer);
-    }
-
-    public void writeComponentService(ComponentService service, XMLStreamWriter writer)
-        throws ContributionWriteException, XMLStreamException {
-        writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
-
-        extensionProcessor.write(service.getInterfaceContract(), writer);
-
-        for (Binding binding : service.getBindings()) {
-            extensionProcessor.write(binding, writer);
-        }
-
-        if (service.getCallback() != null) {
-            Callback callback = service.getCallback();
-            writeStart(writer, CALLBACK);
-
-            for (Binding binding : callback.getBindings()) {
-                extensionProcessor.write(binding, writer);
-            }
-            for (Object extension : callback.getExtensions()) {
-                extensionProcessor.write(extension, writer);
-            }
-
-            writeEnd(writer);
-        }
-
-        for (Object extension : service.getExtensions()) {
-            extensionProcessor.write(extension, writer);
-        }
-
-        writeEnd(writer);
-    }
-
-    public void writeComponent(Composite composite, Component component, XMLStreamWriter writer)
-        throws ContributionWriteException, XMLStreamException {
-        Boolean autowire = component.getAutowire();
-        XAttr autowireAttr = autowire == null ? null : new XAttr(AUTOWIRE, autowire.toString());
-
-        writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()), autowireAttr);
-
-        for (ComponentService service : component.getServices()) {
-            writeComponentService(service, writer);
-        }
-
-        for (ComponentReference reference : component.getReferences()) {
-            writeComponentReference(reference, writer);
-        }
-
-        for (ComponentProperty property : component.getProperties()) {
-            writeProperty(property, writer);
-        }
-
-        // Write the component implementation
-        Implementation implementation = component.getImplementation();
-        if (implementation instanceof Composite) {
-            writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite.getName()));
-            writeEnd(writer);
-        } else {
-            extensionProcessor.write(component.getImplementation(), writer);
-        }
-
-        writeEnd(writer);
-    }
-
-    public void writeCompositeReference(Reference reference, XMLStreamWriter writer) throws ContributionWriteException,
-        XMLStreamException {
-        //TODO handle multivalued promote attribute
-        CompositeReference compositeReference = (CompositeReference)reference;
-        String promote;
-        if (!compositeReference.getPromotedReferences().isEmpty())
-            promote = compositeReference.getPromotedReferences().get(0).getName();
-        else
-            promote = null;
-        writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()), new XAttr(PROMOTE, promote));
-
-        extensionProcessor.write(reference.getInterfaceContract(), writer);
-
-        for (Binding binding : reference.getBindings()) {
-            extensionProcessor.write(binding, writer);
-        }
-
-        if (reference.getCallback() != null) {
-            Callback callback = reference.getCallback();
-            writeStart(writer, CALLBACK);
-
-            for (Binding binding : callback.getBindings()) {
-                extensionProcessor.write(binding, writer);
-            }
-            for (Object extension : callback.getExtensions()) {
-                extensionProcessor.write(extension, writer);
-            }
-
-            writeEnd(writer);
-        }
-
-        for (Object extension : reference.getExtensions()) {
-            extensionProcessor.write(extension, writer);
-        }
-
-        writeEnd(writer);
-    }
-
-    public void writeProperty(Property property, XMLStreamWriter writer) throws XMLStreamException,
-        ContributionWriteException {
-
-        if (property instanceof ComponentProperty) {
-            ComponentProperty componentProperty = (ComponentProperty)property;
-            writeStart(writer,
-                       PROPERTY,
-                       new XAttr(NAME, componentProperty.getName()),
-                       new XAttr(MUST_SUPPLY, componentProperty.isMustSupply()),
-                       new XAttr(MANY, componentProperty.isMany()),
-                       new XAttr(TYPE, componentProperty.getXSDType()),
-                       new XAttr(ELEMENT, componentProperty.getXSDElement()),
-                       new XAttr(SOURCE, componentProperty.getSource()),
-                       new XAttr(FILE, componentProperty.getFile()));
-
-        } else {
-            writeStart(writer,
-                       PROPERTY,
-                       new XAttr(NAME, property.getName()),
-                       new XAttr(MUST_SUPPLY, property.isMustSupply()),
-                       new XAttr(MANY, property.isMany()),
-                       new XAttr(TYPE, property.getXSDType()),
-                       new XAttr(ELEMENT, property.getXSDElement()));
-
-        }
-
-        if (property.getValue() != null && property.getValue() instanceof Document) {
-            try {
-                Document document = (Document)property.getValue();
-                NodeList nodeList = document.getDocumentElement().getChildNodes();
-
-                for (int count = 0; count < nodeList.getLength(); ++count) {
-                    if (nodeList.item(count).getNodeType() == Node.ELEMENT_NODE) {
-                        XMLStreamReader reader =
-                            XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(nodeList.item(count)));
-                        writeElement(reader, writer);
-                    }
-                }
-            } catch (Exception e) {
-                throw new ContributionWriteException(e);
-            }
-        }
-
-        for (Object extension : property.getExtensions()) {
-            extensionProcessor.write(extension, writer);
-        }
-
-        writeEnd(writer);
-    }
-
-    private void writeElement(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
-        while (reader.hasNext()) {
-            switch (reader.next()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    QName name = reader.getName();
-                    writer.writeStartElement(name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
-
-                    int count = reader.getNamespaceCount();
-                    for (int i = 0; i < count; i++) {
-                        String prefix = reader.getNamespacePrefix(i);
-                        String ns = reader.getNamespaceURI(i);
-                        writer.writeNamespace(prefix, ns);
-                    }
-
-                    if (!"".equals(name.getNamespaceURI())) {
-                        writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
-                    }
-
-                    // add the attributes for this element
-                    count = reader.getAttributeCount();
-                    for (int i = 0; i < count; i++) {
-                        String ns = reader.getAttributeNamespace(i);
-                        String prefix = reader.getAttributePrefix(i);
-                        String qname = reader.getAttributeLocalName(i);
-                        String value = reader.getAttributeValue(i);
-
-                        writer.writeAttribute(prefix, ns, qname, value);
-                    }
-
-                    break;
-                case XMLStreamConstants.CDATA:
-                    writer.writeCData(reader.getText());
-                    break;
-                case XMLStreamConstants.CHARACTERS:
-                    writer.writeCharacters(reader.getText());
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    writer.writeEndElement();
-                    break;
-            }
-        }
-    }
-
     public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException {
 
         try {
-            Boolean autowire = composite.getAutowire();
-            XAttr autowireAttr = autowire == null ? null : new XAttr(AUTOWIRE, autowire.toString());
-
+            // Write <composite> element
             writeStartDocument(writer,
                                COMPOSITE,
-                               new XAttr(CONSTRAINING_TYPE, getConstrainingTypeAttr(composite)),
+                               writeConstrainingType(composite),
                                new XAttr(TARGET_NAMESPACE, composite.getName().getNamespaceURI()),
                                new XAttr(NAME, composite.getName().getLocalPart()),
-                               autowireAttr);
+                               new XAttr(AUTOWIRE, composite.getAutowire()),
+                               writeIntents(composite),
+                               writePolicySets(composite));
 
+            // Write <service> elements
             for (Service service : composite.getServices()) {
-                writeCompositeService(service, writer);
+                CompositeService compositeService = (CompositeService)service;
+                Component promotedComponent = compositeService.getPromotedComponent();
+                ComponentService promotedService = compositeService.getPromotedService();
+                String promote;
+                if (promotedService != null) {
+                    if (promotedService.getName() != null) {
+                        promote = promotedComponent.getName() + '/' + promotedService.getService();
+                    } else {
+                        promote = promotedComponent.getName();
+                    }
+                } else {
+                    promote = null;
+                }
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote),
+                           writeIntents(service), writePolicySets(service));
+                
+                // Write service interface
+                extensionProcessor.write(service.getInterfaceContract(), writer);
+
+                // Write bindings
+                for (Binding binding : service.getBindings()) {
+                    extensionProcessor.write(binding, writer);
+                }
+
+                // Write <callback> element
+                if (service.getCallback() != null) {
+                    Callback callback = service.getCallback();
+                    writeStart(writer, CALLBACK, writeIntents(callback), writePolicySets(callback));
+                
+                    // Write callback bindings
+                    for (Binding binding : callback.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    
+                    // Write extensions 
+                    for (Object extension : callback.getExtensions()) {
+                        extensionProcessor.write(extension, writer);
+                    }
+                
+                    writeEnd(writer);
+                }
+
+                // Write extensions
+                for (Object extension : service.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
+                writeEnd(writer);
             }
 
+            // Write <component> elements
             for (Component component : composite.getComponents()) {
-                writeComponent(composite, component, writer);
+                writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()),
+                           new XAttr(AUTOWIRE, component.getAutowire()),
+                           writeIntents(component), writePolicySets(component));
+                
+                // Write <service> elements
+                for (ComponentService service : component.getServices()) {
+                    writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
+                               writeIntents(service), writePolicySets(service));
+
+                    // Write service interface
+                    extensionProcessor.write(service.getInterfaceContract(), writer);
+                    
+                    // Write bindings
+                    for (Binding binding : service.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    
+                    // Write <callback> element
+                    if (service.getCallback() != null) {
+                        Callback callback = service.getCallback();
+                        writeStart(writer, CALLBACK, writeIntents(callback), writePolicySets(callback));
+                    
+                        // Write bindings
+                        for (Binding binding : callback.getBindings()) {
+                            extensionProcessor.write(binding, writer);
+                        }
+                        
+                        // Write extensions 
+                        for (Object extension : callback.getExtensions()) {
+                            extensionProcessor.write(extension, writer);
+                        }
+                    
+                        writeEnd(writer);
+                    }
+                    
+                    // Write extensions
+                    for (Object extension : service.getExtensions()) {
+                        extensionProcessor.write(extension, writer);
+                    }
+                    
+                    writeEnd(writer);
+                }
+                
+                // Write <reference> elements
+                for (ComponentReference reference : component.getReferences()) {
+                    writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
+                               new XAttr(AUTOWIRE, reference.getAutowire()),
+                               writeTargets(reference),
+                               writeIntents(reference), writePolicySets(reference));
+
+                    // Write reference interface
+                    extensionProcessor.write(reference.getInterfaceContract(), writer);
+
+                    // Write bindings
+                    for (Binding binding : reference.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    
+                    // Write callback
+                    if (reference.getCallback() != null) {
+                        Callback callback = reference.getCallback();
+                        writeStart(writer, CALLBACK, writeIntents(callback), writePolicySets(callback));
+                    
+                        // Write callback bindings
+                        for (Binding binding : callback.getBindings()) {
+                            extensionProcessor.write(binding, writer);
+                        }
+                        
+                        // Write extensions
+                        for (Object extensions : callback.getExtensions()) {
+                            extensionProcessor.write(extensions, writer);
+                        }
+                    
+                        writeEnd(writer);
+                    }
+                    
+                    // Write extensions
+                    for (Object extensions : reference.getExtensions()) {
+                        extensionProcessor.write(extensions, writer);
+                    }
+                    
+                    writeEnd(writer);
+                }
+                
+                // Write <property> elements
+                for (ComponentProperty property : component.getProperties()) {
+                    writeStart(writer,
+                               PROPERTY,
+                               new XAttr(NAME, property.getName()),
+                               new XAttr(MUST_SUPPLY, property.isMustSupply()),
+                               new XAttr(MANY, property.isMany()),
+                               new XAttr(TYPE, property.getXSDType()),
+                               new XAttr(ELEMENT, property.getXSDElement()),
+                               new XAttr(SOURCE, property.getSource()),
+                               new XAttr(FILE, property.getFile()),
+                               writeIntents(property), writePolicySets(property));
+
+                    // Write property value
+                    writePropertyValue(property.getValue(), property.getXSDElement(), property.getXSDType(), writer);
+
+                    // Write extensions
+                    for (Object extension : property.getExtensions()) {
+                        extensionProcessor.write(extension, writer);
+                    }
+
+                    writeEnd(writer);
+                }
+        
+                // Write the component implementation
+                Implementation implementation = component.getImplementation();
+                if (implementation instanceof Composite) {
+                    writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite.getName()));
+                    writeEnd(writer);
+                } else {
+                    extensionProcessor.write(component.getImplementation(), writer);
+                }
+                
+                writeEnd(writer);
             }
 
+            // Write <reference> elements
             for (Reference reference : composite.getReferences()) {
-                writeCompositeReference(reference, writer);
+                CompositeReference compositeReference = (CompositeReference)reference;
+
+                // Write list of promoted references
+                List<String> promote = new ArrayList<String>();
+                for (ComponentReference promoted: compositeReference.getPromotedReferences()) {
+                    promote.add(promoted.getName());
+                }
+                
+                // Write <reference> element
+                writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
+                           new XAttr(PROMOTE, promote),
+                           writeIntents(reference), writePolicySets(reference));
+
+                // Write reference interface
+                extensionProcessor.write(reference.getInterfaceContract(), writer);
+                
+                // Write bindings
+                for (Binding binding : reference.getBindings()) {
+                    extensionProcessor.write(binding, writer);
+                }
+                
+                // Write <callback> element
+                if (reference.getCallback() != null) {
+                    Callback callback = reference.getCallback();
+                    writeStart(writer, CALLBACK);
+                
+                    // Write callback bindings
+                    for (Binding binding : callback.getBindings()) {
+                        extensionProcessor.write(binding, writer);
+                    }
+                    
+                    // Write extensions
+                    for (Object extension : callback.getExtensions()) {
+                        extensionProcessor.write(extension, writer);
+                    }
+                
+                    writeEnd(writer);
+                }
+                
+                // Write extensions
+                for (Object extension : reference.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+                
+                writeEnd(writer);
             }
 
+            // Write <property> elements
             for (Property property : composite.getProperties()) {
-                writeProperty(property, writer);
+                writeStart(writer,
+                           PROPERTY,
+                           new XAttr(NAME, property.getName()),
+                           new XAttr(MUST_SUPPLY, property.isMustSupply()),
+                           new XAttr(MANY, property.isMany()),
+                           new XAttr(TYPE, property.getXSDType()),
+                           new XAttr(ELEMENT, property.getXSDElement()),
+                           writeIntents(property), writePolicySets(property));
+
+                // Write property value
+                writePropertyValue(property.getValue(), property.getXSDElement(), property.getXSDType(), writer);
+
+                // Write extensions
+                for (Object extension : property.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+
+                writeEnd(writer);
             }
 
+            // Write <wire> elements
             for (Wire wire : composite.getWires()) {
                 writeStart(writer, WIRE, new XAttr(SOURCE, wire.getSource().getName()), new XAttr(TARGET, wire
                     .getTarget().getName()));
+                
+                // Write extensions
                 for (Object extension : wire.getExtensions()) {
                     extensionProcessor.write(extension, writer);
                 }

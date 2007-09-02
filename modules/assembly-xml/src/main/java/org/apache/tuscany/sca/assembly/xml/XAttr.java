@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import java.util.List;
+
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -43,19 +45,27 @@ class XAttr {
     }
 
     public XAttr(String name, String value) {
-        this.name = name;
-        this.value = value;
+        this(null, name, value);
     }
 
-    public XAttr(String uri, String name, boolean value) {
+    public XAttr(String uri, String name, List values) {
+        this.uri = uri;
+        this.name = name;
+        this.value = values;
+    }
+
+    public XAttr(String name, List values) {
+        this(null, name, values);
+    }
+
+    public XAttr(String uri, String name, Boolean value) {
         this.uri = uri;
         this.name = name;
         this.value = value;
     }
 
-    public XAttr(String name, boolean value) {
-        this.name = name;
-        this.value = value;
+    public XAttr(String name, Boolean value) {
+        this(null, name, value);
     }
 
     public XAttr(String uri, String name, QName value) {
@@ -65,8 +75,7 @@ class XAttr {
     }
 
     public XAttr(String name, QName value) {
-        this.name = name;
-        this.value = value;
+        this(null, name, value);
     }
 
     /**
@@ -75,7 +84,7 @@ class XAttr {
      * @param value
      * @return
      */
-    protected String writeQNameValue(XMLStreamWriter writer, QName qname) throws XMLStreamException {
+    private String writeQNameValue(XMLStreamWriter writer, QName qname) throws XMLStreamException {
         if (qname != null) {
             String prefix = qname.getPrefix();
             String uri = qname.getNamespaceURI();
@@ -109,7 +118,7 @@ class XAttr {
      * @param value
      * @return
      */
-    protected void writeQNamePrefix(XMLStreamWriter writer, QName qname) throws XMLStreamException {
+    private void writeQNamePrefix(XMLStreamWriter writer, QName qname) throws XMLStreamException {
         if (qname != null) {
             String prefix = qname.getPrefix();
             String uri = qname.getNamespaceURI();
@@ -132,25 +141,60 @@ class XAttr {
     }
 
     void write(XMLStreamWriter writer) throws XMLStreamException {
-        if (value != null) {
-            String str;
-            if (value instanceof QName) {
-                str = writeQNameValue(writer, (QName)value);
-            } else {
-                str = String.valueOf(value);
+        String str;
+        if (value instanceof QName) {
+            
+            // Write a QName
+            str = writeQNameValue(writer, (QName)value);
+            
+        } else if (value instanceof List) {
+            
+            // Write a list
+            List values = (List)value;
+            if (values.isEmpty()) {
+                return;
             }
-            if (uri != null && !uri.equals(Constants.SCA10_NS)) {
-                writer.writeAttribute(uri, name, str);
-            } else {
-                writer.writeAttribute(name,str);
+            StringBuffer buffer = new StringBuffer();
+            for (Object v: values) {
+                if (buffer.length() != 0) {
+                    buffer.append(' ');
+                }
+                if (v instanceof QName) {
+                    buffer.append(writeQNameValue(writer, (QName)v));
+                } else {
+                    buffer.append(String.valueOf(v));
+                }
             }
+            str = buffer.toString();
+            
+        } else {
+            
+            // Write a string
+            if (value == null) {
+                return;
+            }
+            str = String.valueOf(value);
+        }
+        if (uri != null && !uri.equals(Constants.SCA10_NS)) {
+            writer.writeAttribute(uri, name, str);
+        } else {
+            writer.writeAttribute(name,str);
         }
     }
 
     void writePrefix(XMLStreamWriter writer) throws XMLStreamException {
-        if (value != null) {
-            if (value instanceof QName) {
-                writeQNamePrefix(writer, (QName)value);
+        if (value instanceof QName) {
+            
+            // Write prefix for a single QName value
+            writeQNamePrefix(writer, (QName)value);
+            
+        } else if (value instanceof List) {
+            
+            // Write prefixes for a list of QNames
+            for (Object v: (List)value) {
+                if (v instanceof QName) {
+                    writeQNamePrefix(writer, (QName)v);
+                }
             }
         }
     }
