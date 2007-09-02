@@ -41,9 +41,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.w3c.dom.Document;
 
 /**
- * A contrainingType content handler.
+ * A constrainingType processor.
  * 
  * @version $Rev$ $Date$
  */
@@ -107,6 +108,11 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                             // Read a <property>
                             abstractProperty = assemblyFactory.createAbstractProperty();
                             readAbstractProperty(abstractProperty, reader);
+                            
+                            // Read the property value
+                            Document value = readPropertyValue(abstractProperty.getXSDElement(), abstractProperty.getXSDType(), reader);
+                            abstractProperty.setValue(value);
+                            
                             constrainingType.getProperties().add(abstractProperty);
                             readIntents(abstractProperty, reader);
                             
@@ -168,12 +174,17 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
     public void write(ConstrainingType constrainingType, XMLStreamWriter writer) throws ContributionWriteException {
         
         try {
+            // Write <constrainingType> element
             writeStartDocument(writer, CONSTRAINING_TYPE,
                new XAttr(TARGET_NAMESPACE, constrainingType.getName().getNamespaceURI()),
-               new XAttr(NAME, constrainingType.getName().getLocalPart()));
+               new XAttr(NAME, constrainingType.getName().getLocalPart()),
+               writeIntents(constrainingType));
     
+            // Write <service> elements 
             for (AbstractService service : constrainingType.getServices()) {
-                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()));
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
+                           writeIntents(service));
+                
                 extensionProcessor.write(service.getInterfaceContract(), writer);
 
                 for (Object extension: service.getExtensions()) {
@@ -182,10 +193,12 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                 
                 writeEnd(writer);
             }
-    
+
+            // Write <reference> elements
             for (AbstractReference reference : constrainingType.getReferences()) {
-                writeStart(writer, REFERENCE,
-                      new XAttr(NAME, reference.getName()));
+                writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
+                           writeIntents(reference));
+                
                 extensionProcessor.write(reference.getInterfaceContract(), writer);
 
                 for (Object extension: reference.getExtensions()) {
@@ -195,16 +208,29 @@ public class ConstrainingTypeProcessor extends BaseArtifactProcessor implements 
                 writeEnd(writer);
             }
     
-            for (AbstractProperty property : constrainingType.getProperties()) {
-                writeStart(writer, PROPERTY, new XAttr(NAME, property.getName()));
+            // Write <property> elements
+            for (AbstractProperty abstractProperty : constrainingType.getProperties()) {
+                writeStart(writer,
+                           PROPERTY,
+                           new XAttr(NAME, abstractProperty.getName()),
+                           new XAttr(MUST_SUPPLY, abstractProperty.isMustSupply()),
+                           new XAttr(MANY, abstractProperty.isMany()),
+                           new XAttr(TYPE, abstractProperty.getXSDType()),
+                           new XAttr(ELEMENT, abstractProperty.getXSDElement()),
+                           writeIntents(abstractProperty));
 
-                for (Object extension: property.getExtensions()) {
+                // Write property value
+                writePropertyValue(abstractProperty.getValue(), abstractProperty.getXSDElement(), abstractProperty.getXSDType(), writer);
+
+                // Write extensions
+                for (Object extension : abstractProperty.getExtensions()) {
                     extensionProcessor.write(extension, writer);
                 }
-                
+
                 writeEnd(writer);
             }
     
+            // Write extension elements
             for (Object extension: constrainingType.getExtensions()) {
                 extensionProcessor.write(extension, writer);
             }
