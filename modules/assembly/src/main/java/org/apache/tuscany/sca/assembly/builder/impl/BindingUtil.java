@@ -27,18 +27,36 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * This class encapsulates utility methods to deal with binding definitions
  */
 class BindingUtil {
+    private static boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {
+        if ( refBinding instanceof PolicySetAttachPoint && svcBinding instanceof PolicySetAttachPoint ) {
+            //TODO : need to add more compatibility checks at the policy attachment levels
+            for ( PolicySet svcPolicySet : ((PolicySetAttachPoint)svcBinding).getPolicySets() ) {
+                for ( PolicySet refPolicySet : ((PolicySetAttachPoint)refBinding).getPolicySets() ) {
+                    if ( !svcPolicySet.equals(refPolicySet) ) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
     
     private static Binding matchBinding(Component component, ComponentService service, List<Binding> source, List<Binding> target) {
         List<Binding> matched = new ArrayList<Binding>();
         // Find the corresponding bindings from the service side
         for (Binding binding : source) {
             for (Binding serviceBinding : target) {
-                if (binding.getClass() == serviceBinding.getClass()) {
+                if (binding.getClass() == serviceBinding.getClass() && 
+                    hasCompatiblePolicySets(binding, serviceBinding)) {
+                    
                     Binding cloned = binding;
                     if (binding instanceof WireableBinding) {
                         // TODO: We need to clone the reference binding
