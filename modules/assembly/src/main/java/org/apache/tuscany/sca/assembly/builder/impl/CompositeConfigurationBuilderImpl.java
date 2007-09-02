@@ -20,22 +20,16 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
@@ -48,12 +42,6 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.QualifiedIntent;
 
 public class CompositeConfigurationBuilderImpl {
 
@@ -120,30 +108,10 @@ public class CompositeConfigurationBuilderImpl {
             }
         }
 
-        List<Intent> compositeIntents = null;
-        List<PolicySet> compositePolicySets = null;
-        if (composite instanceof PolicySetAttachPoint) {
-            compositeIntents = ((PolicySetAttachPoint)composite).getRequiredIntents();
-            compositePolicySets = ((PolicySetAttachPoint)composite).getPolicySets();
-        }
-
         // Initialize service bindings
         for (Service service : composite.getServices()) {
-            // Set default binding names and inherit intents and policysets
-            // defined at composite level
-            addInheritedIntents(compositeIntents, service.getRequiredIntents());
-            addInheritedPolicySets(compositePolicySets, service.getPolicySets(), false);
+            // Set default binding names 
             
-            //inherit intents and policies from promoted service
-            if ( service instanceof CompositeService ) {
-                CompositeService compService = (CompositeService)service;
-                addInheritedIntents(compService.getPromotedService().getRequiredIntents(), 
-                                     service.getRequiredIntents());
-                addInheritedPolicySets(compService.getPromotedService().getPolicySets(), 
-                                     service.getPolicySets(), true);
-            }
-            
-
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
                 SCABinding scaBinding = scaBindingFactory.createSCABinding();
@@ -175,46 +143,16 @@ public class CompositeConfigurationBuilderImpl {
             }
             
             if (service.getCallback() != null) {
-                addInheritedIntents(service.getRequiredIntents(), 
-                                    service.getCallback().getRequiredIntents());
-                addInheritedPolicySets(service.getPolicySets(), 
-                                       service.getCallback().getPolicySets(), 
-                                       false);
                 for (Binding binding : service.getCallback().getBindings()) {
                     if (binding.getName() == null) {
                         binding.setName(service.getName());
                     }
                 }
             }
-            computeIntents(service.getBindings(), service.getRequiredIntents());
-            computePolicySets(service, service.getBindings(), service.getPolicySets());
-            
-            if ( service.getCallback() != null ) {
-                computeIntents(service.getCallback().getBindings(), 
-                               service.getCallback().getRequiredIntents());
-                computePolicySets(service, 
-                                  service.getCallback().getBindings(), 
-                                  service.getCallback().getPolicySets());
-            }
         }
 
         // Initialize reference bindings
         for (Reference reference : composite.getReferences()) {
-            addInheritedIntents(compositeIntents, reference.getRequiredIntents());
-            addInheritedPolicySets(compositePolicySets, reference.getPolicySets(), false);
-
-            //inherit intents and policies from promoted service
-            if ( reference instanceof CompositeReference ) {
-                CompositeReference compReference = (CompositeReference)reference;
-                for ( Reference promotedReference : compReference.getPromotedReferences() ) {
-                    addInheritedIntents(promotedReference.getRequiredIntents(), 
-                                         reference.getRequiredIntents());
-                
-                    addInheritedPolicySets(promotedReference.getPolicySets(), 
-                                         reference.getPolicySets(), true);
-                }
-            }
-            
             // Create default SCA binding
             if (reference.getBindings().isEmpty()) {
                 SCABinding scaBinding = scaBindingFactory.createSCABinding();
@@ -237,17 +175,6 @@ public class CompositeConfigurationBuilderImpl {
                     }
                 }
             }
-            
-            computeIntents(reference.getBindings(), reference.getRequiredIntents());
-            computePolicySets(reference, reference.getBindings(), reference.getPolicySets());
-            
-            if ( reference.getCallback() != null ) {
-                computeIntents(reference.getCallback().getBindings(), 
-                               reference.getCallback().getRequiredIntents());
-                computePolicySets(reference, 
-                                  reference.getCallback().getBindings(), 
-                                  reference.getCallback().getPolicySets());
-            }
         }
 
         // Initialize all component services and references
@@ -268,12 +195,6 @@ public class CompositeConfigurationBuilderImpl {
             if (component.getAutowire() == null) {
                 component.setAutowire(composite.getAutowire());
             }
-
-            // Inherit intents defined at the composite level
-            addInheritedIntents(compositeIntents, component.getRequiredIntents());
-            
-            // Inherit policysets defined at the composite level
-            addInheritedPolicySets(compositePolicySets, component.getPolicySets(), false);
 
             if (component.getImplementation() instanceof ComponentPreProcessor) {
                 ((ComponentPreProcessor)component.getImplementation()).preProcess(component);
@@ -549,16 +470,8 @@ public class CompositeConfigurationBuilderImpl {
 
         // Reconcile each component reference with its reference
         for (ComponentReference componentReference : component.getReferences()) {
-            // inherit intents and policysets from component
-            addInheritedIntents(component.getRequiredIntents(), componentReference.getRequiredIntents());
-            addInheritedPolicySets(component.getPolicySets(), componentReference.getPolicySets(), false);
-
             Reference reference = componentReference.getReference();
             if (reference != null) {
-                // reconcile intents and policysets
-                addInheritedIntents(reference.getRequiredIntents(), componentReference.getRequiredIntents());
-                addInheritedPolicySets(reference.getPolicySets(), componentReference.getPolicySets(), true);
-
                 // Reconcile multiplicity
                 if (componentReference.getMultiplicity() != null) {
                     if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
@@ -621,25 +534,6 @@ public class CompositeConfigurationBuilderImpl {
                     componentReference.getTargets().addAll(reference.getTargets());
                 }
             }
-            
-            //compute intents and policyset for each binding
-            computeIntents(componentReference.getBindings(), 
-                           componentReference.getRequiredIntents());
-            computePolicySets(componentReference,
-                              componentReference.getBindings(),
-                              componentReference.getPolicySets());
-            
-            if ( componentReference.getCallback() != null ) {
-                //compute intents and policyset for each callback binding
-                computeIntents(componentReference.getCallback().getBindings(), 
-                               componentReference.getRequiredIntents());
-                computePolicySets(componentReference,
-                                  componentReference.getCallback().getBindings(),
-                                  componentReference.getPolicySets());
-                
-
-            }
-            
         }
     }
 
@@ -684,17 +578,8 @@ public class CompositeConfigurationBuilderImpl {
 
         //Reconcile each component service with its service
         for (ComponentService componentService : component.getServices()) {
-            // inherit intents and policysets from component
-            addInheritedIntents(component.getRequiredIntents(), componentService.getRequiredIntents());
-            addInheritedPolicySets(component.getPolicySets(), componentService.getPolicySets(), false);
-
             Service service = componentService.getService();
             if (service != null) {
-                // reconcile intents and policysets
-                addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
-                addInheritedPolicySets(service.getPolicySets(), 
-                                       componentService.getPolicySets(), 
-                                       true);
                 // Reconcile interface
                 if (componentService.getInterfaceContract() != null) {
                     if (!componentService.getInterfaceContract().equals(service
@@ -729,21 +614,6 @@ public class CompositeConfigurationBuilderImpl {
                     componentService.getCallback().getBindings().addAll(service.getCallback()
                         .getBindings());
                 }
-            }
-            //compute intents and policyset for each binding
-            computeIntents(componentService.getBindings(), 
-                           componentService.getRequiredIntents());
-            computePolicySets(componentService,
-                              componentService.getBindings(),
-                              componentService.getPolicySets());
-            
-            if ( componentService.getCallback() != null ) {
-                //compute intents and policyset for each binding
-                computeIntents(componentService.getCallback().getBindings(), 
-                               componentService.getRequiredIntents());
-                computePolicySets(componentService,
-                                  componentService.getCallback().getBindings(),
-                                  componentService.getPolicySets());
             }
         }
     }
@@ -856,13 +726,6 @@ public class CompositeConfigurationBuilderImpl {
                     if (service.getBindings().isEmpty()) {
                         service.getBindings().addAll(reference.getCallback().getBindings());
                     }
-                    if (service.getPolicySets().isEmpty()) {
-                        service.getPolicySets().addAll(reference.getCallback().getPolicySets());
-                    }
-                    if (service.getRequiredIntents().isEmpty()) {
-                        service.getRequiredIntents().addAll(reference.getCallback()
-                            .getRequiredIntents());
-                    }
                 }
                 reference.setCallbackService(service);
             }
@@ -927,13 +790,6 @@ public class CompositeConfigurationBuilderImpl {
                 if (service.getCallback() != null) {
                     if (reference.getBindings().isEmpty()) {
                         reference.getBindings().addAll(service.getCallback().getBindings());
-                    }
-                    if (reference.getPolicySets().isEmpty()) {
-                        reference.getPolicySets().addAll(service.getCallback().getPolicySets());
-                    }
-                    if (reference.getRequiredIntents().isEmpty()) {
-                        reference.getRequiredIntents().addAll(service.getCallback()
-                            .getRequiredIntents());
                     }
                 }
                 service.setCallbackReference(reference);
@@ -1141,150 +997,6 @@ public class CompositeConfigurationBuilderImpl {
 
             // No promoted service
             return null;
-        }
-    }
-
-    private void computeIntents(List<Binding> bindings, List<Intent> inheritedIntents) {
-        boolean found = false;
-
-        for (Binding binding : bindings) {
-            if (binding instanceof IntentAttachPoint) {
-                IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
-                IntentAttachPointType bindingType = policiedBinding.getType();
-
-                // validate intents specified for the binding
-                for (Intent intent : policiedBinding.getRequiredIntents()) {
-                    for (QName constrained : intent.getConstrains()) {
-                        if (bindingType.getName().getNamespaceURI().equals(constrained
-                            .getNamespaceURI()) && bindingType.getName().getLocalPart()
-                            .startsWith(constrained.getLocalPart())) {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        warning("Policy Intent '" + intent.getName()
-                            + "' does not constrain binding type  "
-                            + bindingType, binding);
-                    }
-                }
-
-                for (Intent intent : inheritedIntents) {
-                    for (QName constrained : intent.getConstrains()) {
-                        if (bindingType.getName().getNamespaceURI().equals(constrained
-                            .getNamespaceURI()) && bindingType.getName().getLocalPart()
-                            .startsWith(constrained.getLocalPart())) {
-                            policiedBinding.getRequiredIntents().add(intent);
-                            break;
-                        }
-                    }
-                }
-                
-                Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
-                //remove duplicates
-                for ( Intent intent : policiedBinding.getRequiredIntents() ) {
-                    intentsTable.put(intent.getName(), intent);
-                }
-                
-                //if qualified form of intent exists remove the unqualified form
-                for ( Intent intent : intentsTable.values() ) {
-                    if ( intent instanceof QualifiedIntent ) {
-                        QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
-                        if ( intentsTable.get(qualifiedIntent.getQualifiableIntent().getName()) != null ) {
-                            intentsTable.remove(qualifiedIntent.getQualifiableIntent().getName());
-                        }
-                    }
-                }
-                policiedBinding.getRequiredIntents().clear();
-                policiedBinding.getRequiredIntents().addAll(intentsTable.values());
-            }
-        }
-    }
-
-    private void computePolicySets(Base parent,
-                                   List<Binding> bindings,
-                                   List<PolicySet> inheritedPolicySets) {
-        String appliesTo = null;
-        HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
-        
-        for (Binding binding : bindings) {
-            if (binding instanceof PolicySetAttachPoint) {
-                PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
-                IntentAttachPointType bindingType = policiedBinding.getType();
-
-                //validate policysets specified for the binding
-                for (PolicySet policySet : policiedBinding.getPolicySets()) {
-                    appliesTo = policySet.getAppliesTo();
-
-                    if (!isPolicySetApplicable(parent, appliesTo, bindingType)) {
-                        warning("Policy Set '" + policySet.getName()
-                            + "' does not apply to binding type  "
-                            + bindingType, binding);
-
-                    }
-                }
-                
-                for (PolicySet policySet : inheritedPolicySets) {
-                    appliesTo = policySet.getAppliesTo();
-                    if (isPolicySetApplicable(parent, appliesTo, bindingType)) {
-                        policiedBinding.getPolicySets().add(policySet);
-                    }
-                }
-                
-                //get rid of duplicate entries
-                for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
-                    policySetTable.put(policySet.getName(), policySet);
-                }
-                policiedBinding.getPolicySets().clear();
-                policiedBinding.getPolicySets().addAll(policySetTable.values());
-            }
-        }
-    }
-
-    private boolean isPolicySetApplicable(Base parent,
-                                          String xpath,
-                                          IntentAttachPointType bindingType) {
-        //create a xml node out of the parent object.. i.e. write the parent object as scdl fragment
-        //invoke PropertyUtil.evaluate(null, node, xpath)
-        //verify the result Node's QName against the bindingType's name
-        
-        if (parent instanceof ComponentReference) {
-        } else if (parent instanceof ComponentReference) {
-        } else if (parent instanceof Component) {
-        } else if (parent instanceof CompositeService) {
-        } else if (parent instanceof CompositeReference) {
-
-        }
-        return true;
-    }
-
-    private void addInheritedIntents(List<Intent> sourceList, List<Intent> targetList) {
-        if (sourceList != null) {
-            targetList.addAll(sourceList);
-        }
-    }
-    
-    private  void addInheritedPolicySets(List<PolicySet> sourceList, List<PolicySet> targetList, boolean checkOverrides) {
-        //check overrides is true when policysets are to be copied from componentType to component level
-        if ( checkOverrides ) {
-            //aggregate all the provided intents present in the target
-            List<Intent> targetProvidedIntents = new ArrayList<Intent>();
-            for ( PolicySet policySet : targetList ) {
-                targetProvidedIntents.addAll(policySet.getProvidedIntents());
-            }
-            
-            //for every policy set in the source check if it provides one of the intents that is 
-            //already provided by the policysets in the destination and do not copy them.
-            for ( PolicySet policySet : sourceList ) {
-                for ( Intent sourceProvidedIntent : policySet.getProvidedIntents() ) {
-                    if ( !targetProvidedIntents.contains(sourceProvidedIntent) ) {
-                        targetList.add(policySet);
-                    }
-                }
-            }
-        } else {
-            targetList.addAll(sourceList);
         }
     }
 }
