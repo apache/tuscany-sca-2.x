@@ -19,14 +19,9 @@
 
 package echo.provider;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -53,11 +48,13 @@ class EchoReferenceBindingProvider implements ReferenceBindingProvider {
         if (isCallback) {
             throw new UnsupportedOperationException();
         } else {
-            if ( !binding.getPolicySets().isEmpty() ){
-                return new EchoBindingPoliciedInvoker(((PolicySetAttachPoint)binding).getPolicySets());
-            } else {
-                return new EchoBindingInvoker();
+            if (binding instanceof PolicySetAttachPoint) {
+                PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)binding;
+                if ( !policySetAttachPoint.getPolicySets().isEmpty() ){
+                    return new EchoBindingPoliciedInvoker(policySetAttachPoint.getPolicySets());
+                }
             }
+            return new EchoBindingInvoker();
         }
     }
 

@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 import echo.EchoBinding;
 import echo.EchoBindingFactory;
@@ -99,22 +100,23 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
     }
 
     public void resolve(EchoBinding echoBinding, ModelResolver resolver) throws ContributionResolveException {
+        PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)echoBinding;
         List<Intent> requiredIntents = new ArrayList<Intent>();
         Intent resolvedIntent = null;
-        for ( Intent intent : echoBinding.getRequiredIntents() ) {
+        for ( Intent intent : policySetAttachPoint.getRequiredIntents() ) {
             resolvedIntent = resolver.resolveModel(Intent.class, intent);
             requiredIntents.add(resolvedIntent);
         }
-        echoBinding.getRequiredIntents().clear();
-        echoBinding.getRequiredIntents().addAll(requiredIntents);
+        policySetAttachPoint.getRequiredIntents().clear();
+        policySetAttachPoint.getRequiredIntents().addAll(requiredIntents);
         
         List<PolicySet> resolvedPolicySets = new ArrayList<PolicySet>();
         PolicySet resolvedPolicySet = null;
-        for ( PolicySet policySet : echoBinding.getPolicySets() ) {
+        for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
             resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
             resolvedPolicySets.add(resolvedPolicySet);
         }
-        echoBinding.getPolicySets().clear();
-        echoBinding.getPolicySets().addAll(resolvedPolicySets);
+        policySetAttachPoint.getPolicySets().clear();
+        policySetAttachPoint.getPolicySets().addAll(resolvedPolicySets);
     }
 }

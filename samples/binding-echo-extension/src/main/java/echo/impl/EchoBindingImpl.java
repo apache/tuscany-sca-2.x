@@ -25,13 +25,14 @@ import java.util.List;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 import echo.EchoBinding;
 
 /**
  * Implementation of the Echo binding model.
  */
-public class EchoBindingImpl implements EchoBinding {
+public class EchoBindingImpl implements EchoBinding, PolicySetAttachPoint {
     
     private String name;
     private String uri;
