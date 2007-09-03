@@ -97,9 +97,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.tuscany.sdo</groupId>
-                <artifactId>tuscany-sdo-plugin</artifactId>
-                <version>${sdo.version}</version>
+		<groupId>org.apache.tuscany.sdo</groupId>
+		<artifactId>tuscany-sdo-plugin</artifactId>
+		<version>1.0-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <configuration>
@@ -116,9 +116,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.tuscany.sca.extensions.axis2.plugins</groupId>
-                <artifactId>tuscany-plugin-wsdl2java</artifactId>
-                <version>${sca.version}</version>
+		<groupId>org.apache.tuscany.sca</groupId>
+		<artifactId>tuscany-maven-wsdl2java</artifactId>
+		<version>1.0-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <configuration>

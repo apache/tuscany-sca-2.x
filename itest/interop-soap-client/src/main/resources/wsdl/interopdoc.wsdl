@@ -34,26 +34,23 @@
 			<xsd:element name="SingleTag">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element minOccurs="0" maxOccurs="1"
-							name="SingleTag" type="interop:SingleTag" />
+						<xsd:element minOccurs="0" maxOccurs="1" name="SingleTag" type="interop:SingleTag" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-
 			<xsd:complexType name="SingleTag" />
 			<xsd:element name="SingleTagResponse">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element minOccurs="0" maxOccurs="1"
-							name="SingleTag" type="interop:SingleTag" />
+						<xsd:element minOccurs="0" maxOccurs="1" name="SingleTag" type="interop:SingleTag" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
+			
 			<xsd:element name="SimpleDocument">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element minOccurs="0" maxOccurs="1"
-							name="SimpleDocument" type="interop:SimpleDocument" />
+						<xsd:element minOccurs="0" maxOccurs="1" name="SimpleDocument" type="interop:SimpleDocument" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
@@ -65,49 +62,43 @@
 			<xsd:element name="SimpleDocumentResponse">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element minOccurs="0" maxOccurs="1"
-							name="SimpleDocument" type="interop:SimpleDocument" />
+						<xsd:element minOccurs="0" maxOccurs="1" name="SimpleDocument" type="interop:SimpleDocument" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
+			
 			<xsd:element name="ComplexDocument">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element minOccurs="0" maxOccurs="1"
-							name="ComplexDocument" type="interop:ComplexDocument" />
+						<xsd:element minOccurs="0" maxOccurs="1" name="ComplexDocument" type="interop:ComplexDocument" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
 			<xsd:complexType name="ComplexDocument">
 				<xsd:sequence>
-					<xsd:element minOccurs="0" maxOccurs="1"
-						name="simpleDoc" type="interop:ArrayOfSimpleDocument" />
-					<xsd:element minOccurs="0" maxOccurs="1"
-						name="child" type="interop:ChildDocument" />
+					<xsd:element minOccurs="0" maxOccurs="1" name="simpleDoc" type="interop:ArrayOfSimpleDocument" />
+					<xsd:element minOccurs="0" maxOccurs="1" name="child" type="interop:ChildDocument" />
 				</xsd:sequence>
 				<xsd:attribute name="AnAttribute" type="xsd:string" />
-			</xsd:complexType>
-			<xsd:complexType name="ArrayOfSimpleDocument">
-				<xsd:sequence>
-					<xsd:element minOccurs="0" maxOccurs="unbounded"
-						name="SimpleDocument" nillable="true"
-						type="interop:SimpleDocument" />
-				</xsd:sequence>
-			</xsd:complexType>
-			<xsd:complexType name="ChildDocument">
-				<xsd:sequence>
-					<xsd:element minOccurs="0" maxOccurs="1"
-						name="childSimpleDoc" type="interop:ArrayOfSimpleDocument" />
-				</xsd:sequence>
 			</xsd:complexType>
 			<xsd:element name="ComplexDocumentResponse">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element minOccurs="0" maxOccurs="1"
-							name="ComplexDocument" type="interop:ComplexDocument" />
+						<xsd:element minOccurs="0" maxOccurs="1" name="ComplexDocument" type="interop:ComplexDocument" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
+			
+			<xsd:complexType name="ArrayOfSimpleDocument">
+				<xsd:sequence>
+					<xsd:element minOccurs="0" maxOccurs="unbounded" name="SimpleDocument" nillable="true" type="interop:SimpleDocument" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="ChildDocument">
+				<xsd:sequence>
+					<xsd:element minOccurs="0" maxOccurs="1" name="childSimpleDoc" type="interop:ArrayOfSimpleDocument" />
+				</xsd:sequence>
+			</xsd:complexType>
 
 		</xsd:schema>
 
@@ -190,8 +181,7 @@
 	<service name="interopDocSvc">
 
 		<port name="interopDocPort" binding="tns:doc_test_binding">
-			<soap:address
-				location="http://www.whitemesa.net/interopdoc" />
+			<soap:address location="http://www.whitemesa.net/interopdoc" />
 			<!-- soap:address location="http://mssoapinterop.org/asmx/simple.asmx"/ -->
 			<!-- soap:address location="http://easysoap.sourceforge.net/cgi-bin/interopserver"/ -->
 			<!-- soap:address location="http://www.mssoapinterop.org/remoting/ServiceAllTypes.soap"/ -->
