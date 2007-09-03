@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.xml.namespace.QName;
 
@@ -185,9 +186,13 @@ public class WSDL2JavaGenerator {
                     buildCommand.append(" ");
                     buildCommand.append(sdoGenArgsString);
                 }
-                buildCommand.append(" ");
-                buildCommand.append(wsdlFileName);
-                String[] sdoGenCommand = buildCommand.toString().split("\\s+");  
+                
+                //TUSCANY-1642 - We shouldn't split the wsdlFileName as it my contain a filename with spaces
+                Vector sdoCommand = new Vector(java.util.Arrays.asList(buildCommand.toString().split("\\s+")));
+                sdoCommand.add(wsdlFileName);
+
+                String[] sdoGenCommand = new String[sdoCommand.size()];
+                sdoCommand.toArray(sdoGenCommand);  
                 
                 if ((genOptions & VERBOSE_MODE)!=0){
                         System.out.println("Options passed to XSD2Java: ");
