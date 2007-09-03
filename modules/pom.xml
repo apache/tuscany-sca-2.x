@@ -102,9 +102,7 @@
                 <module>implementation-java-xml</module>
                 <module>implementation-java-runtime</module>
                 <module>implementation-notification</module>
-                <!--
                 <module>implementation-osgi</module>
-                -->
                 <module>implementation-resource</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
