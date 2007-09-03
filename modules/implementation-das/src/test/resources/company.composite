@@ -22,10 +22,6 @@
 	targetNamespace="http://sample/das"
 	name="das">
 
-    <service name="CompanyServiceComponent" promote="CompanyComponent">
-        <interface.java interface="org.apache.tuscany.sca.implementation.das.company.CompanyService"/>
-    </service>
-
     <component name="CompanyComponent">
         <tuscany:implementation.das config="/CompanyConfig.xml" dataAccessType="rdb">
         <tuscany:connectionInfo>
@@ -35,5 +31,10 @@
 				loginTimeout="600000"/>
 			</tuscany:connectionInfo>
 		</tuscany:implementation.das>
+
+	    <service name="CompanyServiceComponent">
+	        <interface.java interface="org.apache.tuscany.sca.implementation.das.company.CompanyService"/>
+	    </service>
+
     </component>
 </composite>
