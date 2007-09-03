@@ -46,16 +46,13 @@ public class MockPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
     public void write(Policy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
                                                         XMLStreamException {
-
     }
 
     public Class<Policy> getModelType() {
-        // TODO Auto-generated method stub
         return Policy.class;
     }
 
     public void resolve(Policy arg0, ModelResolver arg1) throws ContributionResolveException {
-
     }
 
     

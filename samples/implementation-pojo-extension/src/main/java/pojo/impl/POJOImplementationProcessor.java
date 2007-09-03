@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
@@ -39,6 +40,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 import pojo.POJOImplementation;
 import pojo.POJOImplementationFactory;
@@ -57,6 +59,8 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     private POJOImplementationFactory pojoImplementationFactory;
+    private PolicyFactory policyFactory;
+    private PolicyAttachPointProcessor policyProcessor;
     
     public POJOImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         
@@ -64,7 +68,9 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
         // create model objects 
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        policyFactory = modelFactories.getFactory(PolicyFactory.class);
         pojoImplementationFactory = modelFactories.getFactory(POJOImplementationFactory.class);
+        policyProcessor = new PolicyAttachPointProcessor(policyFactory);
     }
 
     public QName getArtifactType() {
@@ -80,12 +86,13 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
     public POJOImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
     
         // Read an <implementation.pojo> element
+        POJOImplementation implementation = pojoImplementationFactory.createPOJOImplementation();
+        
+        // Read policies
+        policyProcessor.readPolicies(implementation, reader);
         
         // Read the POJO class attribute.
         String className = reader.getAttributeValue(null, "class");
-
-        // Create the POJO implementation model
-        POJOImplementation implementation = pojoImplementationFactory.createPOJOImplementation();
         implementation.setPOJOName(className);
         
         // Mark the POJO model unresolved to track the fact that it's not
@@ -150,6 +157,17 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
         implementation.setUnresolved(false);
     }
 
-    public void write(POJOImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(POJOImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        
+        // Write <implementation.pojo> element
+        policyProcessor.writePolicyPrefixes(implementation, writer);
+        writer.writeStartElement(IMPLEMENTATION_POJO.getNamespaceURI(), IMPLEMENTATION_POJO.getLocalPart());
+        policyProcessor.writePolicyAttributes(implementation, writer);
+        
+        if (implementation.getPOJOName() != null) {
+            writer.writeAttribute("class", implementation.getPOJOName());
+        }
+        
+        writer.writeEndElement();
     }
 }

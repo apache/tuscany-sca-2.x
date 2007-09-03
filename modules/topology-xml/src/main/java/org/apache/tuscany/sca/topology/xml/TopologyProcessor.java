@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.topology.TopologyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class TopologyProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Runtime> {
+public class TopologyProcessor extends BaseTopologyArtifactProcessor implements StAXArtifactProcessor<Runtime> {
     
     /**
      * Construct a new composite processor
@@ -58,119 +58,108 @@ public class TopologyProcessor extends BaseArtifactProcessor implements StAXArti
         super(topologyFactory, assemblyFactory, extensionProcessor);
     }
     
-    public Runtime read(XMLStreamReader reader) throws ContributionReadException {
+    public Runtime read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         QName name = null;
         Runtime runtime = null;
         Node node = null;
         String domainName = DEFAULT_DOMAIN;
       
-        try {
-            
-            // Read the composite document
-            while (reader.hasNext()) {
-                int event = reader.getEventType();
-                switch (event) {
-                    case START_ELEMENT:
-                        name = reader.getName();
+        // Read the composite document
+        while (reader.hasNext()) {
+            int event = reader.getEventType();
+            switch (event) {
+                case START_ELEMENT:
+                    name = reader.getName();
+                    
+                    if (RUNTIME_QNAME.equals(name)) {
+                        // Read a <runtime>
+                        runtime = topologyFactory.createRuntime();
+                    } else if (NODE_QNAME.equals(name)) {
+                        // Read a <node>
+                        node = topologyFactory.createNode();
+                        node.setName(getString(reader, NAME));
                         
-                        if (RUNTIME_QNAME.equals(name)) {
-                            // Read a <runtime>
-                            runtime = topologyFactory.createRuntime();
-                        } else if (NODE_QNAME.equals(name)) {
-                            // Read a <node>
-                            node = topologyFactory.createNode();
-                            node.setName(getString(reader, NAME));
-                            
-                            // add node to runtime
-                            runtime.getNodes().add(node);
-                            
-                            // reset domain name to the default
-                            domainName = DEFAULT_DOMAIN;
-                        } else if (DOMAIN_QNAME.equals(name)) {
-                            // Read a <domain>
-                            domainName = getString(reader, NAME);                            
-                        } else if (SCHEME_QNAME.equals(name)) {
-                            // Read a <scheme>
-                            Scheme scheme = topologyFactory.createScheme();
-                            scheme.setName(getString(reader, NAME));
-                            scheme.setBaseURL(getString(reader, BASE_URL));
-                            
-                            scheme.setDomainName(domainName);
-                            
-                            // Add scheme to the node
-                            node.getSchemes(domainName).add(scheme);
-                        } else if (COMPONENT_QNAME.equals(name)) {
-                            // Read a <component>
-                            Component component = topologyFactory.createComponent();
-                            component.setName(getString(reader, NAME));
-                            
-                            component.setDomainName(domainName);
-                            
-                            // Add scheme to the node
-                            node.getComponents(domainName).add(component);                            
+                        // add node to runtime
+                        runtime.getNodes().add(node);
+                        
+                        // reset domain name to the default
+                        domainName = DEFAULT_DOMAIN;
+                    } else if (DOMAIN_QNAME.equals(name)) {
+                        // Read a <domain>
+                        domainName = getString(reader, NAME);                            
+                    } else if (SCHEME_QNAME.equals(name)) {
+                        // Read a <scheme>
+                        Scheme scheme = topologyFactory.createScheme();
+                        scheme.setName(getString(reader, NAME));
+                        scheme.setBaseURL(getString(reader, BASE_URL));
+                        
+                        scheme.setDomainName(domainName);
+                        
+                        // Add scheme to the node
+                        node.getSchemes(domainName).add(scheme);
+                    } else if (COMPONENT_QNAME.equals(name)) {
+                        // Read a <component>
+                        Component component = topologyFactory.createComponent();
+                        component.setName(getString(reader, NAME));
+                        
+                        component.setDomainName(domainName);
+                        
+                        // Add scheme to the node
+                        node.getComponents(domainName).add(component);                            
 
-                        } else {
-                            
-                            // Read an extension element
-                            Object extension = extensionProcessor.read(reader);
-                            
-                            if (extension != null) {
-                                // no extensions are supported
-                            }
-                        }
-    
-                    case END_ELEMENT:
-                        name = reader.getName();
-                        // Clear current state when reading reaching end element                
-                }
-                
-                if (reader.hasNext()) {
-                    reader.next();
-                }
-            }
-            return runtime;
+                    } else {
                         
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        }        
+                        // Read an extension element
+                        Object extension = extensionProcessor.read(reader);
+                        
+                        if (extension != null) {
+                            // no extensions are supported
+                        }
+                    }
+
+                case END_ELEMENT:
+                    name = reader.getName();
+                    // Clear current state when reading reaching end element                
+            }
+            
+            if (reader.hasNext()) {
+                reader.next();
+            }
+        }
+        return runtime;
     }
 
     
-    public void write(Runtime runtime, XMLStreamWriter writer) throws ContributionWriteException {
-        try {
-            writeStartDocument(writer, RUNTIME);
-            
-            // TODO - write out the scheme definitions
-    
-            for (Node node : runtime.getNodes()) {
-                writeStart(writer, NODE, new XAttr(NAME, node.getName()));
+    public void write(Runtime runtime, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+        writeStartDocument(writer, RUNTIME);
+        
+        // TODO - write out the scheme definitions
+
+        for (Node node : runtime.getNodes()) {
+            writeStart(writer, NODE, new XAttr(NAME, node.getName()));
+           
+            for (String domainName : node.getDomainNames()) {
+                
+                writeStart(writer, DOMAIN, new XAttr(NAME, domainName));
                
-    
-                for (String domainName : node.getDomainNames()) {
-                    
-                    writeStart(writer, DOMAIN, new XAttr(NAME, domainName));
-                   
-                    for (Scheme scheme: node.getSchemes(domainName)) {
-                        writeStart(writer, SCHEME, new XAttr(NAME, scheme.getName()), new XAttr(BASE_URL, scheme.getBaseURL()));
-                        writeEnd(writer);
-                    }
-                    
-                    for (Component component: node.getComponents(domainName)) {
-                        writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()));
-                        writeEnd(writer);
-                    }                    
-                    
+                for (Scheme scheme: node.getSchemes(domainName)) {
+                    writeStart(writer, SCHEME, new XAttr(NAME, scheme.getName()), new XAttr(BASE_URL, scheme.getBaseURL()));
                     writeEnd(writer);
                 }
-      
+                
+                for (Component component: node.getComponents(domainName)) {
+                    writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()));
+                    writeEnd(writer);
+                }                    
+                
                 writeEnd(writer);
             }
-       
-            writeEndDocument(writer);
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
+  
+            writeEnd(writer);
         }
+   
+        writeEndDocument(writer);
     }
     
     public void resolve(Runtime runtime, ModelResolver resolver) throws ContributionResolveException {

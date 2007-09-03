@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.topology.Runtime;
  * 
  * @version $Rev$ $Date$
  */
-public class TopologyDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<Runtime> {
+public class TopologyDocumentProcessor extends BaseTopologyArtifactProcessor implements URLArtifactProcessor<Runtime> {
     private XMLInputFactory inputFactory;
 
     /**

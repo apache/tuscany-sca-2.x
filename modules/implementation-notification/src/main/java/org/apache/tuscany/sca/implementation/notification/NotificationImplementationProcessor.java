@@ -40,14 +40,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  * 
  * @version $Rev$ $Date$
  */
-public class NotificationImplementationLoader implements StAXArtifactProcessor<NotificationImplementationImpl> {
+public class NotificationImplementationProcessor implements StAXArtifactProcessor<NotificationImplementationImpl> {
 
     protected static final QName IMPLEMENTATION_NOTIFICATION =
         new QName(Constants.SCA10_TUSCANY_NS, "implementation.notification");
     
     private NotificationImplementationFactory implementationFactory;
 
-    public NotificationImplementationLoader(NotificationImplementationFactory implementationFactory) {
+    public NotificationImplementationProcessor(NotificationImplementationFactory implementationFactory) {
         this.implementationFactory = implementationFactory;
     }
 
@@ -97,5 +97,7 @@ public class NotificationImplementationLoader implements StAXArtifactProcessor<N
         
     public void write(NotificationImplementationImpl model, XMLStreamWriter outputSource)
             throws ContributionWriteException, XMLStreamException {
+        
+        //FIXME Implement this method
     }
 }

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.policy;
 
-import java.net.URI;
 import java.util.List;
 
 
@@ -31,14 +30,14 @@ public interface SCADefinitions {
      * Returns the target namespace for this SCA Definition
      * @return the target namespace
      */
-    URI getTargetNamespace();
+    String getTargetNamespace();
     
     /**
      * Sets the target names for this SCA Definition
      * 
      * @param the target namespace for this SCA Definition
      */
-    void setTargetNamespace(URI ns);
+    void setTargetNamespace(String ns);
 
     /**
      * Returns a list of domain wide Policy Intents

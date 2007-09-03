@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.spring.SpringArtifactProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.spring,model=org.apache.tuscany.sca.implementation.spring.SpringImplementation
+org.apache.tuscany.sca.implementation.spring.SpringImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.spring,model=org.apache.tuscany.sca.implementation.spring.SpringImplementation

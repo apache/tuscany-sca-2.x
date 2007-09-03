@@ -70,9 +70,9 @@
                 <module>databinding-sdo</module>
                 <module>databinding-sdo-axiom</module>
                 <module>databinding-json</module>
-<!--
+                <!--
                 <module>databinding-saxon</module>
--->
+                -->
                 <module>databinding-xmlbeans</module>
                 <module>data-engine-helper</module>
                 <!--
@@ -102,13 +102,15 @@
                 <module>implementation-java-xml</module>
                 <module>implementation-java-runtime</module>
                 <module>implementation-notification</module>
+                <!--
                 <module>implementation-osgi</module>
+                -->
                 <module>implementation-resource</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
-<!--
+                <!--
                 <module>implementation-xquery</module>
--->
+                -->
                 <module>java2wsdl</module>
                 <!--
                 <module>jmx</module>

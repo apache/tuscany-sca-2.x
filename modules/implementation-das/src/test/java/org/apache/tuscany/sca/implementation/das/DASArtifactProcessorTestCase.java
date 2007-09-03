@@ -135,6 +135,6 @@ public class DASArtifactProcessorTestCase extends TestCase {
         assertNotNull(connProperties);
         assertEquals("driverClass",connProperties.getDriverClass());
         assertEquals("databaseURL",connProperties.getDatabaseURL());
-        assertEquals(1,connProperties.getLoginTimeout());
+        assertEquals(1,connProperties.getLoginTimeout().intValue());
     }    
 }

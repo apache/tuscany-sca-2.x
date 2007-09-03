@@ -31,7 +31,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor.XAttr;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -47,13 +49,10 @@ import org.apache.tuscany.sca.policy.impl.SCADefinitionsImpl;
  * Processor for SCA Definitions
  * 
  */
-public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinitions>, PolicyConstants {
+public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SCADefinitions>, PolicyConstants {
     
-    protected PolicyFactory policyFactory;
-    protected StAXArtifactProcessor<Object> extensionProcessor;
-    protected ModelResolver definitionsResolver;
-    
-    //protected PolicyIntentProcessor policyIntentResolver;
+    private StAXArtifactProcessor<Object> extensionProcessor;
+    private ModelResolver definitionsResolver;
     
     /**
      * Construct a new (sca) definitions processor
@@ -61,10 +60,8 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
      * @param extensionProcessor 
      */
     public SCADefinitionsProcessor(PolicyFactory policyFactory,
-                              StAXArtifactProcessor extensionProcessor) {
-        this.policyFactory = policyFactory;
+                              StAXArtifactProcessor<Object> extensionProcessor) {
         this.extensionProcessor = extensionProcessor;
-        //this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
     }
     
     /**
@@ -74,193 +71,86 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
      * @param modelResolver 
      */
     public SCADefinitionsProcessor(PolicyFactory policyFactory,
-                              StAXArtifactProcessor extensionProcessor,
+                              StAXArtifactProcessor<Object> extensionProcessor,
                               ModelResolver modelResolver) {
-        this.policyFactory = policyFactory;
         this.extensionProcessor = extensionProcessor;
-        //this.policyIntentResolver = new PolicyIntentProcessor(policyFactory, extensionProcessor);
         this.definitionsResolver = modelResolver;
     }
 
-    /**
-     * Returns a qname from a string.  
-     * @param reader
-     * @param value
-     * @return
-     */
-    protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * Returns the qname value of an attribute.
-     * @param reader
-     * @param name
-     * @return
-     */
-    protected QName getQName(XMLStreamReader reader, String name) {
-        String qname = reader.getAttributeValue(null, name);
-        return getQNameValue(reader, qname);
-    }
-    
-    public SCADefinitions read(XMLStreamReader reader) throws ContributionReadException {
+    public SCADefinitions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         QName name = null;
-        SCADefinitions scaDefns = null;
-        try {
-            // Read the composite document
-            while (reader.hasNext()) {
-                int event = reader.getEventType();
-                switch (event) {
-                    case START_ELEMENT: {
-                        name = reader.getName();
-                        if ( SCA_DEFNS_QNAME.equals(name)) {
-                            scaDefns = new SCADefinitionsImpl();
-                            try {
-                                scaDefns.setTargetNamespace(new URI(reader.getAttributeValue(null, TARGET_NAMESPACE)));
-                            } catch ( URISyntaxException e ) {
-                                throw new ContributionReadException(e);
-                            }
-                        } else {
-                            Object extension = extensionProcessor.read(reader);
-                            if (extension != null) {
-                                if ( extension instanceof Intent ) {
-                                    scaDefns.getPolicyIntents().add((Intent)extension);
-                                } else if ( extension instanceof PolicySet ) {
-                                    scaDefns.getPolicySets().add((PolicySet)extension);
-                                } else if ( extension instanceof IntentAttachPointType ) {
-                                    IntentAttachPointType type = (IntentAttachPointType)extension;
-                                    if ( type.getName().getLocalPart().startsWith(BINDING)) {
-                                        scaDefns.getBindingTypes().add((IntentAttachPointType)extension);
-                                    } else if ( type.getName().getLocalPart().startsWith(IMPLEMENTATION)) {
-                                        scaDefns.getImplementationTypes().add((IntentAttachPointType)extension);
-                                    }
-                                } 
-                                
-                                if ( getDefinitionsResolver() != null ) {
-                                    getDefinitionsResolver().addModel(extension);
+        SCADefinitions definitions = null;
+
+        // Read the composite document
+        while (reader.hasNext()) {
+            int event = reader.getEventType();
+            switch (event) {
+                case START_ELEMENT: {
+                    name = reader.getName();
+                    if ( SCA_DEFINITIONS_QNAME.equals(name)) {
+                        definitions = new SCADefinitionsImpl();
+                        definitions.setTargetNamespace(reader.getAttributeValue(null, TARGET_NAMESPACE));
+                    } else {
+                        Object extension = extensionProcessor.read(reader);
+                        if (extension != null) {
+                            if ( extension instanceof Intent ) {
+                                definitions.getPolicyIntents().add((Intent)extension);
+                            } else if ( extension instanceof PolicySet ) {
+                                definitions.getPolicySets().add((PolicySet)extension);
+                            } else if ( extension instanceof IntentAttachPointType ) {
+                                IntentAttachPointType type = (IntentAttachPointType)extension;
+                                if ( type.getName().getLocalPart().startsWith(BINDING)) {
+                                    definitions.getBindingTypes().add((IntentAttachPointType)extension);
+                                } else if ( type.getName().getLocalPart().startsWith(IMPLEMENTATION)) {
+                                    definitions.getImplementationTypes().add((IntentAttachPointType)extension);
                                 }
+                            } 
+                            
+                            if ( getDefinitionsResolver() != null ) {
+                                getDefinitionsResolver().addModel(extension);
                             }
-                            break;
                         }
+                        break;
                     }
-    
-                    case XMLStreamConstants.CHARACTERS:
-                        break;
-    
-                    case END_ELEMENT:
-                        break;
                 }
-                
-                //Read the next element
-                if (reader.hasNext()) {
-                    reader.next();
-                }
-            }
-            return scaDefns;
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        }
-    }
-    
-    /**
-     * Write attributes to the current element.
-     * @param writer
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeAttributes(XMLStreamWriter writer, XAttr... attrs) throws XMLStreamException {
-        for (XAttr attr : attrs) {
-            if (attr != null)
-                attr.write(writer);
-        }
-    }
-    
-    /**
-     * Start an element.
-     * @param uri
-     * @param name
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs) throws XMLStreamException {
-        writer.writeStartElement(uri, name);
-        writeAttributes(writer, attrs);
-    }
 
-    /**
-     * Start an element.
-     * @param writer
-     * @param name
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeStart(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
-        writer.writeStartElement(SCA10_NS, name);
-        writeAttributes(writer, attrs);
-    }
-    
-    /**
-     * Start a document.
-     * @param writer
-     * @throws XMLStreamException
-     */
-    protected void writeStartDocument(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
-        writer.writeStartDocument();
-        writer.setDefaultNamespace(SCA10_NS);
-        writeStart(writer, name, attrs);
-        writer.writeDefaultNamespace(SCA10_NS);
-    }
-    
-    /**
-     * End a document.
-     * @param writer
-     * @throws XMLStreamException
-     */
-    protected void writeEndDocument(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeEndDocument();
-    }
-    
-    public void write(SCADefinitions scaDefns, XMLStreamWriter writer) throws ContributionWriteException {
+                case XMLStreamConstants.CHARACTERS:
+                    break;
 
-        try {
-            writeStartDocument(writer, 
-                                   SCA_DEFINITIONS,
-                                   new XAttr(TARGET_NAMESPACE, scaDefns.getTargetNamespace().toString())
-                );
-    
-            for (Intent policyIntent : scaDefns.getPolicyIntents()) {
-                extensionProcessor.write(policyIntent, writer);
+                case END_ELEMENT:
+                    break;
             }
             
-            for (PolicySet policySet : scaDefns.getPolicySets()) {
-                extensionProcessor.write(policySet, writer);
+            //Read the next element
+            if (reader.hasNext()) {
+                reader.next();
             }
-            
-            for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
-                extensionProcessor.write(bindingType, writer);
-            }
-            
-            for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
-                extensionProcessor.write(implType, writer);
-            }
-
-            writeEndDocument(writer);
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
         }
+        return definitions;
+    }
+    
+    public void write(SCADefinitions definitions, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+        writeStartDocument(writer, SCA10_NS, SCA_DEFINITIONS, 
+                               new XAttr(TARGET_NAMESPACE, definitions.getTargetNamespace().toString()));
+    
+        for (Intent policyIntent : definitions.getPolicyIntents()) {
+            extensionProcessor.write(policyIntent, writer);
+        }
+        
+        for (PolicySet policySet : definitions.getPolicySets()) {
+            extensionProcessor.write(policySet, writer);
+        }
+        
+        for (IntentAttachPointType bindingType : definitions.getBindingTypes()) {
+            extensionProcessor.write(bindingType, writer);
+        }
+        
+        for (IntentAttachPointType implType : definitions.getImplementationTypes()) {
+            extensionProcessor.write(implType, writer);
+        }
+
+        writeEndDocument(writer);
     }
     
     public void resolve(SCADefinitions scaDefns, ModelResolver resolver) throws ContributionResolveException {
@@ -286,7 +176,7 @@ public class SCADefinitionsProcessor implements StAXArtifactProcessor<SCADefinit
     }
     
     public QName getArtifactType() {
-        return SCA_DEFNS_QNAME;
+        return SCA_DEFINITIONS_QNAME;
     }
     
     public Class<SCADefinitions> getModelType() {

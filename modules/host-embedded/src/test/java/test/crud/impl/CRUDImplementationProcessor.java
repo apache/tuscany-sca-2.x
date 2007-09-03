@@ -64,35 +64,39 @@ public class CRUDImplementationProcessor implements StAXArtifactProcessor<CRUDIm
         return CRUDImplementation.class;
     }
 
-    public CRUDImplementation read(XMLStreamReader reader) throws ContributionReadException {
-        assert IMPLEMENTATION_CRUD.equals(reader.getName());
+    public CRUDImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         
         // Read an <implementation.crud> element
-        try {
-            // Read the directory attribute. This is where the sample
-            // CRUD implementation will persist resources.
-            String directory = reader.getAttributeValue(null, "directory");
 
-            // Create an initialize the CRUD implementation model
-            CRUDImplementation implementation = crudFactory.createCRUDImplementation();
-            implementation.setDirectory(directory);
-            
-            // Skip to end element
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && IMPLEMENTATION_CRUD.equals(reader.getName())) {
-                    break;
-                }
+        // Read the directory attribute. This is where the sample
+        // CRUD implementation will persist resources.
+        String directory = reader.getAttributeValue(null, "directory");
+
+        // Create an initialize the CRUD implementation model
+        CRUDImplementation implementation = crudFactory.createCRUDImplementation();
+        implementation.setDirectory(directory);
+        
+        // Skip to end element
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_CRUD.equals(reader.getName())) {
+                break;
             }
-            
-            return implementation;
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
         }
+        
+        return implementation;
     }
 
     public void resolve(CRUDImplementation impl, ModelResolver resolver) throws ContributionResolveException {
     }
 
-    public void write(CRUDImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(CRUDImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        
+        writer.writeStartElement(IMPLEMENTATION_CRUD.getNamespaceURI(), IMPLEMENTATION_CRUD.getLocalPart());
+        
+        if (implementation != null) {
+            writer.writeAttribute("directory", implementation.getDirectory());
+        }
+        
+        writer.writeEndElement();
     }
 }

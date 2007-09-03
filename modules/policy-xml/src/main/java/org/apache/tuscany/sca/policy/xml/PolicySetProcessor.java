@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -46,10 +47,10 @@ import org.apache.tuscany.sca.policy.PolicySet;
 /* 
  * Processor for handling xml models of PolicySet definitions
  */
-public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, PolicyConstants {
+public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<PolicySet>, PolicyConstants {
 
     private PolicyFactory policyFactory;
-    protected StAXArtifactProcessor<Object> extensionProcessor;
+    private StAXArtifactProcessor<Object> extensionProcessor;
     
 
     public PolicySetProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
@@ -57,58 +58,53 @@ public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, Pol
         this.extensionProcessor = extensionProcessor;
     }
 
-    public PolicySet read(XMLStreamReader reader) throws ContributionReadException {
-        try {
-            PolicySet policySet = policyFactory.createPolicySet();
-            policySet.setName(getQName(reader, NAME));
-            policySet.setAppliesTo(reader.getAttributeValue(null, APPLIES_TO));
-            readProvidedIntents(policySet, reader);
-            
-            int event = reader.getEventType();
-            QName name = null;
-            reader.next();
-            while (reader.hasNext()) {
-                event = reader.getEventType();
-                switch (event) {
-                    case START_ELEMENT : {
-                        name = reader.getName();
-                        if ( POLICY_INTENT_MAP_QNAME.equals(name) ) {
-                            Intent mappedIntent = policyFactory.createIntent();
-                            mappedIntent.setName(getQName(reader, PROVIDES));
-                            if ( policySet.getProvidedIntents().contains(mappedIntent) ) {
-                                readIntentMap(reader, policySet, mappedIntent);
-                            } else {
-                                throw new ContributionReadException("Intent Map provides for Intent not spcified as provided by parent PolicySet - " +policySet.getName());
-                            }
-                        } else if ( POLICY_SET_REFERENCE_QNAME.equals(name) )  {
-                            PolicySet referredPolicySet = policyFactory.createPolicySet();
-                            referredPolicySet.setName(getQName(reader, NAME));
-                            policySet.getReferencedPolicySets().add(referredPolicySet);
+    public PolicySet read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        PolicySet policySet = policyFactory.createPolicySet();
+        policySet.setName(getQName(reader, NAME));
+        policySet.setAppliesTo(reader.getAttributeValue(null, APPLIES_TO));
+        readProvidedIntents(policySet, reader);
+        
+        int event = reader.getEventType();
+        QName name = null;
+        reader.next();
+        while (reader.hasNext()) {
+            event = reader.getEventType();
+            switch (event) {
+                case START_ELEMENT : {
+                    name = reader.getName();
+                    if ( POLICY_INTENT_MAP_QNAME.equals(name) ) {
+                        Intent mappedIntent = policyFactory.createIntent();
+                        mappedIntent.setName(getQName(reader, PROVIDES));
+                        if ( policySet.getProvidedIntents().contains(mappedIntent) ) {
+                            readIntentMap(reader, policySet, mappedIntent);
                         } else {
-                            Object extension = extensionProcessor.read(reader);
-                            if ( extension instanceof Policy ) {
-                                policySet.getPolicies().add(extension);
-                            }
+                            throw new ContributionReadException("Intent Map provides for Intent not spcified as provided by parent PolicySet - " +policySet.getName());
                         }
-                        break;
+                    } else if ( POLICY_SET_REFERENCE_QNAME.equals(name) )  {
+                        PolicySet referredPolicySet = policyFactory.createPolicySet();
+                        referredPolicySet.setName(getQName(reader, NAME));
+                        policySet.getReferencedPolicySets().add(referredPolicySet);
+                    } else {
+                        Object extension = extensionProcessor.read(reader);
+                        if ( extension instanceof Policy ) {
+                            policySet.getPolicies().add(extension);
+                        }
                     }
-                }
-                if ( event == END_ELEMENT ) {
-                    if ( POLICY_SET_QNAME.equals(reader.getName()) ) {
-                        break;
-                    } 
-                }
-                
-                //Read the next element
-                if (reader.hasNext()) {
-                    reader.next();
+                    break;
                 }
             }
-            return policySet;
+            if ( event == END_ELEMENT ) {
+                if ( POLICY_SET_QNAME.equals(reader.getName()) ) {
+                    break;
+                } 
+            }
             
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+            //Read the next element
+            if (reader.hasNext()) {
+                reader.next();
+            }
         }
+        return policySet;
     }
     
     
@@ -199,26 +195,21 @@ public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, Pol
         }
     }
     
-    public void write(PolicySet policySet, XMLStreamWriter writer) throws ContributionWriteException {
-        try {
-            // Write an <sca:policySet>
-            writer.writeStartElement(SCA10_NS, POLICY_SET);
-            writer.writeNamespace(policySet.getName().getPrefix(), policySet.getName().getNamespaceURI());
-            writer.writeAttribute(NAME, 
-                                  policySet.getName().getPrefix() + COLON + policySet.getName().getLocalPart());
-            writer.writeAttribute(APPLIES_TO, policySet.getAppliesTo());
-            
-            writeProvidedIntents(policySet, writer);
-            
-            
-            writer.writeEndElement();
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
-        }
+    public void write(PolicySet policySet, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+        // Write an <sca:policySet>
+        writer.writeStartElement(SCA10_NS, POLICY_SET);
+        writer.writeNamespace(policySet.getName().getPrefix(), policySet.getName().getNamespaceURI());
+        writer.writeAttribute(NAME, 
+                              policySet.getName().getPrefix() + COLON + policySet.getName().getLocalPart());
+        writer.writeAttribute(APPLIES_TO, policySet.getAppliesTo());
+        
+        writeProvidedIntents(policySet, writer);
+        
+        writer.writeEndElement();
     }
     
-    protected void readProvidedIntents(PolicySet policySet, XMLStreamReader reader) {
+    private void readProvidedIntents(PolicySet policySet, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, PROVIDES);
         if (value != null) {
             List<Intent> providedIntents = policySet.getProvidedIntents();
@@ -231,7 +222,7 @@ public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, Pol
         }
     }
     
-    protected void writeProvidedIntents(PolicySet policySet, XMLStreamWriter writer) throws XMLStreamException {
+    private void writeProvidedIntents(PolicySet policySet, XMLStreamWriter writer) throws XMLStreamException {
         if (policySet.getProvidedIntents() != null && 
             policySet.getProvidedIntents().size() > 0) {
             StringBuffer sb = new StringBuffer();
@@ -315,28 +306,4 @@ public class PolicySetProcessor implements StAXArtifactProcessor<PolicySet>, Pol
         return PolicySet.class;
     }
     
-    protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
-    }
-    
-    protected QName getQName(XMLStreamReader reader, String name) {
-        String qname = reader.getAttributeValue(null, name);
-        return getQNameValue(reader, qname);
-    }
-    
-
-    protected String getString(XMLStreamReader reader, String name) {
-        return reader.getAttributeValue(null, name);
-    }
 }

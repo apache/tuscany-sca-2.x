@@ -61,7 +61,7 @@ public class ExtensibleStAXArtifactProcessor
         this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
     }
 
-    public Object read(XMLStreamReader source) throws ContributionReadException {
+    public Object read(XMLStreamReader source) throws ContributionReadException, XMLStreamException {
         
         // Delegate to the processor associated with the element qname
         QName name = source.getName();
@@ -69,25 +69,17 @@ public class ExtensibleStAXArtifactProcessor
         if (processor == null) {
             return null;
         }
-        try {
-            return processor.read(source);
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        }
+        return processor.read(source);
     }
     
     @SuppressWarnings("unchecked")
-    public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
         
         // Delegate to the processor associated with the model type
         if (model != null) {
             StAXArtifactProcessor processor = processors.getProcessor(model.getClass());
             if (processor != null) {
-                try {
-                    processor.write(model, outputSource);
-                } catch (XMLStreamException e) {
-                    throw new ContributionWriteException(e);
-                }
+                processor.write(model, outputSource);
             }
         }
     }

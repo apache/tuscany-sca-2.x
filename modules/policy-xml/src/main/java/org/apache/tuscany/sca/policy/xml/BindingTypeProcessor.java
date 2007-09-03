@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 /* 
  * Processor for handling xml models of BindingType meta data definitions
  */
-public class BindingTypeProcessor extends IntentAttachPointProcessor {
+public class BindingTypeProcessor extends IntentAttachPointTypeProcessor {
 
     public BindingTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory intentAttachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         super(policyFactory, intentAttachPointTypeFactory, extensionProcessor);

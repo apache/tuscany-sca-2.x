@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -43,7 +44,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionMetadataProcessor implements StAXArtifactProcessor<Contribution> {
+public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Contribution> {
+    
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     private static final String TARGET_NAMESPACE = "targetNamespace";
     
@@ -53,9 +55,9 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
     private final AssemblyFactory assemblyFactory;
     private final ContributionFactory contributionFactory;
     
-    private final StAXArtifactProcessor extensionProcessor;
+    private final StAXArtifactProcessor<Object> extensionProcessor;
 
-    public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, StAXArtifactProcessor extensionProcessor) {
+    public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         super();
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
@@ -72,11 +74,9 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
     }
 
     public Contribution read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        Contribution contribution = this.contributionFactory.createContribution();
-        String targetNameSpaceURI = null;
-        QName element = null;
-
+        Contribution contribution = null;
         
+        QName element = null;
         while (reader.hasNext()) {
             int event = reader.getEventType();
             switch (event) {
@@ -84,46 +84,40 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
                     element = reader.getName();
                     
                     if (CONTRIBUTION.equals(element)) {
-                        targetNameSpaceURI = reader.getAttributeValue(null, TARGET_NAMESPACE);    
+
+                        // Read <contribution>
+                        contribution = this.contributionFactory.createContribution();
+                        
                     } else if (DEPLOYABLE.equals(element)) {
-                        String name = reader.getAttributeValue(null, "composite");
-                        if (name == null) {
+                        
+                        
+                        // Read <deployable>
+                        QName compositeName = getQName(reader, "composite");
+                        if (compositeName == null) {
                             throw new ContributionReadException("Attribute 'composite' is missing");
                         }
-                        QName compositeName = null;
 
-                        int index = name.indexOf(':');
-                        if (index != -1) {
-                            String prefix = name.substring(0, index);
-                            String localPart = name.substring(index + 1);
-                            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-                            if (ns == null) {
-                                throw new ContributionReadException("Invalid prefix: " + prefix);
-                            }
-                            compositeName = new QName(targetNameSpaceURI, localPart, prefix);
-                        } else {
-                            String prefix = "";
-                            String localPart = name;
-                            compositeName = new QName(targetNameSpaceURI, localPart, prefix);
+                        if (contribution != null) {
+                            Composite composite = assemblyFactory.createComposite();
+                            composite.setName(compositeName);
+                            composite.setUnresolved(true);
+                            contribution.getDeployables().add(composite);
+                            
                         }
-
-                        Composite composite = assemblyFactory.createComposite();
-                        composite.setName(compositeName);
-                        composite.setUnresolved(true);
-                        
-                        contribution.getDeployables().add(composite);
                     } else{
-                        //process extension
+
+                        // Read an extension element
                         Object extension = extensionProcessor.read(reader);
-                        if (extension != null) {
+                        if (extension != null && contribution != null) {
                             if (extension instanceof Import) {
                                 contribution.getImports().add((Import)extension);
-                            }else if (extension instanceof Export) {
+                            } else if (extension instanceof Export) {
                                 contribution.getExports().add((Export)extension);
                             }
                         }
                     }
                     break;
+                    
                 case XMLStreamConstants.END_ELEMENT:
                     if (CONTRIBUTION.equals(reader.getName())) {
                         return contribution;
@@ -140,13 +134,31 @@ public class ContributionMetadataProcessor implements StAXArtifactProcessor<Cont
         return contribution;
     }
 
-    public void write(Contribution model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
-        // TODO Auto-generated method stub
+    public void write(Contribution contribution, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
+        // Write <contribution>
+        writeStartDocument(writer, CONTRIBUTION.getNamespaceURI(), CONTRIBUTION.getLocalPart());
+
+        // Write imports
+        for (Import imp: contribution.getImports()) {
+            extensionProcessor.write(imp, writer);
+        }
+        
+        // Write exports
+        for (Export export: contribution.getExports()) {
+            extensionProcessor.write(export, writer);
+        }
+    
+        // Write <deployable> elements
+        for (Composite deployable: contribution.getDeployables()) {
+            writeStart(writer, DEPLOYABLE.getNamespaceURI(), DEPLOYABLE.getLocalPart(),
+                       new XAttr("composite", deployable.getName()));
+            writeEnd(writer);
+        }
+        
+        writeEndDocument(writer);
     }
 
     public void resolve(Contribution model, ModelResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
-        
     }
 }

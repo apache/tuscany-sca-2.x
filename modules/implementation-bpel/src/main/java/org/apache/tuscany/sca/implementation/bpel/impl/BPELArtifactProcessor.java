@@ -75,45 +75,42 @@ public class BPELArtifactProcessor implements StAXArtifactProcessor<BPELImplemen
         return BPELImplementation.class;
     }
 
-    public BPELImplementation read(XMLStreamReader reader) throws ContributionReadException {
+    public BPELImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_BPEL.equals(reader.getName());
         
         // Read an <implementation.bpel> element
+
+        // Read the process attribute. 
+        QName process = getAttributeValueNS(reader, "process");
+        String bpelFile = reader.getAttributeValue(null, "file");
+
+        // Resolving the BPEL file and compiling it
+        URL bpelURL = getClass().getClassLoader().getResource(bpelFile);
+        if (bpelURL == null)
+            throw new ODEProcessException("Couldn't find referenced bpel file " + bpelFile);
+        BpelC bpelc = BpelC.newBpelCompiler();
+        ByteArrayOutputStream compiledProcess = new ByteArrayOutputStream();
+        bpelc.setOutputStream(compiledProcess);
         try {
-            // Read the process attribute. 
-            QName process = getAttributeValueNS(reader, "process");
-            String bpelFile = reader.getAttributeValue(null, "file");
-
-            // Resolving the BPEL file and compiling it
-            URL bpelURL = getClass().getClassLoader().getResource(bpelFile);
-            if (bpelURL == null)
-                throw new ODEProcessException("Couldn't find referenced bpel file " + bpelFile);
-            BpelC bpelc = BpelC.newBpelCompiler();
-            ByteArrayOutputStream compiledProcess = new ByteArrayOutputStream();
-            bpelc.setOutputStream(compiledProcess);
-            try {
-                bpelc.compile(new File(bpelURL.getFile()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // Create an initialize the BPEL implementation model
-            BPELImplementation implementation = bpelFactory.createBPELImplementation();
-            implementation.setProcessName(process);
-            implementation.setCompiledProcess(compiledProcess.toByteArray());
-            implementation.setUnresolved(false);
-            
-            // Skip to end element
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && IMPLEMENTATION_BPEL.equals(reader.getName())) {
-                    break;
-                }
-            }
-            
-            return implementation;
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+            bpelc.compile(new File(bpelURL.getFile()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        // Create an initialize the BPEL implementation model
+        BPELImplementation implementation = bpelFactory.createBPELImplementation();
+        implementation.setProcessName(process);
+        implementation.setCompiledProcess(compiledProcess.toByteArray());
+        implementation.setUnresolved(false);
+        
+        // Skip to end element
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_BPEL.equals(reader.getName())) {
+                break;
+            }
+        }
+        
+        return implementation;
     }
 
     public void resolve(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
@@ -126,6 +123,7 @@ public class BPELArtifactProcessor implements StAXArtifactProcessor<BPELImplemen
     }
 
     public void write(BPELImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+        //FIXME Implement
     }
 
     private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {

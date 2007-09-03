@@ -68,7 +68,7 @@ import org.w3c.dom.Document;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor<Composite> {
+public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Composite> {
 
     /**
      * Construct a new composite processor
@@ -98,7 +98,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
      *            extensionProcessor); }
      */
 
-    public Composite read(XMLStreamReader reader) throws ContributionReadException {
+    public Composite read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         Composite composite = null;
         Composite include = null;
         Component component = null;
@@ -113,356 +113,394 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
         Callback callback = null;
         QName name = null;
 
-        try {
+        // Read the composite document
+        while (reader.hasNext()) {
+            int event = reader.getEventType();
+            switch (event) {
+                case START_ELEMENT:
+                    name = reader.getName();
 
-            // Read the composite document
-            while (reader.hasNext()) {
-                int event = reader.getEventType();
-                switch (event) {
-                    case START_ELEMENT:
-                        name = reader.getName();
+                    if (COMPOSITE_QNAME.equals(name)) {
 
-                        if (COMPOSITE_QNAME.equals(name)) {
+                        // Read a <composite>
+                        composite = assemblyFactory.createComposite();
+                        composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
+                        if(isSet(reader, AUTOWIRE)) {
+                            composite.setAutowire(getBoolean(reader, AUTOWIRE));
+                        }
+                        composite.setLocal(getBoolean(reader, LOCAL));
+                        composite.setConstrainingType(readConstrainingType(reader));
+                        policyProcessor.readPolicies(composite, reader);
 
-                            // Read a <composite>
-                            composite = assemblyFactory.createComposite();
-                            composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
-                            if(isSet(reader, AUTOWIRE)) {
-                                composite.setAutowire(getBoolean(reader, AUTOWIRE));
-                            }
-                            composite.setLocal(getBoolean(reader, LOCAL));
-                            composite.setConstrainingType(readConstrainingType(reader));
-                            readPolicies(composite, reader);
+                    } else if (INCLUDE_QNAME.equals(name)) {
 
-                        } else if (INCLUDE_QNAME.equals(name)) {
+                        // Read an <include>
+                        include = assemblyFactory.createComposite();
+                        include.setName(getQName(reader, "name"));
+                        include.setUnresolved(true);
+                        composite.getIncludes().add(include);
 
-                            // Read an <include>
-                            include = assemblyFactory.createComposite();
-                            include.setName(getQName(reader, "name"));
-                            include.setUnresolved(true);
-                            composite.getIncludes().add(include);
+                    } else if (SERVICE_QNAME.equals(name)) {
+                        if (component != null) {
 
-                        } else if (SERVICE_QNAME.equals(name)) {
-                            if (component != null) {
-
-                                // Read a <component><service>
-                                componentService = assemblyFactory.createComponentService();
-                                contract = componentService;
-                                componentService.setName(getString(reader, NAME));
-                                component.getServices().add(componentService);
-                                readPolicies(contract, reader);
-                            } else {
-
-                                // Read a <composite><service>
-                                compositeService = assemblyFactory.createCompositeService();
-                                contract = compositeService;
-                                compositeService.setName(getString(reader, NAME));
-
-                                String promoted = getString(reader, PROMOTE);
-                                String promotedComponentName;
-                                String promotedServiceName;
-                                int s = promoted.indexOf('/');
-                                if (s == -1) {
-                                    promotedComponentName = promoted;
-                                    promotedServiceName = null;
-                                } else {
-                                    promotedComponentName = promoted.substring(0, s);
-                                    promotedServiceName = promoted.substring(s + 1);
-                                }
-
-                                Component promotedComponent = assemblyFactory.createComponent();
-                                promotedComponent.setUnresolved(true);
-                                promotedComponent.setName(promotedComponentName);
-                                compositeService.setPromotedComponent(promotedComponent);
-
-                                ComponentService promotedService = assemblyFactory.createComponentService();
-                                promotedService.setUnresolved(true);
-                                promotedService.setName(promotedServiceName);
-                                compositeService.setPromotedService(promotedService);
-
-                                composite.getServices().add(compositeService);
-                                readPolicies(contract, reader);
-                            }
-
-                        } else if (REFERENCE_QNAME.equals(name)) {
-                            if (component != null) {
-                                // Read a <component><reference>
-                                componentReference = assemblyFactory.createComponentReference();
-                                contract = componentReference;
-                                componentReference.setName(getString(reader, NAME));
-                                readMultiplicity(componentReference, reader);
-                                if (isSet(reader, AUTOWIRE)) {
-                                    componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
-                                }
-                                readTargets(componentReference, reader);
-                                componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
-                                component.getReferences().add(componentReference);
-                                readPolicies(contract, reader);
-                            } else {
-                                // Read a <composite><reference>
-                                compositeReference = assemblyFactory.createCompositeReference();
-                                contract = compositeReference;
-                                compositeReference.setName(getString(reader, NAME));
-                                readMultiplicity(compositeReference, reader);
-                                readTargets(compositeReference, reader);
-                                String promote = reader.getAttributeValue(null, Constants.PROMOTE);
-                                if (promote != null) {
-                                    for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
-                                        ComponentReference promotedReference =
-                                            assemblyFactory.createComponentReference();
-                                        promotedReference.setUnresolved(true);
-                                        promotedReference.setName(tokens.nextToken());
-                                        compositeReference.getPromotedReferences().add(promotedReference);
-                                    }
-                                }
-                                compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
-                                composite.getReferences().add(compositeReference);
-                                readPolicies(contract, reader);
-                            }
-
-                        } else if (PROPERTY_QNAME.equals(name)) {
-                            if (component != null) {
-
-                                // Read a <component><property>
-                                componentProperty = assemblyFactory.createComponentProperty();
-                                property = componentProperty;
-                                componentProperty.setSource(getString(reader, SOURCE));
-                                componentProperty.setFile(getString(reader, FILE));
-                                readPolicies(property, reader);
-                                readAbstractProperty(componentProperty, reader);
-                                
-                                // Read the property value
-                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
-                                property.setValue(value);
-                                
-                                component.getProperties().add(componentProperty);
-                            } else {
-
-                                // Read a <composite><property>
-                                property = assemblyFactory.createProperty();
-                                readPolicies(property, reader);
-                                readAbstractProperty(property, reader);
-                                
-                                // Read the property value
-                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
-                                property.setValue(value);
-                                
-                                composite.getProperties().add(property);
-                            }
-
-                        } else if (COMPONENT_QNAME.equals(name)) {
-
-                            // Read a <component>
-                            component = assemblyFactory.createComponent();
-                            component.setName(getString(reader, NAME));
-                            if (isSet(reader, AUTOWIRE)) {
-                                component.setAutowire(getBoolean(reader, AUTOWIRE));
-                            }
-                            component.setConstrainingType(readConstrainingType(reader));
-                            composite.getComponents().add(component);
-                            readPolicies(component, reader);
-
-                        } else if (WIRE_QNAME.equals(name)) {
-
-                            // Read a <wire>
-                            wire = assemblyFactory.createWire();
-                            ComponentReference source = assemblyFactory.createComponentReference();
-                            source.setUnresolved(true);
-                            source.setName(getString(reader, SOURCE));
-                            wire.setSource(source);
-
-                            ComponentService target = assemblyFactory.createComponentService();
-                            target.setUnresolved(true);
-                            target.setName(getString(reader, TARGET));
-                            wire.setTarget(target);
-
-                            composite.getWires().add(wire);
-                            readPolicies(wire, reader);
-
-                        } else if (CALLBACK_QNAME.equals(name)) {
-
-                            // Read a <callback>
-                            callback = assemblyFactory.createCallback();
-                            contract.setCallback(callback);
-                            readPolicies(callback, reader);
-
-                        } else if (OPERATION_QNAME.equals(name)) {
-
-                            // Read an <operation>
-                            Operation operation = assemblyFactory.createOperation();
-                            operation.setName(getString(reader, NAME));
-                            operation.setUnresolved(true);
-                            if (callback != null) {
-                                readPolicies(callback, operation, reader);
-                            } else {
-                                readPolicies(contract, operation, reader);
-                            }
-                        } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
-
-                            // Read an implementation.composite
-                            Composite implementation = assemblyFactory.createComposite();
-                            implementation.setName(getQName(reader, NAME));
-                            implementation.setUnresolved(true);
-                            component.setImplementation(implementation);
-                            readPolicies(implementation, reader);
+                            // Read a <component><service>
+                            componentService = assemblyFactory.createComponentService();
+                            contract = componentService;
+                            componentService.setName(getString(reader, NAME));
+                            component.getServices().add(componentService);
+                            policyProcessor.readPolicies(contract, reader);
                         } else {
 
-                            // Read an extension element
-                            Object extension = extensionProcessor.read(reader);
-                            if (extension != null) {
-                                if (extension instanceof InterfaceContract) {
+                            // Read a <composite><service>
+                            compositeService = assemblyFactory.createCompositeService();
+                            contract = compositeService;
+                            compositeService.setName(getString(reader, NAME));
 
-                                    // <service><interface> and
-                                    // <reference><interface>
-                                    if (contract != null) {
-                                        contract.setInterfaceContract((InterfaceContract)extension);
-                                    } else {
-                                        if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                            throw new ContributionReadException(
-                                                                                "Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
-                                        } else {
-                                            composite.getExtensions().add(extension);
-                                        }
-                                    }
+                            String promoted = getString(reader, PROMOTE);
+                            String promotedComponentName;
+                            String promotedServiceName;
+                            int s = promoted.indexOf('/');
+                            if (s == -1) {
+                                promotedComponentName = promoted;
+                                promotedServiceName = null;
+                            } else {
+                                promotedComponentName = promoted.substring(0, s);
+                                promotedServiceName = promoted.substring(s + 1);
+                            }
 
-                                } else if (extension instanceof Binding) {
-                                    // <service><binding> and
-                                    // <reference><binding>
-                                    if (callback != null) {
-                                        callback.getBindings().add((Binding)extension);
-                                    } else {
-                                        if (contract != null) {
-                                            contract.getBindings().add((Binding)extension);
-                                        } else {
-                                            if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                                throw new ContributionReadException(
-                                                                                    "Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
-                                            } else {
-                                                composite.getExtensions().add(extension);
-                                            }
-                                        }
-                                    }
+                            Component promotedComponent = assemblyFactory.createComponent();
+                            promotedComponent.setUnresolved(true);
+                            promotedComponent.setName(promotedComponentName);
+                            compositeService.setPromotedComponent(promotedComponent);
 
-                                } else if (extension instanceof Implementation) {
+                            ComponentService promotedService = assemblyFactory.createComponentService();
+                            promotedService.setUnresolved(true);
+                            promotedService.setName(promotedServiceName);
+                            compositeService.setPromotedService(promotedService);
 
-                                    // <component><implementation>
-                                    if (component != null) {
-                                        component.setImplementation((Implementation)extension);
-                                    } else {
-                                        if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                            throw new ContributionReadException(
-                                                                                "Unexpected <implementation> element found. It should appear inside a <component> element");
-                                        } else {
-                                            composite.getExtensions().add(extension);
-                                        }
-                                    }
+                            composite.getServices().add(compositeService);
+                            policyProcessor.readPolicies(contract, reader);
+                        }
+
+                    } else if (REFERENCE_QNAME.equals(name)) {
+                        if (component != null) {
+                            // Read a <component><reference>
+                            componentReference = assemblyFactory.createComponentReference();
+                            contract = componentReference;
+                            componentReference.setName(getString(reader, NAME));
+                            readMultiplicity(componentReference, reader);
+                            if (isSet(reader, AUTOWIRE)) {
+                                componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
+                            }
+                            readTargets(componentReference, reader);
+                            componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
+                            component.getReferences().add(componentReference);
+                            policyProcessor.readPolicies(contract, reader);
+                        } else {
+                            // Read a <composite><reference>
+                            compositeReference = assemblyFactory.createCompositeReference();
+                            contract = compositeReference;
+                            compositeReference.setName(getString(reader, NAME));
+                            readMultiplicity(compositeReference, reader);
+                            readTargets(compositeReference, reader);
+                            String promote = reader.getAttributeValue(null, Constants.PROMOTE);
+                            if (promote != null) {
+                                for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
+                                    ComponentReference promotedReference =
+                                        assemblyFactory.createComponentReference();
+                                    promotedReference.setUnresolved(true);
+                                    promotedReference.setName(tokens.nextToken());
+                                    compositeReference.getPromotedReferences().add(promotedReference);
+                                }
+                            }
+                            compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
+                            composite.getReferences().add(compositeReference);
+                            policyProcessor.readPolicies(contract, reader);
+                        }
+
+                    } else if (PROPERTY_QNAME.equals(name)) {
+                        if (component != null) {
+
+                            // Read a <component><property>
+                            componentProperty = assemblyFactory.createComponentProperty();
+                            property = componentProperty;
+                            componentProperty.setSource(getString(reader, SOURCE));
+                            componentProperty.setFile(getString(reader, FILE));
+                            policyProcessor.readPolicies(property, reader);
+                            readAbstractProperty(componentProperty, reader);
+                            
+                            // Read the property value
+                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                            property.setValue(value);
+                            
+                            component.getProperties().add(componentProperty);
+                        } else {
+
+                            // Read a <composite><property>
+                            property = assemblyFactory.createProperty();
+                            policyProcessor.readPolicies(property, reader);
+                            readAbstractProperty(property, reader);
+                            
+                            // Read the property value
+                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                            property.setValue(value);
+                            
+                            composite.getProperties().add(property);
+                        }
+
+                    } else if (COMPONENT_QNAME.equals(name)) {
+
+                        // Read a <component>
+                        component = assemblyFactory.createComponent();
+                        component.setName(getString(reader, NAME));
+                        if (isSet(reader, AUTOWIRE)) {
+                            component.setAutowire(getBoolean(reader, AUTOWIRE));
+                        }
+                        component.setConstrainingType(readConstrainingType(reader));
+                        composite.getComponents().add(component);
+                        policyProcessor.readPolicies(component, reader);
+
+                    } else if (WIRE_QNAME.equals(name)) {
+
+                        // Read a <wire>
+                        wire = assemblyFactory.createWire();
+                        ComponentReference source = assemblyFactory.createComponentReference();
+                        source.setUnresolved(true);
+                        source.setName(getString(reader, SOURCE));
+                        wire.setSource(source);
+
+                        ComponentService target = assemblyFactory.createComponentService();
+                        target.setUnresolved(true);
+                        target.setName(getString(reader, TARGET));
+                        wire.setTarget(target);
+
+                        composite.getWires().add(wire);
+                        policyProcessor.readPolicies(wire, reader);
+
+                    } else if (CALLBACK_QNAME.equals(name)) {
+
+                        // Read a <callback>
+                        callback = assemblyFactory.createCallback();
+                        contract.setCallback(callback);
+                        policyProcessor.readPolicies(callback, reader);
+
+                    } else if (OPERATION_QNAME.equals(name)) {
+
+                        // Read an <operation>
+                        Operation operation = assemblyFactory.createOperation();
+                        operation.setName(getString(reader, NAME));
+                        operation.setUnresolved(true);
+                        if (callback != null) {
+                            policyProcessor.readPolicies(callback, operation, reader);
+                        } else {
+                            policyProcessor.readPolicies(contract, operation, reader);
+                        }
+                    } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
+
+                        // Read an implementation.composite
+                        Composite implementation = assemblyFactory.createComposite();
+                        implementation.setName(getQName(reader, NAME));
+                        implementation.setUnresolved(true);
+                        component.setImplementation(implementation);
+                        policyProcessor.readPolicies(implementation, reader);
+                    } else {
+
+                        // Read an extension element
+                        Object extension = extensionProcessor.read(reader);
+                        if (extension != null) {
+                            if (extension instanceof InterfaceContract) {
+
+                                // <service><interface> and
+                                // <reference><interface>
+                                if (contract != null) {
+                                    contract.setInterfaceContract((InterfaceContract)extension);
                                 } else {
-
-                                    // Add the extension element to the current
-                                    // element
-                                    if (callback != null) {
-                                        callback.getExtensions().add(extension);
-                                    } else if (contract != null) {
-                                        contract.getExtensions().add(extension);
-                                    } else if (property != null) {
-                                        property.getExtensions().add(extension);
-                                    } else if (component != null) {
-                                        component.getExtensions().add(extension);
+                                    if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                        throw new ContributionReadException(
+                                                                            "Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
                                     } else {
                                         composite.getExtensions().add(extension);
                                     }
                                 }
+
+                            } else if (extension instanceof Binding) {
+                                // <service><binding> and
+                                // <reference><binding>
+                                if (callback != null) {
+                                    callback.getBindings().add((Binding)extension);
+                                } else {
+                                    if (contract != null) {
+                                        contract.getBindings().add((Binding)extension);
+                                    } else {
+                                        if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                            throw new ContributionReadException(
+                                                                                "Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
+                                        } else {
+                                            composite.getExtensions().add(extension);
+                                        }
+                                    }
+                                }
+
+                            } else if (extension instanceof Implementation) {
+
+                                // <component><implementation>
+                                if (component != null) {
+                                    component.setImplementation((Implementation)extension);
+                                } else {
+                                    if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                        throw new ContributionReadException(
+                                                                            "Unexpected <implementation> element found. It should appear inside a <component> element");
+                                    } else {
+                                        composite.getExtensions().add(extension);
+                                    }
+                                }
+                            } else {
+
+                                // Add the extension element to the current
+                                // element
+                                if (callback != null) {
+                                    callback.getExtensions().add(extension);
+                                } else if (contract != null) {
+                                    contract.getExtensions().add(extension);
+                                } else if (property != null) {
+                                    property.getExtensions().add(extension);
+                                } else if (component != null) {
+                                    component.getExtensions().add(extension);
+                                } else {
+                                    composite.getExtensions().add(extension);
+                                }
                             }
                         }
-                        break;
+                    }
+                    break;
 
-                    case XMLStreamConstants.CHARACTERS:
-                        break;
+                case XMLStreamConstants.CHARACTERS:
+                    break;
 
-                    case END_ELEMENT:
-                        name = reader.getName();
+                case END_ELEMENT:
+                    name = reader.getName();
 
-                        // Clear current state when reading reaching end element
-                        if (SERVICE_QNAME.equals(name)) {
-                            componentService = null;
-                            compositeService = null;
-                            contract = null;
-                        } else if (INCLUDE_QNAME.equals(name)) {
-                            include = null;
-                        } else if (REFERENCE_QNAME.equals(name)) {
-                            componentReference = null;
-                            compositeReference = null;
-                            contract = null;
-                        } else if (PROPERTY_QNAME.equals(name)) {
-                            componentProperty = null;
-                            property = null;
-                        } else if (COMPONENT_QNAME.equals(name)) {
-                            component = null;
-                        } else if (WIRE_QNAME.equals(name)) {
-                            wire = null;
-                        } else if (CALLBACK_QNAME.equals(name)) {
-                            callback = null;
-                        }
-                        break;
-                }
-
-                // Read the next element
-                if (reader.hasNext()) {
-                    reader.next();
-                }
+                    // Clear current state when reading reaching end element
+                    if (SERVICE_QNAME.equals(name)) {
+                        componentService = null;
+                        compositeService = null;
+                        contract = null;
+                    } else if (INCLUDE_QNAME.equals(name)) {
+                        include = null;
+                    } else if (REFERENCE_QNAME.equals(name)) {
+                        componentReference = null;
+                        compositeReference = null;
+                        contract = null;
+                    } else if (PROPERTY_QNAME.equals(name)) {
+                        componentProperty = null;
+                        property = null;
+                    } else if (COMPONENT_QNAME.equals(name)) {
+                        component = null;
+                    } else if (WIRE_QNAME.equals(name)) {
+                        wire = null;
+                    } else if (CALLBACK_QNAME.equals(name)) {
+                        callback = null;
+                    }
+                    break;
             }
-            return composite;
 
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+            // Read the next element
+            if (reader.hasNext()) {
+                reader.next();
+            }
         }
+        return composite;
     }
 
-    public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
 
-        try {
-            // Write <composite> element
-            writeStartDocument(writer,
-                               COMPOSITE,
-                               writeConstrainingType(composite),
-                               new XAttr(TARGET_NAMESPACE, composite.getName().getNamespaceURI()),
-                               new XAttr(NAME, composite.getName().getLocalPart()),
-                               new XAttr(AUTOWIRE, composite.getAutowire()),
-                               writeIntents(composite),
-                               writePolicySets(composite));
+        // Write <composite> element
+        writeStartDocument(writer,
+                           COMPOSITE,
+                           writeConstrainingType(composite),
+                           new XAttr(TARGET_NAMESPACE, composite.getName().getNamespaceURI()),
+                           new XAttr(NAME, composite.getName().getLocalPart()),
+                           new XAttr(AUTOWIRE, composite.getAutowire()),
+                           policyProcessor.writePolicies(composite));
 
-            // Write <service> elements
-            for (Service service : composite.getServices()) {
-                CompositeService compositeService = (CompositeService)service;
-                Component promotedComponent = compositeService.getPromotedComponent();
-                ComponentService promotedService = compositeService.getPromotedService();
-                String promote;
-                if (promotedService != null) {
-                    if (promotedService.getName() != null) {
-                        promote = promotedComponent.getName() + '/' + promotedService.getService();
-                    } else {
-                        promote = promotedComponent.getName();
-                    }
+        // Write <service> elements
+        for (Service service : composite.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+            Component promotedComponent = compositeService.getPromotedComponent();
+            ComponentService promotedService = compositeService.getPromotedService();
+            String promote;
+            if (promotedService != null) {
+                if (promotedService.getName() != null) {
+                    promote = promotedComponent.getName() + '/' + promotedService.getService();
                 } else {
-                    promote = null;
+                    promote = promotedComponent.getName();
                 }
-                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote),
-                           writeIntents(service), writePolicySets(service));
+            } else {
+                promote = null;
+            }
+            writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote),
+                       policyProcessor.writePolicies(service));
+            
+            // Write service interface
+            extensionProcessor.write(service.getInterfaceContract(), writer);
+
+            // Write bindings
+            for (Binding binding : service.getBindings()) {
+                extensionProcessor.write(binding, writer);
+            }
+
+            // Write <callback> element
+            if (service.getCallback() != null) {
+                Callback callback = service.getCallback();
+                writeStart(writer, CALLBACK,
+                           policyProcessor.writePolicies(callback));
+            
+                // Write callback bindings
+                for (Binding binding : callback.getBindings()) {
+                    extensionProcessor.write(binding, writer);
+                }
                 
+                // Write extensions 
+                for (Object extension : callback.getExtensions()) {
+                    extensionProcessor.write(extension, writer);
+                }
+            
+                writeEnd(writer);
+            }
+
+            // Write extensions
+            for (Object extension : service.getExtensions()) {
+                extensionProcessor.write(extension, writer);
+            }
+            
+            writeEnd(writer);
+        }
+
+        // Write <component> elements
+        for (Component component : composite.getComponents()) {
+            writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()),
+                       new XAttr(AUTOWIRE, component.getAutowire()),
+                       policyProcessor.writePolicies(component));
+            
+            // Write <service> elements
+            for (ComponentService service : component.getServices()) {
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
+                           policyProcessor.writePolicies(service));
+
                 // Write service interface
                 extensionProcessor.write(service.getInterfaceContract(), writer);
-
+                
                 // Write bindings
                 for (Binding binding : service.getBindings()) {
                     extensionProcessor.write(binding, writer);
                 }
-
+                
                 // Write <callback> element
                 if (service.getCallback() != null) {
                     Callback callback = service.getCallback();
-                    writeStart(writer, CALLBACK, writeIntents(callback), writePolicySets(callback));
+                    writeStart(writer, CALLBACK, policyProcessor.writePolicies(callback));
                 
-                    // Write callback bindings
+                    // Write bindings
                     for (Binding binding : callback.getBindings()) {
                         extensionProcessor.write(binding, writer);
                     }
@@ -474,7 +512,7 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 
                     writeEnd(writer);
                 }
-
+                
                 // Write extensions
                 for (Object extension : service.getExtensions()) {
                     extensionProcessor.write(extension, writer);
@@ -482,156 +520,26 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                 
                 writeEnd(writer);
             }
-
-            // Write <component> elements
-            for (Component component : composite.getComponents()) {
-                writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()),
-                           new XAttr(AUTOWIRE, component.getAutowire()),
-                           writeIntents(component), writePolicySets(component));
-                
-                // Write <service> elements
-                for (ComponentService service : component.getServices()) {
-                    writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
-                               writeIntents(service), writePolicySets(service));
-
-                    // Write service interface
-                    extensionProcessor.write(service.getInterfaceContract(), writer);
-                    
-                    // Write bindings
-                    for (Binding binding : service.getBindings()) {
-                        extensionProcessor.write(binding, writer);
-                    }
-                    
-                    // Write <callback> element
-                    if (service.getCallback() != null) {
-                        Callback callback = service.getCallback();
-                        writeStart(writer, CALLBACK, writeIntents(callback), writePolicySets(callback));
-                    
-                        // Write bindings
-                        for (Binding binding : callback.getBindings()) {
-                            extensionProcessor.write(binding, writer);
-                        }
-                        
-                        // Write extensions 
-                        for (Object extension : callback.getExtensions()) {
-                            extensionProcessor.write(extension, writer);
-                        }
-                    
-                        writeEnd(writer);
-                    }
-                    
-                    // Write extensions
-                    for (Object extension : service.getExtensions()) {
-                        extensionProcessor.write(extension, writer);
-                    }
-                    
-                    writeEnd(writer);
-                }
-                
-                // Write <reference> elements
-                for (ComponentReference reference : component.getReferences()) {
-                    writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
-                               new XAttr(AUTOWIRE, reference.getAutowire()),
-                               writeTargets(reference),
-                               writeIntents(reference), writePolicySets(reference));
-
-                    // Write reference interface
-                    extensionProcessor.write(reference.getInterfaceContract(), writer);
-
-                    // Write bindings
-                    for (Binding binding : reference.getBindings()) {
-                        extensionProcessor.write(binding, writer);
-                    }
-                    
-                    // Write callback
-                    if (reference.getCallback() != null) {
-                        Callback callback = reference.getCallback();
-                        writeStart(writer, CALLBACK, writeIntents(callback), writePolicySets(callback));
-                    
-                        // Write callback bindings
-                        for (Binding binding : callback.getBindings()) {
-                            extensionProcessor.write(binding, writer);
-                        }
-                        
-                        // Write extensions
-                        for (Object extensions : callback.getExtensions()) {
-                            extensionProcessor.write(extensions, writer);
-                        }
-                    
-                        writeEnd(writer);
-                    }
-                    
-                    // Write extensions
-                    for (Object extensions : reference.getExtensions()) {
-                        extensionProcessor.write(extensions, writer);
-                    }
-                    
-                    writeEnd(writer);
-                }
-                
-                // Write <property> elements
-                for (ComponentProperty property : component.getProperties()) {
-                    writeStart(writer,
-                               PROPERTY,
-                               new XAttr(NAME, property.getName()),
-                               new XAttr(MUST_SUPPLY, property.isMustSupply()),
-                               new XAttr(MANY, property.isMany()),
-                               new XAttr(TYPE, property.getXSDType()),
-                               new XAttr(ELEMENT, property.getXSDElement()),
-                               new XAttr(SOURCE, property.getSource()),
-                               new XAttr(FILE, property.getFile()),
-                               writeIntents(property), writePolicySets(property));
-
-                    // Write property value
-                    writePropertyValue(property.getValue(), property.getXSDElement(), property.getXSDType(), writer);
-
-                    // Write extensions
-                    for (Object extension : property.getExtensions()) {
-                        extensionProcessor.write(extension, writer);
-                    }
-
-                    writeEnd(writer);
-                }
-        
-                // Write the component implementation
-                Implementation implementation = component.getImplementation();
-                if (implementation instanceof Composite) {
-                    writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite.getName()));
-                    writeEnd(writer);
-                } else {
-                    extensionProcessor.write(component.getImplementation(), writer);
-                }
-                
-                writeEnd(writer);
-            }
-
+            
             // Write <reference> elements
-            for (Reference reference : composite.getReferences()) {
-                CompositeReference compositeReference = (CompositeReference)reference;
-
-                // Write list of promoted references
-                List<String> promote = new ArrayList<String>();
-                for (ComponentReference promoted: compositeReference.getPromotedReferences()) {
-                    promote.add(promoted.getName());
-                }
-                
-                // Write <reference> element
+            for (ComponentReference reference : component.getReferences()) {
                 writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
-                           new XAttr(PROMOTE, promote),
-                           writeIntents(reference), writePolicySets(reference));
+                           new XAttr(AUTOWIRE, reference.getAutowire()),
+                           writeTargets(reference),
+                           policyProcessor.writePolicies(reference));
 
                 // Write reference interface
                 extensionProcessor.write(reference.getInterfaceContract(), writer);
-                
+
                 // Write bindings
                 for (Binding binding : reference.getBindings()) {
                     extensionProcessor.write(binding, writer);
                 }
                 
-                // Write <callback> element
+                // Write callback
                 if (reference.getCallback() != null) {
                     Callback callback = reference.getCallback();
-                    writeStart(writer, CALLBACK);
+                    writeStart(writer, CALLBACK, policyProcessor.writePolicies(callback));
                 
                     // Write callback bindings
                     for (Binding binding : callback.getBindings()) {
@@ -639,23 +547,23 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                     }
                     
                     // Write extensions
-                    for (Object extension : callback.getExtensions()) {
-                        extensionProcessor.write(extension, writer);
+                    for (Object extensions : callback.getExtensions()) {
+                        extensionProcessor.write(extensions, writer);
                     }
                 
                     writeEnd(writer);
                 }
                 
                 // Write extensions
-                for (Object extension : reference.getExtensions()) {
-                    extensionProcessor.write(extension, writer);
+                for (Object extensions : reference.getExtensions()) {
+                    extensionProcessor.write(extensions, writer);
                 }
                 
                 writeEnd(writer);
             }
-
+            
             // Write <property> elements
-            for (Property property : composite.getProperties()) {
+            for (ComponentProperty property : component.getProperties()) {
                 writeStart(writer,
                            PROPERTY,
                            new XAttr(NAME, property.getName()),
@@ -663,7 +571,9 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
                            new XAttr(MANY, property.isMany()),
                            new XAttr(TYPE, property.getXSDType()),
                            new XAttr(ELEMENT, property.getXSDElement()),
-                           writeIntents(property), writePolicySets(property));
+                           new XAttr(SOURCE, property.getSource()),
+                           new XAttr(FILE, property.getFile()),
+                           policyProcessor.writePolicies(property));
 
                 // Write property value
                 writePropertyValue(property.getValue(), property.getXSDElement(), property.getXSDType(), writer);
@@ -675,28 +585,107 @@ public class CompositeProcessor extends BaseArtifactProcessor implements StAXArt
 
                 writeEnd(writer);
             }
+    
+            // Write the component implementation
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite.getName()));
+                writeEnd(writer);
+            } else {
+                extensionProcessor.write(component.getImplementation(), writer);
+            }
+            
+            writeEnd(writer);
+        }
 
-            // Write <wire> elements
-            for (Wire wire : composite.getWires()) {
-                writeStart(writer, WIRE, new XAttr(SOURCE, wire.getSource().getName()), new XAttr(TARGET, wire
-                    .getTarget().getName()));
+        // Write <reference> elements
+        for (Reference reference : composite.getReferences()) {
+            CompositeReference compositeReference = (CompositeReference)reference;
+
+            // Write list of promoted references
+            List<String> promote = new ArrayList<String>();
+            for (ComponentReference promoted: compositeReference.getPromotedReferences()) {
+                promote.add(promoted.getName());
+            }
+            
+            // Write <reference> element
+            writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
+                       new XAttr(PROMOTE, promote),
+                       policyProcessor.writePolicies(reference));
+
+            // Write reference interface
+            extensionProcessor.write(reference.getInterfaceContract(), writer);
+            
+            // Write bindings
+            for (Binding binding : reference.getBindings()) {
+                extensionProcessor.write(binding, writer);
+            }
+            
+            // Write <callback> element
+            if (reference.getCallback() != null) {
+                Callback callback = reference.getCallback();
+                writeStart(writer, CALLBACK);
+            
+                // Write callback bindings
+                for (Binding binding : callback.getBindings()) {
+                    extensionProcessor.write(binding, writer);
+                }
                 
                 // Write extensions
-                for (Object extension : wire.getExtensions()) {
+                for (Object extension : callback.getExtensions()) {
                     extensionProcessor.write(extension, writer);
                 }
+            
                 writeEnd(writer);
             }
+            
+            // Write extensions
+            for (Object extension : reference.getExtensions()) {
+                extensionProcessor.write(extension, writer);
+            }
+            
+            writeEnd(writer);
+        }
 
-            for (Object extension : composite.getExtensions()) {
+        // Write <property> elements
+        for (Property property : composite.getProperties()) {
+            writeStart(writer,
+                       PROPERTY,
+                       new XAttr(NAME, property.getName()),
+                       new XAttr(MUST_SUPPLY, property.isMustSupply()),
+                       new XAttr(MANY, property.isMany()),
+                       new XAttr(TYPE, property.getXSDType()),
+                       new XAttr(ELEMENT, property.getXSDElement()),
+                       policyProcessor.writePolicies(property));
+
+            // Write property value
+            writePropertyValue(property.getValue(), property.getXSDElement(), property.getXSDType(), writer);
+
+            // Write extensions
+            for (Object extension : property.getExtensions()) {
                 extensionProcessor.write(extension, writer);
             }
 
-            writeEndDocument(writer);
-
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
+            writeEnd(writer);
         }
+
+        // Write <wire> elements
+        for (Wire wire : composite.getWires()) {
+            writeStart(writer, WIRE, new XAttr(SOURCE, wire.getSource().getName()), new XAttr(TARGET, wire
+                .getTarget().getName()));
+            
+            // Write extensions
+            for (Object extension : wire.getExtensions()) {
+                extensionProcessor.write(extension, writer);
+            }
+            writeEnd(writer);
+        }
+
+        for (Object extension : composite.getExtensions()) {
+            extensionProcessor.write(extension, writer);
+        }
+
+        writeEndDocument(writer);
     }
 
     public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {

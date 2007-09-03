@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.policy.impl;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ import org.apache.tuscany.sca.policy.SCADefinitions;
  *
  */
 public class SCADefinitionsImpl implements SCADefinitions {
-    private URI targetNamespace = null;
+    private String targetNamespace = null;
     private List<Intent> policyIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<IntentAttachPointType> bindingTypes = new ArrayList<IntentAttachPointType>();
@@ -56,11 +55,11 @@ public class SCADefinitionsImpl implements SCADefinitions {
         return policySets;
     }
 
-    public URI getTargetNamespace() {
+    public String getTargetNamespace() {
         return targetNamespace;
     }
 
-    public void setTargetNamespace(URI ns) {
+    public void setTargetNamespace(String ns) {
        this.targetNamespace = ns;
     }
 

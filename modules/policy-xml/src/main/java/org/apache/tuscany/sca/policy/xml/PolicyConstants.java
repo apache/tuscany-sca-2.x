@@ -47,9 +47,9 @@ public interface PolicyConstants {
     String ALWAYS_PROVIDES = "alwaysProvides";
     String MAY_PROVIDE = "mayProvide";
     String TYPE = "type";
-    String IMPLEMENATION_TYPE = "implementationType";
+    String IMPLEMENTATION_TYPE = "implementationType";
     String BINDING_TYPE = "bindingType";
-    QName IMPLEMENTATION_TYPE_QNAME = new QName(SCA10_NS, IMPLEMENATION_TYPE);
+    QName IMPLEMENTATION_TYPE_QNAME = new QName(SCA10_NS, IMPLEMENTATION_TYPE);
     QName BINDING_TYPE_QNAME = new QName(SCA10_NS, BINDING_TYPE);
     String BINDING = "binding";
     String IMPLEMENTATION = "implementation";
@@ -57,7 +57,7 @@ public interface PolicyConstants {
     QName POLICY_INTENT_QNAME = new QName(SCA10_NS, INTENT);
     QName POLICY_SET_QNAME = new QName(SCA10_NS, POLICY_SET);
     QName POLICY_INTENT_MAP_QNAME = new QName(SCA10_NS, INTENT_MAP); 
-    QName SCA_DEFNS_QNAME = new QName(SCA10_NS, SCA_DEFINITIONS);
+    QName SCA_DEFINITIONS_QNAME = new QName(SCA10_NS, SCA_DEFINITIONS);
     QName DESCRIPTION_QNAME = new QName(SCA10_NS, DESCRIPTION);
     QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA10_NS, INTENT_MAP_QUALIFIER);
     QName POLICY_SET_REFERENCE_QNAME = new QName(SCA10_NS, POLICY_SET_REFERENCE);

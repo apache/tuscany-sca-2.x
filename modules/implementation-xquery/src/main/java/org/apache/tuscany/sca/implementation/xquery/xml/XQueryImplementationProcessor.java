@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * Processor for the xquery implementation type artifact
  * @version $Rev$ $Date$
  */
-public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImplementation> {
+public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQueryImplementation> {
 
     private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_XQUERY = "implementation.xquery";
@@ -51,7 +51,7 @@ public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImpl
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
 
-    public XQueryArtifactProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
+    public XQueryImplementationProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
     }
@@ -63,47 +63,40 @@ public class XQueryArtifactProcessor implements StAXArtifactProcessor<XQueryImpl
     /**
      * Reads  from the stream and sets the location attribute of the implementation correspondingly
      */
-    public XQueryImplementation read(XMLStreamReader inputSource) throws ContributionReadException, XMLStreamException {
-        try {
-            /* Read the location attribute for the xquery implementation  */
-            String xqueryLocation = inputSource.getAttributeValue(null, LOCATION);
-            if (xqueryLocation == null) {
-                throw new ContributionReadException(MSG_LOCATION_MISSING);
-            }
-            /* Create the XQuery implementation and set the location into it */
-            XQueryImplementation xqueryImplementation =
-                XQueryImplementationFactory.INSTANCE.createXQueryImplementation();
-            xqueryImplementation.setLocation(xqueryLocation);
+    public XQueryImplementation read(XMLStreamReader reader)
+        throws ContributionReadException, XMLStreamException {
 
-            // Skip to end element
-            while (inputSource.hasNext()) {
-                if (inputSource.next() == END_ELEMENT && IMPLEMENTATION_XQUERY_QNAME.equals(inputSource.getName())) {
-                    break;
-                }
-            } // end while
-
-            xqueryImplementation.setUnresolved(true);
-
-            return xqueryImplementation;
-
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        /* Read the location attribute for the xquery implementation  */
+        String xqueryLocation = reader.getAttributeValue(null, LOCATION);
+        if (xqueryLocation == null) {
+            throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
+        /* Create the XQuery implementation and set the location into it */
+        XQueryImplementation xqueryImplementation =
+            XQueryImplementationFactory.INSTANCE.createXQueryImplementation();
+        xqueryImplementation.setLocation(xqueryLocation);
+
+        // Skip to end element
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_XQUERY_QNAME.equals(reader.getName())) {
+                break;
+            }
+        } // end while
+
+        xqueryImplementation.setUnresolved(true);
+
+        return xqueryImplementation;
     }
 
-    public void write(XQueryImplementation xqueryImplementation, XMLStreamWriter outputSource)
+    public void write(XQueryImplementation xqueryImplementation, XMLStreamWriter writer)
         throws ContributionWriteException, XMLStreamException {
-        try {
-
-            outputSource.writeStartElement(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
-            if (xqueryImplementation.getLocation() != null) {
-                outputSource.writeAttribute(LOCATION, xqueryImplementation.getLocation());
-            }
-            outputSource.writeEndElement();
-
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
+        
+        writer.writeStartElement(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
+        if (xqueryImplementation.getLocation() != null) {
+            writer.writeAttribute(LOCATION, xqueryImplementation.getLocation());
         }
+        writer.writeEndElement();
+
     }
 
     public Class<XQueryImplementation> getModelType() {

@@ -116,89 +116,84 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return tokens;
     }
     
-    public OSGiImplementation read(XMLStreamReader reader) throws ContributionReadException {
+    public OSGiImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_OSGI.equals(reader.getName());
         
-        try {
-            String bundleName = reader.getAttributeValue(null, BUNDLE);
-            String bundleLocation = reader.getAttributeValue(null, BUNDLE_LOCATION);
-            String imports = reader.getAttributeValue(null, IMPORTS);
-            String[] importList;
-            if (imports != null)
-                importList = tokenize(imports);
-            else
-                importList = new String[0];
-            String scope = reader.getAttributeValue(null, SCOPE);  
-            String allowsPassByRef = reader.getAttributeValue(null, ALLOWS_PASS_BY_REF);
-            String[] allowsPassByRefList;
-            if (allowsPassByRef != null)
-                allowsPassByRefList = tokenize(allowsPassByRef);
-            else
-                allowsPassByRefList = new String[0];
+        String bundleName = reader.getAttributeValue(null, BUNDLE);
+        String bundleLocation = reader.getAttributeValue(null, BUNDLE_LOCATION);
+        String imports = reader.getAttributeValue(null, IMPORTS);
+        String[] importList;
+        if (imports != null)
+            importList = tokenize(imports);
+        else
+            importList = new String[0];
+        String scope = reader.getAttributeValue(null, SCOPE);  
+        String allowsPassByRef = reader.getAttributeValue(null, ALLOWS_PASS_BY_REF);
+        String[] allowsPassByRefList;
+        if (allowsPassByRef != null)
+            allowsPassByRefList = tokenize(allowsPassByRef);
+        else
+            allowsPassByRefList = new String[0];
+        
+        boolean injectProperties = !"false".equalsIgnoreCase(reader.getAttributeValue(null, INJECT_PROPERTIES));
+        boolean eagerInit = "true".equalsIgnoreCase(reader.getAttributeValue(null, EAGER_INIT));
+        
+        
+        Hashtable<String, List<ComponentProperty>> refProperties = 
+            new Hashtable<String, List<ComponentProperty>>();
+        Hashtable<String, List<ComponentProperty>> serviceProperties = 
+            new Hashtable<String, List<ComponentProperty>>();
+        Hashtable<String, List<ComponentProperty>> refCallbackProperties = 
+            new Hashtable<String, List<ComponentProperty>>();
+        Hashtable<String, List<ComponentProperty>> serviceCallbackProperties = 
+            new Hashtable<String, List<ComponentProperty>>();
+        
+        while (reader.hasNext()) {
             
-            boolean injectProperties = !"false".equalsIgnoreCase(reader.getAttributeValue(null, INJECT_PROPERTIES));
-            boolean eagerInit = "true".equalsIgnoreCase(reader.getAttributeValue(null, EAGER_INIT));
-            
-            
-            Hashtable<String, List<ComponentProperty>> refProperties = 
-                new Hashtable<String, List<ComponentProperty>>();
-            Hashtable<String, List<ComponentProperty>> serviceProperties = 
-                new Hashtable<String, List<ComponentProperty>>();
-            Hashtable<String, List<ComponentProperty>> refCallbackProperties = 
-                new Hashtable<String, List<ComponentProperty>>();
-            Hashtable<String, List<ComponentProperty>> serviceCallbackProperties = 
-                new Hashtable<String, List<ComponentProperty>>();
-            
-            while (reader.hasNext()) {
-                
-                int next = reader.next();
-                if (next == END_ELEMENT && IMPLEMENTATION_OSGI.equals(reader.getName())) {
-                    break;
-                }
-                else if (next == START_ELEMENT && PROPERTIES_QNAME.equals(reader.getName())) {
-                    
-                    // FIXME: This is temporary code which allows reference and service properties used
-                    //        for filtering OSGi services to be specified in <implementation.osgi/>
-                    //        This should really be provided in the component type file since these
-                    //        properties are associated with an implementation rather than a configured
-                    //        instance of an implementation.
-                    String refName = reader.getAttributeValue(null, "reference");
-                    String serviceName = reader.getAttributeValue(null, "service");
-                    String refCallbackName = reader.getAttributeValue(null, "referenceCallback");
-                    String serviceCallbackName = reader.getAttributeValue(null, "serviceCallback");
-                    List<ComponentProperty> props = readProperties(reader);
-                    if (refName != null)
-                        refProperties.put(refName, props);
-                    else if (serviceName != null)
-                        serviceProperties.put(serviceName, props);
-                    else if (refCallbackName != null)
-                        refCallbackProperties.put(refCallbackName, props);
-                    else if (serviceCallbackName != null)
-                        serviceCallbackProperties.put(serviceCallbackName, props);
-                    else
-                        throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");                }
+            int next = reader.next();
+            if (next == END_ELEMENT && IMPLEMENTATION_OSGI.equals(reader.getName())) {
+                break;
             }
+            else if (next == START_ELEMENT && PROPERTIES_QNAME.equals(reader.getName())) {
                 
-            OSGiImplementation implementation = new OSGiImplementation(
-                    bundleName, 
-                    bundleLocation,
-                    importList, 
-                    scope,
-                    eagerInit,
-                    allowsPassByRefList,
-                    refProperties,
-                    serviceProperties,
-                    injectProperties);
-            implementation.setCallbackProperties(refCallbackProperties, serviceCallbackProperties);
-            
-            
-            implementation.setUnresolved(true);
-            
-            return implementation;
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+                // FIXME: This is temporary code which allows reference and service properties used
+                //        for filtering OSGi services to be specified in <implementation.osgi/>
+                //        This should really be provided in the component type file since these
+                //        properties are associated with an implementation rather than a configured
+                //        instance of an implementation.
+                String refName = reader.getAttributeValue(null, "reference");
+                String serviceName = reader.getAttributeValue(null, "service");
+                String refCallbackName = reader.getAttributeValue(null, "referenceCallback");
+                String serviceCallbackName = reader.getAttributeValue(null, "serviceCallback");
+                List<ComponentProperty> props = readProperties(reader);
+                if (refName != null)
+                    refProperties.put(refName, props);
+                else if (serviceName != null)
+                    serviceProperties.put(serviceName, props);
+                else if (refCallbackName != null)
+                    refCallbackProperties.put(refCallbackName, props);
+                else if (serviceCallbackName != null)
+                    serviceCallbackProperties.put(serviceCallbackName, props);
+                else
+                    throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");                }
         }
+            
+        OSGiImplementation implementation = new OSGiImplementation(
+                bundleName, 
+                bundleLocation,
+                importList, 
+                scope,
+                eagerInit,
+                allowsPassByRefList,
+                refProperties,
+                serviceProperties,
+                injectProperties);
+        implementation.setCallbackProperties(refCallbackProperties, serviceCallbackProperties);
+        
+        
+        implementation.setUnresolved(true);
+        
+        return implementation;
     }
 
     public void resolve(OSGiImplementation impl, ModelResolver resolver) throws ContributionResolveException {
@@ -313,7 +308,9 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return reference;
     }
 
-    public void write(OSGiImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(OSGiImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+        
+        //FIXME Implement this method
     }
     
   

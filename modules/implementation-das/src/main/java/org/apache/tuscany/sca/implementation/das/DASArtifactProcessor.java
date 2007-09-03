@@ -54,7 +54,7 @@ public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementa
     
     private DASImplementationFactory dasFactory;
     
-    private StAXArtifactProcessor connectionInfoProcessor;
+    private StAXArtifactProcessor<ConnectionInfo> connectionInfoProcessor;
     
     public DASArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
@@ -87,7 +87,7 @@ public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementa
      *   </implementation.data>
      * </component>
      */
-    public DASImplementation read(XMLStreamReader reader) throws ContributionReadException {
+    public DASImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_DAS.equals(reader.getName());
 
         // Read an <implementation.das> element
@@ -105,36 +105,45 @@ public class DASArtifactProcessor implements StAXArtifactProcessor<DASImplementa
         implementation.setConfig(config);
         implementation.setDataAccessType(dataAccessType);
 
-        try {
-            while (true) {
-                int event = reader.next();
-                switch (event) {
+        while (true) {
+            int event = reader.next();
+            switch (event) {
 
-                case START_ELEMENT:
-                    QName element = reader.getName();
+            case START_ELEMENT:
+                if (ConnectionInfoArtifactProcessor.CONNECTION_INFO.equals(reader.getName())) {
 
-                    // Read an extension element
+                    // Read connection info
                     ConnectionInfo connectionInfo = (ConnectionInfo) connectionInfoProcessor.read(reader);
-                    ;
                     implementation.setConnectionInfo(connectionInfo);
-
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (IMPLEMENTATION_DAS.equals(reader.getName())) {
-                        return implementation;
-                    }
-                    break;
                 }
+                break;
+            case XMLStreamConstants.END_ELEMENT:
+                if (IMPLEMENTATION_DAS.equals(reader.getName())) {
+                    return implementation;
+                }
+                break;
             }
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
         }
-
     }
 
     public void resolve(DASImplementation impl, ModelResolver resolver) throws ContributionResolveException {
     }
 
-    public void write(DASImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(DASImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        
+        writer.writeStartElement(IMPLEMENTATION_DAS.getNamespaceURI(), IMPLEMENTATION_DAS.getLocalPart());
+        
+        if (implementation.getConfig() != null) {
+            writer.writeAttribute("config", implementation.getConfig());
+        }
+        if (implementation.getDataAccessType() != null) {
+            writer.writeAttribute("dataAccessType", implementation.getDataAccessType());
+        }
+        
+        if (implementation.getConnectionInfo() != null) { 
+            connectionInfoProcessor.write(implementation.getConnectionInfo(), writer);
+        }
+        
+        writer.writeEndElement();
     }
 }

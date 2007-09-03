@@ -88,6 +88,8 @@ public class NotificationBindingProcessor implements StAXArtifactProcessor<Notif
 
     public void write(NotificationBinding notificationBinding, XMLStreamWriter writer)
             throws ContributionWriteException, XMLStreamException {
+        
+        //FIXME Implement this method
     }
 
     public void resolve(NotificationBinding notificationBinding, ModelResolver resolver) throws ContributionResolveException {
