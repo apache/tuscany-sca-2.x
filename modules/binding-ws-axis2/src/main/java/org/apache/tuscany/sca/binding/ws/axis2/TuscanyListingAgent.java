@@ -283,8 +283,12 @@ public class TuscanyListingAgent extends ListingAgent {
             } else {
                 int i = filePart.indexOf(contextRoot) + contextRoot.length();
                 int j = filePart.lastIndexOf(serviceName);
-                String mapping = filePart.substring(i+1, j);
-                configContext.setServicePath(mapping);
+                if (i==j) {
+                    configContext.setServicePath("/");
+                } else {
+                    String mapping = filePart.substring(i+1, j);
+                    configContext.setServicePath(mapping);
+                }
             }
             configContext.setContextRoot(contextRoot);
         }
