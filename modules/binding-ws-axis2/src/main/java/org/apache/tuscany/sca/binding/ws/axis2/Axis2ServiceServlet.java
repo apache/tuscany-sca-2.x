@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -35,13 +36,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.axis2.transport.http.server.HttpUtils;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.transport.http.ListingAgent;
+import org.apache.axis2.transport.http.server.HttpUtils;
 
 /**
  * This overrides the servlet init of the AxisServlet so Tuscany can use
@@ -287,28 +288,11 @@ public class Axis2ServiceServlet extends AxisServlet {
             }
         }
 
-        String cp = configContext.getServiceContextPath();
-        if (cp.endsWith("_null_")) {
-            cp = cp.substring(0, cp.length()-6);    
-        }
-        if (!serviceName.startsWith("/")) {
-            serviceName = "/" + serviceName;
-        }
-        String name;
-        if (cp.equals("/")) {
-            name = serviceName;
-        } else {
-            name = cp + serviceName;
-        }
+        String contextPath = configContext.getServiceContextPath();
 
-        EndpointReference endpoint =
-            new EndpointReference("http://" + ip
-                + ":"
-                + port
-                + (name.startsWith("/")? "" : "/")
-                + name);
+        URI epURI = URI.create("http://" + ip + ":" + port + "/" + contextPath + "/" + serviceName).normalize();
 
-        return new EndpointReference[]{endpoint};
+        return new EndpointReference[]{new EndpointReference(epURI.toString())};
     }
     
 }

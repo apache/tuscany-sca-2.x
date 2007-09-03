@@ -33,9 +33,9 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
+import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
@@ -57,7 +57,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class Axis2ServiceProvider {
@@ -119,7 +118,6 @@ public class Axis2ServiceProvider {
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
         servlet.init(configContext);
         String servletURI = wsBinding.getURI();
-        configContext.setContextRoot(servletURI);
         servletHost.addServletMapping(servletURI, servlet);
     }
 
