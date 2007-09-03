@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -43,32 +44,30 @@ import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 /* 
  * Processor for handling xml models of ExtensionType meta data definitions
  */
-public abstract class IntentAttachPointProcessor implements StAXArtifactProcessor<IntentAttachPointType>, PolicyConstants {
+public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<IntentAttachPointType>, PolicyConstants {
 
-    protected IntentAttachPointTypeFactory extnTypeFactory;
-    protected PolicyFactory policyFactory; 
-    protected StAXArtifactProcessor<Object> extensionProcessor;
+    private IntentAttachPointTypeFactory attachPointTypeFactory;
+    private PolicyFactory policyFactory; 
     
 
-    public IntentAttachPointProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory extnTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
+    public IntentAttachPointTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory attachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
-        this.extnTypeFactory = extnTypeFactory;
-        this.extensionProcessor = extensionProcessor;
+        this.attachPointTypeFactory = attachPointTypeFactory;
     }
     
-    public IntentAttachPointType read(XMLStreamReader reader) throws ContributionReadException {
+    public IntentAttachPointType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         QName type = getQName(reader, TYPE);
         
         if ( type != null ) {
             if ( type.getLocalPart().startsWith(BINDING) ) {
-                IntentAttachPointType bindingType = extnTypeFactory.createBindingType();
+                IntentAttachPointType bindingType = attachPointTypeFactory.createBindingType();
                 bindingType.setName(type);
                 
                 readAlwaysProvidedIntents(bindingType, reader);
                 readMayProvideIntents(bindingType, reader);
                 return bindingType; 
             } else if ( type.getLocalPart().startsWith(IMPLEMENTATION) ) {
-                IntentAttachPointType implType = extnTypeFactory.createImplementationType();
+                IntentAttachPointType implType = attachPointTypeFactory.createImplementationType();
                 implType.setName(type);
                 
                 readAlwaysProvidedIntents(implType, reader);
@@ -83,7 +82,7 @@ public abstract class IntentAttachPointProcessor implements StAXArtifactProcesso
         }
     }
 
-    protected void readAlwaysProvidedIntents(IntentAttachPointType extnType, XMLStreamReader reader) {
+    private void readAlwaysProvidedIntents(IntentAttachPointType extnType, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, ALWAYS_PROVIDES);
         if (value != null) {
             List<Intent> alwaysProvided = extnType.getAlwaysProvidedIntents();
@@ -96,7 +95,7 @@ public abstract class IntentAttachPointProcessor implements StAXArtifactProcesso
         }
     }
     
-    protected void readMayProvideIntents(IntentAttachPointType extnType, XMLStreamReader reader) {
+    private void readMayProvideIntents(IntentAttachPointType extnType, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, MAY_PROVIDE);
         if (value != null) {
             List<Intent> mayProvide = extnType.getMayProvideIntents();
@@ -109,26 +108,22 @@ public abstract class IntentAttachPointProcessor implements StAXArtifactProcesso
         }
     }
   
-    public void write(IntentAttachPointType extnType, XMLStreamWriter writer) throws ContributionWriteException {
-        try {
-            // Write an <sca:bindingType or sca:implementationType>
-            if ( extnType instanceof BindingTypeImpl ) {
-                writer.writeStartElement(SCA10_NS, BINDING_TYPE);
-            } else if ( extnType instanceof ImplementationTypeImpl ) {
-                writer.writeStartElement(SCA10_NS, IMPLEMENATION_TYPE);
-            }
-            
-            writeAlwaysProvidesIntentsAttribute(extnType, writer);
-            writeMayProvideIntentsAttribute(extnType, writer);
-            
-            writer.writeEndElement();
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
+    public void write(IntentAttachPointType extnType, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+        // Write an <sca:bindingType or sca:implementationType>
+        if ( extnType instanceof BindingTypeImpl ) {
+            writer.writeStartElement(SCA10_NS, BINDING_TYPE);
+        } else if ( extnType instanceof ImplementationTypeImpl ) {
+            writer.writeStartElement(SCA10_NS, IMPLEMENTATION_TYPE);
         }
+        
+        writeAlwaysProvidesIntentsAttribute(extnType, writer);
+        writeMayProvideIntentsAttribute(extnType, writer);
+        
+        writer.writeEndElement();
     }
     
-    protected void writeMayProvideIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer) throws XMLStreamException {
+    private void writeMayProvideIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer) throws XMLStreamException {
         StringBuffer sb  = new StringBuffer();
         for ( Intent intent : extnType.getMayProvideIntents() ) {
             writer.writeNamespace(intent.getName().getPrefix(), intent.getName().getNamespaceURI());
@@ -141,7 +136,7 @@ public abstract class IntentAttachPointProcessor implements StAXArtifactProcesso
         }
     }
     
-    protected void writeAlwaysProvidesIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer) throws XMLStreamException {
+    private void writeAlwaysProvidesIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer) throws XMLStreamException {
         StringBuffer sb  = new StringBuffer();
         for ( Intent intent : extnType.getAlwaysProvidedIntents() ) {
             writer.writeNamespace(intent.getName().getPrefix(), intent.getName().getNamespaceURI());
@@ -209,31 +204,6 @@ public abstract class IntentAttachPointProcessor implements StAXArtifactProcesso
 //        }
 //        extnType.setUnresolved(isUnresolved);
 //    }
-    
-    protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
-    }
-    
-    protected QName getQName(XMLStreamReader reader, String name) {
-        String qname = reader.getAttributeValue(null, name);
-        return getQNameValue(reader, qname);
-    }
-    
-
-    protected String getString(XMLStreamReader reader, String name) {
-        return reader.getAttributeValue(null, name);
-    }
     
     public Class<IntentAttachPointType> getModelType() {
         return IntentAttachPointType.class;

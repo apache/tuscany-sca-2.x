@@ -76,7 +76,8 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
             switch (event) {
                 case START_ELEMENT:
                     element = reader.getName();
-                    
+
+                    // Read <import.java>
                     if (IMPORT_JAVA.equals(element)) {
                         String packageName = reader.getAttributeValue(null, PACKAGE);
                         if (packageName == null) {
@@ -95,7 +96,7 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
                     break;        
             }
             
-            //Read the next element
+            // Read the next element
             if (reader.hasNext()) {
                 reader.next();
             }
@@ -104,8 +105,19 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
         return javaImport;
     }
 
-    public void write(JavaImport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(JavaImport javaImport, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
+        // Write <import.java>
+        writer.writeStartElement(IMPORT_JAVA.getNamespaceURI(), IMPORT_JAVA.getLocalPart());
+        
+        if (javaImport.getPackage() != null) {
+            writer.writeAttribute(PACKAGE, javaImport.getPackage());
+        }
+        if (javaImport.getLocation() != null) {
+            writer.writeAttribute(LOCATION, javaImport.getLocation());
+        }
+        
+        writer.writeEndElement();
     }
 
 

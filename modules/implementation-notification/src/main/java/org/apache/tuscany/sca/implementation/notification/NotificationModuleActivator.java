@@ -28,12 +28,12 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
  */
 public class NotificationModuleActivator implements ModuleActivator {
 
-    private NotificationImplementationLoader implementationLoader;
+    private NotificationImplementationProcessor implementationLoader;
     
     public void start(ExtensionPointRegistry registry) {
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
-        implementationLoader = new NotificationImplementationLoader(new DefaultNotificationImplementationFactory());
+        implementationLoader = new NotificationImplementationProcessor(new DefaultNotificationImplementationFactory());
         processors.addArtifactProcessor(implementationLoader);
 
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);

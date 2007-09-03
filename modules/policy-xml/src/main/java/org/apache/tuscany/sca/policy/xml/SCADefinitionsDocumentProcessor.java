@@ -45,14 +45,9 @@ import org.apache.tuscany.sca.policy.impl.DefaultIntentAttachPointTypeFactoryImp
  * 
  */
 public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SCADefinitions> {
-    protected StAXArtifactProcessor<Object> extensionProcessor;
-    protected SCADefinitionsBuilder defnBuilder = null;
-    protected ModelResolver domainModelResolver;
-
-    private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-    static {
-        domFactory.setNamespaceAware(true);
-    }
+    private StAXArtifactProcessor<Object> extensionProcessor;
+    private SCADefinitionsBuilder definitionsBuilder;
+    private ModelResolver domainModelResolver;
     private XMLInputFactory inputFactory;
 
     /**
@@ -60,21 +55,14 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      * @param assemblyFactory
      * @param policyFactory
      * @param staxProcessor
-    
-    public SCADefinitionsDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
-        this.extensionProcessor = staxProcessor;
-        this.inputFactory = inputFactory;
-        defnBuilder = new SCADefinitionsBuilderImpl();
-        this.domainModelResolver =  new SCADefinitionsResolver();
-    } */
-     
+     */
     public SCADefinitionsDocumentProcessor(StAXArtifactProcessorExtensionPoint staxProcessors,
-                                           StAXArtifactProcessor staxProcessor,
+                                           StAXArtifactProcessor<Object> staxProcessor,
                                            XMLInputFactory inputFactory,
                                            PolicyFactory policyFactory) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = inputFactory;
-        defnBuilder = new SCADefinitionsBuilderImpl();
+        definitionsBuilder = new SCADefinitionsBuilderImpl();
         this.domainModelResolver = new SCADefinitionsResolver();
         
         IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactoryImpl();
@@ -122,7 +110,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
             if ( resolver == null ) {
                 resolver = this.domainModelResolver;
             }
-            defnBuilder.build(scaDefinitions);
+            definitionsBuilder.build(scaDefinitions);
             extensionProcessor.resolve(scaDefinitions, resolver);
         } catch (SCADefinitionsBuilderException e) {
             throw new ContributionResolveException(e);

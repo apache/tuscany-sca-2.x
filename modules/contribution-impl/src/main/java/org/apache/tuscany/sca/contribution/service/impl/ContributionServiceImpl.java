@@ -228,16 +228,32 @@ public class ContributionServiceImpl implements ContributionService {
         URL[] clUrls = {sourceURL};
         URLClassLoader cl = new URLClassLoader(clUrls, null);
         
-        
         ContributionMetadataDocumentProcessor metadataDocumentProcessor = 
-            new ContributionMetadataDocumentProcessor(cl, this.staxProcessor, this.assemblyFactory, this.contributionFactory, this.xmlFactory);
+            new ContributionMetadataDocumentProcessor(cl, staxProcessor, assemblyFactory, contributionFactory, xmlFactory);
         contributionMetadata = contributionFactory.createContribution();
         try {
             metadataDocumentProcessor.read(contributionMetadata);
         } catch (XMLStreamException e) {
             throw new InvalidContributionMetadataException("Invalid contribution metadata for contribution.");
-
         }
+        
+        // For debugging purposes, write it back to XML
+//        if (contributionMetadata != null) {
+//            try {
+//                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+//                outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+//                staxProcessor.write(contributionMetadata, outputFactory.createXMLStreamWriter(bos));
+//                Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos.toByteArray()));
+//                OutputFormat format = new OutputFormat();
+//                format.setIndenting(true);
+//                format.setIndent(2);
+//                XMLSerializer serializer = new XMLSerializer(System.out, format);
+//                serializer.serialize(document);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         
         return contributionMetadata;
     }

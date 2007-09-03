@@ -42,16 +42,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  * @version $Rev$ $Date$
  */
 public class NamespaceExportProcessor implements StAXArtifactProcessor<NamespaceExport> {
+
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    
     private static final QName EXPORT = new QName(SCA10_NS, "export");
-    
     private static final String NAMESPACE = "namespace";
     
     private final NamespaceImportExportFactory factory;
     
     public NamespaceExportProcessor(ModelFactoryExtensionPoint modelFactories) {
-        super();
         this.factory = modelFactories.getFactory(NamespaceImportExportFactory.class);
     }
 
@@ -69,7 +67,6 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
     public NamespaceExport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         NamespaceExport namespaceExport = this.factory.createNamespaceExport();
         QName element = null;
-
         
         while (reader.hasNext()) {
             int event = reader.getEventType();
@@ -77,6 +74,7 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
                 case START_ELEMENT:
                     element = reader.getName();
                     
+                    // Read <export>
                     if (EXPORT.equals(element)) {
                         String ns = reader.getAttributeValue(null, NAMESPACE);
                         if (ns == null) {
@@ -93,7 +91,7 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
                     break;        
             }
             
-            //Read the next element
+            // Read the next element
             if (reader.hasNext()) {
                 reader.next();
             }
@@ -102,8 +100,16 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
         return namespaceExport;
     }
 
-    public void write(NamespaceExport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(NamespaceExport namespaceExport, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
+        // Write <export>
+        writer.writeStartElement(EXPORT.getNamespaceURI(), EXPORT.getLocalPart());
+        
+        if (namespaceExport.getNamespace() != null) {
+            writer.writeAttribute(NAMESPACE, namespaceExport.getNamespace());
+        }
+        
+        writer.writeEndElement();
     }
 
     public void resolve(NamespaceExport model, ModelResolver resolver) throws ContributionResolveException {

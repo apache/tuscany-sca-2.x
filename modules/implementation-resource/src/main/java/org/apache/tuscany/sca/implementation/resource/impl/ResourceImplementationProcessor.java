@@ -65,49 +65,54 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
         return ResourceImplementation.class;
     }
 
-    public ResourceImplementation read(XMLStreamReader reader) throws ContributionReadException {
-        assert IMPLEMENTATION_RESOURCE.equals(reader.getName());
+    public ResourceImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         
         // Read an <implementation.resource> element
-        try {
-            // Read the directory attribute. This is where the sample
-            // CRUD implementation will persist resources.
-            String location = reader.getAttributeValue(null, "location");
 
-            // Create an initialize the resource implementationmodel
-            ResourceImplementation implementation = implementationFactory.createResourceImplementation();
-            implementation.setLocation(location);
-            implementation.setUnresolved(true);
-            
-            // Skip to end element
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && IMPLEMENTATION_RESOURCE.equals(reader.getName())) {
-                    break;
-                }
+        // Read the location attribute specifying the location of the
+        // resources
+        String location = reader.getAttributeValue(null, "location");
+
+        // Create an initialize the resource implementationmodel
+        ResourceImplementation implementation = implementationFactory.createResourceImplementation();
+        implementation.setLocation(location);
+        implementation.setUnresolved(true);
+        
+        // Skip to end element
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_RESOURCE.equals(reader.getName())) {
+                break;
             }
-            
-            return implementation;
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
         }
+        
+        return implementation;
     }
 
-    public void resolve(ResourceImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ResourceImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
         
         // Resolve the resource directory location
         DeployedArtifact artifact = contributionFactory.createDeployedArtifact();
-        artifact.setURI(impl.getLocation());
+        artifact.setURI(implementation.getLocation());
         DeployedArtifact resolved = resolver.resolveModel(DeployedArtifact.class, artifact);
         if (resolved.getLocation() != null) {
             try {
-                impl.setLocationURL(new URL(resolved.getLocation()));
-                impl.setUnresolved(false);
+                implementation.setLocationURL(new URL(resolved.getLocation()));
+                implementation.setUnresolved(false);
             } catch (IOException e) {
                 throw new ContributionResolveException(e);
             }
         }
     }
 
-    public void write(ResourceImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(ResourceImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        
+        // Write <implementation.resource>
+        writer.writeStartElement(IMPLEMENTATION_RESOURCE.getNamespaceURI(), IMPLEMENTATION_RESOURCE.getLocalPart());
+        
+        if (implementation.getLocation() != null) {
+            writer.writeAttribute("location", implementation.getLocation());
+        }
+        
+        writer.writeEndElement();
     }
 }

@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.sca.implementation.xquery.xml.XQueryArtifactProcessor;
+import org.apache.tuscany.sca.implementation.xquery.xml.XQueryImplementationProcessor;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
  */
 public class XQueryModuleActivator implements ModuleActivator {
 
-    private XQueryArtifactProcessor xqueryArtifactProcessor;
+    private XQueryImplementationProcessor xqueryArtifactProcessor;
 
     public XQueryModuleActivator() {
     }
@@ -58,7 +58,7 @@ public class XQueryModuleActivator implements ModuleActivator {
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = factories.getFactory(JavaInterfaceFactory.class);
         // Create the artifact processor for XQuery artifacts and add to artifact processors
-        xqueryArtifactProcessor = new XQueryArtifactProcessor(assemblyFactory, javaFactory);
+        xqueryArtifactProcessor = new XQueryImplementationProcessor(assemblyFactory, javaFactory);
 
         StAXArtifactProcessorExtensionPoint staxProcessors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);

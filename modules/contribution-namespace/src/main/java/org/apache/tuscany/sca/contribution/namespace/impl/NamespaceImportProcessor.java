@@ -52,7 +52,6 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
     private final NamespaceImportExportFactory factory;
     
     public NamespaceImportProcessor(ModelFactoryExtensionPoint modelFactories) {
-        super();
         this.factory = modelFactories.getFactory(NamespaceImportExportFactory.class);
     }
     
@@ -69,24 +68,26 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
      */
     public NamespaceImport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         NamespaceImport namespaceImport = this.factory.createNamespaceImport();
-        QName element = null;
+        QName element;
         
         while (reader.hasNext()) {
             int event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT:
                     element = reader.getName();
-                    
+
+                    // Read <import>
                     if (IMPORT.equals(element)) {
                         String ns = reader.getAttributeValue(null, NAMESPACE);
                         if (ns == null) {
                             throw new ContributionReadException("Attribute 'namespace' is missing");
                         }
+                        namespaceImport.setNamespace(ns);
+
                         String location = reader.getAttributeValue(null, LOCATION);
                         if (location != null) {
                             namespaceImport.setLocation(location);
                         }
-                        namespaceImport.setNamespace(ns);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -96,7 +97,7 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
                     break;        
             }
             
-            //Read the next element
+            // Read the next element
             if (reader.hasNext()) {
                 reader.next();
             }
@@ -105,12 +106,22 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
         return namespaceImport;
     }
 
-    public void write(NamespaceImport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(NamespaceImport namespaceImport, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
+        // Write <import>
+        writer.writeStartElement(IMPORT.getNamespaceURI(), IMPORT.getLocalPart());
+        
+        if (namespaceImport.getNamespace() != null) {
+            writer.writeAttribute(NAMESPACE, namespaceImport.getNamespace());
+        }
+        if (namespaceImport.getLocation() != null) {
+            writer.writeAttribute(LOCATION, namespaceImport.getLocation());
+        }
+        
+        writer.writeEndElement();
     }
 
 
     public void resolve(NamespaceImport model, ModelResolver resolver) throws ContributionResolveException {
-        
     }
 }

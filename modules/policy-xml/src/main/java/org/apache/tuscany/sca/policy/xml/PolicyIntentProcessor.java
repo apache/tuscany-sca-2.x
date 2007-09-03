@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -44,119 +45,107 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
  * Processor for handling xml models of PolicyIntent definitions
  */
 
-public abstract class PolicyIntentProcessor<T extends Intent> implements StAXArtifactProcessor<T>, PolicyConstants {
+public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<T>, PolicyConstants {
 
     private PolicyFactory policyFactory;
-    protected StAXArtifactProcessor<Object> extensionProcessor;
 
     public PolicyIntentProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
-        this.extensionProcessor = extensionProcessor;
     }
 
-    public T read(XMLStreamReader reader) throws ContributionReadException {
-        try {
-            Intent policyIntent = null;
-            String policyIntentName = reader.getAttributeValue(null, NAME);
-            // Read an <sca:intent>
-            if (reader.getAttributeValue(null, REQUIRES) != null) {
-                policyIntent = policyFactory.createProfileIntent();
-            } else if ( policyIntentName != null && policyIntentName.indexOf(QUALIFIER) != -1) {
-                policyIntent = policyFactory.createQualifiedIntent();
-                
-                int qualifierIndex = policyIntentName.lastIndexOf(QUALIFIER);
-                Intent qualifiableIntent = policyFactory.createIntent();
-                qualifiableIntent.setUnresolved(true);
-                qualifiableIntent.setName(getQNameValue(reader, 
-                                                        policyIntentName.substring(0, qualifierIndex)));
-                
-                ((QualifiedIntent)policyIntent).setQualifiableIntent(qualifiableIntent);
-            } else {
-                policyIntent = policyFactory.createIntent();
-            }
-            policyIntent.setName(getQNameValue(reader, policyIntentName));
+    public T read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        Intent policyIntent = null;
+        String policyIntentName = reader.getAttributeValue(null, NAME);
+        // Read an <sca:intent>
+        if (reader.getAttributeValue(null, REQUIRES) != null) {
+            policyIntent = policyFactory.createProfileIntent();
+        } else if ( policyIntentName != null && policyIntentName.indexOf(QUALIFIER) != -1) {
+            policyIntent = policyFactory.createQualifiedIntent();
             
-            if ( policyIntent instanceof ProfileIntent ) {
-                readRequiredIntents((ProfileIntent)policyIntent, reader);
-            }
+            int qualifierIndex = policyIntentName.lastIndexOf(QUALIFIER);
+            Intent qualifiableIntent = policyFactory.createIntent();
+            qualifiableIntent.setUnresolved(true);
+            qualifiableIntent.setName(getQNameValue(reader, 
+                                                    policyIntentName.substring(0, qualifierIndex)));
             
-            readConstrainedArtifacts(policyIntent, reader);
-            
-            int event = reader.getEventType();
-            QName name = null;
-            while (reader.hasNext()) {
-                event = reader.getEventType();
-                switch (event) {
-                    case START_ELEMENT : {
-                        name = reader.getName();
-                        if (DESCRIPTION_QNAME.equals(name)) {
-                            policyIntent.setDescription(reader.getElementText());
-                        }
-                        break;
+            ((QualifiedIntent)policyIntent).setQualifiableIntent(qualifiableIntent);
+        } else {
+            policyIntent = policyFactory.createIntent();
+        }
+        policyIntent.setName(getQNameValue(reader, policyIntentName));
+        
+        if ( policyIntent instanceof ProfileIntent ) {
+            readRequiredIntents((ProfileIntent)policyIntent, reader);
+        }
+        
+        readConstrainedArtifacts(policyIntent, reader);
+        
+        int event = reader.getEventType();
+        QName name = null;
+        while (reader.hasNext()) {
+            event = reader.getEventType();
+            switch (event) {
+                case START_ELEMENT : {
+                    name = reader.getName();
+                    if (DESCRIPTION_QNAME.equals(name)) {
+                        policyIntent.setDescription(reader.getElementText());
                     }
-                }
-                if (event == END_ELEMENT && POLICY_INTENT_QNAME.equals(reader.getName())) {
                     break;
                 }
-                
-                //Read the next element
-                if (reader.hasNext()) {
-                    reader.next();
-                }
             }
-            return (T)policyIntent;
+            if (event == END_ELEMENT && POLICY_INTENT_QNAME.equals(reader.getName())) {
+                break;
+            }
             
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+            //Read the next element
+            if (reader.hasNext()) {
+                reader.next();
+            }
         }
+        return (T)policyIntent;
     }
     
-    public void write(T policyIntent, XMLStreamWriter writer) throws ContributionWriteException {
-        try {
-            // Write an <sca:intent>
-            writer.writeStartElement(PolicyConstants.SCA10_NS, INTENT);
-            writer.writeNamespace(policyIntent.getName().getPrefix(), policyIntent.getName().getNamespaceURI());
-            writer.writeAttribute(PolicyConstants.NAME, 
-                                  policyIntent.getName().getPrefix() + COLON + policyIntent.getName().getLocalPart());
-            if (policyIntent instanceof ProfileIntent) {
-                ProfileIntent profileIntent = (ProfileIntent)policyIntent;
-                if (profileIntent.getRequiredIntents() != null && 
-                    profileIntent.getRequiredIntents().size() > 0) {
-                    StringBuffer sb = new StringBuffer();
-                    for (Intent requiredIntents : profileIntent.getRequiredIntents()) {
-                        sb.append(requiredIntents.getName());
-                        sb.append(" ");
-                    }
-                    writer.writeAttribute(PolicyConstants.REQUIRES, sb.toString());
+    public void write(T policyIntent, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        // Write an <sca:intent>
+        writer.writeStartElement(PolicyConstants.SCA10_NS, INTENT);
+        writer.writeNamespace(policyIntent.getName().getPrefix(), policyIntent.getName().getNamespaceURI());
+        writer.writeAttribute(PolicyConstants.NAME, 
+                              policyIntent.getName().getPrefix() + COLON + policyIntent.getName().getLocalPart());
+        if (policyIntent instanceof ProfileIntent) {
+            ProfileIntent profileIntent = (ProfileIntent)policyIntent;
+            if (profileIntent.getRequiredIntents() != null && 
+                profileIntent.getRequiredIntents().size() > 0) {
+                StringBuffer sb = new StringBuffer();
+                for (Intent requiredIntents : profileIntent.getRequiredIntents()) {
+                    sb.append(requiredIntents.getName());
+                    sb.append(" ");
                 }
+                writer.writeAttribute(PolicyConstants.REQUIRES, sb.toString());
             }
-            
-            if (!(policyIntent instanceof QualifiedIntent) ) {
-                if (policyIntent.getConstrains() != null && 
-                    policyIntent.getConstrains().size() > 0) {
-                    StringBuffer sb = new StringBuffer();
-                    for (QName contrainedArtifact : policyIntent.getConstrains()) {
-                        sb.append(contrainedArtifact.toString());
-                        sb.append(" ");
-                    }
-                    writer.writeAttribute(CONSTRAINS, sb.toString());
-                } else {
-                    throw new ContributionWriteException("Contrains attribute missing from " +
-                                    "Policy Intent Definition" + policyIntent.getName());
-                }
-            }
-            
-            if ( policyIntent.getDescription() != null && policyIntent.getDescription().length() > 0) {
-                writer.writeStartElement(PolicyConstants.SCA10_NS, DESCRIPTION);
-                writer.writeCData(policyIntent.getDescription());
-                writer.writeEndElement();
-            }
-            
-            writer.writeEndElement();
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
         }
+        
+        if (!(policyIntent instanceof QualifiedIntent) ) {
+            if (policyIntent.getConstrains() != null && 
+                policyIntent.getConstrains().size() > 0) {
+                StringBuffer sb = new StringBuffer();
+                for (QName contrainedArtifact : policyIntent.getConstrains()) {
+                    sb.append(contrainedArtifact.toString());
+                    sb.append(" ");
+                }
+                writer.writeAttribute(CONSTRAINS, sb.toString());
+            } else {
+                throw new ContributionWriteException("Contrains attribute missing from " +
+                                "Policy Intent Definition" + policyIntent.getName());
+            }
+        }
+        
+        if ( policyIntent.getDescription() != null && policyIntent.getDescription().length() > 0) {
+            writer.writeStartElement(PolicyConstants.SCA10_NS, DESCRIPTION);
+            writer.writeCData(policyIntent.getDescription());
+            writer.writeEndElement();
+        }
+        
+        writer.writeEndElement();
     }
 
     //FIXME This method is never used
@@ -201,7 +190,7 @@ public abstract class PolicyIntentProcessor<T extends Intent> implements StAXArt
 //        return policyIntent;
 //    }
     
-    protected void resolveContrainedArtifacts(Intent policyIntent, ModelResolver resolver) {
+    private void resolveContrainedArtifacts(Intent policyIntent, ModelResolver resolver) {
         //FIXME : need to figure out this resolution. 
         policyIntent.setUnresolved(false);
     }
@@ -218,7 +207,7 @@ public abstract class PolicyIntentProcessor<T extends Intent> implements StAXArt
         return POLICY_INTENT_QNAME;
     }
     
-    protected void readConstrainedArtifacts(Intent policyIntent, XMLStreamReader reader) throws ContributionReadException {
+    private void readConstrainedArtifacts(Intent policyIntent, XMLStreamReader reader) throws ContributionReadException {
         String value = reader.getAttributeValue(null, CONSTRAINS);
         if ( policyIntent instanceof QualifiedIntent && value != null) {
             String errorMsg = 
@@ -235,7 +224,7 @@ public abstract class PolicyIntentProcessor<T extends Intent> implements StAXArt
         }
     }
     
-    protected void readRequiredIntents(ProfileIntent policyIntent, XMLStreamReader reader) {
+    private void readRequiredIntents(ProfileIntent policyIntent, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, REQUIRES);
         if (value != null) {
             List<Intent> requiredIntents = policyIntent.getRequiredIntents();
@@ -249,18 +238,4 @@ public abstract class PolicyIntentProcessor<T extends Intent> implements StAXArt
         }
     }
     
-    protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
-    }
 }

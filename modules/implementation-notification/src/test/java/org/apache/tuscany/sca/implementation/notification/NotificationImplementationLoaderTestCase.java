@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.implementation.notification.DefaultNotificationImplementationFactory;
-import org.apache.tuscany.sca.implementation.notification.NotificationImplementationLoader;
+import org.apache.tuscany.sca.implementation.notification.NotificationImplementationProcessor;
 import org.easymock.EasyMock;
 
 /**
@@ -38,11 +38,11 @@ public class NotificationImplementationLoaderTestCase extends TestCase {
 
     public void testRead() throws Exception {
         try {
-        NotificationImplementationLoader implementationLoader =
-            new NotificationImplementationLoader(new DefaultNotificationImplementationFactory());
+        NotificationImplementationProcessor implementationLoader =
+            new NotificationImplementationProcessor(new DefaultNotificationImplementationFactory());
 
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getName()).andReturn(NotificationImplementationLoader.IMPLEMENTATION_NOTIFICATION).times(2);
+        EasyMock.expect(reader.getName()).andReturn(NotificationImplementationProcessor.IMPLEMENTATION_NOTIFICATION).times(2);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("TrafficAdvisoryNotificationTestCase");
         EasyMock.expect(reader.getAttributeValue(null, "type")).andReturn(null);
         EasyMock.expect(reader.hasNext()).andReturn(true);

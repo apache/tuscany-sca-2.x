@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 /* 
  * Processor for handling xml models of ImplementationType meta data definitions
  */
-public class ImplementationTypeProcessor extends IntentAttachPointProcessor {
+public class ImplementationTypeProcessor extends IntentAttachPointTypeProcessor {
 
     public ImplementationTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory intentAttachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         super(policyFactory, intentAttachPointTypeFactory, extensionProcessor);

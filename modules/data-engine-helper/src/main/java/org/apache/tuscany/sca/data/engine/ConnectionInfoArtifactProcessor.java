@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.data.engine.config.ConnectionProperties;
  * @version $Rev$ $Date$
  */
 public class ConnectionInfoArtifactProcessor implements StAXArtifactProcessor<ConnectionInfo> {
-    private static final QName CONNECTION_INFO = new QName(Constants.SCA10_TUSCANY_NS, "connectionInfo");
+    public static final QName CONNECTION_INFO = new QName(Constants.SCA10_TUSCANY_NS, "connectionInfo");
     private static final QName CONNECTION_PROPERTIES = new QName(Constants.SCA10_TUSCANY_NS, "connectionProperties");
     
     public ConnectionInfoArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
@@ -116,7 +116,7 @@ public class ConnectionInfoArtifactProcessor implements StAXArtifactProcessor<Co
             String databaseURL = reader.getAttributeValue(null, "databaseURL");
             String username = reader.getAttributeValue(null, "username");
             String password = reader.getAttributeValue(null, "password");
-            int loginTimeout = Integer.parseInt(reader.getAttributeValue(null, "loginTimeout"));
+            String loginTimeout = reader.getAttributeValue(null, "loginTimeout");
 
             // FIXME: validation sending info to monitor....
             ConnectionProperties connectionProperties = new ConnectionProperties();
@@ -124,7 +124,9 @@ public class ConnectionInfoArtifactProcessor implements StAXArtifactProcessor<Co
             connectionProperties.setDatabaseURL(databaseURL);
             connectionProperties.setUsername(username);
             connectionProperties.setPassword(password);
-            connectionProperties.setLoginTimeout(loginTimeout);
+            if (loginTimeout != null) {
+                connectionProperties.setLoginTimeout(Integer.parseInt(loginTimeout));
+            }
 
             connectionInfo.setConnectionProperties(connectionProperties);
         }
@@ -133,8 +135,42 @@ public class ConnectionInfoArtifactProcessor implements StAXArtifactProcessor<Co
     }
 
     public void resolve(ConnectionInfo impl, ModelResolver resolver) throws ContributionResolveException {
+
     }
 
-    public void write(ConnectionInfo model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(ConnectionInfo connectionInfo, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+        writer.writeStartElement(CONNECTION_INFO.getNamespaceURI(), CONNECTION_INFO.getLocalPart());
+
+        if (connectionInfo.getDataSource() != null) {
+            writer.writeAttribute("dataSource", connectionInfo.getDataSource());
+        }
+        
+        ConnectionProperties connectionProperties = connectionInfo.getConnectionProperties();
+        if (connectionProperties != null) {
+            writer.writeStartElement(CONNECTION_PROPERTIES.getNamespaceURI(), CONNECTION_PROPERTIES.getLocalPart());
+            
+            if (connectionProperties.getDriverClass() != null) {
+                writer.writeAttribute("driverClass", connectionProperties.getDriverClass());
+            }
+            if (connectionProperties.getDatabaseURL() != null) {
+                writer.writeAttribute("databaseURL", connectionProperties.getDatabaseURL());
+            }
+            if (connectionProperties.getUsername() != null) {
+                writer.writeAttribute("username", connectionProperties.getUsername());
+            }
+            if (connectionProperties.getPassword() != null) {
+                writer.writeAttribute("password", connectionProperties.getPassword());
+            }
+            if (connectionProperties.getLoginTimeout() != null) {
+                writer.writeAttribute("loginTimeout", String.valueOf(connectionProperties.getLoginTimeout()));
+            }
+            
+            writer.writeEndElement();
+        }
+        
+        
+        writer.writeEndElement();
+        
     }
 }

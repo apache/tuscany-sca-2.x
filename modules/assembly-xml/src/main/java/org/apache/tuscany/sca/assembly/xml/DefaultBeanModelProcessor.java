@@ -22,10 +22,13 @@ package org.apache.tuscany.sca.assembly.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -38,11 +41,10 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
-public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements StAXArtifactProcessor {
+public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor {
 
     private QName artifactType;
     private Class<Implementation> modelClass;
@@ -84,6 +86,7 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
                     getter = modelClass.getMethod("get" + name.substring(3));
                 } catch (Exception e) {
                     getter = null;
+                    continue;
                 }
                 
                 // Get the property name
@@ -111,11 +114,10 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
         }
     }
 
-    public Object read(XMLStreamReader reader) throws ContributionReadException {
+    public Object read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
+        // Read an element
         try {
-
-            // Read an element
             
             // Create a new instance of the model
             Object model;
@@ -139,13 +141,9 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
             }
 
             // Read policies
-            if (model instanceof PolicySetAttachPoint) {
-                readPolicies((PolicySetAttachPoint)model, reader);
-            } else if (model instanceof IntentAttachPoint) {
-                readIntents((IntentAttachPoint)model, reader);
-            }
+            policyProcessor.readPolicies(model, reader);
 
-            // TODO read extension elements
+            // FIXME read extension elements
             
             // By default mark the model object unresolved
             if (model instanceof Base) {
@@ -165,20 +163,22 @@ public class DefaultBeanModelProcessor extends BaseArtifactProcessor implements 
         }
     }
 
-    public void write(Object bean, XMLStreamWriter writer) throws ContributionWriteException {
+    public void write(Object bean, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         try {
-            // Write an <bean>
-            writer.writeStartElement(artifactType.getNamespaceURI(), artifactType.getLocalPart());
-
             // Write the bean properties as attributes
+            List<XAttr> attrs = new ArrayList<XAttr>();
             for (Map.Entry<String, Method> entry: getterMethods.entrySet()) {
                 if (entry.getValue().getReturnType() == String.class) {
                     String value = (String)entry.getValue().invoke(bean);
-                    writer.writeAttribute(entry.getKey(), value);
+                    attrs.add(new XAttr(entry.getKey(), value));
                 }
             }
             
-            writer.writeEndElement();
+            // Write element
+            writeStart(writer, artifactType.getNamespaceURI(), artifactType.getLocalPart(),
+                       policyProcessor.writePolicies(bean), new XAttr(null, attrs));
+
+            writeEnd(writer);
 
         } catch (Exception e) {
             throw new ContributionWriteException(e);

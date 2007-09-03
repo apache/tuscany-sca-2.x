@@ -21,15 +21,11 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -54,12 +50,12 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -76,12 +72,13 @@ import org.w3c.dom.NodeList;
  * 
  * @version $Rev$ $Date$
  */
-abstract class BaseArtifactProcessor implements Constants {
+abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implements Constants {
 
     protected ContributionFactory contributionFactory;
     protected AssemblyFactory assemblyFactory;
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
+    protected PolicyAttachPointProcessor policyProcessor;
     private DocumentBuilderFactory documentBuilderFactory;
 
     /**
@@ -91,7 +88,7 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    public BaseArtifactProcessor(ContributionFactory contribFactory,
+    public BaseAssemblyProcessor(ContributionFactory contribFactory,
                                  AssemblyFactory factory,
                                  PolicyFactory policyFactory,
                                  StAXArtifactProcessor extensionProcessor) {
@@ -99,6 +96,7 @@ abstract class BaseArtifactProcessor implements Constants {
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.contributionFactory = contribFactory;
+        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
     }
 
     /**
@@ -107,253 +105,36 @@ abstract class BaseArtifactProcessor implements Constants {
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    public BaseArtifactProcessor(AssemblyFactory factory,
+    public BaseAssemblyProcessor(AssemblyFactory factory,
                                  PolicyFactory policyFactory,
                                  StAXArtifactProcessor extensionProcessor) {
         this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
+        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
     }
 
     /**
-     * Returns the string value of an attribute.
-     * @param reader
+     * Start an element.
+     * @param writer
      * @param name
-     * @return
+     * @param attrs
+     * @throws XMLStreamException
      */
-    protected String getString(XMLStreamReader reader, String name) {
-        return reader.getAttributeValue(null, name);
+    protected void writeStart(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
+        writeStart(writer, SCA10_NS, name, attrs);
     }
 
     /**
-     * Returns the qname value of an attribute.
-     * @param reader
-     * @param name
-     * @return
+     * Start a document.
+     * @param writer
+     * @throws XMLStreamException
      */
-    protected QName getQName(XMLStreamReader reader, String name) {
-        String qname = reader.getAttributeValue(null, name);
-        return getQNameValue(reader, qname);
-    }
-
-    /**
-     * Returns the value of xsi:type attribute
-     * @param reader The XML stream reader
-     * @return The QName of the type, if the attribute is not present, null is
-     *         returned.
-     */
-    protected QName getXSIType(XMLStreamReader reader) {
-        String qname = reader.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
-        return getQNameValue(reader, qname);
-    }
-
-    /**
-     * Returns a qname from a string.  
-     * @param reader
-     * @param value
-     * @return
-     */
-    protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the boolean value of an attribute.
-     * @param reader
-     * @param name
-     * @return
-     */
-    protected boolean getBoolean(XMLStreamReader reader, String name) {
-        String value = reader.getAttributeValue(null, name);
-        if (value == null) {
-            return false;
-        }
-        return Boolean.valueOf(value);
-    }
-    
-    /**
-     * Test if an attribute is explicitly set
-     * @param reader
-     * @param name
-     * @return
-     */
-    protected boolean isSet(XMLStreamReader reader, String name) {
-        return reader.getAttributeValue(null, name) != null;
-    }
-    
-    
-
-    /**
-     * Returns the value of an attribute as a list of qnames.
-     * @param reader
-     * @param name
-     * @return
-     */
-    protected List<QName> getQNames(XMLStreamReader reader, String name) {
-        String value = reader.getAttributeValue(null, name);
-        if (value != null) {
-            List<QName> qnames = new ArrayList<QName>();
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                qnames.add(getQName(reader, tokens.nextToken()));
-            }
-            return qnames;
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    /**
-     * Read policy intents.
-     * @param attachPoint
-     * @param reader
-     */
-    protected void readIntents(Object attachPoint, XMLStreamReader reader) {
-        readIntents(attachPoint, null, reader);
-    }
-
-    /**
-     * Write policy intents
-     * @param attachPoint
-     */
-    protected XAttr writeIntents(Object attachPoint) {
-        return writeIntents(attachPoint, null);
-    }
-
-    /**
-     * Read policy intents associated with an operation.
-     * @param attachPoint
-     * @param operation
-     * @param reader
-     */
-    protected void readIntents(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        if (!(attachPoint instanceof IntentAttachPoint))
-            return;
-        IntentAttachPoint intentAttachPoint = (IntentAttachPoint)attachPoint;
-        String value = reader.getAttributeValue(null, Constants.REQUIRES);
-        if (value != null) {
-            List<Intent> requiredIntents = intentAttachPoint.getRequiredIntents();
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                QName qname = getQNameValue(reader, tokens.nextToken());
-                Intent intent = policyFactory.createIntent();
-                intent.setName(qname);
-                if (operation != null) {
-                    //FIXME Don't we need to handle intent specification
-                    // on an operation basis?
-                    //intent.getOperations().add(operation);
-                }
-                requiredIntents.add(intent);
-            }
-        }
-    }
-
-    /**
-     * Write policy intents associated with an operation.
-     * @param attachPoint
-     * @param operation
-     */
-    protected XAttr writeIntents(Object attachPoint, Operation operation) {
-        if (!(attachPoint instanceof IntentAttachPoint)) {
-            return null;
-        }
-        IntentAttachPoint intentAttachPoint = (IntentAttachPoint)attachPoint;
-        List<QName> qnames = new ArrayList<QName>();
-        for (Intent intent: intentAttachPoint.getRequiredIntents()) {
-            qnames.add(intent.getName());
-        }
-        return new XAttr(Constants.REQUIRES, qnames);
-    }
-    
-    /**
-     * Reads policy intents and policy sets.
-     * @param attachPoint
-     * @param reader
-     */
-    protected void readPolicies(Object attachPoint, XMLStreamReader reader) {
-        readPolicies(attachPoint, null, reader);
-    }
-
-    /**
-     * Writes policy intents and policy sets.
-     * @param attachPoint
-     */
-    protected XAttr writePolicySets(Object attachPoint) {
-        return writePolicySets(attachPoint, null);
-    }
-
-    /**
-     * Write policy sets associated with an operation.
-     * @param attachPoint
-     * @param operation
-     */
-    protected XAttr writePolicySets(Object attachPoint, Operation operation) {
-        if (!(attachPoint instanceof PolicySetAttachPoint)) {
-            return null;
-        }
-        PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)attachPoint;
-        List<QName> qnames = new ArrayList<QName>();
-        for (PolicySet policySet: policySetAttachPoint.getPolicySets()) {
-            qnames.add(policySet.getName());
-        }
-        return new XAttr(Constants.POLICY_SETS, qnames);
-    }
-    
-    /**
-     * Reads policy intents and policy sets associated with an operation.
-     * @param attachPoint
-     * @param operation
-     * @param reader
-     */
-    protected void readPolicies(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        readIntents(attachPoint, operation, reader);
-        readPolicySets(attachPoint, operation, reader);
-    }
-
-    /**
-     * Reads policy sets.
-     * @param attachPoint
-     * @param reader
-     */
-    protected void readPolicySets(Object attachPoint, XMLStreamReader reader) {
-        readPolicySets(attachPoint, null, reader);
-    }
-
-    /**
-     * Reads policy sets associated with an operation.
-     * @param attachPoint
-     * @param operation
-     * @param reader
-     */
-    protected void readPolicySets(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        if (!(attachPoint instanceof PolicySetAttachPoint)) {
-            return;
-        }
-        PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)attachPoint;
-        String value = reader.getAttributeValue(null, Constants.POLICY_SETS);
-        if (value != null) {
-            List<PolicySet> policySets = policySetAttachPoint.getPolicySets();
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                QName qname = getQNameValue(reader, tokens.nextToken());
-                PolicySet policySet = policyFactory.createPolicySet();
-                policySet.setName(qname);
-                if (operation != null) {
-                    //FIXME Don't we need to handle policySet specification
-                    // on an operation basis?
-                    //policySet.getOperations().add(operation);
-                }
-                policySets.add(policySet);
-            }
-        }
+    protected void writeStartDocument(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
+        writer.writeStartDocument();
+        writer.setDefaultNamespace(SCA10_NS);
+        writeStart(writer, SCA10_NS, name, attrs);
+        writer.writeDefaultNamespace(SCA10_NS);
     }
 
     /**
@@ -435,46 +216,6 @@ abstract class BaseArtifactProcessor implements Constants {
         property.setMustSupply(getBoolean(reader, MUST_SUPPLY));
         property.setXSDElement(getQName(reader, ELEMENT));
         property.setXSDType(getQName(reader, TYPE));
-    }
-
-    /**
-     * Parse the next child element.
-     * @param reader
-     * @return
-     * @throws XMLStreamException
-     */
-    protected boolean nextChildElement(XMLStreamReader reader) throws XMLStreamException {
-        while (reader.hasNext()) {
-            int event = reader.next();
-            if (event == END_ELEMENT) {
-                return false;
-            }
-            if (event == START_ELEMENT) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Advance the stream to the next END_ELEMENT event skipping any nested
-     * content.
-     * @param reader the reader to advance
-     * @throws XMLStreamException if there was a problem reading the stream
-     */
-    protected void skipToEndElement(XMLStreamReader reader) throws XMLStreamException {
-        int depth = 0;
-        while (reader.hasNext()) {
-            int event = reader.next();
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                depth++;
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (depth == 0) {
-                    return;
-                }
-                depth--;
-            }
-        }
     }
 
     /**
@@ -573,89 +314,6 @@ abstract class BaseArtifactProcessor implements Constants {
             if (interfaceContract != null) {
                 extensionProcessor.resolve(interfaceContract, resolver);
             }
-        }
-    }
-
-    /**
-     * Start an element.
-     * @param uri
-     * @param name
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs)
-        throws XMLStreamException {
-        writeAttributePrefixes(writer, attrs);
-        writer.writeStartElement(uri, name);
-        writeAttributes(writer, attrs);
-    }
-
-    /**
-     * Start an element.
-     * @param writer
-     * @param name
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeStart(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
-        writeAttributePrefixes(writer, attrs);
-        writer.writeStartElement(SCA10_NS, name);
-        writeAttributes(writer, attrs);
-    }
-
-    /**
-     * End an element. 
-     * @param writer
-     * @throws XMLStreamException
-     */
-    protected void writeEnd(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeEndElement();
-    }
-
-    /**
-     * Start a document.
-     * @param writer
-     * @throws XMLStreamException
-     */
-    protected void writeStartDocument(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
-        writer.writeStartDocument();
-        writer.setDefaultNamespace(SCA10_NS);
-        writeStart(writer, name, attrs);
-        writer.writeDefaultNamespace(SCA10_NS);
-    }
-
-    /**
-     * End a document.
-     * @param writer
-     * @throws XMLStreamException
-     */
-    protected void writeEndDocument(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeEndDocument();
-    }
-
-    /**
-     * Write attributes to the current element.
-     * @param writer
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeAttributes(XMLStreamWriter writer, XAttr... attrs) throws XMLStreamException {
-        for (XAttr attr : attrs) {
-            if (attr != null)
-                attr.write(writer);
-        }
-    }
-
-    /**
-     * Write attribute prefixes to the current element.
-     * @param writer
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeAttributePrefixes(XMLStreamWriter writer, XAttr... attrs) throws XMLStreamException {
-        for (XAttr attr : attrs) {
-            if (attr != null)
-                attr.writePrefix(writer);
         }
     }
 
@@ -935,4 +593,5 @@ abstract class BaseArtifactProcessor implements Constants {
             }
         }
     }
+
 }

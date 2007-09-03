@@ -33,7 +33,7 @@ public class ConnectionProperties {
 
     private String password;
 
-    private int loginTimeOut;
+    private Integer loginTimeOut;
 
     public String getDriverClass() {
         return this.driverClass;
@@ -67,11 +67,11 @@ public class ConnectionProperties {
         this.password = password;
     }
 
-    public int getLoginTimeout() {
+    public Integer getLoginTimeout() {
         return this.loginTimeOut;
     }
 
-    public void setLoginTimeout(int loginTimeOut) {
+    public void setLoginTimeout(Integer loginTimeOut) {
         this.loginTimeOut = loginTimeOut;
     }
 

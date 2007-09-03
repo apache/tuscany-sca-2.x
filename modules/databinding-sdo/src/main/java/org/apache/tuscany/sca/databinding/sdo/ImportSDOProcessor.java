@@ -47,7 +47,9 @@ import commonj.sdo.helper.XSDHelper;
  * Loader that handles &lt;import.sdo&gt; elements.
  * 
  * @version $Rev$ $Date$
+ * @deprecated
  */
+@Deprecated
 public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
 
     public ImportSDOProcessor(ModelFactoryExtensionPoint modelFactories) {
@@ -58,7 +60,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         return IMPORT_SDO;
     }
 
-    public ImportSDO read(XMLStreamReader reader) throws ContributionReadException {
+    public ImportSDO read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPORT_SDO.equals(reader.getName());
  
         // FIXME: How do we associate the application HelperContext with the one
@@ -74,14 +76,10 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         }
 
         // Skip to end element
-        try {
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && ImportSDO.IMPORT_SDO.equals(reader.getName())) {
-                    break;
-                }
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && ImportSDO.IMPORT_SDO.equals(reader.getName())) {
+                break;
             }
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
         }
         return importSDO;
     }
@@ -146,8 +144,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     }
 
     public void write(ImportSDO model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        // TODO Auto-generated method stub
-
+        // Not implemented as <import.sdo> is deprecated
     }
 
     public Class<ImportSDO> getModelType() {

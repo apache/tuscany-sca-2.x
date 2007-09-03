@@ -135,7 +135,7 @@ public class SpringXMLComponentTypeLoader {
 
         Resource resource;
 
-        String location = implementation.getSpringLocation();
+        String location = implementation.getLocation();
 
         try {
             // FIXME - is the ContextClassLoader the right place to start the search?

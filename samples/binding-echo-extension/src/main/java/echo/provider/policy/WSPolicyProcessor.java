@@ -40,21 +40,20 @@ public class WSPolicyProcessor implements StAXArtifactProcessor<WSPolicy> {
         return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
     }
 
-    public WSPolicy read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
+    public WSPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        //FIXME Implement this method
         return new WSPolicy();
     }
 
-    public void write(WSPolicy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
-                                                        XMLStreamException {
-
+    public void write(WSPolicy wsPolicy, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        //FIXME Implement this method
     }
 
     public Class<WSPolicy> getModelType() {
-        // TODO Auto-generated method stub
         return WSPolicy.class;
     }
 
-    public void resolve(WSPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WSPolicy wsPolicy, ModelResolver modelResolver) throws ContributionResolveException {
 
     }
 }

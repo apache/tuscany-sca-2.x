@@ -54,7 +54,7 @@ public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplemen
     
     private DATAImplementationFactory dataFactory;
     
-    private StAXArtifactProcessor connectionInfoProcessor;
+    private StAXArtifactProcessor<ConnectionInfo> connectionInfoProcessor;
     
     public DATAArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
@@ -87,40 +87,36 @@ public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplemen
      *   </implementation.data>
      * </component>
      */
-    public DATAImplementation read(XMLStreamReader reader) throws ContributionReadException {
+    public DATAImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_DATA.equals(reader.getName());
 
         // Read an <implementation.data> element
-        try {
 
-            // Create an initialize the DAS implementation model
-            DATAImplementation implementation = dataFactory.createDASImplementation();
+        // Create an initialize the DAS implementation model
+        DATAImplementation implementation = dataFactory.createDASImplementation();
 
-            //FIXME: validation sending info to monitor....
-            String table = reader.getAttributeValue(null, "table");
-            implementation.setTable(table); //required                        
+        //FIXME: validation sending info to monitor....
+        String table = reader.getAttributeValue(null, "table");
+        implementation.setTable(table); //required                        
 
-            while (true) {
-                int event = reader.next();
-                switch (event) {
+        while (true) {
+            int event = reader.next();
+            switch (event) {
 
-                case START_ELEMENT:
-                    QName element = reader.getName();
+            case START_ELEMENT:
+                if (ConnectionInfoArtifactProcessor.CONNECTION_INFO.equals(reader.getName())) {
                     
-                    // Read an extension element
+                    // Read connection info
                     ConnectionInfo connectionInfo = (ConnectionInfo) connectionInfoProcessor.read(reader);;
                     implementation.setConnectionInfo(connectionInfo);
-
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (IMPLEMENTATION_DATA.equals(reader.getName())) {
-                        return implementation;
-                    }                    
-                    break;
                 }
+                break;
+            case XMLStreamConstants.END_ELEMENT:
+                if (IMPLEMENTATION_DATA.equals(reader.getName())) {
+                    return implementation;
+                }                    
+                break;
             }
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
         }
 
     }
@@ -128,6 +124,17 @@ public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplemen
     public void resolve(DATAImplementation impl, ModelResolver resolver) throws ContributionResolveException {
     }
 
-    public void write(DATAImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
+    public void write(DATAImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        writer.writeStartElement(IMPLEMENTATION_DATA.getNamespaceURI(), IMPLEMENTATION_DATA.getLocalPart());
+        
+        if (implementation.getTable() != null) {
+            writer.writeAttribute("table", implementation.getTable());
+        }
+        
+        if (implementation.getConnectionInfo() != null) { 
+            connectionInfoProcessor.write(implementation.getConnectionInfo(), writer);
+        }
+        
+        writer.writeEndElement();
     }
 }

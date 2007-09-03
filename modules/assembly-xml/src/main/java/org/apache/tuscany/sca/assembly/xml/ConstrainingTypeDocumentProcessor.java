@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  * 
  * @version $Rev$ $Date$
  */
-public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor implements URLArtifactProcessor<ConstrainingType> {
+public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<ConstrainingType> {
     private XMLInputFactory inputFactory;
 
     /**
@@ -57,10 +57,33 @@ public class ConstrainingTypeDocumentProcessor extends BaseArtifactProcessor imp
     public ConstrainingType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
         try {
+            
+            // Create a stream reader
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
             reader.nextTag();
+            
+            // Read the constrainingType model 
             ConstrainingType constrainingType = (ConstrainingType)extensionProcessor.read(reader);
+
+            // For debugging purposes, write it back to XML
+//            if (constrainingType != null) {
+//                try {
+//                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//                    XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+//                    outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+//                    extensionProcessor.write(constrainingType, outputFactory.createXMLStreamWriter(bos));
+//                    Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos.toByteArray()));
+//                    OutputFormat format = new OutputFormat();
+//                    format.setIndenting(true);
+//                    format.setIndent(2);
+//                    XMLSerializer serializer = new XMLSerializer(System.out, format);
+//                    serializer.serialize(document);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            
             return constrainingType;
             
         } catch (XMLStreamException e) {

@@ -35,24 +35,22 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 public interface StAXArtifactProcessor<M> extends ArtifactProcessor<M> {
 
     /**
-     * Reads a model from an input source. Examples of input sources are: a URI, a
-     * DOM node, an XML reader.
+     * Reads a model from an XMLStreamReader.
      * 
-     * @param inputSource The input source
+     * @param reader The XMLStreamReader
      * @return A model representation of the input.
      */
-    M read(XMLStreamReader inputSource) throws ContributionReadException, XMLStreamException;
+    M read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException;
     
     /**
-     * Writes a model to an ouput source. Examples of output sources are: a URI, a
-     * DOM node, an XML writer.
+     * Writes a model to an XMLStreamWriter.
      * 
      * @param model A model representing the source
-     * @param outputSource The output source
+     * @param writer The XML stream writer
      * @throws ContributionWriteException
      * @throws XMLStreamException
      */
-    void write(M model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException;
+    void write(M model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException;
     
     /**
      * Returns the type of artifact handled by this artifact processor.

@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -46,7 +47,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * 
  * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
-public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImplementation> {
+public class SpringImplementationProcessor implements StAXArtifactProcessor<SpringImplementation> {
 
     private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_SPRING = "implementation.spring";
@@ -56,11 +57,13 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
+    private PolicyAttachPointProcessor policyProcessor;
     
-    public SpringArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public SpringImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
     }
 
     /*
@@ -82,32 +85,28 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
      * then the default behaviour is to build an application context using all the *.xml files 
      * in the METAINF/spring directory.
      */
-    public SpringImplementation read(XMLStreamReader reader) throws ContributionReadException {
+    public SpringImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
-        try {
-            /* Read the location attribute for the spring implementation  */
-            String springLocation = reader.getAttributeValue(null, LOCATION);
-            if (springLocation == null) {
-                throw new ContributionReadException(MSG_LOCATION_MISSING);
-            }
-            /* Create the Spring implementation and set the location into it */
-            SpringImplementation springImplementation = new SpringImplementation();
-            springImplementation.setSpringLocation(springLocation);
+        // Create the Spring implementation
+        SpringImplementation springImplementation = new SpringImplementation();
 
-            // Skip to end element
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && IMPLEMENTATION_SPRING_QNAME.equals(reader.getName())) {
-                    break;
-                }
-            } // end while
-
-            processComponentType(springImplementation);
-
-            return springImplementation;
-
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        // Read the location attribute for the spring implementation
+        String springLocation = reader.getAttributeValue(null, LOCATION);
+        if (springLocation == null) {
+            throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
+        springImplementation.setLocation(springLocation);
+
+        // Skip to end element
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_SPRING_QNAME.equals(reader.getName())) {
+                break;
+            }
+        } // end while
+
+        processComponentType(springImplementation);
+
+        return springImplementation;
     } // end read
 
     /*
@@ -128,19 +127,19 @@ public class SpringArtifactProcessor implements StAXArtifactProcessor<SpringImpl
      * Write out the XML representation of the Spring implementation
      * <implementation.spring location="..." />
      */
-    public void write(SpringImplementation springImplementation, XMLStreamWriter writer)
-        throws ContributionWriteException {
-        try {
+    public void write(SpringImplementation springImplementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
 
-            writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_SPRING);
-            if (springImplementation.getSpringLocation() != null) {
-                writer.writeAttribute(LOCATION, springImplementation.getSpringLocation());
-            }
-            writer.writeEndElement();
-
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
+        // Write <implementation.spring>
+        policyProcessor.writePolicyPrefixes(springImplementation, writer);
+        writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_SPRING);
+        policyProcessor.writePolicyAttributes(springImplementation, writer);
+        
+        if (springImplementation.getLocation() != null) {
+            writer.writeAttribute(LOCATION, springImplementation.getLocation());
         }
+
+        writer.writeEndElement();
+
     } // end write
 
     /**

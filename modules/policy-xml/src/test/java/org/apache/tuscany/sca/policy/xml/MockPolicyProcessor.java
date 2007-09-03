@@ -46,7 +46,6 @@ public class MockPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
     public void write(Policy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
                                                         XMLStreamException {
-
     }
 
     public Class<Policy> getModelType() {

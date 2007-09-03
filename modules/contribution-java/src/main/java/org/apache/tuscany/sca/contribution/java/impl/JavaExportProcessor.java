@@ -69,7 +69,6 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     public JavaExport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         JavaExport javaExport = this.factory.createJavaExport();
         QName element = null;
-
         
         while (reader.hasNext()) {
             int event = reader.getEventType();
@@ -77,6 +76,7 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
                 case START_ELEMENT:
                     element = reader.getName();
                     
+                    // Read <export.java>
                     if (EXPORT_JAVA.equals(element)) {
                         String packageName = reader.getAttributeValue(null, PACKAGE);
                         if (packageName == null) {
@@ -102,8 +102,16 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
         return javaExport;
     }
 
-    public void write(JavaExport model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(JavaExport javaExport, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
+        // Write <export.java>
+        writer.writeStartElement(EXPORT_JAVA.getNamespaceURI(), EXPORT_JAVA.getLocalPart());
+        
+        if (javaExport.getPackage() != null) {
+            writer.writeAttribute(PACKAGE, javaExport.getPackage());
+        }
+        
+        writer.writeEndElement();
     }
 
     public void resolve(JavaExport model, ModelResolver resolver) throws ContributionResolveException {

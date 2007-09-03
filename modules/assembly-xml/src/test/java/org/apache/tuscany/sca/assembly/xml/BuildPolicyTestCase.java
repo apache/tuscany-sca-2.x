@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.SCADefinitions;
 import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
 import org.apache.tuscany.sca.policy.xml.ProfileIntentProcessor;
@@ -68,6 +67,7 @@ public class BuildPolicyTestCase extends TestCase {
     CompositeBuilder compositeBuilder;
     Composite composite = null;
 
+    @Override
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
@@ -122,6 +122,7 @@ public class BuildPolicyTestCase extends TestCase {
         compositeBuilder.build(composite);
     }
 
+    @Override
     public void tearDown() throws Exception {
         documentProcessor = null;
         resolver = null;

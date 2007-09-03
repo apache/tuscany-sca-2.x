@@ -21,23 +21,21 @@ package echo.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 import echo.EchoBinding;
 import echo.EchoBindingFactory;
@@ -50,11 +48,11 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
     private QName BINDING_ECHO = new QName("http://echo", "binding.echo");
     
     private final EchoBindingFactory factory;
-    private PolicyFactory policyFactory;
+    private PolicyAttachPointProcessor policyProcessor;
 
-    public EchoBindingProcessor(EchoBindingFactory factory, PolicyFactory pFactory) {
+    public EchoBindingProcessor(EchoBindingFactory factory, PolicyFactory policyFactory) {
         this.factory = factory;
-        this.policyFactory = pFactory;
+        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
     }
 
     public QName getArtifactType() {
@@ -65,72 +63,39 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
         return EchoBinding.class;
     }
 
-    public EchoBinding read(XMLStreamReader reader) throws ContributionReadException {
+    public EchoBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         EchoBinding echoBinding = factory.createEchoBinding();
 
         String name = reader.getAttributeValue(null, "name");
         if (name != null) {
             echoBinding.setName(name);
         }
+
         String uri = reader.getAttributeValue(null, "uri");
         if (uri != null) {
             echoBinding.setURI(uri);
         }
         
-        readPolicies(echoBinding, null, reader);
+        policyProcessor.readPolicies(echoBinding, reader);
+
         return echoBinding;
     }
     
-    protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
-    }
-    
-    protected void readIntents(IntentAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
-        String value = reader.getAttributeValue(null, "requires");
-        if (value != null) {
-            List<Intent> requiredIntents = attachPoint.getRequiredIntents();
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                QName qname = getQNameValue(reader, tokens.nextToken());
-                Intent intent = policyFactory.createIntent();
-                intent.setName(qname);
-                if (operation != null) {
-                    //intent.getOperations().add(operation);
-                }
-                requiredIntents.add(intent);
-            }
-        }
-    }
-    
-    protected void readPolicies(PolicySetAttachPoint attachPoint, Operation operation, XMLStreamReader reader) {
-        readIntents(attachPoint, operation, reader);
+    public void write(EchoBinding echoBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
 
-        String value = reader.getAttributeValue(null, "policySets");
-        if (value != null) {
-            List<PolicySet> policySets = attachPoint.getPolicySets();
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                QName qname = getQNameValue(reader, tokens.nextToken());
-                PolicySet policySet = policyFactory.createPolicySet();
-                policySet.setName(qname);
-                if (operation != null) {
-                    //policySet.getOperations().add(operation);
-                }
-                policySets.add(policySet);
-            }
+        policyProcessor.writePolicyPrefixes(echoBinding, writer);
+        writer.writeStartElement(BINDING_ECHO.getNamespaceURI(), BINDING_ECHO.getLocalPart());
+        policyProcessor.writePolicyAttributes(echoBinding, writer);
+        
+        if (echoBinding.getName() != null) {
+            writer.writeAttribute("name", echoBinding.getName());
         }
-    }
-
-    public void write(EchoBinding echoBinding, XMLStreamWriter writer) throws ContributionWriteException {
+        
+        if (echoBinding.getURI() != null) {
+            writer.writeAttribute("uri", echoBinding.getURI());
+        }
+        
+        writer.writeEndElement();
     }
 
     public void resolve(EchoBinding echoBinding, ModelResolver resolver) throws ContributionResolveException {

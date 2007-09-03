@@ -39,7 +39,7 @@ import org.springframework.core.io.Resource;
 public class SpringImplementation extends ComponentTypeImpl implements Implementation, Extensible {
 
     // The location attribute which points to the Spring application-context XML file
-    private String springLocation;
+    private String location;
     // The application-context file as a Spring Resource
     private Resource resource;
     private ComponentType componentType;
@@ -49,7 +49,7 @@ public class SpringImplementation extends ComponentTypeImpl implements Implement
     private Hashtable<String, Class> propertyMap;
 
     protected SpringImplementation() {
-        this.springLocation = null;
+        this.location = null;
         this.resource = null;
         setUnresolved(true);
         serviceMap = new Hashtable<String, SpringBeanElement>();
@@ -57,16 +57,16 @@ public class SpringImplementation extends ComponentTypeImpl implements Implement
     } // end method SpringImplementation
 
     /* Returns the location attribute for this Spring implementation */
-    public String getSpringLocation() {
-        return springLocation;
+    public String getLocation() {
+        return location;
     }
 
     /**
      * Sets the location attribute for this Spring implementation
      * location - a URI to the Spring application-context file
      */
-    public void setSpringLocation(String location) {
-        this.springLocation = location;
+    public void setLocation(String location) {
+        this.location = location;
         return;
     }
 

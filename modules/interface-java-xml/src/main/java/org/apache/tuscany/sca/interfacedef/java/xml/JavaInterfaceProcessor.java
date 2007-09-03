@@ -54,52 +54,47 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         return javaInterface;
     }
 
-    public JavaInterfaceContract read(XMLStreamReader reader) throws ContributionReadException {
-        try {
-            // Read an <interface.java>
-            JavaInterfaceContract javaInterfaceContract = javaFactory.createJavaInterfaceContract();
-            String interfaceName = reader.getAttributeValue(null, INTERFACE);
-            if (interfaceName != null) {
-                JavaInterface javaInterface = createJavaInterface(interfaceName);
-                javaInterfaceContract.setInterface(javaInterface);
-            }
-
-            String callbackInterfaceName = reader.getAttributeValue(null, CALLBACK_INTERFACE);
-            if (callbackInterfaceName != null) {
-                JavaInterface javaCallbackInterface = createJavaInterface(callbackInterfaceName);
-                javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
-            }
-    
-            // Skip to end element
-            while (reader.hasNext()) {
-                if (reader.next() == END_ELEMENT && INTERFACE_JAVA_QNAME.equals(reader.getName())) {
-                    break;
-                }
-            }
-            return javaInterfaceContract;
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+    public JavaInterfaceContract read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        
+        // Read an <interface.java>
+        JavaInterfaceContract javaInterfaceContract = javaFactory.createJavaInterfaceContract();
+        String interfaceName = reader.getAttributeValue(null, INTERFACE);
+        if (interfaceName != null) {
+            JavaInterface javaInterface = createJavaInterface(interfaceName);
+            javaInterfaceContract.setInterface(javaInterface);
         }
+
+        String callbackInterfaceName = reader.getAttributeValue(null, CALLBACK_INTERFACE);
+        if (callbackInterfaceName != null) {
+            JavaInterface javaCallbackInterface = createJavaInterface(callbackInterfaceName);
+            javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
+        }
+
+        // Skip to end element
+        while (reader.hasNext()) {
+            if (reader.next() == END_ELEMENT && INTERFACE_JAVA_QNAME.equals(reader.getName())) {
+                break;
+            }
+        }
+        return javaInterfaceContract;
     }
     
-    public void write(JavaInterfaceContract javaInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException {
-        try {
-            // Write an <interface.java>
-            writer.writeStartElement(Constants.SCA10_NS, INTERFACE_JAVA);
-            JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
-            if (javaInterface != null && javaInterface.getName() != null) {
-                writer.writeAttribute(INTERFACE, javaInterface.getName());
-            }
-            JavaInterface javaCallbackInterface = (JavaInterface)javaInterfaceContract.getCallbackInterface();
-            if (javaCallbackInterface != null && javaCallbackInterface.getName() != null) {
-                writer.writeAttribute(CALLBACK_INTERFACE, javaCallbackInterface.getName());
-            }
-            writer.writeEndElement();
-            
-        } catch (XMLStreamException e) {
-            throw new ContributionWriteException(e);
+    public void write(JavaInterfaceContract javaInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+        
+        // Write an <interface.java>
+        writer.writeStartElement(Constants.SCA10_NS, INTERFACE_JAVA);
+        JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
+        
+        if (javaInterface != null && javaInterface.getName() != null) {
+            writer.writeAttribute(INTERFACE, javaInterface.getName());
         }
+        
+        JavaInterface javaCallbackInterface = (JavaInterface)javaInterfaceContract.getCallbackInterface();
+        if (javaCallbackInterface != null && javaCallbackInterface.getName() != null) {
+            writer.writeAttribute(CALLBACK_INTERFACE, javaCallbackInterface.getName());
+        }
+        
+        writer.writeEndElement();
     }
     
     private JavaInterface resolveJavaInterface(JavaInterface javaInterface, ModelResolver resolver) throws ContributionResolveException {
