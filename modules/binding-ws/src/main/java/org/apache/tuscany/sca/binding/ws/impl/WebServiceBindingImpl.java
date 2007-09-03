@@ -27,22 +27,30 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents a WebService binding.
  *
  * @version $Rev$ $Date$
  */
-public class WebServiceBindingImpl implements WebServiceBinding {
+class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, Extensible {
     private String name;
     private String uri;
     private boolean unresolved;
     private List<Object> extensions = new ArrayList<Object>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType intentAttachPointType;
     
     private String location;
     private Binding binding;
@@ -226,5 +234,20 @@ public class WebServiceBindingImpl implements WebServiceBinding {
     public void setBindingInterfaceContract(InterfaceContract bindingInterfaceContract) {
         this.bindingInterfaceContract = bindingInterfaceContract;
     }
+    
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+    
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
+    public IntentAttachPointType getType() {
+        return intentAttachPointType;
+    }
+    
+    public void setType(IntentAttachPointType intentAttachPointType) {
+        this.intentAttachPointType = intentAttachPointType;
+    }
 }
