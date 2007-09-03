@@ -17,9 +17,12 @@ depending on which app server you are using.
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8085/sample-calculator-ws-webapp/calc.jsp
+http://localhost:8080/sample-calculator-ws-webapp
 
-The port and hostname will of course vary depending on your local installation. 
+The sample is configured to use a service on port 8080. If your servlet container
+is using a port other than 8080 then you will need to edit the Calculator.composite
+and change the uri attribute of the <binding.ws> used by the CalculatorServiceComponent
+to use the correct port.
 
 Sample Overview
 ---------------
