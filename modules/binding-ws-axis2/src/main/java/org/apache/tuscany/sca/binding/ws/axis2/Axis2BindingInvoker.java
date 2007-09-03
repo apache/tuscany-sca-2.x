@@ -50,7 +50,8 @@ public class Axis2BindingInvoker implements Invoker {
     private Options options;
     private SOAPFactory soapFactory;
 
-    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA_NS, "conversationID");
+    public static final QName CALLBACK_ID_REFPARM_QN = new QName(Constants.SCA_NS, "CallbackID");
+    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA_NS, "ConversationID");
 
     public Axis2BindingInvoker(ServiceClient serviceClient,
                                QName wsdlOperationName,
@@ -124,15 +125,31 @@ public class Axis2BindingInvoker implements Invoker {
 
         // Axis2 operationClients can not be shared so create a new one for each request
         OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
+        operationClient.setOptions(options);
 
+        // set callback endpoint and callback ID for WS-Addressing header
+        EndpointReference fromEPR = null;
+        if (msg.getFrom() != null) {
+            fromEPR = new EndpointReference(msg.getFrom().getBinding().getURI());
+            //FIXME: serialize callback ID to XML in case it is not a string
+            fromEPR.addReferenceParameter(CALLBACK_ID_REFPARM_QN,
+                                          (String)msg.getCallableReference().getCallbackID());
+        }
+
+        // set conversation ID for WS-Addressing header
+        //FIXME: get conversation ID from the message's callable reference
+        //FIXME: serialize conversation ID to XML in case it is not a string
         String conversationId = msg.getConversationID();
         if (conversationId != null && conversationId.length() != 0) {
-            EndpointReference fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
+            if (fromEPR == null) {
+                fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
+            }
             fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId);
-            options.setFrom(fromEPR);
-            requestMC.setFrom(fromEPR); //who knows why two ways ?
+        }
 
-            //For now do this the brute force method. Need to figure out how to do axis addressing .. configure mar in flow.
+        // add WS-Addressing header
+        //FIXME: is there any way to use the Axis2 addressing support for this?
+        if (fromEPR != null) {
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
             OMElement el =
@@ -140,9 +157,9 @@ public class Axis2BindingInvoker implements Invoker {
                              AddressingConstants.WSA_FROM,
                              AddressingConstants.WSA_DEFAULT_PREFIX);
             sh.addChild(el);
+            requestMC.setFrom(fromEPR);
         }
 
-        operationClient.setOptions(options);
         // if target endpoint was not specified when this invoker was created, 
         // use dynamically specified target endpoint passed in on this call
         if (options.getTo() == null) {
@@ -153,30 +170,7 @@ public class Axis2BindingInvoker implements Invoker {
                 throw new RuntimeException("Unable to determine destination endpoint");
             }
         }
-        //FIXME: need to consolidate the following code with similar code above for
-        // conversations, so that conversations and callbacks work when used together
-        if (options.getFrom() != null) {
-            requestMC.setFrom(options.getFrom());
-            //FIXME: is there any way to use the Axis2 addressing support for this?
-            SOAPEnvelope sev = requestMC.getEnvelope();
-            SOAPHeader sh = sev.getHeader();
-            OMElement el =
-                options.getFrom().toOM(AddressingConstants.Final.WSA_NAMESPACE,
-                                       AddressingConstants.WSA_FROM,
-                                       AddressingConstants.WSA_DEFAULT_PREFIX);
-            sh.addChild(el);
-        } else if (msg.getFrom() != null)  {
-            EndpointReference fromEpr = new EndpointReference(msg.getFrom().getURI());
-            requestMC.setFrom(fromEpr);
-            SOAPEnvelope sev = requestMC.getEnvelope();
-            SOAPHeader sh = sev.getHeader();
-            OMElement el = fromEpr.toOM(AddressingConstants.Final.WSA_NAMESPACE,
-                                        AddressingConstants.WSA_FROM,
-                                        AddressingConstants.WSA_DEFAULT_PREFIX);
-            sh.addChild(el);
-        } else {
-            // the from field remains blank
-        }
+
         operationClient.addMessageContext(requestMC);
 
         return operationClient;

@@ -48,7 +48,7 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
 
     public void resolveTarget() {
         Message msgContext = ThreadMessageContext.getMessageContext();
-        wire = selectCallbackWire(msgContext, wires);
+        wire = selectCallbackWire(msgContext);
         if (wire == null) {
             //FIXME: need better exception
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
@@ -69,7 +69,7 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
         }
     }
 
-    public static RuntimeWire selectCallbackWire(Message msgContext, List<RuntimeWire> wires) {
+    public RuntimeWire selectCallbackWire(Message msgContext) {
         EndpointReference from = msgContext.getFrom();
         if (from == null) {
             return null;

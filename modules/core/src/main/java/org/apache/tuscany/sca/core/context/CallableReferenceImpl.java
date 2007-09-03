@@ -112,7 +112,11 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     }
 
     public RuntimeWire getRuntimeWire() {
-        return reference.getRuntimeWire(binding);
+        if (reference != null) {
+            return reference.getRuntimeWire(binding);
+        } else {
+            return null;
+        }
     }
     
     protected void bind(RuntimeWire wire) {

@@ -82,7 +82,7 @@ public class CglibProxyFactory implements ProxyFactory {
     public <T> T createCallbackProxy(Class<T> interfaze, final List<RuntimeWire> wires) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(interfaze);
-        enhancer.setCallback(new CglibMethodInterceptor<T>(wires));
+        enhancer.setCallback(new CglibMethodInterceptor<T>(interfaze, wires));
         Object proxy = enhancer.create();
         return interfaze.cast(proxy);
     }
@@ -121,8 +121,9 @@ public class CglibProxyFactory implements ProxyFactory {
             invocationHandler = new JDKInvocationHandler(messageFactory, serviceRef);
         }
 
-        public CglibMethodInterceptor(List<RuntimeWire> wires) {
-            invocationHandler = new JDKCallbackInvocationHandler(messageFactory, wires);
+        public CglibMethodInterceptor(Class<T> interfaze, List<RuntimeWire> wires) {
+            CallbackWireObjectFactory wireFactory = new CallbackWireObjectFactory(interfaze, CglibProxyFactory.this, wires);
+            invocationHandler = new JDKCallbackInvocationHandler(messageFactory, wireFactory);
         }
 
         /**

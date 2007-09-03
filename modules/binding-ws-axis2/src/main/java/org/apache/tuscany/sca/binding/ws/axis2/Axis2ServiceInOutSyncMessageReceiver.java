@@ -47,14 +47,10 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
-            
-            String conversationID = provider.getConversationID(inMC);
-            String callbackAddress = provider.getFromEPR(inMC);
-            OMElement responseOM = (OMElement)provider.invokeTarget(operation, args, null, conversationID,
-                                                                    callbackAddress);
+            OMElement responseOM = (OMElement)provider.invokeTarget(operation, args, inMC);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
-            if(null != responseOM ){
+            if (null != responseOM ) {
                 soapEnvelope.getBody().addChild(responseOM);
             }
             outMC.setEnvelope(soapEnvelope);
@@ -69,6 +65,5 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
         } catch (Exception e) {
             throw AxisFault.makeFault(e);
         }
-
     }
 }

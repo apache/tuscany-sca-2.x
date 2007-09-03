@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -56,20 +55,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         // Set to use the Axiom data binding
         contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
 
-        // look for a matching callback binding
-        WebServiceBinding callbackBinding = null;
-        if (reference.getCallback() != null) {
-            for (Binding binding : reference.getCallback().getBindings()) {
-                if (binding instanceof WebServiceBinding) {
-                    // set the first compatible callback binding
-                    callbackBinding = (WebServiceBinding)binding;
-                    continue;
-                }
-            }
-        }
-
-        axisClient =
-            new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory, callbackBinding);
+        axisClient = new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory);
     }
 
     public void start() {
