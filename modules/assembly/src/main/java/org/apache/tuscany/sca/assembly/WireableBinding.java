@@ -41,19 +41,6 @@ public interface WireableBinding extends Binding, Cloneable {
     void setTargetBinding(Binding binding);
     
     /**
-     * If a reference targets in a component running in a separate
-     * node then its binding will be set remote until runtime
-     * 
-     * @param isRemote
-     */
-    void setRemote(boolean isRemote);
-    
-    /**
-     * @return the flag indicating whether the binding targets a remote component
-     */
-    boolean isRemote();
-     
-    /**
      * @return
      */
     Binding getTargetBinding();

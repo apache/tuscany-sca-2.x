@@ -49,7 +49,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
     private Component targetComponent;
     private ComponentService targetComponentService;
     private Binding targetBinding;
-    private boolean isRemote = false;
     
     private DistributedSCADomain distributedDomain;
 
@@ -194,24 +193,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
      */
     public void setTargetBinding(Binding targetBinding) {
         this.targetBinding = targetBinding;
-    }
-    
-    /**
-     * If a reference targets a component running in a separate
-     * node then its binding will be set remote to kick
-     * off runtime resolution
-     * 
-     * @param isRemote
-     */
-    public void setRemote(boolean isRemote){
-        this.isRemote = isRemote;
-    }
-    
-    /**
-     * @return the flag indicating whether the binding targets a remote component
-     */
-    public boolean isRemote(){
-        return isRemote;
     }
     
     // Operations needed by the distributed SCA binding

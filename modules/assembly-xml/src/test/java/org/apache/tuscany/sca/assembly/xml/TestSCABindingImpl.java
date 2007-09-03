@@ -46,7 +46,6 @@ public class TestSCABindingImpl implements SCABinding, WireableBinding, PolicySe
     private Component targetComponent;
     private ComponentService targetComponentService;
     private Binding targetBinding;
-    private boolean isRemote = false;
     
     List<Intent> requiredIntents = new ArrayList<Intent>();
     List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -133,23 +132,6 @@ public class TestSCABindingImpl implements SCABinding, WireableBinding, PolicySe
      */
     public void setTargetBinding(Binding targetBinding) {
         this.targetBinding = targetBinding;
-    }
-    
-    /**
-     * If a reference targets in a component running in a separate
-     * node then its binding will be set remote until runtime
-     * 
-     * @param isRemote
-     */
-    public void setRemote(boolean isRemote){
-        this.isRemote = isRemote;
-    }
-    
-    /**
-     * @return the flag indicating whether the binding targets a remote component
-     */
-    public boolean isRemote(){
-        return isRemote;
     }
     
     public List<PolicySet> getPolicySets() {

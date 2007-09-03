@@ -356,11 +356,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param binding
      */
     private void addServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
-        // REVIEW: Is this the right way to mark the binding as remote?
-        if ((binding instanceof WireableBinding) && (service.getInterfaceContract().getInterface().isRemotable())) {
-            WireableBinding wireableBinding = (WireableBinding)binding;
-            wireableBinding.setRemote(true);
-        }
         BindingProviderFactory providerFactory =
             (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
         if (providerFactory != null) {
