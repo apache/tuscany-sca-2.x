@@ -28,12 +28,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.policy.Policy;
 
-/**
- * @author administrator
- *
- */
 public class WSPolicyProcessor implements StAXArtifactProcessor<WSPolicy> {
 
     public QName getArtifactType() {
