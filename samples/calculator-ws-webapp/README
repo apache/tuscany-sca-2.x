@@ -9,12 +9,9 @@ first.
 
 As this sample provides a web app there is a manual step where the WAR file
 that contains the sample is copied to your web app container. If you just want 
-to give this sample a go deploy the WAR file (target/sample-calculator-webapp.war)
+to give this sample a go deploy the WAR file (target/sample-calculator-ws-webapp.war)
 to you web application server. 
   
-You may find that you need to remove the servlet-api jars in WEB-INF/lib
-depending on which app server you are using. 
-
 Once the web app is deployed use your browser to visit the following URL;
 
 http://localhost:8080/sample-calculator-ws-webapp
@@ -29,24 +26,24 @@ Sample Overview
 The sample provides a single calculator service with a default SCA (java) 
 binding. The CalculatorClient exercises this interface by calling add, 
 subtract, multiply and divide operations. This results in messages passing to 
-the appropriate components in the composite across the local wires.
+the appropriate components in the composite.
 
 calculator-webapp/
   src/
     main/
       java/
         calculator/
-          CalculatorService.java  - As calculator sample
-          CalculatorServiceImpl.java
           AddService.java         - As calculator sample
           AddServiceImpl.java
-          SubtractService.java    - As calculator sample
-          SubtractServiceImpl.java
-          MultiplyService.java    - As calculator sample
-          MultiplyServiceImpl.java
+          CalculatorClient.java   - As calculator sample
+          CalculatorService.java  - As calculator sample
+          CalculatorServiceImpl.java
           DivideService.java      - As calculator sample
           DivideServiceImpl.java
-          CalculatorClient.java   - As calculator sample
+          MultiplyService.java    - As calculator sample
+          MultiplyServiceImpl.java
+          SubtractService.java    - As calculator sample
+          SubtractServiceImpl.java
       resources/
         Calculator.composite      - As calculator sample except that the 
                                     connection between the CalculatorService
@@ -60,24 +57,21 @@ calculator-webapp/
                                     calls to the TuscanyServlet
         calc.jsp                  - the web application that makes use of the
                                     SCA application 
-    test/
-      java/
-        calculator/
-          CalculatorTestCase.java - JUnit test case 
            
   calculator.png - a pictorial representation of the sample .composite file
   build.xml      - the Ant build file
-  pom.xml        - the Maven build file  
+  pom.xml        - the Maven build file
+  README         - this file  
 
 Building And Running The Sample Using Ant
 -----------------------------------------
 With the binary distribution the sample can be built using Ant as 
 follows
 
-cd calculator-web
+cd calculator-ws-webapp
 ant package
 
-This should result in a war file (sample-calculator-webapp.war) in the target 
+This should result in a war file (sample-calculator-ws-webapp.war) in the target 
 directory. Copy this war file to your web app deployment directory in you
 web app container. 
 
@@ -87,7 +81,7 @@ of copying the WAR file to the webapps directory.
 
 Once the web app is deployed use your browser to visit the following URL;
 
-http://localhost:8085/sample-calculator-webapp/calc.jsp
+http://localhost:8080/sample-calculator-ws-webapp
 
 The port and hostname will of course vary depending on your local installation. 
 
@@ -104,10 +98,10 @@ Building And Running The Sample Using Maven
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. 
 
-cd calculator-web 
+cd calculator-ws-webapp 
 mvn
 
-Again this should result in a war file (sample-calculator-webapp.war) in the target 
+Again this should result in a war file (sample-calculator-ws-webapp.war) in the target 
 directory. Follow the steps described in the previous section for running the web 
 app and for the expected results.
 
