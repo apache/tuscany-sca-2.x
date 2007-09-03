@@ -160,7 +160,6 @@ public class EmbeddedSCADomain extends SCADomain {
             SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
             SCABinding binding = scaBindingFactory.createSCABinding();
             binding.setURI(targetURI);
-            ((WireableBinding)binding).setRemote(true);
             reference.getBindings().add(binding);
             return new ServiceReferenceImpl<B>(businessInterface, component, reference, binding, runtime
                 .getProxyFactory(), runtime.getCompositeActivator());

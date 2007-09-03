@@ -148,7 +148,6 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
                 wireableBinding.setTargetBinding(binding);
                 wireableBinding.setTargetComponent(component);
                 wireableBinding.setTargetComponentService(service);
-                wireableBinding.setRemote(false);
                 ref.getBindings().add(wireableBinding);
             } else {
                 ref.getBindings().add(binding);

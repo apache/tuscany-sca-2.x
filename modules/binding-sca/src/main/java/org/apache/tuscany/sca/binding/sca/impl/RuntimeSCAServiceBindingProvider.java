@@ -55,7 +55,8 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
                                             SCABinding binding) {
         this.service = service;
         // if there is potentially a wire to this service that crosses the node boundary 
-        if (((WireableBinding)binding).isRemote()) {        
+        if (service.getInterfaceContract().getInterface().isRemotable()) {  
+            
             // look to see if a distributed SCA binding implementation has
             // been included on the classpath. This will be needed by the 
             // provider itself to do it's thing
