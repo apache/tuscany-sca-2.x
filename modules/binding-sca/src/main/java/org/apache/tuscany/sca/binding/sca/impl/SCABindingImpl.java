@@ -28,16 +28,23 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * he assemly mode object for an SCA binding.
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, Extensible, WireableBinding {
+public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPoint, WireableBinding {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType intentAttachPointType;
     
     private Component targetComponent;
     private ComponentService targetComponentService;
@@ -129,6 +136,22 @@ public class SCABindingImpl implements SCABinding, Extensible, WireableBinding {
         return super.clone();
     }
     
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+    
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public IntentAttachPointType getType() {
+        return intentAttachPointType;
+    }
+    
+    public void setType(IntentAttachPointType intentAttachPointType) {
+        this.intentAttachPointType = intentAttachPointType;
+    }
+    
     // Wireable binding operations
 
     /**
@@ -201,4 +224,5 @@ public class SCABindingImpl implements SCABinding, Extensible, WireableBinding {
     public DistributedSCADomain getDistributedDomain(){
         return distributedDomain;
     }
+
 }

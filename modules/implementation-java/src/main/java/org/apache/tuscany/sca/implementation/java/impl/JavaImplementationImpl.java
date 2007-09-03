@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class JavaImplementationImpl extends BaseJavaImplementationImpl implements JavaImplementation {
+class JavaImplementationImpl extends BaseJavaImplementationImpl implements JavaImplementation {
     private JavaConstructorImpl<?> constructorDefinition;
     private Map<Constructor, JavaConstructorImpl> constructors = new HashMap<Constructor, JavaConstructorImpl>();
     private Method initMethod;

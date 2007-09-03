@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.implementation.java.BaseJavaImplementation;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class BaseJavaImplementationImpl extends ComponentTypeImpl implements BaseJavaImplementation {
+abstract class BaseJavaImplementationImpl extends ComponentTypeImpl implements BaseJavaImplementation {
 
     private String className;
     private Class<?> javaClass;

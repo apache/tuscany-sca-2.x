@@ -19,18 +19,25 @@
 
 package org.apache.tuscany.sca.binding.feed.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.binding.feed.RSSBinding;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Implementation of the RSS Feed binding model.
  */
-class RSSBindingImpl implements RSSBinding {
+class RSSBindingImpl implements RSSBinding, PolicySetAttachPoint {
 
     private String name;
     private String uri;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType intentAttachPointType;
 
     public String getName() {
         return name;
@@ -56,4 +63,19 @@ class RSSBindingImpl implements RSSBinding {
         // The binding is always resolved
     }
 
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+    
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public IntentAttachPointType getType() {
+        return intentAttachPointType;
+    }
+    
+    public void setType(IntentAttachPointType intentAttachPointType) {
+        this.intentAttachPointType = intentAttachPointType;
+    }
 }
