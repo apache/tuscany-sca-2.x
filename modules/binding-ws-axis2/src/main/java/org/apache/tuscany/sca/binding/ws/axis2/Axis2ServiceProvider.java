@@ -297,7 +297,7 @@ public class Axis2ServiceProvider {
 
         String callbackAddress = null;
         String callbackID = null;
-        String conversationID = null;
+        Object conversationID = null;
 
         //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
