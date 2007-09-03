@@ -50,6 +50,20 @@ public class ConversationIDProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("cid"));
     }
 
+    public void testConversationIDMethodNotString() throws Exception {
+        Method method = Foo.class.getMethod("setConversationID", Long.class);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitMethod(method, type);
+        assertNotNull(type.getResources().get("conversationID"));
+    }
+
+    public void testConversationIDFieldNotString() throws Exception {
+        Field field = Foo.class.getDeclaredField("longCID");
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        processor.visitField(field, type);
+        assertNotNull(type.getResources().get("longCID"));
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -67,5 +81,12 @@ public class ConversationIDProcessorTestCase extends TestCase {
 
         }
 
+        @ConversationID
+        protected Long longCID;
+
+        @ConversationID
+        public void setConversationID(Long cid) {
+
+        }
     }
 }

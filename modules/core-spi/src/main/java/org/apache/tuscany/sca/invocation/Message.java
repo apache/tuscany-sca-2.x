@@ -46,13 +46,13 @@ public interface Message {
      * Get the conversation id
      * @return The conversation ID
      */
-    String getConversationID();
+    Object getConversationID();
 
     /**
      * Set the conversation id
      * @param conversationId The conversation ID
      */
-    void setConversationID(String conversationId);
+    void setConversationID(Object conversationId);
 
     /**
      * Get the end point reference of the source reference

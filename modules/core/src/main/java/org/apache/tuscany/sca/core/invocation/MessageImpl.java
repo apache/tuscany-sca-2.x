@@ -35,7 +35,7 @@ public class MessageImpl implements Message {
     private Object correlationID;
     private boolean isFault;
     private ConversationSequence conversationSequence;
-    private String conversationId;
+    private Object conversationId;
     private Operation op;
     private CallableReference<?> callableReference;
     
@@ -61,11 +61,11 @@ public class MessageImpl implements Message {
         this.body = body;
     }
 
-    public String getConversationID() {
+    public Object getConversationID() {
         return conversationId;
     }
 
-    public void setConversationID(String conversationId) {
+    public void setConversationID(Object conversationId) {
         this.conversationId = conversationId;
     }
     

@@ -138,13 +138,13 @@ public class Axis2BindingInvoker implements Invoker {
 
         // set conversation ID for WS-Addressing header
         //FIXME: get conversation ID from the message's callable reference
-        //FIXME: serialize conversation ID to XML in case it is not a string
-        String conversationId = msg.getConversationID();
-        if (conversationId != null && conversationId.length() != 0) {
+        Object conversationId = msg.getConversationID();
+        if (conversationId != null) {
             if (fromEPR == null) {
                 fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
             }
-            fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId);
+            //FIXME: serialize conversation ID to XML in case it is not a string
+            fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
         }
 
         // add WS-Addressing header

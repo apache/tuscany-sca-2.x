@@ -34,7 +34,7 @@ public class ImmutableMessage implements Message {
         return null;
     }
 
-    public String getConversationID() {
+    public Object getConversationID() {
         return null;
     }
 
@@ -70,7 +70,7 @@ public class ImmutableMessage implements Message {
         throw new UnsupportedOperationException();
     }
 
-    public void setConversationID(String arg0) {
+    public void setConversationID(Object arg0) {
         throw new UnsupportedOperationException();
     }
 

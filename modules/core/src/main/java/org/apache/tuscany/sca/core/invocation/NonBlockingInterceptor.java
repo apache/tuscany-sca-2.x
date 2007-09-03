@@ -55,7 +55,7 @@ public class NonBlockingInterceptor implements Interceptor {
     public Message invoke(final Message msg) {
         // Retrieve conversation id to transfer to new thread
         // Notice that we cannot clear the conversation id from the current thread
-        final String conversationID = ThreadMessageContext.getMessageContext().getConversationID();
+        final Object conversationID = ThreadMessageContext.getMessageContext().getConversationID();
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
@@ -100,7 +100,7 @@ public class NonBlockingInterceptor implements Interceptor {
             return null;
         }
 
-        public void setConversationID(String conversationId) {
+        public void setConversationID(Object conversationId) {
             throw new UnsupportedOperationException();
         }
 

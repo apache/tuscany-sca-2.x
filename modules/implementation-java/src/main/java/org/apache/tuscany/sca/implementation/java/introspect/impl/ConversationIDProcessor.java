@@ -47,17 +47,12 @@ public class ConversationIDProcessor extends BaseJavaClassVisitor {
         if (method.getParameterTypes().length != 1) {
             throw new IllegalContextException("ConversationID setter must have one parameter", method);
         }
-        Class<?> paramType = method.getParameterTypes()[0];
         String name = JavaIntrospectionHelper.toPropertyName(method.getName());
-        if (String.class.equals(paramType)) {
-            JavaElementImpl element = new JavaElementImpl(method, 0);
-            element.setName(name);
-            element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
-            JavaResourceImpl resource = new JavaResourceImpl(element);
-            type.getResources().put(resource.getName(), resource);
-        } else {
-            throw new UnknownContextTypeException(paramType.getName());
-        }
+        JavaElementImpl element = new JavaElementImpl(method, 0);
+        element.setName(name);
+        element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
+        JavaResourceImpl resource = new JavaResourceImpl(element);
+        type.getResources().put(resource.getName(), resource);
     }
 
     @Override
@@ -65,14 +60,9 @@ public class ConversationIDProcessor extends BaseJavaClassVisitor {
         if (field.getAnnotation(ConversationID.class) == null) {
             return;
         }
-        Class<?> paramType = field.getType();
-        if (String.class.equals(paramType)) {
-            JavaElementImpl element = new JavaElementImpl(field);
-            element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
-            JavaResourceImpl resource = new JavaResourceImpl(element);
-            type.getResources().put(resource.getName(), resource);
-        } else {
-            throw new UnknownContextTypeException(paramType.getName());
-        }
+        JavaElementImpl element = new JavaElementImpl(field);
+        element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
+        JavaResourceImpl resource = new JavaResourceImpl(element);
+        type.getResources().put(resource.getName(), resource);
     }
 }

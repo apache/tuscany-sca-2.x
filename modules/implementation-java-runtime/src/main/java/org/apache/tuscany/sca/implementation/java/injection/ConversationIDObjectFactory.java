@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.implementation.java.injection;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 
-public class ConversationIDObjectFactory implements ObjectFactory<String> {
+public class ConversationIDObjectFactory implements ObjectFactory {
 
     public ConversationIDObjectFactory() {
     }
 
-    public String getInstance() {
-        return (String)ThreadMessageContext.getMessageContext().getConversationID();
+    public Object getInstance() {
+        return ThreadMessageContext.getMessageContext().getConversationID();
     }
 }
