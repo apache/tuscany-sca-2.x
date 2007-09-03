@@ -35,6 +35,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
@@ -66,6 +67,13 @@ public class Axis2ServiceProvider {
     private ServletHost servletHost;
     private MessageFactory messageFactory;
     private ConfigurationContext configContext;
+
+    public static final QName QNAME_WSA_ADDRESS =
+            new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
+    public static final QName QNAME_WSA_FROM =
+            new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
+    public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
+            new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
     // TODO: what to do about the base URI?
     // This port number may be used to construct callback URIs.  The value 8085 is used
@@ -280,107 +288,105 @@ public class Axis2ServiceProvider {
         }
         return null;
     }
-
+                                            
     // methods for Axis2 message receivers
-
-    //FIXME: can we use the Axis2 addressing support for this?
-    /**
-     * @param inMC
-     * @return conversationID
-     */
-    protected String getConversationID(MessageContext inMC) {
-        String conversationID = null;
-        if (isConversational()) {
-            SOAPHeader header = inMC.getEnvelope().getHeader();
-            if (header != null) {
-                Iterator<?> i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
-                for (; i.hasNext();) {
-                    Object a = i.next();
-                    if (a instanceof OMElement) {
-                        OMElement ao = (OMElement)a;
-                        for (Iterator<?> rpI =
-                            ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing",
-                                                             "ReferenceParameters")); rpI.hasNext();) {
-                            OMElement rpE = (OMElement)rpI.next();
-                            for (Iterator<?> cidI =
-                                rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN); cidI.hasNext();) {
-                                OMElement cidE = (OMElement)cidI.next();
-                                conversationID = cidE.getText();
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-        return conversationID;
-    }
-
-    //FIXME: can we use the Axis2 addressing support for this?
-    /**
-     * @param inMC
-     * @return fromEPR
-     */
-    protected String getFromEPR(MessageContext inMC) {
-        String fromEPR = null;
-        if (contract instanceof RuntimeComponentService && contract.getInterfaceContract().getCallbackInterface() != null) {
-            SOAPHeader header = inMC.getEnvelope().getHeader();
-            if (header != null) {
-                Iterator<?> i = header.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
-                for (; i.hasNext();) {
-                    Object a = i.next();
-                    if (a instanceof OMElement) {
-                        OMElement ao = (OMElement)a;
-                        for (Iterator<?> adI =
-                            ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "Address")); adI
-                            .hasNext();) {
-                            OMElement adE = (OMElement)adI.next();
-                            fromEPR = adE.getText();
-                        }
-                    }
-                }
-            }
-        }
-        return fromEPR;
-    }
 
     public Object invokeTarget(Operation op,
                                Object[] args,
-                               Object messageId,
-                               String conversationID,
-                               String callbackAddress) throws InvocationTargetException {
+                               MessageContext inMC) throws InvocationTargetException {
+
+        String callbackAddress = null;
+        String callbackID = null;
+        String conversationID = null;
+
+        //FIXME: can we use the Axis2 addressing support for this?
+        SOAPHeader header = inMC.getEnvelope().getHeader();
+        if (header != null) {
+            Iterator<?> i = header.getChildrenWithName(QNAME_WSA_FROM);
+            Object a = null;
+            for (; i.hasNext();) {
+                if (a != null) {
+                    throw new IllegalArgumentException("Duplicate wsa:From element");
+                }
+                a = i.next();
+                if (a instanceof OMElement) {
+                    OMElement ao = (OMElement)a;
+
+                    // process required Address element
+                    Iterator<?> adI = ao.getChildrenWithName(QNAME_WSA_ADDRESS);
+                    OMElement adE = null;
+                    for (; adI.hasNext();) {
+                        if (adE != null) {
+                            throw new IllegalArgumentException("Duplicate wsa:Address element");
+                        }
+                        adE = (OMElement)adI.next();
+                        if (contract.getInterfaceContract().getCallbackInterface() != null) {
+                            callbackAddress = adE.getText();
+                            if (callbackAddress.equals(AddressingConstants.Final.WSA_ANONYMOUS_URL)) {
+                                throw new IllegalArgumentException("Anonymous wsa:Address passed for callback");
+                            }
+                        }
+                    }
+                    if (adE == null) {
+                        throw new IllegalArgumentException("Missing wsa:Address element");
+                    }
+
+                    // process optional ReferenceParameters element
+                    Iterator<?> rpI = ao.getChildrenWithName(QNAME_WSA_REFERENCE_PARAMETERS);
+                    OMElement rpE = null;
+                    for (; rpI.hasNext();) {
+                        if (rpE != null) {
+                            throw new IllegalArgumentException("Duplicate wsa:ReferenceParameters element");
+                        }
+                        rpE = (OMElement)rpI.next();
+                        Iterator<?> cidI = rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN);
+                        OMElement cidE = null;
+                        for (; cidI.hasNext();) {
+                            if (cidE != null) {
+                                throw new IllegalArgumentException("Duplicate SCA conversation ID element");
+                            }
+                            cidE = (OMElement)cidI.next();
+                            if (isConversational()) {
+                                conversationID = cidE.getText();
+                            }
+                        }
+                        Iterator<?> cbidI = rpE.getChildrenWithName(Axis2BindingInvoker.CALLBACK_ID_REFPARM_QN);
+                        OMElement cbidE = null;
+                        for (; cbidI.hasNext();) {
+                            if (cbidE != null) {
+                                throw new IllegalArgumentException("Duplicate SCA callback ID element");
+                            }
+                            cbidE = (OMElement)cbidI.next();
+                            if (contract.getInterfaceContract().getCallbackInterface() != null) {
+                                callbackID = cbidE.getText();
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
 
         Message requestMsg = messageFactory.createMessage();
-
-        if (messageId != null) {
-            requestMsg.setMessageID(messageId);
-        }
         requestMsg.setBody(args);
-
-        if (contract instanceof RuntimeComponentService)
-            requestMsg.setTo(((RuntimeComponentService)contract).getRuntimeWire(getBinding()).getTarget());
-        else
-            requestMsg.setTo(((RuntimeComponentReference)contract).getRuntimeWire(getBinding()).getTarget());
+        requestMsg.setTo(((RuntimeComponentService)contract).getRuntimeWire(getBinding()).getTarget());
         if (callbackAddress != null) {
             requestMsg.setFrom(new EndpointReferenceImpl(callbackAddress));
         }
+        if (callbackID != null) {
+            requestMsg.setCorrelationID(callbackID);
+        }
+        if (conversationID != null) {
+            requestMsg.setConversationID(conversationID);
+        }
 
-        Message workContext = ThreadMessageContext.getMessageContext();
-
-        ThreadMessageContext.setMessageContext(requestMsg);
+        Message workContext = ThreadMessageContext.setMessageContext(requestMsg);
         try {
-            if (isConversational() && conversationID != null) {
-                requestMsg.setConversationID(conversationID);
-            } else {
-                requestMsg.setConversationID(null);
-            }
-
             Message responseMsg = ((RuntimeComponentService)contract).getInvoker(getBinding(), op).invoke(requestMsg);
             if (responseMsg.isFault()) {
                 throw new InvocationTargetException((Throwable)responseMsg.getBody());
             }
             return responseMsg.getBody();
-
         } finally {
             ThreadMessageContext.setMessageContext(workContext);
         }

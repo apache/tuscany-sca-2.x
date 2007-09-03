@@ -52,17 +52,14 @@ public class Axis2ServiceClient {
 
     private WebServiceBinding wsBinding;
     private ServiceClient serviceClient;
-    private WebServiceBinding callbackBinding;
 
     public Axis2ServiceClient(RuntimeComponent component,
                               AbstractContract contract,
                               WebServiceBinding wsBinding,
                               ServletHost servletHost,
-                              MessageFactory messageFactory,
-                              WebServiceBinding callbackBinding) {
+                              MessageFactory messageFactory) {
 
         this.wsBinding = wsBinding;
-        this.callbackBinding = callbackBinding;
         this.serviceClient = createServiceClient();
     }
 
@@ -140,9 +137,6 @@ public class Axis2ServiceClient {
         EndpointReference epTo = getPortLocationEPR(wsBinding);
         if (epTo != null) {
             options.setTo(epTo);
-        }
-        if (callbackBinding != null) {
-            options.setFrom(getPortLocationEPR(callbackBinding));
         }
         options.setProperty(HTTPConstants.CHUNKED, Boolean.FALSE);
 

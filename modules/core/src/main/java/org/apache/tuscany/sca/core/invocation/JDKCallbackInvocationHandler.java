@@ -40,11 +40,10 @@ import org.osoa.sca.NoRegisteredCallbackException;
  */
 public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
-    private transient List<RuntimeWire> wires;
 
-    public JDKCallbackInvocationHandler(MessageFactory messageFactory, List<RuntimeWire> wires) {
-        super(messageFactory, (CallableReference<?>) null);
-        this.wires = wires;
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory,
+                                        CallbackWireObjectFactory wireFactory) {
+        super(messageFactory, wireFactory);
         this.fixedWire = false;
     }
 
@@ -63,7 +62,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
 
         // wire not pre-selected, so select a wire now to be used for the callback
         Message msgContext = ThreadMessageContext.getMessageContext();
-        RuntimeWire wire = CallbackWireObjectFactory.selectCallbackWire(msgContext, wires);
+        RuntimeWire wire = ((CallbackWireObjectFactory)callableReference).selectCallbackWire(msgContext);
         if (wire == null) {
             //FIXME: need better exception
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
@@ -96,6 +95,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         }
         
         callbackID = msgContext.getCorrelationID();
+        ((CallbackWireObjectFactory)callableReference).attachCallbackID(callbackID);
         setEndpoint(msgContext.getFrom());
         
         
