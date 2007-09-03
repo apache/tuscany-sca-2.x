@@ -41,7 +41,7 @@ import commonj.sdo.helper.DataFactory;
  * This is part of the WSDL interop test from Microsoft and more details aobout this test case are found at
  * http://www.mssoapinterop.org/stkV3/wsdl/WSDLInterop-0118.htm
  */
-public class InteropTestDocLitTestCase extends SCATestCase {
+public class InteropTestDocLitTestCase extends TestCase {
 
     private WSDLInteropTestDocLitPortType doc = null;
 
