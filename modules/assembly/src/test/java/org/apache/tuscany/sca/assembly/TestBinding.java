@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
 
 /**
  * A test interface model.
