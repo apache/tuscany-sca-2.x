@@ -33,20 +33,16 @@ import org.osoa.sca.annotations.Service;
 public class CallBackSetCallbackConvServiceImpl implements CallBackSetCallbackConvService {
 
     @Callback
-    private CallBackSetCallbackConvCallback callback;
+    protected CallBackSetCallbackConvCallback callback;
     @Context
     protected ComponentContext context;
 
     public void knockKnock(String aString) {
 
-        try {
-            System.out.println("CallBackBasicServiceImpl message received: " + aString);
-            callback.callBackMessage("Who's There");
-            System.out.println("CallBackBasicServiceImpl response sent");
-            return;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        System.out.println("CallBackSetCallbackConvServiceImpl message received: " + aString);
+        callback.callBackMessage("Who's There");
+        callback.callBackIncrement("This should do it");
+        System.out.println("CallBackSetCallbackConvServiceImpl response sent");
 
     }
 

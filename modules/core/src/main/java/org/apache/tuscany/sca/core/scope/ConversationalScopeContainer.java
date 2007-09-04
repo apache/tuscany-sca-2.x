@@ -183,6 +183,21 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         // add the reference to the collection
         this.instanceLifecycleCollection.put(newContextId, anInstanceWrapper);  
     }
+
+    public void registerWrapper(InstanceWrapper wrapper, Object contextId) throws TargetResolutionException {
+        // if a wrapper for a different instance is already registered for this contextId, remove it
+        InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(contextId);
+        if (anInstanceWrapper != null) {
+            if (anInstanceWrapper.getInstanceWrapper(contextId).getInstance() != wrapper.getInstance()) {
+                remove(contextId);
+            } else {
+                return;
+            }
+        }
+
+        anInstanceWrapper = new InstanceLifeCycleWrapper(wrapper, contextId);  
+        this.instanceLifecycleCollection.put(contextId, anInstanceWrapper);
+    }
     
     
     // The remove is invoked when a conversation is explicitly ended.  This can occur by using the @EndsConversation or API.  
@@ -224,6 +239,16 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
          this.expirationInterval = max_age;
          this.maxIdleTime = max_idle_time;
          this.createInstance(contextId);
+        }
+
+        private InstanceLifeCycleWrapper(InstanceWrapper wrapper, Object contextId) throws TargetResolutionException
+        {
+         this.instanceIds.add(contextId);
+         this.creationTime = System.currentTimeMillis();
+         this.lastReferencedTime = this.creationTime;
+         this.expirationInterval = max_age;
+         this.maxIdleTime = max_idle_time;
+         wrappers.put(contextId, wrapper);       
         }
         
         private boolean isExpired() 

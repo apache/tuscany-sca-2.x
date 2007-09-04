@@ -85,6 +85,10 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
         // do nothing here. the conversational scope container implements this
     }
 
+    public void registerWrapper(InstanceWrapper wrapper, KEY contextId) throws TargetResolutionException { 
+        // do nothing here. the conversational scope container implements this
+    }
+
     public void onEvent(Event event) {
     }
 

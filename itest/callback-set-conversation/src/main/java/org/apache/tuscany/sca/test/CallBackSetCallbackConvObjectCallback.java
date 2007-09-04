@@ -19,10 +19,12 @@
 package org.apache.tuscany.sca.test;
 
 
-public class CallBackSetCallbackConvObjectCallback implements CallBackSetCallbackConvCallback {
-
+public class CallBackSetCallbackConvObjectCallback
+        //FIXME: remove the following hack, needed to get around current JavaImplementationInvoker limitation
+        extends CallBackSetCallbackConvClientImpl
+        //implements CallBackSetCallbackConvCallback
+{
     private int callBackCount = 0;
-    private Object monitor;
 
     public CallBackSetCallbackConvObjectCallback() {
         super();
@@ -36,10 +38,6 @@ public class CallBackSetCallbackConvObjectCallback implements CallBackSetCallbac
         return callBackCount;
     }
 
-    public void setMonitor(Object anObject) {
-        monitor = anObject;
-    }
-
     public void callBackMessage(String aString) {
 
         System.out.println("Entering CallBackSetCallbackObjectCallback callBackMessage: " + aString);
@@ -50,10 +48,7 @@ public class CallBackSetCallbackConvObjectCallback implements CallBackSetCallbac
 
         System.out.println("Entering callback increment: " + aString);
 
-        synchronized (monitor) {
-            this.incrementCallBackCount();
-            monitor.notify();
-        }
+        this.incrementCallBackCount();
     }
 
 }

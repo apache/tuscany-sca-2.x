@@ -30,9 +30,12 @@ import java.util.UUID;
 
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ConversationImpl;
+import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
+import org.apache.tuscany.sca.core.scope.TargetDestructionException;
+import org.apache.tuscany.sca.core.scope.TargetInitializationException;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -227,7 +230,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 // register the calling component instance against this 
                 // new conversation id so that stateful callbacks will be
                 // able to find it
-                if (wire.getSource().getCallbackEndpoint() != null) {
+                if (wire.getSource().getCallbackEndpoint() != null && callbackObject == null) {
                     // the component instance is already registered
                     // so add another registration
                     ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
@@ -288,10 +291,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                     } else {
                         if (contract != null) {
                             if (!contract.isConversational()) {
-                                throw new IllegalArgumentException(
-                                                                   "Callback object for stateless callback is not a ServiceReference");
+                                throw new IllegalArgumentException
+                                        ("Callback object for stateless callback is not a ServiceReference");
                             } else {
-                                //FIXME: add callback object to scope container
+                                ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
+                                if (scopeContainer != null) {
+                                    InstanceWrapper<Object> wrapper = new CallbackObjectWrapper(callbackObject);
+                                    scopeContainer.registerWrapper(wrapper, conversation.getConversationID());
+                                }
                                 msg.setFrom(callbackEndpoint);
                             }
                         }
@@ -359,6 +366,31 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      */
     public void setCallableReference(CallableReference<?> callableReference) {
         this.callableReference = callableReference;
+    }
+
+    /**
+     * Minimal wrapper for a callback object contained in a ServiceReference
+     */
+    private static class CallbackObjectWrapper<T> implements InstanceWrapper<T> {
+
+        private T instance;
+
+        private CallbackObjectWrapper(T instance) {
+            this.instance = instance;
+        }
+
+        public T getInstance() {
+            return instance;
+        }
+
+        public void start() {
+            // do nothing
+        }
+        
+        public void stop() {
+            // do nothing
+        }
+
     }
 
 }
