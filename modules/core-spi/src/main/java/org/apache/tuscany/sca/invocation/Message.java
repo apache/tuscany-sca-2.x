@@ -149,14 +149,18 @@ public interface Message {
      * Get the associated callable reference
      * @param <B>
      * @return The callable reference
+     * @deprecated Seems to duplicate other fields of the Message
      */
+    @Deprecated
     <B> CallableReference<B> getCallableReference();
     
     /**
      * Set the callable reference
      * @param <B>
      * @param callableReference
+     * @deprecated Seems to duplicate other fields of the Message
      */
+    @Deprecated
     <B> void setCallableReference(CallableReference<B> callableReference);
 
 }
