@@ -279,7 +279,7 @@ public class TuscanyListingAgent extends ListingAgent {
         String contextRoot = configContext.getContextRoot();
         if (contextRoot != null && contextRoot.length() > 0) {
             if (contextRoot.equals("/")) {
-                configContext.setServicePath("_null_");
+                configContext.setServicePath("/");
             } else {
                 int i = filePart.indexOf(contextRoot) + contextRoot.length();
                 int j = filePart.lastIndexOf(serviceName);
