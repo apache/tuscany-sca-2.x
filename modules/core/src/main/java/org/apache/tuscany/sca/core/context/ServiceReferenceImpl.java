@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
 import org.osoa.sca.ServiceReference;
 
@@ -99,6 +100,10 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     }
 
     public void setCallback(Object callback) {
+        if (callback != null && !(callback instanceof CallableReference)) {
+            //FIXME: need to check if callback object supports the callback interface
+            // returned by reference.getInterfaceContract().getCallbackInterface()
+        }    
         this.callback = callback;
     }
 }

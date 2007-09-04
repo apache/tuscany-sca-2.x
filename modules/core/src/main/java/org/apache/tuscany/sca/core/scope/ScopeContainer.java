@@ -61,19 +61,31 @@ public interface ScopeContainer<KEY> extends RuntimeEventListener {
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
-     InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException;
+    InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException;
      
-     /**
-      * Allows a component to be registered against more than one context id. This is required in the
-      * case of stateful callbacks where we want to identify the originating client component instance 
-      * as the callback target but we don't want to reuse the clients original conversation id
-      * 
-      * @param existingContextId  an id that identifies an existing component instance
-      * @param newContextId a new id against which this component will also be registered
-      * @throws TargetResolutionException
-      */
-     public void addWrapperReference(KEY existingContextId, KEY newContextId) 
-       throws TargetResolutionException;   
+    /**
+     * Allows a component to be registered against more than one context id. This is required in the
+     * case of stateful callbacks where we want to identify the originating client component instance 
+     * as the callback target but we don't want to reuse the clients original conversation id
+     * 
+     * @param existingContextId  an id that identifies an existing component instance
+     * @param newContextId a new id against which this component will also be registered
+     * @throws TargetResolutionException
+     */
+    void addWrapperReference(KEY existingContextId, KEY newContextId) 
+        throws TargetResolutionException;   
+
+    /**
+     * Register an existing instance against a context id.  This is needed
+     * for a stateful callback where the service reference for the forward call
+     * contains a callback object that is not a service reference.
+     * 
+     * @param wrapper the instance wrapper for the instance to be registered
+     * @param contextId the id for the scope context
+     * @throws TargetResolutionException
+     */
+    void registerWrapper(InstanceWrapper wrapper, KEY contextId) 
+        throws TargetResolutionException;   
 
     /**
      * Returns an implementation instance associated with the current scope context.
@@ -83,7 +95,7 @@ public interface ScopeContainer<KEY> extends RuntimeEventListener {
      * @return the wrapper for the target instance
      * @throws TargetResolutionException if there was a problem instantiating the target instance
      */
-     InstanceWrapper getAssociatedWrapper(KEY contextId)
+    InstanceWrapper getAssociatedWrapper(KEY contextId)
         throws TargetResolutionException;
 
     /**
@@ -93,59 +105,55 @@ public interface ScopeContainer<KEY> extends RuntimeEventListener {
      *
      * @throws TargetDestructionException if there was a problem returning the target instance
      */
-     void returnWrapper(InstanceWrapper wrapper, KEY contextId)
+    void returnWrapper(InstanceWrapper wrapper, KEY contextId)
         throws TargetDestructionException;
 
-     /**
-      * Removes an identified component implementation instance associated with the current 
-      * context from persistent storage
-      *
-      * @param contextId the identifier of the context to remove. 
-      */
-      void remove(KEY contextId) 
-          throws TargetDestructionException;     
+    /**
+     * Removes an identified component implementation instance associated with the current 
+     * context from persistent storage
+     *
+     * @param contextId the identifier of the context to remove. 
+     */
+    void remove(KEY contextId) 
+        throws TargetDestructionException;     
 
-      /* A configuration error state */
-      int CONFIG_ERROR = -1;
-      /* Has not been initialized */
-      int UNINITIALIZED = 0;
-      /* In the process of being configured and initialized */
-      int INITIALIZING = 1;
-      /* Instantiated and configured */
-      int INITIALIZED = 2;
-      /* Configured and initialized */
-      int RUNNING = 4;
-      /* In the process of being shutdown */
-      int STOPPING = 5;
-      /* Has been shutdown and removed from the composite */
-      int STOPPED = 6;
-      /* In an error state */
-      int ERROR = 7;
+    /* A configuration error state */
+    int CONFIG_ERROR = -1;
+    /* Has not been initialized */
+    int UNINITIALIZED = 0;
+    /* In the process of being configured and initialized */
+    int INITIALIZING = 1;
+    /* Instantiated and configured */
+    int INITIALIZED = 2;
+    /* Configured and initialized */
+    int RUNNING = 4;
+    /* In the process of being shutdown */
+    int STOPPING = 5;
+    /* Has been shutdown and removed from the composite */
+    int STOPPED = 6;
+    /* In an error state */
+    int ERROR = 7;
 
-      /**
-       * Returns the lifecycle state
-       *
-       * @see #UNINITIALIZED
-       * @see #INITIALIZING
-       * @see #INITIALIZED
-       * @see #RUNNING
-       * @see #STOPPING
-       * @see #STOPPED
-       */
-      int getLifecycleState();
+    /**
+     * Returns the lifecycle state
+     *
+     * @see #UNINITIALIZED
+     * @see #INITIALIZING
+     * @see #INITIALIZED
+     * @see #RUNNING
+     * @see #STOPPING
+     * @see #STOPPED
+     */
+    int getLifecycleState();
 
-      /**
-       * Starts the Lifecycle.
-       *
-       * @throws CoreRuntimeException
-       */
-      void start();
+    /**
+     * Starts the Lifecycle.
+     */
+    void start();
 
-      /**
-       * Stops the Lifecycle.
-       *
-       * @throws CoreRuntimeException
-       */
-      void stop();
+    /**
+     * Stops the Lifecycle.
+     */
+    void stop();
 
 }

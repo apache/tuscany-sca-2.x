@@ -20,20 +20,25 @@ package org.apache.tuscany.sca.test;
 
 import junit.framework.Assert;
 
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 @Service(CallBackSetCallbackConvClient.class)
 @Scope("CONVERSATION")
-public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackConvClient {
+public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackConvClient,
+        //FIXME: remove the following hack, needed to get around current JavaImplementationInvoker limitation
+        CallBackSetCallbackConvCallback {
 
+    @Context
+    protected ComponentContext componentContext;
     @Reference
     protected CallBackSetCallbackConvService aCallBackService;
     private CallBackSetCallbackConvObjectCallback aCallbackObject = null;
-    private Object monitor = new Object();
 
     public void run() {
 
@@ -76,24 +81,13 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
 
         aCallbackObject = new CallBackSetCallbackConvObjectCallback();
         aCallbackObject.incrementCallBackCount();
-        aCallbackObject.setMonitor(monitor);
 
-        ((ServiceReference)aCallBackService).setCallback(aCallbackObject);
-        aCallBackService.knockKnock("Knock Knock");
-
-        // Lets give the callback a little time to complete....
-
-        int count = 0;
-
-        synchronized (monitor) {
-            while (aCallbackObject.getCount() != 2 && count++ < 30) {
-                try {
-                    monitor.wait(1000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
+                = componentContext.cast(aCallBackService);
+        aCallBackServiceRef.setCallback(aCallbackObject);
+        //FIXME: remove the following workaround for runtime bug
+        aCallBackServiceRef.getService().knockKnock("Knock Knock");
+        //aCallBackService.knockKnock("Knock Knock");
 
         Assert.assertEquals("CallBackSetCallbackConv - Test7", 2, aCallbackObject.getCount());
 
@@ -105,25 +99,27 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
 
         //
         // This test is to specify an Object that is not a service reference
-        // that does not impliment
+        // that does not implement
         // the callback interface. The expected result is an appropriate
         // exception.
         //
 
         try {
-            ((ServiceReference)aCallBackService).setCallback(new CallBackSetCallbackConvBadCallback());
-            aCallBackService.knockKnock("Knock Knock");
+            ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
+                    = componentContext.cast(aCallBackService);
+            aCallBackServiceRef.setCallback(new CallBackSetCallbackConvBadCallback());
+            //FIXME: remove the following workaround for runtime bug
+            aCallBackServiceRef.getService().knockKnock("Knock Knock");
+            //aCallBackService.knockKnock("Knock Knock");
         }
 
         //
         // This should catch an appropriate exception.
         // 
 
-        catch (NoRegisteredCallbackException NotRegEx) // This needs to be
-                                                        // changed to proper
-                                                        // exception once we
-                                                        // know what it is ;-)
+        catch (IllegalArgumentException goodEx)
         {
+            System.out.println("correct exception " + goodEx);
             correctException = true;
         }
 
@@ -142,25 +138,26 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
 
         //
         // This test is to specify an Object that is not a service reference
-        // that does impliment
+        // that does implement
         // the callback interface but does not implement Serializeable. Verify
         // an appropriate exception
         // is thrown.
         //
 
         try {
-            ((ServiceReference)aCallBackService).setCallback(new CallBackSetCallbackConvNonSerCallback());
-            aCallBackService.knockKnock("Knock Knock");
+            ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
+                    = componentContext.cast(aCallBackService);
+            aCallBackServiceRef.setCallback(new CallBackSetCallbackConvNonSerCallback());
+            //FIXME: remove the following workaround for runtime bug
+            aCallBackServiceRef.getService().knockKnock("Knock Knock");
+            //aCallBackService.knockKnock("Knock Knock");
         }
         //
         // This should catch an appropriate exception.
         //
-        catch (NoRegisteredCallbackException NotRegEx) // This needs to be
-                                                        // changed to
-                                                        // appropriate exception
-                                                        // when we know what it
-                                                        // is ;-)
+        catch (IllegalArgumentException goodEx)
         {
+            System.out.println("correct exception " + goodEx);
             correctException = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -168,6 +165,16 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
 
         Assert.assertEquals("CallBackSetCallbackConv - Test9", true, correctException);
 
+    }
+
+    //FIXME: remove the following methods, needed to get around current JavaImplementationInvoker limitation
+
+    public void callBackMessage(String aString) {
+        throw new IllegalStateException("CallbackSetCallbackConvClientImpl.callbackMessage called");
+    }
+
+    public void callBackIncrement(String aString) {
+        throw new IllegalStateException("CallbackSetCallbackConvClientImpl.callbackIncrement called");
     }
 
 }
