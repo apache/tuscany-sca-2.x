@@ -60,7 +60,7 @@ public class CompositeModelResolver implements ModelResolver {
         QName qname = ((Composite)unresolved).getName();
         Composite resolved = (Composite) map.get(qname);
         if (resolved != null) {
-            return (T)resolved;
+            return modelClass.cast(resolved);
         }
         
         // No definition found, delegate the resolution to the imports
@@ -72,7 +72,7 @@ public class CompositeModelResolver implements ModelResolver {
                     // Delegate the resolution to the import resolver
                     resolved = namespaceImport.getModelResolver().resolveModel(Composite.class, (Composite)unresolved);
                     if (!resolved.isUnresolved()) {
-                        return (T)resolved;
+                        return modelClass.cast(resolved);
                     }
                 }
             }

@@ -60,7 +60,7 @@ public class ConstrainingTypeModelResolver implements ModelResolver {
         QName qname = ((ConstrainingType)unresolved).getName();
         ConstrainingType resolved = (ConstrainingType) map.get(qname);
         if (resolved != null) {
-            return (T)resolved;
+            return modelClass.cast(resolved);
         }
         
         // No definition found, delegate the resolution to the imports
@@ -72,7 +72,7 @@ public class ConstrainingTypeModelResolver implements ModelResolver {
                     // Delegate the resolution to the import resolver
                     resolved = namespaceImport.getModelResolver().resolveModel(ConstrainingType.class, (ConstrainingType)unresolved);
                     if (!resolved.isUnresolved()) {
-                        return (T)resolved;
+                        return modelClass.cast(resolved);
                     }
                 }
             }
