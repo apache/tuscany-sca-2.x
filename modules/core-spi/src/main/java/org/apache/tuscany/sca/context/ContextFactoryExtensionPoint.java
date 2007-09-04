@@ -20,25 +20,21 @@
 package org.apache.tuscany.sca.context;
 
 /**
- * An extension point for model factories. Model factories are provided to 
- * abstract the classes that represent artifacts in the assembly model away
- * from their creation mechanism. When the runtime needs to extend the model
- * as it reads in contributed artifacts it looks up the factory for the 
- * artifact required in this registry
+ * An extension point for context factories. 
  *
  * @version $Rev$ $Date$
  */
 public interface ContextFactoryExtensionPoint {
     
     /**
-     * Add a model factory extension.
+     * Add a context factory extension.
      * 
      * @param factory The factory to add
      */
     void addFactory(Object factory);
     
     /**
-     * Remove a model factory extension.
+     * Remove a context factory extension.
      *  
      * @param factory The factory to remove
      */
