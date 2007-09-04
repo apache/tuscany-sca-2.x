@@ -36,7 +36,8 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */
 @Service(ConversationalService.class)
-public class ConversationalServiceStatelessImpl implements ConversationalService {
+@Scope("REQUEST")
+public class ConversationalServiceRequestImpl implements ConversationalService {
     
     @ConversationID
     protected String conversationId;

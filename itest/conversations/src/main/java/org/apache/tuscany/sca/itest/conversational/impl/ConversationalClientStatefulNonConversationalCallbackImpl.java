@@ -22,12 +22,15 @@ import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalReferenceClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
+import org.apache.tuscany.sca.itest.conversational.NonConversationalCallback;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -38,8 +41,12 @@ import org.osoa.sca.annotations.Service;
  */
 
 @Service(interfaces={ConversationalClient.class})
-public class ConversationalClientStatelessImpl implements ConversationalClient, ConversationalCallback {
-   
+@Scope("CONVERSATION")
+@ConversationAttributes(maxAge="10 minutes",
+                        maxIdleTime="5 minutes",
+                        singlePrincipal=false)
+public class ConversationalClientStatefulNonConversationalCallbackImpl implements ConversationalClient, NonConversationalCallback {
+    
     @Context
     protected ComponentContext componentContext;
     
@@ -51,27 +58,27 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
     
     @Reference
     protected ConversationalReferenceClient conversationalReferenceClient;
-    
+      
     private int clientCount = 0;
-    private int callbackCount = 0;
+    private int callbackCount = 0;  
+    
     
     // a static member variable that records the number of times this service is called
-    public static StringBuffer calls = new StringBuffer();    
+    public static StringBuffer calls = new StringBuffer();        
 	
     // From ConversationalClient
-    public int runConversationFromInjectedReference(){
-        calls.append("runConversationFromInjectedReference,");
-        conversationalService.initializeCount(1);
-        conversationalService.incrementCount();
-        clientCount = conversationalService.retrieveCount();
-        conversationalService.endConversation();
-        
-        return clientCount;
-    }
+	public int runConversationFromInjectedReference(){
+	    calls.append("runConversationFromInjectedReference,");	    
+	    conversationalService.initializeCount(1);
+	    conversationalService.incrementCount();
+	    clientCount = conversationalService.retrieveCount();
+	    conversationalService.endConversation();
+	    
+	    return clientCount;
+	}
     public int runConversationFromInjectedReference2(){
-        calls.append("runConversationFromInjectedReference2,");   
-
-        // now test the second reference        
+        calls.append("runConversationFromInjectedReference2,");
+               
         conversationalService2.initializeCount(1);
         conversationalService2.incrementCount();
         
@@ -86,11 +93,11 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         conversationalService.endConversation();
         
         return clientCount;
-    }
+    }	
     public int runConversationFromServiceReference(){
         calls.append("runConversationFromServiceReference,");
         ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
-                                                                                                        "conversationalService");       
+                                                                                                        "conversationalService");
         ConversationalService callableReference = serviceReference.getService();
         
         callableReference.initializeCount(1);
@@ -101,7 +108,7 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         serviceReference.getConversation().end();
         
         return clientCount;
-    }   
+    }	
     public int runConversationWithUserDefinedConversationId(){
         calls.append("runConversationWithUserDefinedConversationId,");
         ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
@@ -132,7 +139,7 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         clientCount = callableReference.retrieveCount();
         return callableReference.endConversation();
               
-    }     
+    }      
     public int runConversationCheckingScope(){
         calls.append("runConversationCheckingScope,");
         // run a conversation
@@ -140,9 +147,10 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         
         // test will then use a static method to find out how many times 
         // init/destroy were called
-    }
-    public int runConversationWithCallback(){
-        calls.append("runConversationWithCallback,");
+    }    
+	public int runConversationWithCallback(){
+	    calls.append("runConversationWithCallback,");
+	    callbackCount = 2;
         conversationalService.initializeCountCallback(1);
         conversationalService.incrementCountCallback();
         clientCount = conversationalService.retrieveCountCallback();
@@ -150,7 +158,6 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         
         return clientCount;
     } 
-    
     public int runConversationHavingPassedReference(){
         calls.append("runConversationHavingPassedReference,");
         ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
@@ -166,22 +173,21 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         serviceReference.getConversation().end();
         
         return clientCount;
-    }	
-    
-	public String runConversationBusinessException(){
-	    calls.append("runConversationbusinessException,");	    
-	    try {
+    }
+    public String runConversationBusinessException(){
+        calls.append("runConversationbusinessException,");      
+        try {
             conversationalService.initializeCount(1);
             conversationalService.businessException();
             clientCount = conversationalService.retrieveCount();
             conversationalService.endConversation();
-	    } catch(Exception ex) {
-	        return ex.getMessage();
-	    }
+        } catch(Exception ex) {
+            return ex.getMessage();
+        }
          
         return "No Exception Returned";
     }
-	
+    
     public String runConversationBusinessExceptionCallback(){
         calls.append("runConversationbusinessExceptionCallback,");
         try {
@@ -194,8 +200,8 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         }
          
         return "No Exception Returned";
-    }	
-	
+    }   
+    
     public int runConversationCallingEndedConversation(){
         calls.append("runConversationCallingEndedConversation,");
         conversationalService.initializeCount(1);
@@ -208,7 +214,7 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         conversationalService.initializeCountCallback(1);
         conversationalService.endConversationCallback();
         return conversationalService.retrieveCountCallback();
-    }   
+    }  
     
     public int runConversationAgeTimeout(){
         calls.append("runConversationAgeTimeout,");
@@ -231,18 +237,16 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
     @Init
     public void init(){
         calls.append("init,");
-
     }
     
     @Destroy
     public void destroy(){
-        calls.append("destroy,");
-        
+        calls.append("destroy,"); 
     }
     
     public void initializeCount(int count){
         calls.append("initializeCount,");
-        callbackCount = 0;
+        callbackCount += count;
     }
     
     public void incrementCount(){
