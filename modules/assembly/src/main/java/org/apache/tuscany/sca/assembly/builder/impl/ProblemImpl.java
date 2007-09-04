@@ -23,7 +23,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.util.PrintUtil;
 
 /**
  * Reports a composite assembly problem. 
@@ -99,15 +98,16 @@ public class ProblemImpl implements Problem {
         return cause;
     }
 
+    @Override
     public String toString() {
         StringWriter sw = new StringWriter();
         PrintWriter writer = new PrintWriter(sw);
         writer.format("[%s] %s %s", severity, message, resource);
-        PrintUtil util = new PrintUtil(writer, false);
-        if (model != null) {
-            writer.println();
-           // util.print(model);
-        }
+        //PrintUtil util = new PrintUtil(writer, false);
+        //if (model != null) {
+        //    writer.println();
+        //    util.print(model);
+        //}
         if (cause != null) {
             writer.println();
             cause.printStackTrace(writer);

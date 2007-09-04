@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.assembly.util;
+package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -42,7 +42,7 @@ import org.w3c.dom.Node;
  * 
  * @version $Rev$ $Date$
  */
-public class PrintUtil {
+class PrintUtil {
     private boolean useGetters = false;
     private PrintWriter out;
     private int indent;
