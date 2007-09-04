@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
+import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.core.scope.TargetResolutionException;
@@ -74,7 +75,18 @@ public class JavaImplementationInvoker implements Invoker {
         ConversationSequence sequence = msg.getConversationSequence();
         Object payload = msg.getBody();
 
-        Object contextId = msg.getConversationID();
+        Object contextId = null;
+        
+        // check what sort of context is required
+        if (scopeContainer != null) {
+           Scope scope = scopeContainer.getScope();
+           if (scope == Scope.REQUEST) {
+        	   contextId = Thread.currentThread();
+           } else {
+        	   contextId = msg.getConversationID();
+           }
+        }
+        
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
             // return a new value
@@ -82,9 +94,16 @@ public class JavaImplementationInvoker implements Invoker {
 
             // detects whether the scope container has created a conversation Id. This will
             // happen in the case that the component has conversational scope but only the
-            // callback interface is conversational
-            boolean cleanUpComponent = (contextId == null) && (msg.getConversationID() != null);
-            contextId = msg.getConversationID();
+            // callback interface is conversational. Or in the callback case if the service interface
+            // is conversational and the callback interface isn't. If we are in this situation we need
+            // to get the contextId of this component and remove it after we have invoked the method on 
+            // it. It is possible that the component instance will not go away when it is removed below 
+            // because a callback conversation will still be holding a reference to it
+            boolean removeTemporaryConversationalComponentAfterCall = false;
+            if ((contextId == null) && (msg.getConversationID() != null)){
+                contextId = msg.getConversationID();
+                removeTemporaryConversationalComponentAfterCall = true;
+            }
 
             Object instance = wrapper.getInstance();
             Object ret;
@@ -93,10 +112,13 @@ public class JavaImplementationInvoker implements Invoker {
             } else {
                 ret = method.invoke(instance, (Object[])payload);
             }
+            
             scopeContainer.returnWrapper(wrapper, contextId);
-            if ((sequence == ConversationSequence.CONVERSATION_END) || (cleanUpComponent)) {
+            
+            if ((sequence == ConversationSequence.CONVERSATION_END) || 
+                (removeTemporaryConversationalComponentAfterCall)) {
                 // if end conversation, or we have the special case where a conversational
-                // object was created to service stateful callbacks, remove resource
+                // object was created to service the stateless half of a stateful component
                 scopeContainer.remove(contextId);
             }
             msg.setBody(ret);
