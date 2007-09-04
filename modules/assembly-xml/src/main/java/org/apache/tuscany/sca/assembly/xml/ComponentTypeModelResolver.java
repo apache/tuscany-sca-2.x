@@ -54,7 +54,7 @@ public class ComponentTypeModelResolver implements ModelResolver {
         String uri = ((ComponentType)unresolved).getURI();
         ComponentType resolved = (ComponentType) map.get(uri);
         if (resolved != null) {
-            return (T)resolved;
+            return modelClass.cast(resolved);
         } else {
             return (T)unresolved;
         }
