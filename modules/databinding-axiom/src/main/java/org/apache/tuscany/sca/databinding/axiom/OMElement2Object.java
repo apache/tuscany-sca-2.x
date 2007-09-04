@@ -28,7 +28,9 @@ public class OMElement2Object extends SimpleType2JavaTransformer<OMElement> {
 
     @Override
     protected String getText(OMElement source) {
-        return source.getText();
+        String text = source.getText();
+        AxiomHelper.completeAndClose(source);
+        return text;
     }
 
     @Override
