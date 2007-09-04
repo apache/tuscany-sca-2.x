@@ -22,7 +22,18 @@ package org.apache.tuscany.sca.assembly;
  * Represent a binding that supports SCA wiring between component references and services
  * 
  * @version $Rev$ $Date$
+ * 
+ * @deprecated To be factored in the base Binding as reported in TUSCANY-1534:
+ * 
+ * - all bindings should be "wireable", i.e. can be configured using an SCA wire
+ * 
+ * - only some bindings will care about pointers to the in-memory model objects
+ * representing the target component, service and binding
+ * 
+ * - all this stuff is only relevant for references so it's confusing to have it on
+ * bindings which apply to services as well.
  */
+@Deprecated
 public interface WireableBinding extends Binding, Cloneable {
 
     /**
