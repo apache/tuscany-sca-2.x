@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
@@ -117,6 +118,13 @@ public class RuntimeWireImpl implements RuntimeWire {
             Binding refBinding = wireSource.getBinding();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
+                if (targetOperation == null) {
+                    throw new ServiceRuntimeException("No matching operation for " + operation.getName()
+                        + " is found in reference "
+                        + wireSource.getComponent().getURI()
+                        + "#"
+                        + reference.getName());
+                }
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(reference, refBinding, chain);
@@ -130,6 +138,13 @@ public class RuntimeWireImpl implements RuntimeWire {
             RuntimeComponent serviceComponent = wireTarget.getComponent();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
+                if (targetOperation == null) {
+                    throw new ServiceRuntimeException("No matching operation for " + operation.getName()
+                        + " is found in service "
+                        + serviceComponent.getURI()
+                        + "#"
+                        + service.getName());
+                }
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
                 addImplementationInterceptor(serviceComponent, service, chain, targetOperation);
                 chains.add(chain);
@@ -178,10 +193,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                 }
             }
         } catch (RuntimeException e) {
-            // TODO: [rfeng] Ignore the self reference if a runtime exception happens
-            if (!reference.getName().startsWith("$self$.")) {
-                throw e;
-            }
+            throw e;
         }
     }
 

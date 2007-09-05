@@ -34,8 +34,6 @@ import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
-import org.apache.tuscany.sca.core.scope.TargetDestructionException;
-import org.apache.tuscany.sca.core.scope.TargetInitializationException;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -180,7 +178,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 found = chain;
                 break;
             } else if (match(operation, method)) {
-                chains.put(method, chain);
                 found = chain;
                 break;
             }
