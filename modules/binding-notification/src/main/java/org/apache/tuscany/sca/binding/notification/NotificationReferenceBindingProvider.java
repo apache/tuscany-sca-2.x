@@ -247,7 +247,7 @@ public class NotificationReferenceBindingProvider
         }
     }
 
-    public List<SubscriberInfo> getSubscribers() {
+    public synchronized List<SubscriberInfo> getSubscribers() {
         return subscribers;
     }
     
