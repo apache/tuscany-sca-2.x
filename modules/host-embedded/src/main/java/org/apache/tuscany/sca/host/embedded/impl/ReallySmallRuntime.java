@@ -47,7 +47,9 @@ import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.SCADefinitions;
 import org.apache.tuscany.sca.policy.xml.SCADefinitionsDocumentProcessor;
@@ -102,7 +104,8 @@ public class ReallySmallRuntime {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         factories.addFactory(policyFactory);
         SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
-        factories.addFactory(scaBindingFactory);
+        IntentAttachPointTypeFactory intentAttachPointTypeFactory = new DefaultIntentAttachPointTypeFactory();
+        factories.addFactory(intentAttachPointTypeFactory);
         ContributionFactory contributionFactory = factories.getFactory(ContributionFactory.class); 
         
         SCADefinitionsDocumentProcessor scaDocDefnProcessor = 
