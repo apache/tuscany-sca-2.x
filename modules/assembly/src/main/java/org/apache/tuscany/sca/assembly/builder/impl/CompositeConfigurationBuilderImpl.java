@@ -388,6 +388,11 @@ public class CompositeConfigurationBuilderImpl {
                 if (componentProperty.getValue() == null) {
                     componentProperty.setValue(property.getValue());
                 }
+                
+                // Override the property value for the composite
+                if(component.getImplementation() instanceof Composite) {
+                    property.setValue(componentProperty.getValue());
+                }
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
