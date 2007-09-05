@@ -19,16 +19,11 @@
 package org.apache.tuscany.sca.binding.notification;
 
 import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.binding.notification.encoding.BrokerID;
+import org.apache.tuscany.sca.binding.notification.NotificationReferenceBindingProvider.SubscriberInfo;
 import org.apache.tuscany.sca.binding.notification.encoding.Constants;
-import org.apache.tuscany.sca.binding.notification.encoding.EncodingUtils;
-import org.apache.tuscany.sca.binding.notification.encoding.EndpointReference;
 import org.apache.tuscany.sca.binding.notification.util.IOUtils;
 import org.apache.tuscany.sca.binding.notification.util.IOUtils.IOUtilsException;
 import org.apache.tuscany.sca.binding.notification.util.IOUtils.Writeable;
@@ -47,21 +42,12 @@ public class NotificationReferenceBindingInvoker implements Invoker {
     private static final Message RESPONSE = new ImmutableMessage();
     private Operation operation;
     
-    private List<SubscriberInfo> subscribers;
-    private String brokerID;
+    private NotificationReferenceBindingProvider notificationReferenceBindingProvider;
 
-    public NotificationReferenceBindingInvoker(Operation operation) {
+    public NotificationReferenceBindingInvoker(Operation operation,
+                                               NotificationReferenceBindingProvider notificationReferenceBindingProvider) {
         this.operation = operation;
-        this.subscribers = new ArrayList<SubscriberInfo>();
-        this.brokerID = null;
-    }
-    
-    public void setBrokerID(String brokerID) {
-        this.brokerID = brokerID;
-    }
-    
-    public String getBrokerID() {
-        return brokerID;
+        this.notificationReferenceBindingProvider = notificationReferenceBindingProvider;
     }
     
     public Message invoke(Message msg) {
@@ -90,13 +76,14 @@ public class NotificationReferenceBindingInvoker implements Invoker {
 
         try {
             synchronized(this) {
-                for (SubscriberInfo subscriber : subscribers) {
+                for (SubscriberInfo subscriber : notificationReferenceBindingProvider.getSubscribers()) {
                     // check for each subscriber's broker id and skip if equal
                     if (incomingBrokerID != null && subscriber.brokerID != null && incomingBrokerID.equals(subscriber.brokerID)) {
                         continue;
                     }
                     HashMap<String, String> headers = new HashMap<String, String>();
                     headers.put(IOUtils.Notification_Operation, operation.getName());
+                    String brokerID = notificationReferenceBindingProvider.getBrokerID();
                     if (brokerID != null) {
                         headers.put(Constants.Broker_ID, brokerID);
                     }
@@ -142,103 +129,5 @@ public class NotificationReferenceBindingInvoker implements Invoker {
             }
         };
         return writeable;
-    }
-    
-    public void addSubscriberUrl(URL subscriberUrl) {
-        addSubscriber(subscriberUrl, null);
-    }
-    
-    public void addSubscriber(EndpointReference subscriberEPR) {
-        BrokerID brokerID = null;
-        if (subscriberEPR.getReferenceProperties() != null) {
-            brokerID = subscriberEPR.getReferenceProperties().getProperty(BrokerID.class);
-        }
-        addSubscriber(subscriberEPR.getEndpointAddress().getAddress(), (brokerID != null ? brokerID.getID() : null));
-    }
-
-    public void addSubscriber(URL address, String brokerID) {
-        synchronized(this) {
-            SubscriberInfo si = new SubscriberInfo(address);
-            si.brokerID = brokerID;
-            if (subscribers == null) {
-                subscribers = new ArrayList<SubscriberInfo>();
-            }
-            subscribers.add(si);
-        }
-    }
-    
-    public void replaceSubscribers(EndpointReference brokerConsumerEPR) {
-        synchronized(this) {
-            subscribers = null;
-        }
-        addSubscriber(brokerConsumerEPR);
-    }
-    
-    public void replaceBrokerSubscriber(URL removedBrokerConsumerUrl, EndpointReference chosenBrokerConsumerEpr) {
-        synchronized(this) {
-            if (subscribers == null) {
-                throw new RuntimeException("No subscribers");
-            }
-            SubscriberInfo siToRemove = null;
-            for (SubscriberInfo si : subscribers) {
-                if (si.address.equals(removedBrokerConsumerUrl)) {
-                    siToRemove = si;
-                }
-            }
-            if (siToRemove == null) {
-                throw new RuntimeException("Can't find info for broker to remove [" + removedBrokerConsumerUrl + "]");
-            }
-            if (!subscribers.remove(siToRemove)) {
-                throw new RuntimeException("Can't remove info for [" + siToRemove.address + "]");
-            }
-        }
-        if (chosenBrokerConsumerEpr != null) {
-            addSubscriber(chosenBrokerConsumerEpr);
-        }
-    }
-    
-    public List<EndpointReference> getNeighborBrokerConsumerEprs() {
-        synchronized(this) {
-            if (subscribers == null) {
-                throw new RuntimeException("No subscribers");
-            }
-            List<EndpointReference> neighborBrokerConsumerEprs = new ArrayList<EndpointReference>();
-            for(SubscriberInfo si : subscribers) {
-                if (si.brokerID != null) {
-                    neighborBrokerConsumerEprs.add(EncodingUtils.createEndpointReference(si.address, si.brokerID));
-                }
-            }
-            
-            return neighborBrokerConsumerEprs;
-        }
-    }
-    
-    public void removeBrokerSubscribers() {
-        synchronized(this) {
-            if (subscribers == null) {
-                throw new RuntimeException("No subscribers");
-            }
-            List<SubscriberInfo> sisToRemove = new ArrayList<SubscriberInfo>();
-            for (SubscriberInfo si : subscribers) {
-                if (si.brokerID != null) {
-                    sisToRemove.add(si);
-                }
-            }
-            for(SubscriberInfo si : sisToRemove) {
-                if (!subscribers.remove(si)) {
-                    throw new RuntimeException("Can't remove broker subscriber [" + si.address + "]");
-                }
-            }
-        }
-    }
-    
-    class SubscriberInfo {
-        public URL address;
-        public String brokerID;
-        
-        public SubscriberInfo(URL address) {
-            this.address = address;
-            this.brokerID = null;
-        }
     }
 }
