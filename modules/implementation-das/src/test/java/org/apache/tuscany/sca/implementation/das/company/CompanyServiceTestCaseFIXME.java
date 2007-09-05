@@ -39,7 +39,7 @@ public class CompanyServiceTestCaseFIXME extends TestCase {
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("company.composite");
-        dasCompanyService = scaDomain.getService(CompanyService.class, "CompanyServiceComponent");
+        dasCompanyService = scaDomain.getService(CompanyService.class, "CompanyComponent/CompanyServiceComponent");
     }
 
     /**
