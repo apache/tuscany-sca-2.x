@@ -19,6 +19,8 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.beans.Introspector;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -33,6 +35,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.osoa.sca.CallableReference;
 
@@ -42,7 +45,7 @@ import org.osoa.sca.CallableReference;
  * @version $Rev$ $Date$
  */
 public final class JavaIntrospectionHelper {
-
+    private static final Logger logger = Logger.getLogger(JavaIntrospectionHelper.class.getName());
     private static final Class[] EMPTY_CLASS_ARRY = new Class[0];
 
     /**
@@ -55,25 +58,38 @@ public final class JavaIntrospectionHelper {
      * Returns a collection of public, and protected fields declared by a class
      * or one of its supertypes
      */
-    public static Set<Field> getAllPublicAndProtectedFields(Class clazz) {
-        return getAllPublicAndProtectedFields(clazz, new HashSet<Field>());
+    public static Set<Field> getAllPublicAndProtectedFields(Class clazz, boolean validating) {
+        return getAllPublicAndProtectedFields(clazz, new HashSet<Field>(), validating);
+    }
+    
+
+    private static void checkInvalidAnnotations(AnnotatedElement element) {
+        for (Annotation a : element.getAnnotations()) {
+            if ("org.osoa.sca.annotations".equals(a.annotationType().getPackage().getName())) {
+                logger.warning("Invalid annotation " + a + " is found on " + element);
+            }
+        }
     }
 
     /**
      * Recursively evaluates the type hierachy to return all fields that are
      * public or protected
      */
-    private static Set<Field> getAllPublicAndProtectedFields(Class clazz, Set<Field> fields) {
+    private static Set<Field> getAllPublicAndProtectedFields(Class clazz, Set<Field> fields, boolean validating) {
         if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
             return fields;
         }
-        fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields);
+        fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields, validating);
         Field[] declaredFields = clazz.getDeclaredFields();
         for (Field field : declaredFields) {
             int modifiers = field.getModifiers();
             if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers)) {
                 field.setAccessible(true); // ignore Java accessibility
                 fields.add(field);
+            } else {
+                if(validating) {
+                    checkInvalidAnnotations(field);
+                }
             }
         }
         return fields;
@@ -87,14 +103,14 @@ public final class JavaIntrospectionHelper {
      * cached. It is assumed that this method will be used during a
      * configuration phase.
      */
-    public static Set<Method> getAllUniquePublicProtectedMethods(Class clazz) {
-        return getAllUniqueMethods(clazz, new HashSet<Method>());
+    public static Set<Method> getAllUniquePublicProtectedMethods(Class clazz, boolean validating) {
+        return getAllUniqueMethods(clazz, new HashSet<Method>(), validating);
     }
 
     /**
      * Recursively evaluates the type hierarchy to return all unique methods
      */
-    private static Set<Method> getAllUniqueMethods(Class pClass, Set<Method> methods) {
+    private static Set<Method> getAllUniqueMethods(Class pClass, Set<Method> methods, boolean validating) {
         if (pClass == null || pClass.isArray() || Object.class.equals(pClass)) {
             return methods;
         }
@@ -103,6 +119,9 @@ public final class JavaIntrospectionHelper {
         for (Method declaredMethod : declaredMethods) {
             int modifiers = declaredMethod.getModifiers();
             if ((!Modifier.isPublic(modifiers) && !Modifier.isProtected(modifiers)) || Modifier.isStatic(modifiers)) {
+                if(validating) {
+                    checkInvalidAnnotations(declaredMethod);
+                }
                 continue;
             }
             if (methods.size() == 0) {
@@ -130,7 +149,7 @@ public final class JavaIntrospectionHelper {
         }
         // evaluate class hierarchy - this is done last to track inherited
         // methods
-        methods = getAllUniqueMethods(pClass.getSuperclass(), methods);
+        methods = getAllUniqueMethods(pClass.getSuperclass(), methods, validating);
         return methods;
     }
 

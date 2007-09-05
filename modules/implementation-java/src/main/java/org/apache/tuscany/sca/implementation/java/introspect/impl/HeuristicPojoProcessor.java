@@ -107,7 +107,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 addService(type, clazz);
             }
         }
-        Set<Method> methods = getAllUniquePublicProtectedMethods(clazz);
+        Set<Method> methods = getAllUniquePublicProtectedMethods(clazz, false);
         if (!type.getReferenceMembers().isEmpty() || !type.getPropertyMembers().isEmpty()) {
             // references and properties have been explicitly defined
 //            if (type.getServices().isEmpty()) {
@@ -202,7 +202,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         // Public or protected fields unless there is a public or protected
         // setter method
         // for the same name
-        Set<Field> fields = getAllPublicAndProtectedFields(clazz);
+        Set<Field> fields = getAllPublicAndProtectedFields(clazz, false);
         for (Field field : fields) {
             if (field.isAnnotationPresent(Callback.class) || field.isAnnotationPresent(Context.class)) {
                 continue;

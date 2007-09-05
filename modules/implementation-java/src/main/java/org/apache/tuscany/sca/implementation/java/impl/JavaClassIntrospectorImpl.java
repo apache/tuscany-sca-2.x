@@ -86,14 +86,14 @@ public class JavaClassIntrospectorImpl {
             }
         }
 
-        Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
+        Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz, true);
         for (Method method : methods) {
             for (JavaClassVisitor processor : visitors) {
                 processor.visitMethod(method, type);
             }
         }
 
-        Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
+        Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz, true);
         for (Field field : fields) {
             for (JavaClassVisitor extension : visitors) {
                 extension.visitField(field, type);
