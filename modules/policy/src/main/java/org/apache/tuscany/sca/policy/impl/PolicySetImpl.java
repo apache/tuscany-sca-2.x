@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -43,7 +42,7 @@ public class PolicySetImpl implements PolicySet {
     private List<Intent> providedIntents = new ArrayList<Intent>();
     private List<PolicySet> referencedPolicySets = new ArrayList<PolicySet>();
     private List<Object> policies = new ArrayList<Object>();
-    Map<Intent, List<Policy>>  mappedPolicies = new Hashtable<Intent, List<Policy>>();
+    Map<Intent, List<Object>>  mappedPolicies = new Hashtable<Intent, List<Object>>();
     private boolean unresolved = true;
     
     protected PolicySetImpl() {
@@ -89,7 +88,7 @@ public class PolicySetImpl implements PolicySet {
         this.unresolved = unresolved;
     }
 
-    public Map<Intent, List<Policy>> getMappedPolicies() {
+    public Map<Intent, List<Object>> getMappedPolicies() {
         return mappedPolicies;
     }
     
