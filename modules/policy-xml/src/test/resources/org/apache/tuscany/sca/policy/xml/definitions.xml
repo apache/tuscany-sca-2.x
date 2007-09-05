@@ -136,6 +136,31 @@
     </intentMap>
 </policySet>
 
+<policySet name="SecureWSPolicy"
+ 	provides="confidentiality"
+ 	appliesTo="sca:binding.ws"
+ 	xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 	xmlns:sp="http://schemas.xmlsoap.org/ws/2002/12/secext"
+ 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+	<wsp:Policy>
+	    <wsp:ExactlyOne>
+	      <wsp:All>
+	        <sp:SecurityToken>
+	          <sp:TokenType>sp:X509v3</sp:TokenType>
+	        </sp:SecurityToken>
+	        <sp:UsernameToken /> 
+	        <sp:SignedParts />
+	        <sp:EncryptedParts>
+	          <sp:Body />
+	        </sp:EncryptedParts>
+	        <sp:TransportBinding>
+	          <sp:IncludeTimeStamp />
+	        </sp:TransportBinding>
+	      </wsp:All>
+	    </wsp:ExactlyOne>
+  </wsp:Policy>
+ </policySet>
+
 <!-- profile intent -->
  <intent name="reliableMessageProtection" 
  			 constrains="sca:binding"
