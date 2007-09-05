@@ -20,11 +20,13 @@ package org.apache.tuscany.sca.policy.impl;
 
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
+import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
+import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
 /**
  * Default implementation for IntentAttachPointTypeFactory
  */
-public class DefaultIntentAttachPointTypeFactoryImpl implements IntentAttachPointTypeFactory{
+public class IntentAttachPointTypeFactoryImpl implements IntentAttachPointTypeFactory {
 
     public IntentAttachPointType createBindingType() {
         return new BindingTypeImpl();

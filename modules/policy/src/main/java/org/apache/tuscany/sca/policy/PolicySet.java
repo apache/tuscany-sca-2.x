@@ -110,7 +110,7 @@ public interface PolicySet {
      * 
      * @return
      */
-    Map<Intent, List<Policy>>getMappedPolicies();
+    Map<Intent, List<Object>>getMappedPolicies();
     
     
     
