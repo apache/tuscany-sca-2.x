@@ -78,6 +78,7 @@ public class ComponentContextHelper {
         this.assemblyFactory = assemblyFactory;
         this.javaInterfaceFactory = javaInterfaceFactory;
         this.staxProcessors = processors;
+        staxProcessors.addArtifactProcessor(new ReferenceParameterProcessor());
     }
 
     /**

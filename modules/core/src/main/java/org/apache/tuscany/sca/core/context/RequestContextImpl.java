@@ -62,6 +62,9 @@ public class RequestContextImpl implements RequestContext {
         
         CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
         ((CallableReferenceImpl<B>) callableReference).attachCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
+        if (callableReference.getConversation() != null) {
+            ((CallableReferenceImpl<B>) callableReference).attachConversationID(ThreadMessageContext.getMessageContext().getConversationID());
+        }
         return callableReference;
     }
 
@@ -84,6 +87,9 @@ public class RequestContextImpl implements RequestContext {
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
         factory.resolveTarget();
         factory.attachCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
+        if (factory.getConversation() != null) {
+            factory.attachConversationID(ThreadMessageContext.getMessageContext().getConversationID());
+        }
         return factory;
     }
 }
