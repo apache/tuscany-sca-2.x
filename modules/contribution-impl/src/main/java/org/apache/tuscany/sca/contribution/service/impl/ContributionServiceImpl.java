@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -99,11 +98,6 @@ public class ContributionServiceImpl implements ContributionService {
     private ModelFactoryExtensionPoint modelFactories;
     
     /**
-     * Contribution post processor
-     */
-    private ContributionPostProcessor postProcessor;
-
-    /**
      * xml factory used to create reader instance to load contribution metadata
      */
     private XMLInputFactory xmlFactory;
@@ -126,7 +120,6 @@ public class ContributionServiceImpl implements ContributionService {
                                    URLArtifactProcessor documentProcessor,
                                    StAXArtifactProcessor staxProcessor,
                                    ExtensibleContributionListener contributionListener,
-                                   ContributionPostProcessor postProcessor,
                                    ModelResolver domainResolver,
                                    ModelResolverExtensionPoint modelResolvers,
                                    ModelFactoryExtensionPoint modelFactories,
@@ -139,7 +132,6 @@ public class ContributionServiceImpl implements ContributionService {
         this.artifactProcessor = documentProcessor;
         this.staxProcessor = staxProcessor;
         this.contributionListener = contributionListener;
-        this.postProcessor = postProcessor;
         this.modelResolvers = modelResolvers;
         this.modelFactories = modelFactories;
         this.xmlFactory = xmlFactory;
@@ -347,10 +339,7 @@ public class ContributionServiceImpl implements ContributionService {
                 }
             }
         }
-        
-        //post process contribution
-        this.postProcessor.visit(contribution);
-        
+                
         // store the contribution on the registry
         this.contributionRepository.addContribution(contribution);
         
