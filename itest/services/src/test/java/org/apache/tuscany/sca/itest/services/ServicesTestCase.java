@@ -46,7 +46,7 @@ public class ServicesTestCase {
         AComponent a1 = domain.getService(AComponent.class, "AComponent1");
         assertEquals("AComponent", a1.foo());
 
-        AComponent a2 = domain.getService(AComponent.class, "AComponent2/AComponent2Service");
+        AComponent a2 = domain.getService(AComponent.class, "AComponent2/AComponent");
         assertEquals("AComponent", a2.foo());
     }
 
@@ -55,7 +55,7 @@ public class ServicesTestCase {
         BComponent a1 = domain.getService(BComponent.class, "BComponent1");
         assertEquals("BComponent", a1.foo());
 
-        BComponent a2 = domain.getService(BComponent.class, "BComponent2/BComponent2Service");
+        BComponent a2 = domain.getService(BComponent.class, "BComponent2/BComponent");
         assertEquals("BComponent", a2.foo());
     }
 
@@ -64,7 +64,7 @@ public class ServicesTestCase {
         CComponent a1 = domain.getService(CComponent.class, "CComponent1");
         assertEquals("CComponent", a1.foo());
 
-        CComponent a2 = domain.getService(CComponent.class, "CComponent2/CComponent2Service");
+        CComponent a2 = domain.getService(CComponent.class, "CComponent2/CComponent");
         assertEquals("CComponent", a2.foo());
     }
 
@@ -83,10 +83,10 @@ public class ServicesTestCase {
             Assert.assertTrue("The service name is required", true);
         }
 
-        DComponent a3 = domain.getService(DComponent.class, "DComponent2/DComponent2Service");
+        DComponent a3 = domain.getService(DComponent.class, "DComponent2/DComponent");
         assertEquals("DComponent", a3.foo());
 
-        D1Component a4 = domain.getService(D1Component.class, "DComponent2/D1Component2Service");
+        D1Component a4 = domain.getService(D1Component.class, "DComponent2/D1Component");
         assertEquals("DComponent", a4.foo1());
 
     }

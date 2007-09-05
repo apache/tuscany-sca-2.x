@@ -27,8 +27,8 @@
         <interface.java interface="mysca.test.myservice.impl.MyService" />
     </service>
 
-    <property name="newLocation" type="anyURI">Raleigh</property>
-    <property name="newYear" type="anyURI">2008</property>
+    <property name="newLocation" type="xsd:anyURI">Raleigh</property>
+    <property name="newYear" type="xsd:anyURI">2008</property>
 
 
     <component name="MyServiceComponentNew">
