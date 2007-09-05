@@ -70,6 +70,10 @@ class BindingUtil {
                         } catch (Exception e) {
                             // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
                         }
+                    } else {
+                        if (binding.getURI() == null) {
+                            binding.setURI(serviceBinding.getURI());
+                        }
                     }
                     matched.add(cloned);
                     break;
