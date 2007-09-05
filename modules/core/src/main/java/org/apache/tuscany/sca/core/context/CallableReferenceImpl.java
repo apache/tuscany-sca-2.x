@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.URI;
-import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -95,7 +94,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 this.binding = this.reference.getBindings().get(0);
             }
         }
-        
+
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
         // sca:component1/component11/component112/service1?
         String componentURI = component.getURI(); // The target will be relative to this base URI
@@ -118,7 +117,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             return null;
         }
     }
-    
+
     protected void bind(RuntimeWire wire) {
         if (wire != null) {
             this.component = wire.getSource().getComponent();
@@ -127,9 +126,9 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             this.componentURI = component.getURI();
             this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
             init(wire);
-        }        
+        }
     }
-    
+
     protected void init(RuntimeWire wire) {
         EndpointReference target = wire.getTarget();
 
@@ -191,26 +190,6 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
      */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.scdl = in.readUTF();
-        // resolve();
-
-        String uri = in.readUTF();
-        int index = uri.indexOf('?');
-        if (index == -1) {
-            componentURI = uri;
-        } else {
-            componentURI = uri.substring(0, index);
-            String query = uri.substring(index);
-            StringTokenizer tokenizer = new StringTokenizer(query, "&");
-            while (tokenizer.hasMoreTokens()) {
-                String attr = tokenizer.nextToken();
-                String pair[] = attr.split("=");
-                if (pair[0].equals("sca.conversationID")) {
-                    this.conversationID = pair[1];
-                } else if (pair[0].equals("sca.callbackID")) {
-                    this.callbackID = pair[1];
-                }
-            }
-        }
     }
 
     /**
@@ -227,6 +206,18 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 currentActivator.configureComponentContext(this.component);
                 this.reference = (RuntimeComponentReference)c.getReferences().get(0);
                 this.reference.setComponent(this.component);
+                ReferenceParameters parameters = null;
+                for (Object ext : reference.getExtensions()) {
+                    if (ext instanceof ReferenceParameters) {
+                        parameters = (ReferenceParameters)ext;
+                        break;
+                    }
+                }
+                if (parameters != null) {
+                    this.callbackID = parameters.getCallbackID();
+                    this.conversationID = parameters.getConversationID();
+                    this.componentURI = parameters.getComponentURI();
+                }
                 URI uri = URI.create("/" + componentURI);
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof WireableBinding) {
@@ -289,24 +280,15 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
+            ReferenceParameters parameters = new ReferenceParameters();
+            parameters.setCallbackID(callbackID);
+            parameters.setComponentURI(componentURI);
+            parameters.setConversationID(conversationID);
+            reference.getExtensions().add(parameters);
             String scdl =
                 ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper().toXML(component, reference);
+            reference.getExtensions().remove(parameters);
             out.writeUTF(scdl);
-            StringBuffer uri = new StringBuffer(componentURI);
-            boolean first = true;
-            if (conversationID != null) {
-                uri.append("?sca.conversationID=").append(conversationID);
-                first = false;
-            }
-            if (callbackID != null) {
-                if (!first) {
-                    uri.append("&");
-                } else {
-                    uri.append("?");
-                }
-                uri.append("sca.callbackID=").append(callbackID);
-            }
-            out.writeUTF(uri.toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new IOException(e.getMessage());
@@ -321,9 +303,13 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     private String createCallbackID() {
         return UUID.randomUUID().toString();
     }
-    
+
     public void attachCallbackID(Object callbackID) {
         this.callbackID = callbackID;
+    }
+
+    public void attachConversationID(Object conversationID) {
+        conversation.setConversationID(conversationID);
     }
 
 }
