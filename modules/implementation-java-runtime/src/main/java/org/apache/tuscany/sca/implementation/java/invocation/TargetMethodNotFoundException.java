@@ -25,17 +25,14 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * @version $Rev$ $Date$
  */
 public class TargetMethodNotFoundException extends TargetInvokerCreationException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -8565552977647191863L;
     private Operation operation;
 
     /**
      * @param operation
      */
-    public TargetMethodNotFoundException(Operation operation) {
-        super("Target method not found for operation");
+    public TargetMethodNotFoundException(String message, Throwable e, Operation operation) {
+        super(message, e);
         this.operation = operation;
     }
 
