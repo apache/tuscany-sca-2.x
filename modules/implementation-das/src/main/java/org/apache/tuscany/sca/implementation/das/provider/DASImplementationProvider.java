@@ -65,6 +65,7 @@ public class DASImplementationProvider implements ImplementationProvider {
         try {
             das = dataAccessEngineManager.getDAS(implementation.getConfig(), implementation.getConnectionInfo());
         } catch(Exception e) {
+            e.printStackTrace();
             //what now ?
         }        
         
