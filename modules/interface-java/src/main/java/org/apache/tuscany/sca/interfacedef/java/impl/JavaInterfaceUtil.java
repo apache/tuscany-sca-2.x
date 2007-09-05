@@ -48,16 +48,18 @@ public final class JavaInterfaceUtil {
      * @throws NoSuchMethodException if no such method exists
      * @Deprecated
      */
-    public static  Method findMethod(Class<?> implClass, Operation operation) throws NoSuchMethodException {
+    public static Method findMethod(Class<?> implClass, Operation operation) throws NoSuchMethodException {
         String name = operation.getName();
         Interface interface1 = operation.getInterface();
-        if(interface1!=null && interface1.isRemotable()) {
-            for(Method m: implClass.getMethods()) {
-                if(m.getName().equals(name)) {
+        if (interface1 != null && interface1.isRemotable()) {
+            for (Method m : implClass.getMethods()) {
+                if (m.getName().equals(name)) {
                     return m;
                 }
             }
-            throw new NoSuchMethodException(name);
+            throw new NoSuchMethodException("No matching method for operation " + operation.getName()
+                + " is found on "
+                + implClass);
         }
         Class<?>[] paramTypes = getPhysicalTypes(operation);
         return implClass.getMethod(name, paramTypes);
@@ -66,9 +68,9 @@ public final class JavaInterfaceUtil {
     /**
      * @Deprecated
      */
-    private static  Class<?>[] getPhysicalTypes(Operation operation) {
+    private static Class<?>[] getPhysicalTypes(Operation operation) {
         DataType<List<DataType>> inputType = operation.getInputType();
-        if(inputType==null) {
+        if (inputType == null) {
             return new Class<?>[] {};
         }
         List<DataType> types = inputType.getLogical();
@@ -76,7 +78,7 @@ public final class JavaInterfaceUtil {
         for (int i = 0; i < javaTypes.length; i++) {
             Type physical = types.get(i).getPhysical();
             if (physical instanceof Class<?>) {
-                javaTypes[i] = (Class<?>) physical;
+                javaTypes[i] = (Class<?>)physical;
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -106,7 +108,7 @@ public final class JavaInterfaceUtil {
      * 
      * @return true if the operation matches, false if does not
      */
-    private static  boolean match(Operation operation, Method method) {
+    private static boolean match(Operation operation, Method method) {
         Class<?>[] params = method.getParameterTypes();
         DataType<List<DataType>> inputType = operation.getInputType();
         List<DataType> types = inputType.getLogical();
@@ -124,6 +126,5 @@ public final class JavaInterfaceUtil {
         return found;
 
     }
-
 
 }

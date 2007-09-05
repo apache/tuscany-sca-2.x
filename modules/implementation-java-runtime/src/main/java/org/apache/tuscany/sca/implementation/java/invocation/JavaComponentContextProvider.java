@@ -141,7 +141,8 @@ public class JavaComponentContextProvider {
                 Class<?> businessInterface = element.getType();
                 ObjectFactory<?> factory = null;
                 if (CallableReference.class.isAssignableFrom(element.getType())) {
-                    businessInterface = JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
+                    businessInterface =
+                        JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
                     factory =
                         new CallableReferenceObjectFactory(new CallbackWireObjectFactory(businessInterface,
                                                                                          proxyFactory, wires));
@@ -268,7 +269,11 @@ public class JavaComponentContextProvider {
                 return invoker;
             }
         } catch (NoSuchMethodException e) {
-            throw new TargetMethodNotFoundException(operation);
+            throw new TargetMethodNotFoundException("No matching method is found for operation " + operation.getName()
+                + " in the implementation ("
+                + implClass
+                + ") of component "
+                + component.getURI(), e, operation);
         }
 
     }
