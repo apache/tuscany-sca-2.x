@@ -21,8 +21,8 @@
     xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0" name="Iteration3Composite"
     targetNamespace="http://foo" local="true" autowire="false" requires="cns:confidentiality" policySets="sns:secure">
 
-    <property name="newLocation" type="anyURI">Raleigh</property>
-    <property name="newYear" type="anyURI">2008</property>
+    <property name="newLocation" type="xsd:anyURI">Raleigh</property>
+    <property name="newYear" type="xsd:anyURI">2008</property>
     <component name="MyServiceComponent">
         <implementation.java class="mysca.test.myservice.impl.MyServiceImpl" />
     </component>

@@ -26,7 +26,7 @@
     
     <component name="AComponent2">
         <implementation.java class="org.apache.tuscany.sca.itest.services.AComponentImpl" />
-	    <service name="AComponent2Service">
+	    <service name="AComponent">
 	        <interface.java interface="org.apache.tuscany.sca.itest.services.AComponent" />
 	    </service>
     </component> 
@@ -37,7 +37,7 @@
     
     <component name="BComponent2">
         <implementation.java class="org.apache.tuscany.sca.itest.services.BComponentImpl" />
-	    <service name="BComponent2Service">
+	    <service name="BComponent">
 	        <interface.java interface="org.apache.tuscany.sca.itest.services.BComponent" />
 	    </service>
     </component> 
@@ -48,7 +48,7 @@
     
     <component name="CComponent2">
         <implementation.java class="org.apache.tuscany.sca.itest.services.CComponentImpl" />
-	    <service name="CComponent2Service">
+	    <service name="CComponent">
 	        <interface.java interface="org.apache.tuscany.sca.itest.services.CComponent" />
 	    </service>
     </component> 
@@ -59,10 +59,10 @@
     
     <component name="DComponent2">
         <implementation.java class="org.apache.tuscany.sca.itest.services.DComponentImpl" />
-	    <service name="DComponent2Service">
+	    <service name="DComponent">
 	        <interface.java interface="org.apache.tuscany.sca.itest.services.DComponent" />
 	    </service>
-	    <service name="D1Component2Service">
+	    <service name="D1Component">
 	        <interface.java interface="org.apache.tuscany.sca.itest.services.D1Component" />
 	    </service>
     </component> 
