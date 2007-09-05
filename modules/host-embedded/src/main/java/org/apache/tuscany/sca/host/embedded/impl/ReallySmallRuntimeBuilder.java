@@ -39,9 +39,6 @@ import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessor;
-import org.apache.tuscany.sca.contribution.processor.ContributionPostProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleContributionPostProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
@@ -185,9 +182,6 @@ public class ReallySmallRuntimeBuilder {
         // Get the model factory extension point
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         
-        //FIXME remove this
-        ContributionPostProcessor postProcessor = new ExtensibleContributionPostProcessor(registry.getExtensionPoint(ContributionPostProcessorExtensionPoint.class));
-
         // Create contribution listener
         ExtensibleContributionListener contributionListener = new ExtensibleContributionListener(registry.getExtensionPoint(ContributionListenerExtensionPoint.class));
         
@@ -204,7 +198,7 @@ public class ReallySmallRuntimeBuilder {
         ContributionService contributionService = 
             new ContributionServiceImpl(repository, packageProcessor, documentProcessor,
                                         staxProcessor, contributionListener, 
-                                        postProcessor, domainModelResolver, modelResolvers, modelFactories,
+                                        domainModelResolver, modelResolvers, modelFactories,
                                         assemblyFactory, contributionFactory, xmlFactory);
         return contributionService;
     }
