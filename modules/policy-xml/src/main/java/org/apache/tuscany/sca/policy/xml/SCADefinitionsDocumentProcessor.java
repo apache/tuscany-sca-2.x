@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -35,10 +34,10 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.SCADefinitions;
-import org.apache.tuscany.sca.policy.impl.DefaultIntentAttachPointTypeFactoryImpl;
 
 /**
  * A SCA Definitions Document processor.
@@ -65,7 +64,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         definitionsBuilder = new SCADefinitionsBuilderImpl();
         this.domainModelResolver = new SCADefinitionsResolver();
         
-        IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactoryImpl();
+        IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();
             
         SCADefinitionsProcessor scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, extensionProcessor, domainModelResolver);
         

@@ -44,6 +44,9 @@ public interface PolicyConstants {
     String REQUIRES = "requires";
     String DEFAULT = "default";
     
+    String WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
+    String WS_POLICY = "Policy";
+    
     String ALWAYS_PROVIDES = "alwaysProvides";
     String MAY_PROVIDE = "mayProvide";
     String TYPE = "type";
@@ -61,6 +64,7 @@ public interface PolicyConstants {
     QName DESCRIPTION_QNAME = new QName(SCA10_NS, DESCRIPTION);
     QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA10_NS, INTENT_MAP_QUALIFIER);
     QName POLICY_SET_REFERENCE_QNAME = new QName(SCA10_NS, POLICY_SET_REFERENCE);
+    QName WS_POLICY_QNAME = new QName(WS_POLICY_NS, WS_POLICY);
     
     String QUALIFIED_INTENT_CONSTRAINS_ERROR = " - Qualified Intents must not specify 'constrains' attribute";
     

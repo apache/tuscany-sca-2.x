@@ -243,8 +243,8 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
 
     private void buildIntentsInMappedPolicies(PolicySet policySet, Map<QName, Intent> definedIntents)
         throws SCADefinitionsBuilderException {
-        Map<Intent, List<Policy>> mappedPolicies = new Hashtable<Intent, List<Policy>>();
-        for (Map.Entry<Intent, List<Policy>> entry : policySet.getMappedPolicies().entrySet()) {
+        Map<Intent, List<Object>> mappedPolicies = new Hashtable<Intent, List<Object>>();
+        for (Map.Entry<Intent, List<Object>> entry : policySet.getMappedPolicies().entrySet()) {
             Intent mappedIntent = entry.getKey();
             if (mappedIntent.isUnresolved()) {
                 Intent resolvedMappedIntent = definedIntents.get(mappedIntent.getName());
