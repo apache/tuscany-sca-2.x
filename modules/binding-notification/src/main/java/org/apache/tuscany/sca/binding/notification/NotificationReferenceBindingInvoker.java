@@ -75,20 +75,18 @@ public class NotificationReferenceBindingInvoker implements Invoker {
         }
 
         try {
-            synchronized(this) {
-                for (SubscriberInfo subscriber : notificationReferenceBindingProvider.getSubscribers()) {
-                    // check for each subscriber's broker id and skip if equal
-                    if (incomingBrokerID != null && subscriber.brokerID != null && incomingBrokerID.equals(subscriber.brokerID)) {
-                        continue;
-                    }
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put(IOUtils.Notification_Operation, operation.getName());
-                    String brokerID = notificationReferenceBindingProvider.getBrokerID();
-                    if (brokerID != null) {
-                        headers.put(Constants.Broker_ID, brokerID);
-                    }
-                    IOUtils.sendHttpRequest(subscriber.address, headers, writeable, null);
+            for (SubscriberInfo subscriber : notificationReferenceBindingProvider.getSubscribers()) {
+                // check for each subscriber's broker id and skip if equal
+                if (incomingBrokerID != null && subscriber.brokerID != null && incomingBrokerID.equals(subscriber.brokerID)) {
+                    continue;
                 }
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put(IOUtils.Notification_Operation, operation.getName());
+                String brokerID = notificationReferenceBindingProvider.getBrokerID();
+                if (brokerID != null) {
+                    headers.put(Constants.Broker_ID, brokerID);
+                }
+                IOUtils.sendHttpRequest(subscriber.address, headers, writeable, null);
             }
         } catch(Exception e) {
             e.printStackTrace();
