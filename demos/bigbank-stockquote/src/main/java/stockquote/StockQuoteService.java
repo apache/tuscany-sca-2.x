@@ -19,15 +19,12 @@
 package stockquote;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /**
  * This is the business interface of the StockQuote service.
  */
 @Remotable
-@Service
 public interface StockQuoteService {
 
     public double getQuote(String symbol);
 }
-

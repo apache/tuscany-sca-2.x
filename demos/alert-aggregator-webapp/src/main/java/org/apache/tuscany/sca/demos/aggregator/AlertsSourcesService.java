@@ -21,9 +21,7 @@ package org.apache.tuscany.sca.demos.aggregator;
 
 import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
 import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
-
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Retrieve and manage alert sources
@@ -31,7 +29,6 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 @Remotable
-@Service 
 public interface AlertsSourcesService {
 
     /**

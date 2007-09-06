@@ -19,15 +19,12 @@
 package helloworld;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /**
  * This is the business interface of the HelloWorld greetings service.
  */
 @Remotable
-@Service
 public interface HelloWorldService {
 
     public String getGreetings(String name);
 }
-

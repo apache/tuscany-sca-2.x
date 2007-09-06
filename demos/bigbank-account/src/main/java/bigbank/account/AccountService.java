@@ -19,16 +19,14 @@
 package bigbank.account;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 
 @Remotable
-@Service
 public interface AccountService {
-    
-	public double getAccountReport(String customerID);
-        
+
+    public double getAccountReport(String customerID);
+
 }

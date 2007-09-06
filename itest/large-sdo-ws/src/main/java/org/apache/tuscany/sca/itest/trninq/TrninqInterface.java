@@ -21,13 +21,11 @@ package org.apache.tuscany.sca.itest.trninq;
 import org.ifxforum.xsd._1.DepAcctTrnInqRq_Type;
 import org.ifxforum.xsd._1.DepAcctTrnInqRs_Type;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /**
  * @version $Rev$ $Date$
  */
 @Remotable
-@Service
 public interface TrninqInterface {
 
     /**

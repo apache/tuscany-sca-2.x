@@ -1,7 +1,6 @@
 package shoppingstore.services.cart;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 import com.amazon.webservices.awsecommerceservice._2007_05_14.CartAdd;
 import com.amazon.webservices.awsecommerceservice._2007_05_14.CartAddResponse;
@@ -15,7 +14,6 @@ import com.amazon.webservices.awsecommerceservice._2007_05_14.CartModify;
 import com.amazon.webservices.awsecommerceservice._2007_05_14.CartModifyResponse;
 
 @Remotable
-@Service
 public interface CartService {
 	
 	public CartCreateResponse CartCreate(CartCreate cartCreate);

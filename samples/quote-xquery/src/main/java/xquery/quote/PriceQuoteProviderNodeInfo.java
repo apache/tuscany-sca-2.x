@@ -21,10 +21,8 @@ package xquery.quote;
 import net.sf.saxon.om.NodeInfo;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 @Remotable
-@Service
 public interface PriceQuoteProviderNodeInfo {
     public NodeInfo providePriceQuote();
 }
