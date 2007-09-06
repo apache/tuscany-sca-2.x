@@ -309,6 +309,10 @@ public class JettyServer implements ServletHost {
         return null;
     }
     
+    public String getContextPath() {
+        return ROOT;
+    }
+
     /**
      * A wrapper to enable use of a WorkScheduler with Jetty
      */

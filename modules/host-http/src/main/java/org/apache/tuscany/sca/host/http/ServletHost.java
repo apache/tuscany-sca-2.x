@@ -71,4 +71,12 @@ public interface ServletHost {
      * @throws ServletMappingException
      */
     RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException;
+
+    /**
+     * Returns the portion of the request URI that indicates the context of the request
+     * 
+     * @return a String specifying the portion of the request URI that indicates the context of the request
+     */
+    String getContextPath();
+
 }

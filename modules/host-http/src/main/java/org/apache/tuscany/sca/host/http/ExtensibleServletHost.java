@@ -74,5 +74,9 @@ public class ExtensibleServletHost implements ServletHost {
         // For now just select the first one
         return servletHosts.getServletHosts().get(0).getRequestDispatcher(uri);
     }
+
+    public String getContextPath() {
+        return servletHosts.getServletHosts().get(0).getContextPath();
+    }
     
 }

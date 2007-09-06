@@ -53,7 +53,6 @@ import org.apache.axis2.transport.http.server.HttpUtils;
 public class Axis2ServiceServlet extends AxisServlet {
 
     protected TuscanyListingAgent agent;
-    protected boolean inited;
 
     private static final long serialVersionUID = 1L;
     private static final ServletConfig DUMMY_CONFIG = createDummyServletConfig();
@@ -220,20 +219,6 @@ public class Axis2ServiceServlet extends AxisServlet {
             }
         };
         return sc;
-    }
-
-    @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        // HACK: Get the correct context root which is not available during init() call
-        if (!inited) {
-            synchronized (configContext) {
-                configContext.setContextRoot(request.getContextPath());
-                inited = true;
-            }
-        }
-
-        super.service(request, response);
     }
 
     @Override

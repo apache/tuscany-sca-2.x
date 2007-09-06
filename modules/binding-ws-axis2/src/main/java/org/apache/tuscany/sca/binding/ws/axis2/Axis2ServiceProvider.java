@@ -97,6 +97,8 @@ public class Axis2ServiceProvider {
             throw new RuntimeException(e); // TODO: better exception
         }
 
+        configContext.setContextRoot(servletHost.getContextPath());
+
         String uri = computeActualURI(BASE_URI, component, contract).normalize().toString();
         if (uri.endsWith("/")) {
             uri = uri.substring(0, uri.length() - 1);
