@@ -20,10 +20,8 @@ package xquery.quote;
 
 import org.example.avail.AvailQuote;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 @Remotable
-@Service
 public interface AvailQuoteProviderService {
     AvailQuote provideAvailQuote(String dummyString);
 }

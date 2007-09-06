@@ -19,10 +19,8 @@
 package account;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 @Remotable
-@Service
 public interface Customer {
 
     /**

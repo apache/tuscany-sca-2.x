@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Verfies component type information is properly introspected from an unadorned
@@ -304,7 +303,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
 
     }
 
-    @Service
+    @Remotable
     private interface Ref {
     }
 

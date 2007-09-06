@@ -20,10 +20,8 @@ package xquery.quote;
 
 import org.example.price.PriceQuote;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 @Remotable
-@Service
 public interface PriceQuoteProvider {
 
     public PriceQuote providePriceQuote();

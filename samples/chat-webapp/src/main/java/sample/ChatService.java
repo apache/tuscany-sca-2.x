@@ -17,9 +17,7 @@
 package sample;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
-@Service
 @Remotable
 public interface ChatService {
 

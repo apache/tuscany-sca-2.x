@@ -22,10 +22,8 @@ import org.example.avail.AvailQuote;
 import org.example.price.PriceQuote;
 import org.example.quote.Quote;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 @Remotable
-@Service
 public interface QuoteJoin {
     public Quote joinPriceAndAvailQuotes(PriceQuote priceQuote, AvailQuote availQuote, float taxRate);
 }

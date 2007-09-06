@@ -20,10 +20,8 @@ package xquery.quote;
 
 import org.example.quote.Quote;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 @Remotable
-@Service
 public interface ExternalReferencesQuoteJoin {
     public Quote joinPriceAndAvailQuotes(float taxRate);
 }

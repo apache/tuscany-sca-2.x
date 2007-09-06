@@ -26,14 +26,12 @@
 package helloworld;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /*
  * HelloWorld java interface
  */
 
 @Remotable
-@Service
 public interface HelloWorld {
 
     /**
