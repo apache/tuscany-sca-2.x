@@ -55,16 +55,12 @@ Sample Usage
 This sample is run using the tuscany binary distribution. To run it, first set the
 following environment variables:
 
-set MAVEN_REPO=<Directory where your maven repo resides, e.g. \Documents and Settings\Administrator\.m2\repository>
-set NOTIFICATION_IMPL_JAR=%MAVEN_REPO%\org\apache\tuscany\sca\tuscany-implementation-notification\1.0-incubating-SNAPSHOT\tuscany-implementation-notification-1.0-incubating-SNAPSHOT.jar
-set NOTIFICATION_BINDING_JAR=%MAVEN_REPO%\org\apache\tuscany\sca\tuscany-binding-notification\1.0-incubating-SNAPSHOT\tuscany-binding-notification-1.0-incubating-SNAPSHOT.jar
-set STAX_JAR=%MAVEN_REPO%\stax\stax\1.1.1-dev\stax-1.1.1-dev.jar
 set TUSCANY_BIN_DISTRO=<Directory where the distro was extracted, e.g. \Devt\tuscany-sca-distr\tuscany-sca-1.0-incubating-SNAPSHOT>
 set TUSCANY_SCA_MANIFEST_JAR=%TUSCANY_BIN_DISTRO%\lib\tuscany-sca-manifest.jar
 
 Then navigate to this sample directory and do:
 
-java -Dnotification.httpPort=8083 -cp "target\sample-binding-notification-producer-1.0-incubating-SNAPSHOT.jar;%NOTIFICATION_IMPL_JAR%;%NOTIFICATION_BINDING_JAR%;%STAX_JAR%;%TUSCANY_SCA_MANIFEST_JAR%" notification.producer.TrafficAdvisoryServer
+java -Dnotification.httpPort=8083 -cp "target\sample-binding-notification-producer-1.0-incubating-SNAPSHOT.jar;%TUSCANY_SCA_MANIFEST_JAR%" notification.producer.TrafficAdvisoryServer
 
 this should bring up the following prompt:
 
