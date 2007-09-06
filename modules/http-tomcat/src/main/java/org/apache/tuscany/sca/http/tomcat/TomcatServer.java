@@ -296,6 +296,10 @@ public class TomcatServer implements ServletHost {
         return null;
     }
     
+    public String getContextPath() {
+        return "/";
+    }
+
     /**
      * A custom connector that uses our WorkScheduler to schedule
      * worker threads.

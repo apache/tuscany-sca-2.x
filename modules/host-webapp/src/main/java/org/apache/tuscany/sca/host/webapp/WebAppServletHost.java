@@ -20,9 +20,11 @@
 package org.apache.tuscany.sca.host.webapp;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -53,6 +55,8 @@ public class WebAppServletHost implements ServletHost {
 
     private Map<String, Servlet> servlets;
     private SCADomain scaDomain;
+
+    private String contextPath;
 
     private WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
@@ -139,9 +143,11 @@ public class WebAppServletHost implements ServletHost {
     }
 
     void init(ServletConfig config) throws ServletException {
-        ServletContext servletContext = config.getServletContext();
+
+        initContextPath(config);
 
         // Create an SCA domain object
+        ServletContext servletContext = config.getServletContext();
         String domainURI = "http://localhost/" + servletContext.getServletContextName().replace(' ', '.');
         String contributionRoot = null;
         try {
@@ -167,7 +173,32 @@ public class WebAppServletHost implements ServletHost {
             servlet.init(config);
         }
     }
-    
+
+    /**
+     * Initializes the contextPath
+     * The 2.5 Servlet API has a getter for this, for pre 2.5 servlet
+     * containers use an init parameter.
+     */
+    @SuppressWarnings("unchecked")
+    protected void initContextPath(ServletConfig config) {
+        if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
+            contextPath = config.getInitParameter("contextPath");
+        } else {
+            Method m;
+            try {
+                m = config.getClass().getMethod("getContextPath", new Class[]{});
+                try {
+                    contextPath = (String)m.invoke(config, new Object[]{});
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
+            }
+        }
+        logger.info("initContextPath: " + contextPath);
+    }
+
     void destroy() {
         
         // Destroy the registered servlets
@@ -179,6 +210,10 @@ public class WebAppServletHost implements ServletHost {
         if (scaDomain != null) {
             scaDomain.close();
         }
+    }
+
+    public String getContextPath() {
+        return contextPath;
     }
 
 }
