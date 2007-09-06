@@ -184,11 +184,12 @@ public class WebAppServletHost implements ServletHost {
         if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
             contextPath = config.getInitParameter("contextPath");
         } else {
+            ServletContext context = config.getServletContext();
             Method m;
             try {
-                m = config.getClass().getMethod("getContextPath", new Class[]{});
+                m = context.getClass().getMethod("getContextPath", new Class[]{});
                 try {
-                    contextPath = (String)m.invoke(config, new Object[]{});
+                    contextPath = (String)m.invoke(context, new Object[]{});
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
