@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 /**
  * @version $Rev$ $Date$
  */
-public class DASArtifactProcessorTestCase extends TestCase {
+public class DASImplementationProcessorTestCase extends TestCase {
     
     protected static final QName IMPLEMENTATION_DAS = new QName(Constants.SCA10_TUSCANY_NS, "implementation.das");
 
