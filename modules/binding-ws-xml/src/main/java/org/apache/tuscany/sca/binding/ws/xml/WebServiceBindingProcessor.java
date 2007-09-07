@@ -229,6 +229,7 @@ public class WebServiceBindingProcessor implements
         wsdlDefinition.setUnresolved(true);
         wsdlDefinition.setNamespace(model.getNamespace());
         wsdlDefinition = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
+        
         if (!wsdlDefinition.isUnresolved()) {
             model.setDefinition(wsdlDefinition);
             Definition definition = wsdlDefinition.getDefinition();
@@ -260,6 +261,7 @@ public class WebServiceBindingProcessor implements
                 model.setBindingInterfaceContract(interfaceContract);
             }
         }
+        policyProcessor.resolvePolicies(model, resolver); 
     }
 
     private PortType getPortType(WebServiceBinding model) {
