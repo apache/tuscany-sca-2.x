@@ -21,7 +21,8 @@
        xmlns:cust="http://www.example.com/Customer"
        xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
        targetNamespace="http://foo"
-           name="PropertyTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+       name="PropertyTest"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
            
     <service name="ProperterTestService" promote="ABComponent">
         <interface.java interface="org.apache.tuscany.sca.itest.ABComponent"/>

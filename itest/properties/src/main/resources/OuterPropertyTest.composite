@@ -19,7 +19,8 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
        xmlns:foo="http://foo"
        targetNamespace="http://foo"
-       name="OuterPropertyTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+       name="OuterPropertyTest"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
            
 	<component name="OuterComponent">
         <implementation.composite name="foo:PropertyTest"/>
