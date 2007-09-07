@@ -19,25 +19,10 @@
 
 package node;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.domain.impl.DistributedSCADomainMemoryImpl;
-import org.apache.tuscany.sca.distributed.domain.impl.DistributedSCADomainNetworkImpl;
-import org.apache.tuscany.sca.distributed.node.impl.EmbeddedNode;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
+import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
+
 
 import calculator.CalculatorService;
 
@@ -61,32 +46,25 @@ public class CalculatorNode {
         
         try {
             String domainName = args[0];
-            String nodeName   = args[1];  
+            String nodeName   = args[1];                       
             
             // Create the distributed domain representation. We use the network implementation 
             // here so that the node contacts a registry running somewhere out on the 
             // network. 
-            DistributedSCADomain distributedDomain = new DistributedSCADomainNetworkImpl(domainName);
-       
-            // create the node that runs the calculator component
-            EmbeddedNode node = new EmbeddedNode(nodeName);
-            SCADomain domain = node.attachDomain(distributedDomain);
-                
+            NodeImpl node = new NodeImpl(domainName, nodeName);
+            node.start();
+
             // the application components are added. The null here just gets the node
             // implementation to read a directory from the classpath with the node name
             // TODO - should be done as a management action.       
-            node.addContribution(domainName, null);  
-            
-            // start the node
-            // TODO - should be done as a management action.
-            node.start();
-                    
+            node.getContributionManager().startContribution(nodeName + "/");  
+                               
             // nodeA is the head node and runs some tests while all other nodes
             // simply listen for incoming messages
             if ( nodeName.equals("nodeA") ) {            
                 // do some application stuff
                 CalculatorService calculatorService = 
-                    domain.getService(CalculatorService.class, "CalculatorServiceComponent");
+                    node.getService(CalculatorService.class, "CalculatorServiceComponent");
         
                 // Calculate
                 System.out.println("3 + 2=" + calculatorService.add(3, 2));
@@ -104,7 +82,7 @@ public class CalculatorNode {
             }
             
             // stop the node and all the domains in it 
-            domain.close(); 
+            node.stop(); 
         
         } catch(Exception ex) {
             System.err.println("Exception in node - " + ex.getMessage());

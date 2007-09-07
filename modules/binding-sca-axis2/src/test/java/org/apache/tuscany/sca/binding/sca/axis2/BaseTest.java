@@ -18,79 +18,15 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import java.net.URL;
-
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.tuscany.sca.distributed.domain.Domain;
 
 public class BaseTest {
 
     public static String DEFULT_DOMAIN_NAME = "mydomain";
+    public static TestServiceDiscoveryImpl serviceDiscovery = new TestServiceDiscoveryImpl();
 
-    public static EmbeddedSCADomain createDomain(String nodeName) throws Exception {
-        ClassLoader cl = BaseTest.class.getClassLoader();
-        EmbeddedSCADomain domain = null;
-
-        try {
-            // Create the distributed domain representation
-            TestDistributedSCADomainImpl distributedDomain = new TestDistributedSCADomainImpl(DEFULT_DOMAIN_NAME);
-            distributedDomain.setNodeName(nodeName);
-
-            // create and start domainA
-            domain = new EmbeddedSCADomain(cl, DEFULT_DOMAIN_NAME);
-            domain.start();
-
-            // add a contribution to the domain
-            ContributionService contributionService = domain.getContributionService();
-
-            // find the current directory as a URL. This is where our contribution 
-            // will come from
-            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
-
-            // Contribute the SCA application
-            Contribution contribution = contributionService.contribute("http://calculator", contributionURL, null, //resolver, 
-                                                                       false);
-            Composite composite = contribution.getDeployables().get(0);
-
-            // Add the deployable composite to the domain
-            domain.getDomainComposite().getIncludes().add(composite);
-            domain.getCompositeBuilder().build(composite);
-
-            distributedDomain.addDistributedDomainToBindings(composite);
-
-            domain.getCompositeActivator().activate(composite);
-        } catch (Exception ex) {
-            System.err.println("Exception when creating domain " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            throw ex;
-        }   
-        return domain;
+    public static TestDomain createDomain(String nodeName) throws Exception {
+       
+        return new TestDomain(DEFULT_DOMAIN_NAME, nodeName,serviceDiscovery);
     }
-
-    public static void startDomain(EmbeddedSCADomain domain) 
-      throws Exception {
-        try {
-            // Start domain
-            for (Composite composite : domain.getDomainComposite().getIncludes()) {
-                domain.getCompositeActivator().start(composite);
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Exception when creating domain " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            throw ex;
-        }     
-    }
-
-    public static void stopDomain(EmbeddedSCADomain domain) throws Exception {
-        // stop the domain     
-        domain.stop();
-    }
-
 }

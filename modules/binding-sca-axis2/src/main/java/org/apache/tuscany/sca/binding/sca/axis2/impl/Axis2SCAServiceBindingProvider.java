@@ -20,17 +20,18 @@
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.distributed.domain.Domain;
+import org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -48,7 +49,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */
 public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
+    
+    private final static Logger logger = Logger.getLogger(Axis2SCAServiceBindingProvider.class.getName());
 
+    private Domain domain;
     private SCABinding binding;
     private Axis2ServiceProvider axisProvider;
     private WebServiceBinding wsBinding;
@@ -56,11 +60,13 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
     private boolean started = false;
 
 
-    public Axis2SCAServiceBindingProvider(RuntimeComponent component,
+    public Axis2SCAServiceBindingProvider(Domain domain,
+    		                              RuntimeComponent component,
                                           RuntimeComponentService service,
                                           DistributedSCABinding binding,
                                           ServletHost servletHost,
                                           MessageFactory messageFactory) {
+    	this.domain = domain;
         this.binding = binding.getSCABinding();
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
@@ -84,48 +90,59 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
                                                    servletHost,
                                                    messageFactory);
         
-        //this.binding.setURI(wsBinding.getURI());
-        
-        // get the url out of the binding and send it to the registry if
-        // a distributed domain is configured
-        DistributedSCADomain distributedDomain = ((SCABindingImpl)this.binding).getDistributedDomain();
-        
-        ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
-        
-        // register endpoint against the path element of the binding uri
-        String componentName = this.binding.getURI();
-        
-        try {
-            URI servicePath = new URI(this.binding.getURI());
-            componentName = servicePath.getPath();
-            
-            // strinp any leading slash
-            if (componentName.charAt(0) == '/'){
-                componentName = componentName.substring(1, componentName.length());
-            }
-        } catch(Exception ex) {
-            // do nothing, the binding uri string will be used
+
+        if (domain != null){
+	        // get the url out of the binding and send it to the registry if
+	        // a distributed domain is configured
+	        ServiceDiscoveryService serviceDiscovery = domain.getServiceDiscovery();
+	        
+	        if (serviceDiscovery != null) {
+		        // register endpoint against the path element of the binding uri
+		        String componentName = this.binding.getURI();
+		        
+		        try {
+		            URI servicePath = new URI(this.binding.getURI());
+		            componentName = servicePath.getPath();
+		            
+		            // strip any leading slash
+		            if (componentName.charAt(0) == '/'){
+		                componentName = componentName.substring(1, componentName.length());
+		            }
+		        } catch(Exception ex) {
+		            // do nothing, the binding uri string will be used
+		        }
+		
+		        try {
+    		            serviceDiscovery.registerServiceEndpoint(domain.getDomainUri(), 
+    		                                                     domain.getNodeUri(), 
+    		                                                     componentName, 
+    		                                                     SCABinding.class.getName(), 
+    		                                                     wsBinding.getURI());
+	                } catch(Exception ex) {
+	                    logger.log(Level.WARNING, 
+	                               "Unable to  register service: "  +
+	                               domain.getDomainUri() + " " +
+	                               domain.getNodeUri() + " " +
+	                               componentName + " " +
+	                               SCABinding.class.getName() + " " +
+	                               wsBinding.getURI());
+	                }
+	        } else {
+	          /* don't think we should thrown an exception here as it
+	           * may be a stand alone node
+	            throw new IllegalStateException("No service manager available for component: "+
+                                                component.getName() +
+                                                " and service: " + 
+                                                service.getName());
+                  */	        	
+	        }
+        } else {
+            throw new IllegalStateException("No distributed domain available for component: "+
+                                            component.getName() +
+                                            " and service: " + 
+                                            service.getName());        	
         }
 
-
-        serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
-                                                 distributedDomain.getNodeName(), 
-                                                 componentName, 
-                                                 SCABinding.class.getName(), 
-                                                 wsBinding.getURI());
-
-/*       
-        serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
-                                                 distributedDomain.getNodeName(), 
-                                                 component.getName(), 
-                                                 SCABinding.class.getName(), 
-                                                 wsBinding.getURI());
-        serviceDiscovery.registerServiceEndpoint(distributedDomain.getDomainName(), 
-                                                 distributedDomain.getNodeName(), 
-                                                 component.getName() + "/" + this.binding.getName(), 
-                                                 SCABinding.class.getName(), 
-                                                 wsBinding.getURI());
-*/
     }
 
     public InterfaceContract getBindingInterfaceContract() {

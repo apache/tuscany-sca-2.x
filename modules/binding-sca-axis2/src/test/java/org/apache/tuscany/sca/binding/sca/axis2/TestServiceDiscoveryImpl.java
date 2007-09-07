@@ -22,7 +22,8 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.distributed.domain.ServiceInfo;
 
 
 /**
@@ -30,7 +31,7 @@ import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
  * 
  * @version $Rev: 552343 $ $Date: 2007-07-01 18:43:40 +0100 (Sun, 01 Jul 2007) $
  */
-public class TestServiceDiscoveryImpl implements ServiceDiscovery{
+public class TestServiceDiscoveryImpl implements ServiceDiscoveryService{
     
     List<ServiceEndpoint> serviceEndpoints = new ArrayList<ServiceEndpoint>();
     
@@ -135,6 +136,11 @@ public class TestServiceDiscoveryImpl implements ServiceDiscovery{
             }
         }
         return url;
+    }
+    
+    public ServiceInfo getServiceInfo() {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }

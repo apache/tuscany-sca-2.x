@@ -23,14 +23,13 @@ import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.distributed.domain.Domain;
+import org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -51,6 +50,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider2 {
 
+	private Domain domain;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -60,11 +60,13 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     private EndpointReference serviceEPR = null;
     private EndpointReference callbackEPR = null;
 
-    public Axis2SCAReferenceBindingProvider(RuntimeComponent component,
+    public Axis2SCAReferenceBindingProvider(Domain domain,
+    		                                RuntimeComponent component,
                                             RuntimeComponentReference reference,
                                             DistributedSCABinding binding,
                                             ServletHost servletHost,
                                             MessageFactory messageFactory) {
+    	this.domain = domain;
         this.component = component;
         this.reference = reference;
         this.binding = binding.getSCABinding();
@@ -118,22 +120,29 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
      */
     public EndpointReference getServiceEndpoint(){
         
-        if ( serviceEPR == null ){
+        if ( serviceEPR == null && domain != null ){
             // try to resolve the service endpoint with the registry 
-            DistributedSCADomain distributedDomain = ((SCABindingImpl)binding).getDistributedDomain();
-            ServiceDiscovery serviceDiscovery = distributedDomain.getServiceDiscovery();
+            ServiceDiscoveryService serviceDiscovery = domain.getServiceDiscovery();
             
-            // The binding URI might be null in the case where this reference is completely
-            // dynamic, for example, in the case of callbacks
-            if (binding.getURI() != null) {
-                String serviceUrl = serviceDiscovery.findServiceEndpoint(distributedDomain.getDomainName(), 
-                                                                         binding.getURI(), 
-                                                                         SCABinding.class.getName());
-                
-                if ( (serviceUrl != null ) &&
-                     (!serviceUrl.equals(""))){
-                    serviceEPR = new EndpointReferenceImpl(serviceUrl);
-                }
+            if (serviceDiscovery != null){
+            
+	            // The binding URI might be null in the case where this reference is completely
+	            // dynamic, for example, in the case of callbacks
+	            if (binding.getURI() != null) {
+	                String serviceUrl = serviceDiscovery.findServiceEndpoint(domain.getDomainUri(), 
+	                                                                         binding.getURI(), 
+	                                                                         SCABinding.class.getName());
+	                
+	                if ( (serviceUrl != null ) &&
+	                     (!serviceUrl.equals(""))){
+	                    serviceEPR = new EndpointReferenceImpl(serviceUrl);
+	                }
+	            }
+            } else {
+	            throw new IllegalStateException("No service manager available for component: "+
+						                        component.getName() +
+						                        " and service: " + 
+						                        reference.getName());	 
             }
         }
         

@@ -23,6 +23,7 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientCallbackOnewayRemoteImpl;
+import org.apache.tuscany.sca.distributed.domain.Domain;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,19 +31,17 @@ import org.junit.Test;
 
 public class AsynchTestCase extends BaseTest {
     
-    public static EmbeddedSCADomain domainA;
-    public static EmbeddedSCADomain domainB;
+    public static TestDomain domainA;
+    public static TestDomain domainB;
 
     @BeforeClass
     public static void init() throws Exception {
         System.out.println("Setting up distributed nodes");
 
         try {
-            // create and start domainA
+            // create and start domains
             domainA = createDomain("nodeG");
             domainB = createDomain("nodeH");
-            startDomain(domainA);
-            startDomain(domainB);
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -53,9 +52,8 @@ public class AsynchTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        // stop the nodes and hence the domains they contain        
-        stopDomain(domainA);
-        stopDomain(domainB);
+        domainA.stop();
+        domainB.stop();
     }   
     
     @Test
