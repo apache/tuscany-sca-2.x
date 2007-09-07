@@ -28,10 +28,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -212,5 +215,39 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor implem
         }
         return new XAttr(Constants.POLICY_SETS, qnames);
     }
+    
+    private void resolvePolicies(PolicySetAttachPoint policySetAttachPoint, ModelResolver resolver) {
+        List<Intent> requiredIntents = new ArrayList<Intent>();
+        Intent resolvedIntent = null;
+        
+        if ( policySetAttachPoint instanceof Binding ) {
+            if ( policySetAttachPoint.getType().isUnresolved() ) {
+                IntentAttachPointType resolved = 
+                    resolver.resolveModel(IntentAttachPointType.class, policySetAttachPoint.getType());
+                policySetAttachPoint.setType(resolved);
+            }
+        }
+        
+        if ( policySetAttachPoint.getRequiredIntents() != null && policySetAttachPoint.getRequiredIntents().size() > 0 ) {
+            for ( Intent intent : policySetAttachPoint.getRequiredIntents() ) {
+                resolvedIntent = resolver.resolveModel(Intent.class, intent);
+                requiredIntents.add(resolvedIntent);
+            }
+            policySetAttachPoint.getRequiredIntents().clear();
+            policySetAttachPoint.getRequiredIntents().addAll(requiredIntents);
+        }
+        
+        if ( policySetAttachPoint.getPolicySets() != null && policySetAttachPoint.getPolicySets().size() > 0 ) {
+            List<PolicySet> resolvedPolicySets = new ArrayList<PolicySet>();
+            PolicySet resolvedPolicySet = null;
+            for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
+                resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
+                resolvedPolicySets.add(resolvedPolicySet);
+            }
+            policySetAttachPoint.getPolicySets().clear();
+            policySetAttachPoint.getPolicySets().addAll(resolvedPolicySets);
+        }
+    }
+
 
 }
