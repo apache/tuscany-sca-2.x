@@ -17,7 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite autowire="false" local="true" name="MySimpleService" policySets="sns:secure" requires="cns:confidentiality"
+<composite autowire="false" local="true" name="MySimpleService"
     targetNamespace="http://foo" xmlns:foo="http://foo" xmlns="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0 ">
