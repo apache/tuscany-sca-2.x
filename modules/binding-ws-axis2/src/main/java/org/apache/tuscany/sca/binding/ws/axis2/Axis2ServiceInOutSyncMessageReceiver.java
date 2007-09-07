@@ -46,7 +46,11 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
     public void invokeBusinessLogic(MessageContext inMC, MessageContext outMC) throws AxisFault {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-            Object[] args = new Object[] {requestOM};
+            Object[] args = null;
+            	
+            if (requestOM != null) {
+            	args = new Object[] {requestOM};
+            }
             OMElement responseOM = (OMElement)provider.invokeTarget(operation, args, inMC);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
