@@ -24,6 +24,8 @@ import junit.framework.TestCase;
  * Test case for WSDL2Java
  */
 public class WSDL2JavaGeneratorTestCase extends TestCase {
+    
+
     public void testAccountService() {
 
         String basedir = System.getProperty("basedir");
@@ -39,7 +41,6 @@ public class WSDL2JavaGeneratorTestCase extends TestCase {
 
     }
 
-
     /**
      * Test WSDL with faults
      * Sample WSDL originated from BigBank and Tuscany 978
@@ -54,6 +55,24 @@ public class WSDL2JavaGeneratorTestCase extends TestCase {
             new String[] {"-targetDirectory", basedir + "/target/wsdl2java-source", 
                           "-javaPackage", "org.apache.tuscany.tools.wsdl2java.generate.account",
                           basedir + "/src/test/resources/AccountServiceWithFault.wsdl"};
+
+        WSDL2JavaGenerator.main(args);
+
+    }
+
+    /**
+     * Test Interopdoc WSDL
+     */
+    public void testInteropdocWsdl() {
+
+        String basedir = System.getProperty("basedir");
+        if (basedir == null)
+            basedir = ".";
+
+        String[] args =
+            new String[] {"-targetDirectory", basedir + "/target/wsdl2java-source", 
+                          "-javaPackage", "org.apache.tuscany.tools.wsdl2java.generate.account",
+                          basedir + "/src/test/resources/interopdoc.wsdl"};
 
         WSDL2JavaGenerator.main(args);
 
