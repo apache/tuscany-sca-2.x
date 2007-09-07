@@ -104,7 +104,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-http-jetty</artifactId>
+            <artifactId>tuscany-host-jetty</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>

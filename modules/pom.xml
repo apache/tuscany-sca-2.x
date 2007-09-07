@@ -88,8 +88,8 @@
                 <module>host-http</module>
                 <module>host-rmi</module>
                 <module>host-webapp</module>
-                <module>http-jetty</module>
-                <module>http-tomcat</module>
+                <module>host-jetty</module>
+                <module>host-tomcat</module>
                 <module>interface</module>
                 <module>interface-java</module>
                 <module>interface-java-xml</module>

@@ -118,7 +118,7 @@
     	<pathelement location="${m2.repo}\commons-codec\commons-codec\1.3\commons-codec-1.3.jar"/>
     	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-binding-sca\1.0-incubating-SNAPSHOT\tuscany-binding-sca-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}\xml-apis\xml-apis\1.3.03\xml-apis-1.3.03.jar"/>
-    	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-http-tomcat\1.0-incubating-SNAPSHOT\tuscany-http-tomcat-1.0-incubating-SNAPSHOT.jar"/>
+    	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-host-tomcat\1.0-incubating-SNAPSHOT\tuscany-host-tomcat-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-implementation-resource\1.0-incubating-SNAPSHOT\tuscany-implementation-resource-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-assembly-xml\1.0-incubating-SNAPSHOT\tuscany-assembly-xml-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-assembly\1.0-incubating-SNAPSHOT\tuscany-assembly-1.0-incubating-SNAPSHOT.jar"/>
