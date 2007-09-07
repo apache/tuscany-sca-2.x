@@ -103,8 +103,8 @@ public class WSDLOperationIntrospectorImpl {
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                wrapper.getInputChildElements() != null && (operation.getOutput() == null || wrapper
-                    .getOutputChildElements() != null);
+                (operation.getInput().getMessage().getParts().values().size() == 0 ||wrapper.getInputChildElements() != null) && 
+                (operation.getOutput() == null || wrapper.getOutputChildElements() != null);
         }
         return wrapperStyle;
     }
@@ -515,8 +515,10 @@ public class WSDLOperationIntrospectorImpl {
                 ElementInfo in = getElementInfo(getInputWrapperElement());
                 ElementInfo out = getElementInfo(getOutputWrapperElement());
                 List<ElementInfo> inChildren = new ArrayList<ElementInfo>();
-                for (XmlSchemaElement e : getInputChildElements()) {
-                    inChildren.add(getElementInfo(e));
+                if (in != null) {
+	                for (XmlSchemaElement e : getInputChildElements()) {
+	                    inChildren.add(getElementInfo(e));
+	                }
                 }
                 List<ElementInfo> outChildren = new ArrayList<ElementInfo>();
                 if (out != null) {
