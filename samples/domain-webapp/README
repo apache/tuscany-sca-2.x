@@ -1,0 +1,310 @@
+Domain Webapp Sample
+====================
+
+Not actually a webapp just yet as webapp host need to use the new domain for it to work.
+If you run the DomainServer in a debugger you will get a server that provides a registry 
+for servide URLs, listens for Nodes starting and stopping and provides a web page where 
+you can see what nodes are registered and pull up their web pages.
+
+Use the nodes from the calculator-distributed to register with this domain
+
+
+==========================================
+Below copied from calculator sample as a template for when this gets done 
+
+
+This sample implements a simple calculator using SCA components.  It uses 
+exactly the same calculator application classes as the calculator sample but 
+runs the application distributed across three nodes.
+
+A node in this sample means an instance of the Tuscany SCA java runtime running
+in a Java virtual machine. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open four command prompts and 
+navigate to this sample directory in each one. There is one command to be run 
+in each command prompt:
+
+ant runDomainNode
+ant runNodeB
+ant runNodeC
+ant runNodeA
+
+Please run the commands in this order. 
+
+OR if you don't have ant, on Windows use
+
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.DomainNode
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.CalculatorNode mydomain nodeB
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.CalculatorNode mydomain nodeC
+java -cp src\main\resources;..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator-distributed.jar node.CalculatorNode mydomain nodeA
+
+and on *nix do
+
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.DomainNode
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.CalculatorNode mydomain nodeB
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.CalculatorNode mydomain nodeC
+java -cp src/main/resources:../../lib/tuscany-sca-manifest.jar:target/sample-calculator-distributed.jar node.CalculatorNode mydomain nodeA
+
+
+The processes started on each of these command prompts can be ended by pressing 
+the <Enter> key.
+
+
+Sample Overview
+---------------
+The sample provides a single calculator service with a default SCA (java) 
+binding. NodeA exercises this interface by calling add, subtract, multiply and 
+divide operations. 
+
+In the case of add and subtract the runtime recognises that
+it can't find these services locally and, using the remote (web services) 
+version of the default SCA binding contacts the add service running in NodeB 
+and the subtract service running in NodeC. 
+
+On the command prompt where you started NodeA, you would see output of invoking the 
+calculator functions distributed over NodeB and and NodeC.  On the command prompts 
+where you have started NodeB and NodeC, you would see log messages that indicate that
+the add and substract services where called on these nodes respectively.
+
+The sample demonstrates that the calculator application can be distributed
+across multiple nodes with no change to the application or to the SCA description
+files. 
+
+
+calculator/
+  src/
+    main/
+      java/
+        calculator/
+          CalculatorService.java  - the first component, calls +-/* as 
+                                    appropriate
+          AddService.java         - adds two numbers
+          AddServiceImpl.java
+          SubtractService.java    - subtracts one number from another
+          SubtractServiceImpl.java
+          MultiplyService.java    - multiplies two numbers
+          MultiplyServiceImpl.java
+          DivideService.java      - divides one number by another
+          DivideServiceImpl.java
+        node/
+          CalculatorNode.java     - runs up an sca application based on 
+                                    configuration given on the command 
+                                    line in the form
+                                    
+                                    CalculatorNode <domain name> <node name>
+                                    
+                                    it looks for a directory name the same
+                                    as <node name> and loads the composites
+                                    there
+                                    
+                                    if <node name> = nodeA it calls the 
+                                    +-/* operations otherwise it behaves
+                                    like a server and waits for service 
+                                    requests
+           DomainNode.java        - the node that provides the service 
+                                    discovery mechanism to the distributed
+                                    domain
+      resources/
+        domain                    - the SCA assembly for the service discovery
+                                    function
+        management/               - the SCA assembly for each nodes management
+                                    function
+        nodeA                     - the SCA assembly for nodeA's part of the 
+                                    calculator application
+        nodeB                     - the SCA assembly for nodeB's part of the 
+                                    calculator application
+        nodeC                     - the SCA assembly for nodeB's part of the 
+                                    calculator application
+    test/
+      java/
+        calculator/
+          DomainInMemoryTestCase.java - JUnit test case which runs all of the
+                                    separate ndes in a single VM for test
+                                    purposes
+  calculator-distributed.png      - a pictorial representation of the sample 
+                                    .composite files
+  build.xml                       - the Ant build file
+  pom.xml                         - the Maven build file        
+
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd calculator-distributed
+ant compile
+ant runDomainNode
+ant runNodeB
+ant runNodeC
+ant runNodeA
+
+You should see the following output from the four separate command prompt:
+
+runDomainNode:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] 23-Aug-2007 17:40:40 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://localhost:8080/ServiceDiscoveryC
+omponent/ServiceDiscovery
+     [java] Domain node started (press enter to shutdown)
+     [java] Registering service: [mydomain nodeB AddServiceComponent org.apache.
+tuscany.sca.assembly.SCABinding http://localhost:8085/AddServiceComponent]
+     [java] Registering service: [mydomain nodeC SubtractServiceComponent org.ap
+ache.tuscany.sca.assembly.SCABinding http://localhost:8086/SubtractServiceCompon
+ent]
+     [java] Finding service: [mydomain SubtractServiceComponent org.apache.tusca
+ny.sca.assembly.SCABinding]
+     [java] Matching service url: http://localhost:8086/SubtractServiceComponent
+
+     [java] Finding service: [mydomain AddServiceComponent org.apache.tuscany.sc
+a.assembly.SCABinding]
+     [java] Matching service url: http://localhost:8085/AddServiceComponent
+     [java] Java Result: 1
+Terminate batch job (Y/N)? y
+
+
+
+runNodeB:
+     [java] file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/
+target/classes/management/
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Registering service: [mydomain nodeB AddServiceComponent/ org.apache
+.tuscany.sca.assembly.SCABinding http://localhost:8085/AddServiceComponent]
+     [java] 23-Aug-2007 17:41:25 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://localhost:8085/AddServiceCompone
+nt
+     [java] Node started (press enter to shutdown)
+     [java] AddService - add 3.0 and 2.0
+     
+     
+runNodeC:
+     [java] file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/
+target/classes/management/
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Registering service: [mydomain nodeC SubtractServiceComponent org.ap
+ache.tuscany.sca.assembly.SCABinding http://localhost:8086/SubtractServiceCompon
+ent]
+     [java] 23-Aug-2007 17:41:51 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] Node started (press enter to shutdown)
+     [java] INFO: Added Servlet mapping: http://localhost:8086/SubtractServiceCo
+mponent
+     [java] SubtractService - subtract 3.0 and 2.0
+Terminate batch job (Y/N)? y
+
+
+runNodeA:
+     [java] file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/
+target/classes/management/
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] 23-Aug-2007 17:42:12 org.apache.tuscany.sca.assembly.builder.impl.Co
+mpositeBuilderImpl$1 problem
+     [java] WARNING: [WARNING] Component reference target not found, it might be
+ a remote service: AddServiceComponent null
+     [java]
+     [java] 23-Aug-2007 17:42:12 org.apache.tuscany.sca.assembly.builder.impl.Co
+mpositeBuilderImpl$1 problem
+     [java] WARNING: [WARNING] Component reference target not found, it might be
+ a remote service: SubtractServiceComponent null
+     [java]
+     [java] Finding service: [mydomain SubtractServiceComponent org.apache.tusca
+ny.sca.assembly.SCABinding]
+     [java] Finding service: [mydomain AddServiceComponent org.apache.tuscany.sc
+a.assembly.SCABinding]
+     [java] CalculatorService - add 3.0 and 2.0
+     [java] 3 + 2=5.0
+     [java] CalculatorService - subtract 3.0 and 2.0
+     [java] 3 - 2=1.0
+     [java] CalculatorService - multiply 3.0 and 2.0
+     [java] 3 * 2=6.0
+     [java] CalculatorService - divide 3.0 and 2.0
+     [java] 3 / 2=1.5
+
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. When running from Maven the four nodes all run within 
+Java virtual machine. 
+
+cd calculator-distributed
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running calculator.DomainInMemoryTestCase
+Setting up distributed nodes
+file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/target/class
+es/management/
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+23-Aug-2007 18:18:41 org.apache.tuscany.sca.assembly.builder.impl.CompositeBuild
+erImpl$1 problem
+WARNING: [WARNING] Component reference target not found, it might be a remote se
+rvice: AddServiceComponent null
+
+23-Aug-2007 18:18:41 org.apache.tuscany.sca.assembly.builder.impl.CompositeBuild
+erImpl$1 problem
+WARNING: [WARNING] Component reference target not found, it might be a remote se
+rvice: SubtractServiceComponent null
+
+file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/target/class
+es/management/
+Registering service: [mydomain nodeB AddServiceComponent org.apache.tuscany.sca.
+assembly.SCABinding http://localhost:8085/AddServiceComponent]
+file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/target/class
+es/management/
+Registering service: [mydomain nodeC SubtractServiceComponent org.apache.tuscany
+.sca.assembly.SCABinding http://localhost:8086/SubtractServiceComponent]
+Finding service: [mydomain SubtractServiceComponent org.apache.tuscany.sca.assem
+bly.SCABinding]
+Matching service url: http://localhost:8086/SubtractServiceComponent
+Finding service: [mydomain AddServiceComponent org.apache.tuscany.sca.assembly.S
+CABinding]
+Matching service url: http://localhost:8085/AddServiceComponent
+23-Aug-2007 18:18:45 org.apache.tuscany.sca.http.jetty.JettyServer addServletMap
+ping
+INFO: Added Servlet mapping: http://localhost:8085/AddServiceComponent
+23-Aug-2007 18:18:47 org.apache.tuscany.sca.http.jetty.JettyServer addServletMap
+ping
+INFO: Added Servlet mapping: http://localhost:8086/SubtractServiceComponent
+CalculatorService - add 3.0 and 2.0
+AddService - add 3.0 and 2.0
+CalculatorService - subtract 3.0 and 2.0
+SubtractService - subtract 3.0 and 2.0
+CalculatorService - multiply 3.0 and 2.0
+CalculatorService - divide 3.0 and 2.0
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.14 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+
+This shows that the Junit test cases have run successfully. 
+
+Known Bug : 
+---------
+The processes that are running NodeB and NodeC do not seem to end on pressing the
+<Enter>.  This will be fixed for the next release.  For this release you should use
+^C (Control C) to exit these processes.
+
+
