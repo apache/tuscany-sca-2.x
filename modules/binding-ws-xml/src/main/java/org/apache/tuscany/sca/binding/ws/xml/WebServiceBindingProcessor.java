@@ -48,7 +48,10 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class WebServiceBindingProcessor implements
     StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
@@ -57,18 +60,24 @@ public class WebServiceBindingProcessor implements
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
+    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
 
     public WebServiceBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.wsFactory = new DefaultWebServiceBindingFactory();
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
     }
 
     public WebServiceBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
         // Read a <binding.ws>
         WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
+        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
+        bindingType.setName(getArtifactType());
+        bindingType.setUnresolved(true);
+        ((PolicySetAttachPoint)wsBinding).setType(bindingType);
         wsBinding.setUnresolved(true);
 
         // Read policies
