@@ -57,6 +57,7 @@ public class DASInvoker implements Invoker {
     }
 
     public Object doTheWork(Object[] args) throws InvocationTargetException {
+        //check if static way
         if (operation.getName().equals("executeCommand")) {
             String commandName, xPath;
             
@@ -70,8 +71,8 @@ public class DASInvoker implements Invoker {
                 
                 return this.dataAccessEngine.executeCommand(commandName, xPath);
             }
-        } else {
-            return null;
+        } else { // dynamic mapping to command
+            return this.dataAccessEngine.executeCommand(operation.getName());
         }
     }
 }
