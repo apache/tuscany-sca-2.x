@@ -479,6 +479,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         // Write <component> elements
         for (Component component : composite.getComponents()) {
             writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()),
+                       new XAttr(URI, component.getURI()),
                        new XAttr(AUTOWIRE, component.getAutowire()),
                        policyProcessor.writePolicies(component));
             
