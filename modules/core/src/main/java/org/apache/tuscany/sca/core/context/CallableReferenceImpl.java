@@ -151,6 +151,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     public B getInstance() throws ObjectCreationException {
         try {
             resolve();
+            //FIXME Can't we just return a single proxy
             return businessInterface.cast(proxyFactory.createProxy(this));
         } catch (Exception e) {
             throw new ObjectCreationException(e);
@@ -218,13 +219,13 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                     this.conversationID = parameters.getConversationID();
                     this.componentURI = parameters.getComponentURI();
                 }
-                URI uri = URI.create("/" + componentURI);
+                URI uri = URI.create(componentURI + "/");
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof WireableBinding) {
                         String targetURI = uri.resolve(binding.getURI()).toString();
                         int index = targetURI.lastIndexOf('/');
                         String serviceName = targetURI.substring(index + 1);
-                        targetURI = targetURI.substring(1, index);
+                        targetURI = targetURI.substring(0, index);
                         Component targetComponet = compositeActivator.resolve(targetURI);
                         ComponentService targetService = null;
                         if (targetComponet != null) {
