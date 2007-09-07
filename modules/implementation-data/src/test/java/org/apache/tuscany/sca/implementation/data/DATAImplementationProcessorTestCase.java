@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 /**
  * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
  */
-public class DATAArtifactProcessorTestCase extends TestCase {
+public class DATAImplementationProcessorTestCase extends TestCase {
     
     protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
 
