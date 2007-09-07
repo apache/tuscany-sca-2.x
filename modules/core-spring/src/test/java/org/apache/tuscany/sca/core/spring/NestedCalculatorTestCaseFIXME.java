@@ -27,7 +27,7 @@ import calculator.CalculatorService;
 /**
  * This shows how to test the Calculator service component.
  */
-public class NestedCalculatorTestCase extends TestCase {
+public class NestedCalculatorTestCaseFIXME extends TestCase {
 
     private SCADomainContext context;
     private CalculatorService calculatorService;
