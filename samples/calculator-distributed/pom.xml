@@ -73,15 +73,29 @@
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>   
         
-        <!-- dependency>
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jms</artifactId>
+            <artifactId>tuscany-binding-jsonrpc</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency -->         
+        </dependency>   
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-http-jetty</artifactId>
+            <artifactId>tuscany-binding-http</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>        
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-resource</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>   
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-http-tomcat</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>          

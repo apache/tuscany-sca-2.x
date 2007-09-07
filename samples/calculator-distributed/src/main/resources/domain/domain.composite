@@ -22,19 +22,23 @@
            xmlns:sample="http://sample"
            name="Domain">
            
-    <!--component name="DistributedDomainManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.distributed.management.impl.DistributedDomainManagerMemoryImpl"/>
-        <service name="DistributedDomainManager">
-            <interface.java interface="org.apache.tuscany.sca.distributed.management.DistributedDomainManager"/>
-            <binding.ws uri="http://localhost:8080/DistributedDomainManagerComponent/DistributedDomainManager"/>
+    
+    <component name="DomainManagerComponent">
+        <implementation.java class="org.apache.tuscany.sca.distributed.domain.impl.DomainManagerServiceImpl"/>
+        <service name="DomainManagerService">
+            <interface.java interface="org.apache.tuscany.sca.distributed.domain.DomainManagerService"/>
+            <binding.ws uri="http://localhost:8080/DomainManagerComponent/DomainManager"/>
         </service>
-    </component-->
+        <reference name="serviceDiscovery" target="ServiceDiscoveryComponent"/>
+    </component>
+    
     
     <component name="ServiceDiscoveryComponent">
-        <implementation.java class="org.apache.tuscany.sca.distributed.management.impl.ServiceDiscoveryMemoryImpl" />
-        <service name="ServiceDiscovery">
-            <interface.java interface="org.apache.tuscany.sca.distributed.management.ServiceDiscovery"/>
-            <binding.ws uri="http://localhost:8080/ServiceDiscoveryComponent/ServiceDiscovery"/>
+        <implementation.java class="org.apache.tuscany.sca.distributed.domain.impl.ServiceDiscoveryServiceImpl" />
+        <service name="ServiceDiscoveryService">
+            <interface.java interface="org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService"/>
+            <binding.sca uri="http://localhost:8080/ServiceDiscoveryComponent/ServiceDiscoverySCA"/>
+            <binding.ws uri="http://localhost:8080/ServiceDiscoveryComponent/ServiceDiscovery"/>            
         </service>
     </component>
     

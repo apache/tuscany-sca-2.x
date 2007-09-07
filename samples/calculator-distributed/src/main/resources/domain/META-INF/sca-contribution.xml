@@ -20,5 +20,5 @@
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	      targetNamespace="http://sample"
               xmlns:sample="http://sample">
-   <deployable composite="sample:Calculator"/>
+   <deployable composite="sample:Domain"/>
 </contribution>

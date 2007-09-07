@@ -22,33 +22,24 @@ import java.net.URL;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
-import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class PromotionTestCase extends BaseTest {
     
-    public static EmbeddedSCADomain domainA;
-    public static EmbeddedSCADomain domainB;
+    public static TestDomain domainA;
+    public static TestDomain domainB;
 
     @BeforeClass
     public static void init() throws Exception {
         System.out.println("Setting up distributed nodes");
 
         try {
-            // create and start domainA
+            // create and start domains
             domainA = createDomain("nodeC");
             domainB = createDomain("nodeD");
-            startDomain(domainA);
-            startDomain(domainB);
+
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -59,9 +50,8 @@ public class PromotionTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        // stop the nodes and hence the domains they contain        
-        stopDomain(domainA);
-        stopDomain(domainB);
+        domainA.stop(); 
+        domainB.stop();
     }    
     
     @Test

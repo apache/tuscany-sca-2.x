@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -50,8 +49,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
     private ComponentService targetComponentService;
     private Binding targetBinding;
     
-    private DistributedSCADomain distributedDomain;
-
     /**
      * Constructs a new SCA binding.
      */
@@ -194,16 +191,4 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
     public void setTargetBinding(Binding targetBinding) {
         this.targetBinding = targetBinding;
     }
-    
-    // Operations needed by the distributed SCA binding
-    // TODO - these are really runtime reference so need a better place for them 
-    
-    public void setDistributedDomain(DistributedSCADomain distributedDomain){
-        this.distributedDomain = distributedDomain;
-    }
-    
-    public DistributedSCADomain getDistributedDomain(){
-        return distributedDomain;
-    }
-
 }

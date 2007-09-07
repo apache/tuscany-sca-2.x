@@ -23,8 +23,8 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.distributed.domain.DistributedSCADomain;
-import org.apache.tuscany.sca.distributed.management.ServiceDiscovery;
+import org.apache.tuscany.sca.distributed.domain.Domain;
+import org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -43,16 +43,19 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * @version $Rev$ $Date$
  */
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2 {
-
+  
+	private Domain domain;
     private RuntimeComponentService service;
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
     private ServiceBindingProvider2 distributedProvider;
     private DistributedSCABinding distributedBinding;
     
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
+    		                                Domain domain,
                                             RuntimeComponent component,
                                             RuntimeComponentService service,
                                             SCABinding binding) {
+    	this.domain = domain;
         this.service = service;
         // if there is potentially a wire to this service that crosses the node boundary 
         if (service.getInterfaceContract().getInterface().isRemotable()) {  
@@ -72,7 +75,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
             // - distributed domain in which to look for remote endpoints 
             // - remotable interface on the service
             if (distributedProviderFactory != null) {
-                if (((SCABindingImpl)binding).getDistributedDomain() != null) {
+                if (this.domain != null) {
                     if (!service.getInterfaceContract().getInterface().isRemotable()) {
                         throw new IllegalStateException("Reference interface not remoteable for component: "+
                                                         component.getName() +
