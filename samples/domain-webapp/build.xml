@@ -157,7 +157,7 @@
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-distributed-impl\1.0-incubating-SNAPSHOT\tuscany-distributed-impl-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-host-embedded\1.0-incubating-SNAPSHOT\tuscany-host-embedded-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-host-http\1.0-incubating-SNAPSHOT\tuscany-host-http-1.0-incubating-SNAPSHOT.jar"/>
-    	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-http-tomcat\1.0-incubating-SNAPSHOT\tuscany-http-jetty-1.0-incubating-SNAPSHOT.jar"/>
+    	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-host-tomcat\1.0-incubating-SNAPSHOT\tuscany-host-jetty-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-implementation-java\1.0-incubating-SNAPSHOT\tuscany-implementation-java-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-implementation-java-runtime\1.0-incubating-SNAPSHOT\tuscany-implementation-java-runtime-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-implementation-java-xml\1.0-incubating-SNAPSHOT\tuscany-implementation-java-xml-1.0-incubating-SNAPSHOT.jar"/>

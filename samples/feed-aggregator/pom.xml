@@ -58,7 +58,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-http-tomcat</artifactId>
+            <artifactId>tuscany-host-tomcat</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>

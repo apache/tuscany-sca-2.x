@@ -24,7 +24,7 @@
 	
     <path id="test.classpath">
     	<pathelement location="target/classes"/>
-        <pathelement location="../../modules/tuscany-http-jetty-1.0-incubating-SNAPSHOT.jar"/>
+        <pathelement location="../../modules/tuscany-host-jetty-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="../../modules/tuscany-binding-jsonrpc-1.0-incubating-SNAPSHOT.jar"/>
         <pathelement location="../../modules/tuscany-binding-rmi-1.0-incubating-SNAPSHOT.jar"/>
     	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
