@@ -94,6 +94,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
         // Wire composite references
         wireBuilder.wireCompositeReferences(composite);
+        
+        // Fuse nested composites
+        //cloneBuilder.fuseCompositeImplementations(composite);
     }
 
 }

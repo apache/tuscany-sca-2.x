@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
@@ -49,6 +53,53 @@ public class CompositeCloneBuilderImpl {
                 }
                 component.setImplementation(clone);
                 expandCompositeImplementations(clone);
+            }
+        }
+    }
+
+    /**
+     * Collect all nested composite implementations in a graph of composites.
+     * 
+     * @param composite
+     * @param nested
+     */
+    private void collectNestedComposites(Composite composite, List<Composite> nested) {
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                Composite nestedComposite = (Composite)implementation;
+                nested.add(nestedComposite);
+                collectNestedComposites(nestedComposite, nested);
+            }
+        }
+    }
+
+    /**
+     * Fuse nested composites into a top level composite.
+     * 
+     * @param composite
+     */
+    public void fuseCompositeImplementations(Composite composite) {
+    
+        // First collect all nested composites
+        List<Composite> nested = new ArrayList<Composite>();
+        collectNestedComposites(composite, nested);
+    
+        // Then add all the non-composite components they contain 
+        for (Composite nestedComposite : nested) {
+            for (Component component: nestedComposite.getComponents()) {
+                Implementation implementation = component.getImplementation();
+                if (!(implementation instanceof Composite)) {
+                    composite.getComponents().add(component);
+                }
+            }
+        }
+    
+        // Clear the initial list of composite components
+        for (Iterator<Component> i = composite.getComponents().iterator(); i.hasNext();) {
+            Component component = i.next();
+            if (component.getImplementation() instanceof Composite) {
+                i.remove();
             }
         }
     }

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -71,6 +72,7 @@ public class CompositeConfigurationBuilderImpl {
      */
     public void configureComponents(Composite composite) {
         configureComponents(composite, null);
+        configureSourcedProperties(composite, null);
     }
 
     /**
@@ -81,12 +83,7 @@ public class CompositeConfigurationBuilderImpl {
      * @param problems
      */
     private void configureComponents(Composite composite, String uri) {
-        URI parentURI;
-        if (uri != null) {
-            parentURI = URI.create(uri + '/');
-        } else {
-            parentURI = null;
-        }
+        String parentURI = uri;
 
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -96,7 +93,7 @@ public class CompositeConfigurationBuilderImpl {
             if (parentURI == null) {
                 componentURI = component.getName();
             } else {
-                componentURI = parentURI.resolve(component.getName()).toString();
+                componentURI = URI.create(parentURI + '/').resolve(component.getName()).toString();
             }
             component.setURI(componentURI);
 
@@ -109,7 +106,8 @@ public class CompositeConfigurationBuilderImpl {
         }
 
         // Initialize service bindings
-        for (Service service : composite.getServices()) {
+        List<Service> compositeServices = composite.getServices();
+        for (Service service : compositeServices) {
             // Set default binding names 
             
             // Create default SCA binding
@@ -128,17 +126,25 @@ public class CompositeConfigurationBuilderImpl {
                 
                 String bindingURI;
                 if (binding.getURI() == null) {
-                    
-                    // Binding URI defaults to the binding name
-                    bindingURI = String.valueOf(binding.getName());
+                    if (compositeServices.size() > 1) {
+                        // Binding URI defaults to parent URI / binding name
+                        bindingURI = String.valueOf(binding.getName());
+                        if (parentURI != null) {
+                            bindingURI = URI.create(parentURI + '/').resolve(bindingURI).toString();
+                        }
+                    } else {
+                        // If there's only one service then binding URI defaults
+                        // to the parent URI
+                        bindingURI = parentURI;
+                    }
                 } else {
+                    // Combine the specified binding URI with the component URI
                     bindingURI = binding.getURI();
+                    if (parentURI != null) {
+                        bindingURI = URI.create(parentURI + '/').resolve(bindingURI).toString();
+                    }
                 }
-                
-                // Combine with the parent URI
-                if (parentURI != null) {
-                    bindingURI = parentURI.resolve(bindingURI).toString();
-                }
+
                 binding.setURI(bindingURI);
             }
             
@@ -164,8 +170,6 @@ public class CompositeConfigurationBuilderImpl {
                 if (binding.getName() == null) {
                     binding.setName(reference.getName());
                 }
-                
-                
             }
 
             if (reference.getCallback() != null) {
@@ -180,7 +184,6 @@ public class CompositeConfigurationBuilderImpl {
         // Initialize all component services and references
         Map<String, Component> components = new HashMap<String, Component>();
         for (Component component : composite.getComponents()) {
-            URI componentURI = URI.create(component.getURI() + '/');
 
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
@@ -263,18 +266,18 @@ public class CompositeConfigurationBuilderImpl {
                     String bindingURI;
                     if (binding.getURI() == null) {
                         if (componentServices.size() > 1) {
-                            // Binding URI defaults component URI / binding name
+                            // Binding URI defaults to component URI / binding name
                             bindingURI = String.valueOf(binding.getName());
-                            bindingURI = componentURI.resolve(bindingURI).toString();
+                            bindingURI = URI.create(component.getURI() + '/').resolve(bindingURI).toString();
                         } else {
                             // If there's only one service then binding URI defaults
                             // to the component URI
-                            bindingURI = componentURI.toString();
+                            bindingURI = component.getURI();
                         }
                     } else {
                         // Combine the specified binding URI with the component URI
                         bindingURI = binding.getURI();
-                        bindingURI = componentURI.resolve(bindingURI).toString();
+                        bindingURI = URI.create(component.getURI()).resolve(bindingURI).toString();
                     }
                     
                     binding.setURI(bindingURI);
@@ -848,12 +851,62 @@ public class CompositeConfigurationBuilderImpl {
     public void activateCompositeServices(Composite composite) {
 
         // Process nested composites recursively
+        activateNestedCompositeServices(composite);
+
+        // Process top level composite services
+        for (Service service : composite.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+
+            // Get the inner most promoted service
+            ComponentService promotedService = getPromotedComponentService(compositeService);
+            if (promotedService != null) {
+                Component promotedComponent = getPromotedComponent(compositeService);
+
+                // Default to use the interface from the promoted service
+                if (compositeService.getInterfaceContract() == null && promotedService.getInterfaceContract() != null) {
+                    compositeService.setInterfaceContract(promotedService.getInterfaceContract());
+                }
+
+                // Create a new component service to represent this composite
+                // service on the promoted component
+                ComponentService newComponentService = assemblyFactory.createComponentService();
+                newComponentService.setName("$promoted$." + compositeService.getName());
+                promotedComponent.getServices().add(newComponentService);
+                newComponentService.setService(promotedService.getService());
+                newComponentService.getBindings().addAll(compositeService.getBindings());
+                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
+                if (compositeService.getInterfaceContract() != null && compositeService
+                    .getInterfaceContract().getCallbackInterface() != null) {
+                    newComponentService.setCallback(assemblyFactory.createCallback());
+                    if (compositeService.getCallback() != null) {
+                        newComponentService.getCallback().getBindings().addAll(compositeService
+                            .getCallback().getBindings());
+                    }
+                }
+
+                // Change the composite service to now promote the newly
+                // created component service directly
+                compositeService.setPromotedComponent(promotedComponent);
+                compositeService.setPromotedService(newComponentService);
+            }
+        }
+    }
+
+    /**
+     * Activate composite services in nested composites.
+     * 
+     * @param composite
+     * @param problems
+     */
+    public void activateNestedCompositeServices(Composite composite) {
+
+        // Process nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
 
                 // First process nested composites
-                activateCompositeServices((Composite)implementation);
+                activateNestedCompositeServices((Composite)implementation);
 
                 // Process the component services declared on components
                 // in this composite
@@ -908,43 +961,34 @@ public class CompositeConfigurationBuilderImpl {
                 }
             }
         }
+    }
 
-        // Process composite services declared in this composite
-        for (Service service : composite.getServices()) {
-            CompositeService compositeService = (CompositeService)service;
-
-            // Get the inner most promoted service
-            ComponentService promotedService = getPromotedComponentService(compositeService);
-            if (promotedService != null) {
-                Component promotedComponent = getPromotedComponent(compositeService);
-
-                // Default to use the interface from the promoted service
-                if (compositeService.getInterfaceContract() == null && promotedService
-                    .getInterfaceContract() != null) {
-                    compositeService.setInterfaceContract(promotedService.getInterfaceContract());
-                }
-
-                // Create a new component service to represent this composite
-                // service on the promoted component
-                ComponentService newComponentService = assemblyFactory.createComponentService();
-                newComponentService.setName("$promoted$." + compositeService.getName());
-                promotedComponent.getServices().add(newComponentService);
-                newComponentService.setService(promotedService.getService());
-                newComponentService.getBindings().addAll(compositeService.getBindings());
-                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                if (compositeService.getInterfaceContract() != null && compositeService
-                    .getInterfaceContract().getCallbackInterface() != null) {
-                    newComponentService.setCallback(assemblyFactory.createCallback());
-                    if (compositeService.getCallback() != null) {
-                        newComponentService.getCallback().getBindings().addAll(compositeService
-                            .getCallback().getBindings());
-                    }
-                }
-
-                // Change the composite service to now promote the newly
-                // created component service directly
-                compositeService.setPromotedComponent(promotedComponent);
-                compositeService.setPromotedService(newComponentService);
+    /**
+     * @param composite
+     */
+    private void configureSourcedProperties(Composite composite, List<ComponentProperty> propertySettings) {
+        // Resolve properties
+        Map<String, Property> compositeProperties = new HashMap<String, Property>();
+        ComponentProperty componentProperty = null;
+        for (Property p : composite.getProperties()) {
+            componentProperty = getComponentPropertyByName(p.getName(), propertySettings);
+            if (componentProperty != null) {
+                compositeProperties.put(p.getName(), componentProperty);
+            } else {
+                compositeProperties.put(p.getName(), p);
+            }
+        }
+    
+        for (Component component : composite.getComponents()) {
+            try {
+                PropertyUtil.sourceComponentProperties(compositeProperties, component);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            Implementation impl = component.getImplementation();
+            if (impl instanceof Composite) {
+                configureSourcedProperties((Composite)impl, component.getProperties());
             }
         }
     }
@@ -1004,4 +1048,16 @@ public class CompositeConfigurationBuilderImpl {
             return null;
         }
     }
+
+    private ComponentProperty getComponentPropertyByName(String propertyName, List<ComponentProperty> properties) {
+        if (properties != null) {
+            for (ComponentProperty aProperty : properties) {
+                if (aProperty.getName().equals(propertyName)) {
+                    return aProperty;
+                }
+            }
+        }
+        return null;
+    }
+
 }
