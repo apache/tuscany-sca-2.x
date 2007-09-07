@@ -22,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -42,9 +41,6 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.w3c.dom.Node;
 
 /**
@@ -67,22 +63,17 @@ public class BPELImplementationImpl implements BPELImplementation {
 
         _bpelService = assemblyFactory.createService();
         _bpelService.setName("BPEL");
-//        WSDLInterface wsdlInterface;
-//        try {
-//            wsdlInterface = introspector.introspect(BPEL.class);
-//        } catch (InvalidInterfaceException e) {
-//            throw new IllegalArgumentException(e);
-//        }
-//        WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
-//        interfaceContract.setInterface(wsdlInterface);
-//        _bpelService.setInterfaceContract(interfaceContract);
     }
 
     public void setCompiledProcess(byte[] compiledProcess) {
         _compiledProcess = compiledProcess;
     }
 
-    public void setProcessName(QName processName) {
+    public QName getProcess() {
+        return _processName;
+    }
+    
+    public void setProcess(QName processName) {
         _processName = processName;
     }
 
@@ -124,12 +115,7 @@ public class BPELImplementationImpl implements BPELImplementation {
     }
 
     
-    public List<Object> getExtensions() {
-        // The sample BPEL implementation does not support extensions
-        return Collections.emptyList();
-    }
-
-    public boolean isUnresolved() {
+       public boolean isUnresolved() {
         return this.unresolved;
     }
 

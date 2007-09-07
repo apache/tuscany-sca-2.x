@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.implementation.bpel;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
 /**
  * Tests the BPEL service
  * 
@@ -30,8 +28,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class BPELTestCase extends TestCase {
 
-    private SCADomain scaDomain;
-    private BPEL bpelService;
+    //private SCADomain scaDomain;
     
     /**
      * @throws java.lang.Exception
