@@ -49,14 +49,14 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class DATAArtifactProcessor implements StAXArtifactProcessor<DATAImplementation> {
+public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAImplementation> {
     protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
     
     private DATAImplementationFactory dataFactory;
     
     private StAXArtifactProcessor<ConnectionInfo> connectionInfoProcessor;
     
-    public DATAArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public DATAImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         

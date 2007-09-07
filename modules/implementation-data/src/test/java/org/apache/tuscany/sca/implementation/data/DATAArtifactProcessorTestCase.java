@@ -86,7 +86,7 @@ public class DATAArtifactProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingDatasource() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_DATASOURCE));
         
-        DATAArtifactProcessor dataProcessor = new DATAArtifactProcessor(modelFactories);
+        DATAImplementationProcessor dataProcessor = new DATAImplementationProcessor(modelFactories);
         
         while(true) {
             int event = reader.next();
@@ -111,7 +111,7 @@ public class DATAArtifactProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingConnectionProperties() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_CONNECTION_PROPERTIES));
 
-        DATAArtifactProcessor dataProcessor = new DATAArtifactProcessor(modelFactories);
+        DATAImplementationProcessor dataProcessor = new DATAImplementationProcessor(modelFactories);
         
         while(true) {
             int event = reader.next();

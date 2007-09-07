@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.data.DATAArtifactProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.data,model=org.apache.tuscany.sca.implementation.data.DATAImplementation
+org.apache.tuscany.sca.implementation.data.DATAImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.data,model=org.apache.tuscany.sca.implementation.data.DATAImplementation
