@@ -86,7 +86,7 @@ public class DASArtifactProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingDatasource() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_DATASOURCE));
         
-        DASArtifactProcessor dataProcessor = new DASArtifactProcessor(modelFactories);
+        DASImplementationProcessor dataProcessor = new DASImplementationProcessor(modelFactories);
         
         while(true) {
             int event = reader.next();
@@ -112,7 +112,7 @@ public class DASArtifactProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingConnectionProperties() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_CONNECTION_PROPERTIES));
 
-        DASArtifactProcessor dataProcessor = new DASArtifactProcessor(modelFactories);
+        DASImplementationProcessor dataProcessor = new DASImplementationProcessor(modelFactories);
         
         while(true) {
             int event = reader.next();

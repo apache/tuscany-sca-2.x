@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.das.DASArtifactProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.das,model=org.apache.tuscany.sca.implementation.das.DASImplementation
+org.apache.tuscany.sca.implementation.das.DASImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.das,model=org.apache.tuscany.sca.implementation.das.DASImplementation
