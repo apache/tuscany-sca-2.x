@@ -115,7 +115,7 @@ public class CompositeWireBuilderImpl {
         connectCompositeServices(composite, components, componentServices);
         connectCompositeReferences(composite, componentReferences);
 
-        //compute the policies before connecting component references
+        // Compute the policies before connecting component references
         computePolicies(composite);
 
         // Connect component references to their targets
@@ -123,9 +123,6 @@ public class CompositeWireBuilderImpl {
 
         // Connect component references as described in wires
         connectWires(composite, componentServices, componentReferences);
-
-        // Resolve sourced properties
-        resolveSourcedProperties(composite, null);
 
         // Validate that references are wired or promoted, according
         // to their multiplicity
@@ -586,47 +583,6 @@ public class CompositeWireBuilderImpl {
     
         // Clear the list of wires
         composite.getWires().clear();
-    }
-
-    /**
-     * @param composite
-     */
-    private void resolveSourcedProperties(Composite composite, List<ComponentProperty> propertySettings) {
-        // Resolve properties
-        Map<String, Property> compositeProperties = new HashMap<String, Property>();
-        ComponentProperty componentProperty = null;
-        for (Property p : composite.getProperties()) {
-            componentProperty = getComponentPropertyByName(p.getName(), propertySettings);
-            if (componentProperty != null) {
-                compositeProperties.put(p.getName(), componentProperty);
-            } else {
-                compositeProperties.put(p.getName(), p);
-            }
-        }
-    
-        for (Component component : composite.getComponents()) {
-            try {
-                PropertyUtil.sourceComponentProperties(compositeProperties, component);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            Implementation impl = component.getImplementation();
-            if (impl instanceof Composite) {
-                resolveSourcedProperties((Composite)impl, component.getProperties());
-            }
-        }
-    }
-
-    private ComponentProperty getComponentPropertyByName(String propertyName, List<ComponentProperty> properties) {
-        if (properties != null) {
-            for (ComponentProperty aProperty : properties) {
-                if (aProperty.getName().equals(propertyName)) {
-                    return aProperty;
-                }
-            }
-        }
-        return null;
     }
 
     /**
