@@ -192,7 +192,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             RuntimeWire wire = reference.getRuntimeWire(binding);
             Invoker invoker = getInvoker(wire, operation);
             if (invoker == null) {
-                throw new ServiceUnavailableException("No service invoker is available for referenc " + reference
+                throw new ServiceUnavailableException("No service invoker is available for reference " + reference
                     .getName()
                     + " (bindingURI="
                     + binding.getURI()
