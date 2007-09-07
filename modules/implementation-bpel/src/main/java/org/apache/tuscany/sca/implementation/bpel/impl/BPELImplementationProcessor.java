@@ -40,8 +40,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
-import org.apache.tuscany.sca.implementation.bpel.BPELImplementationFactory;
-import org.apache.tuscany.sca.implementation.bpel.DefaultBPELImplementationFactory;
+import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
+import org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
@@ -54,15 +54,15 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
  * 
  *  @version $Rev$ $Date$
  */
-public class BPELArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
-    private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA10_TUSCANY_NS, "implementation.bpel");
+public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELImplementation> {
+    private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA10_NS, "implementation.bpel");
     
-    private BPELImplementationFactory bpelFactory;
+    private BPELFactory bpelFactory;
     
-    public BPELArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        this.bpelFactory = new DefaultBPELImplementationFactory(assemblyFactory, wsdlFactory);
+        this.bpelFactory = new DefaultBPELFactory(assemblyFactory, wsdlFactory);
     }
 
     public QName getArtifactType() {
@@ -82,26 +82,14 @@ public class BPELArtifactProcessor implements StAXArtifactProcessor<BPELImplemen
 
         // Read the process attribute. 
         QName process = getAttributeValueNS(reader, "process");
-        String bpelFile = reader.getAttributeValue(null, "file");
 
-        // Resolving the BPEL file and compiling it
-        URL bpelURL = getClass().getClassLoader().getResource(bpelFile);
-        if (bpelURL == null)
-            throw new ODEProcessException("Couldn't find referenced bpel file " + bpelFile);
-        BpelC bpelc = BpelC.newBpelCompiler();
-        ByteArrayOutputStream compiledProcess = new ByteArrayOutputStream();
-        bpelc.setOutputStream(compiledProcess);
-        try {
-            bpelc.compile(new File(bpelURL.getFile()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         // Create an initialize the BPEL implementation model
         BPELImplementation implementation = bpelFactory.createBPELImplementation();
-        implementation.setProcessName(process);
-        implementation.setCompiledProcess(compiledProcess.toByteArray());
-        implementation.setUnresolved(false);
+        implementation.setProcess(process);
+        //FIXME:lresende
+        //implementation.setCompiledProcess(compiledProcess.toByteArray());
+        //implementation.setUnresolved(false);
         
         // Skip to end element
         while (reader.hasNext()) {

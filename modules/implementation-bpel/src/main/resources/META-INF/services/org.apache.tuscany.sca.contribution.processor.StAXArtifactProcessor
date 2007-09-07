@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.bpel.impl.BPELArtifactProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.bpel,model=org.apache.tuscany.sca.implementation.bpel.BPELImplementation
+org.apache.tuscany.sca.implementation.bpel.impl.BPELArtifactProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#implementation.bpel,model=org.apache.tuscany.sca.implementation.bpel.BPELImplementation

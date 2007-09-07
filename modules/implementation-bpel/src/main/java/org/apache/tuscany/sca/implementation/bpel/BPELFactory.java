@@ -19,28 +19,23 @@
 
 package org.apache.tuscany.sca.implementation.bpel;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationImpl;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-
 /**
- * A default factory for the BPEL implementation model.
+ * A factory for the BPEL implementation model.
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultBPELImplementationFactory implements BPELImplementationFactory {
+public interface BPELFactory {
     
-    private AssemblyFactory assemblyFactory;
-    private WSDLFactory wsdlFactory;
-    
-    public DefaultBPELImplementationFactory(AssemblyFactory assemblyFactory,
-                                            WSDLFactory wsdlFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.wsdlFactory = wsdlFactory;
-    }
+    /**
+     * Creates a new BPEL implementation.
+     * 
+     * @return
+     */
+    BPELImplementation createBPELImplementation();
 
-    public BPELImplementation createBPELImplementation() {
-        return new BPELImplementationImpl(assemblyFactory, wsdlFactory);
-    }
-
+    /**
+     * Creates a new BPEL Process Definition
+     * @return
+     */
+    BPELProcessDefinition createBPELProcessDefinition();
 }
