@@ -71,8 +71,8 @@ public class NodeImpl implements Domain, Node {
 	
     private final static Logger logger = Logger.getLogger(NodeImpl.class.getName());
 	
-    final static String LOCAL_DOMAIN_URI = "localdomain";
-    final static String LOCAL_NODE_NAME = "localnode";
+    public final static String LOCAL_DOMAIN_URI = "localdomain";
+    public final static String LOCAL_NODE_NAME = "localnode";
     
     private boolean isStandalone = false;
     
@@ -107,13 +107,6 @@ public class NodeImpl implements Domain, Node {
         this.isStandalone = true;
         init();
     }
-    public NodeImpl(ClassLoader cl) throws ActivationException {
-      this.domainUri = LOCAL_DOMAIN_URI ; 
-      this.nodeUri = LOCAL_NODE_NAME;
-      this.isStandalone = true;
-      this.domainClassLoader = cl;
-      init();
-  }
     
     public NodeImpl(String domainUri)
       throws ActivationException {
@@ -128,6 +121,15 @@ public class NodeImpl implements Domain, Node {
         this.domainUri = domainUri;
         this.nodeUri = nodeUri;
         this.isStandalone = false;
+        init();
+    }    
+    
+    public NodeImpl(String domainUri, String nodeUri, ClassLoader cl)
+    throws ActivationException {
+        this.domainUri = domainUri;
+        this.nodeUri = nodeUri;
+        this.domainClassLoader = cl;
+        this.isStandalone = LOCAL_NODE_NAME.equals(nodeUri);
         init();
     }    
     
