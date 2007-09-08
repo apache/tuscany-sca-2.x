@@ -33,6 +33,7 @@ public class BPELTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void setUp() throws Exception {
         //scaDomain = SCADomain.newInstance("helloworld.composite");
         //bpelService = scaDomain.getService(BPEL.class, "BPELHelloWorldComponent");
@@ -42,15 +43,12 @@ public class BPELTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
+    @Override
     protected void tearDown() throws Exception {
         //scaDomain.close();
     }
-
     
-    public void testCRUD() throws Exception {
-        //Object result = bpelService.invokeProcess("something");
-        //assertEquals("something", result);
+    public void testSomething() {
+        
     }
-
-
 }

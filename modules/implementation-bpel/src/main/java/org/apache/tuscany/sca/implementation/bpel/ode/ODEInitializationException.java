@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.implementation.bpel.ode;
 
 /**
  * Thrown when ODE failed to initialize one if its needed resources.
+ * 
+ * @version $Rev$ $Date$
  */
 public class ODEInitializationException extends RuntimeException {
     private static final long serialVersionUID = -2869674556330744215L;

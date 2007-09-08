@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 /**
  * Thrown when a process can't be compiled properly or when its descriptors
  * are invalid.
+ * 
+ * @version $Rev$ $Date$ 
  */
 public class ODEProcessException extends RuntimeException {
     private static final long serialVersionUID = 1047893235216756186L;
