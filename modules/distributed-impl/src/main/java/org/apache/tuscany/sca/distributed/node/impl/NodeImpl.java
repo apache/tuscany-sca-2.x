@@ -107,6 +107,13 @@ public class NodeImpl implements Domain, Node {
         this.isStandalone = true;
         init();
     }
+    public NodeImpl(ClassLoader cl) throws ActivationException {
+      this.domainUri = LOCAL_DOMAIN_URI ; 
+      this.nodeUri = LOCAL_NODE_NAME;
+      this.isStandalone = true;
+      this.domainClassLoader = cl;
+      init();
+  }
     
     public NodeImpl(String domainUri)
       throws ActivationException {
@@ -522,5 +529,6 @@ public class NodeImpl implements Domain, Node {
                 return componentContext.createSelfReference(businessInterface);
             }
         }
-    }  
+    }
+
 }
