@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -92,8 +93,13 @@ public class BindingSCDLProcessor implements StAXArtifactProcessor {
         return scdlQName;
     }
 
-    public Class<Binding> getModelType() {
-        return bindingClass;
+    public Class getModelType() {
+        //FIXME Having two different bindings, PojoBinding wrappering
+        // the real binding is pretty confusing, looks like if you don't return
+        // PojoBinding here, the write and resolve methods will never be
+        // called, returning PojoBinding.class seems to fix that issue without
+        // breaking anything else
+        return PojoBinding.class;
     }
 
     public Binding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -149,7 +155,38 @@ public class BindingSCDLProcessor implements StAXArtifactProcessor {
     public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
     }
 
-    public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(Object model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+        //FIXME: none of the attributes of Binding seem to be working with PojoBinding
+        // For now at least write the binding URI
+        
+        // Find a namespace prefix and write the element 
+        String prefix = writer.getPrefix(scdlQName.getNamespaceURI());
+        if (prefix == null) {
+            NamespaceContext nsc = writer.getNamespaceContext();
+            for (int i=1; ; i++) {
+                prefix = "ns" + i;
+                if (nsc.getNamespaceURI(prefix) == null) {
+                    break;
+                }
+            }
+            writer.setPrefix(prefix, scdlQName.getNamespaceURI());
+        }
+        writer.writeStartElement(scdlQName.getNamespaceURI(), scdlQName.getLocalPart());
+
+        // Write the binding URI attribute
+        String uri;
+        try {
+            uri = (String)model.getClass().getMethod("getURI").invoke(model);
+        } catch (Exception e) {
+            uri = null;
+        }
+        if (uri != null) {
+            writer.writeAttribute("uri", uri);
+        }
+        
+        writer.writeEndElement();
+
     }
 
 }
