@@ -46,12 +46,15 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 public class Axis2ServiceClient {
 
     private WebServiceBinding wsBinding;
     private ServiceClient serviceClient;
+    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
 
     public Axis2ServiceClient(RuntimeComponent component,
                               AbstractContract contract,
@@ -149,7 +152,7 @@ public class Axis2ServiceClient {
 
         options.setTimeOutInMilliSeconds(30 * 1000); // 30 seconds
 
-        SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
+        SOAPFactory soapFactory = requiresSOAP12() ? OMAbstractFactory.getSOAP12Factory() : OMAbstractFactory.getSOAP11Factory();
         QName wsdlOperationQName = new QName(operationName);
 
         Axis2BindingInvoker invoker;
@@ -159,6 +162,18 @@ public class Axis2ServiceClient {
             invoker = new Axis2BindingInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         }
         return invoker;
+    }
+
+    private boolean requiresSOAP12() {
+        if (wsBinding instanceof IntentAttachPoint) {
+            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
+            for (Intent intent : intents) {
+                if (SOAP12_INTENT.equals(intent.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected EndpointReference getPortLocationEPR(WebServiceBinding binding) {
