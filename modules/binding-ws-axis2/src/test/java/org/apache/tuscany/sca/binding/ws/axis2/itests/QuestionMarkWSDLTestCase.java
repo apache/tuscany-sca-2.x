@@ -35,11 +35,9 @@ import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * FIXME: This doesn't work right now as it seems to cause hangs when running
- * from mvn. Also running in eclipse mostly only works if you comment out
- * one of the test methods.
+ * Test ?wsdl works and that the returned wsdl has the correct endpoint
  */
-public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
+public class QuestionMarkWSDLTestCase extends TestCase {
 
     private SCADomain domain;
 
@@ -53,7 +51,7 @@ public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/services/HelloWorldWebService?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://helloworld-om", "HelloWorldService"));
+        Service service = definition.getService(new QName("http://helloworld", "HelloWorldService"));
         Port port = service.getPort("HelloWorldSoapPort");
 
         String endpoint = getEndpoint(port);
@@ -69,14 +67,14 @@ public class QuestionMarkWSDLTestCaseFIXME extends TestCase {
         wsdlReader.setFeature("javax.wsdl.verbose",false);
         wsdlReader.setFeature("javax.wsdl.importDocuments",true);
 
-        Definition definition = wsdlReader.readWSDL("http://localhost:8085/HelloWorldService/foo/bar?wsdl");
+        Definition definition = wsdlReader.readWSDL("http://localhost:8085/foo/bar?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://helloworld-om", "HelloWorldService"));
-        Port port = service.getPort("HelloWorldSoapPort");
+        Service service = definition.getService(new QName("http://itests.axis2.ws.binding.sca.tuscany.apache.org", "HelloWorld"));
+        Port port = service.getPort("HelloWorldSOAP11port");
 
         String endpoint = getEndpoint(port);
         String ip = HttpUtils.getIpAddress();
-        assertEquals("http://" + ip + ":8085/HelloWorldService/foo/bar", endpoint);
+        assertEquals("http://" + ip + ":8085/foo/bar", endpoint);
     }
 
     protected String getEndpoint(Port port) {

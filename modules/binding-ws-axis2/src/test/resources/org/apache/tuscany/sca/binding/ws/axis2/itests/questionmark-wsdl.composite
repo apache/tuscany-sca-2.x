@@ -22,17 +22,15 @@
            name="QuestionMarkWSDLTests">
 
     <service name="ep1" promote="HelloWorldService">
-        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-om#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </service>
 
     <service name="ep2" promote="HelloWorldService">
-        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-om#wsdl.binding(HelloWorldSoapBinding)"  uri="foo/bar"  />
+        <binding.ws uri="foo/bar"  />
     </service>
 
     <component name="HelloWorldService">
-		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMService"/>
+		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldService"/>
     </component>
 
 </composite>
