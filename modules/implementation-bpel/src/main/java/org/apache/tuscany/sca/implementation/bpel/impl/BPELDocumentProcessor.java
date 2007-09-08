@@ -38,6 +38,11 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 
+/**
+ * BPEL document processor responsible for reading a BPEL file and producing necessary model info about it
+ * 
+ * @version $Rev$ $Date$
+ */
 public class BPELDocumentProcessor implements URLArtifactProcessor<BPELProcessDefinition> {
     public final static QName BPEL_PROCESS_DEFINITION = new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process");
     

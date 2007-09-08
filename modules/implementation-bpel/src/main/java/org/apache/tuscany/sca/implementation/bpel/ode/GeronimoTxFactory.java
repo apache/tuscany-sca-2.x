@@ -24,6 +24,11 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.transaction.TransactionManager;
 
+/**
+ * Geronimo transaction factory
+ * 
+ * @version $Rev$ $Date$
+ */
 public class GeronimoTxFactory {
     private static final Log __log = LogFactory.getLog(GeronimoTxFactory.class);
 
