@@ -147,22 +147,6 @@ public class ContributionManagerImpl implements ContributionManager {
     	}
     }
 
-    public void startContributionJAR(URL contributionJAR) throws ActivationException, ContributionException,
-        IOException, CompositeBuilderException {
-
-        if (contribution == null) {
-            addContributionJAR(contributionJAR);
-        }
-
-        if (contribution != null) {
-            for (Composite composite : contribution.getDeployables()) {
-                nodeRuntime.getCompositeActivator().start(composite);
-            }
-        } else {
-            throw new ActivationException("Contribution " + contributionLocation + " not added");
-        }
-    }
-
     public void addContributionJAR(URL contributionJar) throws CompositeBuilderException, ActivationException {
 
         ContributionService contributionService = nodeRuntime.getContributionService();
@@ -178,6 +162,11 @@ public class ContributionManagerImpl implements ContributionManager {
         // activate all of the composites just loaded
         for (Composite composite : contribution.getDeployables()) {
             nodeRuntime.getCompositeActivator().activate(composite);
+        }
+
+        // start all the composites just loaded
+        for (Composite composite : contribution.getDeployables()) {
+            nodeRuntime.getCompositeActivator().start(composite);
         }
     }
 
