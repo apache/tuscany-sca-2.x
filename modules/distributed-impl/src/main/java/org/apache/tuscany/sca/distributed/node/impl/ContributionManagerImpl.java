@@ -20,27 +20,18 @@
 package org.apache.tuscany.sca.distributed.node.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
-import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
-import org.apache.tuscany.sca.distributed.domain.Domain;
 import org.apache.tuscany.sca.distributed.node.ContributionManager;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
-import org.apache.tuscany.sca.host.embedded.management.variation.ComponentListener;
-import org.apache.tuscany.sca.host.embedded.management.variation.ComponentManager;
 
 public class ContributionManagerImpl implements ContributionManager {
 
@@ -156,4 +147,60 @@ public class ContributionManagerImpl implements ContributionManager {
     	}
     }
 
+    public void startContributionJAR(URL contributionJAR) throws ActivationException, ContributionException,
+        IOException, CompositeBuilderException {
+
+        if (contribution == null) {
+            addContributionJAR(contributionJAR);
+        }
+
+        if (contribution != null) {
+            for (Composite composite : contribution.getDeployables()) {
+                nodeRuntime.getCompositeActivator().start(composite);
+            }
+        } else {
+            throw new ActivationException("Contribution " + contributionLocation + " not added");
+        }
+    }
+
+    public void addContributionJAR(URL contributionJar) throws CompositeBuilderException, ActivationException {
+
+        ContributionService contributionService = nodeRuntime.getContributionService();
+
+        Contribution contribution = contributeJAR(contributionJar, contributionService);
+
+        // Add the composites to the top level domain
+        for (Composite composite : contribution.getDeployables()) {
+            nodeComposite.getIncludes().add(composite);
+            nodeRuntime.getCompositeBuilder().build(composite);
+        }
+
+        // activate all of the composites just loaded
+        for (Composite composite : contribution.getDeployables()) {
+            nodeRuntime.getCompositeActivator().activate(composite);
+        }
+    }
+
+    protected Contribution contributeJAR(URL contributionJar, ContributionService contributionService) throws ActivationException {
+        InputStream is;
+        try {
+            is = contributionJar.openStream();
+        } catch (IOException e) {
+            throw new ActivationException(e);
+        }
+        Contribution contribution;
+        try {
+            contribution = contributionService.contribute(contributionJar.toString(), contributionJar, is, modelResolver);
+        } catch (Exception e) {
+            throw new ActivationException(e);
+        }
+        if (is != null) {
+            try {
+                is.close();
+            } catch (IOException e) {
+                throw new ActivationException(e);
+            }
+        }
+        return contribution;
+    }
 }
