@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-host-home</artifactId>
-    <name>Apache Tuscany Embedded Runtime Home Page</name>
+    <name>Apache Tuscany SCA Embedded Host Home Page</name>
 
     <dependencies>
         <dependency>

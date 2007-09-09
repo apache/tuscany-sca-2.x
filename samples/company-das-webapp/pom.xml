@@ -27,7 +27,7 @@
     </parent>
     
     <artifactId>sample-company-das-webapp</artifactId>
-    <name>Apache Tuscany DAS Data Access Service Web Client Sample</name>
+    <name>Apache Tuscany SCA Company Sample Web Client</name>
     <packaging>war</packaging>
 
     <dependencies>

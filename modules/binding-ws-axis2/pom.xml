@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-binding-ws-axis2</artifactId>
-    <name>Apache Tuscany Web Services Binding using Apache Axis2</name>
+    <name>Apache Tuscany SCA Axis2-based WS Binding Extension</name>
 
     <repositories>
         <repository>

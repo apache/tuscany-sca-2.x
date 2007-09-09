@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-host-webapp</artifactId>
-    <name>Apache Tuscany webapp host</name>
+    <name>Apache Tuscany SCA Webapp Host</name>
 
     <dependencies>
         <dependency>

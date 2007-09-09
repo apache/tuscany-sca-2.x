@@ -28,8 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-ejb</artifactId>
-    <name>Apache Tuscany Binding for Stateless Session Bean</name>
-    <description>Implementation of Stateless Session Bean binding</description>
+    <name>Apache Tuscany SCA EJB Binding Extension</name>
 
     <dependencies>
 

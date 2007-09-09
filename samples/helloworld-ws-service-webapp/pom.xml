@@ -25,7 +25,7 @@
         <version>1.0-incubating-SNAPSHOT</version>
     </parent>
     <artifactId>sample-helloworld-ws-service-webapp</artifactId>
-    <name>Apache Tuscany HelloWorld Web Service Sample</name>
+    <name>Apache Tuscany SCA HelloWorld Web Service Sample Webapp</name>
     <packaging>war</packaging>
 
     <repositories>

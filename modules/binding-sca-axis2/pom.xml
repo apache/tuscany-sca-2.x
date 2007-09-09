@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-sca-axis2</artifactId>
-    <name>Apache Tuscany Default SCA Binding Using Axis2</name>
+    <name>Apache Tuscany SCA Axis2-based Default Binding Extension</name>
 
     <dependencies>
        

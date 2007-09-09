@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-implementation-script</artifactId>
-    <name>Apache Tuscany Implementation Script</name>
+    <name>Apache Tuscany SCA Script Implementation Extension</name>
 
     <dependencies>
 

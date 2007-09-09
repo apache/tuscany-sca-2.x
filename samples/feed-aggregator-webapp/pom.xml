@@ -27,7 +27,7 @@
     </parent>
     <artifactId>sample-feed-aggregator-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany Atom+RSS Feed Aggregator Sample</name>
+    <name>Apache Tuscany SCA Atom+RSS Feed Aggregator Sample Webapp</name>
 
     <repositories>
        <repository>

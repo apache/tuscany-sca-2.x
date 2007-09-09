@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-helloworld-ws-service</artifactId>
-    <name>Apache Tuscany HelloWorld Web Service Sample</name>
+    <name>Apache Tuscany SCA HelloWorld Web Service Sample</name>
 
     <repositories>
        <repository>

@@ -27,7 +27,7 @@
     </parent>
     <artifactId>demo-mortgage-creditcheck</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany Mortgage Credit Check Demo</name>
+    <name>Apache Tuscany SCA Mortgage Credit Check Demo</name>
     <description>A sample Mortgage application made of several SCA components wired together.</description>
 
     <dependencies>

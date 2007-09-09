@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>sample-databinding-echo</artifactId>
-    <name>Apache Tuscany Echo Data Binding Sample</name>    
+    <name>Apache Tuscany SCA Echo Data Binding Sample</name>    
 
     <repositories>
        <repository>

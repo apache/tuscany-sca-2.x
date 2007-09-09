@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-interface-wsdl-xml</artifactId>
-    <name>Apache Tuscany SCA XML WSDL Interface Extension</name>
+    <name>Apache Tuscany SCA WSDL Interface XML Model</name>
 
     <dependencies>
         <dependency>

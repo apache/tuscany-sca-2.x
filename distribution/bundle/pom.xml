@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-bundle</artifactId>
-    <name>Apache Tuscany Bundle Jar</name>
+    <name>Apache Tuscany SCA Bundle Jar</name>
     <packaging>jar</packaging>
 
     <properties>

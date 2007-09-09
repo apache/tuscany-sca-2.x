@@ -27,7 +27,7 @@
     </parent>
     <artifactId>sample-calculator-ws-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany Calculator Sample WebApp With WebServices</name>
+    <name>Apache Tuscany SCA Calculator Sample Web Service in a WebApp</name>
 
     <repositories>
        <repository>

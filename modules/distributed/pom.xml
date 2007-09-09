@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-distributed</artifactId>
-    <name>Apache Tuscany Distributed Domain Base Support</name>
+    <name>Apache Tuscany SCA Distributed Domain Base Support</name>
 
     <dependencies>   
         <dependency>

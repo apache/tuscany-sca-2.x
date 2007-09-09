@@ -27,7 +27,7 @@
     </parent>
     
     <artifactId>sample-company-das</artifactId>
-    <name>Apache Tuscany Company Data Access Service Sample</name>
+    <name>Apache Tuscany SCA Company Data Access Service Sample</name>
     <packaging>jar</packaging>
 
 

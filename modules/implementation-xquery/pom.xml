@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-implementation-xquery</artifactId>
-    <name>Apache Tuscany XQuery Implementation Extension</name>
+    <name>Apache Tuscany SCA XQuery Implementation Extension</name>
 
     <dependencies>
         <dependency>

@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-binding-http</artifactId>
-    <name>Apache Tuscany HTTP Binding Model</name>
+    <name>Apache Tuscany SCA HTTP Binding Extension</name>
 
     <dependencies>
         <dependency>

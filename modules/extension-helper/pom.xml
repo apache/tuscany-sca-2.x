@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-extension-helper</artifactId>
-    <name>Apache Tuscany Extension Helper</name>
+    <name>Apache Tuscany SCA Extension Helper</name>
 
     <dependencies>
 

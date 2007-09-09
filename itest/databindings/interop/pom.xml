@@ -29,7 +29,7 @@
     <artifactId>itest-databindings-interop</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Apache Tuscany Interoperability Databindings Integration Test</name>
+    <name>Apache Tuscany SCA DataBinding Interop Integration Tests</name>
 
     <repositories>
         <repository>

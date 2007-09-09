@@ -33,7 +33,7 @@
     <artifactId>demo-alert-aggregator-webapp</artifactId>
     <packaging>war</packaging>
     <version>1.0-incubating-SNAPSHOT</version>
-    <name>Apache Tuscany Alert Aggregator Demo</name>
+    <name>Apache Tuscany SCA Alert Aggregator Demo</name>
     <url>http://cwiki.apache.org/TUSCANY</url>  
 
     <dependencies>

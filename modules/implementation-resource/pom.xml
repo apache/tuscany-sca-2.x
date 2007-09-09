@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-implementation-resource</artifactId>
-    <name>Apache Tuscany Web Resource Implementation Model</name>
+    <name>Apache Tuscany SCA Resource Implementation Extension</name>
 
     <dependencies>
         <dependency>

@@ -27,7 +27,7 @@
     </parent>
     <artifactId>sample-helloworld-ws-sdo-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany HelloWorld Web Service SDO Sample WebApp</name>
+    <name>Apache Tuscany SCA HelloWorld Web Service SDO Sample WebApp</name>
 
     <repositories>
         <repository>

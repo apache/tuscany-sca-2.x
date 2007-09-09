@@ -28,8 +28,8 @@
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>tuscany-core-databinding</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tuscany Core/DataBinding Integration</name>
-    <description>Apache Tuscany Core/DataBinding Integration</description>
+    <name>Apache Tuscany SCA Core/DataBinding Integration</name>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -65,18 +65,5 @@
             <version>1.0.1</version>
         </dependency>
 
-        <!-- 
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <scope>test</scope>
-        </dependency>
-         -->
     </dependencies>
 </project>

@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-wsdl</artifactId>
-    <name>Apache Tuscany WSDL Integration Tests</name>
+    <name>Apache Tuscany SCA WSDL Support Integration Tests</name>
 
     <dependencies>
         <dependency>
