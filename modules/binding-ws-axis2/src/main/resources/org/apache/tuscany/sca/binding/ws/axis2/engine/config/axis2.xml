@@ -25,6 +25,12 @@
     <parameter name="hotupdate">false</parameter>
     <parameter name="enableMTOM">false</parameter>
     <parameter name="enableSwA">false</parameter>
+    
+    <!-- parameter name="OutflowSecurity">
+		<action>
+			<items>Timestamp</items>
+		</action>
+	</parameter-->
 
     <!--Uncomment if you want to enable file caching for attachments -->
     <!--parameter name="cacheAttachments">true</parameter>
@@ -51,7 +57,7 @@
     <!--To override repository/services you need to uncomment following parameter and value SHOULD be absolute file path.-->
     <!--<parameter name="ServicesDirectory">service</parameter>-->
     <!--To override repository/modules you need to uncomment following parameter and value SHOULD be absolute file path-->
-    <!--<parameter name="ModulesDirectory">modules</parameter>-->
+    <parameter name="ModulesDirectory">F:\LatestTrunk\sca\modules\binding-ws-axis2\src\main\resources\modules</parameter>
 
 
 
@@ -269,7 +275,7 @@
     <!--  Commented out by Tuscany
     <module ref="addressing"/>
     -->
-
+    <module ref="rampart"/>
     <!--Configuring module , providing parameters for modules whether they refer or not-->
     <!--<moduleConfig name="addressing">-->
     <!--<parameter name="addressingPara">N/A</parameter>-->

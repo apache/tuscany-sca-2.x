@@ -37,6 +37,7 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.Parameter;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -48,6 +49,9 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 public class Axis2ServiceClient {
@@ -77,6 +81,8 @@ public class Axis2ServiceClient {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
 
+            configureSecurity(configContext);
+            
             Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
             setServiceAndPort(wsBinding);
             QName serviceQName = wsBinding.getServiceName();
@@ -206,5 +212,25 @@ public class Axis2ServiceClient {
         }
         return null;
     }
+    
+    private void configureSecurity(ConfigurationContext configContext) throws AxisFault {
+        if ( wsBinding instanceof PolicySetAttachPoint ) {
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
+            Parameter configParam = null;
+            Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
+            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
+                for ( Object policy : policySet.getPolicies() ) {
+                    if ( policy instanceof Axis2ConfigParamPolicy ) {
+                        axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
+                        configParam = new Parameter(axis2ConfigParamPolicy.getParamName(), 
+                                                    axis2ConfigParamPolicy.getParamElement().getFirstElement());
+                        configParam.setParameterElement(axis2ConfigParamPolicy.getParamElement());
+                        configContext.getAxisConfiguration().addParameter(configParam);
+                    }
+                }
+            }
+        }
+    }
+
 
 }
