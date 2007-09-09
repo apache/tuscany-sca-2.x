@@ -72,7 +72,7 @@ public class NodeImpl implements Domain, Node {
     private final static Logger logger = Logger.getLogger(NodeImpl.class.getName());
 	
     public final static String LOCAL_DOMAIN_URI = "localdomain";
-    public final static String LOCAL_NODE_NAME = "localnode";
+    public final static String LOCAL_NODE_URI = "localnode";
     
     private boolean isStandalone = false;
     
@@ -100,22 +100,26 @@ public class NodeImpl implements Domain, Node {
        
     // methods defined on the implementation only
     
+    /**
+     * Default constructor creates a standalone node with no connectivity to a wider
+     * domain and no local web page. 
+     */
     public NodeImpl()
       throws ActivationException {
         this.domainUri = LOCAL_DOMAIN_URI ; 
-        this.nodeUri = LOCAL_NODE_NAME;
+        this.nodeUri = LOCAL_NODE_URI;
         this.isStandalone = true;
         init();
     }
-    
-    public NodeImpl(String domainUri)
-      throws ActivationException {
-        this.domainUri = domainUri; 
-        this.nodeUri = LOCAL_NODE_NAME;
-        this.isStandalone = true;
-        init();
-    }
-    
+       
+    /** 
+     * Creates a node connected to a wider domain.  To find its place in the domain 
+     * node and domain identifiers must be provided. 
+     * 
+     * @param domainUri the domain identifier
+     * @param nodeUri the node identifier
+     * @throws ActivationException
+     */
     public NodeImpl(String domainUri, String nodeUri)
     throws ActivationException {
         this.domainUri = domainUri;
@@ -124,12 +128,21 @@ public class NodeImpl implements Domain, Node {
         init();
     }    
     
+    /** 
+     * Creates a node connected to a wider domain and allows a classpath to be specified.  
+     * To find its place in the domain node and domain identifiers must be provided. 
+     * 
+     * @param domainUri the domain identifier
+     * @param nodeUri the node identifier
+     * @param classpath the classpath to use for loading system resources for the node
+     * @throws ActivationException
+     */
     public NodeImpl(String domainUri, String nodeUri, ClassLoader cl)
     throws ActivationException {
         this.domainUri = domainUri;
         this.nodeUri = nodeUri;
         this.domainClassLoader = cl;
-        this.isStandalone = LOCAL_NODE_NAME.equals(nodeUri);
+        this.isStandalone = LOCAL_DOMAIN_URI.equals(domainUri);
         init();
     }    
     
@@ -147,11 +160,10 @@ public class NodeImpl implements Domain, Node {
             
             // create a node runtime for the domain contributions to run on
             nodeRuntime = new ReallySmallRuntime(domainClassLoader);
-            
           
             // Check if node has been given a domain name to connect to
             if (isStandalone) {
-            	logger.log(Level.INFO, "Domain node will be started stand-alone as no node name is provided");
+            	logger.log(Level.INFO, "Domain node will be started stand-alone as node and domain name are not provided");
             	managementRuntime = null;
             	serviceDiscovery = null;
             } else {
@@ -198,7 +210,7 @@ public class NodeImpl implements Domain, Node {
                     // in service discovery. It's not on an SCA binding. 
                     // TODO - really want to be able to hand out service references but they
                     //        don't serialize out over web services yet. 
-                    String nodeManagerUrl = fixUpManagementServiceUrls();                    
+                    fixUpManagementServiceUrls();                    
                   
                     managementRuntime.getCompositeActivator().activate(composite); 
                     managementRuntime.getCompositeActivator().start(composite);
@@ -210,6 +222,10 @@ public class NodeImpl implements Domain, Node {
                     serviceDiscovery =  managementRuntime.getService(ServiceDiscoveryService.class, "ServiceDiscoveryComponent");
                     domainManager = managementRuntime.getService(DomainManagerService.class, "DomainManagerComponent");
                     nodeManagerInit = managementRuntime.getService(NodeManagerInitService.class, "NodeManagerComponent/NodeManagerInitService");
+                    
+                    // Now get the uri back out of the component no it has been build and started
+                    // TODO - this doesn't pick up the url from external hosting environments
+                    String nodeManagerUrl = getNodeManagerServiceUrl();
                     
                     if (nodeManagerUrl != null) {
                         if (isStandalone == false){
@@ -258,18 +274,29 @@ public class NodeImpl implements Domain, Node {
      * 
      * @return node manager url
      */    
-    private String fixUpManagementServiceUrls(){
+    private void fixUpManagementServiceUrls(){
         String nodeManagerUrl = null;
         
         // First get the NodeManager binding from the model 
         List<Component> components = managementRuntime.getDomainComposite().getIncludes().get(0).getComponents();
-        Component nodeManagerComponent = null;
-        
+       
         for(Component component : components){
             for (ComponentService service : component.getServices() ){
                 for (Binding binding : service.getBindings() ) {
                     fixUpBindingUrl(binding);  
                 }
+            }            
+        }
+    }
+    
+    private String getNodeManagerServiceUrl(){
+        String nodeManagerUrl = null;
+        
+        // First get the NodeManager binding from the model 
+        List<Component> components = managementRuntime.getDomainComposite().getIncludes().get(0).getComponents();
+        
+        for(Component component : components){
+            for (ComponentService service : component.getServices() ){
                 
                 if ( service.getName().equals("NodeManagerService")) {
                     nodeManagerUrl = service.getBindings().get(0).getURI();
@@ -278,10 +305,10 @@ public class NodeImpl implements Domain, Node {
         }
         
         return nodeManagerUrl;
-    }
+    }    
     
     /**
-     * For http protocol find a port that isn't in use and make sure the domain name is the real domains name
+     * For http protocol find a port that isn't in use and make sure the domain name is the real domain name
      * 
      * @param binding
      */
@@ -355,7 +382,7 @@ public class NodeImpl implements Domain, Node {
         // make the domain available to the model. 
         // TODO - No sure how this should be done properly. As a nod to this though
         //        I have a domain factory which always returns the same domain
-        //        object
+        //        object. I.e. this node
         ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
         DomainFactoryImpl domainFactory = new DomainFactoryImpl(this);
         factories.addFactory(domainFactory);
@@ -364,13 +391,12 @@ public class NodeImpl implements Domain, Node {
         componentManager = new ComponentManagerServiceImpl(domainUri, nodeUri, nodeComposite, nodeRuntime);
         contributionManager = new ContributionManagerImpl(domainUri, nodeUri, nodeComposite, nodeRuntime, domainClassLoader, null);
         
-        
         if (isStandalone == false){
             // pass this object into the node manager
             nodeManagerInit.setNode((Node)this);
             
             try {
-                // go out an add this node to the wider domain
+                // go out and add this node to the wider domain
                 domainManager.registerNode(domainUri, nodeUri);
             } catch(Exception ex) {
                 // not sure what to do here

@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.distributed.node;
 
 import java.io.IOException;
+import java.net.URL;
 
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
@@ -36,17 +37,19 @@ public interface ContributionManager {
     /**
      * Accepts a new contribution and passes it onto the domain implementation
      * 
+     * @param contributionLocation the URL location of the contribution
      * @throws ActivationException
      */
-    public void addContribution(String contributionLocation)
+    public void addContribution(URL contrubutionLocation)
      throws ActivationException, ContributionException, IOException, CompositeBuilderException;
     
     /**
      * Removes the specified contribution from the domain
      * 
+     * @param contributionname
      * throws ActivationException
      */
-    public void removeContribution(String contributionLocation)
+    public void removeContribution(URL contributionName)
       throws ActivationException, ContributionException;
     
     
@@ -55,7 +58,7 @@ public interface ContributionManager {
      * 
      * @throws ActivationException
      */
-    public void startContribution(String contributionLocation)
+    public void startContribution(URL contributionName)
       throws ActivationException, ContributionException, IOException, CompositeBuilderException;
     
     /**
@@ -63,7 +66,7 @@ public interface ContributionManager {
      * 
      * @throws ActivationException
      */
-    public void stopContribution(String contributionLocation)
+    public void stopContribution(URL contributionName)
       throws ActivationException;
  
 }

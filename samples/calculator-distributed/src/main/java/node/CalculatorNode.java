@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
 
-
 import calculator.CalculatorService;
 
 /**
@@ -57,7 +56,7 @@ public class CalculatorNode {
             // the application components are added. The null here just gets the node
             // implementation to read a directory from the classpath with the node name
             // TODO - should be done as a management action.       
-            node.getContributionManager().startContribution(nodeName + "/");  
+            node.getContributionManager().startContribution(CalculatorNode.class.getClassLoader().getResource(nodeName + "/"));  
                                
             // nodeA is the head node and runs some tests while all other nodes
             // simply listen for incoming messages

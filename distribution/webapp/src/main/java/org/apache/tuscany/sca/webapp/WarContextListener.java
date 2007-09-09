@@ -264,7 +264,7 @@ public class WarContextListener implements ServletContextListener {
         if (servletContext.getInitParameter("nodeName") != null) {
             nodeName = servletContext.getInitParameter("nodeName");
         } else {
-            nodeName = NodeImpl.LOCAL_NODE_NAME;
+            nodeName = NodeImpl.LOCAL_NODE_URI;
         }
 
         if (servletContext.getInitParameter("hotDeployInterval") != null) {

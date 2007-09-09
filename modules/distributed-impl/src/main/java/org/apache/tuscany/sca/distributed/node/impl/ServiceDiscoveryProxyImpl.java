@@ -45,6 +45,7 @@ public class ServiceDiscoveryProxyImpl implements ServiceDiscoveryService{
      * @return dummy valus just so that we don;t have a void return which doesn't work 
      */
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+     /*
         System.err.println("Registering service: [" + 
                 domainUri + " " +
                 nodeUri + " " +
@@ -52,6 +53,7 @@ public class ServiceDiscoveryProxyImpl implements ServiceDiscoveryService{
                 bindingName + " " +
                 URL +
                 "]");
+      */
         
         String dummy = null; 
         
@@ -84,11 +86,13 @@ public class ServiceDiscoveryProxyImpl implements ServiceDiscoveryService{
      * @return url the endpoint url
      */
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
+     /*        
         System.err.println("Finding service: [" + 
                 domainUri + " " +
                 serviceName + " " +
                 bindingName +
                 "]");
+      */
         
         String url = null;
         

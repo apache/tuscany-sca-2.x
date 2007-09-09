@@ -50,27 +50,27 @@ public class InMemoryTestCase {
         try {
             System.out.println("Setting up domain registry");
             
-            registry = new NodeImpl(DEFULT_DOMAIN_NAME);
+            registry = new NodeImpl();
             registry.start();
-            registry.getContributionManager().startContribution("domain/");
+            registry.getContributionManager().startContribution(InMemoryTestCase.class.getClassLoader().getResource("domain/"));
             
             System.out.println("Setting up domain nodes");
                    
             // Create the domain representation
             domainNodeA = new NodeImpl(DEFULT_DOMAIN_NAME, "nodeA");
             domainNodeA.start();
-            domainNodeA.getContributionManager().startContribution("nodeA/");
+            domainNodeA.getContributionManager().startContribution(InMemoryTestCase.class.getClassLoader().getResource("nodeA/"));
             
             // Create the domain representation
             domainNodeB = new NodeImpl(DEFULT_DOMAIN_NAME, "nodeB");
             domainNodeB.start();
-            domainNodeB.getContributionManager().startContribution("nodeB/");        
+            domainNodeB.getContributionManager().startContribution(InMemoryTestCase.class.getClassLoader().getResource("nodeB/"));        
             
             // create the node that runs the 
             // subtract component 
             domainNodeC = new NodeImpl(DEFULT_DOMAIN_NAME, "nodeC");
             domainNodeC.start();
-            domainNodeC.getContributionManager().startContribution("nodeC/");         
+            domainNodeC.getContributionManager().startContribution(InMemoryTestCase.class.getClassLoader().getResource("nodeC/"));         
     
             // get a reference to the calculator service from domainA
             // which will be running this component
