@@ -31,11 +31,11 @@
         </service>
         <service name="NodeManagerService">
             <interface.java interface="org.apache.tuscany.sca.distributed.node.NodeManagerService"/>
-            <tuscany:binding.jsonrpc uri="http://localhost:8081/NodeManagerComponent/NodeManagerJson"/>
+            <tuscany:binding.jsonrpc uri="http://localhost:8082/NodeManagerComponent/NodeManagerJson"/>
         </service>
         <service name="ComponentManagerService">
             <interface.java interface="org.apache.tuscany.sca.distributed.node.ComponentManagerService"/>
-            <tuscany:binding.jsonrpc uri="http://localhost:8081/NodeManagerComponent/ComponentManagerJson"/>
+            <tuscany:binding.jsonrpc uri="http://localhost:8082/NodeManagerComponent/ComponentManagerJson"/>
         </service>
     </component>           
     
@@ -56,7 +56,7 @@
 
     <component name="node">
         <service name="Resource">
-            <tuscany:binding.http uri="http://localhost:8081/node"/>
+            <tuscany:binding.http uri="http://localhost:8082/node"/>
         </service>
        <tuscany:implementation.resource location="webroot"/>
     </component>    

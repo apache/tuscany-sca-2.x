@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.distributed.node.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -41,9 +43,9 @@ public class ContributionManagerImpl implements ContributionManager {
     protected ReallySmallRuntime nodeRuntime;
     private ClassLoader classLoader;
 
-    private String contributionLocation;
     private ModelResolver modelResolver;
-    private Contribution contribution; 
+    
+    private Map<URL, Contribution> contributions = new HashMap<URL, Contribution>(); 
     
     public ContributionManagerImpl(String domainURI, String nodeName, Composite nodeComposite, ReallySmallRuntime nodeRuntime, ClassLoader classLoader, ModelResolver modelResolver) {
         this.domainURI = domainURI;
@@ -52,39 +54,22 @@ public class ContributionManagerImpl implements ContributionManager {
         this.nodeRuntime = nodeRuntime;
         this.classLoader = classLoader;
         this.modelResolver = modelResolver;
-        
-    	// work out what the contribution string if its not supplied 
-        if (contributionLocation == null){
-        	if (nodeName != null){
-        		// guess that it's in a directory with the node name
-        		contributionLocation = nodeName + "/";
-        	} else {
-        		// guess that it's in the current directory
-        		contributionLocation = "/";
-        	}
-        }
-
-        this.contributionLocation = contributionLocation;
     }
     
-    public String getContributionLocation(){
-    	return contributionLocation;
-    }
-   
-    public void addContribution(String contributionLocation)
+    public void addContribution(URL contributionLocation)
       throws ActivationException, ContributionException, IOException, CompositeBuilderException {        
-
-        URL contributionURL = classLoader.getResource(contributionLocation);
     
-        if (contributionURL != null) {
+        if (contributionLocation != null) {
 	        // Get ready to add contributions to the domain
 	        ContributionService contributionService = nodeRuntime.getContributionService();
 	        
 	        // Contribute the SCA application
-	        contribution = contributionService.contribute(contributionLocation, 
-	                                                      contributionURL, 
-	                                                      modelResolver, 
-	                                                      false);
+	        Contribution contribution = contributionService.contribute(contributionLocation.toExternalForm(), 
+	                                                                   contributionLocation, 
+	                                                                   modelResolver, 
+	                                                                   false);
+	        
+	        contributions.put(contributionLocation, contribution);
 	        
 	        // Add the composites to the top level domain
 	        for(Composite composite: contribution.getDeployables()) {
@@ -101,8 +86,10 @@ public class ContributionManagerImpl implements ContributionManager {
         }              
     }
 
-    public void removeContribution(String contributionLocation)
+    public void removeContribution(URL contributionLocation)
       throws ActivationException, ContributionException {
+        
+        Contribution contribution = contributions.get(contributionLocation);
     	
     	stopContribution(contributionLocation);
     	
@@ -117,15 +104,19 @@ public class ContributionManagerImpl implements ContributionManager {
         }
 
         // Remove contribution
-        nodeRuntime.getContributionService().remove(contributionLocation);
+        nodeRuntime.getContributionService().remove(contributionLocation.toExternalForm());
     }
     
-    public void startContribution(String contributionLocation)
+    public void startContribution(URL contributionLocation)
       throws ActivationException, ContributionException, IOException, CompositeBuilderException  {
+        
+        Contribution contribution = contributions.get(contributionLocation);
     	
     	if (contribution == null){
     		addContribution(contributionLocation);
     	}
+    	
+        contribution = contributions.get(contributionLocation);
     	
     	if (contribution != null) {
 	        for(Composite composite: contribution.getDeployables()) {
@@ -136,8 +127,11 @@ public class ContributionManagerImpl implements ContributionManager {
     	}
     }
     
-    public void stopContribution(String contributionLocation)
+    public void stopContribution(URL contributionLocation)
       throws ActivationException {
+        
+        Contribution contribution = contributions.get(contributionLocation);
+        
     	if (contribution != null) {
 	        for(Composite composite: contribution.getDeployables()) {
 	       	 nodeRuntime.getCompositeActivator().stop(composite);

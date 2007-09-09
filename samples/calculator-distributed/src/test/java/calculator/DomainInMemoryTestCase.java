@@ -49,27 +49,27 @@ public class DomainInMemoryTestCase {
         try {
                 System.out.println("Setting up domain registry");
                 
-                registry = new NodeImpl(DEFAULT_DOMAIN_NAME);
+                registry = new NodeImpl();
                 registry.start();
-                registry.getContributionManager().startContribution("domain/");
+                registry.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("domain/"));
                 
                 System.out.println("Setting up distributed nodes");
                        
                 // Create the domain representation
                 domainNodeA = new NodeImpl(DEFAULT_DOMAIN_NAME, "nodeA");
                 domainNodeA.start();
-                domainNodeA.getContributionManager().startContribution("nodeA/");
+                domainNodeA.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("nodeA/"));
                 
                 // Create the domain representation
                 domainNodeB = new NodeImpl(DEFAULT_DOMAIN_NAME, "nodeB");
                 domainNodeB.start();
-                domainNodeB.getContributionManager().startContribution("nodeB/");        
+                domainNodeB.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("nodeB/"));        
                 
                 // create the node that runs the 
                 // subtract component 
                 domainNodeC = new NodeImpl(DEFAULT_DOMAIN_NAME, "nodeC");
                 domainNodeC.start();
-                domainNodeC.getContributionManager().startContribution("nodeC/");         
+                domainNodeC.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("nodeC/"));         
         
                 // get a reference to the calculator service from domainA
                 // which will be running this component

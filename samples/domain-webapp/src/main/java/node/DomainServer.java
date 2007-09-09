@@ -20,9 +20,7 @@ package node;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.distributed.domain.Domain;
 import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * This server program that loads a composite to provide simple registry function.
@@ -33,9 +31,9 @@ public class DomainServer {
 
     public static void main(String[] args) {
         try {
-            NodeImpl node = new NodeImpl("DomainServer");
+            NodeImpl node = new NodeImpl();
             node.start();
-            node.getContributionManager().startContribution(".");
+            node.getContributionManager().startContribution(DomainServer.class.getClassLoader().getResource("."));
     
             try {
                 System.out.println("Domain server started (press enter to shutdown)");
