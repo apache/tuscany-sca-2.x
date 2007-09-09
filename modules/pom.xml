@@ -117,6 +117,7 @@
                 <module>maven-wsdl2java</module>
                 <module>policy</module>
                 <module>policy-xml</module>
+		<module>policy-security</module>
                 <module>sca-api</module>
                 <module>topology</module>
                 <module>topology-xml</module>
