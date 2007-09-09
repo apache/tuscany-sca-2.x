@@ -31,8 +31,7 @@ import org.apache.axis2.engine.AxisConfigurator;
 public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements AxisConfigurator {
 
     public TuscanyAxisConfigurator() throws AxisFault {
-        super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config"));
-    	//super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), null);
+        super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/"));
     }
 
     public ConfigurationContext getConfigurationContext() throws AxisFault {
