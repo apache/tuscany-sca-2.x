@@ -28,7 +28,7 @@
 
     <artifactId>itest-interop-soap-service</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany Interop Testing - Services - InteropDoc</name>
+    <name>Apache Tuscany SCA WS Interop Service Integration Tests</name>
 
     <dependencies>
        <dependency>
