@@ -103,7 +103,7 @@ public class ReadDocumentTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
         */
         
-        URL url = getClass().getResource("definitions.xml");
+        URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("definitions.xml");
         scaDefinitions = scaDefnDocProcessor.read(null, uri, url);
         

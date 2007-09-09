@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -49,6 +50,10 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
 
     private PolicyFactory policyFactory;
 
+    public PolicyIntentProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+    }
+    
     public PolicyIntentProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
     }

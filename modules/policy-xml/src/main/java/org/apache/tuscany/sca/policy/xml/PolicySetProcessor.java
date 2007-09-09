@@ -95,7 +95,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                         policySet.getPolicies().add(wsPolicy);
                     } else {
                         Object extension = extensionProcessor.read(reader);
-                        if ( extension instanceof Policy ) {
+                        if ( extension != null ) {
                             policySet.getPolicies().add(extension);
                         }
                     }
@@ -170,7 +170,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                 policyList.add((Policy)wsPolicy);
                             } else {
                                 Object extension = extensionProcessor.read(reader);
-                                if ( extension instanceof Policy ) {
+                                if ( extension != null ) {
                                     List<Object> policyList = mappedPolicies.get(qualifiedIntent);
                                     if ( policyList == null ) {
                                         policyList = new ArrayList<Object>();
@@ -180,7 +180,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                             mappedPolicies.put(mappedIntent, policyList);
                                         }
                                     }
-                                    policyList.add((Policy)extension);
+                                    policyList.add(extension);
                                 }
                             }
                             break;
