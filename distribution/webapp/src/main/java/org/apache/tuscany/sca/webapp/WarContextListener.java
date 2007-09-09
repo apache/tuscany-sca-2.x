@@ -128,7 +128,7 @@ public class WarContextListener implements ServletContextListener {
         classLoader.addURL(contribution);
         ((ContributionManagerImpl)node.getContributionManager()).addContributionJAR(contribution);
         existingContributions.put(contribution, new Long(new File(contribution.toURI()).lastModified()));
-        logger.log(Level.INFO, "Added contribution", contribution);
+        logger.log(Level.INFO, "Added contribution: " + contribution);
     }
 
     protected URL[] getContributionJarURLs(File repositoryDir) {
@@ -208,11 +208,6 @@ public class WarContextListener implements ServletContextListener {
         for (URL url : currentContrabutions) {
             if (!existingContributions.containsKey(url)) {
                 urls.add(url);
-                try {
-                    logger.info("added contribution: " + new File(url.toURI()).getName());
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
             }
         }
         return urls;

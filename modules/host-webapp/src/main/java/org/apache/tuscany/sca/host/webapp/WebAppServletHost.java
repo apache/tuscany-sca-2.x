@@ -65,12 +65,6 @@ public class WebAppServletHost implements ServletHost {
     public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
         URI pathURI = URI.create(suri);
 
-        // Ignore registrations of the Tuscany default resource servlet, as resources
-        // are already served by the web container
-        if (servlet instanceof DefaultResourceServlet) {
-            return;
-        }
-
         // Make sure that the path starts with a /
         suri = pathURI.getPath();
         if (!suri.startsWith("/")) {
