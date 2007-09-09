@@ -55,8 +55,12 @@ public class ConversationalAgeTestCase {
         conversationalService.initializeCount(42);
         Assert.assertEquals(42, conversationalService.retrieveCount());
         Assert.assertEquals(42, conversationalService.retrieveCount());
-        Thread.sleep(3100);
-        Assert.assertEquals(0, conversationalService.retrieveCount());
+        Thread.sleep(500);
+        try {
+            Assert.assertEquals(42, conversationalService.retrieveCount());
+        } catch (ConversationEndedException e) {
+            Assert.fail();
+        }
     }
 
     @Test
@@ -88,8 +92,12 @@ public class ConversationalAgeTestCase {
         conversationalService.initializeCount(42);
         Assert.assertEquals(42, conversationalService.retrieveCount());
         Assert.assertEquals(42, conversationalService.retrieveCount());
-        Thread.sleep(3100);
-        Assert.assertEquals(0, conversationalService.retrieveCount());
+        Thread.sleep(1100);
+        try {
+            Assert.assertEquals(0, conversationalService.retrieveCount());
+        } catch (ConversationEndedException e) {
+            // expected
+        }
     }
 
 }
