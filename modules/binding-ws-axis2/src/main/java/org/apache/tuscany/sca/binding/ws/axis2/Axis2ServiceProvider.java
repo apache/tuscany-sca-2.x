@@ -19,8 +19,13 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.net.URL;
+import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,32 +35,45 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.deployment.DeploymentErrorMsgs;
+import org.apache.axis2.deployment.DeploymentException;
+import org.apache.axis2.deployment.ModuleBuilder;
 import org.apache.axis2.deployment.util.Utils;
+import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
+import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.MessageReceiver;
+import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
+import org.apache.tuscany.sca.databinding.axiom.String2OMElement;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
@@ -85,16 +103,20 @@ public class Axis2ServiceProvider {
                                 ServletHost servletHost,
                                 MessageFactory messageFactory) {
 
-        this.contract = contract;
+        this.contract = contract; 
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
-
+        
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             configContext = tuscanyAxisConfigurator.getConfigurationContext();
+            //deployRampartModule();
+            configureSecurity();
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
+        } catch ( Exception e ) {
+            throw new RuntimeException(e);
         }
 
         configContext.setContextRoot(servletHost.getContextPath());
@@ -105,6 +127,19 @@ public class Axis2ServiceProvider {
         }
         wsBinding.setURI(uri);
     }
+    
+    private void engageModules() throws AxisFault {
+        if ( wsBinding instanceof PolicySetAttachPoint ) {
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
+            if ( policiedBinding.getPolicySets().size() > 0 ) {
+                //TODO: need to verify if one of the policies are concerned with security
+                AxisModule m = new AxisModule("rampart");
+                m.setFileName(wsBinding.getClass().getClassLoader().getResource("rampart-1.2.mar"));
+                configContext.getAxisConfiguration().addModule(m);
+                configContext.getAxisConfiguration().engageModule(m, configContext.getAxisConfiguration());
+            }
+        }
+    }
 
     public void start() {
 
@@ -112,10 +147,11 @@ public class Axis2ServiceProvider {
         // service for every port
 
         try {
+            AxisService axisService = createAxisService(); 
             configContext.getAxisConfiguration().addService(createAxisService());
         } catch (AxisFault e) {
             throw new RuntimeException(e);
-        }
+        } 
 
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
         servlet.init(configContext);
@@ -405,5 +441,69 @@ public class Axis2ServiceProvider {
     protected Binding getBinding(){
         return wsBinding;
     }
+    
+    private void configureSecurity() throws AxisFault {
+        if ( wsBinding instanceof PolicySetAttachPoint ) {
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
+            Parameter configParam = null;
+            Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
+            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
+                for ( Object policy : policySet.getPolicies() ) {
+                    if ( policy instanceof Axis2ConfigParamPolicy ) {
+                        axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
+                        configParam = new Parameter(axis2ConfigParamPolicy.getParamName(), 
+                                                    axis2ConfigParamPolicy.getParamElement().getFirstElement());
+                        configParam.setParameterElement(axis2ConfigParamPolicy.getParamElement());
+                        configContext.getAxisConfiguration().addParameter(configParam);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void deployRampartModule()  throws DeploymentException, AxisFault {
+    	ClassLoader tccl = (ClassLoader) org.apache.axis2.java.security.AccessController
+        .doPrivileged(new PrivilegedAction() {
+            public Object run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
 
+
+        AxisModule module = new AxisModule();
+        module.setParent(configContext.getAxisConfiguration());
+		String moduleName = "rampart-1.2";
+		URL moduleurl = TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/rampart-1.2.mar");
+		module.setName(moduleName);
+		ClassLoader deploymentClassloader = Utils.createClassLoader(new URL[]{moduleurl},
+													tccl,
+													true,
+													(File)configContext.getAxisConfiguration().getParameterValue(Constants.Configuration.ARTIFACTS_TEMP_DIR));
+													
+		module.setModuleClassLoader(deploymentClassloader);
+		populateModule(module, moduleurl,configContext.getAxisConfiguration());
+		module.setFileName(moduleurl);
+		TuscanyAxisConfigurator.addNewModule(module, configContext.getAxisConfiguration());
+		org.apache.axis2.util.Utils.calculateDefaultModuleVersion(
+				configContext.getAxisConfiguration().getModules(), configContext.getAxisConfiguration());
+    }
+    
+    private void populateModule(AxisModule module, URL moduleUrl, AxisConfiguration axisConfig) throws DeploymentException {
+        try {
+            ClassLoader classLoadere = module.getModuleClassLoader();
+            InputStream moduleStream = classLoadere.getResourceAsStream("META-INF/module.xml");
+            if (moduleStream == null) {
+                moduleStream = classLoadere.getResourceAsStream("meta-inf/module.xml");
+            }
+            if (moduleStream == null) {
+                throw new DeploymentException(
+                        Messages.getMessage(
+                                DeploymentErrorMsgs.MODULE_XML_MISSING, moduleUrl.toString()));
+            }
+            ModuleBuilder moduleBuilder = new ModuleBuilder(moduleStream, module, axisConfig);
+            moduleBuilder.populateModule();
+        } catch (IOException e) {
+            throw new DeploymentException(e);
+        }
+    }
 }
