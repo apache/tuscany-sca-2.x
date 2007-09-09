@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-distribution</artifactId>
-    <name>Apache Tuscany Distribution</name>
+    <name>Apache Tuscany SCA Distribution</name>
     <packaging>pom</packaging>
 
     <properties>

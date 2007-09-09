@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-assembly-java-dsl</artifactId>
-    <name>Apache Tuscany SCA Assembly Java DSL</name>
+    <name>Apache Tuscany SCA Assembly Model Java DSL</name>
 
     <dependencies>
         <dependency>

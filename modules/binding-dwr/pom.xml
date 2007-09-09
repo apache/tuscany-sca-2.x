@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-dwr</artifactId>
-    <name>Apache Tuscany Binding for AJAX DWR services</name>
+    <name>Apache Tuscany SCA AJAX DWR Binding Extension</name>
 
     <dependencies>
 

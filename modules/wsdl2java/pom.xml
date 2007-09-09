@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-wsdl2java</artifactId>
-    <name>Apache Tuscany Axis2 WSDL2Java Tool</name>
+    <name>Apache Tuscany SCA WSDL2Java Tool</name>
 
     <dependencies>
         <dependency>

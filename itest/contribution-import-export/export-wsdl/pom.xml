@@ -26,6 +26,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-contribution-export-wsdl</artifactId>
-    <name>Apache Tuscany Contribution Export WSDL</name>
+    <name>Apache Tuscany SCA Contribution WSDL Export Integration Tests</name>
 
 </project>

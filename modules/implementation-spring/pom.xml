@@ -26,9 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-implementation-spring</artifactId>
-    <name>Apache Tuscany Spring Framework Implementation Model</name>
-    <description>Container for managing Spring composites</description>
-    <packaging>jar</packaging>
+    <name>Apache Tuscany SCA Spring Framework Implementation Extension</name>
 
     <dependencies>
         <dependency>

@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-policy-xml</artifactId>
-    <name>Apache Tuscany Policy - XML Model Support</name>
+    <name>Apache Tuscany SCA Policy XML Model</name>
 
     <dependencies>
         <dependency>

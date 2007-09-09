@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-binding-feed</artifactId>
-    <name>Apache Tuscany Atom+RSS Feed Binding</name>
+    <name>Apache Tuscany SCA Atom+RSS Feed Binding Extension</name>
 
     <dependencies>
         <dependency>

@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-distributed-impl</artifactId>
-    <name>Apache Tuscany Distributed Domain Implementation</name>
+    <name>Apache Tuscany SCA Distributed Domain Implementation</name>
 
     <dependencies>
  

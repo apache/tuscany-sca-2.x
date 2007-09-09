@@ -27,7 +27,7 @@
     </parent>
     <artifactId>tuscany-maven-wsdl2java</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Apache Tuscany Maven Plugin for WSDL2Java</name>
+    <name>Apache Tuscany SCA WSDL2Java Maven Plugin</name>
 
     <dependencies>
         <dependency>

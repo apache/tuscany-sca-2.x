@@ -27,7 +27,7 @@
     </parent>
     <artifactId>sample-helloworld-dojo-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany Dojo Sample WebApp</name>
+    <name>Apache Tuscany SCA HelloWorld DOJO Sample WebApp</name>
 
     <repositories>
        <repository>

@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-binding-jsonrpc</artifactId>
-    <name>Apache Tuscany JSON-RPC Binding</name>
+    <name>Apache Tuscany SCA JSON-RPC Binding Extension</name>
 
     <dependencies>
         <dependency>

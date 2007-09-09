@@ -27,7 +27,7 @@
     </parent>
     <artifactId>itest-contribution-import-export</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany Contribution Import/Export</name>
+    <name>Apache Tuscany SCA Contribution Import/Export Integration Tests</name>
 
     <modules>
         <module>export-wsdl</module>

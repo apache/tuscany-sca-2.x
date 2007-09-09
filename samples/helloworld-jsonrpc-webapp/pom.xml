@@ -27,7 +27,7 @@
     </parent>
     <artifactId>sample-helloworld-jsonrpc-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany JSON-RPC Sample WebApp</name>
+    <name>Apache Tuscany SCA HelloWorld JSON-RPC Sample WebApp</name>
 
     <repositories>
        <repository>

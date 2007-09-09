@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-sca-manifest</artifactId>
-    <name>Apache Tuscany Manifest Jar</name>
+    <name>Apache Tuscany SCA Manifest Jar</name>
 
     <properties>
         <maven.test.skip>true</maven.test.skip>

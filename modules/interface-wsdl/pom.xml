@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-interface-wsdl</artifactId>
-    <name>Apache Tuscany WSDL Interface Model</name>
+    <name>Apache Tuscany SCA WSDL Interface Model</name>
 
     <dependencies>
         <dependency>

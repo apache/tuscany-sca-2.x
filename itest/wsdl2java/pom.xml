@@ -26,7 +26,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>itest-wsdl2java</artifactId>
-	<name>Apache Tuscany WSDL Integration Tests</name>
+	<name>Apache Tuscany SCA WSDL2Java Integration Tests</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>

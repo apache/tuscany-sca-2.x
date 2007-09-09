@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-implementation-java</artifactId>
-    <name>Apache Tuscany Java Implementation Model</name>
+    <name>Apache Tuscany SCA Java Implementation Model</name>
 
     <dependencies>
         <dependency>

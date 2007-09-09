@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-implementation-osgi</artifactId>
-    <name>Apache Tuscany Implementation OSGi</name>
+    <name>Apache Tuscany SCA OSGi Implementation Extension</name>
 
     <dependencies>
 

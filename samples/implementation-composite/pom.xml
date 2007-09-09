@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-implementation-composite</artifactId>
-    <name>Apache Tuscany Composite Implementation Sample</name>
+    <name>Apache Tuscany SCA Composite Sample</name>
     <description>A sample showing local wiring of a component implemented by a nested composite</description>
 
     <repositories>
