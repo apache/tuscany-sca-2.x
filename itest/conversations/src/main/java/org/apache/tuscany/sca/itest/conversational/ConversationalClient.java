@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.conversational;
 
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -42,8 +43,9 @@ public interface ConversationalClient {
 	public String runConversationBusinessExceptionCallback();
 	public int runConversationCallingEndedConversation();
 	public int runConversationCallingEndedConversationCallback();
+        public String runConversationCallingEndedConversationCheckConversationId(); 
+	public String runConversationCallingEndedConversationCallbackCheckConversationId();
 	public int runConversationAgeTimeout();
 	public int runConversationIdleTimeout();
 	public int runConversationPrincipleError();	
-
 }

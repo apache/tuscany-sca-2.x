@@ -21,6 +21,7 @@
 package org.apache.tuscany.sca.core.scope;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.tuscany.sca.core.context.ConversationImpl;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.store.Store;
+import org.osoa.sca.Conversation;
 import org.osoa.sca.ConversationEndedException;
 
 /**
@@ -172,16 +175,32 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         return getInstanceWrapper(true,contextId);
     } 
     
-    public void addWrapperReference(Object existingContextId, Object newContextId) throws TargetResolutionException {
+    /**
+     * This method allows a new context id to be registered alongside an existing one. This happens in
+     * one case, when a conversation includes a stateful callback. The client component instance
+     * must be registered against all outgoing conversation ids so that the component instance
+     * can be found when the callback arrives
+     * 
+     * @param existingContextId the context id against which the component is already registered
+     * @param context this should be a conversation object so that the conversation can b stored
+     *                and reset when the component instance is removed
+     */
+    public void addWrapperReference(Object existingContextId, Object contextId) throws TargetResolutionException {
+        Conversation conversation = (Conversation)contextId;
+        
         // get the instance wrapper via the existing id
-        InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(existingContextId);
+        InstanceLifeCycleWrapper existingInstanceWrapper = this.instanceLifecycleCollection.get(existingContextId);
+        InstanceLifeCycleWrapper newInstanceWrapper = this.instanceLifecycleCollection.get(conversation.getConversationID());
         
-        // add the id to the list of ids that the wrapper holds. Used for reference
-        // counting on destruction
-        anInstanceWrapper.addInstanceId(newContextId);
-        
-        // add the reference to the collection
-        this.instanceLifecycleCollection.put(newContextId, anInstanceWrapper);  
+        // only add the extra reference once
+        if (newInstanceWrapper == null) {
+            // add the id to the list of ids that the wrapper holds. Used for reference
+            // counting and conversation resetting on destruction. 
+            existingInstanceWrapper.addCallbackConversation(conversation);
+            
+            // add the reference to the collection
+            this.instanceLifecycleCollection.put(conversation.getConversationID(), existingInstanceWrapper); 
+        }
     }
 
     public void registerWrapper(InstanceWrapper wrapper, Object contextId) throws TargetResolutionException {
@@ -225,15 +244,17 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     
     private class InstanceLifeCycleWrapper 
     {
-        private List<Object> instanceIds = new ArrayList<Object>();
+        private Object clientConversationId;
+        private List<ConversationImpl> callbackConversations = new ArrayList<ConversationImpl>();
         private long   creationTime;
         private long   lastReferencedTime;
         private long   expirationInterval;
         private long   maxIdleTime;
+        private Conversation conversation;
         
         private InstanceLifeCycleWrapper(Object contextId) throws TargetResolutionException
         {
-         this.instanceIds.add(contextId);
+         this.clientConversationId = contextId;
          this.creationTime = System.currentTimeMillis();
          this.lastReferencedTime = this.creationTime;
          this.expirationInterval = max_age;
@@ -243,14 +264,14 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
 
         private InstanceLifeCycleWrapper(InstanceWrapper wrapper, Object contextId) throws TargetResolutionException
         {
-         this.instanceIds.add(contextId);
+         this.clientConversationId = contextId;
          this.creationTime = System.currentTimeMillis();
          this.lastReferencedTime = this.creationTime;
          this.expirationInterval = max_age;
          this.maxIdleTime = max_idle_time;
          wrappers.put(contextId, wrapper);       
-        }
-        
+        }      
+               
         private boolean isExpired() 
         {               
          long currentTime = System.currentTimeMillis(); 
@@ -267,11 +288,14 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
          this.lastReferencedTime = System.currentTimeMillis();
         }
         
-        // add another instance id to this instance
-        private void addInstanceId(Object contextId){
-            InstanceWrapper ctx =  getInstanceWrapper(instanceIds.get(0));
-            instanceIds.add(contextId);
-            wrappers.put(contextId, ctx);
+        // Associates a callback conversation with this instance. Each time the scope container
+        // is asked to remove an object given a ontextId an associated conversation object will 
+        // have its conversationId reset to null. When the list of ids is empty the component instance
+        // will be removed from the scope container
+        private void addCallbackConversation(Conversation  conversation){
+            InstanceWrapper ctx =  getInstanceWrapper(clientConversationId);
+            callbackConversations.add((ConversationImpl)conversation);
+            wrappers.put(conversation.getConversationID(), ctx);
         }
         
         //
@@ -287,12 +311,36 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         {
           InstanceWrapper ctx =  getInstanceWrapper(contextId);            
           wrappers.remove(contextId);
-          instanceIds.remove(contextId);
           
-          // stop the component if its this removes the 
-          // last reference
-          if (instanceIds.isEmpty()) {
+          // find out if we are dealing with the original client conversation id
+          // and reset accordingly
+          if (clientConversationId.equals(contextId)){
+              clientConversationId = null;
+          } else {
+              // reset the conversationId in the conversation object if present 
+              // so that and ending callback causes the conversation in the originating
+              // service reference in the client to be reset
+              ConversationImpl conversation = null;
+              
+              for (ConversationImpl loopConversation : callbackConversations) {
+                  if (loopConversation.getConversationID().equals(contextId)) {
+                      conversation = loopConversation;
+                  }
+              }
+              if(conversation != null){
+                  conversation.setConversationID(null);
+                  callbackConversations.remove(conversation);
+              }
+          }
+         
+          
+          // stop the component if this removes the last reference
+          if (clientConversationId == null &&
+              callbackConversations.isEmpty()) {
               ctx.stop();
+              if (conversation != null) {
+                  ((ConversationImpl)conversation).setConversationID(null);
+              }
           }   
         }
         
@@ -333,9 +381,14 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
                         // cycle through all the references to this instance and
                         // remove them from the underlying wrappers collection and
                         // from the lifecycle wrappers collection
-                        for(Object contextId : anInstanceLifeCycleWrapper.instanceIds ){
-                            anInstanceLifeCycleWrapper.removeInstanceWrapper(contextId);
-                            this.instanceLifecycleCollection.remove(contextId);
+                        for (ConversationImpl conversation : anInstanceLifeCycleWrapper.callbackConversations) {
+                            anInstanceLifeCycleWrapper.removeInstanceWrapper(conversation.getConversationID());
+                            this.instanceLifecycleCollection.remove(conversation.getConversationID());
+                        }
+                        
+                        if (anInstanceLifeCycleWrapper.clientConversationId != null){
+                            anInstanceLifeCycleWrapper.removeInstanceWrapper(anInstanceLifeCycleWrapper.clientConversationId);
+                            this.instanceLifecycleCollection.remove(anInstanceLifeCycleWrapper.clientConversationId);
                         }
                     } catch (Exception ex) {
                       // TODO - what to do with any asynchronous exceptions?

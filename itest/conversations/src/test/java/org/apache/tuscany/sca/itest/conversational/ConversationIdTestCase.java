@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.itest.conversational;
 
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.itest.conversational.impl.ConversationIdService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

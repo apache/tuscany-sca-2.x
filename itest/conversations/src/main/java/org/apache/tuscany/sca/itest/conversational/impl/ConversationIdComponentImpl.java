@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.itest.conversational.impl;
 
+import org.apache.tuscany.sca.itest.conversational.ConversationIdService;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;

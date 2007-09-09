@@ -72,22 +72,26 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     }
 
     public Object getConversationID() {
-        return conversationID;
+        if (getConversation() != null) {
+            return getConversation().getConversationID();
+        } else {
+            return null;
+        }
     }
 
     public void setConversationID(Object conversationID) throws IllegalStateException {
-        Conversation conversation = getConversation();
-        if (conversation == null) {
+        ConversationImpl conversation = (ConversationImpl)getConversation();
+        if (conversation != null) {
             if (conversationID == null) {
-                this.conversationID = UUID.randomUUID().toString();
+                conversation.setConversationID(UUID.randomUUID().toString());
             } else {
-                this.conversationID = conversationID;
+                conversation.setConversationID(conversationID);
             }
         } else {
-            // FIXME: [refng] Commented it out for now so that test cases are not broken
-            // throw new IllegalStateException("A conversation is currently associated with this reference");
-            this.conversationID = conversationID;
-            ((ConversationImpl) conversation).setConversationID(conversationID);
+            throw new IllegalStateException("Trying to set conversation id " + 
+                                            conversationID.toString() +
+                                            "on non conversational reference " + 
+                                            reference.getName());
         }
     }
 

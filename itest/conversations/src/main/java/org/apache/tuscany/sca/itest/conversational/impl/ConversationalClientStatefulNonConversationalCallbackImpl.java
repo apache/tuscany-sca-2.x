@@ -202,6 +202,46 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         return "No Exception Returned";
     }   
     
+    public String runConversationCallingEndedConversationCheckConversationId(){
+        calls.append("runConversationCallingEndedConversationCheckConversationId,");
+        ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
+                                                                                                        "conversationalService");
+        serviceReference.setConversationID("MyConversation3");
+        
+        ConversationalService callableReference = serviceReference.getService();
+        
+        callableReference.initializeCount(1);
+        callableReference.incrementCount();
+        clientCount = callableReference.retrieveCount();
+        callableReference.endConversation();
+        
+        if (serviceReference.getConversationID() ==null ) {
+            return null;
+        } else {
+            return serviceReference.getConversationID().toString();
+        }
+    }    
+    
+    public String runConversationCallingEndedConversationCallbackCheckConversationId(){
+        calls.append("runConversationCallingEndedConversationCallbackCheckConversationId,");
+        ServiceReference<ConversationalService> serviceReference = componentContext.getServiceReference(ConversationalService.class, 
+                                                                                                        "conversationalService");
+        serviceReference.setConversationID("MyConversation3");
+        
+        ConversationalService callableReference = serviceReference.getService();
+        
+        callableReference.initializeCount(1);
+        callableReference.incrementCount();
+        clientCount = callableReference.retrieveCount();
+        callableReference.endConversationCallback();
+        
+        if (serviceReference.getConversationID() ==null ) {
+            return null;
+        } else {
+            return serviceReference.getConversationID().toString();
+        }
+    }     
+    
     public int runConversationCallingEndedConversation(){
         calls.append("runConversationCallingEndedConversation,");
         conversationalService.initializeCount(1);
