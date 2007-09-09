@@ -27,7 +27,7 @@
 	</parent>
 	<artifactId>itest-interop-soap-client</artifactId>
 	<packaging>jar</packaging>
-	<name>Apache Tuscany Interop Testing - Clients - InteropDoc</name>
+	<name>Apache Tuscany SCA WS Interop Client Integration Tests</name>
 	<properties>
 		<ws.type>axis2</ws.type>
 	</properties>

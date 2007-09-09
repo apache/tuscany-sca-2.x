@@ -26,9 +26,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>itest-interop-soap-round2-client</artifactId>
-	<packaging>jar</packaging>
-	<name>Apache Tuscany Interop Testing - Clients - SOAP Builders Round 2 
-		Interop Test</name>
+	<name>Apache Tuscany SCA WS SOAP Round2 Interop Client Integration Tests</name>
 	<properties>
 		<ws.type>axis2</ws.type>
 	</properties>
