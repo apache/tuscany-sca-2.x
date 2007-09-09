@@ -206,13 +206,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         // make sure that the conversation id is set so it can be put in the 
         // outgoing messages.        
         if (conversational) {
-            if (conversation == null) {
-                // this call is via an automatic proxy rather than a
-                // callable/service reference so no conversation object 
-                // will have been constructed yet
-                conversation = new ConversationImpl();
-            }
-
             Object conversationId = conversation.getConversationID();
 
             // create a conversation id if one doesn't exist 
@@ -222,31 +215,26 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             if (conversationId == null) {
                 // create a new conversation Id
                 conversationId = createConversationID();
-
-                // If we are passing out a callback target
-                // register the calling component instance against this 
-                // new conversation id so that stateful callbacks will be
-                // able to find it
-                if (wire.getSource().getCallbackEndpoint() != null && callbackObject == null) {
-                    // the component instance is already registered
-                    // so add another registration
-                    ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-
-                    if (scopeContainer != null) {
-                        scopeContainer.addWrapperReference(msgContextConversationId, conversationId);
-                    }
-                }
-
-                // we have just created a new conversation Id so 
-                // put it back in the conversation object
                 conversation.setConversationID(conversationId);
             }
 
-            //TODO - assuming that the conversation ID is a string here when
-            //       it can be any object that is serializable to XML
-            msg.setConversationID((String)conversationId);
-        }
+            msg.setConversationID(conversationId);
+            
+            // If we are passing out a callback target register the calling component instance against 
+            // this new conversation id so that stateful callbacks will be able to find it
+            // we don't check if the callback has conversation scope here as non-conversational
+            // scoped components still need to have the conversation ids on the calling reference set
+            // to null
+            if (wire.getSource().getCallbackEndpoint() != null && callbackObject == null) {
+                // the component instance will already registered by now so add another registration
+                ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
 
+                if (scopeContainer != null) {
+                    scopeContainer.addWrapperReference(msgContextConversationId, conversation);
+                }
+            }
+        }
+        
         Invoker headInvoker = chain.getHeadInvoker();
         msg.setCorrelationID(callbackID);
         Operation operation = chain.getTargetOperation();
@@ -257,17 +245,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             if (sequence == ConversationSequence.CONVERSATION_END) {
                 msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
                 conversationStarted = false;
-                if (conversation != null) {
-
-                    // remove conversation id from scope container
-                    ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-
-                    if (scopeContainer != null) {
-                        scopeContainer.remove(conversation.getConversationID());
-                    }
-
-                    conversation.setConversationID(null);
-                }
             } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
                 if (conversationStarted) {
                     msg.setConversationSequence(ConversationSequence.CONVERSATION_CONTINUE);
@@ -316,6 +293,25 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             // dispatch the wire down the chain and get the response
             Message resp = headInvoker.invoke(msg);
             Object body = resp.getBody();
+            
+            // Mark the object instance for removal if the conversation has ended
+            if (contract != null && contract.isConversational()) {
+                ConversationSequence sequence = operation.getConversationSequence();
+                if (sequence == ConversationSequence.CONVERSATION_END) {
+                    if (conversation != null) {
+
+                        // remove conversation id from scope container
+                        ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
+
+                        if (scopeContainer != null) {
+                            scopeContainer.remove(conversation.getConversationID());
+                        }
+
+                        conversation.setConversationID(null);
+                    }
+                }
+            }               
+            
             if (resp.isFault()) {
                 throw (Throwable)body;
             }
@@ -323,6 +319,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         } finally {
             ThreadMessageContext.setMessageContext(msgContext);
         }
+        
+
     }
 
     private ScopeContainer<Object> getConversationalScopeContainer(RuntimeWire wire) {

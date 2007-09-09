@@ -67,7 +67,6 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     protected transient Binding binding;
 
     protected String componentURI; //The URI of the owning component
-    protected Object conversationID; // The conversationID should be serializable
     protected Object callbackID; // The callbackID should be serializable
 
     protected String scdl;
@@ -216,8 +215,11 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 }
                 if (parameters != null) {
                     this.callbackID = parameters.getCallbackID();
-                    this.conversationID = parameters.getConversationID();
                     this.componentURI = parameters.getComponentURI();
+                    
+                    if (conversation != null){
+                        conversation.setConversationID(parameters.getConversationID());
+                    }
                 }
                 URI uri = URI.create(componentURI + "/");
                 for (Binding binding : reference.getBindings()) {
@@ -284,7 +286,11 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             ReferenceParameters parameters = new ReferenceParameters();
             parameters.setCallbackID(callbackID);
             parameters.setComponentURI(componentURI);
-            parameters.setConversationID(conversationID);
+            if (conversation != null){
+                parameters.setConversationID(conversation.getConversationID());
+            } else {
+                parameters.setConversationID(null);
+            }
             reference.getExtensions().add(parameters);
             String scdl =
                 ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper().toXML(component, reference);

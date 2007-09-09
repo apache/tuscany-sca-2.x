@@ -81,7 +81,7 @@ public class ConversationalTestCase {
     public void tearDown() throws Exception {
         domain.close();
     }
- 
+
     // stateless client stateful service tests
     // =======================================
     @Test
@@ -158,7 +158,19 @@ public class ConversationalTestCase {
     public void testStatelessStatefulConversationCallingEndedConversationCallback() {
         int count = conversationalStatelessClientStatefulService.runConversationCallingEndedConversationCallback();
         Assert.assertEquals(0, count);
+    }   
+    
+    @Test
+    public void testStatelessStatefulConversationCallingEndedConversationCheckConversationId() {
+        String id = conversationalStatelessClientStatefulService.runConversationCallingEndedConversationCheckConversationId();
+        Assert.assertEquals(null, id);
     }     
+    
+    //@Test
+    public void testStatelessStatefulConversationCallingEndedConversationCallbackCheckConversationId() {
+        String id = conversationalStatelessClientStatefulService.runConversationCallingEndedConversationCallbackCheckConversationId();
+        Assert.assertEquals(null, id);
+    }    
 
     // stateless client stateless service tests
     // ========================================
@@ -223,6 +235,18 @@ public class ConversationalTestCase {
         int count = conversationalStatelessClientStatelessService.runConversationCallingEndedConversationCallback();
         Assert.assertEquals(0, count);
     } 
+    
+    @Test
+    public void testStatelessStatelessConversationCallingEndedConversationCheckConversationId() {
+        String id = conversationalStatelessClientStatelessService.runConversationCallingEndedConversationCheckConversationId();
+        Assert.assertEquals(null, id);
+    }     
+    
+    //@Test
+    public void testStatelessStatelessConversationCallingEndedConversationCallbackCheckConversationId() {
+        String id = conversationalStatelessClientStatelessService.runConversationCallingEndedConversationCallbackCheckConversationId();
+        Assert.assertEquals(null, id);
+    }     
 
     // stateful client stateful service tests  
     // ======================================
@@ -283,12 +307,24 @@ public class ConversationalTestCase {
         int count = conversationalStatefulClientStatefulService.runConversationCallingEndedConversation();
         Assert.assertEquals(0, count);
     }     
-    
+
     @Test
     public void testStatefulStatefulConversationCallingEndedConversationCallback() {
         int count = conversationalStatefulClientStatefulService.runConversationCallingEndedConversationCallback();
         Assert.assertEquals(0, count);
+    }    
+    
+    @Test
+    public void testStatefulStatefulConversationCallingEndedConversationCheckConversationId() {
+        String id = conversationalStatefulClientStatefulService.runConversationCallingEndedConversationCheckConversationId();
+        Assert.assertEquals(null, id);
     }     
+ 
+    @Test
+    public void testStatefulStatefulConversationCallingEndedConversationCallbackCheckConversationId() {
+        String id = conversationalStatefulClientStatefulService.runConversationCallingEndedConversationCallbackCheckConversationId();
+        Assert.assertEquals(null, id);
+    }    
    
     // stateful client stateless service tests  
     // =======================================
@@ -354,7 +390,19 @@ public class ConversationalTestCase {
     public void testStatefulStatelessConversationCallingEndedConversationCallback() {
         int count = conversationalStatefulClientStatelessService.runConversationCallingEndedConversationCallback();
         Assert.assertEquals(0, count);
+    }  
+    
+    @Test
+    public void testStatefulStatelessConversationCallingEndedConversationCheckConversationId() {
+        String id = conversationalStatefulClientStatelessService.runConversationCallingEndedConversationCheckConversationId();
+        Assert.assertEquals(null, id);
     }     
+    
+    @Test
+    public void testStatefulStatelessConversationCallingEndedConversationCallbackCheckConversationId() {
+        String id = conversationalStatefulClientStatelessService.runConversationCallingEndedConversationCallbackCheckConversationId();
+        Assert.assertEquals(null, id);
+    }      
     
     // stateless client request scope service tests
     // ============================================
@@ -436,6 +484,18 @@ public class ConversationalTestCase {
         Assert.assertEquals(0, count);
     }  
     
+    @Test
+    public void testStatelessRequestConversationCallingEndedConversationCheckConversationId() {
+        String id = conversationalStatelessClientRequestService.runConversationCallingEndedConversationCheckConversationId();
+        Assert.assertEquals(null, id);
+    }     
+    
+    //@Test
+    public void testStatelessRequestConversationCallingEndedConversationCallbackCheckConversationId() {
+        String id = conversationalStatelessClientRequestService.runConversationCallingEndedConversationCallbackCheckConversationId();
+        Assert.assertEquals(null, id);
+    }    
+    
     // stateful client non conversational callback stateful service tests  
     // ==================================================================
    
@@ -503,6 +563,18 @@ public class ConversationalTestCase {
     public void testStatefulNonConversationalCallbackStatefulConversationCallingEndedConversationCallback() {
         int count = conversationalStatefulClientNonConversationalCallbackStatelessService.runConversationCallingEndedConversationCallback();
         Assert.assertEquals(0, count);
-    }         
+    }    
+    
+    @Test
+    public void testStatefulNonConversationalCallbackStatefulConversationCallingEndedConversationCheckConversationId() {
+        String id = conversationalStatefulClientNonConversationalCallbackStatelessService.runConversationCallingEndedConversationCheckConversationId();
+        Assert.assertEquals(null, id);
+    }     
+    
+    @Test
+    public void testStatefulNonConversationalCallbackStatefulConversationCallingEndedConversationCallbackCheckConversationId() {
+        String id = conversationalStatefulClientNonConversationalCallbackStatelessService.runConversationCallingEndedConversationCallbackCheckConversationId();
+        Assert.assertEquals("MyConversation3", id);
+    }    
         
 }
