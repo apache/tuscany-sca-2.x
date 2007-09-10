@@ -75,7 +75,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         // Turn the java interface contract into a wsdl interface contract
         InterfaceContract contract = reference.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
-            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
+            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, null);
         }
         
         // Set to use the Axiom data binding

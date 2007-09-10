@@ -47,7 +47,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         if (contract == null) {
             contract = reference.getInterfaceContract().makeUnidirectional(false);
             if ((contract instanceof JavaInterfaceContract)) {
-                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
+                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, wsBinding);
             }
             wsBinding.setBindingInterfaceContract(contract);
         }
