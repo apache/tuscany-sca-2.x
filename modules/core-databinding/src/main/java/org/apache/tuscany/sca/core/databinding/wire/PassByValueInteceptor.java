@@ -17,9 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.java.invocation;
+package org.apache.tuscany.sca.core.databinding.wire;
 
-import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -27,46 +26,34 @@ import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-/**
- * An interceptor to enforce pass-by-value semantics for remotable interfaces
- * 
- * @version $Rev$ $Date$
- */
-public class PassByValueInvoker extends JavaImplementationInvoker {
+public class PassByValueInteceptor implements Interceptor {
+
     private DataBindingExtensionPoint dataBindings;
     private Operation operation;
 
-    /**
-     * @param dataBindings
-     * @param operation
-     * @param method
-     * @param component
-     */
-    public PassByValueInvoker(DataBindingExtensionPoint dataBindings,
-                              Operation operation,
-                              Method method,
-                              RuntimeComponent component) {
-        super(method, component);
+    private Invoker nextInvoker;
+
+    public PassByValueInteceptor(DataBindingExtensionPoint dataBindings, Operation operation) {
         this.dataBindings = dataBindings;
         this.operation = operation;
     }
 
-    @Override
     public Message invoke(Message msg) {
         Object obj = msg.getBody();
         msg.setBody(copy((Object[])obj));
 
-        Message result = super.invoke(msg);
+        Message resultMsg = nextInvoker.invoke(msg);
 
-        if (!result.isFault() && operation.getOutputType() != null) {
+        if (!msg.isFault() && operation.getOutputType() != null) {
             String dataBindingId = operation.getOutputType().getDataBinding();
             DataBinding dataBinding = dataBindings.getDataBinding(dataBindingId);
-            result.setBody(copy(result.getBody(), dataBinding));
+            resultMsg.setBody(copy(resultMsg.getBody(), dataBinding));
         }
-        return result;
+        return resultMsg;
     }
 
     public Object[] copy(Object[] args) {
@@ -113,6 +100,14 @@ public class PassByValueInvoker extends JavaImplementationInvoker {
             // FIXME: What to do if it's not recognized?
         }
         return copiedArg;
+    }
+
+    public Invoker getNext() {
+        return nextInvoker;
+    }
+
+    public void setNext(Invoker next) {
+        this.nextInvoker = next;
     }
 
 }

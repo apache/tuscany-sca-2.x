@@ -52,10 +52,12 @@ public class DataTransformationInteceptor implements Interceptor {
 
     public DataTransformationInteceptor(RuntimeWire wire,
                                  Operation sourceOperation,
-                                 Operation targetOperation) {
+                                 Operation targetOperation,
+                                 Mediator mediator) {
         super();
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
+        this.mediator = mediator;
     }
 
     public Invoker getNext() {
@@ -212,13 +214,6 @@ public class DataTransformationInteceptor implements Interceptor {
 
     public void setNext(Invoker next) {
         this.next = next;
-    }
-
-    /**
-     * @param mediator the mediator to set
-     */
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
     }
 
 }

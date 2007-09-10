@@ -257,17 +257,10 @@ public class JavaComponentContextProvider {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         try {
-            Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-            boolean passByValue =
-                operation.getInterface().isRemotable() && (!instanceFactoryProvider.getImplementation()
-                    .isAllowsPassByReference(method));
 
-            Invoker invoker = new JavaImplementationInvoker(method, component);
-            if (passByValue) {
-                return new PassByValueInvoker(dataBindingRegistry, operation, method, component);
-            } else {
-                return invoker;
-            }
+            Method method = JavaInterfaceUtil.findMethod(implClass, operation);
+            return new JavaImplementationInvoker(method, component);
+
         } catch (NoSuchMethodException e) {
             throw new TargetMethodNotFoundException("No matching method is found for operation " + operation.getName()
                 + " in the implementation ("
