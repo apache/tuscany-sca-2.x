@@ -35,7 +35,9 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
+import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -47,6 +49,8 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.InvalidWSDLException;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.java2wsdl.Java2WSDLBuilder;
 import org.w3c.dom.Element;
@@ -60,9 +64,9 @@ public class Java2WSDLHelper {
     /**
      * Create a WSDLInterfaceContract from a JavaInterfaceContract
      */
-    public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract) {
+    public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract, WebServiceBinding wsBinding) {
         JavaInterface iface = (JavaInterface)contract.getInterface();
-        Definition def = Java2WSDLHelper.createDefinition(iface.getJavaClass());
+        Definition def = Java2WSDLHelper.createDefinition(iface.getJavaClass(), wsBinding);
 
         DefaultWSDLFactory wsdlFactory = new DefaultWSDLFactory();
 
@@ -140,7 +144,7 @@ public class Java2WSDLHelper {
     /**
      * Create a WSDL4J Definition object from a Java interface
      */
-    protected static Definition createDefinition(Class<?> javaInterface) {
+    protected static Definition createDefinition(Class<?> javaInterface, WebServiceBinding wsBinding) {
 
         String className = javaInterface.getName();
         ClassLoader cl = javaInterface.getClassLoader();
@@ -162,22 +166,47 @@ public class Java2WSDLHelper {
             WSDLLocatorImpl locator = new WSDLLocatorImpl(new ByteArrayInputStream(os.toByteArray()));
             Definition definition = reader.readWSDL(locator);
             
-            // remove the soap 1.2 port as we don't use that (yet) 
-            Service service = (Service)definition.getServices().values().iterator().next();
-            Map<?,?> ports = service.getPorts();
-            for (Object o : ports.keySet()) {
-                if (((String)o).endsWith("SOAP12port")) {
-                    Port p = (Port) ports.remove(o);
-                    definition.removeBinding(p.getBinding().getQName());
-                    break;
-                }
-            }
+            processSOAPVersion(definition, wsBinding);
 
             return definition;
 
         } catch (WSDLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void processSOAPVersion(Definition definition, WebServiceBinding wsBinding) {
+        if (requiresSOAP12(wsBinding)) {
+            removePort(definition, "SOAP11port");
+         } else {
+             removePort(definition, "SOAP12port");
+         }
+    }
+
+    private static void removePort(Definition definition, String portNameSuffix) {
+        Service service = (Service)definition.getServices().values().iterator().next();
+        Map<?,?> ports = service.getPorts();
+        for (Object o : ports.keySet()) {
+            if (((String)o).endsWith(portNameSuffix)) {
+                Port p = (Port) ports.remove(o);
+                definition.removeBinding(p.getBinding().getQName());
+                break;
+            }
+        }
+    }
+
+    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
+    
+    private static boolean requiresSOAP12(WebServiceBinding wsBinding) {
+        if (wsBinding instanceof IntentAttachPoint) {
+            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
+            for (Intent intent : intents) {
+                if (SOAP12_INTENT.equals(intent.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 

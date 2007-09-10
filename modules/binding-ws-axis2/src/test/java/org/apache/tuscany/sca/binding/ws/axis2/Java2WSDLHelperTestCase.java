@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 public class Java2WSDLHelperTestCase extends TestCase {
 
     public void testCreateDefinition() {
-        Definition definition = Java2WSDLHelper.createDefinition(HelloWorld.class);
+        Definition definition = Java2WSDLHelper.createDefinition(HelloWorld.class, null);
         assertNotNull(definition);
 
         Map portTypes = definition.getPortTypes();
@@ -59,7 +59,7 @@ public class Java2WSDLHelperTestCase extends TestCase {
         DefaultJavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
         JavaInterfaceContract javaIC = factory.createJavaInterfaceContract();
         javaIC.setInterface(factory.createJavaInterface(HelloWorld.class));
-        WSDLInterfaceContract wsdlIC = Java2WSDLHelper.createWSDLInterfaceContract(javaIC);
+        WSDLInterfaceContract wsdlIC = Java2WSDLHelper.createWSDLInterfaceContract(javaIC, null);
         assertNotNull(wsdlIC);
         WSDLInterface wsdlInterface = (WSDLInterface)wsdlIC.getInterface();
         assertNotNull(wsdlInterface);

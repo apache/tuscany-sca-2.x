@@ -47,7 +47,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider2 {
         if (contract == null) {
             contract = service.getInterfaceContract().makeUnidirectional(false);
             if ((contract instanceof JavaInterfaceContract)) {
-                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
+                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, wsBinding);
             }
             wsBinding.setBindingInterfaceContract(contract);
         }

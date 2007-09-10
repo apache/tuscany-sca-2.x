@@ -73,7 +73,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
         // Turn the java interface contract into a wsdl interface contract
         InterfaceContract contract = service.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
-            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
+            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, null);
         }
         
         // Set to use the Axiom data binding
