@@ -19,7 +19,9 @@
 package org.apache.tuscany.sca.itest.callableref;
 
 import org.osoa.sca.CallableReference;
+import org.osoa.sca.annotations.Remotable;
 
+@Remotable
 public interface BComponent {
 
     String foo();
