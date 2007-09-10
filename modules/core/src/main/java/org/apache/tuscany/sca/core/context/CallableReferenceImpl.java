@@ -221,13 +221,16 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         conversation.setConversationID(parameters.getConversationID());
                     }
                 }
-                URI uri = URI.create(componentURI + "/");
+
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof WireableBinding) {
-                        String targetURI = uri.resolve(binding.getURI()).toString();
+                        String targetURI = binding.getURI();
                         int index = targetURI.lastIndexOf('/');
-                        String serviceName = targetURI.substring(index + 1);
-                        targetURI = targetURI.substring(0, index);
+                        String serviceName = "";
+                        if (index > -1){
+                            serviceName = targetURI.substring(index + 1);
+                            targetURI = targetURI.substring(0, index);
+                        }
                         Component targetComponet = compositeActivator.resolve(targetURI);
                         ComponentService targetService = null;
                         if (targetComponet != null) {

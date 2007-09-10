@@ -65,7 +65,7 @@ public class CallableReferenceTestCase {
     public void testDReference() {
         assertEquals("DAComponent", acomponent.fooD());
     }
-    
+
     @Test
     public void testBCReference() {
         assertEquals("BCComponent", acomponent.fooBC());
