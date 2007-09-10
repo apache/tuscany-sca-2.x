@@ -84,28 +84,6 @@ public class WarContextListener implements ServletContextListener {
         }
     }
 
-    protected void initNode() throws ContributionException, ActivationException, IOException, CompositeBuilderException, URISyntaxException {        logger.log(Level.INFO, "SCA node starting");
-
-        classLoader = new AddableURLClassLoader(new URL[]{}, Thread.currentThread().getContextClassLoader());
-        Thread.currentThread().setContextClassLoader(classLoader);
-        node = new NodeImpl(domainName, nodeName, classLoader);
-        node.start();
-        
-        existingContributions = new HashMap<URL, Long>();
-        URL[] contributions = getContributionJarURLs(repository);
-        for (URL contribution : contributions) {
-            try {
-                addContribution(contribution);
-            } catch (Throwable e) {
-                e.printStackTrace();
-                logger.log(Level.WARNING, "Exception adding contribution: " + e);
-            }
-        }
-
-        initHotDeploy(repository);
-        
-    }
-    
     public void contextDestroyed(ServletContextEvent event) {
         if (node != null) {
             stopNode();
@@ -124,6 +102,30 @@ public class WarContextListener implements ServletContextListener {
         }
     }
 
+    protected void initNode() throws ContributionException, ActivationException, IOException,
+        CompositeBuilderException, URISyntaxException {
+        logger.log(Level.INFO, "SCA node starting");
+
+        classLoader = new AddableURLClassLoader(new URL[] {}, Thread.currentThread().getContextClassLoader());
+        Thread.currentThread().setContextClassLoader(classLoader);
+        node = new NodeImpl(domainName, nodeName, classLoader);
+        node.start();
+
+        existingContributions = new HashMap<URL, Long>();
+        URL[] contributions = getContributionJarURLs(repository);
+        for (URL contribution : contributions) {
+            try {
+                addContribution(contribution);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                logger.log(Level.WARNING, "Exception adding contribution: " + e);
+            }
+        }
+
+        initHotDeploy(repository);
+
+    }
+
     protected void addContribution(URL contribution) throws CompositeBuilderException, ActivationException, URISyntaxException {
         classLoader.addURL(contribution);
         ((ContributionManagerImpl)node.getContributionManager()).addContributionJAR(contribution);
@@ -133,14 +135,14 @@ public class WarContextListener implements ServletContextListener {
 
     protected URL[] getContributionJarURLs(File repositoryDir) {
 
-        String[] jars = repositoryDir.list(new FilenameFilter() {
+        String[] jarNames = repositoryDir.list(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(".jar");
             }});
 
         List<URL> contributionJars = new ArrayList<URL>();
-        if (jars != null) {
-            for (String jar : jars) {
+        if (jarNames != null) {
+            for (String jar : jarNames) {
                 try {
                     contributionJars.add(new File(repositoryDir, jar).toURL());
                 } catch (MalformedURLException e) {

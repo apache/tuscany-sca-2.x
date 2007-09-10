@@ -66,7 +66,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
         RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
-            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator));
+            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator, dataBindings));
         }
 
     }

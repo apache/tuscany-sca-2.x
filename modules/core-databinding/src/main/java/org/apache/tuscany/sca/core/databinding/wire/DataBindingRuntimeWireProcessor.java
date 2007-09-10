@@ -19,13 +19,18 @@
 
 package org.apache.tuscany.sca.core.databinding.wire;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 
@@ -37,10 +42,12 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
  */
 public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     private Mediator mediator;
+    private DataBindingExtensionPoint dataBindings;
 
-    public DataBindingRuntimeWireProcessor(Mediator mediator) {
+    public DataBindingRuntimeWireProcessor(Mediator mediator, DataBindingExtensionPoint dataBindings) {
         super();
         this.mediator = mediator;
+        this.dataBindings = dataBindings;
     }
 
     public boolean isTransformationRequired(DataType source, DataType target) {
@@ -116,25 +123,87 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         if (targetContract == null) {
             targetContract = sourceContract;
         }
-        if (sourceContract == targetContract) {
-            return;
-        }
+
         List<InvocationChain> chains = wire.getInvocationChains();
         for (InvocationChain chain : chains) {
             Operation sourceOperation = chain.getSourceOperation();
             Operation targetOperation = chain.getTargetOperation();
 
+            Interceptor interceptor = null;
             if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
                 // Add the interceptor to the source side because multiple
-                // references can be wired
-                // to the same service
-                DataTransformationInteceptor interceptor = new DataTransformationInteceptor(wire, sourceOperation,
-                                                                              targetOperation);
-                interceptor.setMediator(mediator);
+                // references can be wired to the same service
+                interceptor = new DataTransformationInteceptor(wire, sourceOperation, targetOperation, mediator);
+            } else {
+                // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
+                // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
+                if (requiresCopy(wire, sourceOperation, targetOperation)) {
+                    interceptor = new PassByValueInteceptor(dataBindings, targetOperation);
+                }
+            }
+            if (interceptor != null) {
                 chain.addInterceptor(0, interceptor);
             }
         }
 
+    }
+
+    /**
+     * Pass-by-value copies are required if the interfaces are remotable unless the
+     * implementation uses the @AllowsPassByReference annotation.
+     */
+    protected boolean requiresCopy(RuntimeWire wire, Operation sourceOperation, Operation targetOperation) {
+        if (!sourceOperation.getInterface().isRemotable()) {
+            return false;
+        }
+        if (!targetOperation.getInterface().isRemotable()) {
+            return false;
+        }
+
+        if (allowsPassByReference(wire.getSource().getComponent(), sourceOperation)) {
+            return false;
+        }
+        
+        if (allowsPassByReference(wire.getTarget().getComponent(), sourceOperation)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Does the implementation use the @AllowsPassByReference annotation for the operation.
+     * Uses reflection to avoid a dependency on JavaImplementation because the isAllowsPassByReference
+     * and getAllowsPassByReference methods are not on the Implementation interface.
+     * TODO: move isAllowsPassByReference/getAllowsPassByReference to Implementation interface 
+     */
+    protected boolean allowsPassByReference(RuntimeComponent component, Operation operation) {
+        if (component == null || component.getImplementation() == null) {
+            return true; // err on the side of no copies
+        }
+        Implementation impl = component.getImplementation();
+        try {
+
+            Method m = impl.getClass().getMethod("isAllowsPassByReference", new Class[] {});
+            if ((Boolean)m.invoke(impl, new Object[]{})) {
+                return true;
+            }
+
+            m = impl.getClass().getMethod("getAllowsPassByReferenceMethods", new Class[] {});
+            List<Method> ms = (List<Method>)m.invoke(impl, new Object[]{});
+            if (ms != null) {
+                for (Method m2 : ms) {
+                    // simple name matching is ok as its a remote operation so no overloading 
+                    if (operation.getName().equals(m2.getName()))
+                        return true;
+                }
+            }
+            
+        } catch (Exception e) {
+            // ignore, assume the impl has no isAllowsPassByReference method
+        }
+
+        return false;
     }
 
 }
