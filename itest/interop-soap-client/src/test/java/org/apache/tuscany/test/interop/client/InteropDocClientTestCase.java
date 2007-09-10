@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.test.interop.client;
 
-import java.awt.CompositeContext;
 import java.rmi.RemoteException;
 
 import junit.framework.TestCase;
@@ -31,8 +30,6 @@ import org.soapinterop.DocTestPortType;
 import org.soapinterop.SimpleDocument;
 import org.soapinterop.SimpleDocument1;
 import org.soapinterop.SingleTag;
-
-import calculator.CalculatorService;
 
 import commonj.sdo.helper.DataFactory;
 
@@ -50,7 +47,7 @@ public class InteropDocClientTestCase extends TestCase {
     protected void setUp() throws Exception {
 
         scaDomain = SCADomain.newInstance("default.composite");
-        interopDoc = scaDomain.getService(LoopbackInteropDocServiceComponentImpl.class, "CalculatorServiceComponent");
+        interopDoc = locateInteropDocService();
 
         //Get the SDO DataFactory
         dataFactory = DataFactory.INSTANCE;
@@ -59,6 +56,8 @@ public class InteropDocClientTestCase extends TestCase {
     
     public void testSingleTag() throws RemoteException {
 
+        assertNotNull(interopDoc);
+        
         // Create the input
         SingleTag input = (SingleTag) dataFactory.create(SingleTag.class);
 
@@ -72,6 +71,8 @@ public class InteropDocClientTestCase extends TestCase {
 
     public void testSimpleDocument() throws RemoteException {
 
+        assertNotNull(interopDoc);
+        
         // Create the input
         SimpleDocument1 input = (SimpleDocument1) dataFactory.create(SimpleDocument1.class);
         input.setValue("123");
@@ -87,18 +88,20 @@ public class InteropDocClientTestCase extends TestCase {
 
     public void testComplexDocument() throws RemoteException {
 
+        assertNotNull(interopDoc);
+        
         // Create the input
         ComplexDocument input = (ComplexDocument) dataFactory.create(ComplexDocument.class);
         input.setAnAttribute("789");
         ChildDocument childDocument = (ChildDocument) dataFactory.create(ChildDocument.class);
         SimpleDocument simpleDocument = (SimpleDocument) dataFactory.create(SimpleDocument.class);
-        ;
+
         SimpleDocument1 simpleDocument1 = (SimpleDocument1) dataFactory.create(SimpleDocument1.class);
-        ;
+
         simpleDocument.setSimpleDocument(simpleDocument1);
         simpleDocument1.setValue("456");
         ArrayOfSimpleDocument arrayOfSimpleDocument = (ArrayOfSimpleDocument) dataFactory.create(ArrayOfSimpleDocument.class);
-        ;
+
         arrayOfSimpleDocument.getSimpleDocument().add(simpleDocument1);
         childDocument.setChildSimpleDoc(arrayOfSimpleDocument);
         input.setChild(childDocument);
@@ -135,9 +138,7 @@ public class InteropDocClientTestCase extends TestCase {
         if (interopLocation == null)
             interopLocation = "Remote";
 
-        CompositeContext compositeContext = CurrentCompositeContext.getContext();
-
-        return (DocTestPortType) compositeContext.locateService(DocTestPortType.class, interopLocation + "InteropDocService");
+        return scaDomain.getService(DocTestPortType.class, interopLocation + "InteropDocService");
     }
 
 }

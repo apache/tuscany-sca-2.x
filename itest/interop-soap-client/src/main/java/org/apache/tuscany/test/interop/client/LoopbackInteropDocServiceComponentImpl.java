@@ -32,15 +32,15 @@ import org.soapinterop.SingleTag;
 @Service(DocTestPortType.class)
 public class LoopbackInteropDocServiceComponentImpl implements DocTestPortType {
     
-    public ComplexDocument ComplexDocument(ComplexDocument param0) throws RemoteException {
+    public ComplexDocument ComplexDocument(ComplexDocument param0){
         return param0;
     }
     
-    public SimpleDocument1 SimpleDocument(SimpleDocument1 param4) throws RemoteException {
+    public SimpleDocument1 SimpleDocument(SimpleDocument1 param4) {
         return param4;
     }
     
-    public SingleTag SingleTag(SingleTag param2) throws RemoteException {
+    public SingleTag SingleTag(SingleTag param2) {
         return param2;
     }
 }
