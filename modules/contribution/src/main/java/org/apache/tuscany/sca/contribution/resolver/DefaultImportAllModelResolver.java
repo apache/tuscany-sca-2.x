@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
@@ -62,8 +63,8 @@ public class DefaultImportAllModelResolver implements ModelResolver {
                         Object resolved = export.getModelResolver().resolveModel(modelClass, unresolved);
                         
                         // Return the resolved model object
-                        if (resolved instanceof org.apache.tuscany.sca.interfacedef.Base) {
-                            if (!((org.apache.tuscany.sca.interfacedef.Base)resolved).isUnresolved()) {
+                        if (resolved instanceof Base) {
+                            if (!((Base)resolved).isUnresolved()) {
                                 return modelClass.cast(resolved);
                             }
                         }
