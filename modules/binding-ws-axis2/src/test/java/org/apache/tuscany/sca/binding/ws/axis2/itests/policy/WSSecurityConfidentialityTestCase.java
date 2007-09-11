@@ -19,6 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2.itests.policy;
 
-public class WSSecurityTestCase extends AbstractHelloWorldOMTestCase {
+public class WSSecurityConfidentialityTestCase extends AbstractHelloWorldOMTestCase {
     // super class does it all getting composite based on this class name
 }

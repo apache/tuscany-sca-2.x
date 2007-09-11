@@ -222,10 +222,12 @@ public class Axis2ServiceClient {
                 for ( Object policy : policySet.getPolicies() ) {
                     if ( policy instanceof Axis2ConfigParamPolicy ) {
                         axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
-                        configParam = new Parameter(axis2ConfigParamPolicy.getParamName(), 
-                                                    axis2ConfigParamPolicy.getParamElement().getFirstElement());
-                        configParam.setParameterElement(axis2ConfigParamPolicy.getParamElement());
-                        configContext.getAxisConfiguration().addParameter(configParam);
+                        for ( String paramName : axis2ConfigParamPolicy.getParamElements().keySet() ) {
+                            configParam = new Parameter(paramName, 
+                                                        axis2ConfigParamPolicy.getParamElements().get(paramName).getFirstElement());
+                            configParam.setParameterElement(axis2ConfigParamPolicy.getParamElements().get(paramName));
+                            configContext.getAxisConfiguration().addParameter(configParam);
+                        }
                     }
                 }
             }
