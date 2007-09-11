@@ -56,16 +56,17 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
         Axis2ConfigParamPolicy policy = new Axis2ConfigParamPolicy();
         int event = reader.getEventType();
         QName name = null;
-        
+        OMElement parameterElement = null;
+        String paramName = null;
         while (reader.hasNext()) {
             event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT : {
                     name = reader.getName();
                     if ( PARAMETER.equals(name.getLocalPart()) ) {
-                        policy.setParamName(reader.getAttributeValue(null, Constants.NAME));
-                        OMElement parameterElement = loadElement(reader);
-                        policy.setParamElement(parameterElement);
+                        paramName = reader.getAttributeValue(null, Constants.NAME);
+                        parameterElement = loadElement(reader);
+                        policy.getParamElements().put(paramName, parameterElement);
                     }
                     break;
                 }
@@ -82,7 +83,7 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
                 reader.next();
             }
         }
-        
+         
         return policy;
     }
 
