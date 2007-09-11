@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 
 import java.net.URI;
 
-import org.apache.tuscany.sca.interfacedef.Base;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.ws.commons.schema.XmlSchema;
 
 /**

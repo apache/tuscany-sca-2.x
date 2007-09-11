@@ -358,7 +358,6 @@ public class ContractCompatibilityTestCase extends TestCase {
 
         public MockContract(String interfaceClass) {
             Interface jInterface = new MockInterface();
-            jInterface.setUnresolved(true);
             setInterface(jInterface);
         }
     }

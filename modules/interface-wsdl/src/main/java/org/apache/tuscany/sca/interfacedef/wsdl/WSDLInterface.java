@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.interfacedef.Interface;
 
 
@@ -29,7 +30,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
  * 
  * @version $Rev$ $Date$
  */
-public interface WSDLInterface extends Interface {
+public interface WSDLInterface extends Interface, Base {
 
     /**
      * Returns the name of the WSDL interface.
