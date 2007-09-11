@@ -154,7 +154,7 @@ public class EmbeddedODEServer {
             _bpelServer.setDehydrationPolicy(dehy);
         }
 
-        store = new ProcessStoreImpl(null, "jpa", true);
+        store = new ProcessStoreImpl(_db.getDataSource(), "jpa", true);
         store.registerListener(new ProcessStoreListener() {
             public void onProcessStoreEvent(ProcessStoreEvent event) {
                 // bounce the process

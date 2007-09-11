@@ -69,51 +69,48 @@ public class EmbeddedODEServerTestCaseFIXME extends TestCase {
 
         URL deployURL = getClass().getClassLoader().getResource("deploy.xml");
         File deploymentDir = new File(deployURL.toURI().getPath()).getParentFile();
+        System.out.println("Deploying : " + deploymentDir.toString());
         System.out.println(deploymentDir);
         if (odeServer.isInitialized()) {
 
-            txMgr.begin(); 
+             
             try {
+                txMgr.begin();
                 odeServer.deploy(new ODEDeployment(deploymentDir));
+                txMgr.commit();
             } catch (Exception e) {
                 txMgr.rollback();
-            } finally {
-                txMgr.commit();
             }
             
-            odeServer.getScheduler().start();
-
             // transaction one
-            txMgr.begin();
             MyRoleMessageExchange mex = null;
             try {
                 // invoke the process
+                txMgr.begin();
                 mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
                         new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld", "HelloWorld"), "hello");
 
                 Message request = mex.createMessage(new QName("", ""));
                 request.setMessage(DOMUtils.stringToDOM("<message><TestPart>Hello</TestPart></message>"));
                 mex.invoke(request);
+                txMgr.commit();
             } catch (Exception e) {
                 txMgr.rollback();
-            } finally {
-                txMgr.commit();
-            }
+            } 
 
             // - end of transaction one
 
             // transaction two
-            txMgr.begin();
             try {
+                txMgr.begin();
                 Status status = mex.getStatus();
                 System.out.println("Status" + status.name());
                 CorrelationStatus cstatus = mex.getCorrelationStatus();
                 System.out.println("CorrelationStatus" + cstatus.name());
+                txMgr.commit();
                 // end of transaction two
             } catch (Exception e) {
                 txMgr.rollback();
-            } finally {
-                txMgr.commit();
             }
         }
     }
