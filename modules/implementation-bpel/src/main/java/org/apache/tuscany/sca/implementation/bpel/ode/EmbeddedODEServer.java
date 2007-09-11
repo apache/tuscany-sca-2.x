@@ -73,6 +73,11 @@ public class EmbeddedODEServer {
 
     private Scheduler _scheduler;
 
+    
+    public EmbeddedODEServer(TransactionManager txMgr) {
+        _txMgr = txMgr;
+    }
+    
     public void init() throws ODEInitializationException {
         _config = new OdeConfigProperties(new Properties(), "ode-sca");
 
@@ -99,12 +104,14 @@ public class EmbeddedODEServer {
     }
 
     private void initTxMgr() {
-        try {
-            GeronimoTxFactory txFactory = new GeronimoTxFactory();
-            _txMgr = txFactory.getTransactionManager();
-        } catch (Exception e) {
-            __log.fatal("Couldn't initialize a transaction manager using Geronimo's transaction factory.", e);
-            throw new ODEInitializationException("Couldn't initialize a transaction manager using " + "Geronimo's transaction factory.", e);
+        if(_txMgr == null) {
+            try {
+                GeronimoTxFactory txFactory = new GeronimoTxFactory();
+                _txMgr = txFactory.getTransactionManager();
+            } catch (Exception e) {
+                __log.fatal("Couldn't initialize a transaction manager using Geronimo's transaction factory.", e);
+                throw new ODEInitializationException("Couldn't initialize a transaction manager using " + "Geronimo's transaction factory.", e);
+            }            
         }
     }
 
@@ -190,6 +197,10 @@ public class EmbeddedODEServer {
     public BpelServerImpl getBpelServer() {
         return _bpelServer;
     }
+    
+    public Scheduler getScheduler() {
+        return _scheduler;
+    }
 
     public void deploy(ODEDeployment d) {
         Collection<QName> procs;
@@ -202,7 +213,7 @@ public class EmbeddedODEServer {
             System.out.println(d + "DEPLOY: Unexpected exception: " + ex.getMessage());
             return;
         }
-
+        
         try {
             for (QName procName : procs) {
                 ProcessConf conf = (ProcessConf) store.getProcessConfiguration(procName);

@@ -183,7 +183,17 @@
             <artifactId>ode-bpel-obj</artifactId>
             <version>1.0-incubating</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.ode</groupId>
+            <artifactId>ode-jacob</artifactId>
+            <version>1.0-incubating</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ode</groupId>
+            <artifactId>ode-jacob-ap</artifactId>
+            <version>1.0-incubating</version>
+        </dependency>
+                
         <!-- ODE Dependencies -->
         <dependency>
             <groupId>commons-logging</groupId>
