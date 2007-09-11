@@ -34,7 +34,7 @@ public abstract class AbstractHelloWorldOMTestCase extends TestCase {
     private SCADomain domain;
     private HelloWorldOM helloWorld;
 
-    public void testCalculator() throws Exception {
+    public void testHelloWorld() throws Exception {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement requestOM = fac.createOMElement("getGreetings", "http://helloworld-om", "helloworld");
         OMElement parmE = fac.createOMElement("name", "http://helloworld-om", "helloworld");

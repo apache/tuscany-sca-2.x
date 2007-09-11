@@ -227,6 +227,12 @@
         </dependency>
         
         <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk15</artifactId>
+            <version>136</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.apache.rampart</groupId>
             <artifactId>rampart-core</artifactId>
             <version>1.2</version>

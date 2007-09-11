@@ -35,8 +35,6 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
@@ -58,13 +56,11 @@ import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
-import org.apache.tuscany.sca.databinding.axiom.String2OMElement;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -444,17 +440,19 @@ public class Axis2ServiceProvider {
     
     private void configureSecurity() throws AxisFault {
         if ( wsBinding instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding; 
             Parameter configParam = null;
             Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
             for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
                 for ( Object policy : policySet.getPolicies() ) {
                     if ( policy instanceof Axis2ConfigParamPolicy ) {
                         axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
-                        configParam = new Parameter(axis2ConfigParamPolicy.getParamName(), 
-                                                    axis2ConfigParamPolicy.getParamElement().getFirstElement());
-                        configParam.setParameterElement(axis2ConfigParamPolicy.getParamElement());
-                        configContext.getAxisConfiguration().addParameter(configParam);
+                        for ( String paramName : axis2ConfigParamPolicy.getParamElements().keySet() ) {
+                            configParam = new Parameter(paramName, 
+                                                        axis2ConfigParamPolicy.getParamElements().get(paramName).getFirstElement());
+                            configParam.setParameterElement(axis2ConfigParamPolicy.getParamElements().get(paramName));
+                            configContext.getAxisConfiguration().addParameter(configParam);
+                        }
                     }
                 }
             }
