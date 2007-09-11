@@ -47,8 +47,6 @@ public interface EndpointReference extends Cloneable {
      */
     Binding getBinding();
 
-    //FIXME Why do we need this? isn't the interface contract already on the Contract?
-    
     /**
      * Get the interface contract for the endpoint
      * @return The interface contract
@@ -86,5 +84,8 @@ public interface EndpointReference extends Cloneable {
     void setCallbackEndpoint(EndpointReference callbackEndpoint);
 
     Object clone() throws CloneNotSupportedException;   
+    
+    void setReferenceParameters(ReferenceParameters parameters);
+    ReferenceParameters getReferenceParameters();
     
 }

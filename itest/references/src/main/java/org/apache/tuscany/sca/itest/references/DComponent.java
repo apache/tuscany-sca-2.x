@@ -21,4 +21,5 @@ package org.apache.tuscany.sca.itest.references;
 public interface DComponent {
 
     String dFoo();
+    String getComponentName();
 }

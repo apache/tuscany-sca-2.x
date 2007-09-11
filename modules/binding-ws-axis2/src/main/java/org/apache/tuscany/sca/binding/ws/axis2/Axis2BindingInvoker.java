@@ -30,15 +30,17 @@ import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.osoa.sca.Constants;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
  * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
@@ -50,8 +52,13 @@ public class Axis2BindingInvoker implements Invoker {
     private Options options;
     private SOAPFactory soapFactory;
 
-    public static final QName CALLBACK_ID_REFPARM_QN = new QName(Constants.SCA_NS, "CallbackID");
-    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA_NS, "ConversationID");
+    public static final QName QNAME_WSA_FROM =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
+    public static final QName QNAME_WSA_TO =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_TO);
+
+    public static final QName CALLBACK_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "CallbackID");
+    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "ConversationID");
 
     public Axis2BindingInvoker(ServiceClient serviceClient,
                                QName wsdlOperationName,
@@ -90,12 +97,12 @@ public class Axis2BindingInvoker implements Invoker {
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
 
             OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
-            
+
             // FIXME: [rfeng] We have to pay performance penality to build the complete OM as the operationClient.complete() will
             // release the underlying HTTP connection. 
             // Force the response to be populated, see https://issues.apache.org/jira/browse/TUSCANY-1541
             response.build();
-            
+
             operationClient.complete(requestMC);
 
             return response;
@@ -127,53 +134,63 @@ public class Axis2BindingInvoker implements Invoker {
         OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
+        ReferenceParameters parameters = msg.getTo().getReferenceParameters();
+
+        // if target endpoint was not specified when this invoker was created, 
+        // use dynamically specified target endpoint passed in on this call
+        EndpointReference toEPR = options.getTo();
+        if (toEPR == null) {
+            org.apache.tuscany.sca.runtime.EndpointReference ep = msg.getTo();
+            toEPR = new EndpointReference(ep.getURI());
+        }
+
         // set callback endpoint and callback ID for WS-Addressing header
-        EndpointReference fromEPR = null;
-        if (msg.getFrom() != null) {
-            fromEPR = new EndpointReference(msg.getFrom().getBinding().getURI());
+        if (parameters.getCallbackID() != null) {
             //FIXME: serialize callback ID to XML in case it is not a string
-            fromEPR.addReferenceParameter(CALLBACK_ID_REFPARM_QN,
-                                          (String)msg.getCallableReference().getCallbackID());
+            toEPR.addReferenceParameter(CALLBACK_ID_REFPARM_QN, parameters.getCallbackID().toString());
         }
 
         // set conversation ID for WS-Addressing header
         //FIXME: get conversation ID from the message's callable reference
-        Object conversationId = msg.getConversationID();
+        Object conversationId = parameters.getConversationID();
         if (conversationId != null) {
-            if (fromEPR == null) {
-                fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
-            }
             //FIXME: serialize conversation ID to XML in case it is not a string
-            fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
+            toEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
+        }
+
+        EndpointReference fromEPR = null;
+        if (msg.getFrom().getCallbackEndpoint() != null) {
+            fromEPR = new EndpointReference(msg.getFrom().getCallbackEndpoint().getBinding().getURI());
         }
 
         // add WS-Addressing header
         //FIXME: is there any way to use the Axis2 addressing support for this?
-        if (fromEPR != null) {
+        if (toEPR != null || fromEPR != null) {
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
-            OMElement el =
-                fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,
-                             AddressingConstants.WSA_FROM,
-                             AddressingConstants.WSA_DEFAULT_PREFIX);
-            sh.addChild(el);
-            requestMC.setFrom(fromEPR);
-        }
-
-        // if target endpoint was not specified when this invoker was created, 
-        // use dynamically specified target endpoint passed in on this call
-        if (options.getTo() == null) {
-            org.apache.tuscany.sca.runtime.EndpointReference ep = msg.getTo();
-            if (ep != null) {
-                requestMC.setTo(new EndpointReference(ep.getURI()));
-            } else {
-                throw new RuntimeException("Unable to determine destination endpoint");
+            if (toEPR != null) {
+                OMElement epr =
+                    EndpointReferenceHelper.toOM(sev.getOMFactory(),
+                                                 toEPR,
+                                                 QNAME_WSA_TO,
+                                                 AddressingConstants.Final.WSA_NAMESPACE);
+                sh.addChild(epr);
+                requestMC.setTo(toEPR);
             }
+            if (fromEPR != null) {
+                OMElement epr =
+                    EndpointReferenceHelper.toOM(sev.getOMFactory(),
+                                                 fromEPR,
+                                                 QNAME_WSA_FROM,
+                                                 AddressingConstants.Final.WSA_NAMESPACE);
+                sh.addChild(epr);
+                requestMC.setFrom(fromEPR);
+            }
+
         }
 
         operationClient.addMessageContext(requestMC);
 
         return operationClient;
     }
-
 }

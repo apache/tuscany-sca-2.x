@@ -18,12 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.notification;
 
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
 
 /**
  * @version $Rev$ $Date$
@@ -35,10 +33,6 @@ public class ImmutableMessage implements Message {
     }
 
     public Object getConversationID() {
-        return null;
-    }
-
-    public ConversationSequence getConversationSequence() {
         return null;
     }
 
@@ -74,10 +68,6 @@ public class ImmutableMessage implements Message {
         throw new UnsupportedOperationException();
     }
 
-    public void setConversationSequence(ConversationSequence arg0) {
-        throw new UnsupportedOperationException();
-    }
-
     public void setCorrelationID(Object arg0) {
         throw new UnsupportedOperationException();
     }
@@ -107,16 +97,16 @@ public class ImmutableMessage implements Message {
     }
 
     /**
-     * @see org.apache.tuscany.sca.invocation.Message#getCallableReference()
+     * @see org.apache.tuscany.sca.invocation.Message#getReplyTo()
      */
-    public <B> CallableReference<B> getCallableReference() {
+    public EndpointReference getReplyTo() {
         return null;
     }
 
     /**
-     * @see org.apache.tuscany.sca.invocation.Message#setCallableReference(org.osoa.sca.CallableReference)
+     * @see org.apache.tuscany.sca.invocation.Message#setReplyTo(org.apache.tuscany.sca.runtime.EndpointReference)
      */
-    public <B> void setCallableReference(CallableReference<B> callableReference) {
+    public void setReplyTo(EndpointReference replyTo) {
         throw new UnsupportedOperationException();
     }
 }

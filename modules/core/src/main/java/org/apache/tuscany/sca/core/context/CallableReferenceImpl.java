@@ -22,17 +22,18 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.net.URI;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.assembly.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -40,6 +41,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -181,10 +183,6 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         return callbackID;
     }
 
-    public EndpointReference getEndpointReference() {
-        return new EndpointReferenceImpl(component, reference, binding, reference.getInterfaceContract());
-    }
-
     /**
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
@@ -203,6 +201,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 this.compositeActivator = currentActivator;
                 Component c = componentContextHelper.fromXML(scdl);
                 this.component = (RuntimeComponent)c;
+                this.componentURI = c.getURI();
                 currentActivator.configureComponentContext(this.component);
                 this.reference = (RuntimeComponentReference)c.getReferences().get(0);
                 this.reference.setComponent(this.component);
@@ -215,9 +214,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 }
                 if (parameters != null) {
                     this.callbackID = parameters.getCallbackID();
-                    this.componentURI = parameters.getComponentURI();
-                    
-                    if (conversation != null){
+
+                    if (conversation != null) {
                         conversation.setConversationID(parameters.getConversationID());
                     }
                 }
@@ -227,7 +225,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         String targetURI = binding.getURI();
                         int index = targetURI.lastIndexOf('/');
                         String serviceName = "";
-                        if (index > -1){
+                        if (index > -1) {
                             serviceName = targetURI.substring(index + 1);
                             targetURI = targetURI.substring(0, index);
                         }
@@ -286,18 +284,20 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
-            ReferenceParameters parameters = new ReferenceParameters();
-            parameters.setCallbackID(callbackID);
-            parameters.setComponentURI(componentURI);
-            if (conversation != null){
-                parameters.setConversationID(conversation.getConversationID());
-            } else {
-                parameters.setConversationID(null);
+            if (reference != null) {
+                ReferenceParameters parameters = new ReferenceParametersImpl();
+                parameters.setCallbackID(callbackID);
+                if (conversation != null) {
+                    parameters.setConversationID(conversation.getConversationID());
+                } else {
+                    parameters.setConversationID(null);
+                }
+                reference.getExtensions().add(parameters);
+                scdl =
+                    ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper()
+                        .toXML(component, reference);
+                reference.getExtensions().remove(parameters);
             }
-            reference.getExtensions().add(parameters);
-            String scdl =
-                ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper().toXML(component, reference);
-            reference.getExtensions().remove(parameters);
             out.writeUTF(scdl);
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,6 +320,27 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
     public void attachConversationID(Object conversationID) {
         conversation.setConversationID(conversationID);
+    }
+
+    protected ReferenceParameters getReferenceParameters() {
+        ReferenceParameters parameters = new ReferenceParametersImpl();
+        parameters.setCallbackID(callbackID);
+        if (conversation != null) {
+            parameters.setConversationID(conversation.getConversationID());
+        }
+        return parameters;
+    }
+
+    public EndpointReference getEndpointReference() {
+        // Use the interface contract of the reference on the component type
+        Reference componentTypeRef = reference.getReference();
+        InterfaceContract sourceContract =
+            componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
+        sourceContract = sourceContract.makeUnidirectional(false);
+        EndpointReference epr = new EndpointReferenceImpl(component, reference, binding, sourceContract);
+        ReferenceParameters parameters = getReferenceParameters();
+        epr.setReferenceParameters(parameters);
+        return epr;
     }
 
 }

@@ -77,6 +77,8 @@ public interface RuntimeComponentReference extends ComponentReference {
      */
     Invoker getInvoker(Binding binding, Operation operation); 
     
+    /**Set the owning component
+     * @param component
+     */
     void setComponent(RuntimeComponent component);
-    
 }

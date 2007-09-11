@@ -20,15 +20,26 @@ package org.apache.tuscany.sca.core.context;
 
 import org.osoa.sca.Conversation;
 
-
 /**
  * Default implementation of a Conversation.
  *
  * @version $Rev: 557524 $ $Date: 2007-07-19 09:46:56 +0100 (Thu, 19 Jul 2007) $
  */
 public class ConversationImpl implements Conversation {
-    
+
     private Object conversationId;
+
+    /**
+     * @param conversationId
+     */
+    public ConversationImpl(Object conversationId) {
+        super();
+        this.conversationId = conversationId;
+    }
+
+    public ConversationImpl() {
+        super();
+    }
 
     public Object getConversationID() {
         return conversationId;
@@ -37,8 +48,49 @@ public class ConversationImpl implements Conversation {
     public void setConversationID(Object conversationId) {
         this.conversationId = conversationId;
     }
-    
+
     public void end() {
         conversationId = null;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((conversationId == null) ? 0 : conversationId.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof ConversationImpl)) {
+            return false;
+        }
+        final ConversationImpl other = (ConversationImpl)obj;
+        if (conversationId == null) {
+            if (other.conversationId != null) {
+                return false;
+            }
+        } else if (!conversationId.equals(other.conversationId)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Conversation (id=" + conversationId + ")";
     }
 }

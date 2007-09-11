@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -44,10 +45,12 @@ public class CallableReferenceObjectFactory implements ObjectFactory<CallableRef
      */
     public CallableReferenceObjectFactory(Class<?> businessInterface,
                                           RuntimeComponent component,
-                                          RuntimeComponentReference reference) {
-        this.callableReference = component.getComponentContext().getServiceReference(businessInterface, reference);
+                                          RuntimeComponentReference reference,
+                                          Binding binding) {
+        this.callableReference =
+            component.getComponentContext().getServiceReference(businessInterface, reference, binding);
     }
-    
+
     public CallableReferenceObjectFactory(CallableReference<?> callableReference) {
         this.callableReference = callableReference;
     }

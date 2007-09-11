@@ -39,7 +39,6 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
     private Map<Binding, ReferenceBindingProvider> bindingProviders = new HashMap<Binding, ReferenceBindingProvider>();
 
     private RuntimeComponent component;
-
     public RuntimeComponentReferenceImpl() {
         super();
     }
@@ -47,7 +46,7 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
     public synchronized List<RuntimeWire> getRuntimeWires() {
         if (wires == null) {
             wires = new ArrayList<RuntimeWire>();
-            component.getComponentContext().activate(this);
+            component.getComponentContext().start(this);
         }
         return wires;
     }

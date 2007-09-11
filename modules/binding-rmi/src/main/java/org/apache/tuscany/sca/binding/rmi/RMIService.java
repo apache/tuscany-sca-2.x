@@ -31,8 +31,6 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.sca.core.invocation.MessageImpl;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHostException;
@@ -40,17 +38,18 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class RMIService implements ComponentLifecycle {
 
-    RuntimeComponent component;
-    RuntimeComponentService service;
+    private RuntimeComponent component;
+    private RuntimeComponentService service;
     private RMIBinding binding;
-    RMIHost rmiHost;
+    private RMIHost rmiHost;
+    private RuntimeWire wire;
 
     public RMIService(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
         this.component = rc;
@@ -63,6 +62,7 @@ public class RMIService implements ComponentLifecycle {
         // URI uri = URI.create(component.getURI() + "/" + binding.getName());
         // binding.setURI(uri.toString());
 
+        wire = service.getRuntimeWire(binding);
         Interface serviceInterface = service.getInterfaceContract().getInterface();
 
         Remote rmiProxy = createRmiService(serviceInterface);
@@ -107,19 +107,8 @@ public class RMIService implements ComponentLifecycle {
     }
 
     protected Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
-
-        Message requestMsg = new MessageImpl();
-        ThreadMessageContext.setMessageContext(requestMsg);
-        requestMsg.setBody(args);
-
-        Message responseMsg = service.getInvoker(binding, op).invoke(requestMsg);
-
-        if (responseMsg.isFault()) {
-            throw new InvocationTargetException((Throwable)responseMsg.getBody());
-        }
-        return responseMsg.getBody();
+        return wire.invoke(op, args);
     }
-
 
     /**
      * if the interface of the component whose serviceBindings must be exposed as RMI Service, does not

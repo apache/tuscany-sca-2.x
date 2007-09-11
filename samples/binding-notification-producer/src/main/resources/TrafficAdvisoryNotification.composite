@@ -38,7 +38,7 @@
         <interface.wsdl interface="http://example.com/TrafficAdvisory.wsdl#wsdl.interface(TrafficAdvisoryPortType)"
             wsdli:wsdlLocation="http://example.com/TrafficAdvisory.wsdl wsdl/TrafficAdvisory.wsdl">
         </interface.wsdl>
-        <tuscany:binding.notification ntm="http://localhost:8083/ntm" notificationType="trafficAdvisory"/>
+        <tuscany:binding.notification ntm="http://localhost:8086/ntm" notificationType="trafficAdvisory"/>
     </reference>
 
 </composite>

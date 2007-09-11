@@ -66,6 +66,19 @@ public class AutoWiredReferenceTestCase {
     public void testD2Reference() {
         assertEquals("DComponent", acomponent.fooD2());
     }
+    
+    @Test
+    public void testMultiDReferenceArray() {
+        String components = acomponent.fooMultipleDArray();
+        Assert.assertTrue(components.contains("DComponent1"));
+    }    
+    
+    @Test
+    public void testMultiDServiceReference() {
+        String components = acomponent.fooMultipleDServiceRef();
+        Assert.assertTrue(components.contains("DComponent"));
+        Assert.assertTrue(components.contains("DComponent1"));
+    }        
 
     @Test
     public void testRequiredFalseReference() {

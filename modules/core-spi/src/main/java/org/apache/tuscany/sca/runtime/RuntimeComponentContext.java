@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
@@ -36,8 +37,8 @@ public interface RuntimeComponentContext extends ComponentContext {
      * Activate the reference (creating runtime wires)
      * @param reference
      */
-    void activate(RuntimeComponentReference reference);
-    
+    void start(RuntimeComponentReference reference);
+
     /**
      * Deserialize the component reference
      * @param reader
@@ -45,6 +46,7 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @throws IOException
      */
     RuntimeComponent read(Reader reader) throws IOException;
+
     /**
      * Serialize the component reference
      * @param reference
@@ -58,10 +60,14 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @param <B>
      * @param businessInterface The business interface
      * @param reference The reference to be wired
+     * @param binding The binding to be used, if it's null, either binding.sca or the 1st binding
+     * will be selected
      * @return A service reference representing the wire
      */
     <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
-                                                RuntimeComponentReference reference);    
+                                                RuntimeComponentReference reference,
+                                                Binding binding);
+
     /**
      * Bind the reference to a target component/componentService
      * @param <B>
@@ -75,7 +81,7 @@ public interface RuntimeComponentContext extends ComponentContext {
                                                 RuntimeComponentReference reference,
                                                 RuntimeComponent component,
                                                 RuntimeComponentService service);
-    
+
     /**
      * Create a callable reference for the given component service
      * @param <B>
@@ -85,9 +91,9 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @return
      */
     <B> CallableReference<B> getCallableReference(Class<B> businessInterface,
-                                                         RuntimeComponent component,
-                                                         RuntimeComponentService service);
-    
+                                                  RuntimeComponent component,
+                                                  RuntimeComponentService service);
+
     /**
      * @param <B>
      * @param businessInterface

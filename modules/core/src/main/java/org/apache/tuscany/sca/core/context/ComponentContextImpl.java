@@ -97,7 +97,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         try {
             for (ComponentReference ref : component.getReferences()) {
                 if (referenceName.equals(ref.getName())) {
-                    return getServiceReference(businessInterface, (RuntimeComponentReference)ref);
+                    return getServiceReference(businessInterface, (RuntimeComponentReference)ref, null);
                 }
             }
             throw new ServiceRuntimeException("Reference not found: " + referenceName);
@@ -152,7 +152,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             RuntimeComponentReference ref =
                 (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
             ref.setComponent(component);
-            return getServiceReference(businessInterface, ref);
+            return getServiceReference(businessInterface, ref, null);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -173,7 +173,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * @throws CloneNotSupportedException
      * @throws InvalidInterfaceException
      */
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, RuntimeComponentReference reference) {
+    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, RuntimeComponentReference reference, Binding binding) {
         try {
             RuntimeComponentReference ref = (RuntimeComponentReference)reference;
             InterfaceContract interfaceContract = reference.getInterfaceContract();
@@ -187,11 +187,11 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 ref.setInterfaceContract(interfaceContract);
             }
             ref.setComponent(component);
-            return new ServiceReferenceImpl<B>(businessInterface, component, ref, proxyFactory, compositeActivator);
+            return new ServiceReferenceImpl<B>(businessInterface, component, ref, binding, proxyFactory, compositeActivator);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
-    }
+    }    
 
     /**
      * Bind a component reference to a component service
@@ -327,10 +327,10 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     }
 
     /**
-     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#activate(org.apache.tuscany.sca.runtime.RuntimeComponentReference)
+     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#start(org.apache.tuscany.sca.runtime.RuntimeComponentReference)
      */
-    public void activate(RuntimeComponentReference reference) {
-        compositeActivator.activate(component, reference);
+    public void start(RuntimeComponentReference reference) {
+        compositeActivator.start(component, reference);
     }
 
     /**

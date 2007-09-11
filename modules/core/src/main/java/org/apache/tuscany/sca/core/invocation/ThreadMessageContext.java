@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
+import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**
@@ -30,7 +31,9 @@ public final class ThreadMessageContext {
     private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>() {
         @Override
         protected synchronized Message initialValue() {
-            return new MessageImpl();
+            Message msg =  new MessageImpl();
+            msg.setFrom(new EndpointReferenceImpl("/"));
+            return msg;
         }
     };
 

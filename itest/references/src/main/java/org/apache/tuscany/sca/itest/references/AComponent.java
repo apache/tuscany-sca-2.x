@@ -30,5 +30,11 @@ public interface AComponent {
 
     String fooD2();
 
+    String fooMultipleD();
+
+    String fooMultipleDArray();
+
+    String fooMultipleDServiceRef();
+
     DComponent getDReference();
 }

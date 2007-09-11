@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.core.assembly;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -41,6 +44,7 @@ import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -60,10 +64,11 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 public class CompositeActivatorImpl implements CompositeActivator {
-
+    private final static Logger logger = Logger.getLogger(CompositeActivatorImpl.class.getName());
     private final static String CALLBACK_PREFIX = "$callback$.";
 
     private final AssemblyFactory assemblyFactory;
+    private final MessageFactory messageFactory;
     private final InterfaceContractMapper interfaceContractMapper;
     private final ScopeRegistry scopeRegistry;
     private final WorkScheduler workScheduler;
@@ -86,6 +91,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param wirePostProcessorRegistry
      */
     public CompositeActivatorImpl(AssemblyFactory assemblyFactory,
+                                  MessageFactory messageFactory,
                                   JavaInterfaceFactory javaInterfaceFactory,
                                   SCABindingFactory scaBindingFactory,
                                   InterfaceContractMapper interfaceContractMapper,
@@ -97,6 +103,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                   ProviderFactoryExtensionPoint providerFactories,
                                   StAXArtifactProcessorExtensionPoint processors) {
         this.assemblyFactory = assemblyFactory;
+        this.messageFactory = messageFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.scopeRegistry = scopeRegistry;
         this.workScheduler = workScheduler;
@@ -112,18 +119,35 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @see org.apache.tuscany.sca.core.assembly.CompositeActivator#activate(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.runtime.RuntimeComponentReference)
      */
     public void activate(RuntimeComponent component, RuntimeComponentReference ref) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Activating component reference: " + component.getURI() + "#" + ref.getName());
+        }
         resolveTargets(ref);
         for (Binding binding : ref.getBindings()) {
             addReferenceBindingProvider(component, ref, binding);
-            addReferenceWire(component, ref, binding);
-            ReferenceBindingProvider provider = ref.getBindingProvider(binding);
-            if (provider != null) {
-                provider.start();
+        }
+    }
+
+    public void start(RuntimeComponent component, RuntimeComponentReference ref) {
+        synchronized (ref) {
+            resolveTargets(ref);
+            for (Binding binding : ref.getBindings()) {
+                ReferenceBindingProvider provider = ref.getBindingProvider(binding);
+                if (provider == null) {
+                    provider = addReferenceBindingProvider(component, ref, binding);
+                }
+                if (provider != null) {
+                    provider.start();
+                }
+                addReferenceWire(component, ref, binding);
             }
         }
     }
 
     public void deactivate(RuntimeComponent component, RuntimeComponentReference ref) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Deactivating component reference: " + component.getURI() + "#" + ref.getName());
+        }
         removeReferenceWires(ref);
         for (Binding binding : ref.getBindings()) {
             removeReferenceBindingProvider(component, ref, binding);
@@ -136,9 +160,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param reference
      * @param binding
      */
-    private void addReferenceBindingProvider(RuntimeComponent component,
-                                             RuntimeComponentReference reference,
-                                             Binding binding) {
+    private ReferenceBindingProvider addReferenceBindingProvider(RuntimeComponent component,
+                                                                 RuntimeComponentReference reference,
+                                                                 Binding binding) {
         BindingProviderFactory providerFactory =
             (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
         if (providerFactory != null) {
@@ -150,6 +174,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             if (bindingProvider != null) {
                 ((RuntimeComponentReference)reference).setBindingProvider(binding, bindingProvider);
             }
+            return bindingProvider;
         } else {
             throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
         }
@@ -324,7 +349,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             new EndpointReferenceImpl((RuntimeComponent)serviceComponent, service, serviceBinding, bindingContract);
 
         RuntimeWire wire =
-            new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor);
+            new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor,
+                                messageFactory);
         runtimeRef.getRuntimeWires().add(wire);
 
         return wire;
@@ -355,7 +381,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param service
      * @param binding
      */
-    private void addServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
+    private ServiceBindingProvider addServiceBindingProvider(RuntimeComponent component,
+                                                             RuntimeComponentService service,
+                                                             Binding binding) {
         BindingProviderFactory providerFactory =
             (BindingProviderFactory)providerFactories.getProviderFactory(binding.getClass());
         if (providerFactory != null) {
@@ -367,6 +395,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             if (bindingProvider != null) {
                 ((RuntimeComponentService)service).setBindingProvider(binding, bindingProvider);
             }
+            return bindingProvider;
         } else {
             throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
         }
@@ -385,37 +414,55 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     public void start(Composite composite) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Starting composite: " + composite.getName());
+        }
         for (Component component : composite.getComponents()) {
             start(component);
         }
     }
 
     public void stop(Composite composite) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Stopping composite: " + composite.getName());
+        }
         for (Component component : composite.getComponents()) {
             stop(component);
-
         }
-
     }
 
     public void start(Component component) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Starting component: " + component.getURI());
+        }
         RuntimeComponent runtimeComponent = ((RuntimeComponent)component);
         configureComponentContext(runtimeComponent);
 
-        for (ComponentService service : component.getServices()) {
-            for (Binding binding : service.getBindings()) {
-                ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(binding);
+        for (ComponentReference reference : component.getReferences()) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
+            }
+            RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
+            runtimeRef.setComponent(runtimeComponent);
+            for (Binding binding : reference.getBindings()) {
+                ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
                 if (bindingProvider != null) {
                     bindingProvider.start();
                 }
             }
-            //            for (RuntimeWire wire : ((RuntimeComponentService)service).getRuntimeWires()) {
-            //                wireProcessor.process(wire);
-            //            }
         }
-
-        for (ComponentReference reference : component.getReferences()) {
-            ((RuntimeComponentReference)reference).setComponent(runtimeComponent);
+        
+        for (ComponentService service : component.getServices()) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Starting component service: " + component.getURI() + "#" + service.getName());
+            }
+            RuntimeComponentService runtimeService = (RuntimeComponentService)service;
+            for (Binding binding : service.getBindings()) {
+                ServiceBindingProvider bindingProvider = runtimeService.getBindingProvider(binding);
+                if (bindingProvider != null) {
+                    bindingProvider.start();
+                }
+            }
         }
 
         Implementation implementation = component.getImplementation();
@@ -452,7 +499,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * Stop a component
      */
     public void stop(Component component) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Stopping component: " + component.getURI());
+        }
         for (ComponentService service : component.getServices()) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Stopping component service: " + component.getURI() + "#" + service.getName());
+            }
             for (Binding binding : service.getBindings()) {
                 ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(binding);
                 if (bindingProvider != null) {
@@ -461,9 +514,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
         for (ComponentReference reference : component.getReferences()) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
+            }
+            RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
             for (Binding binding : reference.getBindings()) {
-                ReferenceBindingProvider bindingProvider =
-                    ((RuntimeComponentReference)reference).getBindingProvider(binding);
+                ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
                 if (bindingProvider != null) {
                     bindingProvider.stop();
                 }
@@ -585,13 +641,26 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                       serviceBinding, targetContract);
 
         RuntimeWire wire =
-            new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor);
+            new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor,
+                                messageFactory);
         runtimeService.getRuntimeWires().add(wire);
 
         return wire;
     }
 
     public void activate(RuntimeComponent component, RuntimeComponentService service) {
+        if (service.getService() == null) {
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.warning("Skipping component service not defined in the component type: " + component.getURI()
+                    + "#"
+                    + service.getName());
+            }
+            return;
+        }
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Activating component service: " + component.getURI() + "#" + service.getName());
+        }
+
         for (Binding binding : service.getBindings()) {
             addServiceBindingProvider(component, service, binding);
             addServiceWire(component, service, binding);
@@ -599,6 +668,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     public void deactivate(RuntimeComponent component, RuntimeComponentService service) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Deactivating component service: " + component.getURI() + "#" + service.getName());
+        }
         removeServiceWires(service);
         for (Binding binding : service.getBindings()) {
             removeServiceBindingProvider(component, service, binding);
@@ -623,7 +695,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     public void activate(Composite composite) throws ActivationException {
         try {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Activating composite: " + composite.getName());
+            }
             for (Component component : composite.getComponents()) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Activating component: " + component.getURI());
+                }
 
                 Implementation implementation = component.getImplementation();
                 if (implementation instanceof Composite) {
@@ -636,6 +714,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 for (ComponentService service : component.getServices()) {
                     activate((RuntimeComponent)component, (RuntimeComponentService)service);
                 }
+
+                for (ComponentReference reference : component.getReferences()) {
+                    activate((RuntimeComponent)component, (RuntimeComponentReference)reference);
+                }
             }
         } catch (Exception e) {
             throw new ActivationException(e);
@@ -644,7 +726,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     public void deactivate(Composite composite) throws ActivationException {
         try {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Deactivating composite: " + composite.getName());
+            }
             for (Component component : composite.getComponents()) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Deactivating component: " + component.getURI());
+                }
                 for (ComponentService service : component.getServices()) {
                     deactivate((RuntimeComponent)component, (RuntimeComponentService)service);
                 }

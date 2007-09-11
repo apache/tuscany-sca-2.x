@@ -256,6 +256,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                         if (isSet(reader, AUTOWIRE)) {
                             component.setAutowire(getBoolean(reader, AUTOWIRE));
                         }
+                        if (isSet(reader, URI)) {
+                            component.setURI(getString(reader, URI));
+                        }
                         component.setConstrainingType(readConstrainingType(reader));
                         composite.getComponents().add(component);
                         policyProcessor.readPolicies(component, reader);

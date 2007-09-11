@@ -39,7 +39,6 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
     private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
     private List<RuntimeWire> callbackWires = new ArrayList<RuntimeWire>();
     private Map<Binding, ServiceBindingProvider> bindingProviders = new HashMap<Binding, ServiceBindingProvider>();
-
     public RuntimeComponentServiceImpl() {
         super();
     }
@@ -89,8 +88,10 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         }
         if (interfaceContract != null && interfaceContract != wire.getSource().getInterfaceContract()) {
             try {
+                // FIXME: [rfeng] We could avoid clone() using a better comparison of the two interface contracts
                 wire = (RuntimeWire)wire.clone();
                 wire.getSource().setInterfaceContract(interfaceContract);
+                wire.rebuild();
             } catch (CloneNotSupportedException e) {
                 throw new ServiceRuntimeException(e);
             }

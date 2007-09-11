@@ -25,13 +25,12 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.distributed.node.ComponentInfo;
-import org.apache.tuscany.sca.distributed.node.ComponentManager;
 import org.apache.tuscany.sca.distributed.node.ComponentManagerService;
 import org.apache.tuscany.sca.distributed.node.Node;
-import org.apache.tuscany.sca.distributed.node.NodeManagerService;
 import org.apache.tuscany.sca.distributed.node.NodeManagerInitService;
+import org.apache.tuscany.sca.distributed.node.NodeManagerService;
 import org.osoa.sca.annotations.Scope;
-
+import org.osoa.sca.annotations.Service;
 
 /**
  * Stores details of services exposed and retrieves details of remote services
@@ -39,23 +38,24 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev: 552343 $ $Date$
  */
 @Scope("COMPOSITE")
+@Service(interfaces = {NodeManagerService.class, NodeManagerInitService.class, ComponentManagerService.class})
 public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerInitService, ComponentManagerService {
-    
-    private Node node; 
-    
-    public String getNodeUri(){
+
+    private Node node;
+
+    public String getNodeUri() {
         return node.getNodeUri();
     }
-    
+
     // NodeManagerInitService
-    public void setNode(Node node){
+    public void setNode(Node node) {
         this.node = node;
     }
-    
+
     // ComponentManagerService
     public List<ComponentInfo> getComponentInfos() {
         List<ComponentInfo> componentInfos = new ArrayList<ComponentInfo>();
-        for (Component component: node.getComponentManager().getComponents()) {
+        for (Component component : node.getComponentManager().getComponents()) {
             ComponentInfo componentInfo = new ComponentInfoImpl();
             componentInfo.setName(component.getName());
             componentInfo.setStarted(node.getComponentManager().isComponentStarted(component));
@@ -63,7 +63,7 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
         }
         return componentInfos;
     }
-    
+
     public ComponentInfo getComponentInfo(String componentName) {
         Component component = node.getComponentManager().getComponent(componentName);
         ComponentInfo componentInfo = new ComponentInfoImpl();
@@ -71,7 +71,7 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
         componentInfo.setStarted(node.getComponentManager().isComponentStarted(component));
         return componentInfo;
     }
-    
+
     public void startComponent(String componentName) throws ActivationException {
         node.getComponentManager().startComponent(node.getComponentManager().getComponent(componentName));
     }
@@ -79,6 +79,6 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
     public void stopComponent(String componentName) throws ActivationException {
         node.getComponentManager().stopComponent(node.getComponentManager().getComponent(componentName));
     }
-    
+
     // TODO - ContributionManagerService
 }

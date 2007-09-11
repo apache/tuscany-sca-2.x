@@ -25,10 +25,12 @@ import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
-import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
@@ -38,59 +40,49 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * @version $Rev$ $Date$
  */
 public class JavaImplementationInvoker implements Invoker {
+    private Operation operation;
     private Method method;
 
     @SuppressWarnings("unchecked")
     private final ScopeContainer scopeContainer;
 
-    public JavaImplementationInvoker(Method method, RuntimeComponent component) {
+    public JavaImplementationInvoker(Operation operation, Method method, RuntimeComponent component) {
         assert method != null : "Operation method cannot be null";
         this.method = method;
+        this.operation = operation;
         this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
-    }
-
-    /**
-     * Resolves the target service instance or returns a cached one
-     */
-    @SuppressWarnings("unchecked")
-    private InstanceWrapper getInstance(ConversationSequence sequence, Object contextId)
-        throws TargetResolutionException, InvalidConversationSequenceException {
-        if (sequence == null) {
-            return scopeContainer.getWrapper(contextId);
-        } else {
-            switch (sequence) {
-                case CONVERSATION_START:
-                    return scopeContainer.getWrapper(contextId);
-                case CONVERSATION_CONTINUE:
-                case CONVERSATION_END:
-                    return scopeContainer.getAssociatedWrapper(contextId);
-                default:
-                    throw new InvalidConversationSequenceException("Unknown sequence type: " + String.valueOf(sequence));
-            }
-        }
     }
 
     @SuppressWarnings("unchecked")
     public Message invoke(Message msg) {
-        ConversationSequence sequence = msg.getConversationSequence();
+        Operation op = msg.getOperation();
+        if (op == null) {
+            op = this.operation;
+        }
+        ConversationSequence sequence = op.getConversationSequence();
         Object payload = msg.getBody();
 
         Object contextId = null;
-        
+
+        EndpointReference to = msg.getTo();
+        ReferenceParameters parameters = null;
+        if (to != null) {
+            parameters = to.getReferenceParameters();
+        }
         // check what sort of context is required
         if (scopeContainer != null) {
-           Scope scope = scopeContainer.getScope();
-           if (scope == Scope.REQUEST) {
-        	   contextId = Thread.currentThread();
-           } else {
-        	   contextId = msg.getConversationID();
-           }
+            Scope scope = scopeContainer.getScope();
+            if (scope == Scope.REQUEST) {
+                contextId = Thread.currentThread();
+            } else if (scope == Scope.CONVERSATION && parameters != null) {
+                contextId = parameters.getConversationID();
+            }
         }
-        
+
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
             // return a new value
-            InstanceWrapper wrapper = getInstance(sequence, contextId);
+            InstanceWrapper wrapper = scopeContainer.getWrapper(contextId);
 
             // detects whether the scope container has created a conversation Id. This will
             // happen in the case that the component has conversational scope but only the
@@ -100,8 +92,8 @@ public class JavaImplementationInvoker implements Invoker {
             // it. It is possible that the component instance will not go away when it is removed below 
             // because a callback conversation will still be holding a reference to it
             boolean removeTemporaryConversationalComponentAfterCall = false;
-            if ((contextId == null) && (msg.getConversationID() != null)){
-                contextId = msg.getConversationID();
+            if (parameters != null && (contextId == null) && (parameters.getConversationID() != null)) {
+                contextId = parameters.getConversationID();
                 removeTemporaryConversationalComponentAfterCall = true;
             }
 
@@ -112,14 +104,14 @@ public class JavaImplementationInvoker implements Invoker {
             } else {
                 ret = method.invoke(instance, (Object[])payload);
             }
-            
+
             scopeContainer.returnWrapper(wrapper, contextId);
-            
-            if ((sequence == ConversationSequence.CONVERSATION_END) || 
-                (removeTemporaryConversationalComponentAfterCall)) {
+
+            if ((sequence == ConversationSequence.CONVERSATION_END) || (removeTemporaryConversationalComponentAfterCall)) {
                 // if end conversation, or we have the special case where a conversational
                 // object was created to service the stateless half of a stateful component
                 scopeContainer.remove(contextId);
+                parameters.setConversationID(null);
             }
             msg.setBody(ret);
         } catch (InvocationTargetException e) {

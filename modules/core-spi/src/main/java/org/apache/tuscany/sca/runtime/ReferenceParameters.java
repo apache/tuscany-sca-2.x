@@ -17,49 +17,53 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core.context;
+package org.apache.tuscany.sca.runtime;
 
 /**
+ * Parameters for the EndPointReference
+ * 
  * @version $Rev$ $Date$
  */
-public class ReferenceParameters {
-    private String componentURI;
-    private Object callbackID;
-    private Object conversationID;
+public interface ReferenceParameters extends Cloneable {
     /**
+     * Get the callback ID
      * @return the callbackID
      */
-    public Object getCallbackID() {
-        return callbackID;
-    }
+    Object getCallbackID();
+
     /**
+     * Set the callback ID
      * @param callbackID the callbackID to set
      */
-    public void setCallbackID(Object callbackID) {
-        this.callbackID = callbackID;
-    }
+    void setCallbackID(Object callbackID);
+
     /**
+     * Get the conversation ID
      * @return the conversationID
      */
-    public Object getConversationID() {
-        return conversationID;
-    }
+    Object getConversationID();
+
     /**
+     * Set the conversation ID
      * @param conversationID the conversationID to set
      */
-    public void setConversationID(Object conversationID) {
-        this.conversationID = conversationID;
-    }
+    void setConversationID(Object conversationID);
+
     /**
-     * @return the componentURI
+     * Get the ID for the non-ServiceReference callback object
+     * @return
      */
-    public String getComponentURI() {
-        return componentURI;
-    }
+    Object getCallbackObjectID();
+
     /**
-     * @param componentURI the componentURI to set
+     * Set the ID for the non-ServiceReference callback object
+     * @param callbackObjectID
      */
-    public void setComponentURI(String componentURI) {
-        this.componentURI = componentURI;
-    }
+    void setCallbackObjectID(Object callbackObjectID);
+
+    EndpointReference getCallbackReference();
+
+    void setCallbackReference(EndpointReference callback);
+
+    Object clone() throws CloneNotSupportedException;
 }

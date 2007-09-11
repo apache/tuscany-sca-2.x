@@ -29,6 +29,9 @@
         <reference name="cReference" target="CComponent" />
         <reference name="dReference1" target="DComponent" />
         <reference name="DReference2" target="DComponent" />
+        <reference name="dReferences" target="DComponent DComponent1" />
+        <reference name="dReferenceArray" target="DComponent1" />
+        <reference name="dServiceReferences" target="DComponent DComponent1" />
     </component>
 
     <component name="BComponent">
@@ -43,4 +46,9 @@
     <component name="DComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.references.DComponentImpl" />
     </component>
+    
+    <component name="DComponent1">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.DComponentImpl" />
+    </component>
+        
 </composite>

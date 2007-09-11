@@ -131,6 +131,7 @@ public class ReallySmallRuntime {
         // Create a composite activator
         compositeActivator = ReallySmallRuntimeBuilder.createCompositeActivator(registry,
                                                                                 assemblyFactory,
+                                                                                messageFactory,
                                                                                 scaBindingFactory,
                                                                                 mapper,
                                                                                 proxyFactory,

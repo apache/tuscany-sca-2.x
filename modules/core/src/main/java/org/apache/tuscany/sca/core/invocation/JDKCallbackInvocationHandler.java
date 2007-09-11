@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.context.ConversationImpl;
@@ -29,8 +28,8 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
 import org.osoa.sca.NoRegisteredCallbackException;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Responsible for dispatching to a callback through a wire. <p/> TODO cache
@@ -41,8 +40,7 @@ import org.osoa.sca.NoRegisteredCallbackException;
 public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
 
-    public JDKCallbackInvocationHandler(MessageFactory messageFactory,
-                                        CallbackWireObjectFactory wireFactory) {
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory, CallbackWireObjectFactory wireFactory) {
         super(messageFactory, wireFactory);
         this.fixedWire = false;
     }
@@ -50,14 +48,8 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     @Override
     @SuppressWarnings( {"unchecked"})
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
-            return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
-        } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName())) {
-            // TODO implement
-            throw new UnsupportedOperationException();
-        } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
-            return hashCode();
-            // TODO beter hash algorithm
+        if (Object.class == method.getDeclaringClass()) {
+            return invokeObjectMethod(method, args);
         }
 
         // wire not pre-selected, so select a wire now to be used for the callback
@@ -65,13 +57,13 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         RuntimeWire wire = ((CallbackWireObjectFactory)callableReference).selectCallbackWire(msgContext);
         if (wire == null) {
             //FIXME: need better exception
-            throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
+            throw new ServiceRuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
         }
-        
+
         // set the conversational state based on the interface that
         // is specified for the reference that this wire belongs to
-        setConversational(wire);
-        
+        init(wire);
+
         // set the conversation id into the conversation object. This is
         // a special case for callbacks as, unless otherwise set manually,
         // the callback should use the same conversation id as was received
@@ -83,37 +75,36 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
                 // will have been constructed yet
                 conversation = new ConversationImpl();
             }
-            
-            Object conversationId = conversation.getConversationID();
+
+            Object convID = conversation.getConversationID();
 
             // create a conversation id if one doesn't exist 
             // already, i.e. the conversation is just starting
-            if (conversationId == null) {
-                conversationId = msgContext.getConversationID();
-                conversation.setConversationID(conversationId);
-            } 
+            if (convID == null) {
+                conversationID = msgContext.getTo().getReferenceParameters().getConversationID();
+                conversation.setConversationID(conversationID);
+            }
         }
-        
-        callbackID = msgContext.getCorrelationID();
+
+        callbackID = msgContext.getTo().getReferenceParameters().getCallbackID();
         ((CallbackWireObjectFactory)callableReference).attachCallbackID(callbackID);
-        setEndpoint(msgContext.getFrom());
         
-        
-        
+        setEndpoint(msgContext.getFrom().getCallbackEndpoint());
+
         // need to set the endpoint on the binding also so that when the chains are created next
         // the sca binding can decide whether to provide local or remote invokers. 
         // TODO - there is a problem here though in that I'm setting a target on a 
         //        binding that may possibly be trying to point at two things in the multi threaded 
         //        case. Need to confirm the general model here and how the clone and bind part
         //        is intended to work
-        wire.getSource().getBinding().setURI(msgContext.getFrom().getURI());
-        
+        wire.getSource().getBinding().setURI(msgContext.getFrom().getCallbackEndpoint().getURI());
+
         // also need to set the target contract as it varies for the sca binding depending on 
         // whether it is local or remote
         RuntimeComponentReference ref = (RuntimeComponentReference)wire.getSource().getContract();
         Binding binding = wire.getSource().getBinding();
         wire.getTarget().setInterfaceContract(ref.getBindingProvider(binding).getBindingInterfaceContract());
-        
+
         //FIXME: can we use the same code as JDKInvocationHandler to select the chain? 
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {

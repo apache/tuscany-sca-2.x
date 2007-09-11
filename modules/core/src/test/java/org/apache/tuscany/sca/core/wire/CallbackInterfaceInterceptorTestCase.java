@@ -20,13 +20,13 @@ package org.apache.tuscany.sca.core.wire;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.CallbackInterfaceInterceptor;
 import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
 import org.easymock.EasyMock;
 import org.osoa.sca.NoRegisteredCallbackException;
-import org.osoa.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
@@ -40,10 +40,8 @@ public class CallbackInterfaceInterceptorTestCase extends TestCase {
         EasyMock.replay(next);
         interceptor.setNext(next);
         Message msg = new MessageFactoryImpl().createMessage();
-        ServiceReference callableReference = EasyMock.createMock(ServiceReference.class);
-        EasyMock.expect(callableReference.getCallback()).andReturn(new Object());
-        EasyMock.replay(callableReference);
-        msg.setCallableReference(callableReference);
+        msg.setFrom(new EndpointReferenceImpl("uri"));
+        msg.getTo().getReferenceParameters().setCallbackObjectID("java:" + System.identityHashCode("ABC"));
         interceptor.invoke(msg);
         EasyMock.verify(next);
     }
@@ -51,10 +49,8 @@ public class CallbackInterfaceInterceptorTestCase extends TestCase {
     public void testNoCallbackObject() {
         CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor();
         Message msg = new MessageFactoryImpl().createMessage();
-        ServiceReference callableReference = EasyMock.createMock(ServiceReference.class);
-        EasyMock.expect(callableReference.getCallback()).andReturn(null);
-        EasyMock.replay(callableReference);
-        msg.setCallableReference(callableReference);
+        msg.setFrom(new EndpointReferenceImpl("uri"));
+        msg.getTo().getReferenceParameters().setCallbackObjectID(null);
         try {
             interceptor.invoke(msg);
             fail();
