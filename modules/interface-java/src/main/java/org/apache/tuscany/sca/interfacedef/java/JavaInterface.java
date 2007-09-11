@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.interfacedef.Interface;
 
 /**
@@ -25,7 +26,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
  * 
  * @version $Rev$ $Date$
  */
-public interface JavaInterface extends Interface {
+public interface JavaInterface extends Interface, Base {
 
     /**
      * Returns the name of the Java interface class.

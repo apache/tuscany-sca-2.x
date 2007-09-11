@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.wsdl.Definition;
 
-import org.apache.tuscany.sca.interfacedef.Base;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
