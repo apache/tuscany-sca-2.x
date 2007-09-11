@@ -18,6 +18,7 @@
  */
 package notification.consumer;
 
+import org.osoa.sca.annotations.AllowsPassByReference;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -27,6 +28,7 @@ import org.osoa.sca.annotations.Service;
  */
 @Service(TrafficAdvisory.class)
 @Scope("COMPOSITE")
+@AllowsPassByReference
 public class TrafficAdvisoryConsumer implements TrafficAdvisory {
     
     @Property
