@@ -37,7 +37,7 @@ public class BPELImplementationProviderFactory implements ImplementationProvider
      * @param odeServer the server instance passed to the implementation provider
      */
     public BPELImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
-        this.odeServer = new EmbeddedODEServer();
+        this.odeServer = new EmbeddedODEServer(null);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, BPELImplementation implementation) {
