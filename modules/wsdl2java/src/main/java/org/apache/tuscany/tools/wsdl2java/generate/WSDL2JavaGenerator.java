@@ -217,6 +217,7 @@ public class WSDL2JavaGenerator {
                         XSD2JavaGenerator.GeneratedPackage.PackageClassInfo classInfo = (XSD2JavaGenerator.GeneratedPackage.PackageClassInfo)iterClass.next();
                         SDODataBindingTypeMappingEntry typeMappingEntry;
                         if ((genOptions & DYNAMIC_SDO)==0){
+                            
                             typeMappingEntry = new SDODataBindingTypeMappingEntry(classInfo.getClassName(), classInfo.getAnonymous(), classInfo.getProperties());
                         } else {
                             // TO DO implement dynamic sdo case
@@ -224,7 +225,15 @@ public class WSDL2JavaGenerator {
                             System.out.println();
                         }                              
                         QName qname = new QName(packageInfo.getNamespace(),classInfo.getName());
-                        typeMapping.put(qname, typeMappingEntry);
+                        
+                        //FIXME Workaround for JIRA TUSCANY-1673
+                        // Do not overwrite a typemapping entry describing a element typed by an anonymous
+                        // complex type with a typemapping entry describing a complex type named like the
+                        // element
+                        SDODataBindingTypeMappingEntry existingTypeMapping = typeMapping.get(qname);
+                        if (existingTypeMapping == null || !existingTypeMapping.isAnonymous()) {
+                            typeMapping.put(qname, typeMappingEntry);
+                        }
                     }          
                 }
        
