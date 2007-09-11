@@ -49,6 +49,22 @@ public class NotificationComponentInvoker implements Invoker {
     }
     
     public Message invoke(Message msg) {
+        addSubscriberInvocationChains();
+
+        // REVIEW Should this be done in separate thread(s)?
+        // REVIEW Should separate copies of message be used?
+        Object msgBody = msg.getBody();
+        
+        for (InvocationChain subscriberInvocationChain : subscriberInvocationChains) {
+            Invoker chainInvoker = subscriberInvocationChain.getHeadInvoker();
+            msg.setBody(msgBody);
+            chainInvoker.invoke(msg);
+        }
+        
+        return RESPONSE;
+    }
+    
+    private void addSubscriberInvocationChains() {
         if (subscriberInvocationChains == null) {
             subscriberInvocationChains = new ArrayList<InvocationChain>();
             for (ComponentReference reference : component.getReferences()) {
@@ -70,18 +86,6 @@ public class NotificationComponentInvoker implements Invoker {
                 }
             }
         }
-        
-        // REVIEW Should this be done in separate thread(s)?
-        // REVIEW Should separate copies of message be used?
-        Object msgBody = msg.getBody();
-        
-        for (InvocationChain subscriberInvocationChain : subscriberInvocationChains) {
-            Invoker chainInvoker = subscriberInvocationChain.getHeadInvoker();
-            msg.setBody(msgBody);
-            chainInvoker.invoke(msg);
-        }
-        
-        return RESPONSE;
     }
     
     private InvocationChain getInvocationChain(List<InvocationChain> chains, Operation operation) {
