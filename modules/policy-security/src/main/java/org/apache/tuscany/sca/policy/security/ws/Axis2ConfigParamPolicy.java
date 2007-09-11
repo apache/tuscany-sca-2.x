@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.policy.security.ws;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.axiom.om.OMElement;
 
 /**
@@ -25,18 +30,9 @@ import org.apache.axiom.om.OMElement;
  * into the axis2config.
  */
 public class Axis2ConfigParamPolicy {
-    private String paramName;
-    private OMElement paramElement;
-    public OMElement getParamElement() {
-        return paramElement;
-    }
-    public void setParamElement(OMElement paramElement) {
-        this.paramElement = paramElement;
-    }
-    public String getParamName() {
-        return paramName;
-    }
-    public void setParamName(String paramName) {
-        this.paramName = paramName;
+    private Map<String, OMElement> paramElements = new Hashtable<String, OMElement>();
+    
+    public Map<String, OMElement> getParamElements() {
+        return paramElements;
     }
 }
