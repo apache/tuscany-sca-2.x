@@ -80,6 +80,10 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         if (source == target) {
             return false;
         }
+        
+        if (source.isWrapperStyle() != target.isWrapperStyle()) {
+            return true;
+        }
 
         // Check output type
         DataType sourceOutputType = source.getOutputType();
@@ -95,6 +99,10 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         List<DataType> targetInputType = target.getInputType().getLogical();
 
         int size = sourceInputType.size();
+        if (size != targetInputType.size()) {
+            // TUSCANY-1682: The wrapper style may have different arguments
+            return true;
+        }
         for (int i = 0; i < size; i++) {
             if (isTransformationRequired(sourceInputType.get(i), targetInputType.get(i))) {
                 return true;
@@ -124,6 +132,9 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             targetContract = sourceContract;
         }
 
+        if (!sourceContract.getInterface().isRemotable()) {
+            return;
+        }
         List<InvocationChain> chains = wire.getInvocationChains();
         for (InvocationChain chain : chains) {
             Operation sourceOperation = chain.getSourceOperation();

@@ -99,5 +99,4 @@ public interface RuntimeComponentService extends ComponentService {
      * @return The runtime invocation chain
      */
     InvocationChain getInvocationChain(Binding binding, Operation operation);    
-    
 }

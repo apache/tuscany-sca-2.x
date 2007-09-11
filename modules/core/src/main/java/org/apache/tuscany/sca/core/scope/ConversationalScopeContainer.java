@@ -143,7 +143,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
             Message msgContext = ThreadMessageContext.getMessageContext();
             
             if (msgContext != null){
-                msgContext.setConversationID(contextId.toString());
+                msgContext.getTo().getReferenceParameters().setConversationID(contextId);
             }
         }
         

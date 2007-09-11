@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.itest.references;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Reference;
 
 public class AComponentImpl implements AComponent {
@@ -30,6 +34,16 @@ public class AComponentImpl implements AComponent {
 
     @Reference(required = false)
     protected DComponent dReference;
+
+    @Reference(name = "dReferences")
+    public Collection<DComponent> dReferences;
+    
+    @Reference(name = "dReferenceArray")
+    public DComponent[] dReferenceArray;
+
+
+    @Reference(name = "dServiceReferences")
+    public List<ServiceReference<DComponent>> dServiceReferences;
 
     private DComponent dReference1;
 
@@ -67,6 +81,42 @@ public class AComponentImpl implements AComponent {
 
     public String fooD2() {
         return dReference2.dFoo();
+    }
+
+    public String fooMultipleDArray() {
+        StringBuffer str = new StringBuffer();
+        for (DComponent d : dReferenceArray) {
+            str.append(d.getComponentName());
+            str.append(',');
+        }
+        if (str.length() > 0) {
+            str.deleteCharAt(str.length() - 1);
+        }
+        return str.toString();
+    }    
+    
+    public String fooMultipleD() {
+        StringBuffer str = new StringBuffer();
+        for (DComponent d : dReferences) {
+            str.append(d.getComponentName());
+            str.append(',');
+        }
+        if (str.length() > 0) {
+            str.deleteCharAt(str.length() - 1);
+        }
+        return str.toString();
+    }
+    
+    public String fooMultipleDServiceRef() {
+        StringBuffer str = new StringBuffer();
+        for (ServiceReference<DComponent> d : dServiceReferences) {
+            str.append(d.getService().getComponentName());
+            str.append(',');
+        }
+        if (str.length() > 0) {
+            str.deleteCharAt(str.length() - 1);
+        }
+        return str.toString();
     }
 
     public DComponent getDReference() {

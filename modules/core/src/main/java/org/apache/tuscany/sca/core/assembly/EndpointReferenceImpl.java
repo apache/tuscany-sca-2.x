@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
@@ -35,6 +36,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     private InterfaceContract interfaceContract;
     private String uri;
     private EndpointReference callbackEndpoint;
+    private ReferenceParameters parameters = new ReferenceParametersImpl();
 
     /**
      * @param component
@@ -121,18 +123,23 @@ public class EndpointReferenceImpl implements EndpointReference {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final EndpointReferenceImpl other = (EndpointReferenceImpl)obj;
         if (uri == null) {
-            if (other.uri != null)
+            if (other.uri != null) {
                 return false;
-        } else if (!uri.equals(other.uri))
+            }
+        } else if (!uri.equals(other.uri)) {
             return false;
+        }
         return true;
     }
 
@@ -141,6 +148,27 @@ public class EndpointReferenceImpl implements EndpointReference {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        EndpointReferenceImpl copy = (EndpointReferenceImpl)super.clone();
+        if (callbackEndpoint != null) {
+            copy.callbackEndpoint = (EndpointReference)callbackEndpoint.clone();
+        }
+        if (parameters != null) {
+            copy.parameters = (ReferenceParameters)parameters.clone();
+        }
+        return copy;
+    }
+
+    /**
+     * @return the parameters
+     */
+    public ReferenceParameters getReferenceParameters() {
+        return parameters;
+    }
+
+    /**
+     * @param parameters the parameters to set
+     */
+    public void setReferenceParameters(ReferenceParameters parameters) {
+        this.parameters = parameters;
     }
 }

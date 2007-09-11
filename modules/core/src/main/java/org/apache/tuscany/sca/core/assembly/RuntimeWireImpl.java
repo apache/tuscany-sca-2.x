@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.assembly;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +30,13 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
+import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
@@ -56,6 +59,8 @@ public class RuntimeWireImpl implements RuntimeWire {
     private transient RuntimeWireProcessor wireProcessor;
     private transient InterfaceContractMapper interfaceContractMapper;
     private transient WorkScheduler workScheduler;
+    private transient MessageFactory messageFactory;
+    private transient RuntimeWireInvoker invoker;
 
     private List<InvocationChain> chains;
 
@@ -65,18 +70,22 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param interfaceContractMapper 
      * @param workScheduler 
      * @param wireProcessor 
+     * @param messageFactory 
      */
     public RuntimeWireImpl(EndpointReference source,
                            EndpointReference target,
                            InterfaceContractMapper interfaceContractMapper,
                            WorkScheduler workScheduler,
-                           RuntimeWireProcessor wireProcessor) {
+                           RuntimeWireProcessor wireProcessor,
+                           MessageFactory messageFactory) {
         super();
         this.wireSource = source;
         this.wireTarget = target;
         this.interfaceContractMapper = interfaceContractMapper;
         this.workScheduler = workScheduler;
         this.wireProcessor = wireProcessor;
+        this.messageFactory = messageFactory;
+        this.invoker = new RuntimeWireInvoker(this.messageFactory, this);
     }
 
     public synchronized List<InvocationChain> getInvocationChains() {
@@ -101,6 +110,10 @@ public class RuntimeWireImpl implements RuntimeWire {
             }
         }
         return null;
+    }
+
+    public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
+        return invoker.invoke(operation, args);
     }
 
     /**
@@ -162,7 +175,13 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     public void setTarget(EndpointReference target) {
+        if (this.wireTarget != target) {
+            rebuild();
+        }
         this.wireTarget = target;
+    }
+
+    public void rebuild() {
         this.chains = null;
     }
 
@@ -247,7 +266,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         RuntimeWireImpl copy = (RuntimeWireImpl)super.clone();
         copy.wireSource = (EndpointReference)wireSource.clone();
         copy.wireTarget = (EndpointReference)wireTarget.clone();
-        copy.chains = null;
+        copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy);
         return copy;
     }
 }

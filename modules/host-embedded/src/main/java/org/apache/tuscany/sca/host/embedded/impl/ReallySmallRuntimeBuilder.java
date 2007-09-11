@@ -98,6 +98,7 @@ public class ReallySmallRuntimeBuilder {
 
     public static CompositeActivator createCompositeActivator(ExtensionPointRegistry registry,
                                                               AssemblyFactory assemblyFactory,
+                                                              MessageFactory messageFactory,
                                                               SCABindingFactory scaBindingFactory,
                                                               InterfaceContractMapper mapper,
                                                               ProxyFactory proxyFactory,
@@ -105,7 +106,8 @@ public class ReallySmallRuntimeBuilder {
                                                               WorkScheduler workScheduler) {
 
         // Create a wire post processor extension point
-        RuntimeWireProcessorExtensionPoint wireProcessors = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
+        RuntimeWireProcessorExtensionPoint wireProcessors =
+            registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
 
         // Add the SCABindingProcessor extension
@@ -117,20 +119,26 @@ public class ReallySmallRuntimeBuilder {
         processors.addArtifactProcessor(scaBindingProcessor);
 
         // Create a provider factory extension point
-        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        ProviderFactoryExtensionPoint providerFactories =
+            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
 
-        JavaInterfaceFactory javaInterfaceFactory = registry.getExtensionPoint(ModelFactoryExtensionPoint.class).getFactory(JavaInterfaceFactory.class);
-        RequestContextFactory requestContextFactory = registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
-       
+        JavaInterfaceFactory javaInterfaceFactory =
+            registry.getExtensionPoint(ModelFactoryExtensionPoint.class).getFactory(JavaInterfaceFactory.class);
+        RequestContextFactory requestContextFactory =
+            registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
+
         // Create the composite activator
         CompositeActivator compositeActivator =
-            new CompositeActivatorImpl(assemblyFactory, javaInterfaceFactory, scaBindingFactory, mapper, scopeRegistry, workScheduler,
-                                       wireProcessor, requestContextFactory, proxyFactory, providerFactories, processors);
+            new CompositeActivatorImpl(assemblyFactory, messageFactory, javaInterfaceFactory, scaBindingFactory,
+                                       mapper, scopeRegistry, workScheduler, wireProcessor, requestContextFactory,
+                                       proxyFactory, providerFactories, processors);
 
         return compositeActivator;
     }
-    
-    public static CompositeBuilder createCompositeBuilder(AssemblyFactory assemblyFactory, SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper) {
+
+    public static CompositeBuilder createCompositeBuilder(AssemblyFactory assemblyFactory,
+                                                          SCABindingFactory scaBindingFactory,
+                                                          InterfaceContractMapper interfaceContractMapper) {
         return new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, null);
     }
 
@@ -151,40 +159,47 @@ public class ReallySmallRuntimeBuilder {
         XMLInputFactory xmlFactory = registry.getExtensionPoint(XMLInputFactory.class);
 
         // Create STAX artifact processor extension point
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
         // Create and register STAX processors for SCA assembly XML
-        ExtensibleStAXArtifactProcessor staxProcessor = 
+        ExtensibleStAXArtifactProcessor staxProcessor =
             new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory,
+                                                                   mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors
+            .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
 
         // Register STAX processors for Contribution Metadata
-        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory,
+                                                                              staxProcessor));
 
         // Create URL artifact processor extension point
-        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint documentProcessors =
+            registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
 
         // Create and register document processors for SCA assembly XML
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
-        
+
         // Create Model Resolver extension point
         ModelResolverExtensionPoint modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
 
         // Create contribution package processor extension point
         TypeDescriber describer = new PackageTypeDescriberImpl();
-        PackageProcessor packageProcessor = new ExtensiblePackageProcessor(registry.getExtensionPoint(PackageProcessorExtensionPoint.class), describer);
+        PackageProcessor packageProcessor =
+            new ExtensiblePackageProcessor(registry.getExtensionPoint(PackageProcessorExtensionPoint.class), describer);
 
         // Get the model factory extension point
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        
+
         // Create contribution listener
-        ExtensibleContributionListener contributionListener = new ExtensibleContributionListener(registry.getExtensionPoint(ContributionListenerExtensionPoint.class));
-        
+        ExtensibleContributionListener contributionListener =
+            new ExtensibleContributionListener(registry.getExtensionPoint(ContributionListenerExtensionPoint.class));
+
         // Create a contribution repository
         ContributionRepository repository;
         try {
@@ -195,10 +210,9 @@ public class ReallySmallRuntimeBuilder {
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
-        ContributionService contributionService = 
-            new ContributionServiceImpl(repository, packageProcessor, documentProcessor,
-                                        staxProcessor, contributionListener, 
-                                        domainModelResolver, modelResolvers, modelFactories,
+        ContributionService contributionService =
+            new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor,
+                                        contributionListener, domainModelResolver, modelResolvers, modelFactories,
                                         assemblyFactory, contributionFactory, xmlFactory);
         return contributionService;
     }
@@ -220,20 +234,18 @@ public class ReallySmallRuntimeBuilder {
 
         return scopeRegistry;
     }
-    
+
     public static SCADefinitionsDocumentProcessor createSCADefinitionsDocProcessor(ExtensionPointRegistry registry,
                                                                                    PolicyFactory policyFactory) {
         XMLInputFactory xmlFactory = registry.getExtensionPoint(XMLInputFactory.class);
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        ExtensibleStAXArtifactProcessor staxProcessor = 
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        ExtensibleStAXArtifactProcessor staxProcessor =
             new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
-        SCADefinitionsDocumentProcessor scaDocDefnProcessor = new SCADefinitionsDocumentProcessor(staxProcessors,
-                                                                                                  staxProcessor,
-                                                                                                  xmlFactory,
-                                                                                                  policyFactory);
+        SCADefinitionsDocumentProcessor scaDocDefnProcessor =
+            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, xmlFactory, policyFactory);
 
         return scaDocDefnProcessor;
     }
-
 
 }

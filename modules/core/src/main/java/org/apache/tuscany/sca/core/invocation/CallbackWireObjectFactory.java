@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Returns proxy instance for a wire callback
@@ -53,7 +54,7 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
             //FIXME: need better exception
             throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
         }
-        resolvedEndpoint = msgContext.getFrom();
+        this.resolvedEndpoint = getCallbackEndpoint(msgContext);
         bind(wire);
     }
 
@@ -62,6 +63,7 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
         if (wire != null) {
             // wire and endpoint already resolved, so return a pre-wired proxy
             wire.setTarget(resolvedEndpoint);
+            wire.rebuild();
             return super.getInstance();
         } else {
             // wire not yet selected, so return a proxy that resolves the target dynamically
@@ -81,7 +83,11 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
         // first choice is wire with matching destination endpoint
         for (RuntimeWire wire : wires) {
             if (from.getURI().equals(wire.getTarget().getURI())) {
-                return wire;
+                try {
+                    return (RuntimeWire)wire.clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new ServiceRuntimeException(e);
+                }
             }
         }
 
@@ -118,15 +124,33 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
         return null;
     }
 
+    /**
+     * @param msgContext
+     */
+    private static EndpointReference getCallbackEndpoint(Message msgContext) {
+        EndpointReference to = msgContext.getTo();
+        if (to == null) {
+            return null;
+        }
+        return to.getReferenceParameters().getCallbackReference();
+    }
+
     private static RuntimeWire cloneAndBind(Message msgContext, RuntimeWire wire) {
-        EndpointReference callback = msgContext.getFrom();
+        EndpointReference callback = getCallbackEndpoint(msgContext);
         if (callback != null && callback.getContract() != null) {
             try {
-                RuntimeComponentReference ref =
-                    bind((RuntimeComponentReference)wire.getSource().getContract(),
-                         callback.getComponent(),
-                         (RuntimeComponentService)callback.getContract());
-                return ref.getRuntimeWires().get(0);
+                RuntimeComponentReference ref = null;
+                if (callback.getContract() instanceof RuntimeComponentReference) {
+                    ref = (RuntimeComponentReference)callback.getContract();
+                    return ref.getRuntimeWire(callback.getBinding());
+                } else {
+                    ref =
+                        bind((RuntimeComponentReference)wire.getSource().getContract(),
+                             callback.getComponent(),
+                             (RuntimeComponentService)callback.getContract());
+
+                    return ref.getRuntimeWires().get(0);
+                }
             } catch (CloneNotSupportedException e) {
                 // will not happen
                 return null;
@@ -155,5 +179,5 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
         }
         return ref;
     }
-    
+
 }

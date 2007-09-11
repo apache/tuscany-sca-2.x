@@ -60,18 +60,18 @@ import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
+import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 public class Axis2ServiceProvider {
 
@@ -82,11 +82,14 @@ public class Axis2ServiceProvider {
     private ConfigurationContext configContext;
 
     public static final QName QNAME_WSA_ADDRESS =
-            new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
     public static final QName QNAME_WSA_FROM =
-            new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
+    public static final QName QNAME_WSA_TO =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_TO);
+
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
-            new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
     // TODO: what to do about the base URI?
     // This port number may be used to construct callback URIs.  The value 8085 is used
@@ -251,7 +254,7 @@ public class Axis2ServiceProvider {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
         return axisService;
     }
 
@@ -320,12 +323,10 @@ public class Axis2ServiceProvider {
         }
         return null;
     }
-                                            
+
     // methods for Axis2 message receivers
 
-    public Object invokeTarget(Operation op,
-                               Object[] args,
-                               MessageContext inMC) throws InvocationTargetException {
+    public Object invokeTarget(Operation op, Object[] args, MessageContext inMC) throws InvocationTargetException {
 
         String callbackAddress = null;
         String callbackID = null;
@@ -334,107 +335,69 @@ public class Axis2ServiceProvider {
         //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
         if (header != null) {
-            Iterator<?> i = header.getChildrenWithName(QNAME_WSA_FROM);
-            Object a = null;
-            for (; i.hasNext();) {
-                if (a != null) {
-                    throw new IllegalArgumentException("Duplicate wsa:From element");
-                }
-                a = i.next();
-                if (a instanceof OMElement) {
-                    OMElement ao = (OMElement)a;
-
-                    // process required Address element
-                    Iterator<?> adI = ao.getChildrenWithName(QNAME_WSA_ADDRESS);
-                    OMElement adE = null;
-                    for (; adI.hasNext();) {
-                        if (adE != null) {
-                            throw new IllegalArgumentException("Duplicate wsa:Address element");
+            OMElement to = header.getFirstChildWithName(QNAME_WSA_TO);
+            if (to != null) {
+                OMElement params = to.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
+                if (params != null) {
+                    OMElement convIDElement =
+                        params.getFirstChildWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN);
+                    if (convIDElement != null) {
+                        if (isConversational()) {
+                            conversationID = convIDElement.getText();
                         }
-                        adE = (OMElement)adI.next();
+                    }
+                    OMElement callbackIDElement =
+                        params.getFirstChildWithName(Axis2BindingInvoker.CALLBACK_ID_REFPARM_QN);
+                    if (callbackIDElement != null) {
                         if (contract.getInterfaceContract().getCallbackInterface() != null) {
-                            callbackAddress = adE.getText();
-                            if (callbackAddress.equals(AddressingConstants.Final.WSA_ANONYMOUS_URL)) {
-                                throw new IllegalArgumentException("Anonymous wsa:Address passed for callback");
-                            }
+                            callbackID = callbackIDElement.getText();
                         }
                     }
-                    if (adE == null) {
-                        throw new IllegalArgumentException("Missing wsa:Address element");
-                    }
+                }
+            }
 
-                    // process optional ReferenceParameters element
-                    Iterator<?> rpI = ao.getChildrenWithName(QNAME_WSA_REFERENCE_PARAMETERS);
-                    OMElement rpE = null;
-                    for (; rpI.hasNext();) {
-                        if (rpE != null) {
-                            throw new IllegalArgumentException("Duplicate wsa:ReferenceParameters element");
-                        }
-                        rpE = (OMElement)rpI.next();
-                        Iterator<?> cidI = rpE.getChildrenWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN);
-                        OMElement cidE = null;
-                        for (; cidI.hasNext();) {
-                            if (cidE != null) {
-                                throw new IllegalArgumentException("Duplicate SCA conversation ID element");
-                            }
-                            cidE = (OMElement)cidI.next();
-                            if (isConversational()) {
-                                conversationID = cidE.getText();
-                            }
-                        }
-                        Iterator<?> cbidI = rpE.getChildrenWithName(Axis2BindingInvoker.CALLBACK_ID_REFPARM_QN);
-                        OMElement cbidE = null;
-                        for (; cbidI.hasNext();) {
-                            if (cbidE != null) {
-                                throw new IllegalArgumentException("Duplicate SCA callback ID element");
-                            }
-                            cbidE = (OMElement)cbidI.next();
-                            if (contract.getInterfaceContract().getCallbackInterface() != null) {
-                                callbackID = cbidE.getText();
-                            }
-                        }
-                    }
-
+            OMElement from = header.getFirstChildWithName(QNAME_WSA_FROM);
+            if (from != null) {
+                OMElement addrElement = from.getFirstChildWithName(QNAME_WSA_ADDRESS);
+                if (addrElement != null && contract.getInterfaceContract().getCallbackInterface() != null) {
+                    callbackAddress = addrElement.getText();
                 }
             }
         }
 
-        Message requestMsg = messageFactory.createMessage();
-        requestMsg.setBody(args);
-        requestMsg.setTo(((RuntimeComponentService)contract).getRuntimeWire(getBinding()).getTarget());
-        if (callbackAddress != null) {
-            requestMsg.setFrom(new EndpointReferenceImpl(callbackAddress));
+        RuntimeWire wire = null;
+        try {
+            wire = (RuntimeWire)(((RuntimeComponentService)contract).getRuntimeWire(getBinding())).clone();
+        } catch (CloneNotSupportedException e) {
+            // Should not happen
         }
+        EndpointReference source = wire.getSource();
+        if (callbackAddress != null) {
+            source.setCallbackEndpoint(new EndpointReferenceImpl(callbackAddress));
+        }
+
+        EndpointReference to = wire.getTarget();
         if (callbackID != null) {
-            requestMsg.setCorrelationID(callbackID);
+            to.getReferenceParameters().setCallbackID(callbackID);
         }
         if (conversationID != null) {
-            requestMsg.setConversationID(conversationID);
+            to.getReferenceParameters().setConversationID(conversationID);
         }
+        return wire.invoke(op, args);
 
-        Message workContext = ThreadMessageContext.setMessageContext(requestMsg);
-        try {
-            Message responseMsg = ((RuntimeComponentService)contract).getInvoker(getBinding(), op).invoke(requestMsg);
-            if (responseMsg.isFault()) {
-                throw new InvocationTargetException((Throwable)responseMsg.getBody());
-            }
-            return responseMsg.getBody();
-        } finally {
-            ThreadMessageContext.setMessageContext(workContext);
-        }
     }
 
     public boolean isConversational() {
         return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
     }
-    
+
     /**
      * Return the binding for this provider as a primitive binding type
      * For use when looking up wires registered against the binding.
      * 
      * @return the binding
      */
-    protected Binding getBinding(){
+    protected Binding getBinding() {
         return wsBinding;
     }
     

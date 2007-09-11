@@ -45,6 +45,13 @@ public interface CompositeActivator {
      * @param component
      * @param ref
      */
+    void start(RuntimeComponent component, RuntimeComponentReference ref);
+    
+    /**
+     * Activate a component reference
+     * @param component
+     * @param ref
+     */
     void activate(RuntimeComponent component, RuntimeComponentReference ref);
 
     /**

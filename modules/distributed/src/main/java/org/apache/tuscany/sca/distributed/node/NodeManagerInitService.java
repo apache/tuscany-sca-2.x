@@ -20,12 +20,12 @@
 package org.apache.tuscany.sca.distributed.node;
 
 
+
 /**
  * Initializes the Node Management component
  * 
  * @version $Rev: 552343 $ $Date$
  */
-
 public interface NodeManagerInitService {
      
     /**

@@ -33,35 +33,32 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class JMSBindingListener implements MessageListener {
 
-   
-    private JMSBinding              jmsBinding;
-    private JMSResourceFactory      jmsResourceFactory;
+    private JMSBinding jmsBinding;
+    private JMSResourceFactory jmsResourceFactory;
     private RuntimeComponentService service;
-    private JMSMessageProcessor     requestMessageProcessor;
-    private JMSMessageProcessor     responseMessageProcessor;
-    private String                  correlationScheme;
-    private MessageFactory          messageFactory;
+    private JMSMessageProcessor requestMessageProcessor;
+    private JMSMessageProcessor responseMessageProcessor;
+    private String correlationScheme;
+    private MessageFactory messageFactory;
+
     //private Method                  operationMethod;    
 
-    public JMSBindingListener(JMSBinding              jmsBinding,
-                              JMSResourceFactory      jmsResourceFactory,
-                              RuntimeComponentService service) 
-      throws NamingException {
-        this.jmsBinding          = jmsBinding;
-        this.jmsResourceFactory  = jmsResourceFactory;
-        this.service             = service;
-        requestMessageProcessor  = jmsBinding.getRequestMessageProcessor();
+    public JMSBindingListener(JMSBinding jmsBinding,
+                              JMSResourceFactory jmsResourceFactory,
+                              RuntimeComponentService service) throws NamingException {
+        this.jmsBinding = jmsBinding;
+        this.jmsResourceFactory = jmsResourceFactory;
+        this.service = service;
+        requestMessageProcessor = jmsBinding.getRequestMessageProcessor();
         responseMessageProcessor = jmsBinding.getResponseMessageProcessor();
-        correlationScheme        = jmsBinding.getCorrelationScheme();
-        messageFactory           = new MessageFactoryImpl();
+        correlationScheme = jmsBinding.getCorrelationScheme();
+        messageFactory = new MessageFactoryImpl();
     }
 
     public void onMessage(Message requestJMSMsg) {
@@ -82,58 +79,28 @@ public class JMSBindingListener implements MessageListener {
      * @throws JMSException
      * @throws InvocationTargetException
      */
-    protected Object invokeService(Message requestJMSMsg) 
-      throws JMSException, InvocationTargetException {
+    protected Object invokeService(Message requestJMSMsg) throws JMSException, InvocationTargetException {
 
         String operationName = requestMessageProcessor.getOperationName(requestJMSMsg);
         Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(requestJMSMsg);
 
-        org.apache.tuscany.sca.invocation.Message requestMsg = messageFactory.createMessage();
+        List<Operation> opList = service.getInterfaceContract().getInterface().getOperations();
 
-        requestMsg.setBody(requestPayload);
+        Operation operation = null;
 
-        org.apache.tuscany.sca.invocation.Message workContext = ThreadMessageContext.getMessageContext();
-        ThreadMessageContext.setMessageContext(requestMsg);
-        
-        try {
-            /* TODO - work out how to do this bit 
-             
-            if (isConversational() && conversationID != null) {
-                    requestMsg.setConversationID(conversationID);
-            } else {
-                    requestMsg.setConversationID(null);
+        for (Operation op : opList) {
+            if (op.getName().equals(operationName)) {
+                operation = op;
+                break;
             }
-            */
-            // get the operation object
-            List<Operation> opList = service.getInterfaceContract().getInterface().getOperations();
-            
-            Operation operation = null;
-            
-            for(Operation op : opList){
-                if ( op.getName().equals(operationName)) {
-                    operation = op;
-                    break;
-                }
-            }
-            
-            if ( operation != null ){
-            
-                // get the component invoker
-                Invoker invoker = service.getInvoker(jmsBinding, operation);
-    
-                org.apache.tuscany.sca.invocation.Message responseMsg = invoker.invoke(requestMsg);
+        }
 
-                if (responseMsg.isFault()) {
-                    throw new InvocationTargetException((Throwable)responseMsg.getBody());
-                }
-                return responseMsg.getBody();
-            } else {
-                throw new JMSBindingException("Can't find operation " + operationName );
-            }
+        if (operation != null) {
+            return service.getRuntimeWire(jmsBinding).invoke(operation, (Object[])requestPayload);
+        } else {
+            throw new JMSBindingException("Can't find operation " + operationName);
+        }
 
-        } finally {
-            ThreadMessageContext.setMessageContext(workContext);
-        }   
     }
 
     protected void sendReply(Message requestJMSMsg, Object responsePayload) {
@@ -150,8 +117,7 @@ public class JMSBindingListener implements MessageListener {
             replyJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
             replyJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
 
-            if (correlationScheme == null || 
-                JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
+            if (correlationScheme == null || JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
                 replyJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSMessageID());
             } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
                 replyJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSCorrelationID());

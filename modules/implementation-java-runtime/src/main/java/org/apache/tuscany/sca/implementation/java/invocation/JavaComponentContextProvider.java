@@ -179,12 +179,13 @@ public class JavaComponentContextProvider {
                         ObjectFactory<?> factory = null;
                         if (CallableReference.class.isAssignableFrom(baseType)) {
                             Type callableRefType = JavaIntrospectionHelper.getParameterType(element.getGenericType());
-                            Type businessType = JavaIntrospectionHelper.getParameterType(callableRefType);
+                            // Type businessType = JavaIntrospectionHelper.getParameterType(callableRefType);
                             Class<?> businessInterface =
-                                JavaIntrospectionHelper.getBusinessInterface(baseType, businessType);
+                                JavaIntrospectionHelper.getBusinessInterface(baseType, callableRefType);
                             factory =
                                 new CallableReferenceObjectFactory(businessInterface, component,
-                                                                   (RuntimeComponentReference)componentReference);
+                                                                   (RuntimeComponentReference)wireList.get(i).getSource().getContract(),
+                                                                   wireList.get(i).getSource().getBinding());
                         } else {
                             factory = createWireFactory(baseType, wireList.get(i));
                         }
@@ -203,7 +204,7 @@ public class JavaComponentContextProvider {
                                     .getGenericType());
                             factory =
                                 new CallableReferenceObjectFactory(businessInterface, component,
-                                                                   (RuntimeComponentReference)componentReference);
+                                                                   (RuntimeComponentReference)componentReference, null);
                         } else {
                             factory = createWireFactory(element.getType(), wireList.get(0));
                         }
@@ -257,9 +258,8 @@ public class JavaComponentContextProvider {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         try {
-
             Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-            return new JavaImplementationInvoker(method, component);
+            return new JavaImplementationInvoker(operation, method, component);
 
         } catch (NoSuchMethodException e) {
             throw new TargetMethodNotFoundException("No matching method is found for operation " + operation.getName()

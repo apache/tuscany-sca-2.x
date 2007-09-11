@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
-import java.net.URL;
-
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -36,7 +34,7 @@ public class Axis2SCABindingInvoker implements Interceptor {
 
     private Invoker axis2Invoker;
     private Axis2SCAReferenceBindingProvider provider;
-    
+
     public Axis2SCABindingInvoker(Axis2SCAReferenceBindingProvider provider, Invoker axis2Invoker) {
         this.axis2Invoker = axis2Invoker;
         this.provider = provider;
@@ -61,45 +59,37 @@ public class Axis2SCABindingInvoker implements Interceptor {
         // make sure that the epr of the target service is set in the TO
         // field of the message
         EndpointReference ep = msg.getTo();
-      
+
         // check to see if we either don't have an endpoint set or if the uri 
         // is dynamic or the target service is marked as unresolved
-        if ((ep == null) || 
-            ((ep != null) && (ep.getURI().equals("/"))) ||
-            ((ep != null) && (ep.getContract() == null)) ||
-            ((ep != null) && (ep.getContract().isUnresolved()))){
-            
+        if ((ep == null) || (ep.getURI().equals("/") || (ep.getContract() == null) || (ep.getContract().isUnresolved()))) {
+
             EndpointReference serviceEPR = provider.getServiceEndpoint();
-            
-            if ( serviceEPR == null){
-                throw new ServiceUnavailableException("Endpoint for service: " +
-                                                      provider.getSCABinding().getURI() +
-                                                      " can't be found for component: " +
-                                                      provider.getComponent().getName() +
-                                                      " reference: " + 
-                                                      provider.getComponentReference().getName());
+
+            if (serviceEPR == null) {
+                throw new ServiceUnavailableException("Endpoint for service: " + provider.getSCABinding().getURI()
+                    + " can't be found for component: "
+                    + provider.getComponent().getName()
+                    + " reference: "
+                    + provider.getComponentReference().getName());
             }
             msg.setTo(serviceEPR);
         }
-        
+
         // make sure that the epr of the callback service (if there is one) is set
-        // in the FROM field of the message. 
-        ep  = msg.getFrom();
-        
-        if ((ep == null) || 
-            (ep != null) && (ep.getURI().equals("/")) ){
-            
+        // in the from/callback field of the message. 
+        ep = msg.getFrom();
+
+        if ((ep == null) || (ep.getURI().equals("/"))) {
+
             EndpointReference callbackEPR = provider.getCallbackEndpoint();
-            
-            if ( callbackEPR != null){
-                msg.setTo(callbackEPR);
+
+            if (callbackEPR != null) {
+                ep.setCallbackEndpoint(callbackEPR);
             }
         }
-        
-        
-        
+
         // do the axis2 stuff
         return axis2Invoker.invoke(msg);
     }
-
 }

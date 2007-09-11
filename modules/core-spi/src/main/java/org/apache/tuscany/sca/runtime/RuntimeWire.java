@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.runtime;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -51,6 +52,11 @@ public interface RuntimeWire extends Cloneable {
      * @param target The target endpoint reference
      */
     void setTarget(EndpointReference target);
+    
+    /**
+     * Force the invocation chains to be rebuilt
+     */
+    void rebuild();
 
     /**
      * Returns the invocation chains for service operations associated with the
@@ -67,6 +73,15 @@ public interface RuntimeWire extends Cloneable {
      * @return The invocation chain for the given operation
      */
     InvocationChain getInvocationChain(Operation operation);
+    
+    /**
+     * Invoke an operation with given arguments
+     * @param operation
+     * @param args The arguments
+     * @return The result
+     * @throws InvocationTargetException
+     */
+    Object invoke(Operation operation, Object[] args) throws InvocationTargetException;
 
     /**
      * @return a clone of the runtime wire

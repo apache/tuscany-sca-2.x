@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
+import org.apache.tuscany.sca.core.scope.TargetDestructionException;
+import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -44,10 +46,12 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
@@ -57,9 +61,10 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected boolean conversational;
     protected ConversationImpl conversation;
-    protected boolean conversationStarted;
+    // protected boolean conversationStarted;
     protected MessageFactory messageFactory;
     protected EndpointReference endpoint;
+    protected Object conversationID;
     protected Object callbackID;
     protected Object callbackObject;
     protected RuntimeWire wire;
@@ -73,7 +78,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.messageFactory = messageFactory;
         this.wire = wire;
         this.businessInterface = businessInterface;
-        setConversational(wire);
+        init(this.wire);
     }
 
     public JDKInvocationHandler(MessageFactory messageFactory, CallableReference<?> callableReference) {
@@ -85,15 +90,24 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             this.conversation = (ConversationImpl)callableReference.getConversation();
             this.wire = ((CallableReferenceImpl<?>)callableReference).getRuntimeWire();
             if (callableReference instanceof ServiceReference) {
+                this.conversationID = ((ServiceReference)callableReference).getConversationID();
                 this.callbackObject = ((ServiceReference)callableReference).getCallback();
             }
             if (wire != null) {
-                setConversational(wire);
+                init(wire);
             }
         }
     }
 
-    protected void setConversational(RuntimeWire wire) {
+    protected void init(RuntimeWire wire) {
+        if (wire != null) {
+            try {
+                // Clone the wire so that reference parameters can be changed
+                this.wire = (RuntimeWire)wire.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
         InterfaceContract contract = wire.getSource().getInterfaceContract();
         this.conversational = contract.getInterface().isConversational();
     }
@@ -103,8 +117,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             return invokeObjectMethod(method, args);
         }
         if (wire == null) {
-            //FIXME: need better exception
-            throw new RuntimeException("Destination for call is not known");
+            throw new ServiceRuntimeException("No runtime wire is available");
         }
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {
@@ -118,10 +131,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     }
 
     /**
+     * Handle the methods on the Object.class
      * @param method
      * @param args
      */
-    private Object invokeObjectMethod(Method method, Object[] args) throws Throwable {
+    protected Object invokeObjectMethod(Method method, Object[] args) throws Throwable {
         String name = method.getName();
         if ("toString".equals(name)) {
             return "[Proxy - " + toString() + "]";
@@ -188,138 +202,150 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         return found;
     }
 
-    public void setEndpoint(EndpointReference endpoint) {
+    protected void setEndpoint(EndpointReference endpoint) {
         this.endpoint = endpoint;
-    }
-
-    public void setCallbackID(Object callbackID) {
-        this.callbackID = callbackID;
     }
 
     protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
 
-        Message msgContext = ThreadMessageContext.getMessageContext();
-        Object msgContextConversationId = msgContext.getConversationID();
-
         Message msg = messageFactory.createMessage();
-
-        // make sure that the conversation id is set so it can be put in the 
-        // outgoing messages.        
-        if (conversational) {
-            Object conversationId = conversation.getConversationID();
-
-            // create a conversation id if one doesn't exist 
-            // already, i.e. the conversation is just starting
-            // If this is a callback the conversation id will have been
-            // set to the conversation from the message context already
-            if (conversationId == null) {
-                // create a new conversation Id
-                conversationId = createConversationID();
-                conversation.setConversationID(conversationId);
-            }
-
-            msg.setConversationID(conversationId);
-            
-            // If we are passing out a callback target register the calling component instance against 
-            // this new conversation id so that stateful callbacks will be able to find it
-            // we don't check if the callback has conversation scope here as non-conversational
-            // scoped components still need to have the conversation ids on the calling reference set
-            // to null
-            if (wire.getSource().getCallbackEndpoint() != null && callbackObject == null) {
-                // the component instance will already registered by now so add another registration
-                ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-
-                if (scopeContainer != null) {
-                    scopeContainer.addWrapperReference(msgContextConversationId, conversation);
-                }
-            }
-        }
-        
-        Invoker headInvoker = chain.getHeadInvoker();
-        msg.setCorrelationID(callbackID);
-        Operation operation = chain.getTargetOperation();
-        msg.setOperation(operation);
-        Interface contract = operation.getInterface();
-        if (contract != null && contract.isConversational()) {
-            ConversationSequence sequence = operation.getConversationSequence();
-            if (sequence == ConversationSequence.CONVERSATION_END) {
-                msg.setConversationSequence(ConversationSequence.CONVERSATION_END);
-                conversationStarted = false;
-            } else if (sequence == ConversationSequence.CONVERSATION_CONTINUE) {
-                if (conversationStarted) {
-                    msg.setConversationSequence(ConversationSequence.CONVERSATION_CONTINUE);
-                } else {
-                    conversationStarted = true;
-                    msg.setConversationSequence(ConversationSequence.CONVERSATION_START);
-                }
-            }
-        }
-        msg.setCallableReference(callableReference);
-        msg.setBody(args);
-        if (wire.getSource() != null) {
-            EndpointReference callbackEndpoint = wire.getSource().getCallbackEndpoint();
-            if (callbackEndpoint != null) {
-                if (callbackObject != null) {
-                    if (callbackObject instanceof ServiceReference) {
-                        msg.setFrom(((CallableReferenceImpl)callbackObject).getRuntimeWire().getTarget());
-                    } else {
-                        if (contract != null) {
-                            if (!contract.isConversational()) {
-                                throw new IllegalArgumentException
-                                        ("Callback object for stateless callback is not a ServiceReference");
-                            } else {
-                                ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-                                if (scopeContainer != null) {
-                                    InstanceWrapper<Object> wrapper = new CallbackObjectWrapper(callbackObject);
-                                    scopeContainer.registerWrapper(wrapper, conversation.getConversationID());
-                                }
-                                msg.setFrom(callbackEndpoint);
-                            }
-                        }
-                    }
-                } else {
-                    msg.setFrom(callbackEndpoint);
-                }
-            }
-        }
+        msg.setFrom(wire.getSource());
         if (endpoint != null) {
             msg.setTo(endpoint);
         } else {
             msg.setTo(wire.getTarget());
         }
+        Invoker headInvoker = chain.getHeadInvoker();
+        Operation operation = chain.getTargetOperation();
+        msg.setOperation(operation);
+        msg.setBody(args);
 
+        Message msgContext = ThreadMessageContext.getMessageContext();
+        Object currentConversationID = msgContext.getTo().getReferenceParameters().getConversationID();
+
+        conversationPreinvoke(msg, wire);
+        handleCallback(msg, wire, currentConversationID);
         ThreadMessageContext.setMessageContext(msg);
         try {
             // dispatch the wire down the chain and get the response
             Message resp = headInvoker.invoke(msg);
             Object body = resp.getBody();
-            
-            // Mark the object instance for removal if the conversation has ended
-            if (contract != null && contract.isConversational()) {
-                ConversationSequence sequence = operation.getConversationSequence();
-                if (sequence == ConversationSequence.CONVERSATION_END) {
-                    if (conversation != null) {
-
-                        // remove conversation id from scope container
-                        ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-
-                        if (scopeContainer != null) {
-                            scopeContainer.remove(conversation.getConversationID());
-                        }
-
-                        conversation.setConversationID(null);
-                    }
-                }
-            }               
-            
             if (resp.isFault()) {
                 throw (Throwable)body;
             }
             return body;
         } finally {
+            conversationPostInvoke(wire, operation);
             ThreadMessageContext.setMessageContext(msgContext);
         }
-        
+    }
+
+    /**
+     * @param msg
+     * @param wire
+     * @param interfaze
+     * @throws TargetResolutionException
+     */
+    private void handleCallback(Message msg, RuntimeWire wire, Object currentConversationID)
+        throws TargetResolutionException {
+        ReferenceParameters parameters = msg.getTo().getReferenceParameters();
+        parameters.setCallbackID(callbackID);
+        if (wire.getSource() == null || wire.getSource().getCallbackEndpoint() == null) {
+            return;
+        }
+
+        parameters.setCallbackReference(wire.getSource().getCallbackEndpoint());
+
+        // If we are passing out a callback target
+        // register the calling component instance against this 
+        // new conversation id so that stateful callbacks will be
+        // able to find it
+        if (conversational && callbackObject == null) {
+            // the component instance is already registered
+            // so add another registration
+            ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
+
+            if (scopeContainer != null) {
+                scopeContainer.addWrapperReference(currentConversationID, conversation);
+            }
+        }
+
+        Interface interfaze = msg.getOperation().getInterface();
+        if (callbackObject != null) {
+            if (callbackObject instanceof ServiceReference) {
+                EndpointReference callbackRef = ((CallableReferenceImpl)callbackObject).getEndpointReference();
+                parameters.setCallbackReference(callbackRef);
+            } else {
+                parameters.setCallbackReference(wire.getSource().getCallbackEndpoint());
+                if (interfaze != null) {
+                    if (!interfaze.isConversational()) {
+                        throw new IllegalArgumentException(
+                                                           "Callback object for stateless callback is not a ServiceReference");
+                    } else {
+                        ScopeContainer scopeContainer = getConversationalScopeContainer(wire);
+                        if (scopeContainer != null) {
+                            InstanceWrapper wrapper = new CallbackObjectWrapper(callbackObject);
+                            scopeContainer.registerWrapper(wrapper, conversation.getConversationID());
+                        }
+                        parameters.setCallbackObjectID("java:" + System.identityHashCode(callbackObject));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Pre-invoke for the conversation handling
+     * @param msg
+     * @param wire
+     * @throws TargetResolutionException
+     */
+    private void conversationPreinvoke(Message msg, RuntimeWire wire) throws TargetResolutionException {
+        if (!conversational) {
+            // Not conversational or the conversation has been started
+            return;
+        }
+        // make sure that the conversation id is set so it can be put in the 
+        // outgoing messages.        
+        Object convID = conversation.getConversationID();
+
+        // create a conversation id if one doesn't exist 
+        // already, i.e. the conversation is just starting
+        // If this is a callback the conversation id will have been
+        // set to the conversation from the message context already
+        if (convID == null) {
+            // create a new conversation Id
+            convID = createConversationID();
+            conversation.setConversationID(convID);
+        }
+        // TODO - assuming that the conversation ID is a string here when
+        //       it can be any object that is serializable to XML
+        msg.getTo().getReferenceParameters().setConversationID(conversation.getConversationID());
+    }
+
+    /**
+     * Post-invoke for the conversation handling
+     * @param wire
+     * @param operation
+     * @throws TargetDestructionException
+     */
+    private void conversationPostInvoke(RuntimeWire wire, Operation operation) throws TargetDestructionException {
+        ConversationSequence sequence = operation.getConversationSequence();
+        if (sequence == ConversationSequence.CONVERSATION_END) {
+            if (conversation != null) {
+
+                // remove conversation id from scope container
+                ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
+
+                if (scopeContainer != null) {
+                    scopeContainer.remove(conversation.getConversationID());
+                }
+
+                if (conversation.getConversationID() != null) {
+                    conversation.end();
+                }
+            }
+        }
 
     }
 
@@ -345,8 +371,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * 
      * @return the conversational id
      */
-    private String createConversationID() {
-        return UUID.randomUUID().toString();
+    private Object createConversationID() {
+        if (conversationID == null) {
+            return UUID.randomUUID().toString();
+        }
+        return conversationID;
     }
 
     /**
@@ -381,7 +410,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         public void start() {
             // do nothing
         }
-        
+
         public void stop() {
             // do nothing
         }

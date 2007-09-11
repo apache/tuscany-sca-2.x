@@ -23,11 +23,12 @@ import java.util.UUID;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.Conversation;
 import org.osoa.sca.ServiceReference;
 
 /**
@@ -53,7 +54,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     public ServiceReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
         super(businessInterface, wire, proxyFactory);
     }
-    
+
     public ServiceReferenceImpl(Class<B> businessInterface,
                                 RuntimeComponent component,
                                 RuntimeComponentReference reference,
@@ -88,10 +89,9 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
                 conversation.setConversationID(conversationID);
             }
         } else {
-            throw new IllegalStateException("Trying to set conversation id " + 
-                                            conversationID.toString() +
-                                            "on non conversational reference " + 
-                                            reference.getName());
+            throw new IllegalStateException("Trying to set conversation id " + conversationID.toString()
+                + "on non conversational reference "
+                + reference.getName());
         }
     }
 
@@ -107,7 +107,22 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
         if (callback != null && !(callback instanceof CallableReference)) {
             //FIXME: need to check if callback object supports the callback interface
             // returned by reference.getInterfaceContract().getCallbackInterface()
-        }    
+        }
         this.callback = callback;
+    }
+
+    protected ReferenceParameters getReferenceParameters() {
+        ReferenceParameters parameters = super.getReferenceParameters();
+        if (callback != null) {
+            if (callback instanceof ServiceReference) {
+                EndpointReference callbackRef = ((CallableReferenceImpl)callback).getEndpointReference();
+                parameters.setCallbackReference(callbackRef);
+            } else {
+                EndpointReference callbackRef = getRuntimeWire().getSource().getCallbackEndpoint();
+                parameters.setCallbackReference(callbackRef);
+                parameters.setCallbackObjectID("java:"+System.identityHashCode(callback));
+            }
+        }
+        return parameters;
     }
 }

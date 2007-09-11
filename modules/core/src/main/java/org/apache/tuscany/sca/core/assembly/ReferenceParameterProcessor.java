@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core.context;
+package org.apache.tuscany.sca.core.assembly;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
  * @version $Rev$ $Date$
@@ -48,8 +49,7 @@ public class ReferenceParameterProcessor implements StAXArtifactProcessor<Refere
      * @see org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor#read(javax.xml.stream.XMLStreamReader)
      */
     public ReferenceParameters read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        ReferenceParameters parameters = new ReferenceParameters();
-        parameters.setComponentURI(reader.getAttributeValue(null, "componentURI"));
+        ReferenceParameters parameters = new ReferenceParametersImpl();
         parameters.setConversationID(reader.getAttributeValue(null, "conversationID"));
         parameters.setCallbackID(reader.getAttributeValue(null, "callbackID"));
         return parameters;
@@ -64,9 +64,6 @@ public class ReferenceParameterProcessor implements StAXArtifactProcessor<Refere
                                  REFERENCE_PARAMETERS.getLocalPart(),
                                  REFERENCE_PARAMETERS.getNamespaceURI());
         writer.writeNamespace(REFERENCE_PARAMETERS.getPrefix(), REFERENCE_PARAMETERS.getNamespaceURI());
-        if (model.getComponentURI() != null) {
-            writer.writeAttribute("componentURI", model.getComponentURI());
-        }
         if (model.getConversationID() != null) {
             writer.writeAttribute("conversationID", model.getConversationID().toString());
         }

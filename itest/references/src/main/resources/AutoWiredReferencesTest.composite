@@ -29,9 +29,13 @@
         <reference name="cReference" autowire="true" />
         <reference name="dReference1" />
         <!-- 
-        <reference name="dReference1" target="DComponent" />
-         -->
+            <reference name="dReference1" target="DComponent" />
+        -->
         <reference name="DReference2" target="DComponent" />
+        <reference name="dReferences" autowire="true" />
+        <reference name="dReferenceArray" autowire="true" />
+        <reference name="dServiceReferences" target="DComponent DComponent1" />
+
     </component>
 
     <component name="BComponent">
@@ -43,6 +47,10 @@
     </component>
 
     <component name="DComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.DComponentImpl" />
+    </component>
+
+    <component name="DComponent1">
         <implementation.java class="org.apache.tuscany.sca.itest.references.DComponentImpl" />
     </component>
 </composite>

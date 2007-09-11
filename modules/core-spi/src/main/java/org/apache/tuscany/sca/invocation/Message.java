@@ -18,10 +18,8 @@
  */
 package org.apache.tuscany.sca.invocation;
 
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.EndpointReference;
-import org.osoa.sca.CallableReference;
 
 /**
  * Represents a request, response, or exception flowing through a wire
@@ -43,15 +41,19 @@ public interface Message {
     <T> void setBody(T body);
 
     /**
+     * @deprecated
      * Get the conversation id
      * @return The conversation ID
      */
+    @Deprecated
     Object getConversationID();
 
     /**
+     * @deprecated
      * Set the conversation id
      * @param conversationId The conversation ID
      */
+    @Deprecated
     void setConversationID(Object conversationId);
 
     /**
@@ -77,6 +79,9 @@ public interface Message {
      * @param to The end point reference of the service that the message targets
      */
     void setTo(EndpointReference to);
+    
+    EndpointReference getReplyTo();
+    void setReplyTo(EndpointReference replyTo);
 
     /**
      * Returns the id of the message
@@ -95,12 +100,14 @@ public interface Message {
      * for message routing.
      * @return The correlation Id
      */
+    @Deprecated
     Object getCorrelationID();
 
     /**
      * Sets the correlation id of the message. Correlation ids are used by transports for message routing.
      * @param correlationId The correlation Id
      */
+    @Deprecated
     void setCorrelationID(Object correlationId);
 
     /**
@@ -118,20 +125,6 @@ public interface Message {
     <T> void setFaultBody(T fault);
 
     /**
-     * Returns the conversational sequence the message is associated with, NONE, START, CONTINUE, or END on TargetInvoker}
-     *
-     * @return The conversational sequence the message is associated with
-     */
-    ConversationSequence getConversationSequence();
-
-    /**
-     * Sets the conversational sequence the message is associated with, NONE, START, CONTINUE, or END
-     *
-     * @param sequence The conversational sequence
-     */
-    void setConversationSequence(ConversationSequence sequence);
-
-    /**
      * Returns the operation that created the message.
      *
      * @return The operation that created the message
@@ -144,23 +137,5 @@ public interface Message {
      * @param op The operation that created the message
      */
     void setOperation(Operation op);
-
-    /**
-     * Get the associated callable reference
-     * @param <B>
-     * @return The callable reference
-     * @deprecated Seems to duplicate other fields of the Message
-     */
-    @Deprecated
-    <B> CallableReference<B> getCallableReference();
-    
-    /**
-     * Set the callable reference
-     * @param <B>
-     * @param callableReference
-     * @deprecated Seems to duplicate other fields of the Message
-     */
-    @Deprecated
-    <B> void setCallableReference(CallableReference<B> callableReference);
 
 }

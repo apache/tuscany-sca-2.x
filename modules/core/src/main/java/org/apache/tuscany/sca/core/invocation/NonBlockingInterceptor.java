@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.LinkedList;
 
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -28,7 +27,6 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.work.WorkScheduler;
-import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -143,14 +141,6 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
 
-        public void setConversationSequence(ConversationSequence sequence) {
-            throw new UnsupportedOperationException();
-        }
-        
-        public ConversationSequence getConversationSequence() {
-            return null;
-        }
-
         public EndpointReference getFrom() {
             return null;
         }
@@ -174,18 +164,18 @@ public class NonBlockingInterceptor implements Interceptor {
         public void setOperation(Operation op) {
             throw new UnsupportedOperationException();
         }
-        
+
         /**
-         * @see org.apache.tuscany.sca.invocation.Message#getCallableReference()
+         * @see org.apache.tuscany.sca.invocation.Message#getReplyTo()
          */
-        public <B> CallableReference<B> getCallableReference() {
+        public EndpointReference getReplyTo() {
             return null;
         }
 
         /**
-         * @see org.apache.tuscany.sca.invocation.Message#setCallableReference(org.osoa.sca.CallableReference)
+         * @see org.apache.tuscany.sca.invocation.Message#setReplyTo(org.apache.tuscany.sca.runtime.EndpointReference)
          */
-        public <B> void setCallableReference(CallableReference<B> callableReference) {
+        public void setReplyTo(EndpointReference replyTo) {
             throw new UnsupportedOperationException();
         }
 

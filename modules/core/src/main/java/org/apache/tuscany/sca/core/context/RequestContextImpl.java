@@ -26,7 +26,9 @@ import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -55,15 +57,17 @@ public class RequestContextImpl implements RequestContext {
 
     @SuppressWarnings("unchecked")
     public <B> CallableReference<B> getServiceReference() {
+        Message msgContext = ThreadMessageContext.getMessageContext();
         // FIXME: [rfeng] Is this the service reference matching the caller side?
-        EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
+        EndpointReference to = msgContext.getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         
         CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
-        ((CallableReferenceImpl<B>) callableReference).attachCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
+        ReferenceParameters parameters = msgContext.getTo().getReferenceParameters();
+        ((CallableReferenceImpl<B>) callableReference).attachCallbackID(parameters.getCallbackID());
         if (callableReference.getConversation() != null) {
-            ((CallableReferenceImpl<B>) callableReference).attachConversationID(ThreadMessageContext.getMessageContext().getConversationID());
+            ((CallableReferenceImpl<B>) callableReference).attachConversationID(parameters.getConversationID());
         }
         return callableReference;
     }
@@ -75,7 +79,8 @@ public class RequestContextImpl implements RequestContext {
 
     @SuppressWarnings("unchecked")
     public <CB> CallableReference<CB> getCallbackReference() {
-        EndpointReference to = ThreadMessageContext.getMessageContext().getTo();
+        Message msgContext = ThreadMessageContext.getMessageContext();
+        EndpointReference to = msgContext.getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getContract();
         RuntimeComponentReference callbackReference = (RuntimeComponentReference)service.getCallbackReference();
         if (callbackReference == null) {
@@ -86,9 +91,10 @@ public class RequestContextImpl implements RequestContext {
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
         factory.resolveTarget();
-        factory.attachCallbackID(ThreadMessageContext.getMessageContext().getCorrelationID());
+        ReferenceParameters parameters = msgContext.getTo().getReferenceParameters();
+        factory.attachCallbackID(parameters.getCallbackID());
         if (factory.getConversation() != null) {
-            factory.attachConversationID(ThreadMessageContext.getMessageContext().getConversationID());
+            factory.attachConversationID(parameters.getConversationID());
         }
         return factory;
     }

@@ -18,10 +18,18 @@
  */
 package org.apache.tuscany.sca.itest.references;
 
+import org.osoa.sca.annotations.ComponentName;
+
 public class DComponentImpl implements DComponent {
+    @ComponentName
+    public String name;
 
     public String dFoo() {
         return "DComponent";
+    }
+
+    public String getComponentName() {
+        return name;
     }
 
 }

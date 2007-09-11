@@ -26,11 +26,19 @@ import org.apache.tuscany.sca.databinding.impl.SimpleType2JavaTransformer;
  */
 public class OMElement2Object extends SimpleType2JavaTransformer<OMElement> {
 
+    /**
+     * @see org.apache.tuscany.sca.databinding.impl.SimpleType2JavaTransformer#close(java.lang.Object)
+     */
+    @Override
+    protected void close(OMElement source) {
+        if (source != null) {
+            AxiomHelper.completeAndClose(source);
+        }
+    }
+
     @Override
     protected String getText(OMElement source) {
-        String text = source.getText();
-        AxiomHelper.completeAndClose(source);
-        return text;
+        return source.getText();
     }
 
     @Override
