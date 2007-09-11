@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 /**
  * An implementation of an extensible model resolver which delegates to the
  * proper resolver extension based on the class of the model to resolve.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ExtensibleModelResolver implements ModelResolver {
@@ -42,6 +42,7 @@ public class ExtensibleModelResolver implements ModelResolver {
 
     /**
      * Constructs an extensible model resolver
+     * 
      * @param resolvers
      * @param contribution
      */
@@ -56,6 +57,7 @@ public class ExtensibleModelResolver implements ModelResolver {
     /**
      * Returns the proper resolver instance based on the interfaces of the model
      * If one is not available on the registry, instantiate on demand
+     * 
      * @param modelType
      * @return
      */
@@ -71,7 +73,7 @@ public class ExtensibleModelResolver implements ModelResolver {
         }
         for (Class<?> c : classes) {
 
-            // Look up an existing model resolver instance 
+            // Look up an existing model resolver instance
             ModelResolver resolverInstance = resolverInstances.get(c);
             if (resolverInstance != null) {
                 return resolverInstance;

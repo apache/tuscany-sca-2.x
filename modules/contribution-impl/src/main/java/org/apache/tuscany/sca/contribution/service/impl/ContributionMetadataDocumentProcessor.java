@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
- * Loader that handles contribution metadata files
+ * MetadataDocumentProcessor that handles contribution metadata files
  * 
  * @version $Rev$ $Date$
  */

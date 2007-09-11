@@ -27,9 +27,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionException;
  */
 public class InvalidContributionMetadataException extends ContributionException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -3184477070625689942L;
 
     protected InvalidContributionMetadataException() {

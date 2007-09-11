@@ -40,14 +40,13 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 /**
- * Loader that handles contribution metadata files
+ * Processor responsible for loading particular elements from contribution metadata file
  * 
  * @version $Rev$ $Date$
  */
 public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Contribution> {
     
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    private static final String TARGET_NAMESPACE = "targetNamespace";
     
     private static final QName CONTRIBUTION = new QName(SCA10_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA10_NS, "deployable");

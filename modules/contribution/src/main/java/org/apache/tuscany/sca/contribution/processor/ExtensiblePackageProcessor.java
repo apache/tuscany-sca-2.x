@@ -33,6 +33,9 @@ import org.apache.tuscany.sca.contribution.service.UnsupportedContentTypeExcepti
 /**
  * Default implementation of PackageProcessor.
  * 
+ * This implementation has a packageProcessorExtensionPoint 
+ * and it delegates to the proper package processor based on content type
+ * 
  * @version $Rev$ $Date$
  */
 public class ExtensiblePackageProcessor implements PackageProcessor {

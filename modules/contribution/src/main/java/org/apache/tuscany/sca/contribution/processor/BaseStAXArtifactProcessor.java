@@ -179,6 +179,12 @@ public abstract class BaseStAXArtifactProcessor {
         }
     }
     
+    /**
+     * 
+     * @param writer
+     * @param uri
+     * @throws XMLStreamException
+     */
     private void writeElementPrefix(XMLStreamWriter writer, String uri) throws XMLStreamException {
         if (uri == null) {
             return;
@@ -384,6 +390,11 @@ public abstract class BaseStAXArtifactProcessor {
             }
         }
 
+        /**
+         * Write to document
+         * @param writer
+         * @throws XMLStreamException
+         */
         public void write(XMLStreamWriter writer) throws XMLStreamException {
             String str;
             if (value instanceof QName) {
@@ -444,6 +455,11 @@ public abstract class BaseStAXArtifactProcessor {
             }
         }
 
+        /**
+         * Registers a prefix for the namespace of a QName or list of QNames 
+         * @param writer
+         * @throws XMLStreamException
+         */
         public void writePrefix(XMLStreamWriter writer) throws XMLStreamException {
             if (value instanceof QName) {
                 
