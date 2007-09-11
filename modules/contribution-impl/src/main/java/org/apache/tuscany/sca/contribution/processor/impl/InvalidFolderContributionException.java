@@ -26,9 +26,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionException;
  */
 public class InvalidFolderContributionException extends ContributionException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1564255850052593282L;
 
     protected InvalidFolderContributionException(String componentDefinitionLocatoin) {

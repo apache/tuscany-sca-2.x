@@ -39,6 +39,9 @@ import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
 /**
  * The default implementation of a StAX artifact processor registry.
  * 
+ * This implementation has a StAXArtifactProcessorExtensionPoint and 
+ * it delegates to the proper StAXArtifactProcessor by element QName
+ * 
  * @version $Rev$ $Date$
  */
 public class ExtensibleStAXArtifactProcessor

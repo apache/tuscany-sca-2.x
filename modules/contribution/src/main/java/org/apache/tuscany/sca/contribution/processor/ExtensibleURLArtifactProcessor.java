@@ -29,6 +29,9 @@ import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
 /**
  * The default implementation of a URL artifact processor.
  * 
+ * This implementation has a URLArtifactProcessorExtensionPoint and 
+ * it delegate to the proper URLArtifactProcessor by either fileName or fileExtention
+ * 
  * @version $Rev$ $Date$
  */
 public class ExtensibleURLArtifactProcessor

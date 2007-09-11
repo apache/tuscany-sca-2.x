@@ -24,9 +24,7 @@ package org.apache.tuscany.sca.contribution.service;
  * @version $Rev$ $Date$
  */
 public class ContributionException extends AbstractContributionException {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 4432880414927652578L;
 
     protected ContributionException() {
