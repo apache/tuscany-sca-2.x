@@ -38,8 +38,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.TransportInDescription;
+import org.apache.axis2.engine.ListenerManager;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;
@@ -56,9 +59,12 @@ public class Axis2ServiceServlet extends AxisServlet {
 
     private static final long serialVersionUID = 1L;
     private static final ServletConfig DUMMY_CONFIG = createDummyServletConfig();
+    
+//JIRA TUSCANY-1561 Port to Axis2 1.3    
+    private ConfigurationContext tmpconfigContext;
 
     public void init(ConfigurationContext configContext) {
-        this.configContext = configContext;
+        this.tmpconfigContext = configContext;
         try {
             super.init(DUMMY_CONFIG);
         } catch (ServletException e) {
@@ -76,13 +82,19 @@ public class Axis2ServiceServlet extends AxisServlet {
     public void init() throws ServletException {
     }
 
+    public void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+        servletContext.setAttribute(CONFIGURATION_CONTEXT, tmpconfigContext);
+        super.init(config);
+    }
+
     /**
      * We've setup the Servlet by passing in a ConfigurationContext on our init method 
      * override this method to just return that
      */
     @Override
     protected ConfigurationContext initConfigContext(ServletConfig config) throws ServletException {
-        return this.configContext;
+        return this.tmpconfigContext;
     }
     
     @Override
@@ -269,7 +281,9 @@ public class Axis2ServiceServlet extends AxisServlet {
                     ip = "localhost";
                 }
             } catch (SocketException e) {
-                throw new AxisFault(e);
+//TUSCANY-1561 Port to Axis2 1.3                 
+//                throw new AxisFault.(e);
+                throw AxisFault.makeFault(e);
             }
         }
 

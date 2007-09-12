@@ -124,8 +124,9 @@ public class TuscanyListingAgent extends ListingAgent {
                     OutputStream out = res.getOutputStream();
                     res.setContentType("text/xml");
                     String ip = extractHostAndPort(filePart, isHttp);
-                    ((AxisService) serviceObj)
-                            .printWSDL2(out, ip, configContext.getServiceContextPath());
+// JIRA TUSCANY-1561 Port to Axis2 1.3                    
+//                    ((AxisService) serviceObj).printWSDL2(out, ip, configContext.getServiceContextPath());
+                    ((AxisService) serviceObj).printWSDL2(out, ip);
                     out.flush();
                     out.close();
                     return;
@@ -134,7 +135,9 @@ public class TuscanyListingAgent extends ListingAgent {
                     res.setContentType("text/xml");
                     String ip = extractHostAndPort(filePart, isHttp);
                     patchSOAP12Port((AxisService)serviceObj);
-                    ((AxisService) serviceObj).printWSDL(out, ip, configContext.getServicePath());
+//                  JIRA TUSCANY-1561 Port to Axis2 1.3                    
+//                    ((AxisService) serviceObj).printWSDL(out, ip, configContext.getServicePath());
+                    ((AxisService) serviceObj).printWSDL(out, ip);
                     out.flush();
                     out.close();
                     return;

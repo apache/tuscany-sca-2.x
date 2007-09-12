@@ -33,12 +33,19 @@ import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.xml.namespace.QName;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
+import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.deployment.DeploymentErrorMsgs;
@@ -181,23 +188,42 @@ public class Axis2ServiceProvider {
      */
     protected URI computeActualURI(String baseURI, RuntimeComponent component, AbstractContract contract) {
 
-        // TODO: support wsa:Address
+        org.apache.axis2.addressing.EndpointReference epr = null;
+        URI eprURI = null;
+        if (wsBinding.getEndPointReference() != null) {
+            epr = getEPR(); 
+            if (epr.getAddress() != null) {
+                eprURI = URI.create(epr.getAddress());
+            }
+        }
 
         URI wsdlURI = null;
         if (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null) {
             // <binding.ws> explicitly points at a wsdl port, may be a relative URI
             wsdlURI = getEndpoint(wsBinding.getPort());
         }
+
+        // if the wsdl port/endpoint has an absolute URI use that
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
+            if (wsBinding.getURI() != null) {
+// TODO:                throw new IllegalArgumentException("Cannot specify binding URI when wsdl has aboslute URI");
+            }
             return URI.create(wsdlURI.toString());
         }
 
+        // if the wsa:EndpointReference has an address element with an absolute URI use that
+        if (eprURI != null && eprURI.isAbsolute()) {
+            if (wsBinding.getURI() != null) {
+                throw new IllegalArgumentException("Cannot specify binding URI when wsa:EndpointReference has aboslute address URI");
+            }
+            return URI.create(eprURI.toString());
+        }
+        
         // either there is no wsdl port endpoint URI or that URI is relative
 
         URI bindingURI = URI.create(wsBinding.getURI());
         if (bindingURI.isAbsolute()) {
-            // there is an absoulte uri specified on the binding: <binding.ws
-            // uri="xxx"
+            // there is an absoulte uri specified on the binding: <binding.ws uri="xxx"
             if (wsdlURI != null) {
                 // there is a relative URI in the wsdl port
                 return URI.create(bindingURI + "/" + wsdlURI);
@@ -207,6 +233,24 @@ public class Axis2ServiceProvider {
         } else {
             bindingURI = URI.create(baseURI + "/" + wsBinding.getURI());
             return bindingURI;
+        }
+    }
+
+    private org.apache.axis2.addressing.EndpointReference getEPR() {
+        try {
+
+            XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(wsBinding.getEndPointReference()));
+            StAXOMBuilder builder = new StAXOMBuilder(parser);
+            OMElement omElement = builder.getDocumentElement();
+            org.apache.axis2.addressing.EndpointReference epr = EndpointReferenceHelper.fromOM(omElement);
+            return epr;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        } catch (FactoryConfigurationError e) {
+            throw new RuntimeException(e);
         }
     }
 

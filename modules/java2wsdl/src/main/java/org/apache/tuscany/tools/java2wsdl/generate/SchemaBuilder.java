@@ -34,6 +34,7 @@ import java.util.Vector;
 
 import javax.xml.namespace.QName;
 
+import org.apache.axis2.description.java2wsdl.Java2WSDLUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
@@ -45,7 +46,6 @@ import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
-import org.apache.ws.java2wsdl.Java2WSDLUtils;
 import org.codehaus.jam.JClass;
 import org.codehaus.jam.JProperty;
 

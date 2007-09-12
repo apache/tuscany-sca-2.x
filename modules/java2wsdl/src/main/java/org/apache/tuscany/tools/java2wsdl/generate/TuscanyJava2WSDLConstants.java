@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.tools.java2wsdl.generate;
 
-import org.apache.ws.java2wsdl.Java2WSDLConstants;
+import org.apache.axis2.description.java2wsdl.Java2WSDLConstants;
 
 /**
  * This is a extension from the Axis2 Java2WSDLConstants to handle additions specific to Tuscany.

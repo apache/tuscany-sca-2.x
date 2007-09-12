@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.    
--->
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements. See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership. The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
 <axisconfig name="AxisJava2.0">
     <!-- ================================================= -->
     <!-- Parameters -->
@@ -26,6 +27,7 @@
     <parameter name="enableMTOM">false</parameter>
     <parameter name="enableSwA">false</parameter>
     
+    <!-- Customized by Tuscany -->
     <!-- parameter name="OutflowSecurity">
 		<action>
 			<items>Timestamp</items>
@@ -42,6 +44,7 @@
 
     <!--During a fault, stacktrace can be sent with the fault message. The following flag will control -->
     <!--that behavior.-->
+
     <!-- Customized by Tuscany -->
     <parameter name="sendStacktraceDetailsWithFaults">true</parameter>
 
@@ -55,9 +58,15 @@
     <parameter name="password">axis2</parameter>
 
     <!--To override repository/services you need to uncomment following parameter and value SHOULD be absolute file path.-->
+    <!--ServicesDirectory only works on the following cases-->
+    <!---File based configurator and in that case the value should be a file URL (http:// not allowed)-->
+    <!---When creating URL Based configurator with URL â€œfile://â€  -->
+    <!--- War based configurator with expanded case , -->
+
+    <!--All the other scenarios it will be ignored.-->
     <!--<parameter name="ServicesDirectory">service</parameter>-->
     <!--To override repository/modules you need to uncomment following parameter and value SHOULD be absolute file path-->
-    <parameter name="ModulesDirectory">F:\LatestTrunk\sca\modules\binding-ws-axis2\src\main\resources\modules</parameter>
+    <!--<parameter name="ModulesDirectory">modules</parameter>-->
 
 
 
@@ -68,21 +77,21 @@
     <!--Our HTTP endpoints can handle both REST and SOAP. Following parameters can be used to distinguiush those endpoints-->
     <!--In case of a servlet, if you change this you have to manually change the settings of your servlet container to map this -->
     <!--context path to proper Axis2 servlets-->
-    <!--<parameter name="servicePath">/</parameter>-->
-    <!--<parameter name="restPath">rest</parameter>-->
 
-    <!--==============================================================-->
-    <!--                     Custom Deplyers                           -->
-    <!--==============================================================-->
-     <!--To have POJO (Service as only one class file , class can be annotated one or not)
-     support uncomment the following XML tag-->
-    <!--<deployer class="org.apache.axis2.deployment.POJODeployer" extension=".class" directory="pojo"/>-->
-    <!--To have POJO (Service as more than one class , so a jar file) support uncomment the following XML tag-->
-    <!--<deployer class="org.apache.axis2.deployment.POJODeployer" extension=".jar" directory="pojo"/>-->
+    <!-- Customized by Tuscany -->
+    <!--<parameter name="servicePath">/</parameter>-->
+
+    <!--<parameter name="restPath">rest</parameter>-->
 
     <!-- Following parameter will completely disable REST handling in Axis2-->
 
     <parameter name="disableREST" locked="true">false</parameter>
+
+    <!--POJO deployer , this will alow users to drop .class file and make that into a service-->
+    <deployer extension=".class" directory="pojo" class="org.apache.axis2.deployment.POJODeployer"/>
+
+    <!-- Following parameter will set the host name for the epr-->
+    <!--<parameter name="hostname" locked="true">myhost.com</parameter>-->
 
     <!-- If you have a frontend host which exposes this webservice using a different public URL  -->
     <!-- use this parameter to override autodetected url -->
@@ -102,26 +111,33 @@
     <!--any operation -->
     <!--Note : You can ovrride this for a particular service by adding the same element with your requirement-->
     <messageReceivers>
+
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
                          class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInMessageReceiver"/>
+
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
                          class="org.apache.axis2.receivers.RawXMLINOnlyMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
                          class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
                          class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
+
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-only"
                          class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInMessageReceiver"/>
+
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-only"
                          class="org.apache.axis2.receivers.RawXMLINOnlyMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-out"
                          class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-out"
                          class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
+
     </messageReceivers>
     <!-- ================================================= -->
     <!-- Message Formatter -->
@@ -156,8 +172,10 @@
     <!-- ================================================= -->
     <transportReceiver name="http"
                        class="org.apache.axis2.transport.http.SimpleHTTPServer">
+
         <!-- Customized by Tuscany -->
         <parameter name="port" locked="false">6060</parameter>
+
         <!-- Here is the complete list of supported parameters (see example settings further below):
             port: the port to listen on (default 6060)
             hostname:  if non-null, url prefix used in reply-to endpoint references                                 (default null)
@@ -202,6 +220,38 @@
         	<parameter name="transport.jms.ConnectionFactoryJNDIName">QueueConnectionFactory</parameter>
         </parameter>
     </transportReceiver>-->
+
+    <!-- ================================================= -->
+    <!-- Non-blocking http/s Transport Listener  -->
+
+    <!-- the non blocking http transport based on HttpCore + NIO extensions
+    <transportReceiver name="http" class="org.apache.axis2.transport.nhttp.HttpCoreNIOListener">
+    	<parameter name="port" locked="false">9000</parameter>
+    	<parameter name="non-blocking" locked="false">true</parameter>
+    </transportReceiver>-->
+
+    <!-- the non blocking https transport based on HttpCore + SSL-NIO extensions
+    <transportReceiver name="https" class="org.apache.axis2.transport.nhttp.HttpCoreNIOSSLListener">
+    	<parameter name="port" locked="false">9002</parameter>
+    	<parameter name="non-blocking" locked="false">true</parameter>
+        <parameter name="keystore" locked="false">
+            <KeyStore>
+                <Location>identity.jks</Location>
+                <Type>JKS</Type>
+                <Password>password</Password>
+                <KeyPassword>password</KeyPassword>
+            </KeyStore>
+        </parameter>
+        <parameter name="truststore" locked="false">
+            <TrustStore>
+                <Location>trust.jks</Location>
+                <Type>JKS</Type>
+                <Password>password</Password>
+            </TrustStore>
+        </parameter>-->
+        <!--<parameter name="SSLVerifyClient">require</parameter>
+            supports optional|require or defaults to none -->
+    <!--</transportReceiver>-->
 
     <!-- ================================================= -->
     <!-- Mail Transport Listener  -->
@@ -252,11 +302,39 @@
         <parameter name="PROTOCOL">HTTP/1.1</parameter>
         <parameter name="Transfer-Encoding">chunked</parameter>
     </transportSender>
-    <!-- Commented out by Tuscany 
-    <transportSender name="jms"
-                     class="org.apache.axis2.transport.jms.JMSSender"/>
-     -->
+    <!--<transportSender name="jms"-->
+                     <!--class="org.apache.axis2.transport.jms.JMSSender"/>-->
      
+    <!-- ================================================= -->
+    <!-- Non-blocking http/s Transport Sender  -->
+
+    <!-- the non-blocking http transport sender based on HttpCore + NIO extensions
+    <transportSender name="http"  class="org.apache.axis2.transport.nhttp.HttpCoreNIOSender">
+        <parameter name="non-blocking" locked="false">true</parameter>
+    </transportSender>-->
+
+    <!-- the non-blocking https transport sender based on HttpCore + NIO SSL extensions
+    <transportSender name="https" class="org.apache.axis2.transport.nhttp.HttpCoreNIOSSLSender">
+        <parameter name="non-blocking" locked="false">true</parameter>
+        <parameter name="keystore" locked="false">
+            <KeyStore>
+                <Location>identity.jks</Location>
+                <Type>JKS</Type>
+                <Password>password</Password>
+                <KeyPassword>password</KeyPassword>
+            </KeyStore>
+        </parameter>
+        <parameter name="truststore" locked="false">
+            <TrustStore>
+                <Location>trust.jks</Location>
+                <Type>JKS</Type>
+                <Password>password</Password>
+            </TrustStore>
+        </parameter>-->
+        <!--<parameter name="HostnameVerifier">DefaultAndLocalhost</parameter>
+            supports Strict|AllowAll|DefaultAndLocalhost or the default if none specified -->
+    <!--</transportSender>-->
+
     <!-- ================================================= -->
     <!-- Mail Transport Sender  -->
     <!--Only need to uncomment the sender. Configuration is achieved with every client.
@@ -272,10 +350,14 @@
     <!-- Global Modules  -->
     <!-- ================================================= -->
     <!-- Comment this to disable Addressing -->
+
     <!--  Commented out by Tuscany
     <module ref="addressing"/>
     -->
+
+	<!-- Added by Tuscany -->
     <module ref="rampart"/>
+
     <!--Configuring module , providing parameters for modules whether they refer or not-->
     <!--<moduleConfig name="addressing">-->
     <!--<parameter name="addressingPara">N/A</parameter>-->
@@ -288,13 +370,12 @@
     <!--
     <cluster class="org.apache.axis2.cluster.tribes.TribesClusterManager">
         <parameter name="param1">value1</parameter>
-    	<configurationManager class="org.apache.axis2.cluster.tribes.configuration.TribesConfigurationManager">
-    	    <listeners>
-    	    </listeners>
+        <parameter name="domain">apache.axis2.domain</parameter>
+    	<configurationManager class="org.apache.axis2.cluster.configuration.TribesConfigurationManager">
+    	    <listener class="org.apache.axis2.cluster.configuration.DefaultConfigurationManagerListener"/>
     	</configurationManager>
-    	<contextManager class="org.apache.axis2.cluster.tribes.context.TribesContextManager">
-    	    <listeners>
-    	    </listeners>
+    	<contextManager class="org.apache.axis2.cluster.context.TribesContextManager">
+    	    <listener class="org.apache.axis2.cluster.context.DefaultContextManagerListener"/>
     	</contextManager>
     </cluster>
     -->
@@ -305,47 +386,44 @@
     <phaseOrder type="InFlow">
         <!--  System pre defined phases       -->
         <phase name="Transport">
+
             <!-- Added by Tuscany -->
             <handler name="TuscanyDispatcher"
                      class="org.apache.tuscany.sca.binding.ws.axis2.TuscanyDispatcher">
                 <order phase="Transport"/>
             </handler>
+
             <handler name="RequestURIBasedDispatcher"
-                     class="org.apache.axis2.engine.RequestURIBasedDispatcher">
+                     class="org.apache.axis2.dispatchers.RequestURIBasedDispatcher">
                 <order phase="Transport"/>
             </handler>
             <handler name="SOAPActionBasedDispatcher"
-                     class="org.apache.axis2.engine.SOAPActionBasedDispatcher">
+                     class="org.apache.axis2.dispatchers.SOAPActionBasedDispatcher">
                 <order phase="Transport"/>
+            </handler>
+        </phase>
+        <phase name="Addressing">
+             <handler name="AddressingBasedDispatcher"
+                     class="org.apache.axis2.dispatchers.AddressingBasedDispatcher">
+                 <order phase="Addressing"/>
             </handler>
         </phase>
         <phase name="Security"/>
         <phase name="PreDispatch"/>
         <phase name="Dispatch" class="org.apache.axis2.engine.DispatchPhase">
-            <handler name="AddressingBasedDispatcher"
-                     class="org.apache.axis2.engine.AddressingBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
+            <handler name="RequestURIBasedDispatcher"
+                     class="org.apache.axis2.dispatchers.RequestURIBasedDispatcher"/>
+            <handler name="SOAPActionBasedDispatcher"
+                     class="org.apache.axis2.dispatchers.SOAPActionBasedDispatcher"/>
             <handler name="RequestURIOperationDispatcher"
-                     class="org.apache.axis2.engine.RequestURIOperationDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
-
+                     class="org.apache.axis2.dispatchers.RequestURIOperationDispatcher"/>
             <handler name="SOAPMessageBodyBasedDispatcher"
-                     class="org.apache.axis2.engine.SOAPMessageBodyBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
+                     class="org.apache.axis2.dispatchers.SOAPMessageBodyBasedDispatcher"/>
 
             <handler name="HTTPLocationBasedDispatcher"
-                     class="org.apache.axis2.engine.HTTPLocationBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
-
-            <handler name="InstanceDispatcher"
-                     class="org.apache.axis2.engine.InstanceDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
+                     class="org.apache.axis2.dispatchers.HTTPLocationBasedDispatcher"/>
         </phase>
+        <phase name="RMPhase"/>
         <!--  System pre defined phases       -->
         <!--   After Postdispatch phase module author or service author can add any phase he want      -->
         <phase name="OperationInPhase"/>
@@ -357,58 +435,44 @@
         <phase name="OperationOutPhase"/>
         <!--system predefined phase-->
         <!--these phase will run irrespective of the service-->
+        <phase name="RMPhase"/>
         <phase name="PolicyDetermination"/>
         <phase name="MessageOut"/>
         <phase name="Security"/>
     </phaseOrder>
     <phaseOrder type="InFaultFlow">
+        <phase name="Addressing">
+             <handler name="AddressingBasedDispatcher"
+                     class="org.apache.axis2.dispatchers.AddressingBasedDispatcher">
+                 <order phase="Addressing"/>
+            </handler>
+        </phase>
+        <phase name="Security"/>
         <phase name="PreDispatch"/>
         <phase name="Dispatch" class="org.apache.axis2.engine.DispatchPhase">
             <handler name="RequestURIBasedDispatcher"
-                     class="org.apache.axis2.engine.RequestURIBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
-
+                     class="org.apache.axis2.dispatchers.RequestURIBasedDispatcher"/>
             <handler name="SOAPActionBasedDispatcher"
-                     class="org.apache.axis2.engine.SOAPActionBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
-
-            <handler name="AddressingBasedDispatcher"
-                     class="org.apache.axis2.engine.AddressingBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
+                     class="org.apache.axis2.dispatchers.SOAPActionBasedDispatcher"/>
             <handler name="RequestURIOperationDispatcher"
-                     class="org.apache.axis2.engine.RequestURIOperationDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
-
+                     class="org.apache.axis2.dispatchers.RequestURIOperationDispatcher"/>
             <handler name="SOAPMessageBodyBasedDispatcher"
-                     class="org.apache.axis2.engine.SOAPMessageBodyBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
+                     class="org.apache.axis2.dispatchers.SOAPMessageBodyBasedDispatcher"/>
 
             <handler name="HTTPLocationBasedDispatcher"
-                     class="org.apache.axis2.engine.HTTPLocationBasedDispatcher">
-                <order phase="Dispatch"/>
-            </handler>
-
-            <handler name="InstanceDispatcher"
-                     class="org.apache.axis2.engine.InstanceDispatcher">
-                <order phase="PostDispatch"/>
-            </handler>
+                     class="org.apache.axis2.dispatchers.HTTPLocationBasedDispatcher"/>
         </phase>
+        <phase name="RMPhase"/>
         <!--      user can add his own phases to this area  -->
         <phase name="OperationInFaultPhase"/>
-	<phase name="soapmonitorPhase"/>
+        <phase name="soapmonitorPhase"/>
     </phaseOrder>
     <phaseOrder type="OutFaultFlow">
         <!--      user can add his own phases to this area  -->
-	<phase name="soapmonitorPhase"/>
+        <phase name="soapmonitorPhase"/>
         <phase name="OperationOutFaultPhase"/>
+        <phase name="RMPhase"/>
         <phase name="PolicyDetermination"/>
         <phase name="MessageOut"/>
     </phaseOrder>
 </axisconfig>
-
-
