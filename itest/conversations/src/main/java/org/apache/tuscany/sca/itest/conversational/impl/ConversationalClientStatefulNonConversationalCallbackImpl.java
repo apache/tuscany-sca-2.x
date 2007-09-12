@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.itest.conversational.impl;
 
-import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalReferenceClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
@@ -105,7 +104,7 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }	
@@ -122,7 +121,7 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }    
@@ -170,7 +169,7 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }
@@ -215,10 +214,10 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        if (serviceReference.getConversationID() ==null ) {
+        if (serviceReference.getConversation() ==null ) {
             return null;
         } else {
-            return serviceReference.getConversationID().toString();
+            return serviceReference.getConversation().getConversationID().toString();
         }
     }    
     
@@ -235,10 +234,10 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         clientCount = callableReference.retrieveCount();
         callableReference.endConversationCallback();
         
-        if (serviceReference.getConversationID() ==null ) {
+        if (serviceReference.getConversation() ==null ) {
             return null;
         } else {
-            return serviceReference.getConversationID().toString();
+            return serviceReference.getConversation().getConversationID().toString();
         }
     }     
     

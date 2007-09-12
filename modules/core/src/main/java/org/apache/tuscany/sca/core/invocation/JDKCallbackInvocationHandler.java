@@ -22,7 +22,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.core.context.ConversationImpl;
+import org.apache.tuscany.sca.core.assembly.RuntimeWireImpl;
+import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
+import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -69,26 +71,28 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         // the callback should use the same conversation id as was received
         // on the incoming call to this component
         if (conversational) {
-            if (conversation == null) {
-                // this is a call via an automatic proxy rather than a
-                // callable/service reference so no conversation object 
-                // will have been constructed yet
-                conversation = new ConversationImpl();
-            }
 
-            Object convID = conversation.getConversationID();
+            if (conversation == null || conversation.getState() == ConversationState.ENDED) {
+                conversation = null;
+            }
+            Object convID = conversation == null ? null : conversation.getConversationID();
 
             // create a conversation id if one doesn't exist 
             // already, i.e. the conversation is just starting
             if (convID == null) {
-                conversationID = msgContext.getTo().getReferenceParameters().getConversationID();
-                conversation.setConversationID(conversationID);
+                convID = msgContext.getTo().getReferenceParameters().getConversationID();
+                if (convID != null) {
+                    conversation = ((RuntimeWireImpl)wire).getConversationManager().getConversation(convID);
+                    if (callableReference != null) {
+                        ((CallableReferenceImpl)callableReference).attachConversation(conversation);
+                    }
+                }
             }
         }
 
         callbackID = msgContext.getTo().getReferenceParameters().getCallbackID();
         ((CallbackWireObjectFactory)callableReference).attachCallbackID(callbackID);
-        
+
         setEndpoint(msgContext.getFrom().getCallbackEndpoint());
 
         // need to set the endpoint on the binding also so that when the chains are created next

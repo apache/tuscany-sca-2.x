@@ -98,7 +98,7 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }   
@@ -115,7 +115,7 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }    
@@ -232,10 +232,10 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        if (serviceReference.getConversationID() ==null ) {
+        if (serviceReference.getConversation() ==null ) {
             return null;
         } else {
-            return serviceReference.getConversationID().toString();
+            return serviceReference.getConversation().getConversationID().toString();
         }
     }    
     
@@ -252,10 +252,10 @@ public class ConversationalClientStatelessImpl implements ConversationalClient, 
         clientCount = callableReference.retrieveCount();
         callableReference.endConversationCallback();
         
-        if (serviceReference.getConversationID() ==null ) {
+        if (serviceReference.getConversation() ==null ) {
             return null;
         } else {
-            return serviceReference.getConversationID().toString();
+            return serviceReference.getConversation().getConversationID().toString();
         } 
     }    
     

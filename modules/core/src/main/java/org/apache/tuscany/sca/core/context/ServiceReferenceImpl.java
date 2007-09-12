@@ -18,10 +18,9 @@
  */
 package org.apache.tuscany.sca.core.context;
 
-import java.util.UUID;
-
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
+import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
@@ -73,25 +72,17 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     }
 
     public Object getConversationID() {
-        if (getConversation() != null) {
-            return getConversation().getConversationID();
-        } else {
-            return null;
-        }
+        return conversationID;
     }
 
     public void setConversationID(Object conversationID) throws IllegalStateException {
-        ConversationImpl conversation = (ConversationImpl)getConversation();
-        if (conversation != null) {
-            if (conversationID == null) {
-                conversation.setConversationID(UUID.randomUUID().toString());
-            } else {
-                conversation.setConversationID(conversationID);
-            }
+        if (conversation == null || conversation.getState() != ConversationState.ENDED) {
+            this.conversationID = conversationID;
+            this.conversation = null;
         } else {
-            throw new IllegalStateException("Trying to set conversation id " + conversationID.toString()
-                + "on non conversational reference "
-                + reference.getName());
+            throw new IllegalStateException("The state of the conversation " + conversation.getConversationID()
+                + " is "
+                + conversation.getState());
         }
     }
 
@@ -120,7 +111,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
             } else {
                 EndpointReference callbackRef = getRuntimeWire().getSource().getCallbackEndpoint();
                 parameters.setCallbackReference(callbackRef);
-                parameters.setCallbackObjectID("java:"+System.identityHashCode(callback));
+                parameters.setCallbackObjectID("java:" + System.identityHashCode(callback));
             }
         }
         return parameters;

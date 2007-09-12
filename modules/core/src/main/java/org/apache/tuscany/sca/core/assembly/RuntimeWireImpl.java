@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
@@ -60,6 +61,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     private transient InterfaceContractMapper interfaceContractMapper;
     private transient WorkScheduler workScheduler;
     private transient MessageFactory messageFactory;
+    private transient ConversationManager conversationManager;
     private transient RuntimeWireInvoker invoker;
 
     private List<InvocationChain> chains;
@@ -71,13 +73,14 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param workScheduler 
      * @param wireProcessor 
      * @param messageFactory 
+     * @param conversationManager 
      */
     public RuntimeWireImpl(EndpointReference source,
                            EndpointReference target,
                            InterfaceContractMapper interfaceContractMapper,
                            WorkScheduler workScheduler,
                            RuntimeWireProcessor wireProcessor,
-                           MessageFactory messageFactory) {
+                           MessageFactory messageFactory, ConversationManager conversationManager) {
         super();
         this.wireSource = source;
         this.wireTarget = target;
@@ -85,7 +88,8 @@ public class RuntimeWireImpl implements RuntimeWire {
         this.workScheduler = workScheduler;
         this.wireProcessor = wireProcessor;
         this.messageFactory = messageFactory;
-        this.invoker = new RuntimeWireInvoker(this.messageFactory, this);
+        this.conversationManager = conversationManager;
+        this.invoker = new RuntimeWireInvoker(this.messageFactory, this.conversationManager, this);
     }
 
     public synchronized List<InvocationChain> getInvocationChains() {
@@ -266,7 +270,14 @@ public class RuntimeWireImpl implements RuntimeWire {
         RuntimeWireImpl copy = (RuntimeWireImpl)super.clone();
         copy.wireSource = (EndpointReference)wireSource.clone();
         copy.wireTarget = (EndpointReference)wireTarget.clone();
-        copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy);
+        copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy.conversationManager, copy);
         return copy;
+    }
+
+    /**
+     * @return the conversationManager
+     */
+    public ConversationManager getConversationManager() {
+        return conversationManager;
     }
 }

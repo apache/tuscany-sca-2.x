@@ -61,6 +61,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
+import org.apache.tuscany.sca.core.conversation.ConversationManager;
+import org.apache.tuscany.sca.core.conversation.ConversationManagerImpl;
 import org.apache.tuscany.sca.core.invocation.DefaultProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -127,11 +129,14 @@ public class ReallySmallRuntimeBuilder {
         RequestContextFactory requestContextFactory =
             registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
 
+        ConversationManager conversationManager = new ConversationManagerImpl();
+        registry.addExtensionPoint(conversationManager);
+        
         // Create the composite activator
         CompositeActivator compositeActivator =
             new CompositeActivatorImpl(assemblyFactory, messageFactory, javaInterfaceFactory, scaBindingFactory,
                                        mapper, scopeRegistry, workScheduler, wireProcessor, requestContextFactory,
-                                       proxyFactory, providerFactories, processors);
+                                       proxyFactory, providerFactories, processors, conversationManager);
 
         return compositeActivator;
     }
