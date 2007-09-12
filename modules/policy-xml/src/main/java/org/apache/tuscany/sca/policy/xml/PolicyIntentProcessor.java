@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.policy.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -200,7 +201,63 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
         policyIntent.setUnresolved(false);
     }
     
+    private void resolveProfileIntent(ProfileIntent policyIntent, ModelResolver resolver)
+        throws ContributionResolveException {
+        // FIXME: Need to check for cyclic references first i.e an A requiring B
+        // and then B requiring A...
+        if (policyIntent != null) {
+            // resolve all required intents
+            List<Intent> requiredIntents = new ArrayList<Intent>();
+            for (Intent requiredIntent : policyIntent.getRequiredIntents()) {
+                if (requiredIntent.isUnresolved()) {
+                    Intent resolvedRequiredIntent = resolver.resolveModel(Intent.class, requiredIntent);
+                    if (resolvedRequiredIntent != null) {
+                        requiredIntents.add(resolvedRequiredIntent);
+                    } else {
+                        throw new ContributionResolveException(
+                                                                 "Required Intent - " + requiredIntent
+                                                                     + " not found for ProfileIntent "
+                                                                     + policyIntent);
+
+                    }
+                } else {
+                    requiredIntents.add(requiredIntent);
+                }
+            }
+            policyIntent.getRequiredIntents().clear();
+            policyIntent.getRequiredIntents().addAll(requiredIntents);
+        }
+    }
+
+    private void resolveQualifiedIntent(QualifiedIntent policyIntent, ModelResolver resolver)
+        throws ContributionResolveException {
+        if (policyIntent != null) {
+            //resolve the qualifiable intent
+            Intent qualifiableIntent = policyIntent.getQualifiableIntent();
+            if (qualifiableIntent.isUnresolved()) {
+                Intent resolvedQualifiableIntent = resolver.resolveModel(Intent.class, qualifiableIntent);
+    
+                if (resolvedQualifiableIntent != null) {
+                    policyIntent.setQualifiableIntent(resolvedQualifiableIntent);
+                } else {
+                    throw new ContributionResolveException("Qualifiable Intent - " + qualifiableIntent
+                        + " not found for QualifiedIntent "
+                        + policyIntent);
+                }
+    
+            }
+        }
+    }
+    
     public void resolve(T policyIntent, ModelResolver resolver) throws ContributionResolveException {
+        if (policyIntent instanceof ProfileIntent) {
+            resolveProfileIntent((ProfileIntent)policyIntent, resolver);
+        }
+
+        if (policyIntent instanceof QualifiedIntent) {
+            resolveQualifiedIntent((QualifiedIntent)policyIntent, resolver);
+        }
+        
         resolveContrainedArtifacts(policyIntent, resolver);
         
         if ( !policyIntent.isUnresolved() ) {

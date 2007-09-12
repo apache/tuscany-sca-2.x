@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.policy.xml;
 
 import java.util.HashMap;
@@ -23,30 +24,40 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
+
 /**
- * Resolver for artifacts defined in definitions.xml
+ * A default implementation of an artifact resolver, based on a map.
  *
+ * @version $Rev: 560306 $ $Date: 2007-07-27 22:01:44 +0530 (Fri, 27 Jul 2007) $
  */
-public class SCADefinitionsResolver implements ModelResolver {
+public class TestModelResolver implements ModelResolver {
+    private static final long serialVersionUID = -7826976465762296634L;
+    
     private Map<Object, Object> map = new HashMap<Object, Object>();
-
-    public SCADefinitionsResolver() {
+    
+    public TestModelResolver() {
     }
 
-    public void addModel(Object resolved) {
-        map.put(resolved, resolved);
-    }
-
-    public Object removeModel(Object resolved) {
-        return map.remove(resolved);
-    }
-
-    @SuppressWarnings("unchecked")
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
-            return (T)resolved;
+            
+            // Return the resolved object
+            return modelClass.cast(resolved);
+            
+        } else {
+            
+            // Return the unresolved object
+            return unresolved;
         }
-        return unresolved;
     }
+    
+    public void addModel(Object resolved) {
+        map.put(resolved, resolved);
+    }
+    
+    public Object removeModel(Object resolved) {
+        return map.remove(resolved);
+    }
+    
 }
