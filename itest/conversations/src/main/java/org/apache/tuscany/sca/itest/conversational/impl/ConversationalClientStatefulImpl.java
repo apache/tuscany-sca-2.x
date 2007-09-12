@@ -104,7 +104,7 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }	
@@ -121,7 +121,7 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }    
@@ -138,14 +138,14 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
         clientCount = callableReference.retrieveCount();
         
         String clientConversationId = serviceReference.getConversationID().toString();
-        String serverConfersationId = callableReference.endConversation();
+        String serverConversationId = callableReference.endConversation();
         
         if (clientConversationId.equals("MyConversation2") &&
-            serverConfersationId.equals("MyConversation2") ) {
+            serverConversationId.equals("MyConversation2") ) {
             return clientConversationId;
         } else {
             return "client = " + clientConversationId +
-                   "server = " + serverConfersationId;
+                   "server = " + serverConversationId;
         }  
               
     }      
@@ -238,12 +238,11 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        if (serviceReference.getConversationID() ==null ) {
+        if (serviceReference.getConversation() ==null ) {
             return null;
         } else {
-            return serviceReference.getConversationID().toString();
+            return serviceReference.getConversation().getConversationID().toString();
         }
-
     }    
     
     public String runConversationCallingEndedConversationCallbackCheckConversationId(){
@@ -259,10 +258,10 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
         clientCount = callableReference.retrieveCount();
         callableReference.endConversationCallback();
         
-        if (serviceReference.getConversationID() ==null ) {
+        if (serviceReference.getConversation() ==null ) {
             return null;
         } else {
-            return serviceReference.getConversationID().toString();
+            return serviceReference.getConversation().getConversationID().toString();
         }
     }    
     

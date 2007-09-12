@@ -23,8 +23,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
-import org.apache.tuscany.sca.core.context.ConversationImpl;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
+import org.apache.tuscany.sca.core.conversation.ConversationManager;
+import org.apache.tuscany.sca.core.conversation.ConversationState;
+import org.apache.tuscany.sca.core.conversation.ExtendedConversation;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
@@ -49,9 +51,9 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public class RuntimeWireInvoker {
+    protected ConversationManager conversationManager;
     protected boolean conversational;
-    protected ConversationImpl conversation;
-    protected boolean conversationStarted;
+    protected ExtendedConversation conversation;
     protected MessageFactory messageFactory;
     protected EndpointReference endpoint;
     protected Object conversationID;
@@ -59,19 +61,22 @@ public class RuntimeWireInvoker {
     protected Object callbackObject;
     protected RuntimeWire wire;
 
-    public RuntimeWireInvoker(MessageFactory messageFactory, RuntimeWire wire) {
+    public RuntimeWireInvoker(MessageFactory messageFactory, ConversationManager conversationManager, RuntimeWire wire) {
         this.messageFactory = messageFactory;
         this.wire = wire;
+        this.conversationManager = conversationManager;
         init(wire);
     }
 
     protected void init(RuntimeWire wire) {
-        ReferenceParameters parameters = wire.getSource().getReferenceParameters();
-        this.callbackID = parameters.getCallbackID();
-        this.callbackObject = parameters.getCallbackReference();
-        this.conversationID = parameters.getConversationID();
-        InterfaceContract contract = wire.getSource().getInterfaceContract();
-        this.conversational = contract.getInterface().isConversational();
+        if (wire != null) {
+            ReferenceParameters parameters = wire.getSource().getReferenceParameters();
+            this.callbackID = parameters.getCallbackID();
+            this.callbackObject = parameters.getCallbackReference();
+            this.conversationID = parameters.getConversationID();
+            InterfaceContract contract = wire.getSource().getInterfaceContract();
+            this.conversational = contract.getInterface().isConversational();
+        }
     }
 
     public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
@@ -192,39 +197,15 @@ public class RuntimeWireInvoker {
     /**
      * Pre-invoke for the conversation handling
      * @param msg
-     * @param wire
      * @throws TargetResolutionException
      */
-    private void conversationPreinvoke(Message msg) throws TargetResolutionException {
+    private void conversationPreinvoke(Message msg) {
         if (!conversational) {
             // Not conversational or the conversation has been started
             return;
         }
-        if (!conversationStarted) {
-            // make sure that the conversation id is set so it can be put in the 
-            // outgoing messages.        
-            if (conversation == null) {
-                // this call is via an automatic proxy rather than a
-                // callable/service reference so no conversation object 
-                // will have been constructed yet
-                conversation = new ConversationImpl();
-            }
-
-            Object convID = conversation.getConversationID();
-
-            // create a conversation id if one doesn't exist 
-            // already, i.e. the conversation is just starting
-            // If this is a callback the conversation id will have been
-            // set to the conversation from the message context already
-            if (convID == null) {
-                // create a new conversation Id
-                convID = createConversationID();
-
-                // we have just created a new conversation Id so 
-                // put it back in the conversation object
-                conversation.setConversationID(convID);
-            }
-            conversationStarted = true;
+        if (conversation == null || conversation.getState() == ConversationState.ENDED) {
+            conversation = conversationManager.startConversation(conversationID);
         }
         // TODO - assuming that the conversation ID is a string here when
         //       it can be any object that is serializable to XML
@@ -243,17 +224,13 @@ public class RuntimeWireInvoker {
         Operation operation = msg.getOperation();
         ConversationSequence sequence = operation.getConversationSequence();
         if (sequence == ConversationSequence.CONVERSATION_END) {
-            conversationStarted = false;
-            if (conversation != null) {
+            conversation.end();
 
-                // remove conversation id from scope container
-                ScopeContainer scopeContainer = getConversationalScopeContainer(msg);
+            // remove conversation id from scope container
+            ScopeContainer scopeContainer = getConversationalScopeContainer(msg);
 
-                if (scopeContainer != null) {
-                    scopeContainer.remove(conversation.getConversationID());
-                }
-
-                conversation.setConversationID(null);
+            if (scopeContainer != null) {
+                scopeContainer.remove(conversation.getConversationID());
             }
         }
     }

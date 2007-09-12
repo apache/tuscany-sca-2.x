@@ -38,7 +38,11 @@ import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.context.ComponentContextHelper;
 import org.apache.tuscany.sca.core.context.ComponentContextImpl;
+import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
+import org.apache.tuscany.sca.core.scope.Scope;
+import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -78,6 +82,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final RequestContextFactory requestContextFactory;
     private final ProxyFactory proxyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
+    private final ConversationManager conversationManager;
 
     private final ComponentContextHelper componentContextHelper;
 
@@ -86,8 +91,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
     /**
      * @param assemblyFactory
      * @param interfaceContractMapper
-     * @param workContext
      * @param workScheduler
+     * @param conversationManager TODO
+     * @param workContext
      * @param wirePostProcessorRegistry
      */
     public CompositeActivatorImpl(AssemblyFactory assemblyFactory,
@@ -101,7 +107,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                   RequestContextFactory requestContextFactory,
                                   ProxyFactory proxyFactory,
                                   ProviderFactoryExtensionPoint providerFactories,
-                                  StAXArtifactProcessorExtensionPoint processors) {
+                                  StAXArtifactProcessorExtensionPoint processors,
+                                  ConversationManager conversationManager) {
         this.assemblyFactory = assemblyFactory;
         this.messageFactory = messageFactory;
         this.interfaceContractMapper = interfaceContractMapper;
@@ -112,6 +119,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         this.javaInterfaceFactory = javaInterfaceFactory;
         this.requestContextFactory = requestContextFactory;
         this.proxyFactory = proxyFactory;
+        this.conversationManager = conversationManager;
         this.componentContextHelper = new ComponentContextHelper(assemblyFactory, javaInterfaceFactory, processors);
     }
 
@@ -350,7 +358,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
         RuntimeWire wire =
             new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor,
-                                messageFactory);
+                                messageFactory, conversationManager);
         runtimeRef.getRuntimeWires().add(wire);
 
         return wire;
@@ -451,7 +459,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 }
             }
         }
-        
+
         for (ComponentService service : component.getServices()) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Starting component service: " + component.getURI() + "#" + service.getName());
@@ -642,7 +650,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
         RuntimeWire wire =
             new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor,
-                                messageFactory);
+                                messageFactory, conversationManager);
         runtimeService.getRuntimeWires().add(wire);
 
         return wire;
@@ -682,7 +690,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
             return;
         }
         ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
-        runtimeComponent.setScopeContainer(scopeRegistry.getScopeContainer(runtimeComponent));
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(runtimeComponent);
+        if (scopeContainer != null && scopeContainer.getScope() == Scope.CONVERSATION) {
+            conversationManager.addListener((ConversationalScopeContainer)scopeContainer);
+        }
+        runtimeComponent.setScopeContainer(scopeContainer);
     }
 
     private void removeScopeContainer(Component component) {
@@ -690,6 +702,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
             return;
         }
         ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
+        ScopeContainer scopeContainer = runtimeComponent.getScopeContainer();
+        if(scopeContainer != null && scopeContainer.getScope() == Scope.CONVERSATION) {
+            conversationManager.removeListener((ConversationalScopeContainer) scopeContainer);
+        }        
         runtimeComponent.setScopeContainer(null);
     }
 
@@ -815,6 +831,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
      */
     public JavaInterfaceFactory getJavaInterfaceFactory() {
         return javaInterfaceFactory;
+    }
+
+    /**
+     * @return the conversationManager
+     */
+    public ConversationManager getConversationManager() {
+        return conversationManager;
     }
 
 }

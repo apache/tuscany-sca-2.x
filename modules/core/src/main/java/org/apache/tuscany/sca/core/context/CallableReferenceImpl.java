@@ -34,6 +34,9 @@ import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.ReferenceParametersImpl;
+import org.apache.tuscany.sca.core.conversation.ConversationManager;
+import org.apache.tuscany.sca.core.conversation.ConversationState;
+import org.apache.tuscany.sca.core.conversation.ExtendedConversation;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -62,14 +65,14 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     protected transient Class<B> businessInterface;
 
     // if the wire targets a conversational service this holds the conversation state 
-    protected transient ConversationImpl conversation;
+    protected transient ConversationManager conversationManager;
+    protected transient ExtendedConversation conversation;
+    protected transient Object conversationID;
+    protected Object callbackID; // The callbackID should be serializable
 
     protected transient RuntimeComponent component;
     protected transient RuntimeComponentReference reference;
     protected transient Binding binding;
-
-    protected String componentURI; //The URI of the owning component
-    protected Object callbackID; // The callbackID should be serializable
 
     protected String scdl;
 
@@ -98,9 +101,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
         // sca:component1/component11/component112/service1?
-        String componentURI = component.getURI(); // The target will be relative to this base URI
-        this.componentURI = componentURI;
         this.compositeActivator = compositeActivator;
+        this.conversationManager = this.compositeActivator.getConversationManager();
         RuntimeWire wire = this.reference.getRuntimeWire(this.binding);
         init(wire);
     }
@@ -124,8 +126,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             this.component = wire.getSource().getComponent();
             this.reference = (RuntimeComponentReference)wire.getSource().getContract();
             this.binding = wire.getSource().getBinding();
-            this.componentURI = component.getURI();
             this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
+            this.conversationManager = this.compositeActivator.getConversationManager();
             init(wire);
         }
     }
@@ -139,10 +141,6 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             contract = reference.getInterfaceContract();
         }
         Interface contractInterface = contract.getInterface();
-
-        if (contractInterface != null && contractInterface.isConversational()) {
-            conversation = new ConversationImpl();
-        }
 
         if (contract.getCallbackInterface() != null) {
             this.callbackID = createCallbackID();
@@ -172,10 +170,13 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     }
 
     public boolean isConversational() {
-        return getConversation() != null;
+        return reference == null ? false : reference.getInterfaceContract().getInterface().isConversational();
     }
 
     public Conversation getConversation() {
+        if (conversation == null || conversation.getState() == ConversationState.ENDED) {
+            conversation = null;
+        }
         return conversation;
     }
 
@@ -199,9 +200,9 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             if (componentContextHelper != null) {
                 CompositeActivator currentActivator = ComponentContextHelper.getCurrentCompositeActivator();
                 this.compositeActivator = currentActivator;
+                this.conversationManager = this.compositeActivator.getConversationManager();
                 Component c = componentContextHelper.fromXML(scdl);
                 this.component = (RuntimeComponent)c;
-                this.componentURI = c.getURI();
                 currentActivator.configureComponentContext(this.component);
                 this.reference = (RuntimeComponentReference)c.getReferences().get(0);
                 this.reference.setComponent(this.component);
@@ -214,10 +215,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 }
                 if (parameters != null) {
                     this.callbackID = parameters.getCallbackID();
-
-                    if (conversation != null) {
-                        conversation.setConversationID(parameters.getConversationID());
-                    }
+                    this.conversationID = parameters.getConversationID();
                 }
 
                 for (Binding binding : reference.getBindings()) {
@@ -287,8 +285,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             if (reference != null) {
                 ReferenceParameters parameters = new ReferenceParametersImpl();
                 parameters.setCallbackID(callbackID);
-                if (conversation != null) {
-                    parameters.setConversationID(conversation.getConversationID());
+                if (conversationID != null) {
+                    parameters.setConversationID(conversationID);
                 } else {
                     parameters.setConversationID(null);
                 }
@@ -319,13 +317,18 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     }
 
     public void attachConversationID(Object conversationID) {
-        conversation.setConversationID(conversationID);
+        this.conversationID = conversationID;
     }
+    
+    public void attachConversation(ExtendedConversation conversation) {
+        this.conversation = conversation;
+    }
+
 
     protected ReferenceParameters getReferenceParameters() {
         ReferenceParameters parameters = new ReferenceParametersImpl();
         parameters.setCallbackID(callbackID);
-        if (conversation != null) {
+        if (getConversation() != null) {
             parameters.setConversationID(conversation.getConversationID());
         }
         return parameters;
