@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -149,7 +150,7 @@ public class BPELImplementationImpl implements BPELImplementation {
             return null;
         }
 
-        public URL getBaseURL() {
+        public URI getBaseURI() {
             return null;
         }
 

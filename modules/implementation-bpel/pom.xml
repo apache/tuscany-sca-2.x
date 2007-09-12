@@ -120,78 +120,78 @@
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-epr</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-store</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-dao</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-dao</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-dao-jpa</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
             <type>zip</type>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-runtime</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-api</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
-            <artifactId>ode-bpel-scheduler-quartz</artifactId>
-            <version>1.0-incubating</version>
+            <artifactId>ode-scheduler-simple</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-utils</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-compiler</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-schemas</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-obj</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-jacob</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-jacob-ap</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1</version>
         </dependency>
                 
         <!-- ODE Dependencies -->
@@ -326,7 +326,7 @@
                                 <artifactItem>
                                     <groupId>org.apache.ode</groupId>
                                     <artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-                                    <version>1.0-incubating</version>
+                                    <version>1.1</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>

@@ -40,10 +40,12 @@ import org.apache.ode.bpel.iapi.ProcessStoreEvent;
 import org.apache.ode.bpel.iapi.ProcessStoreListener;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.bpel.memdao.BpelDAOConnectionFactoryImpl;
-import org.apache.ode.bpel.scheduler.quartz.QuartzSchedulerImpl;
 import org.apache.ode.il.config.OdeConfigProperties;
 import org.apache.ode.il.dbutil.Database;
 import org.apache.ode.store.ProcessStoreImpl;
+import org.apache.ode.scheduler.simple.SimpleScheduler;
+import org.apache.ode.scheduler.simple.JdbcDelegate;
+import org.apache.ode.utils.GUID;
 
 /**
  * Embedded ODE process server
@@ -146,8 +148,8 @@ public class EmbeddedODEServer {
         _bpelServer.setDaoConnectionFactory(_daoCF);
         _bpelServer.setInMemDaoConnectionFactory(new BpelDAOConnectionFactoryImpl(_scheduler));
         // _bpelServer.setEndpointReferenceContext(new EndpointReferenceContextImpl(this));
-        // _bpelServer.setMessageExchangeContext(new MessageExchangeContextImpl(this));
-        // _bpelServer.setBindingContext(new BindingContextImpl(this, _store));
+         _bpelServer.setMessageExchangeContext(new ODEMessageExchangeContext(this));
+         _bpelServer.setBindingContext(new ODEBindingContext(this));
         _bpelServer.setScheduler(_scheduler);
         if (_config.isDehydrationEnabled()) {
             CountLRUDehydrationPolicy dehy = new CountLRUDehydrationPolicy();
@@ -182,11 +184,9 @@ public class EmbeddedODEServer {
     }
 
     protected Scheduler createScheduler() {
-        QuartzSchedulerImpl scheduler = new QuartzSchedulerImpl();
-        scheduler.setExecutorService(_executor, 20);
+        SimpleScheduler scheduler = new SimpleScheduler(new GUID().toString(),new JdbcDelegate(_db.getDataSource()));
         scheduler.setTransactionManager(_txMgr);
-        scheduler.setDataSource(_db.getDataSource());
-        scheduler.init();
+
         return scheduler;
     }
 
