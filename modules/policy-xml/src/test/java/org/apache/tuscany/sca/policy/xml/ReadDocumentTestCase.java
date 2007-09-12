@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.policy.xml;
 
-import java.net.URI;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
@@ -27,6 +29,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
@@ -43,7 +46,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
-import org.apache.tuscany.sca.policy.SCADefinitions;
+import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
+import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -52,9 +56,12 @@ import org.apache.tuscany.sca.policy.SCADefinitions;
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    //private ModelResolver resolver; 
-    private SCADefinitionsDocumentProcessor scaDefnDocProcessor = null;
-    private SCADefinitions scaDefinitions;
+    //private ModelResolver resolver;
+    PolicySetProcessor policySetProcessor;
+    TestModelResolver resolver = null;
+    ExtensibleStAXArtifactProcessor staxProcessor = null;
+    
+        
     Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
     Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
@@ -77,23 +84,13 @@ public class ReadDocumentTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        resolver = new TestModelResolver();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();
-        
-        // Create Stax processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
-        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, 
-                                                                  staxProcessor, 
-                                                                  inputFactory, 
-                                                                  policyFactory);
-        
-        /*scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, staxProcessor, resolver);
-        
-        staxProcessors.addArtifactProcessor(scaDefnProcessor);
         staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, staxProcessor));
@@ -101,37 +98,52 @@ public class ReadDocumentTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ImplementationTypeProcessor(policyFactory, intentAttachPointFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new BindingTypeProcessor(policyFactory, intentAttachPointFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
-        */
         
         URL url = getClass().getResource("test_definitions.xml");
-        URI uri = URI.create("definitions.xml");
-        scaDefinitions = scaDefnDocProcessor.read(null, uri, url);
-        
-        for ( Intent intent : scaDefinitions.getPolicyIntents() ) {
-            intentTable.put(intent.getName(), intent);
+        InputStream urlStream = url.openStream();
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+        QName name = null;
+        reader.next();
+        while ( true ) {
+            int event = reader.getEventType();
+            switch (event) {
+                case START_ELEMENT: {
+                    Object artifact = staxProcessor.read(reader);
+                    if ( artifact instanceof PolicySet ) {
+                        PolicySet policySet = (PolicySet)artifact;
+                        policySetTable.put(policySet.getName(), policySet);
+                    } else if ( artifact instanceof Intent ) {
+                        Intent intent = (Intent)artifact;
+                        intentTable.put(intent.getName(), intent);
+                    } else if ( artifact instanceof BindingTypeImpl ) {
+                        IntentAttachPointType bindingType = (IntentAttachPointType)artifact;
+                        bindingTypesTable.put(bindingType.getName(), bindingType);
+                    } else if ( artifact instanceof ImplementationTypeImpl ) {
+                        IntentAttachPointType implType = (IntentAttachPointType)artifact;
+                        implTypesTable.put(implType.getName(), implType);
+                    }
+                    
+                    if ( artifact != null ) {
+                        resolver.addModel(artifact);
+                    }
+                    
+                    break;
+                }
+            }
+            if ( reader.hasNext() ) {
+                reader.next();
+            } else {
+                break;
+            }
         }
-        
-        for ( PolicySet policySet : scaDefinitions.getPolicySets() ) {
-            policySetTable.put(policySet.getName(), policySet);
-        }
-        
-        for ( IntentAttachPointType bindingType : scaDefinitions.getBindingTypes() ) {
-            bindingTypesTable.put(bindingType.getName(), bindingType);
-        }
-        
-        for ( IntentAttachPointType implType : scaDefinitions.getImplementationTypes() ) {
-            implTypesTable.put(implType.getName(), implType);
-        }
+        urlStream.close();
     }
 
     @Override
     public void tearDown() throws Exception {
-        scaDefnDocProcessor = null;
     }
 
     public void testReadSCADefinitions() throws Exception {
-        assertNotNull(scaDefinitions);
-        
         assertNotNull(intentTable.get(confidentiality));
         assertNotNull(intentTable.get(messageProtection));
         assertNotNull(intentTable.get(confidentiality_transport));
@@ -151,7 +163,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertNotNull(implTypesTable.get(javaImpl));
     }
     
-    public void testResolveSCADefinitions() throws Exception {
+    public void testResolution() throws Exception {
         assertTrue(intentTable.get(messageProtection) instanceof ProfileIntent);
         ProfileIntent profileIntent = (ProfileIntent)intentTable.get(new QName(namespace, "messageProtection"));
         assertNull(profileIntent.getRequiredIntents().get(0).getDescription());
@@ -183,8 +195,23 @@ public class ReadDocumentTestCase extends TestCase {
         assertNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
         assertNull(javaImplType.getMayProvideIntents().get(0).getDescription());
         
-        scaDefnDocProcessor.resolve(scaDefinitions, null);
-        //builder.build(scaDefinitions);
+        for ( Intent intent : intentTable.values() ) {
+            staxProcessor.resolve(intent, resolver);
+        }
+        
+        for ( PolicySet policySet : policySetTable.values() ) {
+            staxProcessor.resolve(policySet, resolver);
+        }
+        
+        for (  IntentAttachPointType bindingType : bindingTypesTable.values() ) {
+            staxProcessor.resolve(bindingType, resolver);
+        }
+        
+        for ( IntentAttachPointType implType : implTypesTable.values() ) {
+            staxProcessor.resolve(implType, resolver);
+        }
+        
+        
         
         //testing if policy intents have been linked have property been linked up 
         assertNotNull(profileIntent.getRequiredIntents().get(0).getDescription());

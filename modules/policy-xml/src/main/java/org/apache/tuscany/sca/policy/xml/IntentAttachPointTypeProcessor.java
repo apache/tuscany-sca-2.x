@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.policy.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -156,54 +157,66 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
     }
     
     public void resolve(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
+        resolveAlwaysProvidedIntents(extnType, resolver);
+        resolveMayProvideIntents(extnType, resolver);
         resolveExtensionType(extnType, resolver);
-
+        
         if ( !extnType.isUnresolved() ) {
              resolver.addModel(extnType);
         }
     }
 
-    //FIXME This method is never used
-//    private void resolveAlwaysProvidedIntents(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
-//        boolean isUnresolved = false;
-//        if (extnType != null && extnType.isUnresolved()) {
-//            //resolve alwaysProvided Intents
-//            List<Intent> alwaysProvided = new ArrayList<Intent>(); 
-//            for ( Intent providedIntent : extnType.getAlwaysProvidedIntents() ) {
-//                if ( providedIntent.isUnresolved() ) {
-//                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
-//                    alwaysProvided.add(providedIntent);
-//                    if (providedIntent.isUnresolved()) {
-//                        isUnresolved = true;
-//                    }
-//                }
-//            }
-//            extnType.getAlwaysProvidedIntents().clear();
-//            extnType.getAlwaysProvidedIntents().addAll(alwaysProvided);
-//        }
-//        extnType.setUnresolved(isUnresolved);
-//    }
+    private void resolveAlwaysProvidedIntents(IntentAttachPointType extensionType,
+                                              ModelResolver resolver) throws ContributionResolveException {
+        if (extensionType != null) {
+            // resolve all provided intents
+            List<Intent> alwaysProvided = new ArrayList<Intent>();
+            for (Intent providedIntent : extensionType.getAlwaysProvidedIntents()) {
+                if (providedIntent.isUnresolved()) {
+                    Intent resolvedProvidedIntent = resolver.resolveModel(Intent.class, providedIntent);
+                    if (resolvedProvidedIntent != null) {
+                        alwaysProvided.add(resolvedProvidedIntent);
+                    } else {
+                        throw new ContributionResolveException(
+                                                                 "Always Provided Intent - " + providedIntent
+                                                                     + " not found for ExtensionType "
+                                                                     + extensionType);
 
-    //FIXME This method is never used
-//    private void resolveMayProvideIntents(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
-//        boolean isUnresolved = false;
-//        if (extnType != null && extnType.isUnresolved()) {
-//            //resolve may provide Intents
-//            List<Intent> mayProvide = new ArrayList<Intent>(); 
-//            for ( Intent providedIntent : extnType.getMayProvideIntents() ) {
-//                if ( providedIntent.isUnresolved() ) {
-//                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
-//                    mayProvide.add(providedIntent);
-//                    if (providedIntent.isUnresolved()) {
-//                        isUnresolved = true;
-//                    }
-//                }
-//            }
-//            extnType.getAlwaysProvidedIntents().clear();
-//            extnType.getAlwaysProvidedIntents().addAll(mayProvide);
-//        }
-//        extnType.setUnresolved(isUnresolved);
-//    }
+                    }
+                } else {
+                    alwaysProvided.add(providedIntent);
+                }
+            }
+            extensionType.getAlwaysProvidedIntents().clear();
+            extensionType.getAlwaysProvidedIntents().addAll(alwaysProvided);
+        }
+    }
+    
+    private void resolveMayProvideIntents(IntentAttachPointType extensionType,
+                                            ModelResolver resolver) throws ContributionResolveException {
+        if (extensionType != null) {
+            // resolve all provided intents
+            List<Intent> mayProvide = new ArrayList<Intent>();
+            for (Intent providedIntent : extensionType.getMayProvideIntents()) {
+                if (providedIntent.isUnresolved()) {
+                    Intent resolvedProvidedIntent = resolver.resolveModel(Intent.class, providedIntent);
+                    if (resolvedProvidedIntent != null) {
+                        mayProvide.add(resolvedProvidedIntent);
+                    } else {
+                        throw new ContributionResolveException(
+                                                                 "May Provide Intent - " + providedIntent
+                                                                     + " not found for ExtensionType "
+                                                                     + extensionType);
+
+                    }
+                } else {
+                    mayProvide.add(providedIntent);
+                }
+            }
+            extensionType.getMayProvideIntents().clear();
+            extensionType.getMayProvideIntents().addAll(mayProvide);
+        }
+    }
     
     public Class<IntentAttachPointType> getModelType() {
         return IntentAttachPointType.class;

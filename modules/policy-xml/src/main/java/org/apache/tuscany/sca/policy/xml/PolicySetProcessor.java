@@ -23,6 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -269,16 +270,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
        policySet.setUnresolved(unresolved);
    }
    
-   public void resolve(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
-       if ( policySet.isUnresolved() ) {
-           //resolve the policy attachments
-           resolvePolicies(policySet, resolver);
-            
-           if ( !policySet.isUnresolved() ) {
-                resolver.addModel(policySet);
-           }
-       }
-    }   
+   
     
     public QName getArtifactType() {
         return POLICY_SET_QNAME;
@@ -340,4 +332,99 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         }
     }
     
-}
+    private void resolveProvidedIntents(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+        if (policySet != null) {
+            //resolve all provided intents
+            List<Intent> providedIntents = new ArrayList<Intent>();
+            for (Intent providedIntent : policySet.getProvidedIntents()) {
+                if (providedIntent.isUnresolved()) {
+                    Intent resolvedProvidedIntent = resolver.resolveModel(Intent.class, providedIntent);
+                    if (resolvedProvidedIntent != null) {
+                        providedIntents.add(resolvedProvidedIntent);
+                    } else {
+                        throw new ContributionResolveException("Provided Intent - " + providedIntent
+                            + " not found for PolicySet "
+                            + policySet);
+
+                    }
+                } else {
+                    providedIntents.add(providedIntent);
+                }
+            }
+            policySet.getProvidedIntents().clear();
+            policySet.getProvidedIntents().addAll(providedIntents);
+        }
+     }
+    
+    private void resolveIntentsInMappedPolicies(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+        Map<Intent, List<Object>> mappedPolicies = new Hashtable<Intent, List<Object>>();
+        for (Map.Entry<Intent, List<Object>> entry : policySet.getMappedPolicies().entrySet()) {
+            Intent mappedIntent = entry.getKey();
+            if (mappedIntent.isUnresolved()) {
+                Intent resolvedMappedIntent = resolver.resolveModel(Intent.class, mappedIntent);
+    
+                if (resolvedMappedIntent != null) {
+                    mappedPolicies.put(resolvedMappedIntent, entry.getValue());
+                } else {
+                    throw new ContributionResolveException("Mapped Intent - " + mappedIntent
+                        + " not found for PolicySet "
+                        + policySet);
+    
+                }
+            } else {
+                mappedPolicies.put(mappedIntent, entry.getValue());
+            }
+        }
+
+        policySet.getMappedPolicies().clear();
+        policySet.getMappedPolicies().putAll(mappedPolicies);
+    }
+    
+    private void resolveReferredPolicySets(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+    
+        List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
+        for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
+            if (referredPolicySet.isUnresolved()) {
+                PolicySet resolvedReferredPolicySet = resolver.resolveModel(PolicySet.class, referredPolicySet);
+                if (resolvedReferredPolicySet != null) {
+                    referredPolicySets.add(resolvedReferredPolicySet);
+                } else {
+                    throw new ContributionResolveException("Referred PolicySet - " + referredPolicySet
+                        + "not found for PolicySet - "
+                        + policySet);
+                }
+            } else {
+                referredPolicySets.add(referredPolicySet);
+            }
+        }
+        policySet.getReferencedPolicySets().clear();
+        policySet.getReferencedPolicySets().addAll(referredPolicySets);
+    }
+    
+    private void includeReferredPolicySets(PolicySet policySet, PolicySet referredPolicySet) {
+        for (PolicySet furtherReferredPolicySet : referredPolicySet.getReferencedPolicySets()) {
+            includeReferredPolicySets(referredPolicySet, furtherReferredPolicySet);
+        }
+        policySet.getPolicies().addAll(referredPolicySet.getPolicies());
+        policySet.getMappedPolicies().putAll(referredPolicySet.getMappedPolicies());
+    }
+    
+    public void resolve(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+        resolveProvidedIntents(policySet, resolver);
+        resolveIntentsInMappedPolicies(policySet, resolver);
+        resolveReferredPolicySets(policySet, resolver);
+        
+        for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
+            includeReferredPolicySets(policySet, referredPolicySet);
+        }
+        
+        if ( policySet.isUnresolved() ) {
+            //resolve the policy attachments
+            resolvePolicies(policySet, resolver);
+             
+            if ( !policySet.isUnresolved() ) {
+                 resolver.addModel(policySet);
+            }
+        }
+     }   
+ }
