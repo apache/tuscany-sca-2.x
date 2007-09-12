@@ -34,6 +34,11 @@
         <binding.ws uri="tempuri.org" wsdlElement="http://sample/calculator#wsdl.binding(DivideBinding)"/>
         <binding.ws uri="tempuri.org" wsdlElement="http://sample/calculator#wsdl.port(DivideService/DividePort)"/>
         <binding.ws uri="tempuri.org" wsdlElement="http://sample/calculator#wsdl.endpoint(DivideService/DivideEndpoint)"/>
+        <binding.ws>
+           <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+              <wsa:Address>myURI</wsa:Address>
+           </wsa:EndpointReference>
+        </binding.ws>
   </reference>  
 
 </componentType>              

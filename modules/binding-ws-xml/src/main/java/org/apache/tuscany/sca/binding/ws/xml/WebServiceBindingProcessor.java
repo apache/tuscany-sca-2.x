@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.ws.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.Map;
 
@@ -97,6 +98,7 @@ public class WebServiceBindingProcessor implements
 
         // Read a qname in the form:
         // namespace#wsdl.???(name)
+        Boolean wsdlElementIsBinding = null;
         String wsdlElement = reader.getAttributeValue(null, WSDL_ELEMENT);
         if (wsdlElement != null) {
             int index = wsdlElement.indexOf('#');
@@ -142,6 +144,8 @@ public class WebServiceBindingProcessor implements
                 // Read a wsdl.service
                 localName = localName.substring("wsdl.binding(".length(), localName.length() - 1);
                 wsBinding.setBindingName(new QName(namespace, localName));
+                
+                wsdlElementIsBinding = true;
 
             } else {
                 throw new ContributionReadException(
@@ -154,11 +158,21 @@ public class WebServiceBindingProcessor implements
 
         // Skip to end element
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && BINDING_WS_QNAME.equals(reader.getName())) {
+            int event = reader.next();
+            if (event == START_ELEMENT && "EndpointReference".equals(reader.getName().getLocalPart())) {
+                if (wsdlElementIsBinding != null && wsdlElementIsBinding) {
+                    throw new ContributionReadException(wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
+                }
+                wsBinding.setEndPointReference(EndPointReferenceHelper.readEndPointReference(reader));
+            }
+            if (event == END_ELEMENT && BINDING_WS_QNAME.equals(reader.getName())) {
                 break;
             }
         }
         return wsBinding;
+    }
+
+    protected void processEndPointReference(XMLStreamReader reader, WebServiceBinding wsBinding) {
     }
 
     public void write(WebServiceBinding wsBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
@@ -221,6 +235,10 @@ public class WebServiceBindingProcessor implements
             writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsBinding.getLocation());
         }
 
+        if (wsBinding.getEndPointReference() != null) {
+            EndPointReferenceHelper.writeEndPointReference(wsBinding.getEndPointReference(), writer);
+        }
+        
         writer.writeEndElement();
     }
 
