@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.w3c.dom.Element;
 
 /**
  * Represents a WebService binding.
@@ -64,6 +65,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private WSDLDefinition wsdlDefinition;
     private String wsdlNamespace;
     private InterfaceContract bindingInterfaceContract;
+    private Element endPointReference;
     
     protected WebServiceBindingImpl() {
     }
@@ -249,5 +251,13 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     
     public void setType(IntentAttachPointType intentAttachPointType) {
         this.intentAttachPointType = intentAttachPointType;
+    }
+
+    public Element getEndPointReference() {
+        return endPointReference;
+    }
+
+    public void setEndPointReference(Element epr) {
+        this.endPointReference = epr;
     }
 }
