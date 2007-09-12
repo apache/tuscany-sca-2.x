@@ -41,17 +41,17 @@ import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessor
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.SCADefinitionsDocumentProcessor;
+import org.apache.tuscany.sca.definitions.SCADefinitionsProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.SCADefinitions;
 import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
 import org.apache.tuscany.sca.policy.xml.ProfileIntentProcessor;
 import org.apache.tuscany.sca.policy.xml.QualifiedIntentProcessor;
-import org.apache.tuscany.sca.policy.xml.SCADefinitionsDocumentProcessor;
-import org.apache.tuscany.sca.policy.xml.SCADefinitionsProcessor;
 import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
 
 /**
