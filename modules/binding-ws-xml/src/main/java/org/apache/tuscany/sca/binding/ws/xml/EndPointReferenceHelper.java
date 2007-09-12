@@ -56,7 +56,9 @@ public class EndPointReferenceHelper {
 
             return loadElement(reader);
 
-        } catch (Exception e) {
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -66,12 +68,14 @@ public class EndPointReferenceHelper {
      */
     public static void writeEndPointReference(Element element, XMLStreamWriter writer)  {
         try {
+
             Source domSource = new DOMSource(element);
             StreamResult result = new StreamResult(new StringWriter());
             javax.xml.transform.Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.transform(domSource , result);
+
         } catch (TransformerException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

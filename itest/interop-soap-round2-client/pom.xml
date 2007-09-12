@@ -27,9 +27,7 @@
 	</parent>
 	<artifactId>itest-interop-soap-round2-client</artifactId>
 	<name>Apache Tuscany SCA WS SOAP Round2 Interop Client Integration Tests</name>
-	<properties>
-		<ws.type>axis2</ws.type>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>

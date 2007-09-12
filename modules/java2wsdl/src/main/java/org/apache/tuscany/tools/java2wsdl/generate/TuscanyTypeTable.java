@@ -27,7 +27,7 @@ import java.util.Vector;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.ws.java2wsdl.Java2WSDLUtils;
+import org.apache.axis2.description.java2wsdl.Java2WSDLUtils;
 import org.codehaus.jam.JClass;
 
 import commonj.sdo.DataObject;

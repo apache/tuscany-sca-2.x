@@ -232,7 +232,9 @@ public class JavaInterfaceEmitter extends JavaEmitter {
             outputFile.delete();
         }
 
-        writeClass(interfaceModel, interfaceWriter);
+//      JIRA TUSCANY-1561 Port to Axis2 1.3                
+//        writeClass(interfaceModel, interfaceWriter);
+        writeFile(interfaceModel, interfaceWriter);
     }
 
     @Override

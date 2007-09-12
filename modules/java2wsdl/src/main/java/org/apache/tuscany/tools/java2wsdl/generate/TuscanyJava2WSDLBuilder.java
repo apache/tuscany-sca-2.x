@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.ws.java2wsdl.Java2WSDLConstants;
+import org.apache.axis2.description.java2wsdl.Java2WSDLConstants;
 
 public class TuscanyJava2WSDLBuilder implements Java2WSDLConstants {
 

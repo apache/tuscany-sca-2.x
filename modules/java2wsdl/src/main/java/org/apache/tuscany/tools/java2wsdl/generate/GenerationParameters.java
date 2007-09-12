@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.ws.java2wsdl.Java2WSDLUtils;
+import org.apache.axis2.description.java2wsdl.Java2WSDLUtils;
 import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOption;
 
 /**

@@ -21,10 +21,10 @@ package org.apache.tuscany.tools.java2wsdl.plugin;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.apache.axis2.description.java2wsdl.Java2WSDLConstants;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tuscany.tools.java2wsdl.generate.Java2WSDLGeneratorFactory;
-import org.apache.ws.java2wsdl.Java2WSDLConstants;
 import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOption;
 
 /**

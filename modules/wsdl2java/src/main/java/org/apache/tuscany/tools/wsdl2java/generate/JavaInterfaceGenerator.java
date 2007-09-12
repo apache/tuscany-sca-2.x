@@ -151,7 +151,11 @@ public class JavaInterfaceGenerator {
                 // This lines up with the sync/async variable from the XSL template
                 codegenConfiguration.setSyncOn(true);
                 codegenConfiguration.setTypeMapper(typeMapper);
-                codegenConfiguration.setWriteMessageReceiver(false);
+
+// JIRA TUSCANY-1561 Port to Axis2 1.3                
+//                codegenConfiguration.setWriteMessageReceiver(false);
+                codegenConfiguration.setSkipMessageReceiver(true);
+                
                 codegenConfiguration.setWriteTestCase(false);
                 addExtension(new WSDLValidatorExtension(), codegenConfiguration);
                 addExtension(new PackageFinder(), codegenConfiguration);
