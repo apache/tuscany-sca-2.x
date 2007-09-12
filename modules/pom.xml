@@ -119,6 +119,7 @@
                 <module>policy-xml</module>
 		<module>policy-security</module>
                 <module>sca-api</module>
+		<module>sca-definitions</module>
                 <module>topology</module>
                 <module>topology-xml</module>
                 <module>wsdl2java</module>
