@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.bpel;
 
 import java.io.File;
 import java.net.URL;
+import java.util.concurrent.Future;
 
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
@@ -36,6 +37,7 @@ import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.ode.GeronimoTxFactory;
 import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
+import org.w3c.dom.Element;
 
 /**
  * Test to Deploy and Invoke a HelloWorld BPEL process using EmbeddedODEServer
@@ -72,44 +74,53 @@ public class EmbeddedODEServerTestCaseFIXME extends TestCase {
         System.out.println("Deploying : " + deploymentDir.toString());
         System.out.println(deploymentDir);
         if (odeServer.isInitialized()) {
-
-             
             try {
                 txMgr.begin();
                 odeServer.deploy(new ODEDeployment(deploymentDir));
                 txMgr.commit();
             } catch (Exception e) {
+                e.printStackTrace();
                 txMgr.rollback();
             }
             
             // transaction one
             MyRoleMessageExchange mex = null;
+            Future onhold = null;
             try {
                 // invoke the process
                 txMgr.begin();
                 mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
-                        new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld", "HelloWorld"), "hello");
+                        new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl", "HelloService"), "hello");
 
                 Message request = mex.createMessage(new QName("", ""));
                 request.setMessage(DOMUtils.stringToDOM("<message><TestPart>Hello</TestPart></message>"));
-                mex.invoke(request);
+                onhold = mex.invoke(request);
                 txMgr.commit();
             } catch (Exception e) {
+                e.printStackTrace();
                 txMgr.rollback();
             } 
-
             // - end of transaction one
+
+            // Waiting until the reply is ready in case the engine needs to continue in a different thread
+            if (onhold != null)
+                onhold.get();
 
             // transaction two
             try {
                 txMgr.begin();
+                // Reloading the mex in the current transaction, otherwise we can't be sure we have
+                // the "freshest" one.
+                mex = (MyRoleMessageExchange) odeServer.getBpelServer().getEngine().getMessageExchange(mex.getMessageExchangeId());
+
                 Status status = mex.getStatus();
-                System.out.println("Status" + status.name());
-                CorrelationStatus cstatus = mex.getCorrelationStatus();
-                System.out.println("CorrelationStatus" + cstatus.name());
+                System.out.println("Status: " + status.name());
+                Element response = mex.getResponse().getMessage();
+                System.out.println("Response: " + DOMUtils.domToString(response));
                 txMgr.commit();
                 // end of transaction two
             } catch (Exception e) {
+                e.printStackTrace();
                 txMgr.rollback();
             }
         }
