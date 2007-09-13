@@ -31,7 +31,6 @@ import junit.framework.TestCase;
 import org.apache.ode.bpel.iapi.Message;
 import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
-import org.apache.ode.bpel.iapi.MyRoleMessageExchange.CorrelationStatus;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
@@ -44,7 +43,7 @@ import org.w3c.dom.Element;
  * 
  * @version $Rev$ $Date$
  */
-public class EmbeddedODEServerTestCaseFIXME extends TestCase {
+public class EmbeddedODEServerTestCase extends TestCase {
 
     private EmbeddedODEServer odeServer;
 
