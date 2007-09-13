@@ -26,6 +26,8 @@ import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.OMXMLParserWrapper;
+import org.apache.axiom.om.impl.builder.StAXBuilder;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -36,10 +38,46 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 public class AxiomHelper {
-
     private static final String DEFAULT_PREFIX = "_ns_";
 
     private AxiomHelper() {
+    }
+
+    /**
+     * See http://issues.apache.org/jira/browse/WSCOMMONS-240
+     * @param om
+     */
+    public static void completeAndClose(OMElement om) {
+        // Get the builder associated with the om element
+        OMXMLParserWrapper builder = om.getBuilder();
+        if (builder != null) {
+            if (builder instanceof StAXBuilder) {
+                ((StAXBuilder)builder).releaseParserOnClose(true);
+            }
+            OMElement document = builder.getDocumentElement();
+            if (document != null) {
+                document.build();
+            }
+        }
+        if (builder instanceof StAXBuilder) {
+            ((StAXBuilder)builder).close();
+        }
+    }
+
+    /**
+     * This method will close the builder immediately.  Any subsequent Axiom objects won't 
+     * be built or accessible.
+     */
+    public static void closeImmediately(OMElement om) {
+        // Get the builder associated with the om element
+        OMXMLParserWrapper builder = om.getBuilder();
+        if (builder != null) {
+            if (builder instanceof StAXBuilder) {
+                ((StAXBuilder)builder).releaseParserOnClose(true);
+                ((StAXBuilder)builder).close();
+            }
+            // builder.close();
+        }
     }
 
     /**
