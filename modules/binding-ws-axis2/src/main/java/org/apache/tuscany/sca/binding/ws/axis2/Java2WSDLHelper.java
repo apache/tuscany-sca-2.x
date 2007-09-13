@@ -125,7 +125,7 @@ public class Java2WSDLHelper {
                 if (ext instanceof Schema) {
                     Element element = ((Schema)ext).getElement();
                     schemaCollection.setBaseUri(((Schema)ext).getDocumentBaseURI());
-                    schemaCollection.read(element, element.getBaseURI());
+                    schemaCollection.read(element, definition.getDocumentBaseURI());
                 }
             }
         }
