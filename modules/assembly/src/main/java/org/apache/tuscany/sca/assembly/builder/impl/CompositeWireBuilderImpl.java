@@ -32,15 +32,14 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
@@ -62,6 +61,7 @@ public class CompositeWireBuilderImpl {
     private CompositeBuilderMonitor monitor;
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
+    private List<PolicySet> domainPolicySets; 
     
     //Represents a target component and service
     private class Target {
@@ -82,10 +82,11 @@ public class CompositeWireBuilderImpl {
         }
     };
     
-    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
+    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, List<PolicySet> domainPolicySets, CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
+        this.domainPolicySets = domainPolicySets;
     }
 
     /**
@@ -215,7 +216,9 @@ public class CompositeWireBuilderImpl {
      * @param componentServices
      * @param problems
      */
-    private void connectCompositeServices(Composite composite, Map<String, Component> components, Map<String, ComponentService> componentServices) {
+    private void connectCompositeServices(Composite composite,
+                                          Map<String, Component> components,
+                                          Map<String, ComponentService> componentServices) {
     
         // Propagate interfaces from inner composite components' services to
         // their component services
@@ -818,6 +821,7 @@ public class CompositeWireBuilderImpl {
             }
             
             computeBindingIntentsAndPolicySets(service);
+            determinePolicySet(service, null);
         }
         
         for (Reference reference : composite.getReferences()) {
@@ -842,6 +846,7 @@ public class CompositeWireBuilderImpl {
             }
             
             computeBindingIntentsAndPolicySets(reference);
+            determinePolicySet(reference, null);
         }
         
         for (Component component : composite.getComponents()) {
@@ -943,7 +948,7 @@ public class CompositeWireBuilderImpl {
                               service.getCallback().getBindings(), 
                               service.getCallback().getPolicySets());
         }
-        trimProvidedIntents(service.getBindings());
+        //trimProvidedIntents(service.getBindings());
     }
     
     private void computeBindingIntentsAndPolicySets(Reference reference) {
@@ -957,21 +962,25 @@ public class CompositeWireBuilderImpl {
                               reference.getCallback().getBindings(), 
                               reference.getCallback().getPolicySets());
         }
-        trimProvidedIntents(reference.getBindings());
+        //trimProvidedIntents(reference.getBindings());
     }
     
     private void computeIntents(List<Binding> bindings, List<Intent> inheritedIntents) {
         boolean found = false;
+        List<Intent> expandedIntents = null;
 
         for (Binding binding : bindings) {
             if (binding instanceof IntentAttachPoint) {
+                
                 IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
                 IntentAttachPointType bindingType = policiedBinding.getType();
 
-                //expand profile intents
-                List<Intent> expandedIntents = expandProfileIntents(policiedBinding.getRequiredIntents());
-                policiedBinding.getRequiredIntents().clear();
-                policiedBinding.getRequiredIntents().addAll(expandedIntents);
+                //expand profile intents specified in the binding
+                if ( policiedBinding.getRequiredIntents().size() > 0 ) {
+                    expandedIntents = expandProfileIntents(policiedBinding.getRequiredIntents());
+                    policiedBinding.getRequiredIntents().clear();
+                    policiedBinding.getRequiredIntents().addAll(expandedIntents);
+                }
                 
                 //validate intents specified for the binding
                 for (Intent intent : policiedBinding.getRequiredIntents()) {
@@ -1092,18 +1101,27 @@ public class CompositeWireBuilderImpl {
     private boolean isPolicySetApplicable(Base parent,
                                           String xpath,
                                           IntentAttachPointType bindingType) {
+        
+        //FIXME: For now do a simple check and later implement whatever is mentioned in the next comment
+       if ( xpath != null && xpath.indexOf(bindingType.getName().getLocalPart()) != -1) {
+           return true;
+       } else {
+           return false;
+       }
+        
+        
         //create a xml node out of the parent object.. i.e. write the parent object as scdl fragment
         //invoke PropertyUtil.evaluate(null, node, xpath)
         //verify the result Node's QName against the bindingType's name
         
-        if (parent instanceof ComponentReference) {
+        /*if (parent instanceof ComponentReference) {
         } else if (parent instanceof ComponentReference) {
         } else if (parent instanceof Component) {
         } else if (parent instanceof CompositeService) {
         } else if (parent instanceof CompositeReference) {
 
         }
-        return true;
+        return true;*/
     }
     
     private List<Intent> expandProfileIntents(List<Intent> intents) {
@@ -1120,50 +1138,85 @@ public class CompositeWireBuilderImpl {
         return expandedIntents;
     }
     
-    private void trimProvidedIntents(List<Binding> bindings) {
-        for (Binding binding : bindings) {
-            if (binding instanceof PolicySetAttachPoint) {
-                trimProvidiedIntents((PolicySetAttachPoint)binding);
-            }
+    
+    private void trimProvidedIntents(List<Intent> requiredIntents, PolicySet policySet) {
+        for ( Intent providedIntent : policySet.getProvidedIntents() ) {
+            if ( requiredIntents.contains(providedIntent) ) {
+                requiredIntents.remove(providedIntent);
+            } 
+        }
+        
+        for ( Intent mappedIntent : policySet.getMappedPolicies().keySet() ) {
+            if ( requiredIntents.contains(mappedIntent) ) {
+                requiredIntents.remove(mappedIntent);
+            } 
         }
     }
     
-    private void trimProvidiedIntents(PolicySetAttachPoint policiedBinding) {
-        for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
-            for ( Intent providedIntent : policySet.getProvidedIntents() ) {
-                if ( policiedBinding.getRequiredIntents().contains(providedIntent) ) {
-                    policiedBinding.getRequiredIntents().remove(providedIntent);
+    private void trimProvidedIntents(List<Intent> requiredIntents, List<PolicySet> policySets) {
+        for ( PolicySet policySet : policySets ) {
+            trimProvidedIntents(requiredIntents, policySet);
+        }
+    }
+    
+    
+    
+    private void determineDomainPolicySets(Contract contract, PolicySetAttachPoint policiedBinding) {
+        if ( domainPolicySets != null && policiedBinding.getRequiredIntents().size() > 0 ) {
+            IntentAttachPointType bindingType = policiedBinding.getType();
+            for ( PolicySet policySet : domainPolicySets ) {
+                if ( isPolicySetApplicable(contract, policySet.getAppliesTo(), bindingType) ) {
+                    int prevSize = policiedBinding.getRequiredIntents().size();
+                    trimProvidedIntents(policiedBinding.getRequiredIntents(), policySet);
+                    //if any intent was trimmed off, then this policyset must be attached to the binding
+                    if ( prevSize != policiedBinding.getRequiredIntents().size() ) {
+                        policiedBinding.getPolicySets().add(policySet);
+                    }
+                }
+            }
+            
+            if ( policiedBinding.getRequiredIntents().size() > 0 ) {
+                if ( contract instanceof Service ) {
+                    warning("There are unfulfilled intents for binding in service - " + contract.getName(), contract);
+                } else {
+                    warning("There are unfulfilled intents for binding in reference - " + contract.getName(), contract);
                 }
             }
         }
     }
     
-    private void determinePolicySet(ComponentReference componentReference, ComponentService componentService) {
-        //add the target component's intents to the binding
-        for ( Binding aBinding : componentReference.getBindings() ) {
+        
+    private void determinePolicySet(Contract source, Contract target) {
+       
+        for ( Binding aBinding : source.getBindings() ) {
             if ( aBinding instanceof PolicySetAttachPoint ) {
                 PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)aBinding;
                 IntentAttachPointType bindingType = policiedBinding.getType();
-                for ( Intent intent : componentService.getRequiredIntents() ) {
-                    if ( !policiedBinding.getRequiredIntents().contains(intent) ) {
-                        for (QName constrained : intent.getConstrains()) {
-                            if (bindingType.getName().getNamespaceURI().equals(constrained
-                                .getNamespaceURI()) && bindingType.getName().getLocalPart()
-                                .startsWith(constrained.getLocalPart())) {
-                                policiedBinding.getRequiredIntents().add(intent);
-                                break;
+                
+                //add the target component's intents to the reference binding
+                if ( target != null ) {
+                    for ( Intent intent : target.getRequiredIntents() ) {
+                        if ( !policiedBinding.getRequiredIntents().contains(intent) ) {
+                            for (QName constrained : intent.getConstrains()) {
+                                if (bindingType.getName().getNamespaceURI().equals(constrained
+                                    .getNamespaceURI()) && bindingType.getName().getLocalPart()
+                                    .startsWith(constrained.getLocalPart())) {
+                                    policiedBinding.getRequiredIntents().add(intent);
+                                    break;
+                                }
                             }
                         }
                     }
                 }
-                trimProvidiedIntents(policiedBinding);
+                
+                trimProvidedIntents(policiedBinding.getRequiredIntents(), policiedBinding.getPolicySets());
+                
                 //determine additional policysets that match remaining intents
-                if ( policiedBinding.getRequiredIntents().size() > 0 ) {
-                    //TODO: resolved to domain policy registry and attach suitable policy sets to the binding
-                    //if there are intents that are not provided by any policy set throw a warning
-                }
+                //TODO: resolved to domain policy registry and attach suitable policy sets to the binding
+                //for now using the SCA Definitions instead of registry
+                //if there are intents that are not provided by any policy set throw a warning
+                determineDomainPolicySets(source, policiedBinding);
             }
-            
         }
     }
 
