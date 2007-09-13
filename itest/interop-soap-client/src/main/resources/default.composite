@@ -17,27 +17,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
         name="interop.client">
     
-    <component name="LoopbackInteropDocService">
+    <component name="InteropDocComponentService">
         <implementation.java class="org.apache.tuscany.test.interop.client.LoopbackInteropDocServiceComponentImpl"/>
+
+		<service name="DocTestPortType">
+	        <!-- interface.wsdl interface="http://soapinterop.org/#wsdl.interface(DocTestPortType)"/ -->
+	        <interface.java interface="org.soapinterop.DocTestPortType"/>
+	        <binding.ws wsdlElement="http://soapinterop.org/#wsdl.endpoint(interopDocSvc/interopDocPort)"/>
+	    </service>
     </component>
     
-    <reference name="RemoteInteropDocService">
-        <!-- interface.wsdl interface="http://soapinterop.org/#wsdl.interface(DocTestPortType)"/ -->
-        <interface.java interface="org.soapinterop.DocTestPortType"/>
-        
-        <binding.ws endpoint="http://soapinterop.org/#wsdl.endpoint(interopDocSvc/interopDocPort)" location="wsdl/interopdoc.wsdl"/>
-    </reference>
-    
-    <reference name="LocalHostInteropDocService">
-         <!-- interface.wsdl interface="http://soapinterop.org/#wsdl.interface(DocTestPortType)"/ -->
-        <interface.java interface="org.soapinterop.DocTestPortType"/>
-    
-        
-        <binding.ws  endpoint="http://soapinterop.org/#wsdl.endpoint(interopDocSvc/interopDocPort)"
-              location="wsdl/interopdoc.wsdl"/>
-    </reference>
+	    
 
 </composite>
