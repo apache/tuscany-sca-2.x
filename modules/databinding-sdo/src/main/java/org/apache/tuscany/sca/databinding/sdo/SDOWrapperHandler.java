@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
@@ -36,7 +37,7 @@ import commonj.sdo.Type;
 import commonj.sdo.helper.DataFactory;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XMLHelper;
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * SDO Wrapper Handler
@@ -47,12 +48,25 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#create(ElementInfo, TransformationContext)
      */
     public Object create(ElementInfo element, TransformationContext context) {
+        DataObject wrapper = null;
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
-        QName typeName = element.getType().getQName();
         DataFactory dataFactory = helperContext.getDataFactory();
-        DataObject root = dataFactory.create(typeName.getNamespaceURI(), typeName.getLocalPart());
-        XMLHelper xmlHelper = helperContext.getXMLHelper();
-        return xmlHelper.createDocument(root, element.getQName().getNamespaceURI(), element.getQName().getLocalPart());
+        XSDHelper xsdHelper = helperContext.getXSDHelper();
+        Property prop =
+            xsdHelper.getGlobalProperty(element.getQName().getNamespaceURI(), element.getQName().getLocalPart(), true);
+        if (prop != null) {
+            wrapper = dataFactory.create(prop.getType());
+        } else {
+            TypeInfo type = element.getType();
+            QName typeName = type != null ? type.getQName() : null;
+            if (typeName != null) {
+                wrapper = dataFactory.create(typeName.getNamespaceURI(), typeName.getLocalPart());
+            }
+        }
+        return wrapper;
+//        XMLHelper xmlHelper = helperContext.getXMLHelper();
+//        return xmlHelper.createDocument(wrapper, element.getQName().getNamespaceURI(), element.getQName()
+//            .getLocalPart());
     }
 
     /**
@@ -95,5 +109,4 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
         }
         return elements;
     }
-
 }

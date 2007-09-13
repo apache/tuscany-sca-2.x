@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.databinding.processor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -91,16 +92,29 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
 
             // FIXME: We need a better way to identify simple java types
+            int i = 0;
             for (org.apache.tuscany.sca.interfacedef.DataType<?> d : operation.getInputType().getLogical()) {
                 if (d.getDataBinding() == null) {
                     d.setDataBinding(dataBindingId);
                 }
-                dataBindingRegistry.introspectType(d, method.getAnnotations());
+                for (Annotation a : method.getParameterAnnotations()[i]) {
+                    if (a.annotationType() == org.apache.tuscany.sca.databinding.annotation.DataType.class) {
+                        String value = ((org.apache.tuscany.sca.databinding.annotation.DataType)a).value();
+                        d.setDataBinding(value);
+                    }
+                }
+                dataBindingRegistry.introspectType(d, method.getParameterAnnotations()[i]);
+                i++;
             }
             if (operation.getOutputType() != null) {
                 DataType<?> d = operation.getOutputType();
                 if (d.getDataBinding() == null) {
                     d.setDataBinding(dataBindingId);
+                }
+                org.apache.tuscany.sca.databinding.annotation.DataType dt =
+                    method.getAnnotation(org.apache.tuscany.sca.databinding.annotation.DataType.class);
+                if (dt != null) {
+                    d.setDataBinding(dt.value());
                 }
                 dataBindingRegistry.introspectType(d, method.getAnnotations());
             }
@@ -113,9 +127,9 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
 
             // JIRA: TUSCANY-842
-            if(operation.getDataBinding() == null) {
+            if (operation.getDataBinding() == null) {
                 assignOperationDataBinding(operation);
-            }  
+            }
 
             // FIXME: Do we want to heuristically check the wrapper style?
             // introspectWrapperStyle(operation);
@@ -130,16 +144,16 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
      *  The method logic assumes the JavaBeans DataBinding is the default 
      */
     private void assignOperationDataBinding(Operation operation) {
-        
+
         String nonDefaultDataBindingName = null;
 
         // Can't use DataType<?> since operation.getInputType() returns: DataType<List<DataType>> 
-        List<DataType> opDataTypes = new LinkedList<DataType>();     
-        
+        List<DataType> opDataTypes = new LinkedList<DataType>();
+
         opDataTypes.addAll(operation.getInputType().getLogical());
         opDataTypes.add(operation.getOutputType());
         opDataTypes.addAll(operation.getFaultTypes());
-        
+
         for (DataType<?> d : opDataTypes) {
             if (d != null) {
                 String dataBinding = d.getDataBinding();
@@ -160,11 +174,10 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 }
             }
         }
-        
+
         // We have a DB worthy of promoting to operation level.
         if (nonDefaultDataBindingName != null) {
             operation.setDataBinding(nonDefaultDataBindingName);
-        }        
+        }
     }
 }
-
