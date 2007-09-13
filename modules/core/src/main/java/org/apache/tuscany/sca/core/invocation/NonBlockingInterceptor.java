@@ -50,6 +50,16 @@ public class NonBlockingInterceptor implements Interceptor {
         this.next = next;
     }
 
+    /**
+     * Sets desired workScheduler to NonBlockingInterceptor. This is a usefull function for the extension framework
+     * to set desired workmanager on the InvocationChain, other than default workmanager which is set per Tuscany runtime.
+     * Using this function, extension framework can set desired workmanager on InvocationChain during post wire processing.
+     * @param workScheduler workScheduler which contains workmanager
+     */
+    public void setWorkScheduler(WorkScheduler workScheduler){
+        this.workScheduler = workScheduler;
+    }
+
     public Message invoke(final Message msg) {
         // Retrieve conversation id to transfer to new thread
         // Notice that we cannot clear the conversation id from the current thread
