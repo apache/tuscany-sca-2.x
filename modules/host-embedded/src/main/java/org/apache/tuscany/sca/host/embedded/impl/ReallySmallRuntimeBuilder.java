@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -73,11 +74,13 @@ import org.apache.tuscany.sca.core.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
@@ -143,8 +146,9 @@ public class ReallySmallRuntimeBuilder {
 
     public static CompositeBuilder createCompositeBuilder(AssemblyFactory assemblyFactory,
                                                           SCABindingFactory scaBindingFactory,
-                                                          InterfaceContractMapper interfaceContractMapper) {
-        return new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, null);
+                                                          InterfaceContractMapper interfaceContractMapper, 
+                                                          List<PolicySet> domainPolicySets) {
+        return new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, domainPolicySets, null);
     }
 
     /**
