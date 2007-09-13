@@ -53,6 +53,7 @@ import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntime {
@@ -121,13 +122,8 @@ public class ReallySmallRuntime {
                                                                                   scaDocDefnProcessor.getDomainModelResolver());
 
         // Create the ScopeRegistry
-        scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry);
+        scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry); 
         
-        // Create a composite builder
-        compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
-                                                                            scaBindingFactory,
-                                                                            mapper);
-
         // Create a composite activator
         compositeActivator = ReallySmallRuntimeBuilder.createCompositeActivator(registry,
                                                                                 assemblyFactory,
@@ -145,15 +141,26 @@ public class ReallySmallRuntime {
         // Start the runtime modules
         startModules(registry, modules);
         
-        loadDomainDefinitions(scaDocDefnProcessor);
+        SCADefinitions scaDefns = loadDomainDefinitions(scaDocDefnProcessor);
+        List<PolicySet> domainPolicySets = null;
+        if ( scaDefns != null ) {
+            domainPolicySets = scaDefns.getPolicySets();
+        }
+        
+        //Create a composite builder
+        compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
+                                                                            scaBindingFactory,
+                                                                            mapper,
+                                                                            domainPolicySets);
     }
     
-    private void loadDomainDefinitions(SCADefinitionsDocumentProcessor scaDocDefnProcessor) throws ActivationException {
+    private SCADefinitions loadDomainDefinitions(SCADefinitionsDocumentProcessor scaDocDefnProcessor) throws ActivationException {
         URL url = this.classLoader.getResource("definitions.xml");
+        SCADefinitions scaDefinitions = null;
         
         if ( url != null ) {
             try {
-                SCADefinitions scaDefinitions = scaDocDefnProcessor.read(null, null, url);
+                scaDefinitions = scaDocDefnProcessor.read(null, null, url);
                 scaDocDefnProcessor.resolve(scaDefinitions, scaDocDefnProcessor.getDomainModelResolver());
             } catch ( ContributionReadException e ) {
                 throw new ActivationException(e);
@@ -161,6 +168,7 @@ public class ReallySmallRuntime {
                 throw new ActivationException(e);
             }
         } 
+        return scaDefinitions;
     }
 
     public void stop() throws ActivationException {
