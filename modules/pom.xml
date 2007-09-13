@@ -39,6 +39,7 @@
                 <module>assembly</module>
                 <module>assembly-java-dsl</module>
                 <module>assembly-xml</module>
+                <module>assembly-xsd</module>
                 <module>binding-dwr</module>
                 <module>binding-ejb</module>
                 <module>binding-feed</module>

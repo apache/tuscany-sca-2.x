@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  (c) Copyright SCA Collaboration 2006  -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:sdo="commonj.sdo/XML"
+    elementFormDefault="qualified">
+
+    <include schemaLocation="sca-core.xsd"/>
+
+    <element name="implementation.cpp" type="sca:CPPImplementation" substitutionGroup="sca:implementation" />
+    <complexType name="CPPImplementation">
+        <complexContent>
+            <extension base="sca:Implementation">
+                <sequence>
+                    <element name="method" type="sca:CPPImplementationMethod" minOccurs="0" maxOccurs="unbounded" />
+                    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="library" type="NCName" use="required"/>
+                <attribute name="header" type="NCName" use="required"/>
+                <attribute name="path" type="NCName" use="optional"/>
+                <attribute name="class" type="Name" use="optional"/>
+                <attribute name="scope" type="sca:CPPImplementationScope" use="optional"/>
+                <attribute name="eagerInit" type="boolean" use="optional"/>
+                <attribute name="allowsPassByReference" type="boolean" use="optional"/>
+                <attribute name="conversationMaxAge" type="string" use="optional"/>
+                <attribute name="conversationMaxIdle" type="string" use="optional"/>
+                <attribute name="conversationSinglePrincipal" type="boolean" use="optional"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <simpleType name="CPPImplementationScope">
+        <restriction base="string">
+            <enumeration value="stateless"/>
+            <enumeration value="composite"/>
+            <enumeration value="request"/>
+            <enumeration value="converstion"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="CPPImplementationMethod">
+        <complexContent>
+            <attribute name="name" type="NCName" use="required"/>
+            <attribute name="allowsPassByReference" type="boolean" use="optional"/>
+            <anyAttribute namespace="##any" processContents="lax"/>
+        </complexContent>
+    </complexType>
+
+</schema>
+
+
