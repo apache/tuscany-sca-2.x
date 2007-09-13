@@ -221,19 +221,28 @@ public class Axis2ServiceProvider {
         
         // either there is no wsdl port endpoint URI or that URI is relative
 
-        URI bindingURI = URI.create(wsBinding.getURI());
-        if (bindingURI.isAbsolute()) {
-            // there is an absoulte uri specified on the binding: <binding.ws uri="xxx"
-            if (wsdlURI != null) {
-                // there is a relative URI in the wsdl port
-                return URI.create(bindingURI + "/" + wsdlURI);
-            } else {
-                return bindingURI;
+        URI completeURI;
+        if (wsBinding.getURI() != null) {
+            completeURI = URI.create(wsBinding.getURI());
+            if (!completeURI.isAbsolute()) {
+                completeURI = URI.create(baseURI + "/" + wsBinding.getURI());
             }
         } else {
-            bindingURI = URI.create(baseURI + "/" + wsBinding.getURI());
-            return bindingURI;
+            completeURI = URI.create(baseURI + "/" + wsBinding.getName());
         }
+        
+        if (eprURI != null) {
+            // there is a relative URI in the binding EPR
+            completeURI = URI.create(completeURI + "/" + eprURI);
+        }
+
+        if (wsdlURI != null) {
+            // there is a relative URI in the wsdl port
+            completeURI = URI.create(completeURI + "/" + wsdlURI);
+        }
+        
+        return completeURI;
+
     }
 
     private org.apache.axis2.addressing.EndpointReference getEPR() {

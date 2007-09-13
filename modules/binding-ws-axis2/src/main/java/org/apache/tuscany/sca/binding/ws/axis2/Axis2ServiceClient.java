@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.wsdl.Binding;
@@ -28,11 +29,19 @@ import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.xml.namespace.QName;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
@@ -143,7 +152,7 @@ public class Axis2ServiceClient {
      */
     protected Invoker createInvoker(Operation operation) {
         Options options = new Options();
-        EndpointReference epTo = getPortLocationEPR(wsBinding);
+        EndpointReference epTo = getWSATOEPR(wsBinding);
         if (epTo != null) {
             options.setTo(epTo);
         }
@@ -182,6 +191,19 @@ public class Axis2ServiceClient {
         return false;
     }
 
+    protected EndpointReference getWSATOEPR(WebServiceBinding binding) {
+        EndpointReference epr = getEPR(binding);
+        if (epr == null) {
+            epr = getPortLocationEPR(binding);
+        } else if (epr.getAddress() == null) {
+            EndpointReference bindingEPR = getPortLocationEPR(binding);
+            if (bindingEPR != null) {
+                epr.setAddress(bindingEPR.getAddress());
+            }
+        }
+        return epr;
+    }
+
     protected EndpointReference getPortLocationEPR(WebServiceBinding binding) {
         String ep = binding.getURI();
         if (ep == null && binding.getPort() != null) {
@@ -194,6 +216,27 @@ public class Axis2ServiceClient {
             }
         }
         return ep != null ? new EndpointReference(ep) : null;
+    }
+
+    protected org.apache.axis2.addressing.EndpointReference getEPR(WebServiceBinding wsBinding) {
+        if (wsBinding.getEndPointReference() == null) {
+            return null;
+        }
+        try {
+
+            XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(wsBinding.getEndPointReference()));
+            StAXOMBuilder builder = new StAXOMBuilder(parser);
+            OMElement omElement = builder.getDocumentElement();
+            org.apache.axis2.addressing.EndpointReference epr = EndpointReferenceHelper.fromOM(omElement);
+            return epr;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        } catch (FactoryConfigurationError e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected String getSOAPAction(String operationName) {
