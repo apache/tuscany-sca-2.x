@@ -1103,7 +1103,7 @@ public class CompositeWireBuilderImpl {
                                           IntentAttachPointType bindingType) {
         
         //FIXME: For now do a simple check and later implement whatever is mentioned in the next comment
-       if ( xpath != null && xpath.indexOf(bindingType.getName().getLocalPart()) != -1) {
+       if ( xpath != null && bindingType != null && xpath.indexOf(bindingType.getName().getLocalPart()) != -1) {
            return true;
        } else {
            return false;
