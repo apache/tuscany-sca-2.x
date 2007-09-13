@@ -26,7 +26,7 @@
     so for this composite the service is: http://localhost:8085/myExplicitURI 
     -->      
 
-    <service name="helloWorld" promote="HelloWorldService" policySets="wsAuthenticationPolicy">
+    <service name="helloWorld" promote="HelloWorldService" requires="authentication">
         <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
