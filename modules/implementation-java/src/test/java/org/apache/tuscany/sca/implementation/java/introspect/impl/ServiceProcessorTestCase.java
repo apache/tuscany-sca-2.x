@@ -73,12 +73,7 @@ public class ServiceProcessorTestCase extends TestCase {
     }
 
     public void testNonInterface() throws Exception {
-        try {
-            processor.visitClass(BadImpl.class, type);
-            fail();
-        } catch (InvalidServiceType e) {
-            //expected
-        }
+        processor.visitClass(FooServiceUsingClassImpl.class, type);
     }
 
     public void testNoInterfaces() throws Exception {
@@ -135,7 +130,7 @@ public class ServiceProcessorTestCase extends TestCase {
     }
 
     @Service(FooSingle.class)
-    private class BadImpl extends FooSingle {
+    private class FooServiceUsingClassImpl extends FooSingle {
 
     }
 
