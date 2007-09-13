@@ -26,7 +26,7 @@
     so for this composite the service is: http://localhost:8085/myExplicitURI 
     -->      
 
-    <service name="helloWorld" promote="HelloWorldService" policySets="wsIntegrityPolicy">
+    <service name="helloWorld" promote="HelloWorldService" requires="integrity">
         <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
     </service>
@@ -40,7 +40,7 @@
         <reference name="helloWorldWS" />
     </component>
 
-    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS" policySets="wsIntegrityPolicy">
+    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS" requires="integrity">
         <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
         <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.binding(HelloWorldSoapBinding)"
                     uri="http://localhost:8085/myExplicitURI"/>
