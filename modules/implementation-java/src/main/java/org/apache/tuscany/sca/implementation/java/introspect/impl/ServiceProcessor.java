@@ -83,16 +83,12 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             }
         }
         for (Class<?> interfaze : interfaces) {
-            if (!interfaze.isInterface()) {
-                throw new InvalidServiceType("Service must be an interface", interfaze);
-            }
-            Service service;
             try {
-                service = createService(interfaze);
+                Service service = createService(interfaze);
+                type.getServices().add(service);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
             }
-            type.getServices().add(service);
         }
     }
 
