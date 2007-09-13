@@ -20,9 +20,11 @@
 package org.apache.tuscany.sca.databinding.sdo;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -45,16 +47,47 @@ public final class SDOContextHelper {
             return getDefaultHelperContext();
         }
         HelperContext helperContext = SDOUtil.createHelperContext();
-        Class javaType = context.getTargetDataType().getPhysical();
-        boolean found = register(helperContext, javaType);
-        javaType = context.getSourceDataType().getPhysical();
-        found = found || register(helperContext, javaType);
+
+        boolean found = register(helperContext, context.getTargetDataType());
+        found = register(helperContext, context.getSourceDataType()) || found;
         if (found) {
             return helperContext;
         } else {
             return getDefaultHelperContext();
         }
 
+    }
+
+    /**
+     * @param helperContext
+     * @param dataType
+     * @return
+     */
+    private static boolean register(HelperContext helperContext, DataType dataType) {
+        if (dataType == null) {
+            return false;
+        }
+        String db = dataType.getDataBinding();
+        boolean found = false;
+        if (DataBinding.IDL_INPUT.equals(db) || DataBinding.IDL_OUTPUT.equals(db)
+            || DataBinding.IDL_FAULT.equals(db)
+            || SDODataBinding.NAME.equals(db)) {
+            Class javaType = dataType.getPhysical();
+            found = register(helperContext, javaType);
+            if (dataType.getLogical() instanceof DataType) {
+                DataType logical = (DataType)dataType.getLogical();
+                found = register(helperContext, logical.getPhysical()) || found;
+            }
+            if (dataType.getLogical() instanceof List) {
+                List types = (List)dataType.getLogical();
+                for (Object type : types) {
+                    if (type instanceof DataType) {
+                        found = register(helperContext, ((DataType)type)) || found;
+                    }
+                }
+            }
+        }
+        return found;
     }
 
     /**
