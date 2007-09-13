@@ -73,7 +73,7 @@ public class BuildPolicyTestCase extends TestCase {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         resolver = new TestModelResolver();
-        compositeBuilder = new CompositeBuilderImpl(factory, new TestSCABindingFactoryImpl(), new InterfaceContractMapperImpl(), null);
+        compositeBuilder = new CompositeBuilderImpl(factory, new TestSCABindingFactoryImpl(), new InterfaceContractMapperImpl(), null, null);
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
         

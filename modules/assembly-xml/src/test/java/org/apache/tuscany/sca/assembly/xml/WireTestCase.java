@@ -91,7 +91,7 @@ public class WireTestCase extends TestCase {
         assertNotNull(composite);
         
         compositeReader.resolve(composite, resolver);
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null, null);
         compositeUtil.build(composite);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
@@ -114,7 +114,7 @@ public class WireTestCase extends TestCase {
         is.close();
         
         compositeReader.resolve(composite, resolver);
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null, null);
         compositeUtil.build(composite);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);

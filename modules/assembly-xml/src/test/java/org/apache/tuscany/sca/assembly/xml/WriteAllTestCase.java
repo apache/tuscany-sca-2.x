@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
+ */ 
 
 package org.apache.tuscany.sca.assembly.xml;
 
@@ -67,7 +67,7 @@ public class WriteAllTestCase extends TestCase {
         scaBindingFactory = new TestSCABindingFactoryImpl();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
-        compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null);
+        compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null, null);
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor));
