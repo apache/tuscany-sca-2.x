@@ -36,9 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <!--
                 <module>callablereferences</module>
-                -->
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
