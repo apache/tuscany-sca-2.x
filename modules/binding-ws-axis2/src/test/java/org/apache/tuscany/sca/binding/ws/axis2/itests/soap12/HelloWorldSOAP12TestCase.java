@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class HelloWorldSOAP12TestCaseFIXME extends TestCase {
+public class HelloWorldSOAP12TestCase extends TestCase {
 
     private SCADomain domain;
 
