@@ -180,7 +180,7 @@ public class SCADomainContext {
         };
 
         // Configure and wire the composite
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, null, monitor);
         compositeUtil.build(composite);
 
     }
