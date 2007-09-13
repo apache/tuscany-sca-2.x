@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006, 2007 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://www.osoa.org/xmlns/sca/1.0" 
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="sca-core.xsd"/>
+
+    <element name="interface.java" type="sca:JavaInterface" substitutionGroup="sca:interface"/>
+    <complexType name="JavaInterface">
+        <complexContent>
+            <extension base="sca:Interface">
+                <sequence>
+                    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="interface" type="NCName" use="required"/>
+                <attribute name="callbackInterface" type="NCName" use="optional"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
