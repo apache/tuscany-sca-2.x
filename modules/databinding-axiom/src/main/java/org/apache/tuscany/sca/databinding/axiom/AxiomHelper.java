@@ -52,8 +52,7 @@ public class AxiomHelper {
         OMXMLParserWrapper builder = om.getBuilder();
         if (builder != null) {
             if (builder instanceof StAXBuilder) {
-                // FIXME: Uncomment it for AXIOM 1.2.5
-                // ((StAXBuilder)builder).releaseParserOnClose(true);
+                ((StAXBuilder)builder).releaseParserOnClose(true);
             }
             OMElement document = builder.getDocumentElement();
             if (document != null) {
@@ -74,8 +73,7 @@ public class AxiomHelper {
         OMXMLParserWrapper builder = om.getBuilder();
         if (builder != null) {
             if (builder instanceof StAXBuilder) {
-                // FIXME: Uncomment it for AXIOM 1.2.5
-                // ((StAXBuilder)builder).releaseParserOnClose(true);
+                ((StAXBuilder)builder).releaseParserOnClose(true);
                 ((StAXBuilder)builder).close();
             }
             // builder.close();
