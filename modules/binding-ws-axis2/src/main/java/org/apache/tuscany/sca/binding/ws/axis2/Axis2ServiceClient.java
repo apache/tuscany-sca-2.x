@@ -195,7 +195,7 @@ public class Axis2ServiceClient {
         EndpointReference epr = getEPR(binding);
         if (epr == null) {
             epr = getPortLocationEPR(binding);
-        } else if (epr.getAddress() == null) {
+        } else if (epr.getAddress() == null || epr.getAddress().length() < 1) {
             EndpointReference bindingEPR = getPortLocationEPR(binding);
             if (bindingEPR != null) {
                 epr.setAddress(bindingEPR.getAddress());
