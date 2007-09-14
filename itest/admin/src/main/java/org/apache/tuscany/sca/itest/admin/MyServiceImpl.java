@@ -1,4 +1,4 @@
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.itest.admin;
 
 import java.util.Date;
 
@@ -7,11 +7,11 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
-import org.apache.tuscany.sca.itest.MyListService;
-import org.apache.tuscany.sca.itest.MyListServiceByYear;
-import org.apache.tuscany.sca.itest.MyService;
-import org.apache.tuscany.sca.itest.MyServiceByDate;
-import org.apache.tuscany.sca.itest.MyLogger;
+import org.apache.tuscany.sca.itest.admin.MyListService;
+import org.apache.tuscany.sca.itest.admin.MyListServiceByYear;
+import org.apache.tuscany.sca.itest.admin.MyLogger;
+import org.apache.tuscany.sca.itest.admin.MyService;
+import org.apache.tuscany.sca.itest.admin.MyServiceByDate;
 
 
 @Service(interfaces={MyService.class, MyServiceByDate.class, MyListService.class, MyListServiceByYear.class})

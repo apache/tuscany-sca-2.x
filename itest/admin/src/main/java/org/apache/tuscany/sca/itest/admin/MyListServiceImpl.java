@@ -1,4 +1,4 @@
-package org.apache.tuscany.sca.itest;
+package org.apache.tuscany.sca.itest.admin;
 
 
 import java.util.List;
@@ -7,8 +7,8 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.sca.itest.MyListService;
-import org.apache.tuscany.sca.itest.MyListServiceByYear;
+import org.apache.tuscany.sca.itest.admin.MyListService;
+import org.apache.tuscany.sca.itest.admin.MyListServiceByYear;
 
 @Service(interfaces={MyListService.class,MyListServiceByYear.class})
 
