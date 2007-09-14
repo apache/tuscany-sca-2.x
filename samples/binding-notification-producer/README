@@ -26,6 +26,23 @@ This sample also illustrates the use of a wsdl interface in the notification
 component's <implementation.notification/>. This allows messages sent and received
 via <binding.notification/> to be transported as literal xml over http.
 
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd binding-notification-producer
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] Sep 14, 2007 10:31:45 AM org.apache.tuscany.sca.http.jetty.JettyServer addServletMapping
+     [java] INFO: Added Servlet mapping: http://localhost:8083/ntm/trafficAdvisory
+     [java] Sep 14, 2007 10:31:45 AM org.apache.tuscany.sca.http.jetty.JettyServer addServletMapping
+     [java] INFO: Added Servlet mapping: http://localhost:8083/producer/trafficAdvisory
+     
 Building And Running The Sample Using Maven 
 -------------------------------------------
 With either the binary or source distributions the sample can be built and run 
