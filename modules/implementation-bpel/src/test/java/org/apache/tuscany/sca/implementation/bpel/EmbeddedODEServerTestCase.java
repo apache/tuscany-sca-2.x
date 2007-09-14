@@ -92,7 +92,7 @@ public class EmbeddedODEServerTestCase extends TestCase {
                         new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl", "HelloService"), "hello");
 
                 Message request = mex.createMessage(new QName("", ""));
-                request.setMessage(DOMUtils.stringToDOM("<message><TestPart>Hello</TestPart></message>"));
+                request.setMessage(DOMUtils.stringToDOM("<message><TestPart><hello xmlns=\"http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl\">Hello</hello></TestPart></message>"));
                 onhold = mex.invoke(request);
                 txMgr.commit();
             } catch (Exception e) {
