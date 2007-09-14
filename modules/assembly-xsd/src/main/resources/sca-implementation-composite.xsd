@@ -16,9 +16,6 @@
                         maxOccurs="unbounded"/>
                 </sequence>
                 <attribute name="name" type="QName" use="required"/>
-                <attribute name="requires" type="sca:listOfQNames" use="optional"/>
-    			<attribute name="policySets" type="sca:listOfQNames" 
-    				use="optional"/>
                 <anyAttribute namespace="##any" processContents="lax"/>
             </extension>
         </complexContent>

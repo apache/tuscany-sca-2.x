@@ -7,8 +7,6 @@
         elementFormDefault="qualified">
         
     <include schemaLocation="sca-core.xsd"/>
-    <import namespace="http://schemas.xmlsoap.org/ws/2004/09/policy" 
-    		schemaLocation="http://schemas.xmlsoap.org/ws/2004/09/ws-policy.xsd"/>
 		
 	<element name="intent" type="sca:Intent"/>	
 	<complexType name="Intent">
@@ -28,9 +26,6 @@
 		<choice minOccurs="0" maxOccurs="unbounded">
 			<element name="policySetReference" type="sca:PolicySetReference"/>
 			<element name="intentMap" type="sca:IntentMap"/>
-			<element ref="wsp:PolicyAttachment"/>
-			<element ref="wsp:Policy"/>
-			<element ref="wsp:PolicyReference"/>
 			<any namespace="##other" processContents="lax"/>
 		</choice>
 		<attribute name="name" type="QName" use="required"/>
@@ -57,7 +52,6 @@
 	<complexType name="Qualifier">
 		<choice minOccurs="1" maxOccurs="unbounded">
 			<element name="intentMap" type="sca:IntentMap"/>
-			<element ref="wsp:PolicyAttachment"/>
 			<any namespace="##other" processContents="lax"/>
 		</choice>
 		<attribute name="name" type="string" use="required"/>

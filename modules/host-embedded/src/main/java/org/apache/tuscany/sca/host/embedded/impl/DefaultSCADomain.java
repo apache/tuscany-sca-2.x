@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.WireableBinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.xml.Constants;
@@ -198,6 +197,30 @@ public class DefaultSCADomain extends SCADomain {
         }
 
         this.componentManager = new DefaultSCADomainComponentManager(this);
+
+        // For debugging purposes, print the composites
+//        ExtensionPointRegistry extensionPoints = runtime.getExtensionPointRegistry();
+//        StAXArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+//        StAXArtifactProcessor processor = artifactProcessors.getProcessor(Composite.class);
+//        for (Composite composite : domainComposite.getIncludes()) {
+//            try {
+//                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+//                outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+//                processor.write(composite, outputFactory.createXMLStreamWriter(bos));
+//                Document document =
+//                    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos
+//                        .toByteArray()));
+//                OutputFormat format = new OutputFormat();
+//                format.setIndenting(true);
+//                format.setIndent(2);
+//                XMLSerializer serializer = new XMLSerializer(System.out, format);
+//                serializer.serialize(document);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+    
     }
 
     @Override

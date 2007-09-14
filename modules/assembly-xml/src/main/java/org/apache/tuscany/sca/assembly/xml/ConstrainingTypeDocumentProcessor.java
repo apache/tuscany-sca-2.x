@@ -27,10 +27,12 @@ import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.validation.Schema;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -42,6 +44,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  */
 public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<ConstrainingType> {
     private XMLInputFactory inputFactory;
+    private Schema schema;
 
     /**
      * Construct a new constrainingType processor.
@@ -49,9 +52,10 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
      * @param policyFactory
      * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
+    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory, Schema schema) {
         super(null, null, staxProcessor);
         this.inputFactory = inputFactory;
+        this.schema = schema;
     }
 
     public ConstrainingType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
@@ -61,6 +65,7 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
             // Create a stream reader
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+            reader = new ValidatingXMLStreamReader(reader, schema);
             reader.nextTag();
             
             // Read the constrainingType model 

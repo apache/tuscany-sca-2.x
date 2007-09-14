@@ -22,8 +22,11 @@ package org.apache.tuscany.sca.host.embedded.impl;
 import java.io.IOException;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -74,7 +77,6 @@ import org.apache.tuscany.sca.core.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -85,6 +87,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.xml.sax.SAXException;
 
 public class ReallySmallRuntimeBuilder {
 
@@ -161,8 +164,7 @@ public class ReallySmallRuntimeBuilder {
                                                                 ContributionFactory contributionFactory,
                                                                 AssemblyFactory assemblyFactory,
                                                                 PolicyFactory policyFactory,
-                                                                InterfaceContractMapper mapper,
-                                                                ModelResolver domainModelResolver)
+                                                                InterfaceContractMapper mapper)
         throws ActivationException {
 
         XMLInputFactory xmlFactory = registry.getExtensionPoint(XMLInputFactory.class);
@@ -188,11 +190,26 @@ public class ReallySmallRuntimeBuilder {
         URLArtifactProcessorExtensionPoint documentProcessors =
             registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
 
+        // Load the Assembly XSD, used for validation
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema;
+        try {
+            schema = schemaFactory.newSchema(ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd"));
+        } catch (SAXException e) {
+            throw new ActivationException(e);
+        }
+        
         // Create and register document processors for SCA assembly XML
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, schema));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory, schema));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory, schema));
+
+        // Create and register document processor for definitions.xml
+        SCADefinitionsDocumentProcessor definitionsDocumentProcessor =
+            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, xmlFactory, policyFactory, schema);
+        documentProcessors.addArtifactProcessor(definitionsDocumentProcessor);
+        ModelResolver domainModelResolver = definitionsDocumentProcessor.getDomainModelResolver();
 
         // Create Model Resolver extension point
         ModelResolverExtensionPoint modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
@@ -219,6 +236,7 @@ public class ReallySmallRuntimeBuilder {
 
         ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
+        // Create the contribution service
         ContributionService contributionService =
             new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor,
                                         contributionListener, domainModelResolver, modelResolvers, modelFactories,
@@ -242,19 +260,6 @@ public class ReallySmallRuntimeBuilder {
         registry.addExtensionPoint(scopeRegistry);
 
         return scopeRegistry;
-    }
-
-    public static SCADefinitionsDocumentProcessor createSCADefinitionsDocProcessor(ExtensionPointRegistry registry,
-                                                                                   PolicyFactory policyFactory) {
-        XMLInputFactory xmlFactory = registry.getExtensionPoint(XMLInputFactory.class);
-        StAXArtifactProcessorExtensionPoint staxProcessors =
-            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        ExtensibleStAXArtifactProcessor staxProcessor =
-            new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
-        SCADefinitionsDocumentProcessor scaDocDefnProcessor =
-            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, xmlFactory, policyFactory);
-
-        return scaDocDefnProcessor;
     }
 
 }

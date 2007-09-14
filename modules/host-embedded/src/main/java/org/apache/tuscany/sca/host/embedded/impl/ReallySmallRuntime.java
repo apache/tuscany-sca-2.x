@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
@@ -109,18 +110,14 @@ public class ReallySmallRuntime {
         factories.addFactory(intentAttachPointTypeFactory);
         ContributionFactory contributionFactory = factories.getFactory(ContributionFactory.class); 
         
-        SCADefinitionsDocumentProcessor scaDocDefnProcessor = 
-            ReallySmallRuntimeBuilder.createSCADefinitionsDocProcessor(registry, policyFactory);
-        
         // Create a contribution service
         contributionService = ReallySmallRuntimeBuilder.createContributionService(classLoader,
                                                                                   registry,
                                                                                   contributionFactory,
                                                                                   assemblyFactory,
                                                                                   policyFactory,
-                                                                                  mapper,
-                                                                                  scaDocDefnProcessor.getDomainModelResolver());
-
+                                                                                  mapper);
+        
         // Create the ScopeRegistry
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry); 
         
@@ -140,11 +137,16 @@ public class ReallySmallRuntime {
         
         // Start the runtime modules
         startModules(registry, modules);
-        
-        SCADefinitions scaDefns = loadDomainDefinitions(scaDocDefnProcessor);
-        List<PolicySet> domainPolicySets = null;
-        if ( scaDefns != null ) {
-            domainPolicySets = scaDefns.getPolicySets();
+
+        // Load the definitions.xml
+        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
+        SCADefinitions definitions = loadDomainDefinitions(definitionsProcessor);
+        List<PolicySet> domainPolicySets;
+        if ( definitions != null ) {
+            domainPolicySets = definitions.getPolicySets();
+        } else {
+            domainPolicySets = null;
         }
         
         //Create a composite builder
@@ -154,21 +156,21 @@ public class ReallySmallRuntime {
                                                                             domainPolicySets);
     }
     
-    private SCADefinitions loadDomainDefinitions(SCADefinitionsDocumentProcessor scaDocDefnProcessor) throws ActivationException {
+    private SCADefinitions loadDomainDefinitions(SCADefinitionsDocumentProcessor definitionsProcessor) throws ActivationException {
         URL url = this.classLoader.getResource("definitions.xml");
-        SCADefinitions scaDefinitions = null;
+        SCADefinitions definitions = null;
         
         if ( url != null ) {
             try {
-                scaDefinitions = scaDocDefnProcessor.read(null, null, url);
-                scaDocDefnProcessor.resolve(scaDefinitions, scaDocDefnProcessor.getDomainModelResolver());
+                definitions = definitionsProcessor.read(null, null, url);
+                definitionsProcessor.resolve(definitions, definitionsProcessor.getDomainModelResolver());
             } catch ( ContributionReadException e ) {
                 throw new ActivationException(e);
             } catch ( ContributionResolveException e ) {
                 throw new ActivationException(e);
             }
         } 
-        return scaDefinitions;
+        return definitions;
     }
 
     public void stop() throws ActivationException {
