@@ -31,16 +31,19 @@ public class TrafficAdvisoryServer {
             SCADomain domain = SCADomain.newInstance("TrafficAdvisoryNotification.composite");
             TestCaseProducer testCaseProducer = domain.getService(TestCaseProducer.class, "TrafficAdvisoryProducer");
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String value = null;
+            String value = "";
+            if (args.length == 1) {
+                value = args[0];
+            }
             do {
+                if(value == null || value.equals("end")) {
+                    break;
+                }
                 try {
                     System.out.println("Send a report value, ^C or <end> to end");
                     value = reader.readLine();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                if(value == null || value.equals("end")) {
-                    break;
                 }
                 testCaseProducer.produceTrafficNotification("Report value [" + value + "]");
             }
