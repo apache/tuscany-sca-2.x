@@ -21,12 +21,22 @@ package org.apache.tuscany.sca.implementation.java.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -39,10 +49,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
-public class JavaImplementationProcessor implements
-    StAXArtifactProcessor<JavaImplementation>, JavaImplementationConstants {
+public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>,
+    JavaImplementationConstants {
 
     private JavaImplementationFactory javaFactory;
     private AssemblyFactory assemblyFactory;
@@ -75,17 +89,18 @@ public class JavaImplementationProcessor implements
         return javaImplementation;
     }
 
-    public void write(JavaImplementation javaImplementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(JavaImplementation javaImplementation, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
 
         // Write an <implementation.java>
         policyProcessor.writePolicyPrefixes(javaImplementation, writer);
         writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_JAVA);
         policyProcessor.writePolicyAttributes(javaImplementation, writer);
-        
+
         if (javaImplementation.getName() != null) {
             writer.writeAttribute(CLASS, javaImplementation.getName());
         }
-        
+
         writer.writeEndElement();
     }
 
@@ -107,10 +122,110 @@ public class JavaImplementationProcessor implements
             throw new ContributionResolveException(e);
         }
 
+        mergeComponentType(resolver, javaImplementation);
+
         // FIXME the introspector should always create at least one service
         if (javaImplementation.getServices().isEmpty()) {
             javaImplementation.getServices().add(assemblyFactory.createService());
         }
+    }
+
+    private JavaElementImpl getMemeber(JavaImplementation impl, String name, Class<?> type) {
+        String setter = JavaIntrospectionHelper.toSetter(name);
+        try {
+            Method method = impl.getJavaClass().getDeclaredMethod(setter, type);
+            int mod = method.getModifiers();
+            if ((Modifier.isPublic(mod) || Modifier.isProtected(mod)) && (!Modifier.isStatic(mod))) {
+                return new JavaElementImpl(method, 0);
+            }
+        } catch (NoSuchMethodException e) {
+            Field field;
+            try {
+                field = impl.getJavaClass().getDeclaredField(name);
+                int mod = field.getModifiers();
+                if ((Modifier.isPublic(mod) || Modifier.isProtected(mod)) && (!Modifier.isStatic(mod))) {
+                    return new JavaElementImpl(field);
+                }
+            } catch (NoSuchFieldException e1) {
+                // Ignore
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Merge the componentType from introspection and external file
+     * @param resolver
+     * @param impl
+     */
+    private void mergeComponentType(ModelResolver resolver, JavaImplementation impl) {
+        // FIXME: Need to clarify how to merge
+        ComponentType componentType = getComponentType(resolver, impl);
+        if (componentType != null && !componentType.isUnresolved()) {
+            Map<String, Reference> refMap = new HashMap<String, Reference>();
+            for (Reference ref : impl.getReferences()) {
+                refMap.put(ref.getName(), ref);
+            }
+            for (Reference reference : componentType.getReferences()) {
+                refMap.put(reference.getName(), reference);
+            }
+            impl.getReferences().clear();
+            impl.getReferences().addAll(refMap.values());
+
+            // Try to match references by type
+            Map<String, JavaElementImpl> refMembers = impl.getReferenceMembers();
+            for (Reference ref : impl.getReferences()) {
+                if (ref.getInterfaceContract() != null) {
+                    Interface i = ref.getInterfaceContract().getInterface();
+                    if (i instanceof JavaInterface) {
+                        Class<?> type = ((JavaInterface)i).getJavaClass();
+                        if (!refMembers.containsKey(ref.getName())) {
+                            JavaElementImpl e = getMemeber(impl, ref.getName(), type);
+                            if (e != null) {
+                                refMembers.put(ref.getName(), e);
+                            }
+                        }
+                    }
+                }
+            }
+
+            Map<String, Service> serviceMap = new HashMap<String, Service>();
+            for (Service svc : impl.getServices()) {
+                serviceMap.put(svc.getName(), svc);
+            }
+            for (Service service : componentType.getServices()) {
+                serviceMap.put(service.getName(), service);
+            }
+            impl.getServices().clear();
+            impl.getServices().addAll(serviceMap.values());
+
+            Map<String, Property> propMap = new HashMap<String, Property>();
+            for (Property prop : impl.getProperties()) {
+                propMap.put(prop.getName(), prop);
+            }
+            for (Property property : componentType.getProperties()) {
+                propMap.put(property.getName(), property);
+            }
+            impl.getProperties().clear();
+            impl.getProperties().addAll(propMap.values());
+
+            if (componentType.getConstrainingType() != null) {
+                impl.setConstrainingType(componentType.getConstrainingType());
+            }
+        }
+    }
+
+    private ComponentType getComponentType(ModelResolver resolver, JavaImplementation impl) {
+        String className = impl.getJavaClass().getName();
+        String componentTypeURI = className.replace('.', '/') + ".componentType";
+        ComponentType componentType = assemblyFactory.createComponentType();
+        componentType.setUnresolved(true);
+        componentType.setURI(componentTypeURI);
+        componentType = resolver.resolveModel(ComponentType.class, componentType);
+        if (!componentType.isUnresolved()) {
+            return componentType;
+        }
+        return null;
     }
 
     public QName getArtifactType() {
