@@ -25,7 +25,7 @@ import static junit.framework.Assert.assertEquals;
 import junit.framework.Assert;
 
 
-import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService;
-import org.apache.tuscany.sca.distributed.domain.ServiceInfo;
+import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.domain.ServiceInfo;
 
 
 /**

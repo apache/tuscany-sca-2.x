@@ -20,7 +20,7 @@ package node;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
  * This server program that loads a composite to provide simple registry function.

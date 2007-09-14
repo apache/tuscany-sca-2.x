@@ -24,9 +24,9 @@
            
     
     <component name="DomainManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.distributed.domain.impl.DomainManagerServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.domain.impl.DomainManagerServiceImpl"/>
         <service name="DomainManagerService">
-            <interface.java interface="org.apache.tuscany.sca.distributed.domain.DomainManagerService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerService"/>
             <binding.ws uri="http://localhost:8080/DomainManagerComponent/DomainManager"/>
         </service>
         <reference name="serviceDiscovery" target="ServiceDiscoveryComponent"/>
@@ -34,9 +34,9 @@
     
     
     <component name="ServiceDiscoveryComponent">
-        <implementation.java class="org.apache.tuscany.sca.distributed.domain.impl.ServiceDiscoveryServiceImpl" />
+        <implementation.java class="org.apache.tuscany.sca.domain.impl.ServiceDiscoveryServiceImpl" />
         <service name="ServiceDiscoveryService">
-            <interface.java interface="org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.ServiceDiscoveryService"/>
             <binding.sca uri="http://localhost:8080/ServiceDiscoveryComponent/ServiceDiscoverySCA"/>
             <binding.ws uri="http://localhost:8080/ServiceDiscoveryComponent/ServiceDiscovery"/>            
         </service>

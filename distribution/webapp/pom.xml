@@ -33,7 +33,12 @@
     <dependencies>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-distributed-impl</artifactId>
+            <artifactId>tuscany-domain</artifactId>
+            <version>${pom.version}</version>
+        </dependency>    
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-node-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>

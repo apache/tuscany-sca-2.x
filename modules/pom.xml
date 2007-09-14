@@ -79,8 +79,8 @@
                 <!--
                 <module>discovery-jms</module>
                 -->
-                <module>distributed</module>
-                <module>distributed-impl</module>
+                <module>domain</module>
+                <module>domain-impl</module>
                 <module>extension-helper</module>
                 <module>host-embedded</module>
                 <!--
@@ -119,6 +119,8 @@
                 -->
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
+                <module>node</module>
+                <module>node-impl</module>
                 <module>policy</module>
                 <module>policy-xml</module>
 		<module>policy-security</module>

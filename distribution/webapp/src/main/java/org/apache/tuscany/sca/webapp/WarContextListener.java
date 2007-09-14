@@ -40,8 +40,8 @@ import javax.servlet.ServletContextListener;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
-import org.apache.tuscany.sca.distributed.node.impl.ContributionManagerImpl;
-import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
+import org.apache.tuscany.sca.node.impl.ContributionManagerImpl;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
  * A ServletContextListener for the Tuscany WAR distribution.
