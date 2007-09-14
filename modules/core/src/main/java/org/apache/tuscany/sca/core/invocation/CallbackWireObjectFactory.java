@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.invocation.Message;
@@ -167,12 +167,12 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
         ref.getTargets().add(service);
         ref.getBindings().clear();
         for (Binding binding : service.getBindings()) {
-            if (binding instanceof WireableBinding) {
-                WireableBinding wireableBinding = (WireableBinding)((WireableBinding)binding).clone();
-                wireableBinding.setTargetBinding(binding);
-                wireableBinding.setTargetComponent(component);
-                wireableBinding.setTargetComponentService(service);
-                ref.getBindings().add(wireableBinding);
+            if (binding instanceof OptimizableBinding) {
+                OptimizableBinding optimizableBinding = (OptimizableBinding)((OptimizableBinding)binding).clone();
+                optimizableBinding.setTargetBinding(binding);
+                optimizableBinding.setTargetComponent(component);
+                optimizableBinding.setTargetComponentService(service);
+                ref.getBindings().add(optimizableBinding);
             } else {
                 ref.getBindings().add(binding);
             }

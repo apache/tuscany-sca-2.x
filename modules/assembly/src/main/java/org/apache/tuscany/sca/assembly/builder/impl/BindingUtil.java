@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
@@ -58,11 +58,11 @@ class BindingUtil {
                     hasCompatiblePolicySets(binding, serviceBinding)) {
                     
                     Binding cloned = binding;
-                    if (binding instanceof WireableBinding) {
+                    if (binding instanceof OptimizableBinding) {
                         // TODO: We need to clone the reference binding
                         try {
-                            cloned = (Binding)((WireableBinding)binding).clone();
-                            WireableBinding endpoint = ((WireableBinding)cloned);
+                            cloned = (Binding)((OptimizableBinding)binding).clone();
+                            OptimizableBinding endpoint = ((OptimizableBinding)cloned);
                             endpoint.setTargetComponent(component);
                             endpoint.setTargetComponentService(service);
                             endpoint.setTargetBinding(serviceBinding);

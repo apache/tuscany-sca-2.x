@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -222,12 +222,12 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             ref.getTargets().add(service);
             ref.getBindings().clear();
             for (Binding binding : service.getBindings()) {
-                if (binding instanceof WireableBinding) {
-                    WireableBinding wireableBinding = (WireableBinding)((WireableBinding)binding).clone();
-                    wireableBinding.setTargetBinding(binding);
-                    wireableBinding.setTargetComponent(component);
-                    wireableBinding.setTargetComponentService(service);
-                    ref.getBindings().add(wireableBinding);
+                if (binding instanceof OptimizableBinding) {
+                    OptimizableBinding optimizableBinding = (OptimizableBinding)((OptimizableBinding)binding).clone();
+                    optimizableBinding.setTargetBinding(binding);
+                    optimizableBinding.setTargetComponent(component);
+                    optimizableBinding.setTargetComponentService(service);
+                    ref.getBindings().add(optimizableBinding);
                 } else {
                     ref.getBindings().add(binding);
                 }
@@ -270,12 +270,12 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         ComponentReference componentReference = assemblyFactory.createComponentReference();
         componentReference.setName("$self$." + service.getName());
         for (Binding binding : service.getBindings()) {
-            if (binding instanceof WireableBinding) {
-                WireableBinding wireableBinding = (WireableBinding)((WireableBinding)binding).clone();
-                wireableBinding.setTargetBinding(binding);
-                wireableBinding.setTargetComponent(component);
-                wireableBinding.setTargetComponentService(service);
-                componentReference.getBindings().add(wireableBinding);
+            if (binding instanceof OptimizableBinding) {
+                OptimizableBinding optimizableBinding = (OptimizableBinding)((OptimizableBinding)binding).clone();
+                optimizableBinding.setTargetBinding(binding);
+                optimizableBinding.setTargetComponent(component);
+                optimizableBinding.setTargetComponentService(service);
+                componentReference.getBindings().add(optimizableBinding);
             } else {
                 componentReference.getBindings().add(binding);
             }

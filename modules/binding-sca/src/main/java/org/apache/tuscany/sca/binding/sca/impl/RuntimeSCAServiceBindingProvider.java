@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.sca.impl;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.domain.Domain;

@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
@@ -219,7 +219,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 }
 
                 for (Binding binding : reference.getBindings()) {
-                    if (binding instanceof WireableBinding) {
+                    if (binding instanceof OptimizableBinding) {
                         String targetURI = binding.getURI();
                         int index = targetURI.lastIndexOf('/');
                         String serviceName = "";
@@ -241,13 +241,13 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                                 }
                             }
                         }
-                        WireableBinding wireableBinding = (WireableBinding)binding;
-                        wireableBinding.setTargetComponent(targetComponet);
-                        wireableBinding.setTargetComponentService(targetService);
+                        OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
+                        optimizableBinding.setTargetComponent(targetComponet);
+                        optimizableBinding.setTargetComponentService(targetService);
                         if (targetService != null) {
                             for (Binding serviceBinding : targetService.getBindings()) {
                                 if (serviceBinding.getClass() == binding.getClass()) {
-                                    wireableBinding.setTargetBinding(serviceBinding);
+                                    optimizableBinding.setTargetBinding(serviceBinding);
                                     break;
                                 }
                             }
