@@ -29,7 +29,7 @@
     <artifactId>itest-databindings-sdo</artifactId>
     <version>1.0-incubating-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Apache Tuscany SDO Databinding Integration Test</name>
+    <name>Apache Tuscany SCA SDO Databinding Integration Test</name>
 
     <repositories>
         <repository>
