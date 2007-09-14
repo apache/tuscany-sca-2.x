@@ -134,14 +134,19 @@ public class ComponentContextHelper {
     private InterfaceContract getInterfaceContract(InterfaceContract interfaceContract, Class<?> businessInterface)
         throws CloneNotSupportedException, InvalidInterfaceException {
         Interface interfaze = interfaceContract.getInterface();
+        boolean compatible = false;
         if (interfaze instanceof JavaInterface) {
             Class<?> cls = ((JavaInterface)interfaze).getJavaClass();
-            if (!businessInterface.isAssignableFrom(cls)) {
-                // The interface is not assignable from the interface contract
-                interfaceContract = (InterfaceContract)interfaceContract.clone();
-                interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
+            if (businessInterface.isAssignableFrom(cls)) {
+                compatible = true;
             }
         }
+        if (!compatible) {
+            // The interface is not assignable from the interface contract
+            interfaceContract = (InterfaceContract)interfaceContract.clone();
+            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
+        }
+
         return interfaceContract;
     }
 
