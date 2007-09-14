@@ -7,29 +7,29 @@
   <property name="newYear" type="anyURI">2008</property>
  
  <component name="MyServiceComponentOrig">
-    <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+    <implementation.java class="org.apache.tuscany.sca.itest.admin.MyServiceImpl"/>
   </component>
  
  <component name="MyServiceComponentCary2007">
-    <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+    <implementation.java class="org.apache.tuscany.sca.itest.admin.MyServiceImpl"/>
     <property name="location">CARY</property>
     <property name="year">2007</property>
   </component>
  
  <component name="MyServiceComponentNew">
-    <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+    <implementation.java class="org.apache.tuscany.sca.itest.admin.MyServiceImpl"/>
     <property name="location" source="$newLocation"/>
     <property name="year" source="$newYear"/>
   </component>
  
  <component name="MyTotalServiceComponent">
-    <implementation.java class="org.apache.tuscany.sca.itest.MyTotalServiceImpl"/>
+    <implementation.java class="org.apache.tuscany.sca.itest.admin.MyTotalServiceImpl"/>
     <reference name="myService" target="MyServiceComponentOrig/MyService"/>
     <reference name="myListService" target="MyServiceComponentOrig/MyListService"/>
   </component>
  
  <component name="MyTotalServiceNewComponent">
-    <implementation.java class="org.apache.tuscany.sca.itest.MyTotalServiceImpl"/>
+    <implementation.java class="org.apache.tuscany.sca.itest.admin.MyTotalServiceImpl"/>
     <reference name="myService" target="MyServiceComponentNew/MyService"/>
     <reference name="myListService" target="MyServiceComponentNew/MyListService"/>
   </component>

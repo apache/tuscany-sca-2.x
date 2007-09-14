@@ -1,7 +1,8 @@
-package test.sca.tests;
+package org.apache.tuscany.sca.itest.admin;
 
 import static junit.framework.Assert.assertEquals;
-import org.apache.tuscany.sca.itest.MyService;
+
+import org.apache.tuscany.sca.itest.admin.MyService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

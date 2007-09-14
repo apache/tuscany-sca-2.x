@@ -26,32 +26,32 @@
            name="MySimpleService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <service name="MyServiceCary1" promote="MyServiceComponentCary2007/MyService">
-        <interface.java interface="org.apache.tuscany.sca.itest.MyService"/>
+        <interface.java interface="org.apache.tuscany.sca.itest.admin.MyService"/>
     </service>
 
     <service name="MyServiceOrig1" promote="MyServiceComponentOrig/MyService">
-        <interface.java interface="org.apache.tuscany.sca.itest.MyService"/>
+        <interface.java interface="org.apache.tuscany.sca.itest.admin.MyService"/>
     </service>
 
     <service name="MyServiceNew1" promote="MyServiceComponentNew/MyService">
-        <interface.java interface="org.apache.tuscany.sca.itest.MyService"/>
+        <interface.java interface="org.apache.tuscany.sca.itest.admin.MyService"/>
     </service>
 
 	<property name="newLocation" type="anyURI">Raleigh</property>
 	<property name="newYear" type="anyURI">2008</property>
 
     <component name="MyServiceComponentOrig">
-        <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.itest.admin.MyServiceImpl"/>
     </component>
 	
     <component name="MyServiceComponentCary2007">
-        <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.itest.admin.MyServiceImpl"/>
 		<property name="location">CARY</property>
 		<property name="year">2007</property>
     </component>
 
     <component name="MyServiceComponentNew">
-        <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.itest.admin.MyServiceImpl"/>
         <property name="location" source="$newLocation"/>
 		<property name="year" source="$newYear"/>
     </component>
