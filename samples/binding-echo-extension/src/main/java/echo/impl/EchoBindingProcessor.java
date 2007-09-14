@@ -37,6 +37,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.impl.IntentAttachPointTypeFactoryImpl;
 
 import echo.EchoBinding;
 import echo.EchoBindingFactory;
@@ -66,6 +68,10 @@ public class EchoBindingProcessor implements StAXArtifactProcessor<EchoBinding> 
 
     public EchoBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         EchoBinding echoBinding = factory.createEchoBinding();
+                IntentAttachPointType bindingType = new IntentAttachPointTypeFactoryImpl().createBindingType();
+        bindingType.setName(getArtifactType());
+        bindingType.setUnresolved(true);
+        ((PolicySetAttachPoint)echoBinding).setType(bindingType);
 
         String name = reader.getAttributeValue(null, "name");
         if (name != null) {
