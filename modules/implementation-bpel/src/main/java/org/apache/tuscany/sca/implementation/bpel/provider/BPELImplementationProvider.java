@@ -58,6 +58,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
         this.component = component;
         this.implementation = implementation;
         this.odeServer = odeServer;
+        this.txMgr = txMgr;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {

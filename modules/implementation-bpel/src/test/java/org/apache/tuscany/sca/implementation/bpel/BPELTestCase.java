@@ -31,16 +31,16 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class BPELTestCase extends TestCase {
 
-    //private SCADomain scaDomain;
-    //HelloPortType bpelService = null;
+    private SCADomain scaDomain;
+    HelloPortType bpelService = null;
     
     /**
      * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
-        //scaDomain = SCADomain.newInstance("helloworld.composite");
-        //bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldComponent");
+        scaDomain = SCADomain.newInstance("helloworld.composite");
+        bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldComponent");
 
     }
 
@@ -49,7 +49,7 @@ public class BPELTestCase extends TestCase {
      */
     @Override
     protected void tearDown() throws Exception {
-        //scaDomain.close();
+        scaDomain.close();
     }
     
     public void testInvoke() {

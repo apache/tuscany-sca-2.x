@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
@@ -171,9 +172,14 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
             Map<String, Service> serviceMap = new HashMap<String, Service>();
             for (Service svc : impl.getServices()) {
-                serviceMap.put(svc.getName(), svc);
+                if(svc != null) {
+                    serviceMap.put(svc.getName(), svc);    
+                }
             }
             for (Service service : componentType.getServices()) {
+                //set default dataBinding to DOM
+                service.getInterfaceContract().getInterface().setDefaultDataBinding(OMElement.class.getName());
+                
                 serviceMap.put(service.getName(), service);
             }
             impl.getServices().clear();
@@ -183,21 +189,12 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             for (Property prop : impl.getProperties()) {
                 propMap.put(prop.getName(), prop);
             }
-            for (Property property : componentType.getProperties()) {
-                propMap.put(property.getName(), property);
-            }
-            impl.getProperties().clear();
-            impl.getProperties().addAll(propMap.values());
-
-            if (componentType.getConstrainingType() != null) {
-                impl.setConstrainingType(componentType.getConstrainingType());
-            }
         }
     }
 
 
     private ComponentType getComponentType(ModelResolver resolver, BPELImplementation impl) {
-        String bpelName = impl.getProcess().getLocalPart();
+        String bpelName = impl.getProcess().getLocalPart().toLowerCase();
         String componentTypeURI = bpelName.replace('.', '/') + ".componentType";
         ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setUnresolved(true);
