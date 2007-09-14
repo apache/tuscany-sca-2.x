@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.sca.impl;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.domain.Domain;
@@ -89,8 +89,8 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         boolean targetIsRemote = false;
 
         // first look at the target service and see if this has been resolved
-        if (((WireableBinding)binding).getTargetComponentService() != null) {
-            if (((WireableBinding)binding).getTargetComponentService().isUnresolved() == true) {
+        if (((OptimizableBinding)binding).getTargetComponentService() != null) {
+            if (((OptimizableBinding)binding).getTargetComponentService().isUnresolved() == true) {
                 targetIsRemote = true;
             } else {
                 targetIsRemote = false;

@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.context.ComponentContextHelper;
@@ -204,19 +204,19 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     // TODO - we should look at all the bindings now associated with the 
                     //        unresolved target but we assume the SCA binding here as
                     //        its currently the only wireable one
-                    if (binding instanceof WireableBinding) {
-                        WireableBinding scaBinding = (WireableBinding)binding;
+                    if (binding instanceof OptimizableBinding) {
+                        OptimizableBinding scaBinding = (OptimizableBinding)binding;
 
                         // clone the SCA binding and fill in service details 
                         // its cloned as each target 
                         SCABinding clonedSCABinding = null;
                         try {
-                            clonedSCABinding = (SCABinding)((WireableBinding)scaBinding).clone();
+                            clonedSCABinding = (SCABinding)((OptimizableBinding)scaBinding).clone();
                             clonedSCABinding.setURI(service.getName());
                             // wireable binding stuff needs to go. SCA binding uses it
                             // currently to get to the service to work out if the service
                             // is resolved. 
-                            WireableBinding endpoint = ((WireableBinding)clonedSCABinding);
+                            OptimizableBinding endpoint = ((OptimizableBinding)clonedSCABinding);
                             endpoint.setTargetComponentService(service);
                             //endpoint.setTargetComponent(component); - not known for unresolved target
                             //endpoint.setTargetBinding(serviceBinding); - not known for unresolved target
@@ -256,8 +256,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
         Component targetComponent = null;
         ComponentService targetComponentService = null;
         Binding targetBinding = null;
-        if (binding instanceof WireableBinding) {
-            WireableBinding endpoint = (WireableBinding)binding;
+        if (binding instanceof OptimizableBinding) {
+            OptimizableBinding endpoint = (OptimizableBinding)binding;
             targetComponent = endpoint.getTargetComponent();
             targetComponentService = endpoint.getTargetComponentService();
             targetBinding = endpoint.getTargetBinding();

@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPoint, WireableBinding {
+public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPoint, OptimizableBinding {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();

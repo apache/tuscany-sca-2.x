@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
-import org.apache.tuscany.sca.assembly.WireableBinding;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -765,7 +765,7 @@ public class CompositeWireBuilderImpl {
         bindings.addAll(reference.getBindings());
         promotedReference.getBindings().clear();
         for (Binding binding : bindings) {
-            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
+            if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
                 promotedReference.getBindings().add(binding);
             }
         }
@@ -784,7 +784,7 @@ public class CompositeWireBuilderImpl {
         }
         promotedReference.setCallback(assemblyFactory.createCallback());
         for (Binding binding : callbackBindings) {
-            if ((!(binding instanceof WireableBinding)) || binding.getURI() != null) {
+            if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
                 promotedReference.getCallback().getBindings().add(binding);
             }
         }
