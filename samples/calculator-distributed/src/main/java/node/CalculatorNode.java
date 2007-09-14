@@ -21,7 +21,7 @@ package node;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.distributed.node.impl.NodeImpl;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 import calculator.CalculatorService;
 

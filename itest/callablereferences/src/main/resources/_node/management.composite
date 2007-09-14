@@ -24,30 +24,30 @@
            name="Management">
     
     <component name="NodeManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.distributed.node.impl.NodeManagerServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.node.impl.NodeManagerServiceImpl"/>
         <service name="NodeManagerInitService">
-            <interface.java interface="org.apache.tuscany.sca.distributed.node.NodeManagerInitService"/>
+            <interface.java interface="org.apache.tuscany.sca.node.NodeManagerInitService"/>
         </service>
         <service name="NodeManagerService">
-            <interface.java interface="org.apache.tuscany.sca.distributed.node.NodeManagerService"/>
+            <interface.java interface="org.apache.tuscany.sca.node.NodeManagerService"/>
             <tuscany:binding.jsonrpc uri="http://localhost:8081/NodeManagerComponent/NodeManagerJson"/>
         </service>
         <service name="ComponentManagerService">
-            <interface.java interface="org.apache.tuscany.sca.distributed.node.ComponentManagerService"/>
+            <interface.java interface="org.apache.tuscany.sca.node.ComponentManagerService"/>
             <tuscany:binding.jsonrpc uri="http://localhost:8081/NodeManagerComponent/ComponentManagerJson"/>
         </service>
     </component>           
     
     <component name="DomainManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.distributed.node.impl.DomainManagerProxyImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.node.impl.DomainManagerProxyImpl"/>
         <reference name="domainManager">
-            <interface.java interface="org.apache.tuscany.sca.distributed.domain.DomainManagerService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerService"/>
             <binding.ws uri="http://localhost:8080/DomainManagerComponent/DomainManager"/>
         </reference>
     </component>
     
     <component name="ServiceDiscoveryComponent">
-        <implementation.java class="org.apache.tuscany.sca.distributed.node.impl.ServiceDiscoveryProxyImpl" />
+        <implementation.java class="org.apache.tuscany.sca.node.impl.ServiceDiscoveryProxyImpl" />
         <reference name="serviceDiscovery">
             <binding.ws uri="http://localhost:8080/ServiceDiscoveryComponent/ServiceDiscovery"/>
         </reference>

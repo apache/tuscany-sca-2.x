@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import org.apache.tuscany.sca.distributed.domain.Domain;
-import org.apache.tuscany.sca.distributed.domain.DomainFactory;
-import org.apache.tuscany.sca.distributed.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.domain.Domain;
+import org.apache.tuscany.sca.domain.DomainFactory;
+import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 
