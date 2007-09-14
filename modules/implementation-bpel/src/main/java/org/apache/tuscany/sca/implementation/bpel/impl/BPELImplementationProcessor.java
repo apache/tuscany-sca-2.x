@@ -20,18 +20,11 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.ode.bpel.compiler.BpelC;
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -39,10 +32,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
+import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
  * Implements a STAX artifact processor for BPEL implementations.
@@ -60,9 +52,7 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
     private BPELFactory bpelFactory;
     
     public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
-        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        this.bpelFactory = new DefaultBPELFactory(assemblyFactory, wsdlFactory);
+        this.bpelFactory = new DefaultBPELFactory(modelFactories);
     }
 
     public QName getArtifactType() {

@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -43,8 +44,9 @@ import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
  * 
  * @version $Rev$ $Date$
  */
-public class BPELDocumentProcessor implements URLArtifactProcessor<BPELProcessDefinition> {
+public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements URLArtifactProcessor<BPELProcessDefinition> {
     public final static QName BPEL_PROCESS_DEFINITION = new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process");
+    public final static String NAME_ELEMENT = "name";
     
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     
@@ -55,7 +57,7 @@ public class BPELDocumentProcessor implements URLArtifactProcessor<BPELProcessDe
     }
     
     public String getArtifactType() {
-        return "*.wsdl";
+        return "*.bpel";
     }    
 
     public Class<BPELProcessDefinition> getModelType() {
@@ -73,7 +75,6 @@ public class BPELDocumentProcessor implements URLArtifactProcessor<BPELProcessDe
 
     public void resolve(BPELProcessDefinition model, ModelResolver resolver) throws ContributionResolveException {
         // TODO Auto-generated method stub
-
     }
     
     /**
@@ -90,14 +91,17 @@ public class BPELDocumentProcessor implements URLArtifactProcessor<BPELProcessDe
         processDefinition.setLocation(doc);
 
         InputStream is = doc.openStream();
+        XMLStreamReader reader = null;
         try {
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            reader = inputFactory.createXMLStreamReader(is);
             int eventType = reader.getEventType();
             while (true) {
                 if (eventType == XMLStreamConstants.START_ELEMENT) {
                     QName elementName = reader.getName();
                     if (BPEL_PROCESS_DEFINITION.equals(elementName)) {
-                        processDefinition.setName(elementName);
+                        QName processName = new QName(getString(reader, org.apache.tuscany.sca.assembly.xml.Constants.TARGET_NAMESPACE), getString(reader, NAME_ELEMENT));
+                        processDefinition.setName(processName);
+                        break;
                     }
                 }
                 if (reader.hasNext()) {
@@ -106,10 +110,14 @@ public class BPELDocumentProcessor implements URLArtifactProcessor<BPELProcessDe
                     break;
                 }
             }
-            return processDefinition;
         } finally {
+            if(reader != null) {
+                reader.close();
+            }
             is.close();
         }
+        
+        return processDefinition;
     }
     
 
