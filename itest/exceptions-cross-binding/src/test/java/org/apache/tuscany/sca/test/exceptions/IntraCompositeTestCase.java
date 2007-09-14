@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.test.exceptions.sdohandgen.InvalidSymbolSDOExcepti
 import stockexceptiontestservice.scatesttool.InvalidSymbolFault;
 import stockexceptiontestservice.scatesttool.StockOffer;
 
-public class IntraCompositeTestCaseFIXME extends TestCase {
+public class IntraCompositeTestCase extends TestCase {
     private SCADomain domain;
 
     private StockTraderSDO stockTrader;

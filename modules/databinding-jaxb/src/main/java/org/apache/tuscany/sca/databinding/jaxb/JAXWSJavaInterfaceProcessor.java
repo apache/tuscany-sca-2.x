@@ -25,16 +25,11 @@ import java.util.Map;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
-import javax.xml.namespace.QName;
-import javax.xml.ws.RequestWrapper;
-import javax.xml.ws.ResponseWrapper;
 
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
-import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
-import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**
  * The databinding annotation processor for java interfaces
@@ -72,6 +67,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 return;
             }
 
+            /*
             String operationName = getValue(webMethod.operationName(), operation.getName());
 
             RequestWrapper requestWrapper = method.getAnnotation(RequestWrapper.class);
@@ -79,7 +75,6 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             if (requestWrapper == null) {
                 return;
             }
-
 
             String ns = getValue(requestWrapper.targetNamespace(), tns);
             String name = getValue(requestWrapper.localName(), operationName);
@@ -90,10 +85,28 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
             QName outputWrapper = new QName(ns, name);
 
-            WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, new ElementInfo(inputWrapper, null),
-                                                      new ElementInfo(outputWrapper, null), null, null);
-            operation.setWrapperStyle(true);
+            List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
+            for (Annotation[] annotations : method.getParameterAnnotations()) {
+                for (Annotation annotation : annotations) {
+                    if (annotation.annotationType() == WebParam.class) {
+                        WebParam param = (WebParam)annotation;
+                        inputElements.add(new ElementInfo(new QName(param.targetNamespace(), param.name()), null));
+                        break;
+                    }
+                }
+            }
+
+            List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
+            WebResult result = method.getAnnotation(WebResult.class);
+            outputElements.add(new ElementInfo(new QName(result.targetNamespace(), result.name()), null));
+
+            WrapperInfo wrapperInfo =
+                new WrapperInfo(JAXBDataBinding.NAME, new ElementInfo(inputWrapper, null),
+                                new ElementInfo(outputWrapper, null), inputElements, outputElements);
             operation.setWrapper(wrapperInfo);
+            */
+            operation.setWrapperStyle(false);
+            operation.setDataBinding(JAXBDataBinding.NAME);
         }
     }
 

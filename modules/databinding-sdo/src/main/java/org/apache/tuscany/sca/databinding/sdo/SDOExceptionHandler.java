@@ -104,7 +104,7 @@ public class SDOExceptionHandler implements ExceptionHandler {
         } catch (NoSuchFieldException e) {
             // Fall back to type inspection
             Type type = helperContext.getTypeHelper().getType(faultBeanClass);
-            if (type != null) {
+            if (type != null && !type.isDataType()) {
                 String ns = type.getURI();
                 String name = helperContext.getXSDHelper().getLocalName(type);
                 faultElement = new QName(ns, name);
