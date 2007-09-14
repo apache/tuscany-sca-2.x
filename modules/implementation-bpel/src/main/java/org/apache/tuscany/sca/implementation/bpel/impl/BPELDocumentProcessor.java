@@ -65,11 +65,18 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     }
 
     public BPELProcessDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
+        BPELProcessDefinition processDefinition = null;
         try {
-            return indexRead(artifactURL);
+            //for now we are just using process name
+            //and relying on componentType file for service definition
+            //so it's ok to set resolved for now
+            processDefinition = indexRead(artifactURL);
+            processDefinition.setUnresolved(false);
         } catch (Exception e) {
             throw new ContributionReadException(e);
         }
+        
+        return processDefinition;
     }
 
 

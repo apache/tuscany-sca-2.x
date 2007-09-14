@@ -23,7 +23,6 @@
     name="bpel">
     
     <component name="BPELHelloWorldComponent">
-        <!-- implementation.bpel process="hns:HelloWorld" file="HelloWorld.bpel"/ -->
         <implementation.bpel process="hns:HelloWorld"/>
     </component>
 

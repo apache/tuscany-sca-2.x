@@ -62,8 +62,6 @@ public class BPELImplementationImpl implements BPELImplementation {
     public BPELImplementationImpl(AssemblyFactory assemblyFactory,
                               WSDLFactory wsdlFactory) {
 
-        _bpelService = assemblyFactory.createService();
-        _bpelService.setName("BPEL");
     }
 
     public void setCompiledProcess(byte[] compiledProcess) {
