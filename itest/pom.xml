@@ -51,6 +51,7 @@
                 <module>exceptions</module>
                 <module>exceptions-cross-binding</module>
                 <module>exceptions-cross-binding-ws</module>
+                <module>exceptions-simple-ws</module>
                 <module>extended-api</module>
                 <!--
                 <module>interop-soap-client</module>
