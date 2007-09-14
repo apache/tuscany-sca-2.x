@@ -23,7 +23,7 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
   <service name="HelloService">
-        <interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsd#wsdl.interface(HelloPortType)" />
+        <interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl#wsdl.interface(HelloPortType)" />
   </service>
 
 </componentType>              

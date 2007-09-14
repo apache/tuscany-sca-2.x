@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
@@ -41,6 +40,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
@@ -178,7 +178,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             }
             for (Service service : componentType.getServices()) {
                 //set default dataBinding to DOM
-                service.getInterfaceContract().getInterface().setDefaultDataBinding(OMElement.class.getName());
+                service.getInterfaceContract().getInterface().setDefaultDataBinding(DOMDataBinding.NAME);
                 
                 serviceMap.put(service.getName(), service);
             }
