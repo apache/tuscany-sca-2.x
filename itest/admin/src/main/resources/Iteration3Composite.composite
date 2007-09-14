@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:foo="http://foo" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0" name="Iteration3Composite"
+    targetNamespace="http://foo" local="true" autowire="false" requires="cns:confidentiality"
+    policySets="sns:secure">
+  <property name="newLocation" type="anyURI">Raleigh</property>
+  <property name="newYear" type="anyURI">2008</property>
+ 
+ <component name="MyServiceComponentOrig">
+    <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+  </component>
+ 
+ <component name="MyServiceComponentCary2007">
+    <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+    <property name="location">CARY</property>
+    <property name="year">2007</property>
+  </component>
+ 
+ <component name="MyServiceComponentNew">
+    <implementation.java class="org.apache.tuscany.sca.itest.MyServiceImpl"/>
+    <property name="location" source="$newLocation"/>
+    <property name="year" source="$newYear"/>
+  </component>
+ 
+ <component name="MyTotalServiceComponent">
+    <implementation.java class="org.apache.tuscany.sca.itest.MyTotalServiceImpl"/>
+    <reference name="myService" target="MyServiceComponentOrig/MyService"/>
+    <reference name="myListService" target="MyServiceComponentOrig/MyListService"/>
+  </component>
+ 
+ <component name="MyTotalServiceNewComponent">
+    <implementation.java class="org.apache.tuscany.sca.itest.MyTotalServiceImpl"/>
+    <reference name="myService" target="MyServiceComponentNew/MyService"/>
+    <reference name="myListService" target="MyServiceComponentNew/MyListService"/>
+  </component>
+  
+  <property name="anotherLocation" type="anyURI">Durham</property>
+  <property name="anotherYear" type="anyURI">2009</property>
+ 
+ <component name="MySimpleServiceInRecursive">
+    <implementation.composite name="foo:MySimpleService"/>
+  </component>
+  
+  <component name="MySimpleServiceInRecursiveAnother">
+    <implementation.composite name="foo:MySimpleService"/>
+    <property name="newLocation">Durham</property>
+    <property name="newYear">2009</property>
+  </component>
+</composite>
