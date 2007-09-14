@@ -51,6 +51,10 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
     
     public ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema) throws XMLStreamException {
         super(reader);
+        if (schema == null) {
+            return;
+        }
+        
         handler = schema.newValidatorHandler();
         handler.setDocumentLocator(new LocatorAdaptor());
         try {
@@ -64,23 +68,26 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
         // get the metadata we need from the document
         handler.setErrorHandler(new ErrorHandler() {
             public void error(SAXParseException exception) throws SAXException {
-                logger.warning(exception.getMessage());
+                //logger.warning(exception.getMessage());
             }
             
             public void fatalError(SAXParseException exception) throws SAXException {
-                logger.warning(exception.getMessage());
+                //logger.warning(exception.getMessage());
             }
             
             public void warning(SAXParseException exception) throws SAXException {
-                logger.warning(exception.getMessage());
+                //logger.warning(exception.getMessage());
             }
         });
     }
 
     @Override
     public int next() throws XMLStreamException {
+        if (handler == null) {
+            return super.next();
+        }
+
         int event = super.next();
-        
         try {
             switch (event) {
                 case XMLStreamConstants.START_DOCUMENT:
@@ -113,9 +120,12 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
     
     @Override
     public int nextTag() throws XMLStreamException {
-        int event;
+        if (handler == null) {
+            return super.nextTag();
+        }
+        
         for (;;) {
-            event = super.getEventType();
+            int event = super.getEventType();
             try {
                 switch (event) {
                     case XMLStreamConstants.START_DOCUMENT:

@@ -88,6 +88,12 @@
         </dependency>
 
         <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xsd</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>

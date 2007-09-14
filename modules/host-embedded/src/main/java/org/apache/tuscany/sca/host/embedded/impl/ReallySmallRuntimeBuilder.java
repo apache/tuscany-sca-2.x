@@ -87,7 +87,6 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
-import org.xml.sax.SAXException;
 
 public class ReallySmallRuntimeBuilder {
 
@@ -191,12 +190,14 @@ public class ReallySmallRuntimeBuilder {
             registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
 
         // Load the Assembly XSD, used for validation
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema;
+        Schema schema = null;
         try {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schema = schemaFactory.newSchema(ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd"));
-        } catch (SAXException e) {
-            throw new ActivationException(e);
+        } catch (Error e) {
+            //FIXME Log this
+        } catch (Exception e) {
+            //FIXME Log this
         }
         
         // Create and register document processors for SCA assembly XML
