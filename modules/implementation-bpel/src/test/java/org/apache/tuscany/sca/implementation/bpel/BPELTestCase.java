@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.bpel;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
@@ -30,7 +31,8 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class BPELTestCase extends TestCase {
 
-    private SCADomain scaDomain;
+    //private SCADomain scaDomain;
+    //HelloPortType bpelService = null;
     
     /**
      * @throws java.lang.Exception
@@ -38,7 +40,7 @@ public class BPELTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         //scaDomain = SCADomain.newInstance("helloworld.composite");
-        //bpelService = scaDomain.getService(BPEL.class, "BPELHelloWorldComponent");
+        //bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldComponent");
 
     }
 
@@ -50,7 +52,7 @@ public class BPELTestCase extends TestCase {
         //scaDomain.close();
     }
     
-    public void testSomething() {
-        
+    public void testInvoke() {
+        //bpelService.hello("Luciano");
     }
 }

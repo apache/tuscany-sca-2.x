@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -47,9 +46,10 @@ public class BPELDocumentProcessorTestCase extends TestCase {
         super.setUp();
        
         modelFactories = new DefaultModelFactoryExtensionPoint();
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        modelFactories.addFactory(assemblyFactory);
-        BPELFactory bpelFactory = new DefaultBPELFactory(new DefaultAssemblyFactory(), new DefaultWSDLFactory());
+        modelFactories.addFactory(new DefaultAssemblyFactory());
+        modelFactories.addFactory(new DefaultWSDLFactory());
+        
+        BPELFactory bpelFactory = new DefaultBPELFactory(modelFactories);
         modelFactories.addFactory(bpelFactory);
     }
 
@@ -61,7 +61,7 @@ public class BPELDocumentProcessorTestCase extends TestCase {
         BPELProcessDefinition bpelProcessDefinition = bpelDocumentProcessor.read(null, processURI, processLocation);
         
         assertNotNull(bpelProcessDefinition);
-        assertEquals(new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process"), bpelProcessDefinition.getName());
+        assertEquals(new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld", "HelloWorld"), bpelProcessDefinition.getName());
         assertEquals(processLocation, bpelProcessDefinition.getLocation());
         assertEquals(true, bpelProcessDefinition.isUnresolved());
     }

@@ -22,7 +22,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-  <service name="BPELHelloWorldService">
+  <service name="HelloService">
         <interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsd#wsdl.interface(HelloPortType)" />
   </service>
 
