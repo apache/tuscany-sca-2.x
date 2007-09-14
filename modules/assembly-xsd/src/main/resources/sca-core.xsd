@@ -57,8 +57,10 @@
     				minOccurs="0" maxOccurs="unbounded" />
     		</choice>
     		<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
+    		<!--
     		<any namespace="##other" processContents="lax" minOccurs="0"
     			maxOccurs="unbounded" />
+    		-->
     	</sequence>
     	<attribute name="name" type="NCName" use="required" />
     	<attribute name="promote" type="anyURI" use="required" />
@@ -80,8 +82,10 @@
     			<any namespace="##other" processContents="lax" />
     		</choice>
     		<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
+    		<!--
     		<any namespace="##other" processContents="lax" minOccurs="0"
     			maxOccurs="unbounded" />
+    		-->
     	</sequence>
     	<attribute name="name" type="NCName" use="required" />
     	<attribute name="target" type="sca:listOfAnyURIs" use="optional"/>
@@ -193,56 +197,52 @@
     </complexType>
 
     <complexType name="ComponentService">
-    	<complexContent>
-    		<restriction base="sca:Service">
-		        <sequence>
-		        	 <element ref="sca:interface" minOccurs="0" maxOccurs="1"/>
-		        	 <element name="operation" type="sca:Operation" minOccurs="0" 
-    					maxOccurs="unbounded" />
-		             <choice minOccurs="0" maxOccurs="unbounded">
-		                <element ref="sca:binding"/>
-		             	<any namespace="##other" processContents="lax" 
-		             		minOccurs="0" maxOccurs="unbounded"/>
-		             </choice>
-		             <element ref="sca:callback" minOccurs="0" maxOccurs="1"/>
-		             <any namespace="##other" processContents="lax" minOccurs="0" 
-		             	maxOccurs="unbounded"/>
-		        </sequence>
-		        <attribute name="name" type="NCName" use="required"/>
-		        <attribute name="requires" type="sca:listOfQNames" 
-		        	use="optional"/>
-		        <attribute name="policySets" type="sca:listOfQNames" 
-		        	use="optional"/>
-		        <anyAttribute namespace="##any" processContents="lax"/>
-    		</restriction>
-    	</complexContent>
+        <sequence>
+        	 <element ref="sca:interface" minOccurs="0" maxOccurs="1"/>
+        	 <element name="operation" type="sca:Operation" minOccurs="0" 
+  					maxOccurs="unbounded" />
+             <choice minOccurs="0" maxOccurs="unbounded">
+                <element ref="sca:binding"/>
+             	<any namespace="##other" processContents="lax" 
+             		minOccurs="0" maxOccurs="unbounded"/>
+             </choice>
+             <element ref="sca:callback" minOccurs="0" maxOccurs="1"/>
+             <!--
+             <any namespace="##other" processContents="lax" minOccurs="0" 
+             	maxOccurs="unbounded"/>
+             -->
+        </sequence>
+        <attribute name="name" type="NCName" use="required"/>
+        <attribute name="requires" type="sca:listOfQNames" 
+        	use="optional"/>
+        <attribute name="policySets" type="sca:listOfQNames" 
+        	use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
     </complexType>
 
     <complexType name="ComponentReference">
-    	<complexContent>
-    		<restriction base="sca:Reference">
-    			<sequence>
-    				<element ref="sca:interface" minOccurs="0" maxOccurs="1" />
-    				<element name="operation" type="sca:Operation" minOccurs="0" 
-    					maxOccurs="unbounded" />
-    				<choice minOccurs="0" maxOccurs="unbounded">
-    					<element ref="sca:binding" />
-    					<any namespace="##other" processContents="lax" />
-    				</choice>
-    				<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
-    				<any namespace="##other" processContents="lax" minOccurs="0" 
-    					maxOccurs="unbounded" />
-    			</sequence>
-    			<attribute name="name" type="NCName" use="required" />
-    			<attribute name="target" type="sca:listOfAnyURIs" use="optional"/>
-    			<attribute name="multiplicity" type="sca:Multiplicity" 
-    				use="optional" default="1..1" />
-    			<attribute name="requires" type="sca:listOfQNames" use="optional"/>
-        		<attribute name="policySets" type="sca:listOfQNames" 
-        			use="optional"/>
-    			<anyAttribute namespace="##any" processContents="lax" />
-    		</restriction>
-    	</complexContent>
+		<sequence>
+			<element ref="sca:interface" minOccurs="0" maxOccurs="1" />
+			<element name="operation" type="sca:Operation" minOccurs="0" 
+				maxOccurs="unbounded" />
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element ref="sca:binding" />
+				<any namespace="##other" processContents="lax" />
+			</choice>
+			<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
+			<!--
+			<any namespace="##other" processContents="lax" minOccurs="0" 
+				maxOccurs="unbounded" />
+			-->
+		</sequence>
+		<attribute name="name" type="NCName" use="required" />
+		<attribute name="target" type="sca:listOfAnyURIs" use="optional"/>
+		<attribute name="multiplicity" type="sca:Multiplicity" 
+			use="optional" default="1..1" />
+		<attribute name="requires" type="sca:listOfQNames" use="optional"/>
+   		<attribute name="policySets" type="sca:listOfQNames" 
+   			use="optional"/>
+		<anyAttribute namespace="##any" processContents="lax" />
     </complexType>
 
     <element name="implementation" type="sca:Implementation"

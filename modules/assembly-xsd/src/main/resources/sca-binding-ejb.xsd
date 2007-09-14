@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006, 2007 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
         targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
@@ -31,10 +33,8 @@
          </sequence>
          <attribute name="homeInterface" type="NCName" use="optional"/>
          <attribute name="ejb-link-name" type="NCName" use="optional"/>
-         <attribute name="session-type" type="sca:BeanType" use="optional"				        default="stateless"/>
-         <attribute name="ejb-version" type="sca:VersionValue" use="optional"					  default="EJB2"/>
-
-
+         <attribute name="session-type" type="sca:BeanType" use="optional" default="stateless"/>
+         <attribute name="ejb-version" type="sca:VersionValue" use="optional" default="EJB2"/>
          <anyAttribute namespace="##any" processContents="lax"/>
 	  </extension>
 	 </complexContent>
