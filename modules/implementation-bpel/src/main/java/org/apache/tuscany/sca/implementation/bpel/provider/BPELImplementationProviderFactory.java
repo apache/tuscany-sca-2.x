@@ -18,30 +18,41 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.provider;
 
+import javax.transaction.TransactionManager;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
+import org.apache.tuscany.sca.implementation.bpel.ode.GeronimoTxFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
+ * BPEL Implementation provider factory
+ * 
+ * We use the provider factory to instantiate a ODE server that is going to be injected in all BPEL components
  */
 public class BPELImplementationProviderFactory implements ImplementationProviderFactory<BPELImplementation> {
 
     private EmbeddedODEServer odeServer;
+    private TransactionManager txMgr;
 
     /**
-     * Constructs a new CRUD implementation.
-     * @param odeServer the server instance passed to the implementation provider
+     * Default constructor receiving an extension point
+     * @param extensionPoints
      */
     public BPELImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
-        this.odeServer = new EmbeddedODEServer(null);
+        GeronimoTxFactory txFactory = new GeronimoTxFactory();
+        txMgr = txFactory.getTransactionManager();
+        this.odeServer = new EmbeddedODEServer(txMgr);
     }
 
+    /**
+     * Creates a new BPEL Implementation and inject the EmbeddedODEServer
+     */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, BPELImplementation implementation) {
-        return new BPELImplementationProvider(component, implementation, odeServer);
+        return new BPELImplementationProvider(component, implementation, odeServer, txMgr);
     }
     
     public Class<BPELImplementation> getModelType() {

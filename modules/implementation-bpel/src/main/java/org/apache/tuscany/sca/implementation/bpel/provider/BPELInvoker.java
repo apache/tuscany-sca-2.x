@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.implementation.bpel.provider;
 
 import java.lang.reflect.InvocationTargetException;
 
+import javax.transaction.TransactionManager;
+
+import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -34,10 +37,13 @@ import org.apache.tuscany.sca.invocation.Message;
  * resource manager.
  */
 public class BPELInvoker implements Invoker {
+    private EmbeddedODEServer odeServer;
+    private TransactionManager txMgr;
     private Operation operation;
     
-    public BPELInvoker(Operation operation) {
+    public BPELInvoker(Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
         this.operation = operation;
+        this.odeServer = odeServer;
     }
     
     public Message invoke(Message msg) {
