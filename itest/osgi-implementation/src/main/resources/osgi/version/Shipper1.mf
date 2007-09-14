@@ -5,6 +5,6 @@ Bundle-SymbolicName: version.supplychain.shipper.Shipper
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
 Import-Package: org.osgi.framework,
- supplychain.customer
+ supplychain.customer;version="[1.0.0,2.0.0)"
 Export-Package: supplychain.shipper;version="1.0.0"
 Bundle-Activator: supplychain.shipper.OSGiVersionedShipperImpl

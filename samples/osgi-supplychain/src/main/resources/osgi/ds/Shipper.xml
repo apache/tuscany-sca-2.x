@@ -27,7 +27,6 @@
         interface="supplychain.customer.Customer" 
         bind="setCustomer"
         unbind="unsetCustomer"
-        target="(component.name=CustomerComponent)"
         cardinality="0..1"
         policy="dynamic"
     />

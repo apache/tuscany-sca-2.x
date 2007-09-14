@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SupplyChain
+Bundle-SymbolicName: supplychain.SupplyChain
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework
+Export-Package: supplychain.customer;version="1.0.0",
+    supplychain.retailer;version="1.0.0",
+    supplychain.warehouse;version="1.0.0",
+    supplychain.shipper;version="1.0.0"
+Bundle-ClassPath: .,CustomerV1.jar,RetailerV1.jar,WarehouseV1.jar,ShipperV1.jar
+

@@ -52,19 +52,21 @@ public class OSGiVersionedShipperImpl extends OSGiBundleImpl {
         
         Hashtable<String, Object> props1 = new Hashtable<String, Object>();
         props1.put("shipperName", "RoyalMail");
+        props1.put("component.service.name", "ShipperComponent"+version+"/ShipperService1");
         bc.registerService("supplychain.shipper.Shipper", 
                 new OSGiVersionedShipperServiceImpl(this, "RoyalMail", version),
                 props1);
         
         Hashtable<String, Object> props2 = new Hashtable<String, Object>();
         props2.put("shipperName", "ParcelForce");
+        props2.put("component.service.name", "ShipperComponent"+version+"/ShipperService2");
         bc.registerService("supplychain.shipper.Shipper", 
                 new OSGiVersionedShipperServiceImpl(this, "ParcelForce", version),
                 props2);
         
         try {
             ServiceReference[] refs = bc.getServiceReferences(Customer.class.getName(), 
-                    "(component.service.name=CustomerComponent" + version + ".CustomerService)");
+                    "(component.service.name=CustomerComponent" + version + "/CustomerService)");
             if (refs != null && refs.length > 0) {
                 customer = (Customer) bc.getService(refs[0]);
             }

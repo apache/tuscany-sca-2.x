@@ -21,8 +21,11 @@ package org.apache.tuscany.sca.implementation.osgi.xml;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -46,6 +49,20 @@ public class TestModelResolver implements ModelResolver {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
             
+            if (unresolved instanceof OSGiImplementation && !(resolved instanceof OSGiImplementation)) {
+                
+                OSGiImplementation impl = ((OSGiImplementation)unresolved);
+                ComponentType componentType = (ComponentType)resolved;
+                
+                List<Property> properties = componentType.getProperties();
+                for (Property property : properties) {
+                    impl.getProperties().add(property);
+                }
+                impl.setUnresolved(false);
+                return unresolved;
+            }
+                
+            
             // Return the resolved object
             return modelClass.cast(resolved);
             
@@ -68,7 +85,7 @@ public class TestModelResolver implements ModelResolver {
             
             // Return the resolved ClassReference
             return modelClass.cast(resolved);
-                
+           
         } else {
             
             // Return the unresolved object

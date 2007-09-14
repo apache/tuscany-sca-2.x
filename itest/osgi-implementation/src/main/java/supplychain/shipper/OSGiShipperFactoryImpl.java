@@ -64,7 +64,7 @@ public class OSGiShipperFactoryImpl implements BundleActivator, ServiceFactory {
     public Object getService(Bundle bundle, ServiceRegistration reg) {
         OSGiShipperImpl shipper = new OSGiShipperImpl(false);
         shipper.start(bundleContext);
-        OSGiShipperServiceImpl shipperService = new OSGiShipperServiceImpl(shipper, 
+        OSGiStatelessShipperServiceImpl shipperService = new OSGiStatelessShipperServiceImpl(shipper, 
                 (String)reg.getReference().getProperty("shipperName"));
         return shipperService;
     }

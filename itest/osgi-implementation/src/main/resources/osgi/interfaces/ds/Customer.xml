@@ -27,7 +27,7 @@
         interface="supplychain.retailer.Retailer" 
         bind="setRetailer"
         unbind="unsetRetailer"
-        target="(retailerName=amazon.com)"
+        target="(component.service.name=RetailerComponent/Retailer)"
         policy="dynamic"
     />
     
@@ -36,7 +36,7 @@
         interface="supplychain.retailer.RetailerQuery" 
         bind="setRetailerQuery"
         unbind="unsetRetailerQuery"
-        target="(retailerName=amazon.com)"
+        target="(component.service.name=RetailerComponent/RetailerQuery)"
         policy="dynamic"
     />
     

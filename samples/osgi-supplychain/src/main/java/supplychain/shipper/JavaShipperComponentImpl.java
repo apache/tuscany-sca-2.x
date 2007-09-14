@@ -40,7 +40,6 @@ public class JavaShipperComponentImpl implements Shipper {
     }
     
     public void processShipment(String order) {
-    	System.out.println("Shipper.processShipment, customer is " + customer);
         customer.notifyShipment(order + ", shipped");
     }
     

@@ -26,11 +26,10 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementation;
+import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
@@ -41,7 +40,7 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker {
     
     private DataBindingExtensionPoint registry;
     private Operation operation;
-    private OSGiImplementation osgiImplementation;
+    private OSGiAnnotations osgiAnnotations;
 
     /**
      * @param registry
@@ -49,13 +48,13 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker {
      * @param method
      * @param component
      */
-    public OSGiRemotableInvoker(OSGiImplementation osgiImplementation,
+    public OSGiRemotableInvoker(OSGiAnnotations osgiAnnotations,
                               DataBindingExtensionPoint registry,
                               Operation operation,
-                              RuntimeComponent component,
+                              OSGiImplementationProvider provider,
                               RuntimeComponentService service) {
-        super(operation, component, service);
-        this.osgiImplementation = osgiImplementation;
+        super(operation, provider, service);
+        this.osgiAnnotations = osgiAnnotations;
         this.registry = registry;
         this.operation = operation;
     }
@@ -65,7 +64,7 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker {
         throws InvocationTargetException {
         
         Object result;
-        if (osgiImplementation.isAllowsPassByReference(m)) {
+        if (osgiAnnotations.isAllowsPassByReference(targetObject, m)) {
             result = super.invokeMethod(targetObject, m, msg);
         }
         else {

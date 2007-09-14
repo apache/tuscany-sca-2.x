@@ -28,5 +28,6 @@
         bind="setShipper"
         unbind="unsetShipper"
         policy="dynamic"
+        target="(shipperName=RoyalMail)"
     />
 </component>

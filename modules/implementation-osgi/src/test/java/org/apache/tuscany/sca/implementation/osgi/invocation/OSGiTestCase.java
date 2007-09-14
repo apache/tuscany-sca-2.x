@@ -24,7 +24,7 @@ import java.lang.reflect.Proxy;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.implementation.osgi.runtime.OSGiRuntime;
+import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
@@ -38,14 +38,16 @@ import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
 public class OSGiTestCase extends TestCase {
     
     protected String className;
-   
-    @Override
+    protected String compositeName;
+    
     protected void setUp() throws Exception {
 
         className = OSGiTestImpl.class.getName();
-        OSGiTestBundles.createBundle("target/OSGiTestService.jar", OSGiTestInterface.class, OSGiTestImpl.class);
+        compositeName = "osgitest.composite";
+        OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar", OSGiTestInterface.class, OSGiTestImpl.class);
         
     }
+   
     
     @Override
     protected void tearDown() throws Exception {
@@ -54,7 +56,7 @@ public class OSGiTestCase extends TestCase {
     
     public void testOSGiComponent() throws Exception {
         
-        SCADomain scaDomain = SCADomain.newInstance("osgitest.composite");
+        SCADomain scaDomain = SCADomain.newInstance(compositeName);
         OSGiTestInterface testService = scaDomain.getService(OSGiTestInterface.class, "OSGiTestServiceComponent");
         assert(testService != null);
         
@@ -62,7 +64,6 @@ public class OSGiTestCase extends TestCase {
         
         String str = testService.testService();
         
-        System.out.println("className " + className + " str " + str);
         assertEquals(className, str);
 
         scaDomain.close();

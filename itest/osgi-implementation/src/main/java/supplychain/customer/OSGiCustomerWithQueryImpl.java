@@ -37,8 +37,8 @@ public class OSGiCustomerWithQueryImpl extends OSGiBundleImpl implements Custome
     
     public OSGiCustomerWithQueryImpl() {
         super(  new String[]{"retailer", "retailerQuery"},
-                new String[]{"(retailerName=amazon.com)",
-                             "(retailerName=amazon.com)"
+                new String[]{"(component.service.name=RetailerComponent/Retailer)",
+                             "(component.service.name=RetailerComponent/RetailerQuery)"
                 });
         registerService(this, "supplychain.customer.Customer", null);
                 

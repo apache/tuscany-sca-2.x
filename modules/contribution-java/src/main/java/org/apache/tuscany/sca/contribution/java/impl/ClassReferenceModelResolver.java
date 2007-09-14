@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,10 +41,21 @@ public class ClassReferenceModelResolver implements ModelResolver {
     protected WeakReference<ClassLoader> classLoader;
     private Map<String, ClassReference> map = new HashMap<String, ClassReference>();
     
+    private ModelResolver osgiResolver;
+    
     public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         //FIXME The classloader should be passed in
         this.classLoader = new WeakReference<ClassLoader>(Thread.currentThread().getContextClassLoader());
+        
+        try {
+            Class osgiResolverClass = Class.forName("org.apache.tuscany.sca.contribution.osgi.impl.OSGiClassReferenceModelResolver");
+            if (osgiResolverClass != null) {
+                Constructor constructor = osgiResolverClass.getConstructor(Contribution.class, ModelFactoryExtensionPoint.class);
+                this.osgiResolver = (ModelResolver)constructor.newInstance(contribution, modelFactories);
+            }
+        } catch (Exception e) {
+        }
     }
 
     public void addModel(Object resolved) {
@@ -89,11 +101,19 @@ public class ClassReferenceModelResolver implements ModelResolver {
         
         //Load a class on demand
         Class clazz = null;
-        try {
-            clazz = Class.forName(((ClassReference)unresolved).getClassName(), true, classLoader.get());
-        } catch (ClassNotFoundException e) {
-            //we will later try to delegate to imported model resolvers
+        
+        if (osgiResolver != null)
+            resolved = osgiResolver.resolveModel(modelClass, unresolved);
+        
+        if (unresolved == resolved || resolved == null) {
+            try {
+                clazz = Class.forName(((ClassReference)unresolved).getClassName(), true, classLoader.get());
+            } catch (ClassNotFoundException e) {
+                //we will later try to delegate to imported model resolvers
+            }
         }
+        else
+            clazz = ((ClassReference)resolved).getJavaClass();
 
 
         if (clazz != null) {

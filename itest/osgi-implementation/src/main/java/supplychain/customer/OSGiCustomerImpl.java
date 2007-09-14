@@ -21,12 +21,15 @@ package supplychain.customer;
 
 import java.util.ArrayList;
 
+import org.osoa.sca.annotations.AllowsPassByReference;
+
 import supplychain.OSGiBundleImpl;
 import supplychain.retailer.Retailer;
 
 /**
  * This class implements the Customer service component.
  */
+@AllowsPassByReference
 public class OSGiCustomerImpl extends OSGiBundleImpl implements Customer {
     
     private ArrayList<String> outstandingOrders = new ArrayList<String>();

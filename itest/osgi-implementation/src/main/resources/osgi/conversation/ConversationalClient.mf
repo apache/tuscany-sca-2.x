@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ConversationTest
+Bundle-SymbolicName: conversation.ConversationalClient
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework, org.osoa.sca, org.osoa.sca.annotations,
+                conversation.service, conversation.referenceclient
+Export-Package: conversation.client
+Bundle-Activator: conversation.client.ConversationalClientActivator
+

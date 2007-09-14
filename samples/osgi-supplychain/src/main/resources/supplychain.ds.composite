@@ -27,8 +27,7 @@
     <component name="CustomerComponent">
         <tuscany:implementation.osgi 
             bundle="Customer" 
-            bundleLocation="file:target/DSCustomer.jar" 
-            scope="COMPOSITE"
+            bundleSymbolicName="ds.supplychain.customer.Customer" 
         />
             
         <!--implementation.java class="supplychain.customer.JavaCustomerComponentImpl" -->
@@ -37,9 +36,9 @@
 
     <component name="RetailerComponent">
         <implementation.java class="supplychain.retailer.JavaRetailerComponentImpl" />
-        <!--implementation.osgi
+        <!--tuscany:implementation.osgi
             bundle="Retailer" 
-            bundleLocation="file:target/DSRetailer.jar" 
+            bundleSymbolicName="ds.supplychain.retailer.Retailer" 
         /-->
         <reference name="warehouse" target="WarehouseComponent"/>
     </component>
@@ -48,7 +47,7 @@
         <implementation.java class="supplychain.warehouse.JavaWarehouseComponentImpl" />
         <!--implementation.osgi
             bundle="Warehouse" 
-            bundleLocation="file:target/DSWarehouse.jar" 
+            bundleSymbolicName="ds.supplychain.warehouse.Warehouse" 
         /-->
         <reference name="shipper" target="ShipperComponent" />
     </component>
@@ -56,7 +55,7 @@
     <component name="ShipperComponent">
         <tuscany:implementation.osgi
             bundle="Shipper" 
-            bundleLocation="file:target/DSShipper.jar" 
+            bundleSymbolicName="ds.supplychain.shipper.Shipper" 
         />
         <!--implementation.java class="supplychain.shipper.JavaShipperComponentImpl" /-->
         <reference name="customer" target="CustomerComponent" />

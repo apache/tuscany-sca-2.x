@@ -27,7 +27,6 @@
         interface="supplychain.shipper.Shipper" 
         bind="setShipper"
         unbind="unsetShipper"
-        target="(component.name=ShipperComponent)"
         policy="dynamic"
     />
 </component>
