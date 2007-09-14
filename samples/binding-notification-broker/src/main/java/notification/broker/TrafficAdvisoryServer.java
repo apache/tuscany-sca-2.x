@@ -41,16 +41,19 @@ public class TrafficAdvisoryServer {
             TestCaseProducer testCaseProducer = domain.getService(TestCaseProducer.class, "TrafficAdvisoryProducer");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String value = null;
+            String value = "";
+            if (args.length == 1) {
+                value = args[0];
+            }
             do {
+                if(value == null || value.equals("end")) {
+                    break;
+                }
                 try {
                     System.out.println("Send a report value, ^C or <end> to end");
                     value = reader.readLine();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                if(value == null || value.equals("end")) {
-                    break;
                 }
                 if (value.equals("rb")) {
                     NotificationBindingProviderFactory.removeBroker(notificationType);
