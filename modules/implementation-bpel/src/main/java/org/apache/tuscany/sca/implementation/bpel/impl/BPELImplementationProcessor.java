@@ -20,13 +20,21 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -34,6 +42,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
+import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory;
 
 /**
@@ -46,12 +55,14 @@ import org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory;
  * 
  *  @version $Rev$ $Date$
  */
-public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELImplementation> {
+public class BPELImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
     private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA10_NS, "implementation.bpel");
     
+    private AssemblyFactory assemblyFactory;
     private BPELFactory bpelFactory;
     
     public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.bpelFactory = new DefaultBPELFactory(modelFactories);
     }
 
@@ -79,7 +90,7 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
         implementation.setProcess(process);
         //FIXME:lresende
         //implementation.setCompiledProcess(compiledProcess.toByteArray());
-        //implementation.setUnresolved(false);
+        implementation.setUnresolved(true);
         
         // Skip to end element
         while (reader.hasNext()) {
@@ -92,9 +103,16 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
     }
 
     public void resolve(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
-        System.out.println("IN RESOLVE");
         if( impl != null && impl.isUnresolved()) {
+            BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(impl, resolver);
+            if(processDefinition.isUnresolved()) {
+                throw new ContributionResolveException("Can't find BPEL Process : " + processDefinition.getName());
+            }
             
+            //resolve component type
+            mergeComponentType(resolver, impl);
+                        
+            //set current implementation resolved 
             impl.setUnresolved(false);
         }
         
@@ -102,6 +120,93 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
 
     public void write(BPELImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
         //FIXME Implement
+    }
+
+    private BPELProcessDefinition resolveBPELProcessDefinition(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+        QName processName = impl.getProcess();
+        BPELProcessDefinition processDefinition = this.bpelFactory.createBPELProcessDefinition();
+        processDefinition.setName(processName);
+        processDefinition.setUnresolved(true);
+        
+        return resolver.resolveModel(BPELProcessDefinition.class, processDefinition);
+    }
+    
+    
+    /**
+     * Merge the componentType from introspection and external file
+     * @param resolver
+     * @param impl
+     */
+    private void mergeComponentType(ModelResolver resolver, BPELImplementation impl) {
+        // FIXME: Need to clarify how to merge
+        ComponentType componentType = getComponentType(resolver, impl);
+        if (componentType != null && !componentType.isUnresolved()) {
+            /*
+            Map<String, Reference> refMap = new HashMap<String, Reference>();
+            for (Reference ref : impl.getReferences()) {
+                refMap.put(ref.getName(), ref);
+            }
+            for (Reference reference : componentType.getReferences()) {
+                refMap.put(reference.getName(), reference);
+            }
+            impl.getReferences().clear();
+            impl.getReferences().addAll(refMap.values());
+
+            // Try to match references by type
+            Map<String, JavaElementImpl> refMembers = impl.getReferenceMembers();
+            for (Reference ref : impl.getReferences()) {
+                if (ref.getInterfaceContract() != null) {
+                    Interface i = ref.getInterfaceContract().getInterface();
+                    if (i instanceof JavaInterface) {
+                        Class<?> type = ((JavaInterface)i).getJavaClass();
+                        if (!refMembers.containsKey(ref.getName())) {
+                            JavaElementImpl e = getMemeber(impl, ref.getName(), type);
+                            if (e != null) {
+                                refMembers.put(ref.getName(), e);
+                            }
+                        }
+                    }
+                }
+            }*/
+
+            Map<String, Service> serviceMap = new HashMap<String, Service>();
+            for (Service svc : impl.getServices()) {
+                serviceMap.put(svc.getName(), svc);
+            }
+            for (Service service : componentType.getServices()) {
+                serviceMap.put(service.getName(), service);
+            }
+            impl.getServices().clear();
+            impl.getServices().addAll(serviceMap.values());
+
+            Map<String, Property> propMap = new HashMap<String, Property>();
+            for (Property prop : impl.getProperties()) {
+                propMap.put(prop.getName(), prop);
+            }
+            for (Property property : componentType.getProperties()) {
+                propMap.put(property.getName(), property);
+            }
+            impl.getProperties().clear();
+            impl.getProperties().addAll(propMap.values());
+
+            if (componentType.getConstrainingType() != null) {
+                impl.setConstrainingType(componentType.getConstrainingType());
+            }
+        }
+    }
+
+
+    private ComponentType getComponentType(ModelResolver resolver, BPELImplementation impl) {
+        String bpelName = impl.getProcess().getLocalPart();
+        String componentTypeURI = bpelName.replace('.', '/') + ".componentType";
+        ComponentType componentType = assemblyFactory.createComponentType();
+        componentType.setUnresolved(true);
+        componentType.setURI(componentTypeURI);
+        componentType = resolver.resolveModel(ComponentType.class, componentType);
+        if (!componentType.isUnresolved()) {
+            return componentType;
+        }
+        return null;
     }
 
     private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
@@ -117,4 +222,5 @@ public class BPELImplementationProcessor implements StAXArtifactProcessor<BPELIm
                     " in your composite has un unrecognized namespace prefix.");
         return new QName(nsUri, name, prefix);
     }
+
 }

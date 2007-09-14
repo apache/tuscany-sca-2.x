@@ -63,6 +63,5 @@ public class BPELDocumentProcessorTestCase extends TestCase {
         assertNotNull(bpelProcessDefinition);
         assertEquals(new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld", "HelloWorld"), bpelProcessDefinition.getName());
         assertEquals(processLocation, bpelProcessDefinition.getLocation());
-        assertEquals(true, bpelProcessDefinition.isUnresolved());
     }
 }

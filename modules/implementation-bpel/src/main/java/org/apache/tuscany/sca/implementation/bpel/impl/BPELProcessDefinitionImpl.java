@@ -23,6 +23,7 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 
 /**
@@ -76,5 +77,25 @@ public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
             e.printStackTrace();
         }
         */
+    }
+
+    @Override
+    public int hashCode() {
+        return String.valueOf(getName()).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof BPELProcessDefinition) {
+            if (getName() != null) {
+                return getName().equals(((BPELProcessDefinition)obj).getName());
+            } else {
+                return ((BPELProcessDefinition)obj).getName() == null;
+            }
+        } else {
+            return false;
+        }
     }
 }
