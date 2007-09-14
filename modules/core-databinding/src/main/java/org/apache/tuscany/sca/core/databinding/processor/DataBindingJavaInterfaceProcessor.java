@@ -160,7 +160,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 // Assumes JavaBeans DB is default
                 if (dataBinding != null && !dataBinding.equals(JavaBeansDataBinding.NAME)) {
                     if (nonDefaultDataBindingName != null) {
-                        if (nonDefaultDataBindingName != dataBinding) {
+                        if (!nonDefaultDataBindingName.equals(dataBinding)) {
                             // We've seen two different non-default DBs, e.g. SDO and JAXB
                             // so unset the string and break out of the loop 
                             nonDefaultDataBindingName = null;
