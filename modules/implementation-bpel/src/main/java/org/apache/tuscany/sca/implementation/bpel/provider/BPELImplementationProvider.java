@@ -18,8 +18,14 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.provider;
 
+import java.io.File;
+import java.net.URL;
+
+import javax.transaction.TransactionManager;
+
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
+import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -36,37 +42,65 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * or policy sets
  */
 public class BPELImplementationProvider implements ImplementationProvider {
-    
+
     private RuntimeComponent component;
     private BPELImplementation implementation;
     private EmbeddedODEServer odeServer;
+    private TransactionManager txMgr;
 
     /**
      * Constructs a new CRUD implementation.
      */
-    public BPELImplementationProvider(RuntimeComponent component, BPELImplementation implementation,
-                                      EmbeddedODEServer odeServer) {
+    public BPELImplementationProvider(RuntimeComponent component,
+                                      BPELImplementation implementation,
+                                      EmbeddedODEServer odeServer,
+                                      TransactionManager txMgr) {
         this.component = component;
         this.implementation = implementation;
         this.odeServer = odeServer;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        BPELInvoker invoker = new BPELInvoker(operation);
+        BPELInvoker invoker = new BPELInvoker(operation, odeServer, txMgr);
         return invoker;
     }
 
     public Invoker createCallbackInvoker(Operation operation) {
-        BPELInvoker invoker = new BPELInvoker(operation);
+        BPELInvoker invoker = new BPELInvoker(operation, odeServer, txMgr);
         return invoker;
     }
 
     public void start() {
         System.out.println("Starting " + component.getName() + " " + component.getClass().getName());
-        if (!odeServer.isInitialized()) odeServer.init();
-        
-        //FIXME:lresende
-        //odeServer.getBpelServer().register(implementation.getProcessConf());
+
+        try {
+            if (!odeServer.isInitialized())
+                // start ode server
+                odeServer.init();
+
+            URL deployURL = getClass().getClassLoader().getResource("deploy.xml");
+            File deploymentDir = new File(deployURL.toURI().getPath()).getParentFile();
+            System.out.println("Deploying : " + deploymentDir.toString());
+            System.out.println(deploymentDir);
+
+            // deploy the process
+            if (odeServer.isInitialized()) {
+                try {
+                    txMgr.begin();
+                    odeServer.deploy(new ODEDeployment(deploymentDir));
+                    txMgr.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    txMgr.rollback();
+                }
+            }
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        // FIXME:lresende
+        // odeServer.getBpelServer().register(implementation.getProcessConf());
     }
 
     public void stop() {
