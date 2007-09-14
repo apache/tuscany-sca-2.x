@@ -10,6 +10,14 @@ first.
 If you just want to run it to see what happens open a command prompt, navigate
 to this sample directory and do:
 
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-implementation-notification.jar notification.TrafficAdvisoryClient
+
+OR you can also use Maven to test:
+
 mvn test
 
 Sample Overview
@@ -45,6 +53,21 @@ implementation-notification/
                                                      notification component, and consumers
   pom.xml                                          - the Maven build file        
 
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd implementation-notification
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] Consumer [Consumer1] received report: Nothing to report today
+     [java] Consumer [Consumer2] received report: Nothing to report today
+     
 Building And Running The Sample Using Maven 
 -------------------------------------------
 With either the binary or source distributions the sample can be built and run 
