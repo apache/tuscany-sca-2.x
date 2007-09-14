@@ -27,6 +27,7 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.FaultException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 
@@ -62,6 +63,12 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
 
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
+            if (t instanceof FaultException && ((FaultException)t).getFaultInfo() instanceof OMElement) {
+                OMElement faultDetail = (OMElement)((FaultException)t).getFaultInfo();
+                inMC.setProperty(Constants.FAULT_NAME, faultDetail.getQName().getLocalPart());
+                AxisFault f = new AxisFault(null, e.getMessage(), "faultNode", "faultRole", faultDetail);
+                throw f;
+            }
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception)t);
             }

@@ -38,6 +38,7 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
@@ -74,8 +75,14 @@ public class Axis2BindingInvoker implements Invoker {
         try {
             Object resp = invokeTarget(msg);
             msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setFaultBody(e.getCause());
+        } catch (AxisFault e) {
+            if (e.getDetail() != null) {
+                FaultException f = new FaultException(e.getMessage(), e.getDetail());
+                f.setLogical(e.getDetail().getQName());
+                msg.setFaultBody(f);
+            } else {
+                msg.setFaultBody(e);
+            }
         } catch (Throwable e) {
             msg.setFaultBody(e);
         }
@@ -83,33 +90,28 @@ public class Axis2BindingInvoker implements Invoker {
         return msg;
     }
 
-    protected Object invokeTarget(Message msg) throws InvocationTargetException {
-        try {
-            OperationClient operationClient = createOperationClient(msg);
+    protected Object invokeTarget(Message msg) throws AxisFault {
+        OperationClient operationClient = createOperationClient(msg);
 
-            // ensure connections are tracked so that they can be closed by the reference binding
-            MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
-            requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
-            requestMC.getOptions().setTimeOutInMilliSeconds(120000L);
+        // ensure connections are tracked so that they can be closed by the reference binding
+        MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
+        requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+        requestMC.getOptions().setTimeOutInMilliSeconds(120000L);
 
-            operationClient.execute(true);
+        operationClient.execute(true);
 
-            MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+        MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
 
-            OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
+        OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
 
-            // FIXME: [rfeng] We have to pay performance penality to build the complete OM as the operationClient.complete() will
-            // release the underlying HTTP connection. 
-            // Force the response to be populated, see https://issues.apache.org/jira/browse/TUSCANY-1541
-            response.build();
+        // FIXME: [rfeng] We have to pay performance penality to build the complete OM as the operationClient.complete() will
+        // release the underlying HTTP connection. 
+        // Force the response to be populated, see https://issues.apache.org/jira/browse/TUSCANY-1541
+        response.build();
 
-            operationClient.complete(requestMC);
+        operationClient.complete(requestMC);
 
-            return response;
-
-        } catch (AxisFault e) {
-            throw new InvocationTargetException(e);
-        }
+        return response;
     }
 
     @SuppressWarnings("deprecation")

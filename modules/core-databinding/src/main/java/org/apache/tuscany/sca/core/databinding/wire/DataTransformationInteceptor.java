@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -130,7 +133,7 @@ public class DataTransformationInteceptor implements Interceptor {
                 for (DataType exType : sourceOperation.getFaultTypes()) {
                     DataType faultType = getFaultType(exType);
                     // Match by the QName (XSD element) of the fault type
-                    if (faultType != null && targetFaultType.getLogical().equals(faultType.getLogical())) {
+                    if (faultType != null && typesMatch(targetFaultType.getLogical(),faultType.getLogical())) {
                         sourceDataType = exType;
                         sourceFaultType = faultType;
                         break;
@@ -182,6 +185,45 @@ public class DataTransformationInteceptor implements Interceptor {
             return null;
         }
         return targetHandler.getFaultType(exceptionType);
+    }
+
+    private boolean typesMatch(Object first, Object second) {
+        if (first.equals(second)) {
+            return true;
+        }
+        if (first instanceof XMLType && second instanceof Class) {
+            if (toJavaClassName((XMLType)first).equals(((Class)second).getName())) {
+                return true;
+            }
+        }
+        if (first instanceof Class && second instanceof XMLType) {
+            if (((Class)first).getName().equals(toJavaClassName((XMLType)second))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String toJavaClassName(XMLType type) {
+        String result = type.getElementName().getLocalPart();
+        String authority = "";
+        try {
+            URI uri = new URI(type.getElementName().getNamespaceURI());
+            authority = uri.getAuthority();
+        } catch (URISyntaxException e) {
+        }
+        for (int i = 0; i < authority.length(); ) { 
+            int j = authority.indexOf(".", i);
+            if (j == -1) {
+                j = authority.length();
+            }
+            result = authority.substring(i, j) + "." + result;
+            if (j < authority.length()) {
+                j += 1;
+            }
+            i = j;
+        }
+        return result;
     }
 
     /**
