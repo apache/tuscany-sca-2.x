@@ -43,22 +43,17 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
     }
 
     @Override
-    protected Object invokeTarget(Message msg) throws InvocationTargetException {
-        try {
-            OperationClient operationClient = createOperationClient(msg);
+    protected Object invokeTarget(Message msg) throws AxisFault {
+        OperationClient operationClient = createOperationClient(msg);
 
-            // ensure connections are tracked so that they can be closed by the reference binding
-            MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
-            requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+        // ensure connections are tracked so that they can be closed by the reference binding
+        MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
+        requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
 
-            operationClient.execute(false);
+        operationClient.execute(false);
 
-            // REVIEW it seems ok to return null
-            return null;
-
-        } catch (AxisFault e) {
-            throw new InvocationTargetException(e);
-        }
+        // REVIEW it seems ok to return null
+        return null;
     }
 
 }
