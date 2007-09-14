@@ -44,6 +44,7 @@ public class BPELInvoker implements Invoker {
     public BPELInvoker(Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
         this.operation = operation;
         this.odeServer = odeServer;
+        this.txMgr = txMgr;
     }
     
     public Message invoke(Message msg) {

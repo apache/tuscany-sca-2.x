@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
@@ -40,6 +39,7 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.w3c.dom.Node;
@@ -49,7 +49,7 @@ import org.w3c.dom.Node;
  * 
  * @version $Rev$ $Date$
  */
-public class BPELImplementationImpl implements BPELImplementation {
+public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImplementation {
 
     private Service _bpelService;
     private QName _processName;
@@ -80,41 +80,37 @@ public class BPELImplementationImpl implements BPELImplementation {
         return null;
     }
 
-    public ConstrainingType getConstrainingType() {
-        // The sample BPEL implementation does not support constrainingTypes
-        return null;
-    }
-
-    public List<Property> getProperties() {
-        // The sample BPEL implementation does not support properties
-        return Collections.emptyList();
-    }
-
-    public List<Service> getServices() {
-        // The sample BPEL implementation provides a single fixed CRUD service
-        return Collections.singletonList(_bpelService);
-    }
-    
-    public List<Reference> getReferences() {
-        // The sample BPEL implementation does not support properties
-        return Collections.emptyList();
-    }
-
+    @Override
     public String getURI() {
         // The sample BPEL implementation does not have a URI
         return null;
     }
 
-    public void setConstrainingType(ConstrainingType constrainingType) {
-        // The sample BPEL implementation does not support constrainingTypes
-    }
-
+    @Override
     public void setURI(String uri) {
         // The sample BPEL implementation does not have a URI
     }
 
+    @Override
+    public ConstrainingType getConstrainingType() {
+        // The sample BPEL implementation does not support constrainingTypes
+        return null;
+    }
+
+    @Override
+    public List<Property> getProperties() {
+        // The sample BPEL implementation does not support properties
+        return Collections.emptyList();
+    }
+
     
-       public boolean isUnresolved() {
+    @Override
+    public List<Reference> getReferences() {
+        // The sample BPEL implementation does not support properties
+        return Collections.emptyList();
+    }
+
+    public boolean isUnresolved() {
         return this.unresolved;
     }
 
