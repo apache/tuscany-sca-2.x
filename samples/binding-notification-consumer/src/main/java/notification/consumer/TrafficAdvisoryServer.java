@@ -32,8 +32,10 @@ public class TrafficAdvisoryServer {
             SCADomain domain = SCADomain.newInstance("TrafficAdvisoryNotification.composite");
 
             try {
-                System.out.println("TrafficAdvisoryServer, hit return to end");
-                System.in.read();
+                if (args.length != 1 || !args[0].equals("end")) {
+                    System.out.println("TrafficAdvisoryServer, hit return to end");
+                    System.in.read();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

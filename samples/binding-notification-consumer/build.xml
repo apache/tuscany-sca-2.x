@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="binding-notification-producer" default="compile">
-    <property name="test.class" value="notification.producer.TrafficAdvisoryServer" />
-	<property name="test.jar"   value="sample-binding-notification-producer.jar" />
+<project name="binding-notification-consumer" default="compile">
+    <property name="test.class" value="notification.consumer.TrafficAdvisoryServer" />
+	<property name="test.jar"   value="sample-binding-notification-consumer.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>
