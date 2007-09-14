@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
+    //private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
     private WebAppServletHost servletHost;
 
@@ -70,7 +71,11 @@ public class TuscanyServletFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain) throws IOException ,ServletException {
 
         // Get the servlet path
-        String path = ((HttpServletRequest)request).getServletPath();
+        HttpServletRequest httpRequest = (HttpServletRequest)request;
+        String path = httpRequest.getPathInfo();
+        if (path == null) {
+            path = httpRequest.getServletPath();
+        }
         if (path == null) {
             path = "/";
         }
