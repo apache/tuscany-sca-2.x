@@ -18,7 +18,7 @@
  */
 package util;
 
-import org.apache.tuscany.sca.implementation.osgi.runtime.OSGiRuntime;
+import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 
 
 /**
@@ -26,13 +26,13 @@ import org.apache.tuscany.sca.implementation.osgi.runtime.OSGiRuntime;
  */
 public  class OSGiTestUtil  {
     
-    public static void setUpOSGiTestRutime() throws Exception {
+    public static void setUpOSGiTestRuntime() throws Exception {
 
-        setUpFelixTestRutime();
+        setUpFelixTestRuntime();
     }
     
     
-    private static void setUpFelixTestRutime() throws Exception {
+    private static void setUpFelixTestRuntime() throws Exception {
 
         String felixConfigFileName = "file:target/test-classes/osgi/felix/felix.config.properties";
         

@@ -61,6 +61,7 @@
                 <module>large-sdo-ws</module>
                 <module>operation-overloading</module>
                 <module>osgi-implementation</module>
+                <module>osgi-contribution</module>
                 <module>properties</module>
                 <module>recursive</module>
                 <module>references</module>

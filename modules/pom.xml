@@ -50,6 +50,7 @@
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
                 <module>binding-sca-axis2</module>
+                <module>binding-osgi</module>
                 <!--
                 <module>binding-sca-jms</module>
                 -->
@@ -61,6 +62,7 @@
                 <module>contribution-impl</module>
                 <module>contribution-namespace</module>
                 <module>contribution-java</module>
+                <module>contribution-osgi</module>
                 <module>core</module>
                 <module>core-databinding</module>
                 <module>core-spi</module>
@@ -107,6 +109,8 @@
                 <module>implementation-node-runtime</module>
                 <module>implementation-notification</module>
                 <module>implementation-osgi</module>
+                <module>osgi-runtime</module>
+
                 <module>implementation-resource</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>

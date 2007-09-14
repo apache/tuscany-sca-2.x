@@ -43,7 +43,6 @@ public class JavaRetailerComponentImpl implements Retailer {
        
     public void submitOrder(String order) {
     	
-    	System.out.println("Retailer.submitOrder, warehouse is " + warehouse);
         warehouse.fulfillOrder(order + ", submitted");
         
     }

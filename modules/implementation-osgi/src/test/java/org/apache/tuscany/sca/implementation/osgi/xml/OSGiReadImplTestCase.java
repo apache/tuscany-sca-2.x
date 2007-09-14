@@ -29,10 +29,12 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -41,7 +43,6 @@ import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
@@ -58,9 +59,9 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class OSGiReadImplTestCase extends TestCase {
 
-    XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    ExtensibleStAXArtifactProcessor staxProcessor;
+    private XMLInputFactory inputFactory;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private ExtensibleStAXArtifactProcessor staxProcessor;
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private PolicyFactory policyFactory;
@@ -115,20 +116,28 @@ public class OSGiReadImplTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
+        
+        ComponentTypeProcessor ctProcessor = new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor);
+        is = getClass().getClassLoader().getResourceAsStream("OSGiTestService.componentType");
+        reader = inputFactory.createXMLStreamReader(is);
+        ComponentType ct = ctProcessor.read(reader);
 
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
-        staxProcessor.resolve(composite, resolver);
+        ctProcessor.resolve(ct, resolver);
+        resolver.addModel(ct);
+        
+        compositeProcessor.resolve(composite, resolver);
 
         CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null, null);
         compositeUtil.build(composite);
     }
 
     public void testReadOSGiImplementation() throws Exception {
+
         String str = "<?xml version=\"1.0\" encoding=\"ASCII\"?>" +
                      "<implementation.osgi xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://osgi\" " +
-                     "bundle=\"OSGiTestService\" " +
-                     "bundleLocation=\"file:target/OSGiTestService.jar\" " +
-                     "scope=\"COMPOSITE\" " +
+                     "bundleSymbolicName=\"OSGiTestService\" " +
+                     "bundleVersion=\"2.0.0\" " +
                      "imports=\"import1.jar import2.jar\"" +
                      "/>";
         ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
@@ -139,12 +148,11 @@ public class OSGiReadImplTestCase extends TestCase {
 
         OSGiImplementation osgiImpl = osgiProcessor.read(reader);
 
-        assertEquals(osgiImpl.getBundleName(), "OSGiTestService");
-        assertEquals(osgiImpl.getBundleLocation(), "file:target/OSGiTestService.jar");
+        assertEquals(osgiImpl.getBundleSymbolicName(), "OSGiTestService");
+        assertEquals(osgiImpl.getBundleVersion(), "2.0.0");
         assertTrue(osgiImpl.getImports().length == 2);
         assertEquals(osgiImpl.getImports()[0], "import1.jar");
         assertEquals(osgiImpl.getImports()[1], "import2.jar");
-        assertEquals(osgiImpl.getScope(), Scope.COMPOSITE);
     }
 
 }

@@ -23,6 +23,7 @@ import java.util.Hashtable;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osoa.sca.annotations.Property;
 
 /**
  * 
@@ -31,10 +32,12 @@ import org.osgi.framework.BundleContext;
  */
 public class OSGiTestWithPropertyImpl implements OSGiTestInterface, BundleActivator {
     
+    @Property
     public double exchangeRate;
     
     private String currency;
     
+    @Property
     public void setCurrency(String currency) {
         this.currency = currency;
     }

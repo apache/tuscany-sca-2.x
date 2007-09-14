@@ -27,6 +27,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.BundleActivator;
+import org.osoa.sca.annotations.AllowsPassByReference;
 
 
 public class OSGiGreetingsImpl implements Greetings, ServiceListener, BundleActivator {
@@ -51,6 +52,7 @@ public class OSGiGreetingsImpl implements Greetings, ServiceListener, BundleActi
         return s;
     }
     
+    @AllowsPassByReference
     public String[] getModifiedGreetingsFromOSGi(String s[]) {
         for (int i = 0; i < s.length; i++) {
             s[i] = "Hello " + s[i] + "(From OSGi)";
@@ -59,6 +61,7 @@ public class OSGiGreetingsImpl implements Greetings, ServiceListener, BundleActi
         return greetingsService.getModifiedGreetingsFromOSGi(s);
     }
     
+    @AllowsPassByReference
     public String[] getModifiedGreetingsFromJava(String s[]) {
         for (int i = 0; i < s.length; i++) {
             s[i] = s[i] + "(From OSGi)";

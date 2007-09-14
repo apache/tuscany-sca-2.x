@@ -25,7 +25,7 @@ package supplychain.properties;
 public class DSProperties2TestCase extends Properties2TestCase {
 
     public DSProperties2TestCase() {
-        super("sca/properties2-ds-test.composite");
+        super("properties/properties2-ds-test.composite");
     }
    
 }

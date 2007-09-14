@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.core.scope.Scope;
 
 /**
  * 
@@ -32,13 +31,11 @@ import org.apache.tuscany.sca.core.scope.Scope;
  */
 public interface OSGiImplementationInterface extends Implementation, Extensible {
     
-    public String getBundleName();
+    public String getBundleSymbolicName();
     
-    public String getBundleLocation();
+    public String getBundleVersion();
     
     public String[] getImports();
-    
-    public Scope getScope();
     
     public List<ComponentProperty> getReferenceProperties(String referenceName);
     

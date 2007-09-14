@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="osgi-supplychain" default="compile">
+<project name="sample-osgi-supplychain" default="compile">
     <property name="test.class" value="supplychain.SupplyChainClient" />
-	<property name="test.jar"   value="sample-osgi-supplychain.jar" />
-	
+    <property name="test.jar"   value="sample-osgi-supplychain.jar" />
+    
     <target name="init">
         <mkdir dir="target/classes"/>
     </target>
-	
+    
     <target name="compile" depends="init">
         <javac srcdir="src/main/java"
                destdir="target/classes"
@@ -31,7 +31,7 @@
                source="1.5"
                target="1.5">
             <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </javac> 
         <copy todir="target/classes">
@@ -41,29 +41,57 @@
             <manifest>
                 <attribute name="Main-Class" value="${test.class}" /> 
             </manifest>
-        </jar>    	
-    </target>	
-	
+        </jar>  
+        <jar jarfile="target/classes/Customer.jar" manifest="target/classes/osgi/Customer.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/customer/Customer.class \
+                               supplychain/OSGiBundleImpl.class \
+                               supplychain/customer/OSGiCustomerImpl.class"
+            />
+        </jar>  
+        <jar jarfile="target/classes/Retailer.jar" manifest="target/classes/osgi/Retailer.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/retailer/Retailer.class \
+                               supplychain/OSGiBundleImpl.class \
+                               supplychain/retailer/OSGiRetailerImpl.class"
+            />
+        </jar>  
+        <jar jarfile="target/classes/Warehouse.jar" manifest="target/classes/osgi/Warehouse.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/warehouse/Warehouse.class \
+                               supplychain/OSGiBundleImpl.class \
+                               supplychain/warehouse/OSGiWarehouseImpl.class"
+            />
+        </jar>  
+        <jar jarfile="target/classes/Shipper.jar" manifest="target/classes/osgi/Shipper.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/shipper/Shipper.class \
+                               supplychain/OSGiBundleImpl.class \
+                               supplychain/shipper/OSGiShipperImpl.class"
+            />
+        </jar>  
+    </target>    
+    
     <target name="run-classes">
         <java classname="${test.class}"
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </java>
     </target>
-	
+    
     <target name="run">
         <java classname="${test.class}"
               fork="true">
             <classpath>
                 <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+                <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
-        </java>    	
-    </target>	
-	
+        </java>        
+    </target>    
+    
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">
             <fileset dir="target"/>

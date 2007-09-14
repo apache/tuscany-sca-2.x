@@ -40,8 +40,6 @@ public class JavaWarehouseComponentImpl implements Warehouse {
     }
     
     public void fulfillOrder(String order) {
-    	System.out.println("Warehouse.fulfillOrder : shipper is " + shipper);
-        
         shipper.processShipment(order + ", fulfilled");
     }
     

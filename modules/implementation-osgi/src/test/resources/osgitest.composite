@@ -25,9 +25,7 @@
     <component name="OSGiTestServiceComponent">
         <tuscany:implementation.osgi 
             bundle="OSGiTestService" 
-            bundleLocation="file:target/OSGiTestService.jar" 
-            scope="COMPOSITE"
-            injectProperties="true"
+            bundleSymbolicName="org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface"
         />
         
         <property name="currency" type="xsd:string" >USD</property> 

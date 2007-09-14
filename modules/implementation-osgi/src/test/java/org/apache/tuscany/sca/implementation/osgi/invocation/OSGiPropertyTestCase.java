@@ -35,8 +35,9 @@ public class OSGiPropertyTestCase extends OSGiTestCase {
     protected void setUp() throws Exception {
         
         className = OSGiTestWithPropertyImpl.class.getName();
+        compositeName = "osgiproptest.composite";
         
-        OSGiTestBundles.createBundle("target/OSGiTestService.jar", 
+        OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar", 
                 OSGiTestInterface.class, 
                 OSGiTestWithPropertyImpl.class);        
         

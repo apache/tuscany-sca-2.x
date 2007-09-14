@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CallbackService
+Bundle-SymbolicName: callback.CallbackService
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework, callback.client
+Export-Package: callback.service
+Bundle-Activator: callback.service.OSGiCallbackServiceImpl
+

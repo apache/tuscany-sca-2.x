@@ -21,12 +21,14 @@ package stockquote;
 import java.util.Dictionary;
 
 import org.osgi.service.component.ComponentContext;
+import org.osoa.sca.annotations.Property;
 
 /**
  * Declarative Stock quote with configurable properties.
  */
 public class OSGiStockQuoteComponentImpl implements StockQuote {
     
+    @Property
     public double exchangeRate;
     
     private String currency;
@@ -35,6 +37,7 @@ public class OSGiStockQuoteComponentImpl implements StockQuote {
     public double configExchangeRate;
     public String configCurrency;
     
+    @Property
     public void setCurrency(String currency) {
         this.currency = currency;
     }

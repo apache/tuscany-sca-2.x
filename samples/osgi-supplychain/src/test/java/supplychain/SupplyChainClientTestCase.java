@@ -47,10 +47,7 @@ public class SupplyChainClientTestCase extends TestCase {
 
 
     public void test() throws Exception {
-    	
-    	
-        System.out.println("In SupplyChainClientTestCase.test: Calling customer.purchaseGoods, customer is " + customer);
-        
+    	    	
         customer.purchaseGoods();
         
         System.out.println("Sleeping ...");

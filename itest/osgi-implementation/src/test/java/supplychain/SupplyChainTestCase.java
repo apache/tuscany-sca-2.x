@@ -43,7 +43,7 @@ public abstract class SupplyChainTestCase extends TestCase {
 
     protected void setUp() throws Exception {
 
-        OSGiTestUtil.setUpOSGiTestRutime();
+        OSGiTestUtil.setUpOSGiTestRuntime();
         
         scaDomain = SCADomain.newInstance(compositeName);
         customer = scaDomain.getService(Customer.class, "CustomerComponent");

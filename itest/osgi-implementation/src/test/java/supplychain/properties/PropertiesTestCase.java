@@ -37,7 +37,7 @@ public class PropertiesTestCase extends TestCase {
     
     public PropertiesTestCase() {
         super();
-        compositeName = "sca/properties-test.composite";
+        compositeName = "properties/properties-test.composite";
     }
     
     protected PropertiesTestCase(String compositeName) {
@@ -47,7 +47,7 @@ public class PropertiesTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         
-        OSGiTestUtil.setUpOSGiTestRutime();
+        OSGiTestUtil.setUpOSGiTestRuntime();
         
         scaDomain = SCADomain.newInstance(compositeName);
         stockQuoteService = scaDomain.getService(StockQuote.class, "StockQuoteComponent");

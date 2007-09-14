@@ -27,6 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osoa.sca.annotations.Property;
 
 /**
  * 
@@ -37,6 +38,7 @@ public class OSGiStockQuoteImpl implements StockQuote, BundleActivator {
     
     public String pid;
     
+    @Property
     public double exchangeRate;
     
     private String currency;
@@ -51,6 +53,7 @@ public class OSGiStockQuoteImpl implements StockQuote, BundleActivator {
         this.bundleContext = bc;
     }
     
+    @Property
     public void setCurrency(String currency) {
         this.currency = currency;
     }

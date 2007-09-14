@@ -75,7 +75,21 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-osgi-runtime</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-osgi</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
@@ -104,7 +118,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -134,7 +147,7 @@
                             <configuration>
                                 <tasks>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="jar.dir" value="target/classes/wiring"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/Customer.mf"/>
@@ -145,7 +158,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="jar.dir" value="target/classes/wiring"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/Retailer.mf"/>
@@ -157,7 +170,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="jar.dir" value="target/classes/wiring"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/Shipper.mf"/>
@@ -169,7 +182,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring"/>
+                                        <property name="jar.dir" value="target/classes/wiring"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/Warehouse.mf"/>
@@ -181,7 +194,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="jar.dir" value="target/classes/wiring/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/ds/Customer.mf"/>
@@ -192,7 +205,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="jar.dir" value="target/classes/wiring/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/ds/Retailer.mf"/>
@@ -204,7 +217,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="jar.dir" value="target/classes/wiring/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/ds/Shipper.mf"/>
@@ -216,7 +229,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/wiring/ds"/>
+                                        <property name="jar.dir" value="target/classes/wiring/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse.jar"/>
                                         <property name="manifest.file.name" value="osgi/wiring/ds/Warehouse.mf"/>
@@ -228,7 +241,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/factory"/>
+                                        <property name="jar.dir" value="target/classes/factory"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/factory/Customer.mf"/>
@@ -236,11 +249,12 @@
                                              value="supplychain/customer/Customer.class \
                                                     supplychain/OSGiBundleImpl.class \
                                                     supplychain/customer/OSGiCustomerImpl.class \
+                                                    supplychain/customer/OSGiStatelessCustomerImpl.class \
                                                     supplychain/customer/OSGiCustomerFactoryImpl.class"/>
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/factory"/>
+                                        <property name="jar.dir" value="target/classes/factory"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/factory/Retailer.mf"/>
@@ -252,7 +266,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/factory"/>
+                                        <property name="jar.dir" value="target/classes/factory"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/factory/Shipper.mf"/>
@@ -261,22 +275,24 @@
                                                     supplychain/OSGiBundleImpl.class \
                                                     supplychain/shipper/OSGiShipperImpl.class \
                                                     supplychain/shipper/OSGiShipperServiceImpl.class \
+                                                    supplychain/shipper/OSGiStatelessShipperServiceImpl.class \
                                                     supplychain/shipper/OSGiShipperFactoryImpl.class"/>
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="jar.dir" value="target/classes/factory/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/factory/ds/Customer.mf"/>
                                         <property name="files.list" 
                                              value="supplychain/customer/Customer.class \
                                                     osgi/factory/ds/Customer.xml \
+                                                    supplychain/customer/OSGiStatelessCustomerComponentImpl.class \
                                                     supplychain/customer/OSGiCustomerComponentImpl.class"/>
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="jar.dir" value="target/classes/factory/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/factory/ds/Retailer.mf"/>
@@ -288,7 +304,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="jar.dir" value="target/classes/factory/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/factory/ds/Shipper.mf"/>
@@ -296,11 +312,12 @@
                                              value="supplychain/shipper/Shipper.class \
                                                     osgi/factory/ds/Shipper1.xml \
                                                     osgi/factory/ds/Shipper2.xml \
+                                                    supplychain/shipper/OSGiStatelessShipperComponentImpl.class \
                                                     supplychain/shipper/OSGiShipperComponentImpl.class"/>
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/factory/ds"/>
+                                        <property name="jar.dir" value="target/classes/factory/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse.jar"/>
                                         <property name="manifest.file.name" value="osgi/factory/ds/Warehouse.mf"/>
@@ -311,7 +328,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="jar.dir" value="target/classes/services"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/Customer.mf"/>
@@ -322,7 +339,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="jar.dir" value="target/classes/services"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/Retailer.mf"/>
@@ -334,7 +351,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="jar.dir" value="target/classes/services"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/Shipper.mf"/>
@@ -346,7 +363,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services"/>
+                                        <property name="jar.dir" value="target/classes/services"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/Warehouse.mf"/>
@@ -358,7 +375,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="jar.dir" value="target/classes/services/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/ds/Customer.mf"/>
@@ -369,7 +386,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="jar.dir" value="target/classes/services/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/ds/Retailer.mf"/>
@@ -381,7 +398,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="jar.dir" value="target/classes/services/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/ds/Shipper.mf"/>
@@ -393,7 +410,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/services/ds"/>
+                                        <property name="jar.dir" value="target/classes/services/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse.jar"/>
                                         <property name="manifest.file.name" value="osgi/services/ds/Warehouse.mf"/>
@@ -405,7 +422,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/interfaces"/>
+                                        <property name="jar.dir" value="target/classes/interfaces"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/interfaces/Customer.mf"/>
@@ -416,7 +433,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/interfaces"/>
+                                        <property name="jar.dir" value="target/classes/interfaces"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/interfaces/Retailer.mf"/>
@@ -428,7 +445,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/interfaces"/>
+                                        <property name="jar.dir" value="target/classes/interfaces"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/interfaces/Shipper.mf"/>
@@ -440,7 +457,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/interfaces/ds"/>
+                                        <property name="jar.dir" value="target/classes/interfaces/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer.jar"/>
                                         <property name="manifest.file.name" value="osgi/interfaces/ds/Customer.mf"/>
@@ -451,7 +468,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/interfaces/ds"/>
+                                        <property name="jar.dir" value="target/classes/interfaces/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer.jar"/>
                                         <property name="manifest.file.name" value="osgi/interfaces/ds/Retailer.mf"/>
@@ -463,7 +480,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/interfaces/ds"/>
+                                        <property name="jar.dir" value="target/classes/interfaces/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper.jar"/>
                                         <property name="manifest.file.name" value="osgi/interfaces/ds/Shipper.mf"/>
@@ -474,7 +491,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Customer1.mf"/>
@@ -485,7 +502,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Retailer1.mf"/>
@@ -497,7 +514,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Shipper1.mf"/>
@@ -509,7 +526,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Warehouse1.mf"/>
@@ -521,7 +538,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Customer2.mf"/>
@@ -532,7 +549,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Retailer2.mf"/>
@@ -544,7 +561,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Shipper2.mf"/>
@@ -556,7 +573,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version"/>
+                                        <property name="jar.dir" value="target/classes/version"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/Warehouse2.mf"/>
@@ -568,7 +585,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Customer1.mf"/>
@@ -579,7 +596,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Customer2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Customer2.mf"/>
@@ -590,7 +607,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Retailer1.mf"/>
@@ -602,7 +619,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Retailer2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Retailer2.mf"/>
@@ -614,7 +631,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Shipper1.mf"/>
@@ -626,7 +643,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Shipper2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Shipper2.mf"/>
@@ -638,7 +655,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse1.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Warehouse1.mf"/>
@@ -650,7 +667,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/version/ds"/>
+                                        <property name="jar.dir" value="target/classes/version/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Warehouse2.jar"/>
                                         <property name="manifest.file.name" value="osgi/version/ds/Warehouse2.mf"/>
@@ -662,7 +679,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/ws"/>
+                                        <property name="jar.dir" value="target/classes/ws"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="HelloWorld.jar"/>
                                         <property name="manifest.file.name" value="osgi/ws/HelloWorld.mf"/>
@@ -672,7 +689,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/passbyref"/>
+                                        <property name="jar.dir" value="target/classes/passbyref"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="Greetings.jar"/>
                                         <property name="manifest.file.name" value="osgi/passbyref/Greetings.mf"/>
@@ -682,7 +699,79 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/properties"/>
+                                        <property name="jar.dir" value="target/classes/callback"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="CallbackClient.jar"/>
+                                        <property name="manifest.file.name" value="osgi/callback/CallbackClient.mf"/>
+                                        <property name="files.list" 
+                                             value="callback/client/CallbackClient.class \
+                                                    callback/client/CallbackCallback.class \
+                                                    callback/client/OSGiCallbackClientImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/classes/callback"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="CallbackService.jar"/>
+                                        <property name="manifest.file.name" value="osgi/callback/CallbackService.mf"/>
+                                        <property name="files.list" 
+                                             value="callback/service/CallbackService.class \
+                                                    callback/service/OSGiCallbackServiceImpl.class"/>
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/classes/conversation"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="ConversationalClient.jar"/>
+                                        <property name="manifest.file.name" value="osgi/conversation/ConversationalClient.mf"/>
+                                        <property name="files.list" 
+                                             value="conversation/client/ConversationalClientStatefulImpl.class \
+                                                    conversation/client/ConversationalClientStatelessImpl.class \
+                                                    conversation/client/ConversationalCallback.class \
+                                                    conversation/client/ConversationalClient.class \
+                                                    conversation/client/ConversationalClientServiceFactory.class \
+                                                    conversation/client/ConversationalClientActivator.class" />
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/classes/conversation"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="ConversationalReferenceClient.jar"/>
+                                        <property name="manifest.file.name" value="osgi/conversation/ConversationalReferenceClient.mf"/>
+                                        <property name="files.list" 
+                                             value="conversation/referenceclient/ConversationalReferenceClient.class \
+                                                    conversation/referenceclient/ConversationalReferenceClientImpl.class \
+                                                    conversation/referenceclient/ConversationalReferenceClientActivator.class" />
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/classes/conversation"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="ConversationalService.jar"/>
+                                        <property name="manifest.file.name" value="osgi/conversation/ConversationalService.mf"/>
+                                        <property name="files.list" 
+                                             value="conversation/service/ConversationalService.class \
+                                                    conversation/service/ConversationalServiceStatefulImpl.class \
+                                                    conversation/service/ConversationalServiceStatelessImpl.class
+                                                    conversation/service/ConversationalServiceFactory.class \
+                                                    conversation/service/ConversationalServiceActivator.class" />
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/classes/conversation"/>
+                                        <property name="files.dir" value="target/classes"/>
+                                        <property name="jar.file.name" value="ConversationalService.jar"/>
+                                        <property name="manifest.file.name" value="osgi/conversation/ConversationalService.mf"/>
+                                        <property name="files.list" 
+                                             value="conversation/ConversationalService.class \
+                                                    conversation/ConversationalServiceStatefulImpl.class \
+                                                    conversation/ConversationalServiceStatelessImpl.class
+                                                    conversation/ConversationalServiceFactory.class \
+                                                    conversation/OSGiConversationTestActivator.class" />
+              
+                                    </ant>
+                                    <ant antfile="./build-bundles.xml" target="create-bundles">
+                                        <property name="jar.dir" value="target/classes/properties"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="StockQuote.jar"/>
                                         <property name="manifest.file.name" value="osgi/properties/StockQuote.mf"/>
@@ -692,7 +781,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/properties/ds"/>
+                                        <property name="jar.dir" value="target/classes/properties/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="StockQuote.jar"/>
                                         <property name="manifest.file.name" value="osgi/properties/ds/StockQuote.mf"/>
@@ -703,7 +792,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/properties"/>
+                                        <property name="jar.dir" value="target/classes/properties"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="StockQuoteFactory.jar"/>
                                         <property name="manifest.file.name" value="osgi/properties/StockQuoteFactory.mf"/>
@@ -714,7 +803,7 @@
               
                                     </ant>
                                     <ant antfile="./build-bundles.xml" target="create-bundles">
-                                        <property name="jar.dir" value="target/properties/ds"/>
+                                        <property name="jar.dir" value="target/classes/properties/ds"/>
                                         <property name="files.dir" value="target/classes"/>
                                         <property name="jar.file.name" value="StockQuoteFactory.jar"/>
                                         <property name="manifest.file.name" value="osgi/properties/ds/StockQuoteFactory.mf"/>

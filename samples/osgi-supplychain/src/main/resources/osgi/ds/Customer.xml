@@ -27,7 +27,6 @@
         interface="supplychain.retailer.Retailer" 
         bind="setRetailer"
         unbind="unsetRetailer"
-        target="(component.name=RetailerComponent)"
         policy="dynamic"
     />
 </component>

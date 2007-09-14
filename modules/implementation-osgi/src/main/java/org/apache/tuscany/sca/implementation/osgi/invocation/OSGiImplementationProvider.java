@@ -18,14 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.osgi.invocation;
 
-
-import java.beans.Introspector;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashSet;
@@ -44,21 +40,29 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.JDKProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.Scope;
+import org.apache.tuscany.sca.core.scope.ScopeContainer;
+import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
+import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
-import org.apache.tuscany.sca.implementation.osgi.context.OSGiPropertyValueObjectFactory;
-import org.apache.tuscany.sca.implementation.osgi.runtime.OSGiRuntime;
+import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementation;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -66,7 +70,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
@@ -80,11 +86,14 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * The runtime instantiation of OSGi component implementations
  * 
  */
-public class OSGiImplementationProvider  implements ScopedImplementationProvider, FrameworkListener {
+public class OSGiImplementationProvider  implements ScopedImplementationProvider, 
+                                                    FrameworkListener,
+                                                    BundleListener {
     
     private static final String COMPONENT_SERVICE_NAME = "component.service.name";
   
     private OSGiImplementation implementation;
+    private OSGiAnnotations osgiAnnotations;
     private BundleContext bundleContext;
     
     private Hashtable<RuntimeWire, Reference> referenceWires = new Hashtable<RuntimeWire,Reference>();
@@ -92,7 +101,12 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                        = new Hashtable<RuntimeWire,ComponentReference>();
     private HashSet<RuntimeWire> resolvedWires = new HashSet<RuntimeWire>();   
     private boolean wiresResolved;
-    private OSGiPropertyValueObjectFactory propertyValueFactory = new OSGiPropertyValueObjectFactory();
+    
+    private boolean bundleStarted;
+    
+    private boolean processedResolvedBundle, processingResolvedBundle;
+    
+    private JavaPropertyValueObjectFactory propertyValueFactory;
     
 
     private Hashtable<String, Object> componentProperties = new Hashtable<String, Object>();
@@ -105,7 +119,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
     private OSGiRuntime osgiRuntime;
     
-    
+    private ScopeRegistry scopeRegistry;
     private DataBindingExtensionPoint dataBindingRegistry;
     
     private boolean packagesRefreshed;
@@ -113,15 +127,25 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
 
     public OSGiImplementationProvider(RuntimeComponent definition,
             OSGiImplementationInterface impl,
-            DataBindingExtensionPoint dataBindingRegistry) throws BundleException {
+            DataBindingExtensionPoint dataBindingRegistry,
+            JavaPropertyValueObjectFactory propertyValueFactory,
+            ProxyFactory proxyFactory,
+            ScopeRegistry scopeRegistry,
+            RequestContextFactory requestContextFactory) throws BundleException {
         
         
         this.implementation = (OSGiImplementation)impl;
         this.runtimeComponent = definition;
         this.dataBindingRegistry = dataBindingRegistry;
-
+        this.propertyValueFactory = propertyValueFactory;
+        this.scopeRegistry = scopeRegistry;
+        
+        
         bundleContext = getBundleContext();
-        osgiBundle = installBundle();
+        osgiBundle = (Bundle)implementation.getOSGiBundle();
+        bundleContext.addBundleListener(this);
+        osgiServiceListener = new OSGiServiceListener(osgiBundle);        
+        bundleContext.addServiceListener(osgiServiceListener);    
         
         // Install and start all dependent  bundles
         String[] imports = implementation.getImports();
@@ -133,6 +157,17 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             }                
         }
         
+
+        this.osgiAnnotations = new OSGiAnnotations(
+                implementation.getModelFactories(),
+                implementation.getClassList(),
+                runtimeComponent,
+                propertyValueFactory,
+                proxyFactory,
+                requestContextFactory,
+                osgiBundle,
+                dependentBundles);
+
         
         // PackageAdmin is used to resolve bundles 
         org.osgi.framework.ServiceReference packageAdminReference = 
@@ -162,8 +197,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             for (Object p : props) {
              
                 Property prop = (Property)p;
-                ObjectFactory<?> objFactory = propertyValueFactory.createValueFactory(prop, prop.getValue());
-                Object value = objFactory.getInstance();           
+                Class javaType = SimpleTypeMapperImpl.getJavaType(prop.getXSDType());
+                ObjectFactory<?> objFactory = propertyValueFactory.createValueFactory(prop, prop.getValue(), javaType);
+                Object value = objFactory.getInstance();          
 
                 propsTable.put(prop.getName(), value);
             }
@@ -173,50 +209,21 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
    
     private BundleContext getBundleContext() throws BundleException {
 
-        if (bundleContext == null) {
-            osgiRuntime = OSGiRuntime.getRuntime();
-            bundleContext = osgiRuntime .getBundleContext();       
+        try {
+            if (bundleContext == null) {
+                osgiRuntime = OSGiRuntime.getRuntime();
+                bundleContext = osgiRuntime .getBundleContext();       
+            }
+        } catch (BundleException e) {
+           throw e;
+        } catch (Exception e) {
+            throw new BundleException("Could not start OSGi runtime", e);
         }
+        
         
         return bundleContext;
     }
     
-    private Bundle getBundle() throws Exception {
-        
-        Bundle[] bundles = bundleContext.getBundles();
-        for (Bundle b : bundles) {
-            if (b.getLocation().equals(implementation.getBundleName())) {
-                return b;
-            }
-        }
-        return null;
-    }
-
-    
-    // Install the bundle corresponding to this component.
-    private Bundle installBundle() throws ObjectCreationException {
-        try {
-            
-            Bundle bundle = null;
-            
-            if ((bundle = getBundle()) == null) {
-               
-                String bundleName = implementation.getBundleLocation();
-                                
-                bundle = bundleContext.installBundle(bundleName);
-                
-            }          
-
-            osgiServiceListener = new OSGiServiceListener(bundle);
-            
-            bundleContext.addServiceListener(osgiServiceListener);    
-
-            return bundle;
-            
-        } catch (Exception e) {
-            throw new ObjectCreationException(e);
-        }
-    }
     
     private String getOSGiFilter(Hashtable<String, Object> props) {
         
@@ -318,12 +325,17 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     protected Bundle startBundle() throws ObjectCreationException {
 
         try {
-    
-            if (osgiBundle.getState() != Bundle.ACTIVE && osgiBundle.getState() != Bundle.STARTING) {
-        
+            
+            if (!bundleStarted) {
+                
+                bundleStarted = true;
+                
                 configurePropertiesUsingConfigAdmin();
-        
+                
                 resolveBundle();
+                
+                processAnnotations();
+                
                 
                 for (Bundle bundle : dependentBundles) {
                     try {
@@ -335,8 +347,11 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                             throw e;
                     }
                 }
-            
-                if (osgiBundle.getState() != Bundle.ACTIVE && osgiBundle.getState() != Bundle.STARTING) {
+                
+            }
+    
+            if (osgiBundle.getState() != Bundle.ACTIVE && osgiBundle.getState() != Bundle.STARTING) {
+        
 
                     int retry = 0;
                 
@@ -353,8 +368,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                             throw e;
                         }
                     }
-                }                   
-            }
+                }     
    
         } catch (Exception e) {
             throw new ObjectCreationException(e);
@@ -363,11 +377,17 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     }
     
     
+    // This method is called by OSGiInstanceWrapper.getInstance to obtain the OSGI service reference
+    // corresponding to the specified service. The properties used to filter the service should
+    // be chosen based on whether this is a normal service or a callback.
     protected org.osgi.framework.ServiceReference getOSGiServiceReference(ComponentService service) 
             throws ObjectCreationException {
          
         Hashtable<String, Object> props = new Hashtable<String, Object>();
-        processProperties(implementation.getServiceProperties(service.getName()), props);
+        if (!service.isCallback())
+            processProperties(implementation.getServiceProperties(service.getName()), props);
+        else
+            processProperties(implementation.getServiceCallbackProperties(service.getName()), props);
         
         String filter = getOSGiFilter(props);
         Interface serviceInterface = service.getInterfaceContract().getInterface();
@@ -643,7 +663,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
     public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
         
-        return new OSGiInstanceWrapper<Object>(this, bundleContext);
+        return new OSGiInstanceWrapper<Object>(this, osgiAnnotations, bundleContext);
     }
     
    
@@ -689,7 +709,12 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     private boolean resolveWireResolveReferences(Bundle bundle, Class interfaceClass, RuntimeWire wire,
             boolean isOSGiToOSGiWire) throws Exception {
         
-        boolean createProxy = false;
+
+        // FIXME: At the moment injection of values into instances require an instance to be obtained
+        // throught the instance wrapper, and hence requires a proxy. When we do this processing here,
+        // we dont yet know whether the target requires any property or callback injection. So it is
+        // safer to create a proxy all the time. 
+        boolean createProxy = true; 
        
         ComponentReference scaRef = componentReferenceWires.get(wire);
         Hashtable<String, Object> targetProperties = new Hashtable<String, Object>();
@@ -810,6 +835,11 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             
             if (!wiresResolved) {
                 wiresResolved = true;
+                
+                if (!setReferencesAndProperties()) {
+                    wiresResolved = false;
+                    return;
+                }
                     
                 int refPlusServices = referenceWires.size() + runtimeComponent.getServices().size();
                 boolean[] createProxyService = new boolean[refPlusServices];
@@ -892,7 +922,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     }
     
    
-    
+    @SuppressWarnings("unchecked")
     private void configurePropertiesUsingConfigAdmin() {
                
         try {
@@ -925,7 +955,8 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                     if (serviceProps != null) {
                         for (ComponentProperty prop : serviceProps) {
                             if (prop.getName().equals("service.pid")) {
-                                ObjectFactory objFactory = propertyValueFactory.createValueFactory(prop, prop.getValue());
+                                ObjectFactory objFactory = propertyValueFactory.createValueFactory(prop, 
+                                        prop.getValue(), String.class);
                                 pid = (String)objFactory.getInstance();
                             }
                         }
@@ -958,152 +989,32 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
 
     }
     
-    protected void injectProperties(Object instance)  {
-        
-        if (!implementation.needsPropertyInjection())
-            return;
-        
-        Class implClass = instance.getClass();
-        List<ComponentProperty> compProps = runtimeComponent.getProperties();
-        
-        for (ComponentProperty prop : compProps) {
-            
-            boolean hasSetProp = false;
-            String propName = prop.getName();
-            ObjectFactory objFactory = propertyValueFactory.createValueFactory(prop, prop.getValue());
-            
-            try {
-                Field field = implClass.getDeclaredField(propName);
-                org.osoa.sca.annotations.Property propAnn;
-                
-                if ((propAnn = field.getAnnotation(org.osoa.sca.annotations.Property.class)) != null
-                        || Modifier.isPublic(field.getModifiers())) {
-                    
-                    try {
-                        if (!field.isAccessible())
-                            field.setAccessible(true);
-                            
-                        field.set(instance, objFactory.getInstance());
-                        hasSetProp = true;
-                    } catch (IllegalAccessException e) {
-                        if (propAnn.required())
-                            throw new RuntimeException(e);
-                    }
-                    
-                }
-            } catch (NoSuchFieldException e) {
-                // Ignore exception
-            }
-
-            if (!hasSetProp) {
-                Method[] methods = implClass.getDeclaredMethods();
-                org.osoa.sca.annotations.Property propAnn = null;
-
-                for (Method method : methods) {
-
-                    if (!method.getName().startsWith("set"))
-                        continue;
-                    if ((propAnn = method.getAnnotation(org.osoa.sca.annotations.Property.class)) != null
-                            || Modifier.isPublic(method.getModifiers())) {
-                        
-                        String methodPropName = Introspector.decapitalize(method.getName().substring(3));
-                        if (!propName.equals(methodPropName))
-                            continue;
-                    }
-                    try {
-                        if (!method.isAccessible())
-                            method.setAccessible(true);
-
-                        method.invoke(instance, objFactory.getInstance());
-                        hasSetProp = true;
-                    } catch (Exception e) {
-                        if (propAnn != null && propAnn.required())
-                            throw new RuntimeException(e);
-                    }
-                }
-            }
-
-        }
-        
-    }
     
-    protected void injectPropertiesWithoutAnnotations(Object instance)  {
-        
-        if (!implementation.needsPropertyInjection())
-            return;
-        
-        Class implClass = instance.getClass();
-        List<ComponentProperty> compProps = runtimeComponent.getProperties();
-        
-        for (ComponentProperty prop : compProps) {
-            
-            boolean hasSetProp = false;
-            String propName = prop.getName();
-            ObjectFactory objFactory = propertyValueFactory.createValueFactory(prop, prop.getValue());
-            
-            try {
-                Field field = implClass.getDeclaredField(propName);
-                
-                if (Modifier.isPublic(field.getModifiers())) {
-                   
-                    try {
-                        field.set(instance, objFactory.getInstance());
-                        hasSetProp = true;
-                    
-                    } catch (Exception e) {
-                        // Ignore
-                    }
-                }
-            } catch (NoSuchFieldException e) {
-                // Ignore exception
-            }
-
-            if (!hasSetProp) {
-                Method[] methods = implClass.getDeclaredMethods();
-                for (Method method : methods) {
-
-                    if (!method.getName().startsWith("set"))
-                        continue;
-                    if (Modifier.isPublic(method.getModifiers())) {
-                        
-                        String methodPropName = Introspector.decapitalize(method.getName().substring(3));
-                        if (!propName.equals(methodPropName))
-                            continue;
-                    }
-                    try {
-                        method.invoke(instance, objFactory.getInstance());
-                    } catch (Exception e) {
-                       // Ignore
-                    }
-                }
-            }
-
-        }
-        
-    }
-
-
     
     public boolean isOptimizable() {
         return false;
     }
     
     public Scope getScope() {
-        return implementation.getScope();
+        return osgiAnnotations.getScope();
     }
 
     public boolean isEagerInit() {
-        return implementation.isEagerInit();
+        return osgiAnnotations.isEagerInit();
     }
 
     public long getMaxAge() {
-        return implementation.getMaxAge();
+        return osgiAnnotations.getMaxAge();
     }
 
     public long getMaxIdleTime() {
-        return implementation.getMaxIdleTime();
+        return osgiAnnotations.getMaxIdleTime();
     }
     
+    protected ScopeContainer<?> getScopeContainer() {
+        startBundle();
+        return ((ScopedRuntimeComponent)runtimeComponent).getScopeContainer();
+    }
     
     public Invoker createTargetInvoker(RuntimeComponentService service, Operation operation)  {
        
@@ -1112,9 +1023,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         boolean isRemotable = serviceInterface.isRemotable();
 
 
-        Invoker invoker = new OSGiTargetInvoker(operation, runtimeComponent, service);
+        Invoker invoker = new OSGiTargetInvoker(operation, this, service);
         if (isRemotable) {
-            return new OSGiRemotableInvoker(implementation, dataBindingRegistry, operation, runtimeComponent, service);
+            return new OSGiRemotableInvoker(osgiAnnotations, dataBindingRegistry, operation, this, service);
         } else {
             return invoker;
         }
@@ -1131,14 +1042,16 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         return createTargetInvoker(service, operation);
     }
 
-    public void start() {
-                
+    private boolean setReferencesAndProperties() {
+       
         for (Reference ref: implementation.getReferences()) {
             List<RuntimeWire> wireList = null;
             ComponentReference compRef = null;
             for (ComponentReference cRef : runtimeComponent.getReferences()) {
                 if (cRef.getName().equals(ref.getName())) {
+                    
                     wireList = ((RuntimeComponentReference)cRef).getRuntimeWires();
+                    
                     compRef = cRef;
                     break;
                 }
@@ -1166,12 +1079,71 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
         processProperties(runtimeComponent.getProperties(), componentProperties);
         
+        return true;
+        
     }
     
+    public void start() {
+        setReferencesAndProperties();
+    }
+        
+    public void processAnnotations() throws IntrospectionException {
+        
+        synchronized (this) {       
+            if (processedResolvedBundle || processingResolvedBundle)
+                return;
+            processingResolvedBundle = true;
+        }
+        
+        osgiAnnotations.processAnnotations();
+        
+        Scope scope = osgiAnnotations.getScope();
+        if (scope.equals(Scope.SYSTEM) || scope.equals(Scope.COMPOSITE)) {
+            // Nothing
+        } else {
+
+            if (runtimeComponent instanceof ScopedRuntimeComponent) {
+
+                ScopedRuntimeComponent component = (ScopedRuntimeComponent) runtimeComponent;
+
+                ScopeContainer oldScopeContainer = component.getScopeContainer();
+                component.setScopeContainer(null);
+                ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(runtimeComponent);
+
+                if (oldScopeContainer.getLifecycleState() == ScopeContainer.RUNNING)
+                    scopeContainer.start();
+                
+                component.setScopeContainer(scopeContainer);
+            }
+
+            // Check for conversational contract if conversational scope
+//            if (scope.equals(Scope.CONVERSATION)) {
+//                boolean hasConversationalContract = false;
+//                for (Service serviceDef : implementation.getServices()) {
+//                    if (serviceDef.getInterfaceContract().getInterface()
+//                            .isConversational()) {
+//                        hasConversationalContract = true;
+//                        break;
+//                    }
+//                }
+//                if (!hasConversationalContract) {
+//                    Exception e = new NoConversationalContractException(
+//                            runtimeComponent.getName() + ":" + osgiBundle);
+//                    throw new RuntimeException(e);
+//                }
+//            }
+        }
+            
+        synchronized (this) {                
+            processedResolvedBundle = true;
+            this.notifyAll();
+        }  
+    }
     
     public void stop() {
 
-        bundleContext.removeServiceListener(osgiServiceListener);
+        if (osgiServiceListener != null)
+            bundleContext.removeServiceListener(osgiServiceListener);
     }
 
     
@@ -1185,8 +1157,16 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         }
         
     }
-
-
+    
+    public void bundleChanged(BundleEvent event) {
+        if (event.getType() == BundleEvent.RESOLVED && event.getBundle() == osgiBundle) {
+            try {
+                processAnnotations();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }             
+        }
+    }
 
     private class OSGiServiceListener implements ServiceListener {
         

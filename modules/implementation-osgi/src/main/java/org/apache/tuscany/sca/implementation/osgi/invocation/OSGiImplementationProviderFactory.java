@@ -19,8 +19,16 @@
 package org.apache.tuscany.sca.implementation.osgi.invocation;
 
 
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
+import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -34,17 +42,30 @@ import org.osgi.framework.BundleException;
  */
 public class OSGiImplementationProviderFactory implements ImplementationProviderFactory<OSGiImplementationInterface> {
     
-    DataBindingExtensionPoint dataBindings;
+    private DataBindingExtensionPoint dataBindings;
+    private JavaPropertyValueObjectFactory propertyFactory;
+    private ProxyFactory proxyFactory;
+    private ScopeRegistry scopeRegistry;
     
-    public OSGiImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
+    private RequestContextFactory requestContextFactory;
+    
+    public OSGiImplementationProviderFactory(ExtensionPointRegistry extensionPoints ) {
         
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
-        //FIXME transformers is never used
-        //TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
-        //FIXME mediator is never used
-        //MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
-        //FIXME factory is never used
-        //OSGiPropertyValueObjectFactory factory = new OSGiPropertyValueObjectFactory(mediator);
+        proxyFactory = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        ContextFactoryExtensionPoint contextFactories = extensionPoints.getExtensionPoint(ContextFactoryExtensionPoint.class);
+        requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
+        
+
+        // FIXME: Scope registry is not an extension point, and this usage is specific
+        // to implementation.osgi since it needs to change scope after the component is
+        // created. Do we need to find a better way?
+        scopeRegistry = extensionPoints.getExtensionPoint(ScopeRegistry.class);
+        
+        TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
+        MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
+        propertyFactory = new JavaPropertyValueObjectFactory(mediator);
+        
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
@@ -52,7 +73,14 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
                 
         try {
                 
-            return new OSGiImplementationProvider(component, implementation, dataBindings);
+            return new OSGiImplementationProvider(component, 
+                    implementation, 
+                    dataBindings,
+                    propertyFactory,
+                    proxyFactory,
+                    scopeRegistry,
+                    requestContextFactory
+                    );
                 
         } catch (BundleException e) {
             throw new RuntimeException(e);

@@ -27,7 +27,6 @@
         interface="supplychain.warehouse.Warehouse" 
         bind="setWarehouse"
         unbind="unsetWarehouse"
-        target="(component.name=WarehouseComponent)"
         policy="dynamic"
     />
 </component>

@@ -23,10 +23,10 @@ import supplychain.SupplyChainTestCase;
 /**
  * OSGi test program - declarative with components exposing multiple services with multiple interfaces
  */
-public class DSInterfacesTestCase extends SupplyChainTestCase {
+public abstract class DSInterfacesTestCase extends SupplyChainTestCase {
 
     public DSInterfacesTestCase() {
-        super("sca/interfaces-ds-test.composite");
+        super("interfaces/interfaces-ds-test.composite");
     }
    
 }

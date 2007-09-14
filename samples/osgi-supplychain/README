@@ -30,7 +30,11 @@ and a notifyShipment operation annotated with the SCA @OneWay annotation.
 The SupplyChainClient exercises this interface by calling the
 purchaseGoods operation. This results in messages passing to 
 the Retailer, Warehouse, and Shipper components and the result returned
-to the Customer service on a separate callback thread.
+to the Customer service on a separate callback thread. The Customer
+and Shipper components are implemented as OSGi bundles which use
+implementation.osgi, while the Retailer and Warehouse components are
+implemented using implementation.java.
+
 
 src
 +---main
@@ -121,17 +125,10 @@ Buildfile: build.xml
 
 run:
      [java] Main thread Thread[main,5,main]
-     [java] Created OSGiCustomerImpl
-     [java] Started bundle OSGiCustomerImpl
-     [java] Customer.purchaseGoods, retailer is [Proxy - 1afae45]
-     [java] Retailer.submitOrder, warehouse is [Proxy - 811c88]
-     [java] Warehouse.fulfillOrder : shipper is [Proxy - 15bdc50]
-     [java] Created OSGiShipperImpl
-     [java] Started bundle OSGiShipperImpl
-     [java] Shipper.processShipment, customer is [Proxy - 60e128]
-     [java] Main thread sleeping ...
-     [java] Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfi
-lled, shipped
+     [java] Main thread Started OSGi bundle with activator OSGiCustomerImpl
+     [java] Main thread Started OSGi bundle with activator OSGiShipperImpl
+     [java] Main thread Sleeping ...
+     [java] Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfilled, shipped
 
  
 
@@ -151,6 +148,8 @@ You should see the following output from the test phase.
 -------------------------------------------------------
 Running supplychain.SupplyChainClientTestCase
 Main thread Thread[main,5,main]
+Started OSGi bundle with activator OSGiCustomerImpl
+Started OSGi bundle with activator OSGiShipperImpl
 Sleeping ...
 Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfilled, shipped
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.625 sec

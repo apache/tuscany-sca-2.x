@@ -39,7 +39,6 @@ public class JavaCustomerComponentImpl implements Customer {
     }
     
     public void purchaseGoods() {
-        System.out.println("Customer.purchaseGoods, retailer is " + retailer);
         retailer.submitOrder("Order");
     }
     
