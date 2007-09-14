@@ -276,6 +276,16 @@
             <version>1.3</version>
             <type>mar</type>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.ant</groupId>
+                    <artifactId>ant-nodeps</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xmlbeans</groupId>
+                    <artifactId>xbean</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
