@@ -53,7 +53,7 @@ public class BPELTestCase extends TestCase {
     }
     
     public void testInvoke() {
-        //String response = bpelService.hello("Hello");
-        //assertEquals("World", response);
+        String response = bpelService.hello("Hello");
+        assertEquals("World", response);
     }
 }
