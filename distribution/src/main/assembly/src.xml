@@ -90,8 +90,6 @@
              <exclude>itest/contribution-import-export/import-wsdl/work/**/*</exclude>
              <exclude>itest/contribution-import-export/import-composite/work</exclude>
              <exclude>itest/contribution-import-export/import-composite/work/**/*</exclude>
-             <exclude>itest/osgi-implementation</exclude>
-             <exclude>itest/osgi-implementation/**/*</exclude>
              <exclude>modules/host-tomcat/work</exclude>
              <exclude>modules/host-tomcat/work/**/*</exclude>
              <exclude>modules/binding-jms</exclude>
