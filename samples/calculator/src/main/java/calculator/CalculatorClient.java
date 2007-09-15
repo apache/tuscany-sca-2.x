@@ -39,26 +39,6 @@ public class CalculatorClient {
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
 
-        double r;
-        for (int i=0; i < 100; i++) {
-            r = calculatorService.add(3, 2);
-            r = calculatorService.subtract(3, 2);
-            r = calculatorService.multiply(3, 2);
-            r = calculatorService.divide(3, 2);
-        }
-
-        long begin = System.currentTimeMillis();
-        long n = 10000;
-        for (int i=0; i < n; i++) {
-            r = calculatorService.add(3, 2);
-            r = calculatorService.subtract(3, 2);
-            r = calculatorService.multiply(3, 2);
-            r = calculatorService.divide(3, 2);
-        }
-        long end = System.currentTimeMillis();
-        double time = ((double)(end - begin)) / ((double)n);
-        System.out.println("Time: " + time);
-        
         scaDomain.close();
     }
 
