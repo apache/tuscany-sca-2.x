@@ -195,7 +195,7 @@ public class BPELInvoker implements Invoker {
             
             Part operationPart = (Part) wsdlInterface.getPortType().getOperation(operation.getName(),null,null).getOutput().getMessage().getParts().values().iterator().next();
 
-            return (Element) DOMUtils.findChildByName(response, new QName("",operationPart.getName())).getFirstChild();
+            return (Element) DOMUtils.findChildByName(response, new QName("",operationPart.getName()));
         }
         
         return null;
