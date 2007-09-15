@@ -51,6 +51,12 @@
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-api</artifactId>
             <version>1.2.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
          <dependency>
@@ -64,6 +70,12 @@
             <artifactId>axiom-impl</artifactId>
             <version>1.2.5</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>
