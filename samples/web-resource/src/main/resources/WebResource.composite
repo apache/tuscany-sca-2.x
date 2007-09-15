@@ -22,7 +22,7 @@
 	targetNamespace="http://web"
 	name="WebResource">
 
-    <component name="myWeb">
+    <component name="MyWeb">
         <service name="Resource">
             <tuscany:binding.http/>
         </service>
