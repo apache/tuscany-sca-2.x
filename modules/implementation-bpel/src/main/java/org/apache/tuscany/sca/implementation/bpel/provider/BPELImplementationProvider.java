@@ -26,6 +26,7 @@ import javax.transaction.TransactionManager;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
+import org.apache.tuscany.sca.implementation.bpel.ode.ODEInitializationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -44,12 +45,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class BPELImplementationProvider implements ImplementationProvider {
 
     private RuntimeComponent component;
-    private BPELImplementation implementation;
+
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
 
+    private BPELImplementation implementation;
+    
     /**
-     * Constructs a new CRUD implementation.
+     * Constructs a new BPEL Implementation.
      */
     public BPELImplementationProvider(RuntimeComponent component,
                                       BPELImplementation implementation,
@@ -75,9 +78,10 @@ public class BPELImplementationProvider implements ImplementationProvider {
         System.out.println("Starting " + component.getName() + " " + component.getClass().getName());
 
         try {
-            if (!odeServer.isInitialized())
+            if (!odeServer.isInitialized()) {
                 // start ode server
                 odeServer.init();
+            }
 
             URL deployURL = getClass().getClassLoader().getResource("deploy.xml");
             File deploymentDir = new File(deployURL.toURI().getPath()).getParentFile();
@@ -96,8 +100,10 @@ public class BPELImplementationProvider implements ImplementationProvider {
                 }
             }
             
+        } catch (ODEInitializationException inite) {
+            throw new RuntimeException("BPEL Component Type Implementation : Error initializing embedded ODE server " + inite.getMessage(), inite);
         } catch(Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("BPEl Component Type Implementation initialization failure : " + e.getMessage(), e);
         }
 
         // FIXME:lresende
