@@ -25,7 +25,7 @@
             
     <service name="HelloWorld" promote="HelloWorldImpl">
         <interface.java interface="helloworld.HelloWorld" />
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)"/>
     </service>
     
     <component name="HelloWorldImpl">
