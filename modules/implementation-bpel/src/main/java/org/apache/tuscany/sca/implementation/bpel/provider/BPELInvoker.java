@@ -20,16 +20,28 @@
 package org.apache.tuscany.sca.implementation.bpel.provider;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.Future;
 
+import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
+import javax.wsdl.Part;
+import javax.xml.namespace.QName;
 
+import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
+import org.apache.ode.bpel.iapi.MessageExchange.Status;
+import org.apache.ode.utils.DOMUtils;
+import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
- * Implements a target invoker for CRUD component implementations.
+ * Implements a target invoker for BPEL component implementations.
  * 
  * The target invoker is responsible for dispatching invocations to the particular
  * component implementation logic. In this example we are simply delegating the
@@ -59,11 +71,133 @@ public class BPELInvoker implements Invoker {
     }
 
     public Object doTheWork(Object[] args) throws InvocationTargetException {
-        if (operation.getName().equals("invokeProcess")) {
-            return args[0];
-        } else {
-            return null;
+        Element response = null;
+        
+        org.apache.ode.bpel.iapi.MyRoleMessageExchange mex = null;
+        Future onhold = null;
+        
+        //Process the BPEL process invocation
+        try {
+            txMgr.begin();
+            mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
+                    new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl", "HelloService"), "hello");
+
+            onhold = mex.invoke(createInvocationMessage(mex, args));
+            
+            txMgr.commit();
+        } catch (Exception e) {
+            try {
+                txMgr.rollback();
+            } catch (SystemException se) {
+
+            }
+            throw new InvocationTargetException(e, "Error invoking BPEL process : " + e.getMessage());
+        } 
+
+
+        // Waiting until the reply is ready in case the engine needs to continue in a different thread
+        if (onhold != null) {
+            try {
+                onhold.get();
+            } catch (Exception e) {
+                throw new InvocationTargetException(e,"Error invoking BPEL process : " + e.getMessage());
+            }
         }
+
+        //Process the BPEL invocation response
+        try {
+            txMgr.begin();
+            // Reloading the mex in the current transaction, otherwise we can't
+            // be sure we have the "freshest" one.
+            mex = (MyRoleMessageExchange)odeServer.getBpelServer().getEngine().getMessageExchange(mex.getMessageExchangeId());
+
+            Status status = mex.getStatus();
+            System.out.println("Status: " + status.name());
+            Element invocationResponse = mex.getResponse().getMessage();
+            System.out.println("Response: " + DOMUtils.domToString(invocationResponse));
+            
+            //process the method invocation result
+            response = processResponse(invocationResponse);
+            
+            txMgr.commit();
+            // end of transaction two
+        } catch (Exception e) {
+            try {
+                txMgr.rollback();
+            } catch (SystemException se) {
+
+            }
+            throw new InvocationTargetException(e, "Error retrieving BPEL process invocation status : " + e
+                .getMessage());
+        }
+    
+    
+        return response;
     }
 
+    /**
+     * Create BPEL Invocation message
+     * 
+     *  BPEL invocation message like :
+     *  <message>
+     *     <TestPart>
+     *        <hello xmlns="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl">Hello</hello>
+     *     </TestPart>
+     *   </message>
+     * @param args
+     * @return
+     */
+    private org.apache.ode.bpel.iapi.Message createInvocationMessage(org.apache.ode.bpel.iapi.MyRoleMessageExchange mex, Object[] args) {
+        Interface interfaze = operation.getInterface();
+        if(interfaze instanceof WSDLInterface){
+            WSDLInterface wsdlInterface = null;
+            wsdlInterface = (WSDLInterface) interfaze;
+            
+            Part operationPart = (Part) wsdlInterface.getPortType().getOperation(operation.getName(),null,null).getInput().getMessage().getParts().values().iterator().next();
+            
+            Document dom = DOMUtils.newDocument();
+            
+            Element contentMessage = dom.createElement("message");
+            Element contentPart = dom.createElement(operationPart.getName());
+            Element contentInvocation = (Element) args[0];
+            
+            contentPart.appendChild(dom.importNode(contentInvocation, false));
+            contentMessage.appendChild(contentPart);
+            dom.appendChild(contentMessage);
+            
+            System.out.println("::message:: " + DOMUtils.domToString(dom.getDocumentElement()));
+
+            org.apache.ode.bpel.iapi.Message request = mex.createMessage(new QName("", ""));
+            request.setMessage(dom.getDocumentElement());
+            
+            return request;
+        }
+        return null;
+    }
+    
+    /**
+     * Process BPEL response
+     * 
+     *  <message>
+     *     <TestPart>
+     *        <hello xmlns="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl">World</hello>
+     *     </TestPart>
+     *   </message> 
+     * 
+     * @param response
+     * @return
+     */
+    private Element processResponse(Element response) {
+        Interface interfaze = operation.getInterface();
+        if(interfaze instanceof WSDLInterface){
+            WSDLInterface wsdlInterface = null;
+            wsdlInterface = (WSDLInterface) interfaze;
+            
+            Part operationPart = (Part) wsdlInterface.getPortType().getOperation(operation.getName(),null,null).getOutput().getMessage().getParts().values().iterator().next();
+
+            return (Element) DOMUtils.findChildByName(response, new QName("",operationPart.getName())).getFirstChild();
+        }
+        
+        return null;
+    }
 }
