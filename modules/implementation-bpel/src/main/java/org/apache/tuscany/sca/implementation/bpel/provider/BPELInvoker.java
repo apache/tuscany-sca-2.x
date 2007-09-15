@@ -25,6 +25,7 @@ import java.util.concurrent.Future;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.wsdl.Part;
+import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
@@ -51,12 +52,37 @@ import org.w3c.dom.Element;
 public class BPELInvoker implements Invoker {
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
+    
     private Operation operation;
+    private QName bpelServiceName;
+    private String bpelOperationName;
+    private Part bpelOperationInputPart;
+    private Part bpelOperationOutputPart;
     
     public BPELInvoker(Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
         this.operation = operation;
         this.odeServer = odeServer;
         this.txMgr = txMgr;
+
+        initializeInvocation();
+    }
+
+    
+    private void initializeInvocation() {
+
+        this.bpelOperationName = operation.getName();
+        
+        Interface interfaze = operation.getInterface();
+        if(interfaze instanceof WSDLInterface){
+            WSDLInterface wsdlInterface = null;
+            wsdlInterface = (WSDLInterface) interfaze;
+            
+            Service serviceDefinition = (Service) wsdlInterface.getWsdlDefinition().getDefinition().getServices().values().iterator().next(); 
+            bpelServiceName = serviceDefinition.getQName();
+                
+            bpelOperationInputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getInput().getMessage().getParts().values().iterator().next();
+            bpelOperationOutputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getOutput().getMessage().getParts().values().iterator().next();
+        }
     }
     
     public Message invoke(Message msg) {
@@ -73,6 +99,10 @@ public class BPELInvoker implements Invoker {
     public Object doTheWork(Object[] args) throws InvocationTargetException {
         Element response = null;
         
+        if(! (operation.getInterface() instanceof WSDLInterface)) {
+            throw new InvocationTargetException(null,"Unsupported service contract");
+        }
+        
         org.apache.ode.bpel.iapi.MyRoleMessageExchange mex = null;
         Future onhold = null;
         
@@ -80,8 +110,8 @@ public class BPELInvoker implements Invoker {
         try {
             txMgr.begin();
             mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
-                    new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl", "HelloService"), "hello");
-
+                                                                              bpelServiceName,
+                                                                              bpelOperationName);
             onhold = mex.invoke(createInvocationMessage(mex, args));
             
             txMgr.commit();
@@ -148,31 +178,22 @@ public class BPELInvoker implements Invoker {
      * @return
      */
     private org.apache.ode.bpel.iapi.Message createInvocationMessage(org.apache.ode.bpel.iapi.MyRoleMessageExchange mex, Object[] args) {
-        Interface interfaze = operation.getInterface();
-        if(interfaze instanceof WSDLInterface){
-            WSDLInterface wsdlInterface = null;
-            wsdlInterface = (WSDLInterface) interfaze;
-            
-            Part operationPart = (Part) wsdlInterface.getPortType().getOperation(operation.getName(),null,null).getInput().getMessage().getParts().values().iterator().next();
-            
-            Document dom = DOMUtils.newDocument();
-            
-            Element contentMessage = dom.createElement("message");
-            Element contentPart = dom.createElement(operationPart.getName());
-            Element contentInvocation = (Element) args[0];
-            
-            contentPart.appendChild(dom.importNode(contentInvocation, false));
-            contentMessage.appendChild(contentPart);
-            dom.appendChild(contentMessage);
-            
-            System.out.println("::message:: " + DOMUtils.domToString(dom.getDocumentElement()));
+        Document dom = DOMUtils.newDocument();
+        
+        Element contentMessage = dom.createElement("message");
+        Element contentPart = dom.createElement(bpelOperationInputPart.getName());
+        Element contentInvocation = (Element) args[0];
+        
+        contentPart.appendChild(dom.importNode(contentInvocation, false));
+        contentMessage.appendChild(contentPart);
+        dom.appendChild(contentMessage);
+        
+        System.out.println("::message:: " + DOMUtils.domToString(dom.getDocumentElement()));
 
-            org.apache.ode.bpel.iapi.Message request = mex.createMessage(new QName("", ""));
-            request.setMessage(dom.getDocumentElement());
-            
-            return request;
-        }
-        return null;
+        org.apache.ode.bpel.iapi.Message request = mex.createMessage(new QName("", ""));
+        request.setMessage(dom.getDocumentElement());
+        
+        return request;
     }
     
     /**
@@ -188,16 +209,6 @@ public class BPELInvoker implements Invoker {
      * @return
      */
     private Element processResponse(Element response) {
-        Interface interfaze = operation.getInterface();
-        if(interfaze instanceof WSDLInterface){
-            WSDLInterface wsdlInterface = null;
-            wsdlInterface = (WSDLInterface) interfaze;
-            
-            Part operationPart = (Part) wsdlInterface.getPortType().getOperation(operation.getName(),null,null).getOutput().getMessage().getParts().values().iterator().next();
-
-            return (Element) DOMUtils.findChildByName(response, new QName("",operationPart.getName()));
-        }
-        
-        return null;
+        return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName()));
     }
 }
