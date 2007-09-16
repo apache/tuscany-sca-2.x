@@ -29,9 +29,8 @@
     <element name="composite" type="sca:Composite"/>
     <complexType name="Composite">
          <sequence>
-             <element name="include" type="anyURI" minOccurs="0" 
-             	maxOccurs="unbounded"/>
              <choice minOccurs="0" maxOccurs="unbounded">
+	             <element name="include" type="sca:Include"/>
                  <element name="service" type="sca:Service"/>
                  <element name="property" type="sca:Property"/>
                  <element name="component" type="sca:Component"/>
