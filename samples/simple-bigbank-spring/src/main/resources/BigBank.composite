@@ -24,7 +24,7 @@
 	name="BigBank">
 
     <component name="AccountServiceComponent">
-        <tuscany:implementation.spring location="Account-spring-context.xml"/>
+        <implementation.spring location="Account-spring-context.xml"/>
         <reference name="stockQuoteService" target="StockQuoteServiceComponent"/>
     </component>
 
