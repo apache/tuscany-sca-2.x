@@ -46,7 +46,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
     private static final Logger logger = Logger.getLogger(ValidatingXMLStreamReader.class.getName());
     
-    private int level = 0;
+    private int level;
     private ValidatorHandler handler;
     
     public ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema) throws XMLStreamException {
@@ -67,16 +67,20 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
         // running from an XML document with XSD validation errors, as long as we can
         // get the metadata we need from the document
         handler.setErrorHandler(new ErrorHandler() {
+            private String getMessage(SAXParseException e) {
+                return "XMLSchema validation problem in: " + e.getSystemId() + ", line: " + e.getLineNumber() + ", column: " + e.getColumnNumber() + "\n" + e.getMessage();
+            }
+            
             public void error(SAXParseException exception) throws SAXException {
-                //logger.warning(exception.getMessage());
+                logger.warning(getMessage(exception));
             }
             
             public void fatalError(SAXParseException exception) throws SAXException {
-                //logger.warning(exception.getMessage());
+                logger.warning(getMessage(exception));
             }
             
             public void warning(SAXParseException exception) throws SAXException {
-                //logger.warning(exception.getMessage());
+                logger.warning(getMessage(exception));
             }
         });
     }
@@ -102,6 +106,9 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
                     handler.processingInstruction(super.getPITarget(), super.getPIData());
                     break;
                 case XMLStreamConstants.CHARACTERS:
+                case XMLStreamConstants.CDATA:
+                case XMLStreamConstants.SPACE:
+                case XMLStreamConstants.ENTITY_REFERENCE:
                     handler.characters(super.getTextCharacters(), super.getTextStart(), super.getTextLength());
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -140,6 +147,9 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
                         handler.processingInstruction(super.getPITarget(), super.getPIData());
                         break;
                     case XMLStreamConstants.CHARACTERS:
+                    case XMLStreamConstants.CDATA:
+                    case XMLStreamConstants.SPACE:
+                    case XMLStreamConstants.ENTITY_REFERENCE:
                         handler.characters(super.getTextCharacters(), super.getTextStart(), super.getTextLength());
                         break;
                     case XMLStreamConstants.END_ELEMENT:
@@ -156,8 +166,43 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
             super.next();
         }
     }
+    
+    @Override
+    public String getElementText() throws XMLStreamException {
+        if (handler == null) {
+            return super.getElementText();
+        }
 
+        if (getEventType() != XMLStreamConstants.START_ELEMENT) {
+            return super.getElementText();
+        }
+        StringBuffer text = new StringBuffer();
+
+        for (;;) {
+            int event = next();
+            switch (event) {
+                case XMLStreamConstants.END_ELEMENT:
+                    return text.toString();
+                    
+                case XMLStreamConstants.COMMENT:
+                case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                    continue;
+                    
+                case CHARACTERS:
+                case CDATA:
+                case SPACE:
+                case ENTITY_REFERENCE:
+                    text.append(getText());
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+    }
+    
     private void handleStartElement() throws SAXException {
+
         // send startPrefixMapping events immediately before startElement event
         int nsCount = super.getNamespaceCount();
         for (int i = 0; i < nsCount; i++) {
@@ -182,6 +227,7 @@ public class ValidatingXMLStreamReader extends StreamReaderDelegate implements X
     }
 
     private void handleEndElement() throws SAXException {
+
         // fire endElement
         QName qname = super.getName();
         handler.endElement(qname.getNamespaceURI(), qname.getLocalPart(), qname.toString());

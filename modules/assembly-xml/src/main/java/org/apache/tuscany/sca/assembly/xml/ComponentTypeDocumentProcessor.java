@@ -64,7 +64,7 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
             
             // Create a stream reader
             urlStream = url.openStream();
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             reader = new ValidatingXMLStreamReader(reader, schema);
             reader.nextTag();
             

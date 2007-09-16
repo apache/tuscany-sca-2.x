@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URL;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -49,9 +48,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.xml.sax.InputSource;
-import org.xml.sax.Parser;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -61,7 +58,9 @@ import org.xml.sax.helpers.DefaultHandler;
 public class ReadDocumentTestCase extends TestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
-    private TestModelResolver resolver; 
+    private TestModelResolver resolver;
+    private XMLInputFactory inputFactory;
+    private ExtensibleStAXArtifactProcessor staxProcessor; 
 
     @Override
     public void setUp() throws Exception {
@@ -74,20 +73,16 @@ public class ReadDocumentTestCase extends TestCase {
         
         // Create Stax processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new CompositeProcessor(new ContributionFactoryImpl(), factory, policyFactory, mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
         
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd")); 
+        inputFactory = XMLInputFactory.newInstance();
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, null));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory, null));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory, null));
         
-        // Create document processors
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, schema));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory, schema));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory, schema));
-
         resolver = new TestModelResolver();
     }
 
@@ -95,9 +90,18 @@ public class ReadDocumentTestCase extends TestCase {
     public void tearDown() throws Exception {
     }
     
-    public void xtestValidate() throws Exception {
+    public void testValidateAssembly() throws Exception {
         
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory schemaFactory;
+        try {
+            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        } catch (Error e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        } catch (Exception e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        }
         Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
         ValidatorHandler handler = schema.newValidatorHandler();
         
@@ -107,9 +111,98 @@ public class ReadDocumentTestCase extends TestCase {
         reader.setFeature("http://xml.org/sax/features/namespaces", true);
         reader.setContentHandler(handler);
         reader.parse(new InputSource(url.openStream()));
-        
     }
 
+    public void testValidateImplementation() throws Exception {
+        
+        SchemaFactory schemaFactory;
+        try {
+            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        } catch (Error e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        } catch (Exception e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        }
+        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
+        ValidatorHandler handler = schema.newValidatorHandler();
+        
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        URL url = getClass().getResource("JavaScriptReference.composite");
+        XMLReader reader = parserFactory.newSAXParser().getXMLReader();
+        reader.setFeature("http://xml.org/sax/features/namespaces", true);
+        reader.setContentHandler(handler);
+        reader.parse(new InputSource(url.openStream()));
+    }
+        
+    public void testReadImplementation() throws Exception {
+        
+        SchemaFactory schemaFactory;
+        try {
+            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        } catch (Error e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        } catch (Exception e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        }
+        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
+        
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, inputFactory, schema);
+        
+        URL url = getClass().getResource("JavaScriptReference.composite");
+        URI uri = URI.create("JavaScriptReference.composite");
+        Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url);
+        assertNotNull(composite);
+    }
+        
+    public void testValidateBinding() throws Exception {
+        
+        SchemaFactory schemaFactory;
+        try {
+            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        } catch (Error e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        } catch (Exception e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        }
+        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
+        ValidatorHandler handler = schema.newValidatorHandler();
+        
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        URL url = getClass().getResource("RMIBindingTest.composite");
+        XMLReader reader = parserFactory.newSAXParser().getXMLReader();
+        reader.setFeature("http://xml.org/sax/features/namespaces", true);
+        reader.setContentHandler(handler);
+        reader.parse(new InputSource(url.openStream()));
+    }
+        
+    public void testReadBinding() throws Exception {
+        
+        SchemaFactory schemaFactory;
+        try {
+            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        } catch (Error e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        } catch (Exception e) {
+            // Some old JDKs don't support XMLSchema validation
+            return;
+        }
+        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
+        
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, inputFactory, schema);
+        
+        URL url = getClass().getResource("RMIBindingTest.composite");
+        URI uri = URI.create("RMIBindingTest.composite");
+        Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url);
+        assertNotNull(composite);
+    }
+        
     public void testResolveConstrainingType() throws Exception {
         
         URL url = getClass().getResource("CalculatorComponent.constrainingType");

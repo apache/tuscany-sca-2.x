@@ -8,14 +8,19 @@
     <element name="componentType" type="sca:ComponentType"/>
     <complexType name="ComponentType">
     	<sequence>
-    		<element ref="sca:implementation" minOccurs="0" maxOccurs="1"/>
+             <choice minOccurs="0" maxOccurs="1">
+	             <element ref="sca:implementation"/>
+	             <any namespace="##other" processContents="lax"/>
+             </choice>
         	<choice minOccurs="0" maxOccurs="unbounded">
             	<element name="service" type="sca:ComponentService" />
             	<element name="reference" type="sca:ComponentReference"/>
             	<element name="property" type="sca:Property"/>
         	</choice>
+        	<!-- 
         	<any namespace="##other" processContents="lax" minOccurs="0" 
         		maxOccurs="unbounded"/>
+        	-->
         </sequence>
         <attribute name="constrainingType" type="QName" use="optional"/>
         <anyAttribute namespace="##any" processContents="lax"/>
@@ -37,7 +42,7 @@
              	maxOccurs="unbounded"/>
         </sequence>
         <attribute name="name" type="NCName" use="required"/>
-        <attribute name="targetNamespace" type="anyURI" use="required"/>
+        <attribute name="targetNamespace" type="anyURI" use="optional"/>
         <attribute name="local" type="boolean" use="optional" default="false"/>
         <attribute name="autowire" type="boolean" use="optional" default="false"/>
         <attribute name="constrainingType" type="QName" use="optional"/>
@@ -53,8 +58,7 @@
     			maxOccurs="unbounded" />
     		<choice minOccurs="0" maxOccurs="unbounded">
     			<element ref="sca:binding" />
-    			<any namespace="##other" processContents="lax"
-    				minOccurs="0" maxOccurs="unbounded" />
+    			<any namespace="##other" processContents="lax"/>
     		</choice>
     		<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
     		<!--
@@ -179,14 +183,19 @@
       
     <complexType name="Component">
         <sequence>
-             <element ref="sca:implementation" minOccurs="0" maxOccurs="1"/>
+             <choice minOccurs="0" maxOccurs="1">
+	             <element ref="sca:implementation"/>
+	             <any namespace="##other" processContents="lax"/>
+             </choice>
              <choice minOccurs="0" maxOccurs="unbounded">
              	<element name="service" type="sca:ComponentService"/>
                 <element name="reference" type="sca:ComponentReference"/>
                 <element name="property" type="sca:PropertyValue" />
              </choice>
+             <!-- 
              <any namespace="##other" processContents="lax" minOccurs="0" 
              	maxOccurs="unbounded"/>
+             -->
         </sequence>
         <attribute name="name" type="NCName" use="required"/>
         <attribute name="autowire" type="boolean" use="optional" default="false"/>
@@ -201,11 +210,10 @@
         	 <element ref="sca:interface" minOccurs="0" maxOccurs="1"/>
         	 <element name="operation" type="sca:Operation" minOccurs="0" 
   					maxOccurs="unbounded" />
-             <choice minOccurs="0" maxOccurs="unbounded">
-                <element ref="sca:binding"/>
-             	<any namespace="##other" processContents="lax" 
-             		minOccurs="0" maxOccurs="unbounded"/>
-             </choice>
+    		<choice minOccurs="0" maxOccurs="unbounded">
+    			<element ref="sca:binding" />
+    			<any namespace="##other" processContents="lax"/>
+    		</choice>
              <element ref="sca:callback" minOccurs="0" maxOccurs="1"/>
              <!--
              <any namespace="##other" processContents="lax" minOccurs="0" 

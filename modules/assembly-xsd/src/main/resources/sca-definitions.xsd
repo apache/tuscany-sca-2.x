@@ -18,6 +18,7 @@
              <element ref="sca:implementationType"/>
              <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
           </choice>
+          <attribute name="targetNamespace" type="anyURI" use="optional"/>
        </complexType>
     </element>
    

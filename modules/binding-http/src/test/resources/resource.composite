@@ -32,10 +32,10 @@
     -->
 
     <component name="ResourceServiceComponent2">
+        <tuscany:implementation.resource location="content"/>
     	<service name="Resource">
     		<tuscany:binding.http uri="http://localhost:8085/webcontent"/>
     	</service>
-        <tuscany:implementation.resource location="content"/>
     </component>
 
 </composite>
