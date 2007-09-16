@@ -23,6 +23,7 @@
 	name="simplecallback">
 
     <component name="MyClientComponent">
+        <implementation.java class="simplecallback.MyClientImpl" />
         <reference name="myService">
             <interface.java interface="simplecallback.MyService"
                 callbackInterface="simplecallback.MyServiceCallback" />
@@ -31,10 +32,10 @@
                 <binding.ws wsdlElement="http://simplecallback#wsdl.binding(MyServiceCallbackSoapBinding)" />
             </callback>
         </reference>
-        <implementation.java class="simplecallback.MyClientImpl" />
     </component>
 
     <component name="MyServiceComponent">
+        <implementation.java class="simplecallback.MyServiceImpl" />
         <service name="MyService">
             <interface.wsdl interface="http://simplecallback#wsdl.interface(MyService)"
                 callbackInterface="http://simplecallback#wsdl.interface(MyServiceCallback)" />
@@ -43,7 +44,6 @@
                 <binding.ws wsdlElement="http://simplecallback#wsdl.binding(MyServiceCallbackSoapBinding)" />
             </callback>
         </service>
-        <implementation.java class="simplecallback.MyServiceImpl" />
     </component>
     
 </composite>

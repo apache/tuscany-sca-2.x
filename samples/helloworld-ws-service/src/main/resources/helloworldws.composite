@@ -23,11 +23,11 @@
     name="helloworldws">
 
     <component name="HelloWorldServiceComponent">
+        <implementation.java class="helloworld.HelloWorldImpl" />
 	    <service name="HelloWorldService">
 	        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
 	        <binding.ws uri="http://localhost:8085/HelloWorldService"/>
 	    </service>
-        <implementation.java class="helloworld.HelloWorldImpl" />
     </component>
 
 </composite>
