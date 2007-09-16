@@ -159,7 +159,7 @@ public class OSGiCallbackClientImpl implements
         bundleContext.registerService("callback.client.CallbackClient", this, serviceProps);
         
         Hashtable<String, Object> callbackProps = new Hashtable<String, Object>();
-        callbackProps.put("component.service.name", "CallbackClient/$callback$.callbackService");
+        callbackProps.put("component.service.name", "CallbackClient/callbackService");
         callbackProps.put("component.name", "CallbackClient");
         
         bundleContext.registerService("callback.client.CallbackCallback", this, callbackProps);
