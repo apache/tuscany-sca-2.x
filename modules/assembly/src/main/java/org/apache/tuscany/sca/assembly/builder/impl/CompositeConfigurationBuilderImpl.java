@@ -46,8 +46,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 
 public class CompositeConfigurationBuilderImpl {
 
-    private String CALLBACK_PREFIX = "$callback$.";
-
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private CompositeBuilderMonitor monitor;
@@ -309,7 +307,7 @@ public class CompositeConfigurationBuilderImpl {
                 if (componentReference.getCallback() != null) {
                     for (Binding binding : componentReference.getCallback().getBindings()) {
                         if (binding.getName() == null) {
-                            binding.setName(CALLBACK_PREFIX + componentReference.getName());
+                            binding.setName(componentReference.getName());
                         }
                     }
                 }
@@ -726,7 +724,7 @@ public class CompositeConfigurationBuilderImpl {
                                                             // unit tests
             reference.getInterfaceContract().getCallbackInterface() != null) {
                 ComponentService service =
-                    componentServices.get(CALLBACK_PREFIX + reference.getName());
+                    componentServices.get(reference.getName());
                 if (service == null) {
                     service = createCallbackService(component, reference);
                 }
@@ -749,7 +747,7 @@ public class CompositeConfigurationBuilderImpl {
     private ComponentService createCallbackService(Component component, ComponentReference reference) {
         ComponentService componentService = assemblyFactory.createComponentService();
         componentService.setIsCallback(true);
-        componentService.setName(CALLBACK_PREFIX + reference.getName());
+        componentService.setName(reference.getName());
         try {
             InterfaceContract contract =
                 (InterfaceContract)reference.getInterfaceContract().clone();
@@ -762,7 +760,7 @@ public class CompositeConfigurationBuilderImpl {
         Reference implReference = reference.getReference();
         if (implReference != null) {
             Service implService = assemblyFactory.createService();
-            implService.setName(CALLBACK_PREFIX + implReference.getName());
+            implService.setName(implReference.getName());
             try {
                 InterfaceContract implContract =
                     (InterfaceContract)implReference.getInterfaceContract().clone();
@@ -791,7 +789,7 @@ public class CompositeConfigurationBuilderImpl {
                                                             // unit tests
             service.getInterfaceContract().getCallbackInterface() != null) {
                 ComponentReference reference =
-                    componentReferences.get(CALLBACK_PREFIX + service.getName());
+                    componentReferences.get(service.getName());
                 if (reference == null) {
                     reference = createCallbackReference(component, service);
                 }
@@ -814,7 +812,7 @@ public class CompositeConfigurationBuilderImpl {
     private ComponentReference createCallbackReference(Component component, ComponentService service) {
         ComponentReference componentReference = assemblyFactory.createComponentReference();
         componentReference.setIsCallback(true);
-        componentReference.setName(CALLBACK_PREFIX + service.getName());
+        componentReference.setName(service.getName());
         try {
             InterfaceContract contract = (InterfaceContract)service.getInterfaceContract().clone();
             contract.setInterface(contract.getCallbackInterface());
@@ -826,7 +824,7 @@ public class CompositeConfigurationBuilderImpl {
         Service implService = service.getService();
         if (implService != null) {
             Reference implReference = assemblyFactory.createReference();
-            implReference.setName(CALLBACK_PREFIX + implService.getName());
+            implReference.setName(implService.getName());
             try {
                 InterfaceContract implContract =
                     (InterfaceContract)implService.getInterfaceContract().clone();
