@@ -171,4 +171,14 @@ public class EndpointReferenceImpl implements EndpointReference {
     public void setReferenceParameters(ReferenceParameters parameters) {
         this.parameters = parameters;
     }
+
+    public void mergeEndpoint(EndpointReference epr) {
+        this.component = epr.getComponent();
+        this.contract = epr.getContract();
+        this.binding = epr.getBinding();
+        this.interfaceContract = epr.getInterfaceContract();
+        this.uri = epr.getURI();
+        this.callbackEndpoint = epr.getCallbackEndpoint();
+    }
+   
 }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * The runtime wire interface that connects a component reference to a 
@@ -76,12 +77,21 @@ public interface RuntimeWire extends Cloneable {
     
     /**
      * Invoke an operation with given arguments
-     * @param operation
+     * @param operation The operation
      * @param args The arguments
      * @return The result
      * @throws InvocationTargetException
      */
     Object invoke(Operation operation, Object[] args) throws InvocationTargetException;
+
+    /**
+     * Invoke an operation with a context message
+     * @param operation The operation
+     * @param msg The message
+     * @return The result
+     * @throws InvocationTargetException
+     */
+    Object invoke(Operation operation, Message msg) throws InvocationTargetException;
 
     /**
      * @return a clone of the runtime wire

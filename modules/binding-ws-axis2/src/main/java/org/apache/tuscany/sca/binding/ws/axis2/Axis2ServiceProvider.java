@@ -71,6 +71,7 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -399,6 +400,13 @@ public class Axis2ServiceProvider {
                             conversationID = convIDElement.getText();
                         }
                     }
+                    OMElement callbackAddrElement =
+                        params.getFirstChildWithName(Axis2BindingInvoker.CALLBACK_REFERENCE_REFPARM_QN);
+                    if (callbackAddrElement != null) {
+                        if (contract.getInterfaceContract().getCallbackInterface() != null) {
+                            callbackAddress = callbackAddrElement.getText();
+                        }
+                    }
                     OMElement callbackIDElement =
                         params.getFirstChildWithName(Axis2BindingInvoker.CALLBACK_ID_REFPARM_QN);
                     if (callbackIDElement != null) {
@@ -408,36 +416,35 @@ public class Axis2ServiceProvider {
                     }
                 }
             }
-
-            OMElement from = header.getFirstChildWithName(QNAME_WSA_FROM);
-            if (from != null) {
-                OMElement addrElement = from.getFirstChildWithName(QNAME_WSA_ADDRESS);
-                if (addrElement != null && contract.getInterfaceContract().getCallbackInterface() != null) {
-                    callbackAddress = addrElement.getText();
-                }
-            }
         }
 
-        RuntimeWire wire = null;
-        try {
-            wire = (RuntimeWire)(((RuntimeComponentService)contract).getRuntimeWire(getBinding())).clone();
-        } catch (CloneNotSupportedException e) {
-            // Should not happen
+        // create a message object and set the args as its body
+        Message msg = messageFactory.createMessage();
+        msg.setBody(args);
+
+        // if reference parameters are needed, create a new "To" EPR to hold them
+        EndpointReference to = null;
+        if (callbackAddress != null ||
+            callbackID != null ||
+            conversationID != null) {
+            to = new EndpointReferenceImpl(null);
+            msg.setTo(to);
         }
-        EndpointReference source = wire.getSource();
+
+        // set the reference parameters into the "To" EPR
         if (callbackAddress != null) {
-            source.setCallbackEndpoint(new EndpointReferenceImpl(callbackAddress));
+            to.getReferenceParameters().setCallbackReference(new EndpointReferenceImpl(callbackAddress));
         }
-
-        EndpointReference to = wire.getTarget();
         if (callbackID != null) {
             to.getReferenceParameters().setCallbackID(callbackID);
         }
         if (conversationID != null) {
             to.getReferenceParameters().setConversationID(conversationID);
         }
-        return wire.invoke(op, args);
 
+        // find the runtime wire and invoke it with the message
+        RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());
+        return wire.invoke(op, msg);
     }
 
     public boolean isConversational() {

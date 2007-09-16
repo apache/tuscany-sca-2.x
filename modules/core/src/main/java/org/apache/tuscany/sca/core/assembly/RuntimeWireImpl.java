@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -117,7 +118,14 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
-        return invoker.invoke(operation, args);
+        Message msg = messageFactory.createMessage();
+        msg.setBody(args);
+        msg.setTo(wireTarget);
+        return invoker.invoke(operation, msg);
+    }
+
+    public Object invoke(Operation operation, Message msg) throws InvocationTargetException {
+        return invoker.invoke(operation, msg);
     }
 
     /**
