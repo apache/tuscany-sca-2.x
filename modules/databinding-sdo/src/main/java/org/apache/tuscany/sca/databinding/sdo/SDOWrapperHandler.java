@@ -27,8 +27,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
@@ -50,23 +53,12 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     public Object create(ElementInfo element, TransformationContext context) {
         DataObject wrapper = null;
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
-        DataFactory dataFactory = helperContext.getDataFactory();
-        XSDHelper xsdHelper = helperContext.getXSDHelper();
-        Property prop =
-            xsdHelper.getGlobalProperty(element.getQName().getNamespaceURI(), element.getQName().getLocalPart(), true);
-        if (prop != null) {
-            wrapper = dataFactory.create(prop.getType());
-        } else {
-            TypeInfo type = element.getType();
-            QName typeName = type != null ? type.getQName() : null;
-            if (typeName != null) {
-                wrapper = dataFactory.create(typeName.getNamespaceURI(), typeName.getLocalPart());
-            }
+        Type sdoType = getSDOType(helperContext, element);
+        if (sdoType != null) {
+            DataFactory dataFactory = helperContext.getDataFactory();
+            return dataFactory.create(sdoType);
         }
-        return wrapper;
-//        XMLHelper xmlHelper = helperContext.getXMLHelper();
-//        return xmlHelper.createDocument(wrapper, element.getQName().getNamespaceURI(), element.getQName()
-//            .getLocalPart());
+        return null;
     }
 
     /**
@@ -80,7 +72,7 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     }
 
     @SuppressWarnings("unchecked")
-    public List getChildren(Object wrapper) {
+    public List getChildren(Object wrapper, List<ElementInfo> childElements, TransformationContext context) {
         DataObject wrapperDO =
             (wrapper instanceof XMLDocument) ? ((XMLDocument)wrapper).getRootObject() : (DataObject)wrapper;
         List<Property> properties = wrapperDO.getInstanceProperties();
@@ -108,5 +100,69 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
             }
         }
         return elements;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, List, org.apache.tuscany.sca.databinding.TransformationContext)
+     */
+    public DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context) {
+        // FIXME: [rfeng] Temporarily disable the wrapping support for SDO to work around a few issues
+        // in the WSDL-less story
+        if (true) {
+            return null;
+        }
+        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+        Type sdoType = getSDOType(helperContext, element);
+        if (sdoType != null) {
+            // Check if child elements matches
+            for (ElementInfo child : childElements) {
+                if (sdoType.getProperty(child.getQName().getLocalPart()) == null) {
+                    return null;
+                }
+            }
+            Class physical = sdoType.getInstanceClass();
+            DataType<XMLType> wrapperType =
+                new DataTypeImpl<XMLType>(SDODataBinding.NAME, physical, new XMLType(element));
+            return wrapperType;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param helperContext
+     * @param element
+     * @return
+     */
+    private Type getSDOType(HelperContext helperContext, ElementInfo element) {
+        XSDHelper xsdHelper = helperContext.getXSDHelper();
+        Type sdoType = null;
+        Property prop =
+            xsdHelper.getGlobalProperty(element.getQName().getNamespaceURI(), element.getQName().getLocalPart(), true);
+        if (prop != null) {
+            sdoType = prop.getType();
+        } else {
+            TypeInfo type = element.getType();
+            QName typeName = type != null ? type.getQName() : null;
+            if (typeName != null) {
+                sdoType = helperContext.getTypeHelper().getType(typeName.getNamespaceURI(), typeName.getLocalPart());
+            }
+        }
+        return sdoType;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#isInstance(java.lang.Object, org.apache.tuscany.sca.interfacedef.util.ElementInfo, java.util.List, org.apache.tuscany.sca.databinding.TransformationContext)
+     */
+    public boolean isInstance(Object wrapper,
+                              ElementInfo element,
+                              List<ElementInfo> childElements,
+                              TransformationContext context) {
+        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+        Type sdoType = getSDOType(helperContext, element);
+        if (sdoType != null) {
+            return sdoType.isInstance(wrapper);
+        }
+        return false;
     }
 }

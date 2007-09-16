@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
@@ -46,15 +47,36 @@ public final class SDOContextHelper {
         if (context == null) {
             return getDefaultHelperContext();
         }
-        HelperContext helperContext = SDOUtil.createHelperContext();
 
-        boolean found = register(helperContext, context.getTargetDataType());
-        found = register(helperContext, context.getSourceDataType()) || found;
-        if (found) {
+        HelperContext helperContext = (HelperContext)context.getMetadata().get(HelperContext.class.getName());
+        if (helperContext != null) {
             return helperContext;
-        } else {
-            return getDefaultHelperContext();
         }
+        helperContext = SDOUtil.createHelperContext();
+
+        boolean found = false;
+        Operation op = context.getSourceOperation();
+        if (op != null) {
+            found = register(helperContext, op.getInputType()) || found;
+            found = register(helperContext, op.getOutputType()) || found;
+        } else {
+            found = register(helperContext, context.getSourceDataType()) || found;
+        }
+
+        op = context.getTargetOperation();
+        if (op != null) {
+            found = register(helperContext, op.getInputType()) || found;
+            found = register(helperContext, op.getOutputType()) || found;
+        } else {
+            found = register(helperContext, context.getTargetDataType()) || found;
+        }
+
+        if (!found) {
+            helperContext = getDefaultHelperContext();
+        }
+
+        context.getMetadata().put(HelperContext.class.getName(), helperContext);
+        return helperContext;
 
     }
 
