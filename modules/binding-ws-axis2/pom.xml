@@ -289,6 +289,10 @@
                     <groupId>xmlbeans</groupId>
                     <artifactId>xbean</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.axis2</groupId>
+                    <artifactId>axis2-xmlbeans</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
