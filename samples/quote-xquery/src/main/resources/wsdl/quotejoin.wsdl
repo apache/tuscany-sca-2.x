@@ -19,18 +19,17 @@
 -->
 <wsdl:definitions targetNamespace="http://quote.xquery" xmlns:tns="http://quote.xquery"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-    xmlns:ava="http://www.example.org/avail" 
-    xmlns:pri="http://www.example.org/price" 
-    xmlns:quo="http://www.example.org/quote" name="quotejoin">
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ava="http://www.example.org/avail"
+    xmlns:pri="http://www.example.org/price" xmlns:quo="http://www.example.org/quote" name="quotejoin">
 
-    <wsdl:import namespace="http://www.example.org/avail" location="AvailQuote.xsd"/>
-    <wsdl:import namespace="http://www.example.org/price" location="PriceQuote.xsd"/>
-    <wsdl:import namespace="http://www.example.org/quote" location="Quote.xsd"/>
     <wsdl:types>
         <schema elementFormDefault="qualified" targetNamespace="http://quote.xquery"
             xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ava="http://www.example.org/avail"
             xmlns:pri="http://www.example.org/price" xmlns:quo="http://www.example.org/quote">
+
+            <import namespace="http://www.example.org/avail" schemaLocation="AvailQuote.xsd" />
+            <import namespace="http://www.example.org/price" schemaLocation="PriceQuote.xsd" />
+            <import namespace="http://www.example.org/quote" schemaLocation="Quote.xsd" />
 
             <element name="joinPriceAndAvailQuotes">
                 <complexType>
@@ -46,6 +45,20 @@
                 <complexType>
                     <sequence>
                         <element name="joinPriceAndAvailQuotesReturn" type="quo:Quote" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="provideAvailQuote">
+                <complexType>
+                    <sequence>
+                        <element name="provideAvailQuote" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="provideAvailQuoteResponse">
+                <complexType>
+                    <sequence>
+                        <element name="provideAvailQuoteReturn" type="ava:AvailQuote" />
                     </sequence>
                 </complexType>
             </element>
@@ -83,6 +96,41 @@
     <wsdl:service name="QuoteJoinService">
         <wsdl:port binding="tns:QuoteJoinSoapBinding" name="QuoteJoinSoapPort">
             <wsdlsoap:address location="http://localhost:8085/QuoteJoinService" />
+        </wsdl:port>
+    </wsdl:service>
+
+
+
+    <wsdl:message name="provideAvailQuoteRequest">
+        <wsdl:part element="tns:provideAvailQuote" name="parameters" />
+    </wsdl:message>
+    <wsdl:message name="provideAvailQuoteResponse">
+        <wsdl:part element="tns:provideAvailQuoteResponse" name="parameters" />
+    </wsdl:message>
+
+    <wsdl:portType name="AvailQuoteProvider">
+        <wsdl:operation name="provideAvailQuote">
+            <wsdl:input message="tns:provideAvailQuoteRequest" name="provideAvailQuoteRequest" />
+            <wsdl:output message="tns:provideAvailQuoteResponse" name="provideAvailQuoteResponse" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="AvailQuoteProviderSoapBinding" type="tns:AvailQuoteProvider">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="provideAvailQuote">
+            <wsdlsoap:operation soapAction="" />
+            <wsdl:input name="provideAvailQuoteRequest">
+                <wsdlsoap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="provideAvailQuoteResponse">
+                <wsdlsoap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="AvailQuoteProviderService">
+        <wsdl:port binding="tns:AvailQuoteProviderSoapBinding" name="AvailQuoteProviderSoapPort">
+            <wsdlsoap:address location="http://localhost:8085/AvailQuoteProviderService" />
         </wsdl:port>
     </wsdl:service>
 

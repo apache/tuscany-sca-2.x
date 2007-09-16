@@ -25,7 +25,8 @@
     <dbsdo:import.sdo factory="org.example.avail.AvailFactory" />
     <dbsdo:import.sdo factory="org.example.price.PriceFactory" />
     <dbsdo:import.sdo factory="org.example.quote.QuoteFactory" />
-
+    <dbsdo:import.sdo location="wsdl/quotejoin.wsdl" />
+    
     <component name="QuoteJoinServerComponent">
         <service name="quoteJoin">
             <interface.java interface="xquery.quote.QuoteJoin" />

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding.saxon;
 import javax.xml.transform.dom.DOMSource;
 
 import net.sf.saxon.Configuration;
+import net.sf.saxon.event.Builder;
 import net.sf.saxon.om.DocumentInfo;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.trans.XPathException;
@@ -47,7 +48,7 @@ public class Node2NodeInfoTransformer extends BaseTransformer<Node, NodeInfo> im
         }
         DocumentInfo docInfo = null;
         try {
-            docInfo = configuration.buildDocument(new DOMSource(source));
+        	docInfo = (DocumentInfo)Builder.build(new DOMSource(source), null, configuration);
         } catch (XPathException e) {
             throw new TransformationException(e);
         }

@@ -33,6 +33,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.Configuration;
+import net.sf.saxon.event.Builder;
 import net.sf.saxon.om.DocumentInfo;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NodeInfo;
@@ -239,11 +240,11 @@ public class XQueryInvoker implements Invoker {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 StreamResult sw = new StreamResult(baos);
                 try {
-                    QueryResult.serialize((NodeInfo)inputArguments[i], sw, props);
+                    QueryResult.serialize((NodeInfo)inputArguments[i], sw, props, ((NodeInfo)inputArguments[i]).getConfiguration());
                     baos.close();
                     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
                     StreamSource ss = new StreamSource(bais);
-                    parameters[i] = configuration.buildDocument(ss);
+                    parameters[i] = Builder.build(ss, null, configuration);
                 } catch (Exception e) {
                     e.printStackTrace();
                     parameters[i] = null;
@@ -281,13 +282,13 @@ public class XQueryInvoker implements Invoker {
                         Transformer transformer = TransformerFactory.newInstance().newTransformer();
                         transformer.transform(new DOMSource(element), sr);
                         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-                        docInfo = configuration.buildDocument(new StreamSource(bais));
+                        docInfo = (DocumentInfo)Builder.build(new StreamSource(bais), null, configuration);
                     } catch (Exception e) {
                         e.printStackTrace();
                         return parameter;
                     }
                 } else {
-                    docInfo = configuration.buildDocument(new DOMSource(doc));
+                	docInfo = (DocumentInfo)Builder.build(new DOMSource(doc), null, configuration);
                 }
                 parameter = docInfo;
             } catch (XPathException e) {
