@@ -23,18 +23,20 @@ java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-simple-bigbank-spring.
 
 Sample Overview
 ---------------
-The sample provides a composite with two java components wired together 
-with a default binding. A request to the AccountComponent results in a 
-request to the AccountDataComponent to get account data. The data returns 
-back via the AccountComponent to the client.
+This sample demonstrates a simple bank summary transaction using Spring for one of the components.
+ 
+A request to the AccountComponent results in a request to the AccountDataComponent to get account data
+which is based on a random stock quote price. Therefore result for this sample will vary on each run.
+
 
 simple-bigbank-spring/
   src/
     main/
       java/
         bigbank/
-          account/                - AccountComponent implementation
-          accountdata/            - AccountDataComponent implementation
+          account/                - AccountComponent implementation using Spring
+          accountdata/            - AccountDataComponent implementation using Spring
+          sockquote/              - stockquote implementation using Java
           client/                 - starts the SCA Runtime and 
                                     deploys the BigBank.composite. 
                                     It then calls the deployed AccountService 
@@ -60,11 +62,15 @@ cd simple-bigbank-spring
 ant compile
 ant run
 
-You should see the following output from the run target.
+You should see the following output. 
+** Please note that balance amount will vary depending on the random stock value.
 
 run:
+     [java] Spring parent context - getBean called for name: stockQuoteService
+     [java] Getting stock quote for: IBM, value: 104.97
      [java] Account summary: currency: USD, [ID:Foo_CHA12345, balance:1500.0, ID
-:Foo_SAA12345, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100]
+:Foo_SAA12345, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100, balance:10497.0]
+
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
@@ -75,14 +81,16 @@ cd simple-bigbank-spring
 mvn
 
 You should see the following output from the test phase.
+** Please note that balance amount will vary depending on the random stock value.
 
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
 Running bigbank.BigBankTestCase
+Getting stock quote for: IBM, value: 104.02
 Account summary: currency: USD, [ID:Foo_CHA12345, balance:1500.0, ID:Foo_SAA1234
-5, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100, balance:10432.0]]
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.592 sec
+5, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100, balance:10402.0]
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.502 sec
 
 Results :
 
