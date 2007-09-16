@@ -72,8 +72,8 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
     }
 
     public RuntimeWire selectCallbackWire(Message msgContext) {
-        EndpointReference from = msgContext.getFrom();
-        if (from == null) {
+        EndpointReference callbackEPR = getCallbackEndpoint(msgContext);
+        if (callbackEPR == null) {
             return null;
         }
 
@@ -82,7 +82,7 @@ public class CallbackWireObjectFactory<B> extends CallableReferenceImpl<B> {
 
         // first choice is wire with matching destination endpoint
         for (RuntimeWire wire : wires) {
-            if (from.getURI().equals(wire.getTarget().getURI())) {
+            if (callbackEPR.getURI().equals(wire.getTarget().getURI())) {
                 try {
                     return (RuntimeWire)wire.clone();
                 } catch (CloneNotSupportedException e) {

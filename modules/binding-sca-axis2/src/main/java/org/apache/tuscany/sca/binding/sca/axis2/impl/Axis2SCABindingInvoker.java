@@ -58,34 +58,38 @@ public class Axis2SCABindingInvoker implements Interceptor {
 
         // make sure that the epr of the target service is set in the TO
         // field of the message
-        EndpointReference ep = msg.getTo();
+        EndpointReference to = msg.getTo();
 
         // check to see if we either don't have an endpoint set or if the uri 
         // is dynamic or the target service is marked as unresolved
-        if ((ep == null) || (ep.getURI().equals("/") || (ep.getContract() == null) || (ep.getContract().isUnresolved()))) {
+        if ((to == null) || (to.getURI().equals("/") || (to.getContract() == null) || (to.getContract().isUnresolved()))) {
 
-            EndpointReference serviceEPR = provider.getServiceEndpoint();
+            EndpointReference eprTo = provider.getServiceEndpoint();
 
-            if (serviceEPR == null) {
+            if (eprTo == null) {
                 throw new ServiceUnavailableException("Endpoint for service: " + provider.getSCABinding().getURI()
                     + " can't be found for component: "
                     + provider.getComponent().getName()
                     + " reference: "
                     + provider.getComponentReference().getName());
             }
-            msg.setTo(serviceEPR);
+            if (to != null) {
+                to.mergeEndpoint(eprTo);
+            } else {
+                msg.setTo(eprTo);
+            }
         }
 
         // make sure that the epr of the callback service (if there is one) is set
-        // in the from/callback field of the message. 
-        ep = msg.getFrom();
+        // in the callbackReference field of the message. 
+        EndpointReference callbackEPR = msg.getTo().getReferenceParameters().getCallbackReference();
 
-        if ((ep == null) || (ep.getURI().equals("/"))) {
+        if ((callbackEPR == null) || (callbackEPR.getURI().equals("/"))) {
 
-            EndpointReference callbackEPR = provider.getCallbackEndpoint();
+            callbackEPR = provider.getCallbackEndpoint();
 
             if (callbackEPR != null) {
-                ep.setCallbackEndpoint(callbackEPR);
+                msg.getTo().getReferenceParameters().setCallbackReference(callbackEPR);
             }
         }
 

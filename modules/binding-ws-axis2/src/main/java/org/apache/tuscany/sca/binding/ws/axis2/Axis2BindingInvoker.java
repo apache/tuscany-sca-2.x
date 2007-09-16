@@ -58,6 +58,7 @@ public class Axis2BindingInvoker implements Invoker {
     public static final QName QNAME_WSA_TO =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_TO);
 
+    public static final QName CALLBACK_REFERENCE_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "CallbackReference");
     public static final QName CALLBACK_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "CallbackID");
     public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "ConversationID");
 
@@ -147,6 +148,10 @@ public class Axis2BindingInvoker implements Invoker {
         }
 
         // set callback endpoint and callback ID for WS-Addressing header
+        if (parameters.getCallbackReference() != null) {
+            toEPR.addReferenceParameter(CALLBACK_REFERENCE_REFPARM_QN,
+                                        parameters.getCallbackReference().getBinding().getURI());
+        }
         if (parameters.getCallbackID() != null) {
             //FIXME: serialize callback ID to XML in case it is not a string
             toEPR.addReferenceParameter(CALLBACK_ID_REFPARM_QN, parameters.getCallbackID().toString());
@@ -160,35 +165,18 @@ public class Axis2BindingInvoker implements Invoker {
             toEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
         }
 
-        EndpointReference fromEPR = null;
-        if (msg.getFrom().getCallbackEndpoint() != null) {
-            fromEPR = new EndpointReference(msg.getFrom().getCallbackEndpoint().getBinding().getURI());
-        }
-
         // add WS-Addressing header
         //FIXME: is there any way to use the Axis2 addressing support for this?
-        if (toEPR != null || fromEPR != null) {
+        if (toEPR != null) {
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
-            if (toEPR != null) {
-                OMElement epr =
-                    EndpointReferenceHelper.toOM(sev.getOMFactory(),
-                                                 toEPR,
-                                                 QNAME_WSA_TO,
-                                                 AddressingConstants.Final.WSA_NAMESPACE);
-                sh.addChild(epr);
-                requestMC.setTo(toEPR);
-            }
-            if (fromEPR != null) {
-                OMElement epr =
-                    EndpointReferenceHelper.toOM(sev.getOMFactory(),
-                                                 fromEPR,
-                                                 QNAME_WSA_FROM,
-                                                 AddressingConstants.Final.WSA_NAMESPACE);
-                sh.addChild(epr);
-                requestMC.setFrom(fromEPR);
-            }
-
+            OMElement epr =
+                EndpointReferenceHelper.toOM(sev.getOMFactory(),
+                                             toEPR,
+                                             QNAME_WSA_TO,
+                                             AddressingConstants.Final.WSA_NAMESPACE);
+            sh.addChild(epr);
+            requestMC.setTo(toEPR);
         }
 
         operationClient.addMessageContext(requestMC);

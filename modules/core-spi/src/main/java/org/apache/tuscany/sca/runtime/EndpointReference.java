@@ -87,5 +87,7 @@ public interface EndpointReference extends Cloneable {
     
     void setReferenceParameters(ReferenceParameters parameters);
     ReferenceParameters getReferenceParameters();
+
+    void mergeEndpoint(EndpointReference epr);
     
 }

@@ -79,29 +79,33 @@ public class RuntimeWireInvoker {
         }
     }
 
-    public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
-        return invoke(wire, operation, args);
+    public Object invoke(Operation operation, Message msg) throws InvocationTargetException {
+        return invoke(wire, operation, msg);
     }
 
-    public Object invoke(RuntimeWire wire, Operation operation, Object[] args) throws InvocationTargetException {
+    public Object invoke(RuntimeWire wire, Operation operation, Message msg) throws InvocationTargetException {
         RuntimeWire runtimeWire = wire == null ? this.wire : wire;
         InvocationChain chain = runtimeWire.getInvocationChain(operation);
-        return invoke(chain, args, runtimeWire);
+        return invoke(chain, msg, runtimeWire);
     }
 
-    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws InvocationTargetException {
+    protected Object invoke(InvocationChain chain, Message msg, RuntimeWire wire) throws InvocationTargetException {
 
-        Message msg = messageFactory.createMessage();
         msg.setFrom(wire.getSource());
+        EndpointReference epTo = null;
         if (endpoint != null) {
-            msg.setTo(endpoint);
+            epTo = endpoint;
         } else {
-            msg.setTo(wire.getTarget());
+            epTo = wire.getTarget();
+        }
+        if (msg.getTo() != null) {
+            msg.getTo().mergeEndpoint(epTo);
+        } else {
+            msg.setTo(epTo);
         }
         Invoker headInvoker = chain.getHeadInvoker();
         Operation operation = chain.getTargetOperation();
         msg.setOperation(operation);
-        msg.setBody(args);
 
         Message msgContext = ThreadMessageContext.getMessageContext();
         Object currentConversationID = msgContext.getTo().getReferenceParameters().getConversationID();
@@ -176,7 +180,6 @@ public class RuntimeWireInvoker {
                 EndpointReference callbackRef = ((CallableReferenceImpl)callbackObject).getEndpointReference();
                 parameters.setCallbackReference(callbackRef);
             } else {
-                parameters.setCallbackReference(wire.getSource().getCallbackEndpoint());
                 if (interfaze != null) {
                     if (!interfaze.isConversational()) {
                         throw new IllegalArgumentException(

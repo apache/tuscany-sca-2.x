@@ -278,7 +278,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 EndpointReference callbackRef = ((CallableReferenceImpl)callbackObject).getEndpointReference();
                 parameters.setCallbackReference(callbackRef);
             } else {
-                parameters.setCallbackReference(wire.getSource().getCallbackEndpoint());
                 if (interfaze != null) {
                     if (!interfaze.isConversational()) {
                         throw new IllegalArgumentException(
