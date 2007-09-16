@@ -24,13 +24,13 @@
 	name="BigBank">
 
     <component name="AccountServiceComponent">
+        <implementation.java class="bigbank.account.AccountServiceImpl"/>
+
 	    <service name="AccountService">
 	        <tuscany:binding.jsonrpc uri="/AccountJSONService"/>
 			<binding.ws wsdlElement="http://bigbank#wsdl.port(AccountService/AccountServiceSoap)"/>
 			<binding.sca/>
 	    </service>
-
-        <implementation.java class="bigbank.account.AccountServiceImpl"/>
 
         <reference name="accountDataService" target="AccountDataServiceComponent"/>
 	    <reference name="calculatorService">
@@ -44,11 +44,11 @@
     </component>
 
     <component name="AccountFeedComponent">
+        <implementation.java class="bigbank.account.feed.AccountFeedImpl"/>
 	   	<service name="Collection">
 	   		<tuscany:binding.rss uri="/rss"/>
 	   		<tuscany:binding.atom uri="/atom"/>
 	   	</service>
-        <implementation.java class="bigbank.account.feed.AccountFeedImpl"/>
         <reference name="accountService" target="AccountServiceComponent"/>
     </component>
 
@@ -57,10 +57,10 @@
     </component>
 
     <component name="WebResourceComponent">
+        <tuscany:implementation.resource location="web"/>
 	   	<service name="Resource">
 	   		<tuscany:binding.http uri="/"/>
 	   	</service>
-        <tuscany:implementation.resource location="web"/>
     </component>
 
 </composite>
