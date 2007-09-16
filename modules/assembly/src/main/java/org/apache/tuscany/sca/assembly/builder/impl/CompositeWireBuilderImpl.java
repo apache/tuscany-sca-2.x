@@ -821,7 +821,6 @@ public class CompositeWireBuilderImpl {
             }
             
             computeBindingIntentsAndPolicySets(service);
-            determinePolicySet(service, null);
         }
         
         for (Reference reference : composite.getReferences()) {
@@ -846,7 +845,6 @@ public class CompositeWireBuilderImpl {
             }
             
             computeBindingIntentsAndPolicySets(reference);
-            determinePolicySet(reference, null);
         }
         
         for (Component component : composite.getComponents()) {
@@ -948,7 +946,7 @@ public class CompositeWireBuilderImpl {
                               service.getCallback().getBindings(), 
                               service.getCallback().getPolicySets());
         }
-        //trimProvidedIntents(service.getBindings());
+        determinePolicySet(service, null);
     }
     
     private void computeBindingIntentsAndPolicySets(Reference reference) {
@@ -962,7 +960,7 @@ public class CompositeWireBuilderImpl {
                               reference.getCallback().getBindings(), 
                               reference.getCallback().getPolicySets());
         }
-        //trimProvidedIntents(reference.getBindings());
+        determinePolicySet(reference, null);
     }
     
     private void computeIntents(List<Binding> bindings, List<Intent> inheritedIntents) {
