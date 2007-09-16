@@ -23,10 +23,10 @@
     name="StockQuote">
 
     <component name="StockQuoteServiceComponent">
+        <implementation.java class="stockquote.StockQuoteImpl" />
 	    <service name="StockQuoteService">
 	        <binding.ws uri="http://localhost:8081/services/StockQuoteWebService"/>
 	    </service>
-        <implementation.java class="stockquote.StockQuoteImpl" />
     </component>
 
 </composite>
