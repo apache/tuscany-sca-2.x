@@ -195,9 +195,11 @@ public class ReallySmallRuntimeBuilder {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schema = schemaFactory.newSchema(ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd"));
         } catch (Error e) {
-            //FIXME Log this
+            //FIXME Log this, some old JDKs don't support XMLSchema validation
+            //e.printStackTrace();
         } catch (Exception e) {
-            //FIXME Log this
+            //FIXME Log this, some old JDKs don't support XMLSchema validation
+            //e.printStackTrace();
         }
         
         // Create and register document processors for SCA assembly XML
@@ -207,8 +209,10 @@ public class ReallySmallRuntimeBuilder {
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory, schema));
 
         // Create and register document processor for definitions.xml
+        //TODO No XMLSchema validation for definitions.xml for now
+        // as the XSD for it is not quite right yet
         SCADefinitionsDocumentProcessor definitionsDocumentProcessor =
-            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, xmlFactory, policyFactory, schema);
+            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, xmlFactory, policyFactory, null);
         documentProcessors.addArtifactProcessor(definitionsDocumentProcessor);
         ModelResolver domainModelResolver = definitionsDocumentProcessor.getDomainModelResolver();
 

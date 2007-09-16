@@ -92,7 +92,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         InputStream urlStream = null;
         try {
             urlStream = url.openStream();
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             reader = new ValidatingXMLStreamReader(reader, schema);
             reader.nextTag();
             SCADefinitions scaDefns = (SCADefinitions)extensionProcessor.read(reader);

@@ -16,7 +16,7 @@
 				minOccurs="0" maxOccurs="unbounded"/>
 		</sequence>
         <attribute name="name" type="QName" use="required"/>
-		<attribute name="constrains" type="sca:listOfQNames" use="required"/>
+		<attribute name="constrains" type="sca:listOfQNames" use="optional"/>
 		<attribute name="requires" type="sca:listOfQNames" use="optional"/>
 		<anyAttribute namespace="##any" processContents="lax"/>    
 	</complexType>

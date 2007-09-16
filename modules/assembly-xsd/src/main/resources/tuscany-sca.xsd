@@ -20,9 +20,8 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0">
     
-    <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca.xsd"/>
+    <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="tuscany-sca-include.xsd"/>
 
-	<!-- 
     <include schemaLocation="tuscany-sca-binding-atom.xsd"/>
     <include schemaLocation="tuscany-sca-binding-dwr.xsd"/>
     <include schemaLocation="tuscany-sca-binding-http.xsd"/>
@@ -30,14 +29,16 @@
     <include schemaLocation="tuscany-sca-binding-notification.xsd"/>
     <include schemaLocation="tuscany-sca-binding-rmi.xsd"/>
     <include schemaLocation="tuscany-sca-binding-rss.xsd"/>
+    
+    <!--
     <include schemaLocation="tuscany-sca-implementation-das.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-data.xsd"/>
+    -->
     <include schemaLocation="tuscany-sca-implementation-node.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-notification.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-osgi.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-resource.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-script.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-xquery.xsd"/>
-    -->
     
 </schema>
