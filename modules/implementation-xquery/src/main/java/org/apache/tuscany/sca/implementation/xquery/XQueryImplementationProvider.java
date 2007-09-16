@@ -25,10 +25,10 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.saxon.SaxonNodeDataBinding;
 import org.apache.tuscany.sca.databinding.saxon.SaxonValueDataBinding;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
@@ -76,15 +76,15 @@ public class XQueryImplementationProvider implements ImplementationProvider {
     }
 
     private void init() {
-        List<ComponentService> services = component.getServices();
-        for (ComponentService sevice : services) {
+        List<Service> services = implementation.getServices();
+        for (Service sevice : services) {
             InterfaceContract interfaceContract = sevice.getInterfaceContract();
             //interfaceContract.getInterface().setDefaultDataBinding(ValueRepresentation.class.getName());
             setDataBinding(interfaceContract.getInterface(), false);
         }
 
-        List<ComponentReference> references = component.getReferences();
-        for (ComponentReference reference : references) {
+        List<Reference> references = implementation.getReferences();
+        for (Reference reference : references) {
             InterfaceContract interfaceContract = reference.getInterfaceContract();
             //interfaceContract.getInterface().setDefaultDataBinding(ValueRepresentation.class.getName());
             setDataBinding(interfaceContract.getInterface(), true);
@@ -131,11 +131,12 @@ public class XQueryImplementationProvider implements ImplementationProvider {
         interfaze.setDefaultDataBinding(SaxonNodeDataBinding.NAME);
         List<Operation> operations = interfaze.getOperations();
         for (Operation operation : operations) {
+            operation.setDataBinding(SaxonNodeDataBinding.NAME);
             DataType<List<DataType>> inputType = operation.getInputType();
             if (inputType != null) {
                 List<DataType> logical = inputType.getLogical();
                 for (DataType inArg : logical) {
-                    if (inArg.getPhysical().isPrimitive() || inArg.getPhysical() == java.lang.String.class) {
+                    if (SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
                         if (!isReference) {
                             inArg.setDataBinding(SaxonValueDataBinding.NAME);
                         }
@@ -146,7 +147,7 @@ public class XQueryImplementationProvider implements ImplementationProvider {
             }
             DataType outputType = operation.getOutputType();
             if (outputType != null) {
-                if (outputType.getPhysical().isPrimitive() || outputType.getPhysical() == java.lang.String.class) {
+                if (SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
                     if (!isReference) {
                         outputType.setDataBinding(SaxonValueDataBinding.NAME);
                     }

@@ -64,13 +64,13 @@ public class SimpleType2ValueTransformer extends BaseTransformer<Object, Value> 
     public Value transform(Object source, TransformationContext context) {
         Value result = null;
         if (source instanceof Integer) {
-            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Integer)source)));
+            result = new IntegerValue((Integer)source);
         } else if (source instanceof Long) {
-            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Long)source)));
+            result = new IntegerValue((Long)source);
         } else if (source instanceof Short) {
-            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Short)source)));
+            result = new IntegerValue((Short)source);
         } else if (source instanceof Byte) {
-            result = IntegerValue.makeIntegerValue(BigInteger.valueOf(((Byte)source)));
+            result = new IntegerValue((Byte)source);
         } else if (source instanceof Double) {
             result = new DoubleValue((Double)source);
         } else if (source instanceof Float) {
