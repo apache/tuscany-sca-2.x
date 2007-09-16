@@ -69,7 +69,6 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 public class CompositeActivatorImpl implements CompositeActivator {
     private final static Logger logger = Logger.getLogger(CompositeActivatorImpl.class.getName());
-    private final static String CALLBACK_PREFIX = "$callback$.";
 
     private final AssemblyFactory assemblyFactory;
     private final MessageFactory messageFactory;
@@ -336,8 +335,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             Binding callbackBinding = null;
             for (Binding binding : callbackService.getBindings()) {
                 // first look for a callback binding whose name matches the reference binding name
-                if (binding.getName().equals(refBinding.getName()) || binding.getName()
-                    .equals(CALLBACK_PREFIX + refBinding.getName())) {
+                if (binding.getName().equals(refBinding.getName())) {
                     callbackBinding = binding;
                     break;
                 }
