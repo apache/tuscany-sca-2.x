@@ -24,7 +24,6 @@
  * the ClientComponent.
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="SpringSCAProperty">
     
     <component name="ClientComponent">
@@ -33,7 +32,7 @@
     </component>
 
     <component name="HelloWorldComponent">
-        <tuscany:implementation.spring location="META-INF/sca/SpringSCAProperty-context.xml"/>
+        <implementation.spring location="META-INF/sca/SpringSCAProperty-context.xml"/>
         <property name="TestProperty">Hello</property>
     </component>
 
