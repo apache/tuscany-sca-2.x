@@ -25,11 +25,10 @@
  * by a plain Java POJO.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="SpringImplicitReference">
 
     <component name="ClientComponent">
-        <tuscany:implementation.spring location="META-INF/sca/SpringImplicitReference-context.xml"/>
+        <implementation.spring location="META-INF/sca/SpringImplicitReference-context.xml"/>
         <reference name="testReference" target="ReferenceComponent"/>
     </component>
 

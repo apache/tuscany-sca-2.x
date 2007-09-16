@@ -51,7 +51,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
 
     private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_SPRING = "implementation.spring";
-    private static final QName IMPLEMENTATION_SPRING_QNAME = new QName(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_SPRING);
+    private static final QName IMPLEMENTATION_SPRING_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_SPRING);
     private static final String MSG_LOCATION_MISSING = "Reading implementation.spring - location attribute missing";
 
     private AssemblyFactory assemblyFactory;
