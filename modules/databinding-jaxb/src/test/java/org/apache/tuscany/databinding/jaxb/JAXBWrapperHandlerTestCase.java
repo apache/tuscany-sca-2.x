@@ -63,7 +63,7 @@ public class JAXBWrapperHandlerTestCase extends TestCase {
         PurchaseOrderType po = factory.createPurchaseOrderType();
         po.setComment("Comment");
         JAXBElement<PurchaseOrderType> wrapper = factory.createPurchaseOrder(po);
-        List children = handler.getChildren(wrapper);
+        List children = handler.getChildren(wrapper, null, null);
         assertNotNull(children);
         assertEquals(4, children.size());
         assertEquals("Comment", children.get(2));

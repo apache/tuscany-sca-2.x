@@ -50,7 +50,7 @@ public class SDOWrapperHandlerTestCase extends TestCase {
     public void testWrapperAnyType() throws Exception {
         XMLHelper xmlHelper = context.getXMLHelper();
         XMLDocument document = xmlHelper.load(getClass().getResourceAsStream("/wrapper.xml"));
-        List children = handler.getChildren(document);
+        List children = handler.getChildren(document, null, null);
         assertEquals(5, children.size());
     }
 
@@ -59,7 +59,7 @@ public class SDOWrapperHandlerTestCase extends TestCase {
         xsdHelper.define(getClass().getResourceAsStream("/wrapper.xsd"), null);
         XMLHelper xmlHelper = context.getXMLHelper();
         XMLDocument document = xmlHelper.load(getClass().getResourceAsStream("/wrapper.xml"));
-        List children = handler.getChildren(document);
+        List children = handler.getChildren(document, null, null);
         assertEquals(5, children.size());
     }
     

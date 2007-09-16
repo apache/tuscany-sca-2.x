@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -158,7 +159,8 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             if (d != null) {
                 String dataBinding = d.getDataBinding();
                 // Assumes JavaBeans DB is default
-                if (dataBinding != null && !dataBinding.equals(JavaBeansDataBinding.NAME)) {
+                if (dataBinding != null && !dataBinding.equals(JavaBeansDataBinding.NAME)
+                    && !dataBinding.equals(SimpleJavaDataBinding.NAME)) {
                     if (nonDefaultDataBindingName != null) {
                         if (!nonDefaultDataBindingName.equals(dataBinding)) {
                             // We've seen two different non-default DBs, e.g. SDO and JAXB

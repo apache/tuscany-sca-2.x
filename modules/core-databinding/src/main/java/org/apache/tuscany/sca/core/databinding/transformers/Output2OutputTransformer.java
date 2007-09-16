@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -118,25 +117,45 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
             DataType<DataType> sourceType = context.getSourceDataType();
             Operation sourceOp = context.getSourceOperation();
             boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
+
             WrapperHandler sourceWrapperHandler = null;
-            if (sourceWrapped) {
-                sourceWrapperHandler = getWrapperHandler(getDataBinding(sourceOp), true);
-            }
+            String sourceDataBinding = getDataBinding(sourceOp);
+            sourceWrapperHandler = getWrapperHandler(sourceDataBinding, sourceWrapped);
 
             DataType<DataType> targetType = context.getTargetDataType();
-            Operation targetOp = context.getTargetOperation();
+            Operation targetOp = (Operation)context.getTargetOperation();
             boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
             WrapperHandler targetWrapperHandler = null;
-            if (targetWrapped) {
-                targetWrapperHandler = getWrapperHandler(getDataBinding(targetOp), true);
-            }
+            String targetDataBinding = getDataBinding(targetOp);
+            targetWrapperHandler = getWrapperHandler(targetDataBinding, targetWrapped);
 
             if ((!sourceWrapped) && targetWrapped) {
                 // Unwrapped --> Wrapped
                 WrapperInfo wrapper = targetOp.getWrapper();
+                ElementInfo wrapperElement = wrapper.getOutputWrapperElement();
+                List<ElementInfo> childElements = wrapper.getOutputChildElements();
+
+                // If the source can be wrapped, wrapped it first
+                if (sourceWrapperHandler != null) {
+                    DataType sourceWrapperType =
+                        sourceWrapperHandler.getWrapperType(wrapperElement, childElements, context);
+                    if (sourceWrapperType != null) {
+                        Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, context);
+                        if (sourceWrapper != null) {
+                            if (!childElements.isEmpty()) {
+                                // Set the return value
+                                ElementInfo returnElement = wrapper.getOutputChildElements().get(0);
+                                sourceWrapperHandler.setChild(sourceWrapper, 0, returnElement, response);
+                            }
+                            Object targetWrapper =
+                                mediator.mediate(sourceWrapper, sourceWrapperType, targetType.getLogical(), context
+                                    .getMetadata());
+                            return targetWrapper;
+                        }
+                    }
+                }
                 Object targetWrapper = targetWrapperHandler.create(wrapper.getOutputWrapperElement(), context);
 
-                List<ElementInfo> childElements = wrapper.getOutputChildElements();
                 if (childElements.isEmpty()) {
                     // void output
                     return targetWrapper;
@@ -155,24 +174,25 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                     // The void output
                     return null;
                 }
-                targetWrapperHandler = getWrapperHandler(getDataBinding(targetOp), false);
                 if (targetWrapperHandler != null) {
                     ElementInfo wrapperElement = sourceOp.getWrapper().getOutputWrapperElement();
-                    // Object targetWrapper =
-                    // targetWrapperHandler.create(wrapperElement, context);
-                    
-                    // use operation DB not output type DB
-                    DataType<XMLType> targetWrapperType = new DataTypeImpl<XMLType>(getDataBinding(targetOp), Object.class, new XMLType(wrapperElement));
-                    Object targetWrapper = mediator.mediate(sourceWrapper,
-                                                            sourceType.getLogical(),
-                                                            targetWrapperType,
-                                                            context.getMetadata());
-                    return targetWrapperHandler.getChildren(targetWrapper).get(0);
-                } else {
-                    Object child = sourceWrapperHandler.getChildren(sourceWrapper).get(0);
-                    DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
-                    return mediator.mediate(child, childType, targetType.getLogical(), context.getMetadata());
+
+                    // FIXME: This is a workaround for the wsdless support as it passes in child elements
+                    // under the wrapper that only matches by position
+                    if (sourceWrapperHandler.isInstance(sourceWrapper, wrapperElement, childElements, context)) {
+                        DataType targetWrapperType =
+                            targetWrapperHandler.getWrapperType(wrapperElement, childElements, context);
+                        if (targetWrapperType != null) {
+                            Object targetWrapper =
+                                mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context
+                                    .getMetadata());
+                            return targetWrapperHandler.getChildren(targetWrapper, childElements, context).get(0);
+                        }
+                    }
                 }
+                Object child = sourceWrapperHandler.getChildren(sourceWrapper, childElements, context).get(0);
+                DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
+                return mediator.mediate(child, childType, targetType.getLogical(), context.getMetadata());
             } else {
                 // FIXME: Do we want to handle wrapped to wrapped?
                 return mediator.mediate(response, sourceType.getLogical(), targetType.getLogical(), context

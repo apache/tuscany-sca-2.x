@@ -32,7 +32,10 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * JAXB WrapperHandler implementation
@@ -100,9 +103,9 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getChildren(java.lang.Object)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getChildren(java.lang.Object, List, TransformationContext)
      */
-    public List getChildren(JAXBElement<?> wrapper) {
+    public List getChildren(JAXBElement<?> wrapper, List<ElementInfo> childElements, TransformationContext context) {
         Object wrapperValue = wrapper.getValue();
         Class<?> wrapperClass = wrapperValue.getClass();
 
@@ -121,4 +124,52 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
         return elements;
     }
 
+    /**
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, List, org.apache.tuscany.sca.databinding.TransformationContext)
+     */
+    public DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context) {
+        try {
+            // FIXME: How do we map the global element to a factory?
+            String packageName = null;
+            String factoryClassName = packageName + ".ObjectFactory";
+            ClassLoader classLoader = context != null ? context.getClassLoader() : null;
+            if (classLoader == null) {
+                //FIXME Understand why we need this, the classloader should be passed in
+                classLoader = Thread.currentThread().getContextClassLoader();
+            }
+            Class<?> factoryClass = Class.forName(factoryClassName, true, classLoader);
+            assert factoryClass.isAnnotationPresent(XmlRegistry.class);
+            QName elementName = element.getQName();
+            Method method = null;
+            for (Method m : factoryClass.getMethods()) {
+                XmlElementDecl xmlElement = m.getAnnotation(XmlElementDecl.class);
+                QName name = new QName(xmlElement.namespace(), xmlElement.name());
+                if (xmlElement != null && name.equals(elementName)) {
+                    method = m;
+                    break;
+                }
+            }
+            if (method != null) {
+                Class typeClass = method.getParameterTypes()[0];
+                DataType<XMLType> wrapperType =
+                    new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, typeClass, new XMLType(element));
+                return wrapperType;
+            }
+
+            return null;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#isInstance(java.lang.Object, org.apache.tuscany.sca.interfacedef.util.ElementInfo, java.util.List, org.apache.tuscany.sca.databinding.TransformationContext)
+     */
+    public boolean isInstance(Object wrapper,
+                              ElementInfo element,
+                              List<ElementInfo> childElements,
+                              TransformationContext context) {
+        // TODO: Implement the logic
+        return true;
+    }
 }

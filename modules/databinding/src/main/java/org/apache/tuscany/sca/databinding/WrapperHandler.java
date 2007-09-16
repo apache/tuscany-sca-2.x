@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 
 /**
@@ -37,6 +38,28 @@ public interface WrapperHandler<T> {
     T create(ElementInfo element, TransformationContext context);
 
     /**
+     * Get the data type for the wrapper
+     * @param element The wrapper element
+     * @param childElements A list of child elements
+     * @param context The transformation context
+     * @return The data type of the wrapper, null if it's not a wrapper type
+     */
+    DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context);
+
+    /**
+     * Check if the given data is an instance of the wrapper
+     * @param wrapper
+     * @param element
+     * @param childElements
+     * @param context
+     * @return
+     */
+    boolean isInstance(Object wrapper,
+                       ElementInfo element,
+                       List<ElementInfo> childElements,
+                       TransformationContext context);
+
+    /**
      * Set child element for the wrapper
      * 
      * @param wrapper The wrapper
@@ -49,7 +72,11 @@ public interface WrapperHandler<T> {
     /**
      * Get a list of child elements from the wrapper
      * @param wrapper
+     * @param childElements 
+     * @param context 
      * @return child elements under the wrapper
      */
-    List getChildren(T wrapper);
+    List getChildren(T wrapper, List<ElementInfo> childElements, TransformationContext context);
+
+    // Object getChild(T wrapper, ElementInfo childElement, TransformationContext context);
 }

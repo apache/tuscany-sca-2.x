@@ -48,7 +48,11 @@ import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
@@ -59,20 +63,20 @@ import org.xml.sax.InputSource;
 public class WSDLModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<String, List<WSDLDefinition>> map = new HashMap<String, List<WSDLDefinition>>();
-    
+
     private ExtensionRegistry wsdlExtensionRegistry;
-    
+
     private WSDLFactory wsdlFactory;
     private javax.wsdl.factory.WSDLFactory wsdl4jFactory;
     private ContributionFactory contributionFactory;
 
     public WSDLModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
-        
+
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.wsdl4jFactory = modelFactories.getFactory(javax.wsdl.factory.WSDLFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        
+
         wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
     }
 
@@ -122,10 +126,11 @@ public class WSDLModelResolver implements ModelResolver {
 
                     DeployedArtifact proxyArtifact = contributionFactory.createDeployedArtifact();
                     proxyArtifact.setURI(uri);
-                    
+
                     //use contribution resolution (this supports import/export)
-                    DeployedArtifact importedArtifact = contribution.getModelResolver().resolveModel(DeployedArtifact.class, proxyArtifact);
-                    if(importedArtifact.getLocation() != null) {
+                    DeployedArtifact importedArtifact =
+                        contribution.getModelResolver().resolveModel(DeployedArtifact.class, proxyArtifact);
+                    if (importedArtifact.getLocation() != null) {
                         //get the artifact URL
                         url = new URL(importedArtifact.getLocation());
                     }
@@ -300,11 +305,33 @@ public class WSDLModelResolver implements ModelResolver {
         Types types = definition.getTypes();
         if (types != null) {
             schemaCollection.setSchemaResolver(new XSDModelResolver.URIResolverImpl(contribution));
+            int index = 0;
             for (Object ext : types.getExtensibilityElements()) {
                 if (ext instanceof Schema) {
                     Element element = ((Schema)ext).getElement();
-                    schemaCollection.setBaseUri(((Schema)ext).getDocumentBaseURI());
-                    schemaCollection.read(element, element.getBaseURI());
+                    Document doc = (Document) element.getOwnerDocument().cloneNode(false);
+                    Element schema = (Element)doc.importNode(element, true);
+                    doc.appendChild(schema);
+                    Node parent = element.getParentNode();
+                    while (parent instanceof Element) {
+                        Element root = (Element)parent;
+                        NamedNodeMap nodeMap = root.getAttributes();
+                        for (int i = 0; i < nodeMap.getLength(); i++) {
+                            Attr attr = (Attr)nodeMap.item(i);
+                            String name = attr.getName();
+                            if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
+                                if (schema.getAttributeNode(name) == null) {
+                                    schema.setAttributeNodeNS((Attr)doc.importNode(attr, true));
+                                }
+                            }
+                        }
+                        parent = parent.getParentNode();
+                    }
+                    String baseURI = ((Schema)ext).getDocumentBaseURI();
+                    doc.setDocumentURI(baseURI);
+                    schemaCollection.setBaseUri(baseURI);
+                    schemaCollection.read(doc, baseURI + "#" + index, null);
+                    index++;
                 }
             }
         }
