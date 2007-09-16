@@ -24,11 +24,11 @@
            name="Calculator">
 
     <component name="CalculatorServiceComponent">
+		<implementation.java class="calculator.CalculatorServiceImpl"/>
 	    <service name="CalculatorService">
 	        <interface.java interface="calculator.CalculatorService"/>
 	        <tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
 	    </service>
-		<implementation.java class="calculator.CalculatorServiceImpl"/>
 		<reference name="addService" target="AddServiceComponent"></reference>
         <reference name="subtractService" target="SubtractServiceComponent"></reference>
         <reference name="multiplyService" target="MultiplyServiceComponent"></reference>
