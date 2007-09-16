@@ -23,10 +23,11 @@ java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-simple-bigbank.jar big
 
 Sample Overview
 ---------------
-The sample provides a composite with two java components wired together 
-with a default binding. A request to the AccountComponent results in a 
-request to the AccountDataComponent to get account data. The data returns 
-back via the AccountComponent to the client.
+This sample demonstrates a simple bank summary transaction while using Java components wired together.
+SCA default binding is used.
+ 
+A request to the AccountComponent results in a request to the AccountDataComponent to get account data
+which is based on a random stock quote price. Therefore result for this sample will vary on each run.
 
 calculator/
   src/
@@ -35,6 +36,7 @@ calculator/
         bigbank/
           account/                - AccountComponent implementation
           accountdata/            - AccountDataComponent implementation
+          stockquote/             - generates random stock prices
           client/                 - starts the SCA Runtime and 
                                     deploys the BigBank.composite. 
                                     It then calls the deployed AccountService 
@@ -60,11 +62,16 @@ cd simple-bigbank
 ant compile
 ant run
 
-You should see the following output from the run target.
+You should see the following output from the run target. 
+** Please note that the balance amount is dependent on the random sotck quote price and the 
+numbers may vary on each run.
 
 run:
+     [java] Getting stock quote for: IBM, value: 104.06
      [java] Account summary: currency: USD, [ID:Foo_CHA12345, balance:1500.0, ID
-:Foo_SAA12345, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100]
+:Foo_SAA12345, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100, balanc
+e:10406.0]
+
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
@@ -75,14 +82,17 @@ cd simple-bigbank
 mvn
 
 You should see the following output from the test phase.
+** Please note that the balance amount is dependent on the random sotck quote price and the numbers may vary on each run.
+
 
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
 Running bigbank.BigBankTestCase
+Getting stock quote for: IBM, value: 104.02
 Account summary: currency: USD, [ID:Foo_CHA12345, balance:1500.0, ID:Foo_SAA1234
-5, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100, balance:10432.0]]
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.592 sec
+5, balance:1500.0, ID:Foo_STA12345, symbol:IBM, quantity:100, balance:10402.0]
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.502 sec
 
 Results :
 
