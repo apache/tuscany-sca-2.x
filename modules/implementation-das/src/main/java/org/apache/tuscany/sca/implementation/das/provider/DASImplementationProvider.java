@@ -60,17 +60,8 @@ public class DASImplementationProvider implements ImplementationProvider {
         return invoker;
     }
 
-    public Invoker createCallbackInvoker(Operation operation) {
-        DAS das = null;
-        try {
-            das = dataAccessEngineManager.getDAS(implementation.getConfig(), implementation.getConnectionInfo());
-        } catch(Exception e) {
-            e.printStackTrace();
-            //what now ?
-        }        
-        
-        DASInvoker invoker = new DASInvoker(operation, new DataAccessEngine(das) );
-        return invoker;
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {
