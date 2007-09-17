@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.binding.sca.impl;
 
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.domain.Domain;
@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -47,9 +47,8 @@ import org.osoa.sca.ServiceUnavailableException;
  * 
  * @version $Rev$ $Date$
  */
-public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider2 {
+public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private ExtensionPointRegistry extensionPoints;
     private Domain domain;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
@@ -57,14 +56,13 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private boolean started = false;
 
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory = null;
-    private ReferenceBindingProvider2 distributedProvider = null;
+    private ReferenceBindingProvider distributedProvider = null;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
     		                                  Domain domain,
                                               RuntimeComponent component,
                                               RuntimeComponentReference reference,
                                               SCABinding binding) {
-        this.extensionPoints = extensionPoints;
         this.domain = domain;
         this.component = component;
         this.reference = reference;
@@ -145,8 +143,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                 DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
                 distributedBinding.setSCABinging(binding);
 
-                distributedProvider =
-                    (ReferenceBindingProvider2)distributedProviderFactory
+                distributedProvider = distributedProviderFactory
                         .createReferenceBindingProvider(component, reference, distributedBinding);
             }
         }
@@ -162,9 +159,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         }
     }
 
-    public boolean supportsAsyncOneWayInvocation() {
+    public boolean supportsOneWayInvocation() {
         if (isTargetRemote()) {
-            return distributedProvider.supportsAsyncOneWayInvocation();
+            return distributedProvider.supportsOneWayInvocation();
         } else {
             return false;
         }
@@ -201,15 +198,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                     + ").");
             }
             return invoker;
-        }
-    }
-
-    @Deprecated
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            return createInvoker(operation);
         }
     }
 

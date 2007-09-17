@@ -34,11 +34,9 @@ import org.apache.tuscany.sca.domain.Domain;
 import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
@@ -48,7 +46,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * 
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */
-public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
+public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     
     private final static Logger logger = Logger.getLogger(Axis2SCAServiceBindingProvider.class.getName());
 
@@ -66,7 +64,6 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
                                           DistributedSCABinding binding,
                                           ServletHost servletHost,
                                           MessageFactory messageFactory) {
-    	this.domain = domain;
         this.binding = binding.getSCABinding();
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
@@ -149,12 +146,8 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider2 {
         return wsBinding.getBindingInterfaceContract();
     }
 
-    public boolean supportsAsyncOneWayInvocation() {
+    public boolean supportsOneWayInvocation() {
         return false;
-    }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        throw new UnsupportedOperationException();
     }
 
     public void start() {

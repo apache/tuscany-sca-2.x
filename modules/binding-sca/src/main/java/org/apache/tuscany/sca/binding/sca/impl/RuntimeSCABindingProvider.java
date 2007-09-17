@@ -44,7 +44,7 @@ public class RuntimeSCABindingProvider implements ReferenceBindingProvider {
         return reference.getInterfaceContract();
     }
 
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
+    public Invoker createInvoker(Operation operation) {
         return null;
     }
 
@@ -52,6 +52,10 @@ public class RuntimeSCABindingProvider implements ReferenceBindingProvider {
     }
 
     public void stop() {
+    }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
 }

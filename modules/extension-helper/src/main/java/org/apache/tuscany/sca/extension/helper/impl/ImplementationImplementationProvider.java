@@ -63,9 +63,9 @@ public class ImplementationImplementationProvider implements ImplementationProvi
         InvokerProxy invoker = new InvokerProxy(op);
         return invoker;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        throw new RuntimeException("TODO: callbacks not yet implemented");
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {

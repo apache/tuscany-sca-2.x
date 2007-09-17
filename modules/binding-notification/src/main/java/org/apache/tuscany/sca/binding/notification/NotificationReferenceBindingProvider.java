@@ -136,13 +136,6 @@ public class NotificationReferenceBindingProvider
         return brokerID;
     }
 
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        }
-        return createInvoker(operation);
-    }
-
     public Invoker createInvoker(Operation operation) {
         if (invoker == null) {
             invoker = new NotificationReferenceBindingInvoker(operation, this);
@@ -150,7 +143,7 @@ public class NotificationReferenceBindingProvider
         return invoker;
     }
 
-    public boolean supportsAsyncOneWayInvocation() {
+    public boolean supportsOneWayInvocation() {
         return false;
     }
 

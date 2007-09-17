@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.CallableReferenceObjectFactory;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.TargetInvokerCreationException;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
@@ -254,21 +253,11 @@ public class JavaComponentContextProvider {
     void stop() {
     }
 
-    Invoker createInvoker(Operation operation) throws TargetInvokerCreationException {
+    Invoker createInvoker(Operation operation) throws NoSuchMethodException {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
-        try {
-            Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-            return new JavaImplementationInvoker(operation, method, component);
-
-        } catch (NoSuchMethodException e) {
-            throw new TargetMethodNotFoundException("No matching method is found for operation " + operation.getName()
-                + " in the implementation ("
-                + implClass
-                + ") of component "
-                + component.getURI(), e, operation);
-        }
-
+        Method method = JavaInterfaceUtil.findMethod(implClass, operation);
+        return new JavaImplementationInvoker(operation, method, component);
     }
 
     private <B> WireObjectFactory<B> createWireFactory(Class<B> interfaze, RuntimeWire wire) {

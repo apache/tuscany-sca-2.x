@@ -43,9 +43,9 @@ class NodeImplementationProvider implements ImplementationProvider {
         NodeImplementationInvoker invoker = new NodeImplementationInvoker(implementation.getComposite());
         return invoker;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        return null;
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {

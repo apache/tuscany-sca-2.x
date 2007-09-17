@@ -91,12 +91,12 @@ public class XQueryImplementationProvider implements ImplementationProvider {
         }
     }
 
-    public Invoker createCallbackInvoker(Operation operation) {
-        return new XQueryInvoker(null, operation, implementation, referenceProxies, properties);
-    }
-
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         return new XQueryInvoker(service, operation, implementation, referenceProxies, properties);
+    }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {

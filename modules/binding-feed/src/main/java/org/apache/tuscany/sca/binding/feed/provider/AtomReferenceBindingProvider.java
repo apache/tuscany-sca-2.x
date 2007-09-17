@@ -61,33 +61,29 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(60000);
     }
 
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            String operationName = operation.getName();
-            if (operationName.equals("get")) {
-                return new AtomBindingInvoker.GetInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
-            } else if (operationName.equals("post")) {
-                return new AtomBindingInvoker.PostInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
-            } else if (operationName.equals("put")) {
-                return new AtomBindingInvoker.PutInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
-            } else if (operationName.equals("delete")) {
-                return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), httpClient,
-                                                            authorizationHeader);
-            } else if (operationName.equals("getFeed")) {
-                return new AtomBindingInvoker.GetCollectionInvoker(operation, binding.getURI(), httpClient,
-                                                                   authorizationHeader);
-            } else if (operationName.equals("postMedia")) {
-                return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), httpClient,
+    public Invoker createInvoker(Operation operation) {
+        String operationName = operation.getName();
+        if (operationName.equals("get")) {
+            return new AtomBindingInvoker.GetInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
+        } else if (operationName.equals("post")) {
+            return new AtomBindingInvoker.PostInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
+        } else if (operationName.equals("put")) {
+            return new AtomBindingInvoker.PutInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
+        } else if (operationName.equals("delete")) {
+            return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), httpClient,
+                                                        authorizationHeader);
+        } else if (operationName.equals("getFeed")) {
+            return new AtomBindingInvoker.GetCollectionInvoker(operation, binding.getURI(), httpClient,
                                                                authorizationHeader);
-            } else if (operationName.equals("putMedia")) {
-                return new AtomBindingInvoker.PutMediaInvoker(operation, binding.getURI(), httpClient,
-                                                              authorizationHeader);
-            }
-
-            return new AtomBindingInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
+        } else if (operationName.equals("postMedia")) {
+            return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), httpClient,
+                                                           authorizationHeader);
+        } else if (operationName.equals("putMedia")) {
+            return new AtomBindingInvoker.PutMediaInvoker(operation, binding.getURI(), httpClient,
+                                                          authorizationHeader);
         }
+
+        return new AtomBindingInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -105,6 +101,10 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
 
     public void stop() {
         httpClient = null;
+    }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
 }

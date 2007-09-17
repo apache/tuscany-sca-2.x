@@ -164,10 +164,14 @@ public class BindingsActivator implements ModuleActivator {
                 List<InvokerProxy> invokers = new ArrayList<InvokerProxy>();
                 private InvokerFactory factory;
 
-                public Invoker createInvoker(Operation operation, boolean isCallback) {
+                public Invoker createInvoker(Operation operation) {
                     InvokerProxy invoker = new InvokerProxy(factory, operation);
                     invokers.add(invoker);
                     return invoker;
+                }
+                
+                public boolean supportsOneWayInvocation() {
+                    return false;
                 }
 
                 public InterfaceContract getBindingInterfaceContract() {
@@ -211,6 +215,10 @@ public class BindingsActivator implements ModuleActivator {
 
                 public InterfaceContract getBindingInterfaceContract() {
                     return null;
+                }
+                
+                public boolean supportsOneWayInvocation() {
+                    return false;
                 }
 
                 public void start() {

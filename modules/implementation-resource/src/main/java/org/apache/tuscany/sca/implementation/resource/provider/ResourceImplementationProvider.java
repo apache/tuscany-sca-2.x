@@ -43,9 +43,9 @@ class ResourceImplementationProvider implements ImplementationProvider {
         ResourceImplementationInvoker invoker = new ResourceImplementationInvoker(implementation.getLocationURL());
         return invoker;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        return null;
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {

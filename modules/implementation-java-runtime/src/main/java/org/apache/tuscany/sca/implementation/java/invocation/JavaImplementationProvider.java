@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.TargetInvokerCreationException;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -134,17 +133,13 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         try {
             return componentContextProvider.createInvoker(operation);
-        } catch (TargetInvokerCreationException e) {
+        } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        try {
-            return componentContextProvider.createInvoker(operation);
-        } catch (TargetInvokerCreationException e) {
-            throw new IllegalArgumentException(e);
-        }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public Scope getScope() {

@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  * 
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */
-public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider2 {
+public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider {
 
 	private Domain domain;
     private RuntimeComponent component;
@@ -95,7 +95,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         return wsBinding.getBindingInterfaceContract();
     }
 
-    public boolean supportsAsyncOneWayInvocation() {
+    public boolean supportsOneWayInvocation() {
         return false;
     }
 
@@ -103,15 +103,6 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         return new Axis2SCABindingInvoker(this, axisReferenceBindingProvider.createInvoker(operation));
     }
 
-    @Deprecated
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            return createInvoker(operation);
-        }
-    }
-    
     /**
      * Uses the distributed domain service discovery feature to locate remote
      * service endpoints

@@ -54,10 +54,9 @@ class CRUDImplementationProvider implements ImplementationProvider {
         CRUDImplementationInvoker invoker = new CRUDImplementationInvoker(operation, new ResourceManager(implementation.getDirectory()));
         return invoker;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        CRUDImplementationInvoker invoker = new CRUDImplementationInvoker(operation, new ResourceManager(implementation.getDirectory()));
-        return invoker;
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {

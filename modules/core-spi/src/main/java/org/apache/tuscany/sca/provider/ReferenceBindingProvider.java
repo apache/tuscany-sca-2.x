@@ -49,11 +49,10 @@ public interface ReferenceBindingProvider {
      * binding protocol.
      * 
      * @param operation The operation that the interceptor will handle
-     * @param isCallback A flag to tell if the operation is for the callback
      * @return An invoker that handles the invocation logic, null should be
      *         returned if no invoker is required
      */
-    Invoker createInvoker(Operation operation, boolean isCallback);
+    Invoker createInvoker(Operation operation);
 
     /**
      * Get the effective interface contract imposed by the binding. For example,
@@ -65,4 +64,13 @@ public interface ReferenceBindingProvider {
      */
     InterfaceContract getBindingInterfaceContract();
 
+    /**
+     * For bindings that invoke one-way operations asynchronously, there is no
+     * need to perform a thread switch before calling the invoker. This method
+     * indicates whether the binding has this capability.
+     * 
+     * @return true if the binding invoker is able to invoke one-way operations
+     *         asynchronously, false if all invocations are synchronous
+     */
+    boolean supportsOneWayInvocation();
 }

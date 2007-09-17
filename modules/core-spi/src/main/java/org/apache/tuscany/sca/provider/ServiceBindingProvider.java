@@ -49,4 +49,15 @@ public interface ServiceBindingProvider {
      *         interface contract for the component service will be used
      */
     InterfaceContract getBindingInterfaceContract();
+
+    /**
+     * For bindings that invoke one-way callback operations asynchronously,
+     * there is no need to perform a thread switch before calling the invoker.
+     * This method indicates whether the binding has this capability.
+     * 
+     * @return true if the callback invoker is able to invoke one-way operations
+     *         asynchronously, false if all invocations are synchronous
+     */
+    boolean supportsOneWayInvocation();
+
 }

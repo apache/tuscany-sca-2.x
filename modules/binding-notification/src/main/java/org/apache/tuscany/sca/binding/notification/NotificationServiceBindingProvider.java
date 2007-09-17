@@ -137,6 +137,10 @@ public class NotificationServiceBindingProvider
     public InterfaceContract getBindingInterfaceContract() {
         return service.getInterfaceContract();
     }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
+    }
 
     public void start() {
         if (started) {
