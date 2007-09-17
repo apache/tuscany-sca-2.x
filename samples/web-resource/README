@@ -57,7 +57,7 @@ run:
     [java] Sample server started (press enter to shutdown)
 
     [java] To get the Web resource, point your Web browser to the following address:
-    [java] http://localhost:8080/MyWeb/index.html
+    [java] http://localhost:8080/myWeb/index.html
      
 As this point the Web resource is exposed by a web server started automatically
 by the SCA runtime. To stop the server just press enter.
