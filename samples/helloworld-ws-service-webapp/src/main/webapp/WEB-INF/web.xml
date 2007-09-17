@@ -22,7 +22,7 @@
 Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
-    <display-name>Apache Tuscany sample HelloWorld JSON-RPC</display-name>
+    <display-name>Apache Tuscany HelloWorld Web Service Sample</display-name>
     
     <listener>
         <listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class>
