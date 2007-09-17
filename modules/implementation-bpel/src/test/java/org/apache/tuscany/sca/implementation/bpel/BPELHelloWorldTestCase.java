@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  * 
  * @version $Rev$ $Date$
  */
-public class BPELTestCase extends TestCase {
+public class BPELHelloWorldTestCase extends TestCase {
 
     private SCADomain scaDomain;
     HelloPortType bpelService = null;
