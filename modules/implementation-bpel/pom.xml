@@ -221,11 +221,20 @@
 			<version>1.2-beta</version>
 			<exclusions>
 				<exclusion>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-ejb_2.1_spec</artifactId>
+				</exclusion>
+				<exclusion>
 					<groupId>ognl</groupId>
 					<artifactId>ognl</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-ejb_3.0_spec</artifactId>
+			<version>1.0</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.apache.geronimo.modules</groupId>
 			<artifactId>geronimo-connector</artifactId>
