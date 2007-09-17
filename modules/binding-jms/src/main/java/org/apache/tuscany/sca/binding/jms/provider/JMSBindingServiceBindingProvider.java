@@ -69,6 +69,10 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         return service.getInterfaceContract();
     }
 
+    public boolean supportsOneWayInvocation() {
+        return true;
+    }
+
     public void start() {
 
         try {
