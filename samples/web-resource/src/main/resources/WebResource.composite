@@ -22,11 +22,11 @@
 	targetNamespace="http://web"
 	name="WebResource">
 
-    <component name="MyWeb">
+    <component name="myWeb">
+       <tuscany:implementation.resource location="myContent"/>
         <service name="Resource">
             <tuscany:binding.http/>
         </service>
-       <tuscany:implementation.resource location="myContent"/>
     </component>      
 
 </composite>
