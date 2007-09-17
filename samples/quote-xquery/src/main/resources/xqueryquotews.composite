@@ -28,11 +28,11 @@
     <dbsdo:import.sdo location="wsdl/quotejoin.wsdl" />
     
     <component name="QuoteJoinServerComponent">
+        <tuscany:implementation.xquery location="META-INF/sca/quote_join.xq" />
         <service name="quoteJoin">
             <interface.java interface="xquery.quote.QuoteJoin" />
             <binding.ws wsdlElement="http://quote.xquery#wsdl.port(QuoteJoinService/QuoteJoinSoapPort)" />
         </service>
-        <tuscany:implementation.xquery location="META-INF/sca/quote_join.xq" />
         <reference name="quoteCalculator" target="QuoteCalculatorServerComponent" />
     </component>
 
@@ -41,12 +41,12 @@
     </component>
 
     <component name="AvailQuoteProviderComponent">
+        <implementation.java class="xquery.quote.AvailQuoteProviderImpl" />
         <service name="AvailQuoteProviderService">
             <interface.java interface="xquery.quote.AvailQuoteProviderService" />
             <binding.ws
                 wsdlElement="http://quote.xquery#wsdl.port(AvailQuoteProviderService/AvailQuoteProviderSoapPort)" />
         </service>
-        <implementation.java class="xquery.quote.AvailQuoteProviderImpl" />
     </component>
 
 </composite>
