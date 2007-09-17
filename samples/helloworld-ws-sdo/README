@@ -1,24 +1,26 @@
-Hello World Web Service References Sample
-=========================================
+Hello World Web Service References using SDO Sample
+===================================================
 This sample demonstrates an SCA reference that uses a web service binding which works with SDO.  
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens, you need to run the server first 
-so open a command prompt, navigate to the helloworld-ws-service sample directory 
-and do 
+To run this sample
+------------------
+This sample is dependent on helloworld-ws-service. Open a command prompt to start
+the service. If you are running ant do the following:
 
-ant run-server
+cd helloworld-ws-service
+ant run
 
-OR if you don't have ant, on Windows do
+if you don't have ant, issue one of the following commands for windows or *nix:
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-sdo.jar helloworld-ws-sdo.HelloWorldServer
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-service.jar helloworld.HelloWorldServer
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-sdo.jar helloworld-ws-sdo.HelloWorldServer
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-service.jar helloworld.HelloWorldServer
 
 You should see the following output:
 
@@ -68,17 +70,19 @@ rver addServletMapping
 
 The server is now ready.
 
-Then open another command window to run the client:
 
+Now, open another command window to run the client.  
+
+cd helloworld-ws-sdo
 ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-sdo.jar helloworld-ws-sdo.HelloWorldClient
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-sdo.jar helloworld.HelloWorldClient
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-sdo.jar helloworld-ws-sdo.HelloWorldClient
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-sdo.jar helloworl.HelloWorldClient
 
 You should be able to see the following result:
 
@@ -130,14 +134,16 @@ helloworld-ws-sdo/
 
 Building And Running The Sample Using Ant
 -----------------------------------------
-With the binary distribution the sample can be built and run using Ant. Before
-you do this start up the service that the reference will talk to. To do this
-run up the helloworld-ws-service test. Take a look at the README in that sample
-and you will see you need the following commands
+You can build and run the sample with the binary distribution using Ant. 
+Make sure that you have started helloworld-ws-service which this sample is dependent on
+in a separate command window. You can either follow the instruction at the begining of this 
+sample file or if you want to build and run the service, follow the README under helloworld-ws-service.
 
-cd helloworld-ws-sdo
-ant
+Now, let's build and run helloworld-ws-sdo sample:
 
+cd helloworld-ws-sdo                                             
+ant 
+ant run 
 
 You should see the following output from the run target.
 
@@ -151,9 +157,7 @@ om.util.StAXUtils).
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
-With either the binary or source distributions the sample can be built and run 
-using Maven as follows. When using Maven you don't need to run the helloworld-
-ws-service sample first as Maven does this for you. 
+You can build and run the sample with either the binary or source distributions using Maven. Please note that you do not need to start helloworld-ws-service in this case since Maven does this for you.
 
 cd helloworld-ws-sdo
 mvn
