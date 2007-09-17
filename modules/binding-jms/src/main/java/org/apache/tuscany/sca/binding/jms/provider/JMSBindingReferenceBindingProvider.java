@@ -52,7 +52,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         
     }
 
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
+    public Invoker createInvoker(Operation operation) {
  
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)){
             throw new JMSBindingException("No destination specified for reference " +
@@ -97,14 +97,14 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
             jmsBinding.setResponseDestinationName(reference.getName());
         }    
 */        
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            JMSBindingInvoker invoker =  new JMSBindingInvoker(jmsBinding,
-                                                               operation); 
-            jmsBindingInvokers.add(invoker);
-            return invoker;
-        }
+        JMSBindingInvoker invoker =  new JMSBindingInvoker(jmsBinding,
+                                                           operation); 
+        jmsBindingInvokers.add(invoker);
+        return invoker;
+    }
+
+    public boolean supportsOneWayInvocation() {
+        return true;
     }
 
     public InterfaceContract getBindingInterfaceContract() {
