@@ -59,9 +59,9 @@ public class SpringImplementationProvider implements ImplementationProvider {
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         return new SpringInvoker(component, springContext, service, operation);
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        return new SpringInvoker(component, springContext, null, operation);
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     /**

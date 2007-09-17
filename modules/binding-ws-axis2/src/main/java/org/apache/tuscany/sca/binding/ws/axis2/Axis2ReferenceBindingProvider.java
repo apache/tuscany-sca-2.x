@@ -26,11 +26,11 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
-public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 {
+public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
     private WebServiceBinding wsBinding;
     private Axis2ServiceClient axisClient;
@@ -70,17 +70,8 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider2 
         return wsBinding.getBindingInterfaceContract();
     }
 
-    public boolean supportsAsyncOneWayInvocation() {
+    public boolean supportsOneWayInvocation() {
         return true;
-    }
-
-    @Deprecated
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            return createInvoker(operation);
-        }
     }
 
     public Invoker createInvoker(Operation operation) {

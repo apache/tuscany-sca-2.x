@@ -1033,13 +1033,12 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     }
     
     
-    public Invoker createCallbackInvoker(Operation operation) {
-        
-        return createTargetInvoker(null, operation);
-    }
-
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         return createTargetInvoker(service, operation);
+    }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     private boolean setReferencesAndProperties() {

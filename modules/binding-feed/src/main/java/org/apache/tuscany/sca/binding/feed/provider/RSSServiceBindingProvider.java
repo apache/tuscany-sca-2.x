@@ -54,6 +54,10 @@ class RSSServiceBindingProvider implements ServiceBindingProvider {
     public InterfaceContract getBindingInterfaceContract() {
         return service.getInterfaceContract();
     }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
+    }
 
     public void start() {
         RuntimeComponentService componentService = (RuntimeComponentService)service;

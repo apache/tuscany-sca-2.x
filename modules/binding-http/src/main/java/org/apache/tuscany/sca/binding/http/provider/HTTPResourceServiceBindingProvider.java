@@ -67,6 +67,10 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
     public InterfaceContract getBindingInterfaceContract() {
         return service.getInterfaceContract();
     }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
+    }
 
     public void start() {
 

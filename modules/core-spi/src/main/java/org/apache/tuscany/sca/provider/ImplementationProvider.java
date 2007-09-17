@@ -56,13 +56,13 @@ public interface ImplementationProvider {
     Invoker createInvoker(RuntimeComponentService service, Operation operation);
 
     /**
-     * Create an invoker to call back to the given component
-     * @param operation The operation
-     * @return An invoker that handles the invocation logic, null should be
-     *         returned if no invoker is required
+     * For bindings that invoke one-way callback operations asynchronously,
+     * there is no need to perform a thread switch before calling the invoker.
+     * This method indicates whether the binding has this capability.
+     * 
+     * @return true if the callback invoker is able to invoke one-way operations
+     *         asynchronously, false if all invocations are synchronous
      */
-    Invoker createCallbackInvoker(Operation operation);
-    
-    // InterfaceContract getImplementationInterfaceContract(RuntimeComponentService service);
-    
+    boolean supportsOneWayInvocation();
+
 }

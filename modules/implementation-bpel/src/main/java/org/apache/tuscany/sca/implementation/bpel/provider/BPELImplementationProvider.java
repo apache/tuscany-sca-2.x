@@ -68,10 +68,9 @@ public class BPELImplementationProvider implements ImplementationProvider {
         BPELInvoker invoker = new BPELInvoker(operation, odeServer, txMgr);
         return invoker;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        BPELInvoker invoker = new BPELInvoker(operation, odeServer, txMgr);
-        return invoker;
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {

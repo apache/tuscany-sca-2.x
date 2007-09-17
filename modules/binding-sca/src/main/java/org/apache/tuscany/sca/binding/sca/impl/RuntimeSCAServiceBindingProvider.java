@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.sca.impl;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.domain.Domain;
@@ -30,7 +29,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider2;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
@@ -42,12 +41,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * 
  * @version $Rev$ $Date$
  */
-public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2 {
+public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
   
-	private Domain domain;
+    private Domain domain;
     private RuntimeComponentService service;
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
-    private ServiceBindingProvider2 distributedProvider;
+    private ServiceBindingProvider distributedProvider;
     private DistributedSCABinding distributedBinding;
     
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
@@ -87,8 +86,8 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
                     distributedBinding = new DistributedSCABindingImpl();
                     distributedBinding.setSCABinging(binding);
                     
-                    distributedProvider = (ServiceBindingProvider2)
-                                          distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
+                    distributedProvider = 
+                        distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
                     
                 
                 } else {
@@ -121,16 +120,11 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider2
         }
     }
 
-    public boolean supportsAsyncOneWayInvocation() {
+    public boolean supportsOneWayInvocation() {
         return false;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        throw new UnsupportedOperationException();
-    }
-
+    
     public void start() {
-
         if (distributedProvider != null) {
             distributedProvider.start();
         }

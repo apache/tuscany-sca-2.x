@@ -42,18 +42,18 @@ class RSSReferenceBindingProvider implements ReferenceBindingProvider {
         this.binding = binding;
     }
 
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            return new RSSBindingInvoker(binding.getURI(), "rss_2.0");
-        }
+    public Invoker createInvoker(Operation operation) {
+        return new RSSBindingInvoker(binding.getURI(), "rss_2.0");
+    }
+
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public InterfaceContract getBindingInterfaceContract() {
         return reference.getInterfaceContract();
     }
-
+    
     public void start() {
     }
 

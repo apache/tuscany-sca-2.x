@@ -52,6 +52,10 @@ class EchoServiceBindingProvider implements ServiceBindingProvider {
     public InterfaceContract getBindingInterfaceContract() {
         return service.getInterfaceContract();
     }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
+    }
 
     public void start() {
 

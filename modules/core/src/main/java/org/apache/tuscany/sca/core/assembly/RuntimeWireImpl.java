@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider2;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -212,13 +211,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         try {
             ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
             if (provider != null) {
-                Invoker invoker = null;
-                if (provider instanceof ReferenceBindingProvider2) {
-                    invoker = ((ReferenceBindingProvider2)provider).createInvoker(operation);
-                } else {
-                    // must be an old provider that only has the deprecated signature
-                    invoker = provider.createInvoker(operation, false);
-                }
+                Invoker invoker = provider.createInvoker(operation);
                 if (invoker != null) {
                     chain.addInvoker(invoker);
                 }
@@ -238,13 +231,8 @@ public class RuntimeWireImpl implements RuntimeWire {
     private void addNonBlockingInterceptor(ComponentReference reference, Binding binding, InvocationChain chain) {
         ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
         if (provider != null) {
-            boolean supportsAsyncOneWayInvocation = false;
-            if (provider instanceof ReferenceBindingProvider2) {
-                supportsAsyncOneWayInvocation = ((ReferenceBindingProvider2)provider).supportsAsyncOneWayInvocation();
-            } else {
-                // must be an old provider that doesn't have this method
-            }
-            if (!supportsAsyncOneWayInvocation) {
+            boolean supportsOneWayInvocation = provider.supportsOneWayInvocation();
+            if (!supportsOneWayInvocation) {
                 chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
             }
         }

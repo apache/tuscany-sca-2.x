@@ -88,11 +88,9 @@ class POJOImplementationProvider implements ImplementationProvider {
         POJOImplementationInvoker invoker = new POJOImplementationInvoker(pojoInstance, operation, method);
         return invoker;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        Method method = implementation.getMethods().get(operation.getName()); 
-        POJOImplementationInvoker invoker = new POJOImplementationInvoker(pojoInstance, operation, method);
-        return invoker;
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
 }

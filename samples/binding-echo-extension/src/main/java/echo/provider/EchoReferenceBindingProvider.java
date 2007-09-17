@@ -44,18 +44,18 @@ class EchoReferenceBindingProvider implements ReferenceBindingProvider {
         this.binding = binding;
     }
 
-    public Invoker createInvoker(Operation operation, boolean isCallback) {
-        if (isCallback) {
-            throw new UnsupportedOperationException();
-        } else {
-            if (binding instanceof PolicySetAttachPoint) {
-                PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)binding;
-                if ( !policySetAttachPoint.getPolicySets().isEmpty() ){
-                    return new EchoBindingPoliciedInvoker(policySetAttachPoint.getPolicySets());
-                }
+    public Invoker createInvoker(Operation operation) {
+        if (binding instanceof PolicySetAttachPoint) {
+            PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)binding;
+            if ( !policySetAttachPoint.getPolicySets().isEmpty() ){
+                return new EchoBindingPoliciedInvoker(policySetAttachPoint.getPolicySets());
             }
-            return new EchoBindingInvoker();
         }
+        return new EchoBindingInvoker();
+    }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public InterfaceContract getBindingInterfaceContract() {

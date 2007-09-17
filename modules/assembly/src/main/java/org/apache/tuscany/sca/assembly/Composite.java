@@ -84,14 +84,6 @@ public interface Composite extends Implementation, Extensible, Cloneable {
     void setLocal(boolean local);
 
     /**
-     * Returns true if the component references should be autowired.
-     * 
-     * @return whether component references should be autowired.
-     */
-    @Deprecated
-    boolean isAutowire();
-    
-    /**
      * Return the Boolean value of autowire
      * @return null/TRUE/FALSE
      */

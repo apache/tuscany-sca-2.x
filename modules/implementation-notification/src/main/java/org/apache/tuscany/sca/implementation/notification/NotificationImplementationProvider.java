@@ -45,9 +45,9 @@ public class NotificationImplementationProvider implements ImplementationProvide
         NotificationComponentInvoker invoker = new NotificationComponentInvoker(operation, component);
         return invoker;
     }
-
-    public Invoker createCallbackInvoker(Operation operation) {
-        throw new UnsupportedOperationException();
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
     public void start() {
