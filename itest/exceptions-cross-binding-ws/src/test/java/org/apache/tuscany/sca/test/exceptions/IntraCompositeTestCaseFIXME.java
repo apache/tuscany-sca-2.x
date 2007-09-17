@@ -78,7 +78,7 @@ public class IntraCompositeTestCaseFIXME extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("ExceptionTest.composite");
+        domain = SCADomain.newInstance("intracomposite.composite");
         stockTrader = domain.getService(StockTraderSDO.class, "stockTraderSDOComponent");
         assertNotNull(stockTrader);
     }
