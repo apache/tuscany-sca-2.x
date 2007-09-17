@@ -32,14 +32,6 @@ public class ImmutableMessage implements Message {
         return null;
     }
 
-    public Object getConversationID() {
-        return null;
-    }
-
-    public Object getCorrelationID() {
-        return null;
-    }
-
     public EndpointReference getFrom() {
         return null;
     }
@@ -61,14 +53,6 @@ public class ImmutableMessage implements Message {
     }
 
     public <T> void setBody(T arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setConversationID(Object arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setCorrelationID(Object arg0) {
         throw new UnsupportedOperationException();
     }
 
@@ -103,10 +87,4 @@ public class ImmutableMessage implements Message {
         return null;
     }
 
-    /**
-     * @see org.apache.tuscany.sca.invocation.Message#setReplyTo(org.apache.tuscany.sca.runtime.EndpointReference)
-     */
-    public void setReplyTo(EndpointReference replyTo) {
-        throw new UnsupportedOperationException();
-    }
 }
