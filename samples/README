@@ -3,7 +3,7 @@ The Apache Tuscany SCA Samples
 The Apache Tuscany SCA samples are built as part of the main Maven build and 
 run, using the provided JUnit test cases, as tests in the Maven build.
 
-In the binary distribution of Apache Tuscany the samples can also 
+In the binary distribution of Apache Tuscany most samples can also 
 be run using the provided Ant build.xml files. These show the samples running 
 from a simple main() method without the need for a JUnit test case. 
 
@@ -19,44 +19,53 @@ SCA, bindings, policies, integration in an SOA environment etc..
 Sample Overview
 ---------------
 The samples generally show off different features of the SCA runtime
-and the extensions that come packaged with it. This list is ordered in a rough
-order of increasing complexity. 
+and the extensions that come packaged with it.
 
-calculator               - A calculator built with java components and local 
-                           wires
-calculator-script        - The calculator but this time built using various 
-                           script languages
-calculator-webapp        - The calculator again but this time running inside a 
-                           web app
-chat-webapp              - A simple chat style web app demonsrating how to use
-                           the AJAX binding
-feed-aggregator          - Demonstrates using the ATOM binding
-helloworld-ws-reference  - The client side of a hello world sample that uses a 
-                           web service binding
-helloworld-ws-service    - The server side of a hello world sample that uses a 
-                           web service binding
-helloworld-ws-sdo	 - helloworld using ws binding and SDO
+calculator               - Calculator built with java components and local wires. 
+calculator-script        - Calculator built using various script languages
+calculator-webapp        - Calculator running inside a web app
+calculator-ws-webapp     - Calculator running inside a web app also showing webservices binding
 calculator-rmi-reference - The calculator configured to talk RMI to the 
                            calculator-rmi-service sample
 calculator-rmi-service   - The calculator configured to accept RMI requests 
                            from calculator-rmi-reference
-helloworld-jsonrpc-webapp       - An SCA application that exposes a service using 
-                           JSONRPC
-helloworld-dojo-webapp          - An SCA application that exposes a service using 
+calculator-distributed   - A calculator built using SCA nodes running on multiple JVMs
+   
+chat-webapp              - A simple chat style web app demonsrating use of AJAX binding
+                    
+feed-aggregator          - Demonstrates using the ATOM binding
+feed-aggregator-webapp   - feed-aggregator running in webapp
+
+helloworld-dojo-webapp   -  An SCA application that exposes a service using 
                            JSONRPC and a client using the Dojo toolkit
-simple-callback          - An SCA application with two components demonstrating
-                           the callback interface
-simple-callback-ws       - An SCA application with two components demonstrating
-                           the callback interface across the Web service binding
-implementation-composite - An SCA application that shows how composites are used to 
-                           implement components
-supplychain              - A more complicated sample showing how asynchronous 
-                           callbacks can be used
+helloworld-jsonrpc-webapp- helloworld using jsonrpc binding
+helloworld-ws-reference  - The client side of a hello world sample that uses a 
+                           web service binding (requires helloworld-ws-service)
+helloworld-ws-service    - The server side of a hello world sample that uses a 
+                           web service binding
+helloworld-ws-service-secure -  Shows how policy intent can be used.
+helloworld-ws-sdo        - helloworld using ws binding and SDO
+helloworld-ws-sdo-webapp - helloworld using ws binding and SDO within a webapp
+
+implementation-composite - Shows how SCA composites are used 
+                     
+osgi-supplychain         - SCA asynchronous API with OSGi and Java implementation types
+simple-bigbank           - A banking application built with java components 
+                           and local wire
+simple-bigbank-spring    - A banking application showing how SCA works with Spring
+
+simple-callback          - demonstrates the callback interface
+simple-callback-ws       - demonstrates use of callback interface across WS binding
+store                    - Step by step guide for creating an online store
+supplychain              - shows how asynchronous callbacks can be used
+
 databinding-echo         - An SCA application that shows how databindings 
                            transform data
-simple-bigbank           - A banking application built with java components 
-                           and local wires
+web-resource             - Demonstrates using an SCA Web resource component
 
+
+Samples for building extensions
+-------------------------------
 There are two samples that demonstrate how to build extensions for the 
 Tuscany SCA runtime. These samples are slightly different from the samples
 above in that the provided code is concerned with building the extension
@@ -71,6 +80,8 @@ implementation-crud        - A sample application that exercises the new
 binding-echo-extension     - Shows how to build new binding extensions
 binding-echo               - A sample application that exercises the new 
                              binding extension
+implementation-notifiaction- Illustrates the use of <implementation.notification/>
+implementation-pojo-extension - shows how new implementation types are constructed 
 
 Sample Layout
 -------------
@@ -261,4 +272,5 @@ In a new or existing workspace
 
 The details of how to do this for other development environments will
 vary but the process will be similar. 
+
 
