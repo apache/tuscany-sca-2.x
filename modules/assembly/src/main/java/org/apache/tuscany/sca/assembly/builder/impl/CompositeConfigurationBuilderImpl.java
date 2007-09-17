@@ -133,7 +133,11 @@ public class CompositeConfigurationBuilderImpl {
                     } else {
                         // If there's only one service then binding URI defaults
                         // to the parent URI
-                        bindingURI = parentURI;
+                        if (parentURI != null) {
+                            bindingURI = parentURI;
+                        } else {
+                            bindingURI = String.valueOf(binding.getName());
+                        }
                     }
                 } else {
                     // Combine the specified binding URI with the component URI

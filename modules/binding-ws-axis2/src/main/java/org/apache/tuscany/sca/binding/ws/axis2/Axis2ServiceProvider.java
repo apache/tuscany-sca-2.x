@@ -214,9 +214,11 @@ public class Axis2ServiceProvider {
 
         // if the wsa:EndpointReference has an address element with an absolute URI use that
         if (eprURI != null && eprURI.isAbsolute()) {
-            if (wsBinding.getURI() != null) {
-                throw new IllegalArgumentException("Cannot specify binding URI when wsa:EndpointReference has aboslute address URI");
-            }
+            //FIXME Throwing an exception breaks as wsBinding.getURI() will return the default URI
+            // derived from the service name or the URI actually configured in the .composite
+//            if (wsBinding.getURI() != null) {
+//                throw new IllegalArgumentException("Cannot specify binding URI when wsa:EndpointReference has aboslute address URI");
+//            }
             return URI.create(eprURI.toString());
         }
         
