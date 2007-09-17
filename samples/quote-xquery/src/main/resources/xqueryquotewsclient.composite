@@ -32,6 +32,7 @@
         <tuscany:implementation.xquery location="META-INF/sca/quote_join.xq" />
         <reference name="quoteCalculator" target="QuoteCalculatorComponent" />
     </component>
+
     <component name="QuoteJoinPropertiesComponent">
         <tuscany:implementation.xquery location="META-INF/sca/quote_join_properties.xq" />
         <!-- Reset the default namespace as the sub-elements under pri:priceQuote are
@@ -84,6 +85,7 @@
         <property name="taxRate">0.1</property>
         <reference name="quoteCalculator" target="QuoteCalculatorComponent" />
     </component>
+
     <component name="QuoteJoinExternalReferencesComponent">
         <tuscany:implementation.xquery location="META-INF/sca/quote_join_external_references.xq" />
         <reference name="quoteCalculator" target="QuoteCalculatorComponent" />
