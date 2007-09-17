@@ -314,7 +314,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>sca-definitions</artifactId>
+            <artifactId>tuscany-definitions</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
