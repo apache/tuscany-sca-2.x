@@ -41,22 +41,6 @@ public interface Message {
     <T> void setBody(T body);
 
     /**
-     * @deprecated
-     * Get the conversation id
-     * @return The conversation ID
-     */
-    @Deprecated
-    Object getConversationID();
-
-    /**
-     * @deprecated
-     * Set the conversation id
-     * @param conversationId The conversation ID
-     */
-    @Deprecated
-    void setConversationID(Object conversationId);
-
-    /**
      * Get the end point reference of the source reference
      * @return The end point reference of the reference originating the message
      */
@@ -80,9 +64,6 @@ public interface Message {
      */
     void setTo(EndpointReference to);
     
-    EndpointReference getReplyTo();
-    void setReplyTo(EndpointReference replyTo);
-
     /**
      * Returns the id of the message
      * @return The message Id
@@ -94,21 +75,6 @@ public interface Message {
      * @param messageId The message ID
      */
     void setMessageID(Object messageId);
-
-    /**
-     * Returns the correlation id of the message or null if one is not available. Correlation ids are used by transports
-     * for message routing.
-     * @return The correlation Id
-     */
-    @Deprecated
-    Object getCorrelationID();
-
-    /**
-     * Sets the correlation id of the message. Correlation ids are used by transports for message routing.
-     * @param correlationId The correlation Id
-     */
-    @Deprecated
-    void setCorrelationID(Object correlationId);
 
     /**
      * Determines if the message represents a fault/exception

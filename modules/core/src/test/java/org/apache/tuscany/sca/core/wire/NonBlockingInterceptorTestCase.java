@@ -51,13 +51,14 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         });
         replay(scheduler);
         Message context = createMock(Message.class);
-        String convID = "convID";
-        EasyMock.expect(context.getConversationID()).andReturn(convID);
+        //String convID = "convID";
+        //TODO port to the new way of dealing with conversation IDs later
+        //EasyMock.expect(context.getConversationID()).andReturn(convID);
         EasyMock.replay(context);
         ThreadMessageContext.setMessageContext(context);
         Message msg = createMock(Message.class);
-        msg.setCorrelationID(null);
-        msg.setConversationID(convID);
+        //TODO port to the new way of dealing with conversation IDs later
+        //msg.setConversationID(convID);
         Interceptor next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.eq(msg))).andReturn(msg);
         EasyMock.replay(next);

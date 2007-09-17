@@ -61,18 +61,10 @@ public class NonBlockingInterceptor implements Interceptor {
     }
 
     public Message invoke(final Message msg) {
-        // Retrieve conversation id to transfer to new thread
-        // Notice that we cannot clear the conversation id from the current thread
-        final Object conversationID = ThreadMessageContext.getMessageContext().getConversationID();
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
                 public void run() {
-                    msg.setCorrelationID(null);
-                    // if we got a conversation id, transfer it to new thread
-                    if (conversationID != null) {
-                        msg.setConversationID(conversationID);
-                    }
                     Message context = ThreadMessageContext.setMessageContext(msg);
                     try {
                         next.invoke(msg);
@@ -100,18 +92,6 @@ public class NonBlockingInterceptor implements Interceptor {
      */
     private static class ImmutableMessage implements Message {
 
-        public String getConversationID() {
-            return null;
-        }
-
-        public RuntimeWire getWire() {
-            return null;
-        }
-
-        public void setConversationID(Object conversationId) {
-            throw new UnsupportedOperationException();
-        }
-
         @SuppressWarnings("unchecked")
         public Object getBody() {
             return null;
@@ -132,14 +112,6 @@ public class NonBlockingInterceptor implements Interceptor {
         }
 
         public void setMessageID(Object messageId) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object getCorrelationID() {
-            return null;
-        }
-
-        public void setCorrelationID(Object correlationId) {
             throw new UnsupportedOperationException();
         }
 
@@ -180,13 +152,6 @@ public class NonBlockingInterceptor implements Interceptor {
          */
         public EndpointReference getReplyTo() {
             return null;
-        }
-
-        /**
-         * @see org.apache.tuscany.sca.invocation.Message#setReplyTo(org.apache.tuscany.sca.runtime.EndpointReference)
-         */
-        public void setReplyTo(EndpointReference replyTo) {
-            throw new UnsupportedOperationException();
         }
 
     }

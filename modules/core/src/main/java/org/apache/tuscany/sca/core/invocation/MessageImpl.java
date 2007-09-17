@@ -31,13 +31,11 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 public class MessageImpl implements Message {
     private Object body;
     private Object messageID;
-    private Object correlationID;
     private boolean isFault;
     private Operation operation;
 
     private EndpointReference from;
     private EndpointReference to;
-    private EndpointReference replyTo;
 
     public MessageImpl() {
         this.from = new EndpointReferenceImpl("/");
@@ -54,28 +52,12 @@ public class MessageImpl implements Message {
         this.body = body;
     }
 
-    public Object getConversationID() {
-        return getTo().getReferenceParameters().getConversationID();
-    }
-
-    public void setConversationID(Object conversationID) {
-        getTo().getReferenceParameters().setConversationID(conversationID);
-    }
-
     public Object getMessageID() {
         return messageID;
     }
 
     public void setMessageID(Object messageId) {
         this.messageID = messageId;
-    }
-
-    public Object getCorrelationID() {
-        return correlationID;
-    }
-
-    public void setCorrelationID(Object correlationId) {
-        this.correlationID = correlationId;
     }
 
     public boolean isFault() {
@@ -109,20 +91,6 @@ public class MessageImpl implements Message {
 
     public void setOperation(Operation op) {
         this.operation = op;
-    }
-
-    /**
-     * @return the replyTo
-     */
-    public EndpointReference getReplyTo() {
-        return replyTo;
-    }
-
-    /**
-     * @param replyTo the replyTo to set
-     */
-    public void setReplyTo(EndpointReference replyTo) {
-        this.replyTo = replyTo;
     }
 
 }
