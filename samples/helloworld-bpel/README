@@ -1,0 +1,123 @@
+Hello World BPEL Sample
+======================================
+This sample demonstrates an SCA service implemented by a BPEL process. 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant run
+
+The sample will start the an embedded BPEL engine, deploy process and invoke it.
+
+Sample Overview
+---------------
+The sample provides a single component that is wired to a service with a 
+web service binding.
+
+helloworld-bpel/
+  src/
+    main/
+      java/
+        helloworld/
+          BPELClient.java          		  - client application for  
+                                            BEPELHelloWorldComponent
+
+      resources/
+          deploy.xml					  - ODE deployment descriptor
+          helloworld.bpel				  - helloworld bpel process
+          helloworld.componentType		  - helloworld bpel service description
+          helloworld.composite            - the SCA assembly for this sample
+          helloworld.wsdl                 - the service description that describes
+                                            the bpel process
+          log4j.properties				  - logging configuration
+          
+    test/
+      java/
+        helloworld/
+          BPELHelloWorldTestCase.java     - JUnit test case 
+  helloworld-bpel.png                     - a pictorial representation of the 
+                                            sample .composite file
+  build.xml                               - the Ant build file
+  pom.xml                                 - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant using the 
+following commands
+
+cd helloworld-bpel
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] HelloWorld server started (press enter to shutdown)
+     
+As this point the SCA service is exposed as a web service by a web server 
+started automatically by the SCA runtime. To stop the server just press 
+enter.
+
+To exercise the service run up the helloworld-ws-reference sample. Take a look at 
+the README in that sample and you will see you need the following commands
+
+cd helloworld-ws-reference
+ant run
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. When using Maven you don't need to run the helloworld-
+ws-reference sample as Maven includes a simple ping test to make sure that the
+service is available
+
+cd helloworld-ws-service
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running helloworld.HelloWorldServerTestCase
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+10-May-2007 13:48:42 org.apache.catalina.core.StandardEngine start
+INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
+10-May-2007 13:48:42 org.apache.catalina.startup.ContextConfig defaultWebConfig
+INFO: No default web.xml
+10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.xsd
+10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
+1.dtd
+10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
+2.dtd
+10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_2_
+0.xsd
+10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_1_1.xs
+d
+10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol init
+INFO: Initializing Coyote HTTP/1.1 on http-8085
+10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol start
+INFO: Starting Coyote HTTP/1.1 on http-8085
+10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol destroy
+INFO: Stopping Coyote HTTP/1.1 on http-8085
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.857 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
