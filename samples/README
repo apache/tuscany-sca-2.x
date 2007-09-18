@@ -36,7 +36,9 @@ chat-webapp              - A simple chat style web app demonsrating use of AJAX 
 feed-aggregator          - Demonstrates using the ATOM binding
 feed-aggregator-webapp   - feed-aggregator running in webapp
 
-helloworld-dojo-webapp   -  An SCA application that exposes a service using 
+helloworld-bpel          - Demonstrates an SCA component invoking a BPEL process in a composition
+
+helloworld-dojo-webapp   - An SCA application that exposes a service using 
                            JSONRPC and a client using the Dojo toolkit
 helloworld-jsonrpc-webapp- helloworld using jsonrpc binding
 helloworld-ws-reference  - The client side of a hello world sample that uses a 
