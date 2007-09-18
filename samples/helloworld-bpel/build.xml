@@ -192,7 +192,7 @@
         </jar>    	
     </target>	
 	
-    <target name="run" depends="compile">
+    <target name="run">
         <java classname="${client.class}" fork="true">
             <classpath path="target/${test.jar}"/>
             <classpath refid="project.classpath"/>
