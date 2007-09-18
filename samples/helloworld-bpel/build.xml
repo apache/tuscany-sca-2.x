@@ -127,7 +127,6 @@
         
         <pathelement location="${tuscany.sca.lib.location}/geronimo-spec-jta-1.0.1B-rc4.jar"/>        
         <pathelement location="${tuscany.sca.lib.location}/activation-1.1.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/xercesImpl-2.8.0.jar"/>        
         <pathelement location="${tuscany.sca.lib.location}/mail-1.4.jar"/>        
         
         <pathelement location="${tuscany.sca.lib.location}/xstream-1.1.3.jar"/>        
