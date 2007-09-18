@@ -26,7 +26,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     SCADomain scaDomain = (SCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
-    HelloWorld helloWorld = scaDomain.getService(HelloWorld.class, "HelloWorldServiceComponent");
+    HelloWorld helloWorld = (HelloWorld)scaDomain.getService(HelloWorld.class, "HelloWorldServiceComponent");
 %>
 <html>
 <head><title>Hello World SDO sample</title></head>
