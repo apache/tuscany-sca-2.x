@@ -82,7 +82,8 @@ public class BPELImplementationProvider implements ImplementationProvider {
                 odeServer.init();
             }
 
-            URL deployURL = getClass().getClassLoader().getResource("deploy.xml");
+            URL deployURL = this.implementation.getProcessDefinition().getLocation();
+            
             File deploymentDir = new File(deployURL.toURI().getPath()).getParentFile();
             System.out.println("Deploying : " + deploymentDir.toString());
             System.out.println(deploymentDir);

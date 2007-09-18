@@ -110,6 +110,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                 throw new ContributionResolveException("Can't find BPEL Process : " + processDefinition.getName());
             }
             
+            impl.setProcessDefinition(processDefinition);
+            
             //resolve component type
             mergeComponentType(resolver, impl);
                         

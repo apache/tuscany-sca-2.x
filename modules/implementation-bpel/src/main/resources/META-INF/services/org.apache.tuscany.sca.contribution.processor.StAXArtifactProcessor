@@ -17,4 +17,3 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#implementation.bpel,model=org.apache.tuscany.sca.implementation.bpel.BPELImplementation
-org.apache.tuscany.sca.implementation.bpel.impl.BPELDocumentProcessor;qname=http://schemas.xmlsoap.org/ws/2004/03/business-process#process,model=org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition
