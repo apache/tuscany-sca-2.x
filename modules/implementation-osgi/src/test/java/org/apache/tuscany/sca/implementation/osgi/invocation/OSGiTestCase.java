@@ -51,7 +51,7 @@ public class OSGiTestCase extends TestCase {
     
     @Override
     protected void tearDown() throws Exception {
-        OSGiRuntime.getRuntime().shutdown();
+        OSGiRuntime.stop();
     }
     
     public void testOSGiComponent() throws Exception {

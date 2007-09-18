@@ -45,9 +45,9 @@ import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
  * @version $Rev$ $Date$
  */
 public class OSGiImportExportListener implements ContributionListener {
-    
+
     private OSGiBundleProcessor bundleProcessor;
-    
+
     public OSGiImportExportListener() {
         bundleProcessor = new OSGiBundleProcessor();
     }
@@ -57,58 +57,56 @@ public class OSGiImportExportListener implements ContributionListener {
      * Export model resolvers are same as Contribution model resolver
      * Import model resolvers are matched to a specific contribution if a location uri is specified, 
      *    otherwise it try to resolve agains all the other contributions
-     */    
+     */
     public void contributionAdded(ContributionRepository repository, Contribution contribution) {
-        
-        OSGiRuntime osgiRuntime;
-        
+
+        OSGiRuntime osgiRuntime = null;
         try {
-            osgiRuntime = OSGiRuntime.getRuntime();
-            
-            if (bundleProcessor.installContributionBundle(contribution) == null)
+            if (bundleProcessor.installContributionBundle(contribution) == null) {
                 return;
+            } else {
+                osgiRuntime = OSGiRuntime.getRuntime();
+            }
         } catch (Exception e) {
             return;
         }
-        
 
         HashSet<Contribution> bundlesToInstall = new HashSet<Contribution>();
         // Initialize the contribution imports
-        for (Import import_: contribution.getImports()) {
+        for (Import import_ : contribution.getImports()) {
             boolean initialized = false;
-            
-           
-            if(import_ instanceof JavaImport) {
-                JavaImport javaImport = (JavaImport) import_;
+
+            if (import_ instanceof JavaImport) {
+                JavaImport javaImport = (JavaImport)import_;
                 String packageName = javaImport.getPackage();
-                
+
                 //Find a matching contribution
-                if(javaImport.getLocation() != null) {
+                if (javaImport.getLocation() != null) {
                     Contribution targetContribution = repository.getContribution(javaImport.getLocation());
                     if (targetContribution != null) {
-                    
+
                         // Find a matching contribution export
-                        for (Export export: targetContribution.getExports()) {
+                        for (Export export : targetContribution.getExports()) {
                             if (export instanceof JavaExport) {
                                 JavaExport javaExport = (JavaExport)export;
                                 if (packageName.equals(javaExport.getPackage())) {
-                                    
+
                                     if (osgiRuntime.findBundle(targetContribution.getLocation()) == null)
                                         bundlesToInstall.add(targetContribution);
-                                        
+
                                     initialized = true;
-                                    
+
                                 }
                             }
                             if (initialized)
                                 break;
                         }
-                    }                    
+                    }
                 }
             }
             if (!initialized) {
                 for (Contribution c : repository.getContributions()) {
-                    
+
                     // Go over all exports in the contribution
                     for (Export export : c.getExports()) {
                         // If the export matches our namespace, try to the resolve the model object
@@ -121,7 +119,7 @@ public class OSGiImportExportListener implements ContributionListener {
         }
         for (Contribution c : bundlesToInstall) {
             try {
-                    installDummyBundle(osgiRuntime, c);
+                installDummyBundle(osgiRuntime, c);
             } catch (Exception e) {
             }
         }
@@ -132,10 +130,12 @@ public class OSGiImportExportListener implements ContributionListener {
 
     }
 
-    public void contributionUpdated(ContributionRepository repository, Contribution oldContribution, Contribution contribution) {
+    public void contributionUpdated(ContributionRepository repository,
+                                    Contribution oldContribution,
+                                    Contribution contribution) {
 
     }
-    
+
     private void installDummyBundle(OSGiRuntime osgiRuntime, Contribution contribution) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -143,38 +143,47 @@ public class OSGiImportExportListener implements ContributionListener {
 
         String bundleName = contribution.getURI();
         String uri = contribution.getURI();
-        
+
         StringBuffer exportPackageNames = new StringBuffer();
         for (Export export : contribution.getExports()) {
             if (export instanceof JavaExport) {
-                if (exportPackageNames.length() > 0) exportPackageNames.append(",");
+                if (exportPackageNames.length() > 0)
+                    exportPackageNames.append(",");
                 exportPackageNames.append(((JavaExport)export).getPackage());
             }
         }
         StringBuffer importPackageNames = new StringBuffer();
         for (Import import_ : contribution.getImports()) {
             if (import_ instanceof JavaImport) {
-                if (importPackageNames.length() > 0) importPackageNames.append(",");
+                if (importPackageNames.length() > 0)
+                    importPackageNames.append(",");
                 importPackageNames.append(((JavaImport)import_).getPackage());
             }
         }
 
-        String manifestStr = "Manifest-Version: 1.0" + EOL
-                + "Bundle-ManifestVersion: 2" + EOL + "Bundle-Name: "
-                + bundleName + EOL + "Bundle-SymbolicName: " + bundleName + EOL
-                + "Bundle-Version: " + "1.0.0" + EOL
-                + "Bundle-Localization: plugin" + EOL;
-        
+        String manifestStr =
+            "Manifest-Version: 1.0" + EOL
+                + "Bundle-ManifestVersion: 2"
+                + EOL
+                + "Bundle-Name: "
+                + bundleName
+                + EOL
+                + "Bundle-SymbolicName: "
+                + bundleName
+                + EOL
+                + "Bundle-Version: "
+                + "1.0.0"
+                + EOL
+                + "Bundle-Localization: plugin"
+                + EOL;
 
         StringBuilder manifestBuf = new StringBuilder();
         manifestBuf.append(manifestStr);
-        manifestBuf.append("Export-Package: " + exportPackageNames + EOL); 
-        manifestBuf.append("Import-Package: " + importPackageNames + EOL); 
+        manifestBuf.append("Export-Package: " + exportPackageNames + EOL);
+        manifestBuf.append("Import-Package: " + importPackageNames + EOL);
         manifestBuf.append("Bundle-ClassPath: .," + uri + EOL);
-        
 
-        ByteArrayInputStream manifestStream = new ByteArrayInputStream(
-                manifestBuf.toString().getBytes());
+        ByteArrayInputStream manifestStream = new ByteArrayInputStream(manifestBuf.toString().getBytes());
         Manifest manifest = new Manifest();
         manifest.read(manifestStream);
 
@@ -184,15 +193,14 @@ public class OSGiImportExportListener implements ContributionListener {
         jarOut.putNextEntry(ze);
         URL url = new URL(contribution.getLocation());
         InputStream stream = url.openStream();
-            
+
         byte[] bytes = new byte[stream.available()];
         stream.read(bytes);
         jarOut.write(bytes);
         stream.close();
-        
+
         jarOut.close();
         out.close();
-        
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
 

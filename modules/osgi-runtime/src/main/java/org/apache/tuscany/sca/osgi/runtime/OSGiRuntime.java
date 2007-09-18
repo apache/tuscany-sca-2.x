@@ -18,28 +18,30 @@
  */
 package org.apache.tuscany.sca.osgi.runtime;
 
-
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.packageadmin.PackageAdmin;
 
-public abstract class OSGiRuntime  {
-    
+public abstract class OSGiRuntime {
+    private static final Logger logger = Logger.getLogger(OSGiRuntime.class.getName());
     private BundleContext bundleContext;
-    
+
     public abstract BundleContext getBundleContext();
-    
-    public abstract void shutdown() throws Exception;
-    
+
+    protected abstract void shutdown() throws Exception;
+
     public abstract boolean supportsBundleFragments();
-    
+
     private PackageAdmin packageAdmin;
-    
-   
+
+    private static OSGiRuntime instance;
+
     /**
      * System property org.apache.tuscany.implementation.osgi.runtime.OSGiRuntime can be set to the
      * name of the OSGiRuntime class (eg. EquinoxRuntime). If set, start this runtime and return the
@@ -48,105 +50,106 @@ public abstract class OSGiRuntime  {
      * 
      * @throws BundleException
      */
-    public static OSGiRuntime getRuntime() throws Exception {
-        
+    public synchronized static OSGiRuntime getRuntime() throws Exception {
+        if (instance != null) {
+            return instance;
+        }
         String runtimeClassName = System.getProperty(OSGiRuntime.class.getName());
 
         if (runtimeClassName != null) {
             try {
                 Class<?> runtimeClass = OSGiRuntime.class.getClassLoader().loadClass(runtimeClassName);
                 Method method = runtimeClass.getMethod("getInstance");
-                return (OSGiRuntime) method.invoke(null);
-                
+                instance = (OSGiRuntime)method.invoke(null);
+                return instance;
+
             } catch (Exception e) {
                 throw new BundleException("Could not start OSGi runtime " + runtimeClassName, e);
             }
         }
-        
+
         try {
-            
-            return EquinoxRuntime.getInstance();
-            
+            instance = EquinoxRuntime.getInstance();
+            return instance;
+
         } catch (ClassNotFoundException e) {
-        } catch (Throwable e) {   
-            e.printStackTrace();
-        } 
-        
+            // Ignore
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+
         try {
-            
-            return FelixRuntime.getInstance();
-            
+            instance = FelixRuntime.getInstance();
+            return instance;
         } catch (ClassNotFoundException e) {
-        } catch (Throwable e) {   
-            e.printStackTrace();
-        } 
-        
+            // Ignore
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+
         try {
-            
-            return KnopflerfishRuntime.getInstance();
-            
+            instance = KnopflerfishRuntime.getInstance();
+            return instance;
         } catch (ClassNotFoundException e) {
-        } catch (Throwable e) {   
-            e.printStackTrace();
-        } 
-        
+            // Ignore
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+
         throw new BundleException("Could not start OSGi runtime from the classpath");
     }
-    
+
     private void initialize() {
-    	if (bundleContext == null)
+        if (bundleContext == null)
             bundleContext = getBundleContext();
-    	
-    	if (bundleContext != null) {
-        
-    	    org.osgi.framework.ServiceReference packageAdminReference = 
+
+        if (bundleContext != null) {
+
+            org.osgi.framework.ServiceReference packageAdminReference =
                 bundleContext.getServiceReference("org.osgi.service.packageadmin.PackageAdmin");
             if (packageAdminReference != null) {
-    	  
-                packageAdmin = (PackageAdmin) bundleContext.getService(packageAdminReference);
+
+                packageAdmin = (PackageAdmin)bundleContext.getService(packageAdminReference);
             }
-    	}
-        
+        }
+
     }
-  
 
     public Bundle findBundle(String bundleSymbolicName, String bundleVersion) {
-        
-    	initialize();
-        
+
+        initialize();
+
         if (bundleContext != null) {
             Bundle[] installedBundles = bundleContext.getBundles();
             for (Bundle bundle : installedBundles) {
-                if (bundleSymbolicName.equals(bundle.getSymbolicName()) &&
-                        (bundleVersion == null || 
-                         bundleVersion.equals(bundle.getHeaders().get("Bundle-Version"))))
-                     return bundle;
+                if (bundleSymbolicName.equals(bundle.getSymbolicName()) && (bundleVersion == null || bundleVersion
+                    .equals(bundle.getHeaders().get("Bundle-Version"))))
+                    return bundle;
             }
-                
+
         }
         return null;
     }
-    
 
     public Bundle findBundle(String bundleLocation) {
-        
+
         initialize();
-        
+
         if (bundleContext != null) {
             Bundle[] installedBundles = bundleContext.getBundles();
             for (Bundle bundle : installedBundles) {
                 if (bundle.getLocation().equals(bundleLocation))
-                     return bundle;
+                    return bundle;
             }
-                
+
         }
         return null;
     }
-   
+
     public Bundle installBundle(String bundleLocation, InputStream inputStream) {
-        
-    	initialize();
-       
+
+        initialize();
+
         try {
             if (bundleContext != null) {
                 Bundle bundle = findBundle(bundleLocation);
@@ -156,15 +159,25 @@ public abstract class OSGiRuntime  {
                     bundle = bundleContext.installBundle(bundleLocation);
                 else
                     bundle = bundleContext.installBundle(bundleLocation, inputStream);
-                
+
                 if (bundle != null && packageAdmin != null)
-                	packageAdmin.refreshPackages(null);
-                
+                    packageAdmin.refreshPackages(null);
+
                 return bundle;
             }
         } catch (BundleException e) {
         }
         return null;
+    }
+
+    /**
+     * @return the instance
+     */
+    public synchronized static void stop() throws Exception {
+        if (instance != null) {
+            instance.shutdown();
+            instance = null;
+        }
     }
 
 }

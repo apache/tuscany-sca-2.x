@@ -24,6 +24,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph;
 import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
@@ -32,6 +34,7 @@ import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
  * @version $Rev$ $Date$
  */
 public class DefaultTransformerExtensionPoint implements TransformerExtensionPoint {
+	private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
     private boolean loadedTransformers;
     
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
@@ -40,14 +43,32 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     }
     
     public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
+    	if (logger.isLoggable(Level.FINE)) {
+			String className = transformer.getClass().getName();
+			boolean lazy = false;
+			boolean pull = (transformer instanceof PullTransformer);
+			if (transformer instanceof LazyPullTransformer) {
+				className = ((LazyPullTransformer) transformer).className;
+				lazy = true;
+			}
+			if (transformer instanceof LazyPushTransformer) {
+				className = ((LazyPushTransformer) transformer).className;
+				lazy = true;
+			}
+
+			logger.fine("Adding transformer: " + className + ";source="
+					+ sourceType + ",target=" + resultType + ",weight="
+					+ weight + ",type=" + (pull ? "pull" : "push") + ",lazy="
+					+ lazy);
+		}
         graph.addEdge(sourceType, resultType, transformer, weight);
     }
 
     public void addTransformer(Transformer transformer) {
-        graph.addEdge(transformer.getSourceDataBinding(),
+        addTransformer(transformer.getSourceDataBinding(),
             transformer.getTargetDataBinding(),
-            transformer,
-            transformer.getWeight());
+            transformer.getWeight(),
+            transformer);
     }
 
     public boolean removeTransformer(String sourceType, String resultType) {
