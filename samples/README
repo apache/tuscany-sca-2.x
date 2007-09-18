@@ -259,7 +259,7 @@ In a new or existing workspace
     Create a new java project to represent the sample you want to work on, e.g.
         calculator
     Import all of the sample code and resources into this project, e.g.
-        File, Import and then select tuscany-sca-0.90-incubating\samples\calculator from the filesystem
+        File, Import and then select tuscany-sca-1.0-incubating\samples\calculator from the filesystem
     Configure the source path to include
         src/main/java
         src/main/resources
