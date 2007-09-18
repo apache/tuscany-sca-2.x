@@ -63,6 +63,7 @@ databinding-echo         - An SCA application that shows how databindings
                            transform data
 web-resource             - Demonstrates using an SCA Web resource component
 
+quote-xquery             - Demonstrate SCA components using XQuery
 
 Samples for building extensions
 -------------------------------
