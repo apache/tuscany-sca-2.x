@@ -23,13 +23,13 @@ helloworld-bpel/
     main/
       java/
         helloworld/
-          BPELClient.java          		  - client application for  
+          BPELClient.java          	  - client application for  
                                             BEPELHelloWorldComponent
 
       resources/
-          deploy.xml					  - ODE deployment descriptor
-          helloworld.bpel				  - helloworld bpel process
-          helloworld.componentType		  - helloworld bpel service description
+          deploy.xml			  - ODE deployment descriptor
+          helloworld.bpel		  - helloworld bpel process
+          helloworld.componentType	  - helloworld bpel service description
           helloworld.composite            - the SCA assembly for this sample
           helloworld.wsdl                 - the service description that describes
                                             the bpel process
@@ -56,68 +56,64 @@ ant run
 You should see the following output from the run target.
 
 run:
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
-     [java] HelloWorld server started (press enter to shutdown)
+     [java] ...
+     [java] ...     
      
-As this point the SCA service is exposed as a web service by a web server 
-started automatically by the SCA runtime. To stop the server just press 
-enter.
-
-To exercise the service run up the helloworld-ws-reference sample. Take a look at 
-the README in that sample and you will see you need the following commands
-
-cd helloworld-ws-reference
-ant run
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
 With either the binary or source distributions the sample can be built and run 
-using Maven as follows. When using Maven you don't need to run the helloworld-
-ws-reference sample as Maven includes a simple ping test to make sure that the
-service is available
+using Maven as follows. When using Maven, a simple test is present that exercise
+the same logic as the client to invoke the BPEl process.
 
-cd helloworld-ws-service
+cd helloworld-bpel
 mvn
 
 You should see the following output from the test phase.
 
+-
+
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running helloworld.HelloWorldServerTestCase
-log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
-Utils).
-log4j:WARN Please initialize the log4j system properly.
-10-May-2007 13:48:42 org.apache.catalina.core.StandardEngine start
-INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
-10-May-2007 13:48:42 org.apache.catalina.startup.ContextConfig defaultWebConfig
-INFO: No default web.xml
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
-WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.xsd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
-WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
-1.dtd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
-WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
-2.dtd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
-WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_2_
-0.xsd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
-WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_1_1.xs
-d
-10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol init
-INFO: Initializing Coyote HTTP/1.1 on http-8085
-10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol start
-INFO: Starting Coyote HTTP/1.1 on http-8085
-10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol destroy
-INFO: Stopping Coyote HTTP/1.1 on http-8085
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.857 sec
+Running helloworld.BPELHelloWorldTestCase
+Starting BPELHelloWorldComponent org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl
+INFO - GeronimoLog.info(79) | BPEL Server Started.
+10:19:31,609 INFO  [BpelServerImpl] BPEL Server Started.
+Deploying : D:\dev\Opensource\Apache\Tuscany\source\java\sca\samples\helloworld-bpel\target\classes
+D:\dev\Opensource\Apache\Tuscany\source\java\sca\samples\helloworld-bpel\target\classes
+INFO - GeronimoLog.info(79) | Process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1 has been unregistered.
+10:19:37,656 INFO  [BpelServerImpl] Process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1 has been unregistered.
+INFO - GeronimoLog.info(79) | Activated process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1.
+10:19:38,312 INFO  [BpelServerImpl] Activated process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1.
+INFO - GeronimoLog.info(79) | Process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1 has been unregistered.
+10:19:38,312 INFO  [BpelServerImpl] Process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1 has been unregistered.
+INFO - GeronimoLog.info(79) | Activated process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1.
+10:19:38,453 INFO  [BpelServerImpl] Activated process {http://tuscany.apache.org/implementation/bpel/example/helloworld}HelloWorld-1.
+::message:: <?xml version="1.0" encoding="UTF-8"?>
+<message><TestPart><hello xmlns="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"/></TestPart></message>
+Status: RESPONSE
+Response: <?xml version="1.0" encoding="UTF-8"?>
+<message><TestPart><hello xmlns="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"> World</hello></TestPart></message>
+Stopping BPELHelloWorldComponent org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.031 sec
 
 Results :
 
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] [jar:jar]
+[INFO] Building jar: D:\dev\Opensource\Apache\Tuscany\source\java\sca\samples\helloworld-bpel\target\sample-helloworld-bpel.jar
+[INFO] [install:install]
+[INFO] Installing D:\dev\Opensource\Apache\Tuscany\source\java\sca\samples\helloworld-bpel\target\sample-helloworld-bpel.jar to C:\Documents and Settings\lresende\.m
+2\repository\org\apache\tuscany\sca\sample-helloworld-bpel\1.1-incubating-SNAPSHOT\sample-helloworld-bpel-1.1-incubating-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1 minute 3 seconds
+[INFO] Finished at: Tue Sep 18 10:19:41 PDT 2007
+[INFO] Final Memory: 24M/46M
+[INFO] ------------------------------------------------------------------------
+
 
 This shows that the Junit test cases have run successfully. 
