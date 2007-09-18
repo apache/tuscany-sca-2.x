@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.xquery;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -31,8 +35,11 @@ public class XQueryImplementationProviderFactory implements ImplementationProvid
 
     private JavaPropertyValueObjectFactory javaFactory;
 
-    public XQueryImplementationProviderFactory(JavaPropertyValueObjectFactory javaFactory) {
-        this.javaFactory = javaFactory;
+    public XQueryImplementationProviderFactory(ExtensionPointRegistry registry) {
+        DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
+        MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
+        this.javaFactory = new JavaPropertyValueObjectFactory(mediator);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,

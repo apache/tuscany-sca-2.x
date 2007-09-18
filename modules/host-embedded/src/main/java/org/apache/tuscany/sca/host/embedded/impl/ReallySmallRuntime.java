@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -58,7 +60,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntime {
-
+	private final static Logger logger = Logger.getLogger(ReallySmallRuntime.class.getName());
     private List<ModuleActivator> modules;
     private ExtensionPointRegistry registry;
 
@@ -76,7 +78,8 @@ public class ReallySmallRuntime {
     }
 
     public void start() throws ActivationException {
-
+    	long start = System.currentTimeMillis();
+    	
         // Create our extension point registry
         registry = new DefaultExtensionPointRegistry();
 
@@ -154,6 +157,10 @@ public class ReallySmallRuntime {
                                                                             scaBindingFactory,
                                                                             mapper,
                                                                             domainPolicySets);
+        if (logger.isLoggable(Level.FINE)) {
+            long end = System.currentTimeMillis();
+			logger.fine("The tuscany runtime is started in " + (end - start) + " ms.");
+		}
     }
     
     private SCADefinitions loadDomainDefinitions(SCADefinitionsDocumentProcessor definitionsProcessor) throws ActivationException {
@@ -174,6 +181,7 @@ public class ReallySmallRuntime {
     }
 
     public void stop() throws ActivationException {
+    	long start = System.currentTimeMillis();
 
         // Stop the runtime modules
         stopModules(registry, modules);
@@ -189,6 +197,11 @@ public class ReallySmallRuntime {
         compositeActivator = null;
         workScheduler = null;
         scopeRegistry = null;
+        
+        if (logger.isLoggable(Level.FINE)) {
+            long end = System.currentTimeMillis();
+			logger.fine("The tuscany runtime is stopped in " + (end - start) + " ms.");
+		}
     }
 
     public ContributionService getContributionService() {
@@ -233,16 +246,35 @@ public class ReallySmallRuntime {
     }
     
     private void startModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) throws ActivationException {
-
+    	boolean debug = logger.isLoggable(Level.FINE);
         // Start all the extension modules
-        for (ModuleActivator activator : modules) {
-            activator.start(registry);
+        for (ModuleActivator module : modules) {
+            long start = 0L;
+        	if (debug) {
+				logger.fine(module.getClass().getName() + " is starting.");
+            	start = System.currentTimeMillis();
+        	}
+            module.start(registry);
+            if (debug) {
+				long end = System.currentTimeMillis();
+				logger.fine(module.getClass().getName() + " is started in " + (end - start) + " ms.");
+			}
         }
     }
 
     private void stopModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) {
+    	boolean debug = logger.isLoggable(Level.FINE);
         for (ModuleActivator module : modules) {
+            long start = 0L;
+        	if (debug) {
+				logger.fine(module.getClass().getName() + " is stopping.");
+            	start = System.currentTimeMillis();
+        	}
             module.stop(registry);
+            if (debug) {
+				long end = System.currentTimeMillis();
+				logger.fine(module.getClass().getName() + " is stopped in " + (end - start) + " ms.");
+			}
         }
     }
 

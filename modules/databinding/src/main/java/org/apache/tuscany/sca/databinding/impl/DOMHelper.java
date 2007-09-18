@@ -23,8 +23,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
@@ -71,6 +73,41 @@ public final class DOMHelper {
         String qname =
             (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name.getLocalPart();
         return document.createElementNS(name.getNamespaceURI(), qname);
+    }
+
+    /**
+     * Wrap an element as a DOM document
+     * @param node
+     * @return
+     */
+    public static Document promote(Node node) {
+        if (node instanceof Document) {
+            return (Document)node;
+        }
+        Element element = (Element)node;
+        Document doc = element.getOwnerDocument();
+        if (doc.getDocumentElement() == element) {
+            return doc;
+        }
+        doc = (Document)element.getOwnerDocument().cloneNode(false);
+        Element schema = (Element)doc.importNode(element, true);
+        doc.appendChild(schema);
+        Node parent = element.getParentNode();
+        while (parent instanceof Element) {
+            Element root = (Element)parent;
+            NamedNodeMap nodeMap = root.getAttributes();
+            for (int i = 0; i < nodeMap.getLength(); i++) {
+                Attr attr = (Attr)nodeMap.item(i);
+                String name = attr.getName();
+                if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
+                    if (schema.getAttributeNode(name) == null) {
+                        schema.setAttributeNodeNS((Attr)doc.importNode(attr, true));
+                    }
+                }
+            }
+            parent = parent.getParentNode();
+        }
+        return doc;
     }
 
 }

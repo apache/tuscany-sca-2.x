@@ -19,40 +19,54 @@
 
 package org.apache.tuscany.sca.osgi.runtime;
 
-import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
-import org.osgi.framework.BundleContext;
-
 import junit.framework.TestCase;
+
+import org.osgi.framework.BundleContext;
 
 /**
  * Test OSGi runtime.
  * 
  */
 public class OSGiRuntimeTestCase extends TestCase {
-    
-    public void testRuntime() throws Exception {
-        
-        BundleContext bc1 = OSGiRuntime.getRuntime().getBundleContext();
-        
-        assertNotNull(bc1);
-        
-        BundleContext bc2 = OSGiRuntime.getRuntime().getBundleContext();
-        
-        assertNotNull(bc2);
-        
-        assertTrue(bc1 == bc2);
-        
-        OSGiRuntime.getRuntime().shutdown();
-        
-        BundleContext bc3 = OSGiRuntime.getRuntime().getBundleContext();
-        
-        assertNotNull(bc3);
-        
-        assertTrue(bc1 != bc3);
-        
-        
-        
+    private OSGiRuntime runtime;
+
+    /**
+     * @see junit.framework.TestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        this.runtime = OSGiRuntime.getRuntime();
     }
 
-   
+    /**
+     * @see junit.framework.TestCase#tearDown()
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        OSGiRuntime.stop();
+    }
+
+    public void testRuntime() throws Exception {
+
+        BundleContext bc1 = runtime.getBundleContext();
+
+        assertNotNull(bc1);
+
+        BundleContext bc2 = runtime.getBundleContext();
+
+        assertNotNull(bc2);
+
+        assertTrue(bc1 == bc2);
+
+        OSGiRuntime.stop();
+        runtime = OSGiRuntime.getRuntime();
+
+        BundleContext bc3 = runtime.getBundleContext();
+
+        assertNotNull(bc3);
+
+        assertTrue(bc1 != bc3);
+
+    }
+
 }

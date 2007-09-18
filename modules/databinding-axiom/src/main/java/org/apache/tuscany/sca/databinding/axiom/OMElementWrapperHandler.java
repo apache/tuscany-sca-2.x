@@ -110,15 +110,21 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
 
     public Object getChild(OMElement wrapper, ElementInfo childElement, int index, TransformationContext context) {
         int pos = 0;
+        String wrapperNS = wrapper.getQName().getNamespaceURI();
         for (Iterator i = wrapper.getChildElements(); i.hasNext();) {
             OMElement e = (OMElement)i.next();
             if (pos == index) {
                 TypeInfo type = childElement.getType();
-                if (type != null) {
+                if (!childElement.getQName().equals(e.getQName()) && type != null) {
                     OMAttribute attr = e.getAttribute(XSI_TYPE_QNAME);
                     if (attr == null) {
-                        OMNamespace ns =
-                            e.getOMFactory().createOMNamespace(type.getQName().getNamespaceURI(), "_typens_");
+                        String typeNS = type.getQName().getNamespaceURI();
+                        if (wrapperNS != null) {
+                            // FIXME: [rfeng] Workaround for TUSCANY-1713, assuming the type
+                            // namespace is the same as the wrapper
+                            typeNS = wrapperNS;
+                        }
+                        OMNamespace ns = e.getOMFactory().createOMNamespace(typeNS, "_typens_");
                         e.declareNamespace(ns);
                         OMNamespace xsiNS =
                             e.getOMFactory().createOMNamespace(XSI_TYPE_QNAME.getNamespaceURI(),

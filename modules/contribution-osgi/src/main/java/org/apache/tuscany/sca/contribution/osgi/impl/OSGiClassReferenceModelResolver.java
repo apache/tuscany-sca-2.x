@@ -40,8 +40,7 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
     private Map<String, ClassReference> map = new HashMap<String, ClassReference>();
     private Bundle bundle;
     private boolean initialized;
-    
-    
+
     public OSGiClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
     }
@@ -50,11 +49,11 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
         ClassReference clazz = (ClassReference)resolved;
         map.put(clazz.getClassName(), clazz);
     }
-    
+
     public Object removeModel(Object resolved) {
         return map.remove(((ClassReference)resolved).getClassName());
     }
-    
+
     /**
      * Handle artifact resolution when the specific class reference is imported from another contribution
      * @param unresolved
@@ -63,66 +62,63 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
     private ClassReference resolveImportedModel(ClassReference unresolved) {
         ClassReference resolved = unresolved;
 
-        if( this.contribution != null) {
+        if (this.contribution != null) {
             for (Import import_ : this.contribution.getImports()) {
-                
+
                 if (resolved == unresolved && bundle != null) {
                     resolved = import_.getModelResolver().resolveModel(ClassReference.class, unresolved);
                     if (resolved != unresolved)
-                            break;
+                        break;
                 }
             }
-            
+
         }
         return resolved;
     }
-    
-    
+
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
-        
-        if (resolved != null ){
+
+        if (resolved != null) {
             return modelClass.cast(resolved);
-        } 
+        }
         initialize();
 
         //Load a class on demand
         Class clazz = null;
         if (bundle != null) {
-                try {
-                    clazz = bundle.loadClass(((ClassReference)unresolved).getClassName());
-                } catch (Exception e) {
-                    // we will later try to delegate to imported model resolvers
-                } 
+            try {
+                clazz = bundle.loadClass(((ClassReference)unresolved).getClassName());
+            } catch (Exception e) {
+                // we will later try to delegate to imported model resolvers
+            }
         }
-        
-        
+
         if (clazz != null) {
             //if we load the class            
             // Store a new ClassReference wrappering the loaded class
             ClassReference classReference = new ClassReference(clazz);
             map.put(getPackageName(classReference), classReference);
-            
+
             // Return the resolved ClassReference
-            return modelClass.cast(classReference);            
+            return modelClass.cast(classReference);
         } else {
             //delegate resolution of the class
             resolved = this.resolveImportedModel((ClassReference)unresolved);
             return modelClass.cast(resolved);
         }
-        
 
     }
-    
+
     /***************
      * Helper methods
      ***************/
-    
+
     private String getPackageName(ClassReference clazz) {
         int pos = clazz.getClassName().lastIndexOf(".");
-        return clazz.getClassName().substring(0, pos - 1 );
+        return clazz.getClassName().substring(0, pos - 1);
     }
-    
+
     private void initialize() {
         if (initialized)
             return;

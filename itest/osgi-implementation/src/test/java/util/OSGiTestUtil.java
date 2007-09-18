@@ -61,7 +61,7 @@ public  class OSGiTestUtil  {
     
     public static void shutdownOSGiRuntime()  {
         try {
-            OSGiRuntime.getRuntime().shutdown();
+            OSGiRuntime.stop();
         
         } catch (Exception e) {
             // Ignore

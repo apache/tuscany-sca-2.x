@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -51,9 +52,9 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
 
-    public XQueryImplementationProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
+    public XQueryImplementationProcessor(ModelFactoryExtensionPoint modelFactoryExtensionPoint) {
+        this.assemblyFactory = modelFactoryExtensionPoint.getFactory(AssemblyFactory.class);
+        this.javaFactory = modelFactoryExtensionPoint.getFactory(JavaInterfaceFactory.class);
     }
 
     public QName getArtifactType() {

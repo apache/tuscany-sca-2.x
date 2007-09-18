@@ -25,6 +25,8 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
@@ -38,6 +40,7 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  */
 public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoint {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
+	private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
     private boolean loadedDataBindings;
 
     public DefaultDataBindingExtensionPoint() {
@@ -56,7 +59,17 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     }
 
     public void addDataBinding(DataBinding dataBinding) {
-        bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
+    	if (logger.isLoggable(Level.FINE)) {
+			String className = dataBinding.getClass().getName();
+			boolean lazy = false;
+			if (dataBinding instanceof LazyDataBinding) {
+				className = ((LazyDataBinding) dataBinding).className;
+				lazy = true;
+			}
+			logger.fine("Adding databinding: " + className + ";type="
+					+ dataBinding.getName() + ",lazy=" + lazy);
+		}
+		bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
         String[] aliases = dataBinding.getAliases();
         if (aliases != null) {
             for (String alias : aliases) {
