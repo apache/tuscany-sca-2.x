@@ -445,23 +445,24 @@ class FeedBindingListenerServlet extends HttpServlet {
         // Get the request path
         String path = request.getPathInfo();
 
-        if (path.startsWith("/")) {
-            String id = path.substring(1);
-
-            // Delete a specific entry from the collection
-            Message requestMessage = messageFactory.createMessage();
-            requestMessage.setBody(new Object[] {id});
-            Message responseMessage = deleteInvoker.invoke(requestMessage);
-            if (responseMessage.isFault()) {
-                Object body = responseMessage.getBody();
-                if (body instanceof NotFoundException) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                } else {
-                    throw new ServletException((Throwable)responseMessage.getBody());
-                }
-            }
+        String id;
+        if (path != null && path.startsWith("/")) {
+            id = path.substring(1);
         } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            id = "";
+        }
+
+        // Delete a specific entry from the collection
+        Message requestMessage = messageFactory.createMessage();
+        requestMessage.setBody(new Object[] {id});
+        Message responseMessage = deleteInvoker.invoke(requestMessage);
+        if (responseMessage.isFault()) {
+            Object body = responseMessage.getBody();
+            if (body instanceof NotFoundException) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            } else {
+                throw new ServletException((Throwable)responseMessage.getBody());
+            }
         }
     }
 
