@@ -79,8 +79,12 @@
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
                 <exclude>helloworld-ws-reference/work</exclude>
                 <exclude>helloworld-ws-reference/work/**/*</exclude>
+                <exclude>helloworld-ws-reference-secure/work</exclude>
+                <exclude>helloworld-ws-reference-secure/work/**/*</exclude>
                 <exclude>helloworld-ws-service/work</exclude>
                 <exclude>helloworld-ws-service/work/**/*</exclude>
+                <exclude>helloworld-ws-service-secure/work</exclude>
+                <exclude>helloworld-ws-service-secure/work/**/*</exclude>
                 <exclude>helloworld-ws-service-webapp/target/sample-helloworld-ws-service-webapp</exclude>
                 <exclude>helloworld-ws-service-webapp/target/sample-helloworld-ws-service-webapp/**/*</exclude>
                 <exclude>helloworld-ws-sdo/work</exclude>
