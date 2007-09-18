@@ -86,14 +86,23 @@
     		 <exclude>itest/databindings/jaxbgen/velocity.log</exclude>
              <exclude>itest/old</exclude>
              <exclude>itest/old/**/*</exclude>
+             <exclude>itest/exceptions-simple-ws/work</exclude>
+             <exclude>itest/exceptions-simple-ws/work/**/*</exclude>
+             <exclude>itest/callablereferences/work</exclude>
+             <exclude>itest/callablereferences/work/**/*</exclude>
+             <exclude>itest/large-sdo-ws/work</exclude>
+             <exclude>itest/large-sdo-ws/work/**/*</exclude>
              <exclude>itest/contribution-import-export/import-wsdl/work</exclude>
              <exclude>itest/contribution-import-export/import-wsdl/work/**/*</exclude>
              <exclude>itest/contribution-import-export/import-composite/work</exclude>
              <exclude>itest/contribution-import-export/import-composite/work/**/*</exclude>
              <exclude>modules/host-tomcat/work</exclude>
              <exclude>modules/host-tomcat/work/**/*</exclude>
+             <exclude>modules/node-impl/work</exclude>
+             <exclude>modules/node-impl/work/**/*</exclude>
              <exclude>modules/binding-jms</exclude>
              <exclude>modules/binding-jms/**/*</exclude>
+             <exclude>modules/implementation-bpel/derby.log</exclude>
              <exclude>modules/implementation-das</exclude>
              <exclude>modules/implementation-das/**/*</exclude>
              <exclude>modules/implementation-data</exclude>
@@ -116,10 +125,14 @@
              <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-ws-reference/work</exclude>
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
+             <exclude>samples/helloworld-ws-reference-secure/work</exclude>
+             <exclude>samples/helloworld-ws-reference-secure/work/**/*</exclude>
              <exclude>samples/helloworld-ws-sdo/work</exclude>
              <exclude>samples/helloworld-ws-sdo/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service/work</exclude>
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
+             <exclude>samples/helloworld-ws-service-secure/work</exclude>
+             <exclude>samples/helloworld-ws-service-secure/work/**/*</exclude>
              <exclude>samples/osgi-supplychain/.felix</exclude>
              <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
              <exclude>samples/quote-xquery</exclude>
