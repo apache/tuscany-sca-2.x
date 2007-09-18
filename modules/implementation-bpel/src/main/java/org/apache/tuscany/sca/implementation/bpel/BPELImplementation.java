@@ -30,19 +30,6 @@ import org.apache.tuscany.sca.assembly.Implementation;
 public interface BPELImplementation extends Implementation {
 
     /**
-     * Builds the process configuration used by ODE to get deployment and configuration
-     * level information about a process.
-     * @return
-     */
-    //ProcessConf getProcessConf();
-
-    /**
-     * Sets the implementation compiled process bytes
-     * @param compiledProcess serialized compiled process
-     */
-    //void setCompiledProcess(byte[] compiledProcess);
-
-    /**
      * Get the BPEL process Name
      */
     QName getProcess();
@@ -52,4 +39,16 @@ public interface BPELImplementation extends Implementation {
      * @param processName process QName
      */
     void setProcess(QName processName);
+    
+    /**
+     * Get the BPEL process definition
+     * @return
+     */
+    BPELProcessDefinition getProcessDefinition();
+    
+    /**
+     * Set the BPEL process definition
+     * @param processDefinition
+     */
+    void setProcessDefinition(BPELProcessDefinition processDefinition);
 }

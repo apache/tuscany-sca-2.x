@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
+import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.w3c.dom.Node;
 
@@ -51,9 +52,9 @@ import org.w3c.dom.Node;
  */
 public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImplementation {
 
-    private Service _bpelService;
     private QName _processName;
-    private byte[] _compiledProcess;
+    private BPELProcessDefinition _processDefinition;
+
     private boolean unresolved;
 
     /**
@@ -64,10 +65,6 @@ public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImp
 
     }
 
-    public void setCompiledProcess(byte[] compiledProcess) {
-        _compiledProcess = compiledProcess;
-    }
-
     public QName getProcess() {
         return _processName;
     }
@@ -76,8 +73,12 @@ public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImp
         _processName = processName;
     }
 
-    public ProcessConf getProcessConf() {
-        return null;
+    public BPELProcessDefinition getProcessDefinition() {
+        return this._processDefinition;
+    }
+
+    public void setProcessDefinition(BPELProcessDefinition processDefinition) {
+        this._processDefinition = processDefinition;
     }
 
     @Override
@@ -137,7 +138,7 @@ public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImp
         }
 
         public InputStream getCBPInputStream() {
-            return new ByteArrayInputStream(_compiledProcess);
+            return null; //new ByteArrayInputStream(_compiledProcess);
         }
 
         public String getBpelDocument() {
