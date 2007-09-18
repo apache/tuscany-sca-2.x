@@ -16,54 +16,96 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="feed-aggregator" default="compile">
-    <property name="test.class" value="feed.SampleServer" />
-	<property name="test.jar"   value="sample-feed-aggregator.jar" />
-	
+<project name="sample-feed-aggregator-webapp" default="package">
+    <property file="${user.home}/tuscany/build.properties" />
+    <property file="${user.home}/build.properties" />
+
+    <property name="tuscany.sca.manifest.location" value="../../lib/tuscany-sca-manifest.jar"/>
+    <property name="tuscany.sca.lib.location" value="../../lib"/>
+    <property name="tuscany.sca.modules.location" value="../../modules"/>
+            
+    <path id="project.classpath">
+        <pathelement path="target/classes"/>
+        <pathelement location="${tuscany.sca.manifest.location}"/>
+    </path>
+    	
     <target name="init">
         <mkdir dir="target/classes"/>
     </target>
 	
+    	
     <target name="compile" depends="init">
-        <javac srcdir="src/main/java"
-               destdir="target/classes"
+        <javac destdir="target/classes"
                debug="on"
                source="1.5"
                target="1.5">
-            <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
+               <src location="src/main/java"/>
+               <classpath refid="project.classpath"/>
         </javac> 
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
-        <jar destfile="target/${test.jar}" basedir="target/classes">
-            <manifest>
-                <attribute name="Main-Class" value="${test.class}" /> 
-            </manifest>
-        </jar>    	
     </target>	
 	
-    <target name="run-classes">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/classes"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>
-    </target>
-	
-    <target name="run">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>    	
-    </target>	
-	
+    <target name="package" depends="compile">
+        <war destfile="target/sample-feed-aggregator-webapp.war" 
+             webxml="src/main/webapp/WEB-INF/web.xml">
+            <fileset dir="src/main/webapp"/>       	
+            <zipfileset dir="${tuscany.sca.modules.location}" prefix="WEB-INF/lib">
+	<include name="tuscany-interface-java-xml-1.0-incubating.jar"/>
+	<include name="tuscany-policy-1.0-incubating.jar"/>
+	<include name="tuscany-implementation-java-xml-1.0-incubating.jar"/>
+	<include name="tuscany-domain-api-1.0-incubating.jar"/>
+	<include name="tuscany-interface-java-1.0-incubating.jar"/>
+	<include name="tuscany-contribution-java-1.0-incubating.jar"/>
+	<include name="tuscany-core-spi-1.0-incubating.jar"/>
+	<include name="tuscany-core-databinding-1.0-incubating.jar"/>
+	<include name="tuscany-binding-sca-1.0-incubating.jar"/>
+	<include name="tuscany-host-webapp-1.0-incubating.jar"/>
+	<include name="tuscany-contribution-impl-1.0-incubating.jar"/>
+	<include name="tuscany-assembly-xsd-1.0-incubating.jar"/>
+	<include name="tuscany-definitions-1.0-incubating.jar"/>
+	<include name="tuscany-databinding-1.0-incubating.jar"/>
+	<include name="tuscany-contribution-namespace-1.0-incubating.jar"/>
+	<include name="tuscany-binding-sca-xml-1.0-incubating.jar"/>
+	<include name="tuscany-implementation-java-1.0-incubating.jar"/>
+	<include name="tuscany-policy-xml-1.0-incubating.jar"/>
+	<include name="tuscany-node-api-1.0-incubating.jar"/>
+	<include name="tuscany-node-1.0-incubating.jar"/>
+	<include name="tuscany-host-embedded-1.0-incubating.jar"/>
+	<include name="tuscany-contribution-1.0-incubating.jar"/>
+	<include name="tuscany-core-1.0-incubating.jar"/>
+	<include name="tuscany-domain-1.0-incubating.jar"/>
+	<include name="tuscany-sca-api-1.0-incubating.jar"/>
+	<include name="tuscany-host-http-1.0-incubating.jar"/>
+	<include name="tuscany-interface-1.0-incubating.jar"/>
+            	
+            </zipfileset>
+            <lib dir="${tuscany.sca.lib.location}">
+		<include name="geronimo-commonj_1.1_spec-1.0.jar"/>
+		<include name="sca-api-1.0-incubating.jar"/>
+		<include name="axiom-impl-1.2.5.jar"/>
+		<include name="xml-apis-1.0.b2.jar"/>
+		<include name="stax-api-1.0.1.jar"/>
+		<include name="xalan-2.7.0.jar"/>
+		<include name="commons-httpclient-3.0.1.jar"/>
+		<include name="axiom-api-1.2.5.jar"/>
+		<include name="neethi-2.0.2.jar"/>
+		<include name="sca-definitions-1.0-incubating.jar"/>
+		<include name="rome-0.9.jar"/>
+		<include name="cglib-nodep-2.1_3.jar"/>
+		<include name="commons-logging-1.0.3.jar"/>
+		<include name="xercesImpl-2.6.2.jar"/>
+		<include name="wstx-asl-3.2.1.jar"/>
+		<include name="commons-codec-1.2.jar"/>
+		<include name="jaxen-1.1-beta-9.jar"/>
+		<include name="jdom-1.0.jar"/>
+            	
+            </lib>        	
+            <classes dir="target/classes"/>
+        </war>
+     </target>
+		
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">
             <fileset dir="target"/>
