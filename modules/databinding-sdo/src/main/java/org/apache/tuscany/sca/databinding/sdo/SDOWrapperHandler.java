@@ -107,10 +107,10 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
      */
     public DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context) {
         // FIXME: [rfeng] Temporarily disable the wrapping support for SDO to work around a few issues
-        // in the WSDL-less story
-        if (true) {
-            return null;
-        }
+        // in the WSDL-less story: https://issues.apache.org/jira/browse/TUSCANY-1713
+//        if (true) {
+//            return null;
+//        }
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {

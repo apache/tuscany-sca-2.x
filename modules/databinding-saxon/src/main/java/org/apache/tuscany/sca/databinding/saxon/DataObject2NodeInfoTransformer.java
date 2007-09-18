@@ -18,18 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.saxon;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.om.NodeInfo;
 
@@ -37,10 +26,11 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 
 import commonj.sdo.DataObject;
+import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
-import commonj.sdo.impl.HelperProvider;
 
 /**
  * Transforms SDO DataObject-s to NodeInfo objects needed by Saxon parser
@@ -59,8 +49,13 @@ public class DataObject2NodeInfoTransformer extends BaseTransformer<DataObject, 
         this.node2NodeInfoTransformer = node2NodeInfoTransformer;
     }
 
+    public DataObject2NodeInfoTransformer() {
+        this.node2NodeInfoTransformer = new Node2NodeInfoTransformer();
+    }
+
     public NodeInfo transform(DataObject source, TransformationContext context) {
-        XMLHelper helper = HelperProvider.INSTANCE.xmlHelper();
+        // FIXME: Need to create the HelperContext from the transformation context
+        XMLHelper helper = XMLHelper.INSTANCE;
         String name = null;
         if (source.getClass().getInterfaces().length > 0) {
             name = source.getClass().getInterfaces()[0].getSimpleName();
@@ -72,32 +67,15 @@ public class DataObject2NodeInfoTransformer extends BaseTransformer<DataObject, 
             name = Character.toLowerCase(name.charAt(0)) + name.substring(1, name.length());
         }
 
-        DOMResult domResult = new DOMResult();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            helper.save(source, null, name, baos);
-            baos.flush();
-            baos.close();
-        } catch (IOException e) {
+            DOMResult domResult = new DOMResult(DOMHelper.newDocument());
+            XMLDocument xmlDoc = helper.createDocument(source, null, name);
+            helper.save(xmlDoc, domResult, null);
+            return node2NodeInfoTransformer.transform(domResult.getNode(), context);
+        } catch (Exception e) {
             throw new TransformationException(e);
         }
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        Source src = new StreamSource(bais);
-
-        try {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(src, domResult);
-        } catch (TransformerConfigurationException e) {
-            throw new TransformationException(e);
-        } catch (TransformerFactoryConfigurationError e) {
-            throw new TransformationException(e);
-        } catch (TransformerException e) {
-            throw new TransformationException(e);
-        }
-
-        return node2NodeInfoTransformer.transform(domResult.getNode(), context);
     }
 
     @Override
@@ -112,7 +90,7 @@ public class DataObject2NodeInfoTransformer extends BaseTransformer<DataObject, 
 
     @Override
     public int getWeight() {
-        return 10;
+        return 30 + node2NodeInfoTransformer.getWeight();
     }
 
 }

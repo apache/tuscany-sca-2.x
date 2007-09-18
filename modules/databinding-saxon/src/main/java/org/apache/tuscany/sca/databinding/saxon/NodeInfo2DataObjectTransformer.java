@@ -18,21 +18,15 @@
  */
 package org.apache.tuscany.sca.databinding.saxon;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import net.sf.saxon.om.NodeInfo;
 
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Document;
 
@@ -57,6 +51,10 @@ public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, Da
         this.nodeInfo2NodeTransformer = nodeInfo2NodeTransformer;
     }
 
+    public NodeInfo2DataObjectTransformer() {
+        this.nodeInfo2NodeTransformer = new NodeInfo2NodeTransformer();
+    }
+
     @Override
     protected Class getSourceType() {
         return NodeInfo.class;
@@ -69,7 +67,7 @@ public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, Da
 
     @Override
     public int getWeight() {
-        return 10 + nodeInfo2NodeTransformer.getWeight();
+        return 30 + nodeInfo2NodeTransformer.getWeight();
     }
 
     public DataObject transform(NodeInfo source, TransformationContext context) {
@@ -79,30 +77,12 @@ public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, Da
     }
 
     private DataObject produceResult(Document doc) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StreamResult streamResult = new StreamResult(baos);
         try {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(new DOMSource(doc), streamResult);
-        } catch (TransformerConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (TransformerFactoryConfigurationError e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            baos.flush();
-            baos.close();
+            DataObject resultingObject =
+                XMLHelper.INSTANCE.load(new DOMSource(doc), doc.getDocumentURI(), null).getRootObject();
+            return resultingObject;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new TransformationException(e);
         }
-        DataObject resultingObject = XMLHelper.INSTANCE.load(new String(baos.toByteArray())).getRootObject();
-
-        return resultingObject;
     }
 }
