@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.domain.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.domain.DomainManagerService;
 import org.apache.tuscany.sca.domain.NodeInfo;
-import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
-import org.apache.tuscany.sca.domain.impl.ServiceDiscoveryServiceImpl.ServiceEndpoint;
+import org.apache.tuscany.sca.domain.SCADomainService;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
@@ -39,31 +39,38 @@ import org.osoa.sca.annotations.Scope;
 @Scope("COMPOSITE")
 public class DomainManagerServiceImpl implements DomainManagerService{
     
+    private final static Logger logger = Logger.getLogger(DomainManagerServiceImpl.class.getName());
+    
     @Reference 
-    public ServiceDiscoveryService serviceDiscovery;
+    public SCADomainService scaDomainService;
 
     List<NodeInfo> nodes = new ArrayList<NodeInfo>();
     
     public String registerNode(String domainUri, String nodeUri){ 
+        // try and remove it first just in case it's already registered
+        removeNode(domainUri, nodeUri);
+        
         NodeInfo nodeInfo = new NodeInfoImpl(domainUri, nodeUri);
         nodes.add(nodeInfo);
-        System.err.println("Registering node: " + nodeUri);
+        logger.log(Level.INFO, "Registered node: " + nodeUri);
         return nodeUri;
     }
     
     public String removeNode(String domainUri, String nodeUri){ 
         
-        NodeInfo nodeToRemove = null;
+        List<NodeInfo> nodesToRemove = new ArrayList<NodeInfo>();
         
         for(NodeInfo node : nodes){
             if ( node.match(domainUri, nodeUri)){
-                nodeToRemove = node;
-                break;
+                nodesToRemove.add(node);
             }
         }
 
-        nodes.remove(nodeToRemove);
-        System.err.println("Removed node: " + nodeUri);
+        for(NodeInfo nodeToRemove : nodesToRemove){
+            nodes.remove(nodeToRemove);
+            logger.log(Level.INFO, "Removed node: " + nodeUri);
+        }
+
         
         return nodeUri;
     }    
@@ -72,11 +79,10 @@ public class DomainManagerServiceImpl implements DomainManagerService{
         
         // get the nodeManagerUrl for each node
         for(NodeInfo node : nodes){
-            String url = serviceDiscovery.findServiceEndpoint(node.getDomainUri(), 
+            String url = scaDomainService.findServiceEndpoint(node.getDomainUri(), 
                                                               node.getNodeUri() + "NodeManagerService",
                                                               "");
                                                  
-
             if (url != null) {
                 node.setNodeManagerUrl(url);
             }

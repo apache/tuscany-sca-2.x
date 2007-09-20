@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.domain.SCADomainService;
 import org.apache.tuscany.sca.domain.ServiceInfo;
 
 
@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.domain.ServiceInfo;
  * 
  * @version $Rev: 552343 $ $Date: 2007-07-01 18:43:40 +0100 (Sun, 01 Jul 2007) $
  */
-public class TestServiceDiscoveryImpl implements ServiceDiscoveryService{
+public class TestServiceDiscoveryImpl implements SCADomainService{
     
     List<ServiceEndpoint> serviceEndpoints = new ArrayList<ServiceEndpoint>();
     
@@ -111,7 +111,9 @@ public class TestServiceDiscoveryImpl implements ServiceDiscoveryService{
         return "";
     }
     
-   
+    public String removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
+        return "";  
+    }
     /**
      * Locates information about a service endpoint 
      * 

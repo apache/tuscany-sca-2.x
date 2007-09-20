@@ -51,22 +51,5 @@ public interface ContributionManager {
      */
     public void removeContribution(URL contributionName)
       throws ActivationException, ContributionException;
-    
-    
-    /**
-     * starts the contribution
-     * 
-     * @throws ActivationException
-     */
-    public void startContribution(URL contributionName)
-      throws ActivationException, ContributionException, IOException, CompositeBuilderException;
-    
-    /**
-     * stops the contribution
-     * 
-     * @throws ActivationException
-     */
-    public void stopContribution(URL contributionName)
-      throws ActivationException;
  
 }

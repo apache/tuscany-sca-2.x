@@ -21,7 +21,9 @@ package calculator;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.node.impl.SCANodeImpl;
+import org.apache.tuscany.sca.node.impl.SCANodeUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,12 +36,12 @@ import calculator.CalculatorService;
  */
 public class DomainInMemoryTestCase {
     
-    private static String DEFAULT_DOMAIN_NAME = "mydomain";
+    private static String DEFAULT_DOMAIN_URL = "http://localhost:8877";
 
-    private static NodeImpl registry;
-    private static NodeImpl domainNodeA;
-    private static NodeImpl domainNodeB;
-    private static NodeImpl domainNodeC;
+    private static SCADomain domain;
+    private static SCADomain domainNodeA;
+    private static SCADomain domainNodeB;
+    private static SCADomain domainNodeC;
 
     private static CalculatorService calculatorServiceA;
 
@@ -48,29 +50,20 @@ public class DomainInMemoryTestCase {
         
         try {
                 System.out.println("Setting up domain registry");
-                
-                registry = new NodeImpl();
-                registry.start();
-                registry.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("domain/"));
+                domain = SCADomain.newInstance("domain.composite");
                 
                 System.out.println("Setting up distributed nodes");
                        
                 // Create the domain representation
-                domainNodeA = new NodeImpl(DEFAULT_DOMAIN_NAME, "nodeA");
-                domainNodeA.start();
-                domainNodeA.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("nodeA/"));
+                domainNodeA = SCADomain.newInstance(DEFAULT_DOMAIN_URL, "nodeA", null, "nodeA/Calculator.composite");
                 
                 // Create the domain representation
-                domainNodeB = new NodeImpl(DEFAULT_DOMAIN_NAME, "nodeB");
-                domainNodeB.start();
-                domainNodeB.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("nodeB/"));        
+                domainNodeB = SCADomain.newInstance(DEFAULT_DOMAIN_URL, "nodeB", null, "nodeB/Calculator.composite");
                 
                 // create the node that runs the 
                 // subtract component 
-                domainNodeC = new NodeImpl(DEFAULT_DOMAIN_NAME, "nodeC");
-                domainNodeC.start();
-                domainNodeC.getContributionManager().startContribution(DomainInMemoryTestCase.class.getClassLoader().getResource("nodeC/"));         
-        
+                domainNodeC = SCADomain.newInstance(DEFAULT_DOMAIN_URL, "nodeC", null, "nodeC/Calculator.composite");        
+                
                 // get a reference to the calculator service from domainA
                 // which will be running this component
                 calculatorServiceA = domainNodeA.getService(CalculatorService.class, "CalculatorServiceComponent");
@@ -82,9 +75,10 @@ public class DomainInMemoryTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the domain and hence the nodes it contains  
-        domainNodeA.stop();
-        domainNodeB.stop();
-        domainNodeC.stop();
+        domainNodeA.close();
+        domainNodeB.close();
+        domainNodeC.close();
+        domain.close();
     }
 
     @Test

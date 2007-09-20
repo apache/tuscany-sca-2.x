@@ -21,7 +21,8 @@ package node;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 
 import calculator.CalculatorService;
 
@@ -38,38 +39,40 @@ public class CalculatorNode {
     public static void main(String[] args) throws Exception {
         
         // Check that the correct arguments have been provided
-        if (null == args || args.length != 2) {
+        if (null == args || args.length < 2) {
              System.err.println("Useage: java CalculatorNode domainname nodename");   
              System.exit(1);
         }    
         
         try {
             String domainName = args[0];
-            String nodeName   = args[1];                       
-            
-            // Create the distributed domain representation. We use the network implementation 
-            // here so that the node contacts a registry running somewhere out on the 
-            // network. 
-            NodeImpl node = new NodeImpl(domainName, nodeName);
-            node.start();
-
-            // the application components are added. The null here just gets the node
-            // implementation to read a directory from the classpath with the node name
-            // TODO - should be done as a management action.       
-            node.getContributionManager().startContribution(CalculatorNode.class.getClassLoader().getResource(nodeName + "/"));  
+            String nodeName   = args[1];
+             
+            SCADomain domainNode = SCADomain.newInstance(domainName, nodeName, null, nodeName + "/Calculator.composite");
                                
             // nodeA is the head node and runs some tests while all other nodes
             // simply listen for incoming messages
             if ( nodeName.equals("nodeA") ) {            
                 // do some application stuff
                 CalculatorService calculatorService = 
-                    node.getService(CalculatorService.class, "CalculatorServiceComponent");
-        
+                    domainNode.getService(CalculatorService.class, "CalculatorServiceComponent");
+                
                 // Calculate
                 System.out.println("3 + 2=" + calculatorService.add(3, 2));
                 System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
                 System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
                 System.out.println("3 / 2=" + calculatorService.divide(3, 2));
+                
+                // a little hidden loop test to put some load on the nodes
+                if (args.length > 2){
+                    for (int i=0; i < 1000; i++){
+                        // Calculate
+                        System.out.println("3 + 2=" + calculatorService.add(3, 2));
+                        System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
+                        System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
+                        System.out.println("3 / 2=" + calculatorService.divide(3, 2));
+                    }
+                }
             } else {
                 // start up and wait for messages
                 try {
@@ -81,7 +84,7 @@ public class CalculatorNode {
             }
             
             // stop the node and all the domains in it 
-            node.stop(); 
+            domainNode.close(); 
         
         } catch(Exception ex) {
             System.err.println("Exception in node - " + ex.getMessage());

@@ -33,6 +33,6 @@ public interface NodeManagerInitService {
      * 
      * @param node
      */
-    public void setNode(Node node);
+    public void setNode(SCANode node);
     
 }

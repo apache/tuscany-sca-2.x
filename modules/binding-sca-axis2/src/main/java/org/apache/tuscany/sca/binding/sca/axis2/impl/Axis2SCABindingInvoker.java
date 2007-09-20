@@ -18,11 +18,18 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
+import java.lang.reflect.UndeclaredThrowableException;
+import java.net.ConnectException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.axis2.AxisFault;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.osoa.sca.ServiceUnavailableException;
+
 
 /**
  * A wrapper for the Axis2BindingInvoker that ensures that the url of the target
@@ -31,7 +38,11 @@ import org.osoa.sca.ServiceUnavailableException;
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
  */
 public class Axis2SCABindingInvoker implements Interceptor {
-
+    
+    private final static Logger logger = Logger.getLogger(Axis2SCABindingInvoker.class.getName());    
+    
+    private int retryCount = 100;
+    private int retryInterval = 5000; //ms
     private Invoker axis2Invoker;
     private Axis2SCAReferenceBindingProvider provider;
 
@@ -94,6 +105,46 @@ public class Axis2SCABindingInvoker implements Interceptor {
         }
 
         // do the axis2 stuff
-        return axis2Invoker.invoke(msg);
+        Message returnMessage = null;
+        
+    //    for (int i =0; i < retryCount; i++){
+            
+            returnMessage = axis2Invoker.invoke(msg);
+   /*         
+            if ( AxisFault.class.isInstance(returnMessage.getBody())){
+                
+                AxisFault axisFault =  returnMessage.getBody();  
+                
+                if (axisFault.getCause().getClass() == ConnectException.class) {
+                    logger.log(Level.INFO, "Trying to send message to " + 
+                                           msg.getTo().getURI());
+                    
+                    // try and get the service endpoint again just in case
+                    // it's moved
+                    EndpointReference serviceEPR = provider.refreshServiceEndpoint();
+    
+                    if (serviceEPR == null) {
+                        throw new ServiceUnavailableException("Endpoint for service: " + provider.getSCABinding().getURI()
+                            + " can't be found for component: "
+                            + provider.getComponent().getName()
+                            + " reference: "
+                            + provider.getComponentReference().getName());
+                    }
+                    msg.setTo(serviceEPR);  
+                } else {
+                    break;
+                }
+          
+            } else {
+                break;
+            }
+            
+            try {
+                Thread.sleep(retryInterval);
+            } catch(InterruptedException ex) {
+            }
+         }            
+        */
+        return returnMessage;
     }
 }

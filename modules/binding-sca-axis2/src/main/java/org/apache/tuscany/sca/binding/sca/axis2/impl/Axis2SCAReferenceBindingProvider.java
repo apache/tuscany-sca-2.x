@@ -28,14 +28,14 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.domain.Domain;
-import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.domain.SCADomainService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider {
 
-	private Domain domain;
+	private SCANode node;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -60,13 +60,13 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     private EndpointReference serviceEPR = null;
     private EndpointReference callbackEPR = null;
 
-    public Axis2SCAReferenceBindingProvider(Domain domain,
+    public Axis2SCAReferenceBindingProvider(SCANode node,
     		                                RuntimeComponent component,
                                             RuntimeComponentReference reference,
                                             DistributedSCABinding binding,
                                             ServletHost servletHost,
                                             MessageFactory messageFactory) {
-    	this.domain = domain;
+    	this.node = node;
         this.component = component;
         this.reference = reference;
         this.binding = binding.getSCABinding();
@@ -111,16 +111,16 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
      */
     public EndpointReference getServiceEndpoint(){
         
-        if ( serviceEPR == null && domain != null ){
+        if ( serviceEPR == null && node != null ){
             // try to resolve the service endpoint with the registry 
-            ServiceDiscoveryService serviceDiscovery = domain.getServiceDiscovery();
+            SCADomainService serviceDiscovery = node.getDomainService();
             
             if (serviceDiscovery != null){
             
 	            // The binding URI might be null in the case where this reference is completely
 	            // dynamic, for example, in the case of callbacks
 	            if (binding.getURI() != null) {
-	                String serviceUrl = serviceDiscovery.findServiceEndpoint(domain.getDomainUri(), 
+	                String serviceUrl = serviceDiscovery.findServiceEndpoint(node.getDomainURI(), 
 	                                                                         binding.getURI(), 
 	                                                                         SCABinding.class.getName());
 	                
@@ -130,7 +130,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
 	                }
 	            }
             } else {
-	            throw new IllegalStateException("No service manager available for component: "+
+	            throw new IllegalStateException("No domain service available while trying to find component: "+
 						                        component.getName() +
 						                        " and service: " + 
 						                        reference.getName());	 
@@ -138,6 +138,16 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         }
         
         return serviceEPR;
+    }
+    
+    /**
+     * Go back to the distributed domain to go and get the service endpoint
+     * 
+     * @return An EPR for the target service that this reference refers to 
+     */
+    public EndpointReference refreshServiceEndpoint(){ 
+        serviceEPR= null;
+        return getServiceEndpoint();
     }
     
     /**

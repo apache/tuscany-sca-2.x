@@ -33,7 +33,7 @@
     <dependencies>   
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sca-api</artifactId>
+            <artifactId>tuscany-sca-api</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
  
@@ -53,11 +53,17 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
+        </dependency> 
+        
+         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-domain</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
         </dependency>  
                     
          <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-domain</artifactId>
+            <artifactId>tuscany-domain-api</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>                     
 

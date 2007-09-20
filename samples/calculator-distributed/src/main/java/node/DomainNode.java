@@ -18,9 +18,10 @@
  */
 package node;
 
-import java.io.IOException;
+import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.node.impl.SCANodeImpl;
+import org.apache.tuscany.sca.node.impl.SCANodeUtil;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * This server program that loads a composite to provide simple registry function.
@@ -31,16 +32,17 @@ public class DomainNode {
 
     public static void main(String[] args) {
 
-        SCADomain scaDomain = SCADomain.newInstance("domain/domain.composite");
-
         try {
+            SCADomain domainNode = SCADomain.newInstance("domain.composite");            
+        
             System.out.println("Domain node started (press enter to shutdown)");
             System.in.read();
-        } catch (IOException e) {
+            
+            domainNode.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        scaDomain.close();
         System.out.println("Domain node stopped");
     }
 

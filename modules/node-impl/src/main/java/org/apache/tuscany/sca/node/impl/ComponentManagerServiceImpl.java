@@ -29,8 +29,6 @@ import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
 import org.apache.tuscany.sca.node.ComponentListener;
 import org.apache.tuscany.sca.node.ComponentManager;
-import org.apache.tuscany.sca.domain.Domain;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 
 public class ComponentManagerServiceImpl implements ComponentManager {
