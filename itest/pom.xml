@@ -72,6 +72,7 @@
                 <module>wsdl</module>
                 <module>wsdlless</module>
                 <module>wsdl2java</module>
+                <module>ws-void-args-return</module>
             </modules>
         </profile>
 

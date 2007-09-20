@@ -66,6 +66,9 @@ class WebAppRequestDispatcher implements RequestDispatcher {
             @Override
             public String getPathInfo() {
                 String path = super.getServletPath();
+                if (path.length() == 0) {
+                    path = super.getPathInfo();
+                }
                 path = path.substring(servletPath.length());
                 return path;
             }

@@ -35,13 +35,13 @@ public class NewConsumerResponseEnDeCoder extends EndpointReferenceSequenceEnDeC
         super(registry);
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         return QNAME;
     }
 
-    @Override
-    protected Class<NewConsumerResponse> getEncodingObjectType() {
+    
+	public Class<NewConsumerResponse> getEncodingObjectType() {
         return NewConsumerResponse.class;
     }
 

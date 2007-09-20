@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<sca:definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 			targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
+ 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+ 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+
+ <sca:intent name="soap"  
+ 			 constrains="sca:binding.ws">
+ 			 <sca:description>
+ 			 Communitcation thro this binding requires SOAP 
+ 			 </sca:description>
+ </sca:intent>
+
+ <sca:intent name="soap11"  
+ 			 constrains="sca:binding.ws">
+ 			 <sca:description>
+ 			 Communitcation thro this binding requires SOAP 1.1
+ 			 </sca:description>
+ </sca:intent>
+
+ <sca:intent name="soap12"  
+ 			 constrains="sca:binding.ws">
+ 			 <sca:description>
+ 			 Communitcation thro this binding requires SOAP 1.2
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="authentication" 
+ 			 constrains="sca:binding.ws">
+ 			 <description>
+ 			 Communitcation thro this binding required Authentication.
+ 			 </description>
+ </sca:intent>
+ 
+ <sca:intent name="wsAuthentication" 
+ 			 constrains="sca:binding.ws">
+ 			 <description>
+ 			 Communitcation thro this binding required Authentication.
+ 			 </description>
+ </sca:intent>	
+ 
+ <sca:intent name="integrity" 
+ 			 constrains="sca:binding.ws">
+ 			 <description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </description>
+ </sca:intent>
+ 
+  <sca:intent name="confidentiality" 
+ 			 constrains="sca:binding.ws">
+ 			 <description>
+ 			 	Communitcation thro this binding must prevent
+	 			 unauthorized users from reading the messages.
+ 			 </description>
+ </sca:intent>
+ 
+ <!-- WS Security POLICY SETS -->
+  <sca:policySet name="wsAuthenticationPolicy"
+ 	provides="authentication"
+ 	appliesTo="sca:binding.ws"
+ 	>
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+ 			<action>
+ 				<items>UsernameToken</items>
+ 				<passwordCallbackClass>helloworld.ServerPWCBHandler</passwordCallbackClass>
+       		</action>
+      	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsClientAuthenticationPolicy"
+ 	provides="wsAuthentication"
+ 	appliesTo="sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="OutflowSecurity">
+ 			<action>
+ 				<items>UsernameToken</items>
+ 				<user>TuscanyWsUser</user>
+				<passwordCallbackClass>helloworld.ClientPWCBHandler</passwordCallbackClass>" +
+                <passwordType>PasswordText</passwordType>
+               </action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsIntegrityPolicy"
+ 	provides="integrity"
+ 	appliesTo="sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+		    <action>
+		        <items>Timestamp Signature</items>
+		        <signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/security.properties</signaturePropFile>
+		    </action>
+		</parameter>
+ 		<parameter name="OutflowSecurity">
+      		<action>
+        		<items>Timestamp Signature</items>
+        		<user>TuscanyWsUser</user>
+        		<signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/security.properties</signaturePropFile>
+        		<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.IntegrityPWCBHandler</passwordCallbackClass>" +
+        		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
+      		</action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsConfidentialityPolicy"
+ 	provides="confidentiality"
+ 	appliesTo="sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+      		<action>
+        		<items>Timestamp Signature Encrypt</items>
+        		<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.IntegrityPWCBHandler</passwordCallbackClass>
+        		<signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/security.properties</signaturePropFile>
+      		</action>
+    	</parameter>
+ 		<parameter name="OutflowSecurity">
+      		<action>
+        		<items>Timestamp Signature Encrypt</items>
+        		<user>TuscanyWsUser</user>
+        		<encryptionUser>TuscanyWsUser</encryptionUser>
+        		<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.IntegrityPWCBHandler</passwordCallbackClass>
+        		<signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/security.properties</signaturePropFile>
+      			<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
+      			<encryptionKeyIdentifier>SKIKeyIdentifier</encryptionKeyIdentifier>
+	      </action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ </sca:definitions>

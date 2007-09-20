@@ -232,7 +232,8 @@ public class TuscanyJava2OMBuilder implements TuscanyJava2WSDLConstants {
                     + MESSAGE_SUFFIX, null);
                 operation.addChild(message);
 
-                if (!jmethod.getReturnType().isVoidType()) {
+                if (!jmethod.getReturnType().isVoidType() ||
+                    jmethod.getAnnotation("org.osoa.sca.annotations.OneWay") == null) {
                     message = fac.createOMElement(OUT_PUT_LOCAL_NAME, wsdl);
                     message.addAttribute(MESSAGE_LOCAL_NAME, tns.getPrefix() + COLON_SEPARATOR
                         + jmethod.getSimpleName()

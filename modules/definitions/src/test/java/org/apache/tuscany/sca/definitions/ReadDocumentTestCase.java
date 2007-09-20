@@ -24,12 +24,9 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import junit.framework.TestCase;
 
@@ -87,14 +84,11 @@ public class ReadDocumentTestCase extends TestCase {
         ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
         
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd")); 
-        
         scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, 
                                                                   staxProcessor, 
                                                                   inputFactory, 
                                                                   policyFactory,
-                                                                  schema);
+                                                                  null);
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");

@@ -46,6 +46,23 @@ This product includes/uses DWR (http://getahead.org/dwr)
 This product includes/uses dojotoolkit (http://dojotoolkit.org/)
  Copyright (c) 2005, The Dojo Foundation. All rights reserved.
 
+This product includes/uses Howl (http://howl.objectweb.org/)
+ Copyright (c) 2004, Bull S.A.
+
+This product includes/uses axion (http://axion.tigris.org/)
+ Copyright (c) 2002-2003 Axion Development Team.
+
+This product includes/uses javacc (https://javacc.dev.java.net/)
+ Copyright (c) 2003 Sun Microsystems, Inc. All  Rights Reserved.
+
+The Program includes all or portions of the following software: "The 
+Saxon XSLT and XQuery Processor from Saxonica Limited" distributed under
+an MPL v1.0 license. Please refer to the homepage URL at 
+http://www.saxonica.com/.
+
+This product includes/uses Serp (http://serp.sourceforge.net/) under the BSD license:
+ Copyright (c) 2002, A. Abram White. All rights reserved.
+
 This product also includes software under the BSD license
 with the following copyright:
 

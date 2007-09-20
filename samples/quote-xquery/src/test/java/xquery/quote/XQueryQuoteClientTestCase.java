@@ -18,11 +18,19 @@
  */
 package xquery.quote;
 
+import java.util.List;
+
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
 import org.example.avail.AvailQuote;
+import org.example.avail.AvailRequest;
 import org.example.price.PriceQuote;
+import org.example.price.PriceRequest;
+import org.example.price.ShipAddress;
 import org.example.quote.Quote;
+import org.example.quote.QuoteResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,15 +87,15 @@ public class XQueryQuoteClientTestCase {
 
     @Test
     public void testQuoteJoin() {
-        AvailQuote availQuote = TestHelper.buildAvailQuoteData();
-        PriceQuote priceQuote = TestHelper.buildPriceQuoteData();
+        AvailQuote availQuote = QuoteDataUtil.buildAvailQuoteData();
+        PriceQuote priceQuote = QuoteDataUtil.buildPriceQuoteData();
 
         if (SHOW_DEBUG_MSG) {
             System.out.println("Input quote for the price list:");
-            TestHelper.serializeToSystemOut((DataObject)priceQuote, "priceQuote");
+            QuoteDataUtil.serializeToSystemOut((DataObject)priceQuote, "priceQuote");
             System.out.println();
             System.out.println("Input quote for the availability:");
-            TestHelper.serializeToSystemOut((DataObject)availQuote, "availQuote");
+            QuoteDataUtil.serializeToSystemOut((DataObject)availQuote, "availQuote");
             System.out.println();
         }
 
@@ -95,51 +103,90 @@ public class XQueryQuoteClientTestCase {
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from local join:");
-            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            QuoteDataUtil.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        XQueryQuoteClientTestCase.assertQuote(availQuote, priceQuote, quote, 0.1f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotes(priceQuote, availQuote, 0.2f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from local join (second invokation):");
-            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            QuoteDataUtil.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.2f);
+        XQueryQuoteClientTestCase.assertQuote(availQuote, priceQuote, quote, 0.2f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotesWs(priceQuote, availQuote, 0.1f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from web service join:");
-            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            QuoteDataUtil.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        XQueryQuoteClientTestCase.assertQuote(availQuote, priceQuote, quote, 0.1f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotes();
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from properties join:");
-            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            QuoteDataUtil.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        XQueryQuoteClientTestCase.assertQuote(availQuote, priceQuote, quote, 0.1f);
 
         quote = quoteJoinLocal.joinPriceAndAvailQuotes(0.1f);
         if (SHOW_DEBUG_MSG) {
             System.out.println();
             System.out.println("Output quote from external references join:");
-            TestHelper.serializeToSystemOut((DataObject)quote, "quote");
+            QuoteDataUtil.serializeToSystemOut((DataObject)quote, "quote");
             System.out.println();
         }
-        TestHelper.assertQuote(availQuote, priceQuote, quote, 0.1f);
+        XQueryQuoteClientTestCase.assertQuote(availQuote, priceQuote, quote, 0.1f);
     }
 
     @After
     public void stopClient() throws Exception {
         server.after();
         scaDomain.close();
+    }
+
+    public static void assertQuote(AvailQuote availQuote, PriceQuote priceQuote, Quote quote, float taxRate) {
+        QuoteCalculatorImpl quoteCalculatorImpl = new QuoteCalculatorImpl();
+    
+        TestCase.assertEquals(priceQuote.getCustomerName(), quote.getName());
+        ShipAddress shipAddress = priceQuote.getShipAddress();
+        TestCase.assertEquals(shipAddress.getStreet() + ","
+            + shipAddress.getCity()
+            + ","
+            + shipAddress.getState().toUpperCase()
+            + ","
+            + shipAddress.getZip(), quote.getAddress());
+        List availRequests = availQuote.getAvailRequest();
+        List priceRequests = priceQuote.getPriceRequests().getPriceRequest();
+        List quoteResponses = quote.getQuoteResponse();
+        TestCase.assertEquals(availRequests.size(), priceRequests.size());
+        TestCase.assertEquals(availRequests.size(), quoteResponses.size());
+    
+        for (int i = 0; i < availRequests.size(); i++) {
+            AvailRequest availRequest = (AvailRequest)availRequests.get(i);
+            PriceRequest priceRequest = (PriceRequest)priceRequests.get(i);
+            QuoteResponse quoteResponse = (QuoteResponse)quoteResponses.get(i);
+            TestCase.assertEquals(availRequest.getWidgetId(), quoteResponse.getWidgetId());
+            TestCase.assertEquals(priceRequest.getPrice(), quoteResponse.getUnitPrice());
+            TestCase.assertEquals(availRequest.getRequestedQuantity(), quoteResponse.getRequestedQuantity());
+            TestCase.assertEquals(availRequest.isQuantityAvail(), quoteResponse.isFillOrder());
+            if (availRequest.getShipDate() == null) {
+                TestCase.assertNull(quoteResponse.getShipDate());
+            } else {
+                TestCase.assertEquals(availRequest.getShipDate(), quoteResponse.getShipDate());
+            }
+            TestCase.assertEquals(taxRate, quoteResponse.getTaxRate());
+            TestCase.assertEquals(quoteCalculatorImpl.calculateTotalPrice(taxRate,
+                                                                          availRequest.getRequestedQuantity(),
+                                                                          priceRequest.getPrice(),
+                                                                          availRequest.isQuantityAvail()),
+                                                                          quoteResponse.getTotalCost());
+        }
     }
 }

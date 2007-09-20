@@ -35,13 +35,13 @@ public class EndProducersEnDeCoder extends EndpointReferenceSequenceEnDeCoder<En
         super(registry);
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         return QNAME;
     }
 
-    @Override
-    protected Class<EndProducers> getEncodingObjectType() {
+    
+	public Class<EndProducers> getEncodingObjectType() {
         return EndProducers.class;
     }
 

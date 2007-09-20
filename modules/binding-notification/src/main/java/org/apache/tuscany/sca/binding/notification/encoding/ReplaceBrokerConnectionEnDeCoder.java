@@ -87,14 +87,14 @@ public class ReplaceBrokerConnectionEnDeCoder extends AbstractEnDeCoder<ReplaceB
         }
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
-    @Override
-    protected Class<ReplaceBrokerConnection> getEncodingObjectType() {
+    
+	public Class<ReplaceBrokerConnection> getEncodingObjectType() {
         
         return ReplaceBrokerConnection.class;
     }

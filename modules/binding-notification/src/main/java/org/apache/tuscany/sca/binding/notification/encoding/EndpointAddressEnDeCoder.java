@@ -77,14 +77,14 @@ public class EndpointAddressEnDeCoder extends AbstractEnDeCoder<EndpointAddress>
         }
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
-    @Override
-    protected Class<EndpointAddress> getEncodingObjectType() {
+    
+	public Class<EndpointAddress> getEncodingObjectType() {
         
         return EndpointAddress.class;
     }

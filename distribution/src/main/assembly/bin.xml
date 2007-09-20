@@ -81,7 +81,11 @@
                 <exclude>helloworld-ws-reference/work/**/*</exclude>
                 <exclude>helloworld-ws-reference-secure/work</exclude>
                 <exclude>helloworld-ws-reference-secure/work/**/*</exclude>
+                <exclude>helloworld-ws-service-webapp</exclude>
+                <exclude>helloworld-ws-service-webapp/**/*</exclude>
                 <exclude>helloworld-ws-service/work</exclude>
+                <exclude>helloworld-ws-service/secure/work/**/*</exclude>
+                <exclude>helloworld-ws-service/secure/work</exclude>
                 <exclude>helloworld-ws-service/work/**/*</exclude>
                 <exclude>helloworld-ws-service-secure/work</exclude>
                 <exclude>helloworld-ws-service-secure/work/**/*</exclude>
@@ -91,12 +95,16 @@
                 <exclude>helloworld-ws-sdo/work/**/*</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp/**/*</exclude>
+                <exclude>calculator-distributed/work</exclude>
+                <exclude>calculator-distributed/work/**/*</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
                 <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp/**/*</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp/**/*</exclude>
+                <exclude>domain-webapp</exclude>
+                <exclude>domain-webapp/**/*</exclude>
                 <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp</exclude>
                 <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp/**/*</exclude>
                 <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp</exclude>
@@ -129,6 +137,13 @@
                 <exclude>*/target/sdo-source</exclude>
                 <exclude>*/target/sdo-source/**/*</exclude>
                 <exclude>*/**/*.svg</exclude>
+                <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp.war</exclude>
+                <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp.war</exclude>
+                <exclude>helloworld-ws-service-webapp/target/sample-helloworld-ws-service-webapp.war</exclude>
+                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp.war</exclude>
+                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc-webapp.war</exclude>
+                <exclude>chat-webapp/target/sample-chat-webapp.war</exclude>
+                <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp.war</exclude>
             </excludes>
         </fileSet>
         <!-- Add all the demos to the demos directory -->
@@ -166,6 +181,10 @@
                 <exclude>*/target/surefire-reports/**/*</exclude>
                 <exclude>*/**/*.svg</exclude>
                 <exclude>*/**/*.ruleset</exclude>
+                <exclude>alert-aggregator-webapp/target</exclude>
+                <exclude>alert-aggregator-webapp/target/**/*</exclude>
+                <exclude>mortgage-creditcheck/target</exclude>
+                <exclude>mortgage-creditcheck/target/**/*</exclude>
             </excludes>
         </fileSet>
         <!-- Add the generated tuscany manifest classpath jar to the lib directory -->
@@ -177,6 +196,14 @@
             </includes>
         </fileSet>
 
+        <!-- temporary fix since maven dependencies of rampart seems to refere to SNAPSHOT versions of the parent pom --> 
+        <!--fileSet>
+            <directory>../modules/binding-ws-axis2/target/classes/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules</directory>
+            <outputDirectory>tuscany-sca-${tuscany.version}/lib</outputDirectory>
+            <includes>
+                <include>rampart-1.3.mar</include> 
+            </includes>
+        </fileSet-->
     </fileSets>
 
     <dependencySets>

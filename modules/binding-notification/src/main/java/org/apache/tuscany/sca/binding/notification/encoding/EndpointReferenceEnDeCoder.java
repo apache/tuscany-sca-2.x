@@ -87,14 +87,14 @@ public class EndpointReferenceEnDeCoder extends AbstractEnDeCoder<EndpointRefere
         }
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
-    @Override
-    protected Class<EndpointReference> getEncodingObjectType() {
+    
+	public Class<EndpointReference> getEncodingObjectType() {
         
         return EndpointReference.class;
     }

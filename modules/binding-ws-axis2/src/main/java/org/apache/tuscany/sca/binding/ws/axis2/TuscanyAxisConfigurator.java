@@ -18,20 +18,52 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
+import org.apache.axis2.deployment.DeploymentConstants;
+import org.apache.axis2.deployment.DeploymentErrorMsgs;
+import org.apache.axis2.deployment.DeploymentException;
+import org.apache.axis2.deployment.ModuleBuilder;
 import org.apache.axis2.deployment.URLBasedAxisConfigurator;
+import org.apache.axis2.deployment.util.Utils;
+import org.apache.axis2.description.AxisModule;
+import org.apache.axis2.description.Parameter;
+import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisConfigurator;
+import org.apache.axis2.i18n.Messages;
+import org.apache.axis2.util.Loader;
 
 /**
  * Helps configure Axis2 from a resource in binding.ws.axis2 instead of Axis2.xml 
  * <p/> TODO: Review: should there be a single global Axis ConfigurationContext
  */
 public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements AxisConfigurator {
-
+    
+    /* these two fields are part of a temporary fix to solve problems that maven has with including
+     * rampart-1.3.mar into the classpath and also at the time of Release 1.0 rampart-1.3.mar seems
+     * to pull in a SNAPSHOT version of rampart-project pom.  Hence rampart.mar has been excluded
+     * as a maven dependency and has been packed with this module 
+     */
+    /************start of fix *********************************************************************/
+    private URL axis2_xml = 
+        TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml");
+    private URL axis2_repository = null;
+    private URL rampart_mar_url =
+        TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules/rampart-1.3.mar");
+    /************** end of fix *************************************************************/
+    
     public TuscanyAxisConfigurator() throws AxisFault {
-        super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/"));
+        //super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), 
+        //      TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules/rampart.mar"));
+        super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), 
+                    null);
     }
 
     public ConfigurationContext getConfigurationContext() throws AxisFault {
@@ -40,5 +72,102 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
         }
         return configContext;
     }
+    
+    /* these three methods are part of a temporary fix to solve problems that maven has with including
+     * rampart-1.3.mar into the classpath and also at the time of Release 1.0 rampart-1.3.mar seems
+     * to pull in a SNAPSHOT version of rampart-project pom.  Hence rampart.mar has been excluded
+     * as a maven dependency and has been packed with this module 
+     */
+    /************start of fix *********************************************************************/
+    public AxisConfiguration getAxisConfiguration() throws AxisFault {
+        InputStream axis2xmlStream;
+        try {
+            if (axis2_xml == null) {
+                axis2xmlStream =
+                        Loader.getResourceAsStream(DeploymentConstants.AXIS2_CONFIGURATION_RESOURCE);
+            } else {
+                axis2xmlStream = axis2_xml.openStream();
+            }
+            axisConfig = populateAxisConfiguration(axis2xmlStream);
+            if (axis2_repository == null) {
+                Parameter axis2repoPara = axisConfig.getParameter(DeploymentConstants.AXIS2_REPO);
+                if (axis2repoPara != null) {
+                    String repoValue = (String) axis2repoPara.getValue();
+                    if (repoValue != null && !"".equals(repoValue.trim())) {
+                        if (repoValue.startsWith("file:/")) {
+                            // we treat this case specially , by assuming file is
+                            // located in the local machine
+                            loadRepository(repoValue);
+                        } else {
+                            loadRepositoryFromURL(new URL(repoValue));
+                        }
+                    }
+                } else {
+                    //log.info("No repository found , module will be loaded from classpath");
+                    try {
+                        loadFromClassPath(); 
+                    } catch ( Exception e ) {
+                        loadRampartModule();
+                    }
+                }
+                
+            } else {
+                loadRepositoryFromURL(axis2_repository);
+            }
+
+        } catch (IOException e) {
+            throw new AxisFault(e.getMessage());
+        }
+        axisConfig.setConfigurator(this);
+        return axisConfig;
+    }
+    
+    public void loadRampartModule() throws DeploymentException {
+        try {
+            ClassLoader deploymentClassLoader =
+                    Utils.createClassLoader(
+                            new URL[]{rampart_mar_url},
+                            axisConfig.getModuleClassLoader(),
+                            true,
+                            (File) axisConfig.getParameterValue(Constants.Configuration.ARTIFACTS_TEMP_DIR));
+            AxisModule module = new AxisModule();
+            module.setModuleClassLoader(deploymentClassLoader);
+            module.setParent(axisConfig);
+            //String moduleFile = fileUrl.substring(0, fileUrl.indexOf(".mar"));
+            if (module.getName() == null) {
+                module.setName(org.apache.axis2.util.Utils.getModuleName("rampart-1.3"));
+                module.setVersion(org.apache.axis2.util.Utils.getModuleVersion("rampart-1.3"));
+            }
+            populateModule(module, rampart_mar_url);
+            module.setFileName(rampart_mar_url);
+            addNewModule(module, axisConfig);
+            org.apache.axis2.util.Utils.
+                    calculateDefaultModuleVersion(axisConfig.getModules(), axisConfig);
+            axisConfig.validateSystemPredefinedPhases();
+        } catch (IOException e) {
+            throw new DeploymentException(e);
+        }
+    }
+    
+    private void populateModule(AxisModule module, URL moduleUrl) throws DeploymentException {
+        try {
+            ClassLoader classLoader = module.getModuleClassLoader();
+            InputStream moduleStream = classLoader.getResourceAsStream("META-INF/module.xml");
+            if (moduleStream == null) {
+                moduleStream = classLoader.getResourceAsStream("meta-inf/module.xml");
+            }
+            if (moduleStream == null) {
+                throw new DeploymentException(
+                        Messages.getMessage(
+                                DeploymentErrorMsgs.MODULE_XML_MISSING, moduleUrl.toString()));
+            }
+            ModuleBuilder moduleBuilder = new ModuleBuilder(moduleStream, module, axisConfig);
+            moduleBuilder.populateModule();
+        } catch (IOException e) {
+            throw new DeploymentException(e);
+        }
+    }
+    
+    /************** end of fix *************************************************************/
 
 }

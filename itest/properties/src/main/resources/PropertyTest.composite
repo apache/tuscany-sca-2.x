@@ -20,6 +20,7 @@
        xmlns:foo="http://foo" 
        xmlns:cust="http://www.example.com/Customer"
        xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
+       xmlns:xsd="http://www.w3.org/2001/XMLSchema"
        targetNamespace="http://foo"
        name="PropertyTest"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

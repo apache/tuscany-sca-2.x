@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.notification.encoding;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -43,4 +44,19 @@ public interface EnDeCoder<E extends EncodingObject> {
      * @throws EncodingException In case of any encoding error.
      */
     E decode(XMLStreamReader reader) throws EncodingException;
+    
+    /**
+     * Gets the qualified name of the XML fragment for the Encoding
+     * object.
+     * 
+     * @return Qualified name of the XML fragment.
+     */
+    QName getEncodingObjectQName();
+
+    /**
+     * Returns the type of the encoding object.
+     * 
+     * @return Encoding object type.
+     */
+    Class<E> getEncodingObjectType();
 }

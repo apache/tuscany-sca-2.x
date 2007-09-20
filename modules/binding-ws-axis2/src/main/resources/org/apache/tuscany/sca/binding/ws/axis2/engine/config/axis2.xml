@@ -79,7 +79,7 @@
     <!--context path to proper Axis2 servlets-->
 
     <!-- Customized by Tuscany -->
-    <!--<parameter name="servicePath">/</parameter>-->
+    <parameter name="servicePath">/</parameter>
 
     <!--<parameter name="restPath">rest</parameter>-->
 

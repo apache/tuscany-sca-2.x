@@ -32,14 +32,14 @@ public class BrokerEnDeCoder extends AbstractBrokerEnDeCoder<Broker> {
         super(registry);
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
-    @Override
-    protected Class<Broker> getEncodingObjectType() {
+    
+	public Class<Broker> getEncodingObjectType() {
         
         return Broker.class;
     }

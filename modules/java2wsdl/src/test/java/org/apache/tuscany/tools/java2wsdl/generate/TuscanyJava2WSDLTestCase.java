@@ -87,6 +87,20 @@ public class TuscanyJava2WSDLTestCase extends TestCase {
     }
 
     /**
+     * Test WSDL generation for a service interface.
+     */
+    public void testServiceWSDLGeneration() {
+        String[] arguments =
+            new String[] {"-cn", "org.apache.tuscany.tools.java2wsdl.generate.ExampleService", 
+                          "-o",  "target/java2wsdl-source"};
+
+        Java2WSDL.main(arguments);
+
+        File file = new File("target/java2wsdl-source/ExampleService.wsdl");
+        assertTrue(file.exists() && file.isFile());
+    }
+
+    /**
      * Test WSDL generation from a java interface and then generate the java
      * interface using the generated WSDL.
      */
