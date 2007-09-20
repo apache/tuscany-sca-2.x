@@ -19,6 +19,8 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -28,9 +30,11 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
+import org.osoa.sca.ServiceRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
-
+    private static final Logger logger = Logger.getLogger(Axis2ServiceInOutSyncMessageReceiver.class.getName());
+	
     protected Operation operation;
 
     private Axis2ServiceProvider provider;
@@ -72,8 +76,10 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception)t);
             }
-            throw new RuntimeException(e);
-        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), t);
+            throw new ServiceRuntimeException(e);
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
             throw AxisFault.makeFault(e);
         }
     }

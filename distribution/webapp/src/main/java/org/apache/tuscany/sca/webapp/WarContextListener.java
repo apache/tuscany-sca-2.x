@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.node.impl.ContributionManagerImpl;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 
 /**
  * A ServletContextListener for the Tuscany WAR distribution.
@@ -53,7 +53,7 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 public class WarContextListener implements ServletContextListener {
     private final static Logger logger = Logger.getLogger(WarContextListener.class.getName());
 
-    protected NodeImpl node;
+    protected SCANodeImpl node;
     protected AddableURLClassLoader classLoader;
     protected File repository;
 
@@ -108,7 +108,7 @@ public class WarContextListener implements ServletContextListener {
 
         classLoader = new AddableURLClassLoader(new URL[] {}, Thread.currentThread().getContextClassLoader());
         Thread.currentThread().setContextClassLoader(classLoader);
-        node = new NodeImpl(domainName, nodeName, classLoader);
+        node = new SCANodeImpl(domainName, nodeName, classLoader);
         node.start();
 
         existingContributions = new HashMap<URL, Long>();
@@ -126,9 +126,9 @@ public class WarContextListener implements ServletContextListener {
 
     }
 
-    protected void addContribution(URL contribution) throws CompositeBuilderException, ActivationException, URISyntaxException {
+    protected void addContribution(URL contribution) throws CompositeBuilderException, ContributionException, IOException, ActivationException, URISyntaxException {
         classLoader.addURL(contribution);
-        ((ContributionManagerImpl)node.getContributionManager()).addContributionJAR(contribution);
+        ((ContributionManagerImpl)node.getContributionManager()).addContribution(contribution);
         existingContributions.put(contribution, new Long(new File(contribution.toURI()).lastModified()));
         logger.log(Level.INFO, "Added contribution: " + contribution);
     }
@@ -260,13 +260,13 @@ public class WarContextListener implements ServletContextListener {
         if (servletContext.getInitParameter("domainName") != null) {
             domainName = servletContext.getInitParameter("domainName");
         } else {
-            domainName = NodeImpl.LOCAL_DOMAIN_URI;
+            domainName = SCANodeImpl.LOCAL_DOMAIN_URI;
         }
 
         if (servletContext.getInitParameter("nodeName") != null) {
             nodeName = servletContext.getInitParameter("nodeName");
         } else {
-            nodeName = NodeImpl.LOCAL_NODE_URI;
+            nodeName = SCANodeImpl.LOCAL_NODE_URI;
         }
 
         if (servletContext.getInitParameter("hotDeployInterval") != null) {

@@ -27,6 +27,7 @@ tuscany-sca-manifest.jar - all of the standard Tuscany SCA runtime and
 sample-binding-echo-extension.jar  - the new echo binding extension implementation
 sample-binding-echo - the application that uses the echo binding                         
 
+Note: this sample currently is not working on Linux
 
 Sample Overview
 ---------------

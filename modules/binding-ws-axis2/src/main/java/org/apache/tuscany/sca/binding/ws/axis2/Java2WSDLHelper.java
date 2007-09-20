@@ -22,17 +22,29 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.wsdl.Binding;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.BindingOutput;
 import javax.wsdl.Definition;
+import javax.wsdl.Input;
+import javax.wsdl.Message;
+import javax.wsdl.OperationType;
+import javax.wsdl.Output;
+import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.schema.Schema;
+import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
@@ -53,6 +65,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.java2wsdl.Java2WSDLBuilder;
+import org.osoa.sca.annotations.OneWay;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
@@ -88,8 +102,18 @@ public class Java2WSDLHelper {
 
         try {
             for (Operation op : iface.getOperations()) {
+                javax.wsdl.Operation wsdlOp = portType.getOperation(op.getName(), null, null);
+                WSDLOperationIntrospectorImpl opx =
+                    new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition.getInlinedSchemas(), null,
+                                                      null);
+
                 Operation clonedOp = (Operation)op.clone();
                 clonedOp.setDataBinding(null);
+
+                if (clonedOp.getInputType().getLogical().isEmpty()) {
+                    // null args case needs a single input type for the wrapper
+                    clonedOp.setInputType(opx.getInputType());
+                }
                 for (DataType<?> dt : clonedOp.getInputType().getLogical()) {
                     dt.setDataBinding(null);
                 }
@@ -101,10 +125,6 @@ public class Java2WSDLHelper {
                     dt.setDataBinding(null);
                 }
                 clonedOp.setWrapperStyle(true);
-                javax.wsdl.Operation wsdlOp = portType.getOperation(op.getName(), null, null);
-                WSDLOperationIntrospectorImpl opx =
-                    new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition.getInlinedSchemas(), null,
-                                                      null);
                 clonedOp.setWrapper(opx.getWrapper().getWrapperInfo());
 
                 wsdlInterface.getOperations().add(clonedOp);
@@ -167,6 +187,7 @@ public class Java2WSDLHelper {
             Definition definition = reader.readWSDL(locator);
             
             processSOAPVersion(definition, wsBinding);
+            processNoArgAndVoidReturnMethods(definition, javaInterface);
 
             return definition;
 
@@ -177,9 +198,9 @@ public class Java2WSDLHelper {
 
     private static void processSOAPVersion(Definition definition, WebServiceBinding wsBinding) {
         if (requiresSOAP12(wsBinding)) {
-            removePort(definition, "SOAP11port");
+             removePort(definition, "SOAP11port_http");
          } else {
-             removePort(definition, "SOAP12port");
+             removePort(definition, "SOAP12port_http");
          }
     }
 
@@ -208,6 +229,119 @@ public class Java2WSDLHelper {
         }
         return false;
     }
+
+    private static void processNoArgAndVoidReturnMethods(Definition definition, Class javaInterface) {
+        String namespaceURI = definition.getTargetNamespace();
+        String prefix = definition.getPrefix(namespaceURI);
+        String xsPrefix = definition.getPrefix("http://www.w3.org/2001/XMLSchema");
+        PortType portType = (PortType)definition.getAllPortTypes().values().iterator().next();
+
+        Element schema = null;
+        Document document = null;
+        Types types = definition.getTypes();
+        if (types != null) {
+            for (Object ext : types.getExtensibilityElements()) {
+                if (ext instanceof Schema) {
+                    Element element = ((Schema)ext).getElement();
+                    if (element.getAttribute("targetNamespace").equals(namespaceURI)) {
+                        schema = element;
+                        document = schema.getOwnerDocument();
+                        break;
+                    }
+                }
+            }
+        }
+        if (document == null) {
+            return;
+        }
+
+        // look at each operation in the port type to see if it needs fixing up
+        for (Object oper : portType.getOperations()) {
+            javax.wsdl.Operation operation = (javax.wsdl.Operation)oper;
+            String opName = operation.getName();
+
+            // if input message has no parts, add one containing an empty wrapper
+            Input input = operation.getInput();
+            if (input != null) {
+                Message inputMsg = input.getMessage();
+                if (inputMsg.getParts().isEmpty()) {
+                    // create wrapper element and add it to the schema DOM
+                    Element wrapper = document.createElementNS("http://www.w3.org/2001/XMLSchema",
+                                                               xsPrefix + ":element");
+                    wrapper.setAttribute("name", opName);
+                    schema.appendChild(wrapper);
+                    Element complexType = document.createElementNS("http://www.w3.org/2001/XMLSchema",
+                                                                   xsPrefix + ":complexType");
+                    wrapper.appendChild(complexType);
+
+                    // create new part for the wrapper and add it to the message
+                    Part part = definition.createPart();
+                    part.setName("parameters");
+                    part.setElementName(new QName(namespaceURI, opName, prefix));
+                    inputMsg.addPart(part);
+                }
+            }
+
+            // if two-way operation has no output message, add one containing an empty wrapper
+            if (input != null && operation.getOutput() == null) {
+                boolean isOneWay = false;
+                Method[] methods = javaInterface.getMethods();
+                for (Method method : methods) {
+                    if (method.getName().equals(opName) && method.getAnnotation(OneWay.class) != null) {
+                        isOneWay = true;
+                    }
+                }
+                if (!isOneWay) {
+                    // create wrapper element and add it to the schema DOM
+                    String msgName = opName + "Response";
+                    Element wrapper = document.createElementNS("http://www.w3.org/2001/XMLSchema",
+                                                               xsPrefix + ":element");
+                    wrapper.setAttribute("name", msgName);
+                    schema.appendChild(wrapper);
+                    Element complexType = document.createElementNS("http://www.w3.org/2001/XMLSchema",
+                                                                   xsPrefix + ":complexType");
+                    wrapper.appendChild(complexType);
+
+                    // create new part for the wrapper
+                    Part part = definition.createPart();
+                    part.setName("parameters");
+                    part.setElementName(new QName(namespaceURI, msgName, prefix));
+
+                    // create new message for the part
+                    Message outputMsg = definition.createMessage();
+                    outputMsg.setQName(new QName(namespaceURI, msgName, prefix));
+                    outputMsg.addPart(part);
+                    outputMsg.setUndefined(false);
+                    definition.addMessage(outputMsg);
+
+                    // create output element for the operation
+                    Output output = definition.createOutput();
+                    output.setMessage(outputMsg);
+                    output.setExtensionAttribute(new QName("http://www.w3.org/2006/05/addressing/wsdl", "Action"),
+                                                 new QName("urn:" + msgName));
+                    operation.setOutput(output);
+                    operation.setStyle(OperationType.REQUEST_RESPONSE);
+
+                    // add binding output element to bindings for this port type
+                    for (Object bindObj : definition.getAllBindings().values()) {
+                        Binding binding = (Binding)bindObj;
+                        if (binding.getPortType().equals(portType)) {
+                            BindingOperation op = binding.getBindingOperation(opName, null, null);
+                            if (op != null && op.getBindingInput() != null && op.getBindingOutput() == null) {
+                                BindingOutput bindingOut = definition.createBindingOutput();
+                                for (Object extObj : op.getBindingInput().getExtensibilityElements()) {
+                                    bindingOut.addExtensibilityElement((ExtensibilityElement)extObj);
+                                }
+                                op.setBindingOutput(bindingOut);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 }
 
 class WSDLLocatorImpl implements WSDLLocator {

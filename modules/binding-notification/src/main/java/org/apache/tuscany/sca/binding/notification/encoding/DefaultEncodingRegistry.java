@@ -70,4 +70,9 @@ public class DefaultEncodingRegistry implements EncodingRegistry {
         }
         return decoder.decode(reader);
     }
+    
+    public void stop() {
+    	encoderRegistry.clear();
+    	decoderRegistry.clear();
+    }
 }

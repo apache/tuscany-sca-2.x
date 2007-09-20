@@ -6,10 +6,9 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens open a command prompt, navigate
-to this sample directory and do:
+If you just want to run it to see what happens open a command prompt, please 
+check the section to build and run the sample using maven.
 
-ant run
 
 The sample will start the an embedded BPEL engine, deploy process and invoke it.
 
@@ -46,18 +45,8 @@ helloworld-bpel/
 
 Building And Running The Sample Using Ant
 -----------------------------------------
-With the binary distribution the sample can be built and run using Ant using the 
-following commands
 
-cd helloworld-bpel
-ant compile
-ant run
-
-You should see the following output from the run target.
-
-run:
-     [java] ...
-     [java] ...     
+Ant script is not supported at the moment.
      
 
 Building And Running The Sample Using Maven 
@@ -65,6 +54,36 @@ Building And Running The Sample Using Maven
 With either the binary or source distributions the sample can be built and run 
 using Maven as follows. When using Maven, a simple test is present that exercise
 the same logic as the client to invoke the BPEl process.
+We first need to tweek the helloworld-bpel pom.xml in order to overcome a surefire 
+defect. See below the changes that need to be done on the helloworld-bpel\pom.xml
+
+Original:
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<useFile>false</useFile>
+					<trimStackTrace>false</trimStackTrace>
+					<skip>true</skip>
+					<!--useSystemClassLoader>true</useSystemClassLoader-->
+				</configuration>
+			</plugin>
+
+Updated:
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<useFile>false</useFile>
+					<trimStackTrace>false</trimStackTrace>
+					<useSystemClassLoader>true</useSystemClassLoader>
+				</configuration>
+			</plugin>
+
+Now that you have the updated pom :
 
 cd helloworld-bpel
 mvn

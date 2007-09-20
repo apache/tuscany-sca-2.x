@@ -23,41 +23,28 @@ import javax.xml.namespace.QName;
 /**
  * @version $Rev$ $Date$
  */
-public abstract class AbstractEnDeCoder<E extends EncodingObject> implements EnDeCoder<E> {
+public abstract class AbstractEnDeCoder<E extends EncodingObject> implements
+		EnDeCoder<E> {
 
-    protected EncodingRegistry registry;
-    
-    protected AbstractEnDeCoder(EncodingRegistry registry) {
-        
-        this.registry = registry;
-    }
+	protected EncodingRegistry registry;
 
-    public void start() {
-        Class<E> encodingType = getEncodingObjectType();
-        QName encodingQName = getEncodingObjectQName();
+	protected AbstractEnDeCoder(EncodingRegistry registry) {
 
-        registry.registerEnDeCoder(encodingType, encodingQName, this);
-    }
+		this.registry = registry;
+	}
 
-    public void stop() {
-        Class<E> encodingType = getEncodingObjectType();
-        QName encodingQName = getEncodingObjectQName();
+	public void start() {
+		Class<E> encodingType = getEncodingObjectType();
+		QName encodingQName = getEncodingObjectQName();
 
-        registry.unregisterEnDeCoder(encodingType, encodingQName);
-    }
+		registry.registerEnDeCoder(encodingType, encodingQName, this);
+	}
 
-    /**
-     * Gets the qualified name of the XML fragment for the Encoding
-     * object.
-     * 
-     * @return Qualified name of the XML fragment.
-     */
-    protected abstract QName getEncodingObjectQName();
+	public void stop() {
+		Class<E> encodingType = getEncodingObjectType();
+		QName encodingQName = getEncodingObjectQName();
 
-    /**
-     * Returns the type of the encoding object.
-     * 
-     * @return Encoding object type.
-     */
-    protected abstract Class<E> getEncodingObjectType();
+		registry.unregisterEnDeCoder(encodingType, encodingQName);
+	}
+
 }

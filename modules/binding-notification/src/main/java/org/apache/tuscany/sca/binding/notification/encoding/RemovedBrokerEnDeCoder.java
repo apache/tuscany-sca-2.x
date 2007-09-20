@@ -32,13 +32,13 @@ public class RemovedBrokerEnDeCoder extends EndpointReferenceWrapperEnDeCoder<Re
         super(registry);
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         return QNAME;
     }
 
-    @Override
-    protected Class<RemovedBroker> getEncodingObjectType() {
+    
+	public Class<RemovedBroker> getEncodingObjectType() {
         return RemovedBroker.class;
     }
 }

@@ -159,8 +159,8 @@ public class ReallySmallRuntime {
                                                                             domainPolicySets);
         if (logger.isLoggable(Level.FINE)) {
             long end = System.currentTimeMillis();
-			logger.fine("The tuscany runtime is started in " + (end - start) + " ms.");
-		}
+            logger.fine("The tuscany runtime is started in " + (end - start) + " ms.");
+        }
     }
     
     private SCADefinitions loadDomainDefinitions(SCADefinitionsDocumentProcessor definitionsProcessor) throws ActivationException {
@@ -200,8 +200,8 @@ public class ReallySmallRuntime {
         
         if (logger.isLoggable(Level.FINE)) {
             long end = System.currentTimeMillis();
-			logger.fine("The tuscany runtime is stopped in " + (end - start) + " ms.");
-		}
+            logger.fine("The tuscany runtime is stopped in " + (end - start) + " ms.");
+        }
     }
 
     public ContributionService getContributionService() {
@@ -245,36 +245,37 @@ public class ReallySmallRuntime {
         return modules;
     }
     
-    private void startModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) throws ActivationException {
-    	boolean debug = logger.isLoggable(Level.FINE);
+    private void startModules(ExtensionPointRegistry registry, List<ModuleActivator> modules)
+        throws ActivationException {
+        boolean debug = logger.isLoggable(Level.FINE);
         // Start all the extension modules
         for (ModuleActivator module : modules) {
             long start = 0L;
-        	if (debug) {
-				logger.fine(module.getClass().getName() + " is starting.");
-            	start = System.currentTimeMillis();
-        	}
+            if (debug) {
+                logger.fine(module.getClass().getName() + " is starting.");
+                start = System.currentTimeMillis();
+            }
             module.start(registry);
             if (debug) {
-				long end = System.currentTimeMillis();
-				logger.fine(module.getClass().getName() + " is started in " + (end - start) + " ms.");
-			}
+                long end = System.currentTimeMillis();
+                logger.fine(module.getClass().getName() + " is started in " + (end - start) + " ms.");
+            }
         }
     }
 
     private void stopModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) {
-    	boolean debug = logger.isLoggable(Level.FINE);
+        boolean debug = logger.isLoggable(Level.FINE);
         for (ModuleActivator module : modules) {
             long start = 0L;
-        	if (debug) {
-				logger.fine(module.getClass().getName() + " is stopping.");
-            	start = System.currentTimeMillis();
-        	}
+            if (debug) {
+                logger.fine(module.getClass().getName() + " is stopping.");
+                start = System.currentTimeMillis();
+            }
             module.stop(registry);
             if (debug) {
-				long end = System.currentTimeMillis();
-				logger.fine(module.getClass().getName() + " is stopped in " + (end - start) + " ms.");
-			}
+                long end = System.currentTimeMillis();
+                logger.fine(module.getClass().getName() + " is stopped in " + (end - start) + " ms.");
+            }
         }
     }
 

@@ -35,13 +35,13 @@ public class NeighborBrokerConsumersEnDeCoder extends EndpointReferenceSequenceE
         super(registry);
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         return QNAME;
     }
 
-    @Override
-    protected Class<NeighborBrokerConsumers> getEncodingObjectType() {
+    
+	public Class<NeighborBrokerConsumers> getEncodingObjectType() {
         return NeighborBrokerConsumers.class;
     }
 

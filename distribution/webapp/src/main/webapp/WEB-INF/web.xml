@@ -30,11 +30,11 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
   <context-param>
      <param-name>domainName</param-name>
-     <param-value>mydomain</param-value>
+     <param-value>http://localhost:8080/</param-value>
   </context-param>
   <context-param>
      <param-name>nodeName</param-name>
-     <param-value>nodeB</param-value>
+     <param-value>http://localhost:8081/</param-value>
   </context-param>
   <context-param>
      <param-name>hotDeployInterval</param-name>

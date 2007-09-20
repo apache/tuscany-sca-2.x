@@ -16,27 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package helloworld;
 
-package org.apache.tuscany.sca.binding.ws.axis2.itests.policy;
+import java.io.IOException;
 
-import java.security.Provider;
-import java.security.Security;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
 
-public class WSSecurityConfidentialityTestCase extends AbstractHelloWorldOMTestCase {
+import org.apache.ws.security.WSPasswordCallback;
 
-    /**
-     * @see org.apache.tuscany.sca.binding.ws.axis2.itests.policy.AbstractHelloWorldOMTestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        // Workaround an issue with IBM JDK
-        Provider jce = Security.getProvider("IBMJCE");
-        if (jce != null) {
-            // Make sure IBMJCE is used first
-            Security.removeProvider("IBMJCE");
-            Security.insertProviderAt(jce, 1);
+/**
+ * Sample userid passwd generation class
+ */
+public class ClientPWCBHandler implements CallbackHandler {
+
+    public void handle(Callback[] callbacks) throws IOException,
+            UnsupportedCallbackException {
+        for (int i = 0; i < callbacks.length; i++) {
+        	System.out.println("*** Calling Client UserId/Password Handler .... ");
+            WSPasswordCallback pwcb = (WSPasswordCallback)callbacks[i];
+            pwcb.setPassword("TuscanyWsUserPasswd");
         }
-        super.setUp();
     }
-    // super class does it all getting composite based on this class name
+
 }

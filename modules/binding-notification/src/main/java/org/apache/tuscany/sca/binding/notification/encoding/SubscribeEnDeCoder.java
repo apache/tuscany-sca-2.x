@@ -69,14 +69,14 @@ public class SubscribeEnDeCoder extends AbstractEnDeCoder<Subscribe> {
         }
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
-    @Override
-    protected Class<Subscribe> getEncodingObjectType() {
+    
+	public Class<Subscribe> getEncodingObjectType() {
         
         return Subscribe.class;
     }

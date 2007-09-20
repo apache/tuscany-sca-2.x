@@ -92,6 +92,8 @@
              <exclude>itest/callablereferences/work/**/*</exclude>
              <exclude>itest/large-sdo-ws/work</exclude>
              <exclude>itest/large-sdo-ws/work/**/*</exclude>
+             <exclude>itest/ws-void-args-return/work</exclude>
+             <exclude>itest/ws-void-args-return/work/**/*</exclude>
              <exclude>itest/contribution-import-export/import-wsdl/work</exclude>
              <exclude>itest/contribution-import-export/import-wsdl/work/**/*</exclude>
              <exclude>itest/contribution-import-export/import-composite/work</exclude>
@@ -111,6 +113,8 @@
              <exclude>modules/implementation-osgi/.felix/**/*</exclude>
              <exclude>samples/old</exclude>
              <exclude>samples/old/**/*</exclude>
+             <exclude>samples/calculator-distributed/work</exclude>
+             <exclude>samples/calculator-distributed/work/**/*</exclude>
              <exclude>samples/company-das</exclude>
              <exclude>samples/company-das/**/*</exclude>
              <exclude>samples/company-das-webapp</exclude>
@@ -119,6 +123,8 @@
              <exclude>samples/das-service/**/*</exclude>
              <exclude>samples/das-service-web</exclude>
              <exclude>samples/das-service-web/**/*</exclude>
+             <exclude>samples/domain-webapp</exclude>
+             <exclude>samples/domain-webapp/**/*</exclude>
              <exclude>samples/helloworld-jsonrpc-webapp/src/main/webapp/dojo</exclude>
              <exclude>samples/helloworld-jsonrpc-webapp/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
@@ -133,6 +139,8 @@
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service-secure/work</exclude>
              <exclude>samples/helloworld-ws-service-secure/work/**/*</exclude>
+             <exclude>samples/helloworld-ws-service-webapp</exclude>
+             <exclude>samples/helloworld-ws-service-webapp/**/*</exclude>
              <exclude>samples/osgi-supplychain/.felix</exclude>
              <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
              <exclude>samples/quote-xquery</exclude>

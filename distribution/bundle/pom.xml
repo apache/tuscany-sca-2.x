@@ -179,6 +179,11 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-domain-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-domain-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -289,6 +294,11 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-xquery</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-node</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -339,13 +349,20 @@
         </dependency>        
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>sca-api</artifactId>
+            <artifactId>tuscany-sca-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <!-- sdo 1.0 uses 3.2.0 but sca uses 3.2.1 -->
+                    <groupId>org.codehaus.woodstox</groupId>
+                    <artifactId>wstx-asl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>

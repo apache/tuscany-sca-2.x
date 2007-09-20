@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import javax.wsdl.Binding;
@@ -45,15 +46,21 @@ import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
+import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.Intent;
@@ -62,6 +69,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.ws.commons.schema.resolver.URIResolver;
+import org.xml.sax.InputSource;
 
 public class Axis2ServiceClient {
 
@@ -97,13 +106,73 @@ public class Axis2ServiceClient {
             QName serviceQName = wsBinding.getServiceName();
             String portName = wsBinding.getPortName();
             AxisService axisService =
-                AxisService.createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
+                createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
 
             return new ServiceClient(configContext, axisService);
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
         }
     }
+    
+    /**
+     * URI resolver implementation for xml schema
+     */
+    public static class URIResolverImpl implements URIResolver {
+        private Definition definition;
+
+        public URIResolverImpl(Definition definition) {
+            this.definition = definition;
+        }
+
+        public org.xml.sax.InputSource resolveEntity(java.lang.String targetNamespace,
+                                                     java.lang.String schemaLocation,
+                                                     java.lang.String baseUri) {
+            try {
+                if (baseUri == null) {
+                    baseUri = definition.getDocumentBaseURI();
+                }
+                URL url = new URL(new URL(baseUri), schemaLocation);
+                return XMLDocumentHelper.getInputSource(url);
+            } catch (IOException e) {
+                return null;
+            }
+        }
+    }
+    
+    /**
+     * This method is copied from AxisService.createClientSideAxisService to
+     * work around http://issues.apache.org/jira/browse/WSCOMMONS-228
+     * 
+     * @param wsdlDefinition
+     * @param wsdlServiceName
+     * @param portName
+     * @param options
+     * @return
+     * @throws AxisFault
+     */
+    @Deprecated
+    public static AxisService createClientSideAxisService(Definition wsdlDefinition,
+                                                          QName wsdlServiceName,
+                                                          String portName,
+                                                          Options options) throws AxisFault {
+        WSDL11ToAxisServiceBuilder serviceBuilder =
+                new WSDL11ToAxisServiceBuilder(wsdlDefinition, wsdlServiceName, portName);
+        serviceBuilder.setServerSide(false);
+        // [rfeng] Add a custom resolver to work around WSCOMMONS-228
+        serviceBuilder.setCustomResolver(new URIResolverImpl(wsdlDefinition));
+        serviceBuilder.setBaseUri(wsdlDefinition.getDocumentBaseURI());
+        // [rfeng]
+        AxisService axisService = serviceBuilder.populateService();
+        AxisEndpoint axisEndpoint = (AxisEndpoint) axisService.getEndpoints()
+                .get(axisService.getEndpointName());
+        options.setTo(new EndpointReference(axisEndpoint.getEndpointURL()));
+        if (axisEndpoint != null) {
+            options.setSoapVersionURI((String) axisEndpoint.getBinding()
+                    .getProperty(WSDL2Constants.ATTR_WSOAP_VERSION));
+        }
+        return axisService;
+    }
+
 
     /**
      * Ensure the WSDL definition contains a suitable service and port

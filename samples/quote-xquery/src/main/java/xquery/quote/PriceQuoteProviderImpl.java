@@ -22,6 +22,6 @@ import org.example.price.PriceQuote;
 
 public class PriceQuoteProviderImpl implements PriceQuoteProvider {
     public PriceQuote providePriceQuote() {
-        return TestHelper.buildPriceQuoteData();
+        return QuoteDataUtil.buildPriceQuoteData();
     }
 }

@@ -66,6 +66,7 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -330,11 +331,15 @@ public class Axis2ServiceProvider {
 
         WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, serviceQName, portName);
         builder.setServerSide(true);
+        // [rfeng] Add a custom resolver to work around WSCOMMONS-228
+        builder.setCustomResolver(new URIResolverImpl(definition));
+        builder.setBaseUri(definition.getDocumentBaseURI());
+        // [rfeng]
         AxisService axisService = builder.populateService();
 
         String path = URI.create(wsBinding.getURI()).getPath();
         axisService.setName(path);
-        axisService.setServiceDescription("Tuscany configured AxisService for service: " + wsBinding.getURI());
+        axisService.setDocumentation("Tuscany configured AxisService for service: " + wsBinding.getURI());
 
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);

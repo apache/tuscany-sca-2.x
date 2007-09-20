@@ -108,7 +108,9 @@ public class Axis2BindingInvoker implements Invoker {
         // FIXME: [rfeng] We have to pay performance penality to build the complete OM as the operationClient.complete() will
         // release the underlying HTTP connection. 
         // Force the response to be populated, see https://issues.apache.org/jira/browse/TUSCANY-1541
-        response.build();
+        if (response != null) {
+            response.build();
+        }
 
         operationClient.complete(requestMC);
 

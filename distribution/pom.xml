@@ -73,6 +73,11 @@
                     <groupId>jline</groupId>
                     <artifactId>jline</artifactId>
                 </exclusion>
+                <exclusion>
+                    <!-- exclude stax 1.0.1 as we're also pulling in javax\xml\stream\stax-api\1.0-2 -->
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
             </exclusions>
        </dependency>
         <dependency>
@@ -84,6 +89,18 @@
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <!-- sdo 1.0 uses 3.2.0 but sca uses 3.2.1 -->
+                    <groupId>org.codehaus.woodstox</groupId>
+                    <artifactId>wstx-asl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- exclude stax 1.0.1 as we're also pulling in javax\xml\stream\stax-api\1.0-2 -->
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -116,7 +133,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.tuscany.sca</groupId>
-                                    <artifactId>sca-api</artifactId>
+                                    <artifactId>tuscany-sca-api</artifactId>
                                     <classifier>javadoc</classifier>
                                     <version>${pom.version}</version>
                                 </artifactItem>

@@ -32,13 +32,13 @@ public class NewConsumerEnDeCoder extends EndpointReferenceWrapperEnDeCoder<NewC
         super(registry);
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         return QNAME;
     }
 
-    @Override
-    protected Class<NewConsumer> getEncodingObjectType() {
+    
+	public Class<NewConsumer> getEncodingObjectType() {
         return NewConsumer.class;
     }
 }

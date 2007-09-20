@@ -87,14 +87,14 @@ public class RemoveBrokerEnDeCoder extends AbstractEnDeCoder<RemoveBroker> {
         }
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
-    @Override
-    protected Class<RemoveBroker> getEncodingObjectType() {
+    
+	public Class<RemoveBroker> getEncodingObjectType() {
         
         return RemoveBroker.class;
     }

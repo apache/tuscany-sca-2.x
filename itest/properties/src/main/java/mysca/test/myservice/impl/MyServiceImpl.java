@@ -37,7 +37,7 @@ public class MyServiceImpl implements MyService {
     protected String year = "2006";
 
     @ComponentName
-    private String componentName;
+    protected String componentName;
 
 
     private Logger logger;

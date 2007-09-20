@@ -63,14 +63,14 @@ public class NewBrokerAckEnDeCoder extends AbstractEnDeCoder<NewBrokerAck> {
         }
     }
 
-    @Override
-    protected QName getEncodingObjectQName() {
+    
+	public QName getEncodingObjectQName() {
         
         return QNAME;
     }
 
-    @Override
-    protected Class<NewBrokerAck> getEncodingObjectType() {
+    
+	public Class<NewBrokerAck> getEncodingObjectType() {
         
         return NewBrokerAck.class;
     }

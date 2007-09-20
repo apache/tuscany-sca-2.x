@@ -1,22 +1,49 @@
-Apache Tuscany SCA 0.99 (incubating) August 2007 Release Notes
-==============================================================
+Apache Tuscany SCA 1.0 (incubating) September 2007 Release Notes
+================================================================
 
 Apache Tuscany provides a runtime based on the Service Component
 Architecture. SCA is a set of specifications aimed at simplifying SOA
 Application Development which are being standardized at OASIS as part
-of Open Composite Services Architecture (Open CSA).
+of Open Composite Services Architecture (Open CSA) - http://www.oasis-opencsa.org/.
 
 Overview
 --------
 
-        This 0.99 release of Apache Tuscany SCA is expected to be
-        the last point release before 1.0 final release. It further
-        builds on the stability and modularity established with the
-        previous releases including more complete implementation of SCA
-        specifications, support for distributed SCA domains, SCA policy,
-        OSGi implementation types, and notification components for pub/sub
-        interactions. Start up time and memory footprint of the Tuscany SCA 
-        runtime has also been reduced.
+     The Apache Tuscany SCA 1.0 release includes implementations of the
+     main SCA specifications including:
+
+        SCA Assembly Model V1.0
+        SCA Policy Framework V1.0
+        SCA Java Common Annotations and APIs V1.0
+        SCA Java Component Implementation V1.0
+        SCA Spring Component Implementation V1.0
+        SCA BPEL Client and Implementation V1.0
+        SCA Web Services Binding V1.0
+        SCA EJB Session Bean Binding V1.0
+
+    It also includes implementations of many features not yet defined
+    by SCA specifications, including:
+
+        - SCA bindings for Direct Web Remoting, RSS and ATOM Feeds, 
+          HTTP resources, JSON-RPC, PUB/SUB Notifications, and RMI.
+        - SCA implementation types for OSGI, XQuery, BPEL, and various 
+          dynamic languages including Groovy, Javascript, Python and Ruby
+        - Databindings for Service Data Objects (SDO), JAXB, XmlBeans, 
+          Axis2's AXIOM, JSON, SAXON, DOM, SAX and StAX
+
+    The Tuscany SCA Runtime can be configured as a single node SCA domain or 
+    as an SCA domain distributed across multiple nodes. 
+    In addition Tuscany SCA supports the following host-deployment options: -
+     - running standalone 
+     - running with distributed nodes across multiple JVMs
+     - running with embedded Jetty or Tomcat
+     - running as a standard web application                                     
+     - running as a module in Geronimo (experimental). 
+     
+     
+    The Wepapp samples included in this release have been tried and tested on Tomcat, 
+    WebSphere.
+        
 
 See the CHANGES file for a detailed list of the features in this release.
 
@@ -30,7 +57,7 @@ For more information on Apache Tuscany visit the website at:
 Any issues with this release can be reported to Apache Tuscany
 using the mailing lists or in the JIRA issue tracker.
 
-    Mailing lists:
+    Mailing list archives:
 
        http://mail-archives.apache.org/mod_mbox/ws-tuscany-user/
        http://mail-archives.apache.org/mod_mbox/ws-tuscany-dev/
@@ -38,6 +65,10 @@ using the mailing lists or in the JIRA issue tracker.
     Jira:
 
        http://issues.apache.org/jira/browse/TUSCANY
+
+To join the project's mailing lists follow the instructions at:
+
+    http://incubator.apache.org/tuscany/mailing-lists.html
 
 To find out more about OASIS Open CSA go to: 
 

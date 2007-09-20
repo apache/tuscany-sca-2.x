@@ -268,7 +268,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>sca-api</artifactId>
+            <artifactId>tuscany-sca-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
