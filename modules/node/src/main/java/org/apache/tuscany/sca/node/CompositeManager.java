@@ -19,6 +19,15 @@
 
 package org.apache.tuscany.sca.node;
 
+import java.io.IOException;
+import java.net.URL;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
+
 
 /**
  * A management interface for composites in the distributed domain
@@ -27,24 +36,50 @@ package org.apache.tuscany.sca.node;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 public interface CompositeManager {
+    
+    /**
+     * Add all composite in a contribution
+     * 
+     * @param contributionURL
+     */
+    public abstract void addAllComposites(URL contributionURL)
+      throws ActivationException, ContributionException, IOException, CompositeBuilderException;
+    
+    /**
+     * adds a named composite
+     * 
+     * @param compositeName the name of the composite to be added
+     */
+    public abstract void addComposite(QName compositeName);
+
+    /**
+     * Removes a named composite
+     * 
+     * @param compositeName the name of the composite to be added
+     */
+    public abstract void removeComposite(QName compositeName);    
+    
+    /**
+     * Starts all composites in a contribution
+     * 
+     * @param contributionURL
+     */
+    public abstract void startAllComposites(URL contributionURL)
+      throws ActivationException;
        
     /**
-     * Starts a named component
+     * Starts a named composite
      * 
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the node
-     * @param componentName the name of the component to be started
+     * @param compositeName the name of the composite to be started
      */
-    public void startComposite(String domainUri, String nodeUri, String compositeName);
-    
-    
+    public abstract void startComposite(QName compositeName);
+
     /**
-     * Stops a named component
+     * Stops a named composite
      * 
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the node
-     * @param componentName the name of the component to be started
+     * @param compositeName the name of the composite to be stopped
      */
-    public void stopComposite(String domainUri, String nodeUri, String compositeName);
-     
+    public abstract void stopComposite(QName compositeName);
+    
+
 }

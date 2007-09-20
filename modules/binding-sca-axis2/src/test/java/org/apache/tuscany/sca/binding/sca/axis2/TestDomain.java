@@ -36,11 +36,13 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
-import org.apache.tuscany.sca.domain.Domain;
-import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.domain.SCADomainService;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.node.ComponentManager;
+import org.apache.tuscany.sca.node.ContributionManager;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -54,11 +56,11 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev: 552343 $ $Date$
  */
-public class TestDomain implements Domain {
+public class TestDomain implements SCANode {
     
     private String nodeName;
     private String domainURI;
-    private static ServiceDiscoveryService serviceDiscovery;   
+    private static SCADomainService serviceDiscovery;   
     private ReallySmallRuntime nodeRuntime;
     
     private ClassLoader cl = BaseTest.class.getClassLoader();
@@ -88,7 +90,7 @@ public class TestDomain implements Domain {
             
             // make the domain available to the model. 
             ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            DomainFactoryImpl domainFactory = new DomainFactoryImpl(this);
+            NodeFactoryImpl domainFactory = new NodeFactoryImpl(this);
             factories.addFactory(domainFactory);                       
 
             // add a contribution to the domain
@@ -127,17 +129,34 @@ public class TestDomain implements Domain {
     }
     
         
-    public String getNodeUri(){
+    public String getNodeURI(){
         return nodeName;
     }  
     
-    public String getDomainUri(){
+    public String getDomainURI(){
         return domainURI;
     } 
     
-    public ServiceDiscoveryService getServiceDiscovery(){
-        return serviceDiscovery;
+    
+    public URL getNodeURL(){
+        return null;
+    }  
+    
+    public URL getDomainURL(){
+        return null;
     }     
+    
+    public SCADomainService getDomainService(){
+        return serviceDiscovery;
+    } 
+    
+    public ContributionManager getContributionManager(){
+        return null;
+    }
+    
+    public ComponentManager getComponentManager(){
+        return null;
+    }    
     
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         return null; 

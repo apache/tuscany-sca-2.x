@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.binding.sca.impl;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.domain.Domain;
-import org.apache.tuscany.sca.domain.DomainFactory;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -39,15 +39,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<SCABinding> {
     
     private ExtensionPointRegistry extensionPoints;
-    private Domain domain = null;
+    private SCANode node = null;
     
     public RuntimeSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         ModelFactoryExtensionPoint factories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        DomainFactory domainFactory = factories.getFactory(DomainFactory.class);
+        NodeFactory domainFactory = factories.getFactory(NodeFactory.class);
         
         if (domainFactory != null) {
-        	domain = domainFactory.getDomain();
+        	node = domainFactory.getNode();
         }
         
     } 
@@ -56,13 +56,13 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
                                                                    RuntimeComponentReference reference,
                                                                    SCABinding binding) {
               
-        return  new RuntimeSCAReferenceBindingProvider(extensionPoints, domain, component, reference, binding);
+        return  new RuntimeSCAReferenceBindingProvider(extensionPoints, node, component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                SCABinding binding) {
-        return new RuntimeSCAServiceBindingProvider(extensionPoints, domain, component, service, binding);
+        return new RuntimeSCAServiceBindingProvider(extensionPoints, node, component, service, binding);
     }
 
     public Class<SCABinding> getModelType() {

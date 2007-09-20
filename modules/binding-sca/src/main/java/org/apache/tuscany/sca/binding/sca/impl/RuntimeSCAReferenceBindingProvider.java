@@ -23,11 +23,11 @@ import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.domain.Domain;
-import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.domain.SCADomainService;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -49,7 +49,7 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private Domain domain;
+    private SCANode node;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -59,11 +59,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private ReferenceBindingProvider distributedProvider = null;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
-    		                                  Domain domain,
+    		                                  SCANode domain,
                                               RuntimeComponent component,
                                               RuntimeComponentReference reference,
                                               SCABinding binding) {
-        this.domain = domain;
+        this.node = domain;
         this.component = component;
         this.reference = reference;
         this.binding = binding;
@@ -98,14 +98,14 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // reference, e.g. a callback, so check the domain to see if the service is available
             // at this node. The binding uri might be null here if the dynamic reference has been
             // fully configured yet. It won't have all of the information until invocation time
-            if ((domain != null) && (binding.getURI() != null)) {
-                ServiceDiscoveryService serviceDiscovery = domain.getServiceDiscovery();
+            if ((node != null) && (binding.getURI() != null)) {
+                SCADomainService serviceDiscovery = node.getDomainService();
 
                 String serviceUrl =
-                    serviceDiscovery.findServiceEndpoint(domain.getDomainUri(),
+                    serviceDiscovery.findServiceEndpoint(node.getDomainURI(),
                                                          binding.getURI(),
                                                          SCABinding.class.getName());
-                if (serviceUrl == null) {
+                if ((serviceUrl == null) || serviceUrl.equals("")) {
                     targetIsRemote = false;
                 } else {
                     targetIsRemote = true;
@@ -132,7 +132,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                         + reference.getName());
                 }
 
-                if (domain == null) {
+                if (node == null) {
                     throw new IllegalStateException("No distributed domain available for component: " + component
                         .getName()
                         + " and reference: "

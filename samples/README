@@ -38,7 +38,7 @@ feed-aggregator-webapp   - feed-aggregator running in webapp
 
 helloworld-bpel          - Demonstrates an SCA component invoking a BPEL process in a composition
 
-helloworld-dojo-webapp   - An SCA application that exposes a service using 
+helloworld-dojo-webapp   -  An SCA application that exposes a service using 
                            JSONRPC and a client using the Dojo toolkit
 helloworld-jsonrpc-webapp- helloworld using jsonrpc binding
 helloworld-ws-reference  - The client side of a hello world sample that uses a 

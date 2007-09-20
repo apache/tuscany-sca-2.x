@@ -79,6 +79,7 @@
                 <module>discovery-jms</module>
                 -->
                 <module>domain</module>
+                <module>domain-api</module>
                 <module>domain-impl</module>
                 <module>extension-helper</module>
                 <module>host-embedded</module>

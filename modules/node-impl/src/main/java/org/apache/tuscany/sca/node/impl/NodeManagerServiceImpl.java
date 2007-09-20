@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.node.ComponentInfo;
 import org.apache.tuscany.sca.node.ComponentManagerService;
-import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.NodeManagerInitService;
 import org.apache.tuscany.sca.node.NodeManagerService;
 import org.osoa.sca.annotations.Scope;
@@ -41,14 +41,14 @@ import org.osoa.sca.annotations.Service;
 @Service(interfaces = {NodeManagerService.class, NodeManagerInitService.class, ComponentManagerService.class})
 public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerInitService, ComponentManagerService {
 
-    private Node node;
+    private SCANode node;
 
     public String getNodeUri() {
-        return node.getNodeUri();
+        return node.getNodeURI();
     }
 
     // NodeManagerInitService
-    public void setNode(Node node) {
+    public void setNode(SCANode node) {
         this.node = node;
     }
 

@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
+import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,12 +34,12 @@ import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
-import org.apache.tuscany.sca.domain.Domain;
-import org.apache.tuscany.sca.domain.ServiceDiscoveryService;
+import org.apache.tuscany.sca.domain.SCADomainService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -50,7 +54,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     
     private final static Logger logger = Logger.getLogger(Axis2SCAServiceBindingProvider.class.getName());
 
-    private Domain domain;
+    private SCANode node;
     private SCABinding binding;
     private Axis2ServiceProvider axisProvider;
     private WebServiceBinding wsBinding;
@@ -58,12 +62,13 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     private boolean started = false;
 
 
-    public Axis2SCAServiceBindingProvider(Domain domain,
+    public Axis2SCAServiceBindingProvider(SCANode node,
     		                              RuntimeComponent component,
                                           RuntimeComponentService service,
                                           DistributedSCABinding binding,
                                           ServletHost servletHost,
                                           MessageFactory messageFactory) {
+    	this.node = node;
         this.binding = binding.getSCABinding();
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
@@ -88,42 +93,94 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                                    messageFactory);
         
 
-        if (domain != null){
+        if (node != null){
 	        // get the url out of the binding and send it to the registry if
 	        // a distributed domain is configured
-	        ServiceDiscoveryService serviceDiscovery = domain.getServiceDiscovery();
+	        SCADomainService domainService = node.getDomainService();
 	        
-	        if (serviceDiscovery != null) {
-		        // register endpoint against the path element of the binding uri
-		        String componentName = this.binding.getURI();
+	        if (domainService != null) {
+		        // work out what the component service name is that will be registered
+	            // it should be the path element of the binding uri
+		        String componentServiceName = this.binding.getURI();
 		        
 		        try {
 		            URI servicePath = new URI(this.binding.getURI());
-		            componentName = servicePath.getPath();
+		            componentServiceName = servicePath.getPath();
 		            
 		            // strip any leading slash
-		            if (componentName.charAt(0) == '/'){
-		                componentName = componentName.substring(1, componentName.length());
+		            if (componentServiceName.charAt(0) == '/'){
+		                componentServiceName = componentServiceName.substring(1, componentServiceName.length());
 		            }
 		        } catch(Exception ex) {
 		            // do nothing, the binding uri string will be used
 		        }
-		
+		        
+		        // work out what the endpoint address is that the component service name will be registered
+		        // against. Be default this is the url calculated by the web services binding but
+		        // we have to adjust that to:
+		        // 1. correct the host and port in the case that this is a web app as the container controlls the port
+                // 2. correct the host name in the case that it's localhost		        
+		        String componentServiceUrlString = wsBinding.getURI();
+		        URL componentServiceUrl;
+		        
 		        try {
-    		            serviceDiscovery.registerServiceEndpoint(domain.getDomainUri(), 
-    		                                                     domain.getNodeUri(), 
-    		                                                     componentName, 
-    		                                                     SCABinding.class.getName(), 
-    		                                                     wsBinding.getURI());
-	                } catch(Exception ex) {
-	                    logger.log(Level.WARNING, 
-	                               "Unable to  register service: "  +
-	                               domain.getDomainUri() + " " +
-	                               domain.getNodeUri() + " " +
-	                               componentName + " " +
-	                               SCABinding.class.getName() + " " +
-	                               wsBinding.getURI());
-	                }
+		            componentServiceUrl = new URL(componentServiceUrlString);
+		        } catch (MalformedURLException ex) {
+		            throw new IllegalStateException("Unable to conver url " + 
+		                                            componentServiceUrlString + 
+		                                            " as generated by the web service binding into a URL");
+		        }
+		        
+	            String originalHost = componentServiceUrl.getHost();
+	            String newHost = originalHost;
+	            int originalPort = componentServiceUrl.getPort();
+	            int newPort = originalPort;
+		        
+		        // TODO - could do with a change to the ServletHost API so that we can just ask the servlet
+		        //        host if it is controlling the URL
+		        if (servletHost.getClass().getName().equals("WebbAppServletHost")){
+		            // the service URL will likely be completely different to that 
+		            // calculated by the ws binding so replace it with the node url
+		            // The node url will have been set via init parameters in the web app
+                    URL nodeUrl = node.getNodeURL();
+                    
+                    if (nodeUrl != null){
+                        newHost = nodeUrl.getHost();
+                        newPort = nodeUrl.getPort();
+                    } else {
+                        throw new IllegalStateException("Node running inside a webapp and node was not created with a valid node url");
+                    }
+		        }
+		        
+		        // no good registering localhost as a host name when nodes are spread across 
+		        // machines
+                if ( newHost.equals("localhost")){
+                    try {
+                        newHost = InetAddress.getLocalHost().getHostName();
+                    } catch(UnknownHostException ex) {
+                        throw new IllegalStateException("Got unknown host while trying to get the local host name in order to regsiter service with the domain");
+                    }		        
+                }
+                
+		        // replace the old with the new
+                componentServiceUrlString = componentServiceUrlString.replace(String.valueOf(originalPort), String.valueOf(newPort));          
+                componentServiceUrlString = componentServiceUrlString.replace(originalHost, newHost);		        
+		        		
+		        try {
+		            domainService.registerServiceEndpoint(node.getDomainURI(), 
+    		                                              node.getNodeURI(), 
+    		                                              componentServiceName, 
+    		                                              SCABinding.class.getName(), 
+    		                                              componentServiceUrlString);
+                } catch(Exception ex) {
+                    logger.log(Level.WARNING, 
+                               "Unable to  register service: "  +
+                               node.getDomainURI() + " " +
+                               node.getNodeURI() + " " +
+                               componentServiceName + " " +
+                               SCABinding.class.getName() + " " +
+                               componentServiceUrlString);
+                }
 	        } else {
 	          /* don't think we should thrown an exception here as it
 	           * may be a stand alone node
