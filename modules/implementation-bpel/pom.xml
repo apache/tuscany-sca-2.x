@@ -334,7 +334,6 @@
 					<useFile>false</useFile>
 					<trimStackTrace>false</trimStackTrace>
 					<useSystemClassLoader>true</useSystemClassLoader>
-                    <forkMode>once</forkMode>
 				</configuration>
 			</plugin>
 			<plugin>
