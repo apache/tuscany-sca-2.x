@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.contribution.processor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -47,6 +49,7 @@ import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
 public class ExtensibleStAXArtifactProcessor
     implements StAXArtifactProcessor<Object> {
 
+    private static final Logger logger = Logger.getLogger(ExtensibleStAXArtifactProcessor.class.getName()); 
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private StAXArtifactProcessorExtensionPoint processors;
@@ -70,6 +73,10 @@ public class ExtensibleStAXArtifactProcessor
         QName name = source.getName();
         StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)processors.getProcessor(name);
         if (processor == null) {
+            if (logger.isLoggable(Level.WARNING)) {
+                Location location = source.getLocation();
+                logger.warning("Element " + name + " cannot be processed. (" + location + ")");
+            }
             return null;
         }
         return processor.read(source);
@@ -83,6 +90,10 @@ public class ExtensibleStAXArtifactProcessor
             StAXArtifactProcessor processor = processors.getProcessor(model.getClass());
             if (processor != null) {
                 processor.write(model, outputSource);
+            } else {
+                if (logger.isLoggable(Level.WARNING)) {
+                    logger.warning("No StAX processor is configured to handle " + model.getClass());
+                }
             }
         }
     }
