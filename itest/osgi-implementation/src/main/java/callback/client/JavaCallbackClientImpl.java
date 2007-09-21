@@ -31,7 +31,9 @@ import callback.service.CallbackService;
  */
 public class JavaCallbackClientImpl implements CallbackClient, CallbackCallback {
 
+	@Reference
     protected CallbackService callbackService;
+	
     private static String returnMessage = null;
     private static int callbackCount = 0;
     private static Object monitor = new Object();

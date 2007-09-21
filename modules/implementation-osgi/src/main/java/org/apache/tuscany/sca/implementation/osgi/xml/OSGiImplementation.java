@@ -115,6 +115,14 @@ public class OSGiImplementation extends ComponentTypeImpl implements OSGiImpleme
         return serviceCallbackProperties.get(serviceName);
     }
 
+    /**
+     * Since OSGi implementation annotations may not be processed until much later, leave it to
+     * the OSGi invoker to decide whether pass-by-reference is allowed.
+     * @return
+     */
+    public boolean isAllowsPassByReference() {
+        return true;
+    }
     
     public Object getOSGiBundle() {
         return osgiBundle;

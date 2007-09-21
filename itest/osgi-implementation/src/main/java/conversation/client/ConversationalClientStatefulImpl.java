@@ -24,7 +24,6 @@ import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -80,7 +79,7 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }	
@@ -97,7 +96,7 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
         clientCount = callableReference.retrieveCount();
         callableReference.endConversation();
         
-        serviceReference.getConversation().end();
+        // serviceReference.getConversation().end();
         
         return clientCount;
     }    
@@ -240,6 +239,7 @@ public class ConversationalClientStatefulImpl implements ConversationalClient, C
     
     public String endConversation(){
         calls.append("endConversation,");
+        callbackCount = 0;
         return null;
     }
     

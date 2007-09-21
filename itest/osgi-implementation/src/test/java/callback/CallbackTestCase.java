@@ -19,43 +19,30 @@
 
 package callback;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 import callback.client.CallbackClient;
 
-import util.OSGiTestUtil;
+import test.OSGiTestCase;
 
-public abstract class CallbackTestCase extends TestCase {
+public abstract class CallbackTestCase extends OSGiTestCase {
 
-    private SCADomain scaDomain;
     private CallbackClient aCallbackClient;
     
     protected String compositeName;
     
    
     public CallbackTestCase(String compositeName) {
-        super();
-        this.compositeName = compositeName;
+        super(compositeName, "callback");
     }
 
    
 
     protected void setUp() throws Exception {
-        OSGiTestUtil.setUpOSGiTestRuntime();
-        
-        scaDomain = SCADomain.newInstance(compositeName);
+    	super.setUp();
         aCallbackClient = scaDomain.getService(CallbackClient.class, "CallbackClient");
     }
 
     
-    protected void tearDown() throws Exception {
-        scaDomain.close();
-        
-        OSGiTestUtil.shutdownOSGiRuntime();
-    }
-
     public void test() throws Exception {
         aCallbackClient.run(); 
     }

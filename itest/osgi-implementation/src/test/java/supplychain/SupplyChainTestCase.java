@@ -18,44 +18,28 @@
  */
 package supplychain;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
-
 import supplychain.customer.Customer;
-import util.OSGiTestUtil;
+import test.OSGiTestCase;
 
 /**
  * Test case for supplychain - it is invoked with different composite files to test 
  * various scenarios.
  */
-public abstract class SupplyChainTestCase extends TestCase {
+public abstract class SupplyChainTestCase extends OSGiTestCase {
 
-    private String compositeName;
-    private SCADomain scaDomain;
     public Customer customer;
     
-    public SupplyChainTestCase(String compositeName) {
-        super();
-        this.compositeName = compositeName;
+   
+    public SupplyChainTestCase(String compositeName, String contributionLocation) {
+        super(compositeName, contributionLocation);
     }
 
     protected void setUp() throws Exception {
 
-        OSGiTestUtil.setUpOSGiTestRuntime();
-        
-        scaDomain = SCADomain.newInstance(compositeName);
+    	super.setUp();
         customer = scaDomain.getService(Customer.class, "CustomerComponent");
     }
     
-    protected void tearDown() throws Exception {
-        scaDomain.close();
-        
-        OSGiTestUtil.shutdownOSGiRuntime();
-    }
-
-
     public void test() throws Exception {
         
         System.out.println("Main thread " + Thread.currentThread());

@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.jar.JarOutputStream;
@@ -34,6 +35,7 @@ import org.apache.tuscany.sca.core.scope.TargetDestructionException;
 import org.apache.tuscany.sca.core.scope.TargetInitializationException;
 import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -76,11 +78,44 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
     
     public synchronized T getInstance(ComponentService service) throws TargetInitializationException {
         
+    	// If an instance corresponding to this service has already been created, return the instance.
         if (instanceInfoList.get(service) != null)
             return instanceInfoList.get(service).osgiInstance;
+        
+        // There is no strict relation between service and callback instances. The instance semantics
+        // actually applies to the component instance in SCA. But for OSGi services, the callback
+        // is just another OSGi service, and could correspond to any of the service instances in 
+        // the component. To implement the SCA scope semantics for callbacks, OSGi callbacks
+        // should also be made on the service object which implements the callback. The following code
+        // finds the first possible callback instance based on the interfaces implemented by the service 
+        // objects in this component. Note that the interfaces are checked by name rather than using
+        // instanceof since the class seen by Tuscany could be from a different classloader from that
+        // used by the bundle.
+        if (service.isCallback()) {
+        	Iterator<InstanceInfo<T>> instances = instanceInfoList.values().iterator();
+        	while (instances.hasNext()) {
+        		InstanceInfo<T> instanceInfo = instances.next();
+        		Interface interfaze = service.getInterfaceContract().getInterface();
+        		if (interfaze instanceof JavaInterface && ((JavaInterface)interfaze).getJavaClass() != null) {
+        			String interfaceName = ((JavaInterface)interfaze).getJavaClass().getName();
+        			Class[] interfaces = instanceInfo.osgiInstance.getClass().getInterfaces();
+        			for (Class clazz : interfaces) {
+        				if (clazz.getName().equals(interfaceName)) {
+                			return instanceInfo.osgiInstance;
+        				}
+        			}
+        			
+        		}
+        		    
+        	}
+        }
 
         Bundle refBundle = provider.startBundle();
         
+        // For scopes other than composite, the service object is obtained using a dummy reference
+        // bundle to guarantee that a new instance is created each time. This combined with the Tuscany
+        // scope container code guarantee SCA scope semantics for OSGi components as long as service
+        // factories are used.
         if (!annotationProcessor.getScope().equals(Scope.COMPOSITE)) {
             refBundle = getDummyReferenceBundle();
         }
@@ -111,44 +146,7 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
         return instanceInfo.osgiInstance;
     }
     
-    public synchronized T getCallbackInstance(EndpointReference from, Interface callbackInterface) 
-            throws TargetInitializationException {
-        
-        if (instanceInfoList.get(callbackInterface) != null)
-            return instanceInfoList.get(callbackInterface).osgiInstance;
-
-        Bundle refBundle = provider.startBundle();
-        
-        if (!annotationProcessor.getScope().equals(Scope.COMPOSITE)) {
-            refBundle = getDummyReferenceBundle();
-        }
-        
-        InstanceInfo<T> instanceInfo = new InstanceInfo<T>();
-        
-
-        instanceInfo.osgiServiceReference = provider.getOSGiServiceReference(from, callbackInterface);
-        
-        instanceInfo.refBundleContext = refBundle.getBundleContext();
-        instanceInfo.osgiInstance = getInstanceObject(instanceInfo);
-        
-       
-        try {
-            
-            if (!isInitialized(instanceInfo.osgiInstance)) {
-
-                annotationProcessor.injectProperties(instanceInfo.osgiInstance);
-                callLifecycleMethod(instanceInfo.osgiInstance, Init.class); 
-                instanceInfo.isFirstInstance = true;
-            }
-
-            instanceInfoList.put(callbackInterface, instanceInfo);
-            
-        } catch (Exception e) {
-            throw new TargetInitializationException(e);
-        }
-        
-        return instanceInfo.osgiInstance;
-    }
+    
     
     // This method is provided purely to implement InstanceWrapper interface, and is never called.
     public T getInstance() {

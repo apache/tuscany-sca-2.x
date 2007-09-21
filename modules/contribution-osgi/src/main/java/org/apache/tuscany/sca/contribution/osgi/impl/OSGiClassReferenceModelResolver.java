@@ -125,7 +125,7 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
 
         initialized = true;
         try {
-            bundle = OSGiRuntime.getRuntime().findBundle(contribution.getLocation());
+            bundle = OSGiRuntime.findInstalledBundle(contribution.getLocation());
         } catch (Exception e) {
         }
     }

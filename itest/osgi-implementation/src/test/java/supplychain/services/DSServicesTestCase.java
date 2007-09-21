@@ -26,7 +26,7 @@ import supplychain.SupplyChainTestCase;
 public class DSServicesTestCase extends SupplyChainTestCase {
 
     public DSServicesTestCase() {
-        super("services/services-ds-test.composite");
+        super("services-ds-test.composite", "services/ds");
     }
    
 }

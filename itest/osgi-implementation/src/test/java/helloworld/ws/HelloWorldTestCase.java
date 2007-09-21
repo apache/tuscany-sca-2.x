@@ -20,22 +20,22 @@
 package helloworld.ws;
 
 import helloworld.HelloWorld;
-import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+import test.OSGiTestCase;
 import util.OSGiTestUtil;
 
 
-public class HelloWorldTestCase extends TestCase {
+public class HelloWorldTestCase extends OSGiTestCase {
 
-    private SCADomain scaDomain;
     private HelloWorld helloWorld;
+    
+    public HelloWorldTestCase() {
+    	super("ws-helloworld.composite", "ws");
+    }
 
     protected void setUp() throws Exception {
-        OSGiTestUtil.setUpOSGiTestRuntime();
-        
-        scaDomain = SCADomain.newInstance("ws/ws-helloworld.composite");
+        super.setUp();
         helloWorld = scaDomain.getService(HelloWorld.class, "HelloWorldComponent");
     }
     

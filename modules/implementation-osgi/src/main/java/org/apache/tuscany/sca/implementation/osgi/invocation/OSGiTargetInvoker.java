@@ -136,13 +136,8 @@ public class OSGiTargetInvoker<T> implements Invoker {
                 removeTemporaryConversationalComponentAfterCall = true;
             }
             
-
-            if (service != null) {
-                instance = wrapper.getInstance(service);
-            } else {
-                instance = wrapper.getCallbackInstance(to, operation.getInterface());
-            }
-
+            instance = wrapper.getInstance(service);
+            
             Method m = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
 
             Object ret = invokeMethod(instance, m, msg);

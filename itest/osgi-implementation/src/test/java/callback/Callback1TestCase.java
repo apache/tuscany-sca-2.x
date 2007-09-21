@@ -23,7 +23,7 @@ package callback;
 public class Callback1TestCase extends CallbackTestCase {
 
     public Callback1TestCase() {
-        super("callback/callback-test1.composite");
+        super("callback-test1.composite");
     }
     
    

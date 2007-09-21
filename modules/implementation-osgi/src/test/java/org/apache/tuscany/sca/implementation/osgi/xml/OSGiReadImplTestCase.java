@@ -85,7 +85,7 @@ public class OSGiReadImplTestCase extends TestCase {
         osgiProcessor = new OSGiImplementationProcessor(modelFactories);
         staxProcessors.addArtifactProcessor(osgiProcessor);
 
-        OSGiTestBundles.createBundle("target/OSGiTestService.jar", OSGiTestInterface.class, OSGiTestImpl.class);
+        OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar", OSGiTestInterface.class, OSGiTestImpl.class);
 
     }
 

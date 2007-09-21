@@ -25,7 +25,7 @@ package supplychain.factory;
 public class DSFactoryTestCase extends FactoryTestCase {
 
     public DSFactoryTestCase() {
-        super("factory/factory-ds-test.composite");
+        super("factory-ds-test.composite", "factory/ds");
     }
     
     

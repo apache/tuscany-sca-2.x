@@ -19,6 +19,7 @@
 package conversation.referenceclient;
 
 import org.osoa.sca.CallableReference;
+import org.osoa.sca.annotations.AllowsPassByReference;
 import org.osoa.sca.annotations.Service;
 
 import conversation.service.ConversationalService;
@@ -31,6 +32,7 @@ import conversation.service.ConversationalService;
  */
 
 @Service(interfaces={ConversationalReferenceClient.class})
+@AllowsPassByReference
 public class ConversationalReferenceClientImpl implements ConversationalReferenceClient{
    
     public void incrementCount(CallableReference<ConversationalService> conversationalService){

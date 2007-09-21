@@ -93,6 +93,7 @@ public class EquinoxRuntime extends OSGiRuntime  {
                 // Ignore errors.
             }
         }
+        super.shutdown();
     }
 
 
