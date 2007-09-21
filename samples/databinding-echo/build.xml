@@ -62,7 +62,7 @@
                             <classpath>
                                 <pathelement path="target/${test.jar}"/>
                                 <pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-                                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar "/> 
+                                <pathelement location="../binding-echo-extension/target/sample-binding-echo-extension.jar"/> 
                             </classpath>
                         </java>
                     </target>
