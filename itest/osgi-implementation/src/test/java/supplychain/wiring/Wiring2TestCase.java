@@ -26,7 +26,7 @@ import supplychain.SupplyChainTestCase;
 public class Wiring2TestCase extends SupplyChainTestCase {
 
     public Wiring2TestCase() {
-        super("wiring/wiring-test2.composite");
+        super("wiring-test2.composite", "wiring");
     }
    
 }

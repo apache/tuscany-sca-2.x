@@ -20,10 +20,10 @@
 package callback;
 
 
-public abstract class Callback2TestCase extends CallbackTestCase {
+public class Callback2TestCase extends CallbackTestCase {
 
     public Callback2TestCase() {
-        super("callback/callback-test2.composite");
+        super("callback-test2.composite");
     }
     
 }

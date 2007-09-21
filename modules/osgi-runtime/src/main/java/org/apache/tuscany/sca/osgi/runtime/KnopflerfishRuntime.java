@@ -58,7 +58,7 @@ public class KnopflerfishRuntime extends OSGiRuntime  {
     //        the classpath which contains framework.jar. The entries in init.xargs starting with
     //        -install are assumed to be single-line entries with full bundle location.
     //
-    private BundleContext startRuntime() throws Exception {
+    protected BundleContext startRuntime() throws Exception {
         
         if (bundleContext != null)
             return bundleContext;
@@ -146,6 +146,7 @@ public class KnopflerfishRuntime extends OSGiRuntime  {
             }
             framework = null;
         }
+        super.shutdown();
         
     }
     

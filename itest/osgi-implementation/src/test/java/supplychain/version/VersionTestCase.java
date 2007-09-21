@@ -26,7 +26,7 @@ import supplychain.VersionedSupplyChainTestCase;
 public  class VersionTestCase extends VersionedSupplyChainTestCase {
     
     public VersionTestCase() {
-        super("version/version-test.composite");
+        super("version-test.composite", "version");
     }
     
     

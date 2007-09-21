@@ -18,46 +18,32 @@
  */
 package supplychain.properties;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 import stockquote.StockQuote;
-import util.OSGiTestUtil;
+import test.OSGiTestCase;
 
 /**
  * OSGi test program - procedural with business properties
  */
-public class Properties2TestCase extends TestCase {
+public class Properties2TestCase extends OSGiTestCase {
     
 
-    private SCADomain scaDomain;
     private StockQuote stockQuoteServiceUSD;
     private StockQuote stockQuoteServiceEURO;
-    private String compositeName;
     
     public Properties2TestCase() {
-        super();
-        compositeName = "properties/properties2-test.composite";
+        super("properties2-test.composite", "properties");
     }
     
-    protected Properties2TestCase(String compositeName) {
-        super();
-        this.compositeName = compositeName;
+    protected Properties2TestCase(String compositeName, String contributionLocation) {
+        super(compositeName, contributionLocation);
     }
 
     protected void setUp() throws Exception {
         
-        OSGiTestUtil.setUpOSGiTestRuntime();
-        
-        scaDomain = SCADomain.newInstance(compositeName);
+        super.setUp();
         stockQuoteServiceUSD = scaDomain.getService(StockQuote.class, "USDStockQuoteComponent");
         stockQuoteServiceEURO = scaDomain.getService(StockQuote.class, "EUROStockQuoteComponent");
-    }
-    
-    protected void tearDown() throws Exception {
-        scaDomain.close();
-        OSGiTestUtil.shutdownOSGiRuntime();
     }
     
     public void test() throws Exception {

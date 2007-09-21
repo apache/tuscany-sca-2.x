@@ -30,18 +30,19 @@ import org.osgi.service.packageadmin.PackageAdmin;
 
 public abstract class OSGiRuntime {
     private static final Logger logger = Logger.getLogger(OSGiRuntime.class.getName());
-    private BundleContext bundleContext;
 
     public abstract BundleContext getBundleContext();
 
-    protected abstract void shutdown() throws Exception;
-
     public abstract boolean supportsBundleFragments();
-
-    private PackageAdmin packageAdmin;
-
+    
+    protected abstract BundleContext startRuntime() throws Exception;
+       
     private static OSGiRuntime instance;
-
+    
+    private BundleContext bundleContext;
+    
+    private PackageAdmin packageAdmin;
+    
     /**
      * System property org.apache.tuscany.implementation.osgi.runtime.OSGiRuntime can be set to the
      * name of the OSGiRuntime class (eg. EquinoxRuntime). If set, start this runtime and return the
@@ -52,26 +53,37 @@ public abstract class OSGiRuntime {
      */
     public synchronized static OSGiRuntime getRuntime() throws Exception {
         if (instance != null) {
+        	
+        	if (instance.bundleContext == null) {
+        		instance.startRuntime();
+        		instance.initialize();
+        	}
             return instance;
         }
         String runtimeClassName = System.getProperty(OSGiRuntime.class.getName());
+        
+        if (instance != null)
+        	return instance;
 
         if (runtimeClassName != null) {
             try {
                 Class<?> runtimeClass = OSGiRuntime.class.getClassLoader().loadClass(runtimeClassName);
                 Method method = runtimeClass.getMethod("getInstance");
-                instance = (OSGiRuntime)method.invoke(null);
+                instance = (OSGiRuntime) method.invoke(null);
+                instance.initialize();
                 return instance;
-
+                
             } catch (Exception e) {
                 throw new BundleException("Could not start OSGi runtime " + runtimeClassName, e);
             }
         }
 
         try {
+            
             instance = EquinoxRuntime.getInstance();
+            instance.initialize();
             return instance;
-
+            
         } catch (ClassNotFoundException e) {
             // Ignore
         } catch (Throwable e) {
@@ -79,8 +91,11 @@ public abstract class OSGiRuntime {
         }
 
         try {
+
             instance = FelixRuntime.getInstance();
+            instance.initialize();
             return instance;
+ 
         } catch (ClassNotFoundException e) {
             // Ignore
         } catch (Throwable e) {
@@ -88,8 +103,11 @@ public abstract class OSGiRuntime {
         }
 
         try {
+       
             instance = KnopflerfishRuntime.getInstance();
+            instance.initialize();
             return instance;
+            
         } catch (ClassNotFoundException e) {
             // Ignore
         } catch (Throwable e) {
@@ -99,9 +117,16 @@ public abstract class OSGiRuntime {
         throw new BundleException("Could not start OSGi runtime from the classpath");
     }
 
+
+    public void shutdown() throws Exception {
+    	
+    	bundleContext = null;
+    	packageAdmin = null;
+    }
+    
     private void initialize() {
-        if (bundleContext == null)
-            bundleContext = getBundleContext();
+    	
+        bundleContext = getBundleContext();
 
         if (bundleContext != null) {
 
@@ -117,8 +142,6 @@ public abstract class OSGiRuntime {
 
     public Bundle findBundle(String bundleSymbolicName, String bundleVersion) {
 
-        initialize();
-
         if (bundleContext != null) {
             Bundle[] installedBundles = bundleContext.getBundles();
             for (Bundle bundle : installedBundles) {
@@ -130,10 +153,15 @@ public abstract class OSGiRuntime {
         }
         return null;
     }
+    
+    public synchronized static Bundle findInstalledBundle(String bundleLocation) {
+    	if (instance != null) {
+    		return instance.findBundle(bundleLocation);
+    	}
+    	return null;
+    }
 
     public Bundle findBundle(String bundleLocation) {
-
-        initialize();
 
         if (bundleContext != null) {
             Bundle[] installedBundles = bundleContext.getBundles();
@@ -147,8 +175,6 @@ public abstract class OSGiRuntime {
     }
 
     public Bundle installBundle(String bundleLocation, InputStream inputStream) {
-
-        initialize();
 
         try {
             if (bundleContext != null) {

@@ -26,11 +26,11 @@ import supplychain.SupplyChainTestCase;
 public class FactoryTestCase extends SupplyChainTestCase {
 
     public FactoryTestCase() {
-        super("factory/factory-test.composite");
+        super("factory-test.composite", "factory");
     }
     
-    protected FactoryTestCase(String compositeName) {
-        super(compositeName);
+    protected FactoryTestCase(String compositeName, String contributionLocation) {
+        super(compositeName, contributionLocation);
     }
     
     

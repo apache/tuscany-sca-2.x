@@ -62,7 +62,7 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         
     }
     
-    private BundleContext startRuntime() throws Exception {
+    protected BundleContext startRuntime() throws Exception {
         
         if (bundleContext != null)
             return bundleContext;
@@ -183,6 +183,7 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
             }            
             felix = null;
         }
+        super.shutdown();
     }
     
     @Override

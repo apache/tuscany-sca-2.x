@@ -23,10 +23,10 @@ import supplychain.SupplyChainTestCase;
 /**
  * OSGi test program - procedural with components exposing multiple services with multiple interfaces
  */
-public abstract class InterfacesTestCase extends SupplyChainTestCase {
+public class InterfacesTestCase extends SupplyChainTestCase {
 
     public InterfacesTestCase() {
-        super("interfaces/interfaces-test.composite");
+        super("interfaces-test.composite", "interfaces");
     }
    
 }

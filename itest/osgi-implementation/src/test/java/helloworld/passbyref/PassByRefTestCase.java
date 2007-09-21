@@ -20,25 +20,23 @@
 package helloworld.passbyref;
 
 import helloworld.Greetings;
-import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
-import util.OSGiTestUtil;
+import test.OSGiTestCase;
 
 
-public abstract class PassByRefTestCase extends TestCase {
+public class PassByRefTestCase extends OSGiTestCase {
 
-    private SCADomain scaDomain;
     private Greetings greetingsJava;
     private Greetings greetingsOSGi;
     private String[] origNames = {"world"};
     private String[] names;
+    
+    public PassByRefTestCase() {
+    	super("passbyref-test.composite", "passbyref");
+    }
 
     protected void setUp() throws Exception {
-        OSGiTestUtil.setUpOSGiTestRuntime();
-        
-        scaDomain = SCADomain.newInstance("passbyref/passbyref-test.composite");
+
+    	super.setUp();
         greetingsJava = scaDomain.getService(Greetings.class, "JavaGreetingsComponent");
         greetingsOSGi = scaDomain.getService(Greetings.class, "OSGiGreetingsComponent");
         
@@ -46,10 +44,6 @@ public abstract class PassByRefTestCase extends TestCase {
         System.arraycopy(origNames, 0, names, 0, names.length);
     }
     
-    protected void tearDown() throws Exception {
-        scaDomain.close();
-        OSGiTestUtil.shutdownOSGiRuntime();
-    }
     
     public void test() throws Exception {
         

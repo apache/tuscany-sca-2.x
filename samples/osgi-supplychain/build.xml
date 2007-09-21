@@ -37,11 +37,6 @@
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
-        <jar destfile="target/${test.jar}" basedir="target/classes">
-            <manifest>
-                <attribute name="Main-Class" value="${test.class}" /> 
-            </manifest>
-        </jar>  
         <jar jarfile="target/classes/Customer.jar" manifest="target/classes/osgi/Customer.mf" >
             <fileset dir="target/classes" 
                      includes="supplychain/customer/Customer.class \
@@ -69,6 +64,39 @@
                                supplychain/OSGiBundleImpl.class \
                                supplychain/shipper/OSGiShipperImpl.class"
             />
+        </jar>  
+        <jar jarfile="target/classes/DSCustomer.jar" manifest="target/classes/osgi/ds/Customer.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/customer/Customer.class \
+                               osgi/ds/Customer.xml \
+                               supplychain/customer/OSGiCustomerComponentImpl.class"
+            />
+        </jar>  
+        <jar jarfile="target/classes/DSRetailer.jar" manifest="target/classes/osgi/ds/Retailer.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/retailer/Retailer.class \
+                               Vosgi/ds/Retailer.xml \
+                               supplychain/retailer/OSGiRetailerComponentImpl.class"
+            />
+        </jar>  
+        <jar jarfile="target/classes/DSWarehouse.jar" manifest="target/classes/osgi/ds/Warehouse.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/warehouse/Warehouse.class \
+                               osgi/ds/Warehouse.xml \
+                               supplychain/warehouse/OSGiWarehouseComponentImpl.class"
+            />
+        </jar>  
+        <jar jarfile="target/classes/DSShipper.jar" manifest="target/classes/osgi/ds/Shipper.mf" >
+            <fileset dir="target/classes" 
+                     includes="supplychain/shipper/Shipper.class \
+                               osgi/ds/Shipper.xml \
+                               supplychain/shipper/OSGiShipperComponentImpl.class"
+            />
+        </jar>  
+        <jar destfile="target/${test.jar}" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" /> 
+            </manifest>
         </jar>  
     </target>    
     

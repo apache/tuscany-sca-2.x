@@ -1109,8 +1109,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                 component.setScopeContainer(null);
                 ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(runtimeComponent);
 
-                if (oldScopeContainer.getLifecycleState() == ScopeContainer.RUNNING)
+                if (oldScopeContainer != null && oldScopeContainer.getLifecycleState() == ScopeContainer.RUNNING) {
                     scopeContainer.start();
+                }
                 
                 component.setScopeContainer(scopeContainer);
             }

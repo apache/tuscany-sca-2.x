@@ -267,7 +267,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             // so add another registration
             ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
 
-            if (scopeContainer != null) {
+            if (scopeContainer != null && currentConversationID != null) {
                 scopeContainer.addWrapperReference(currentConversationID, conversation.getConversationID());
             }
         }

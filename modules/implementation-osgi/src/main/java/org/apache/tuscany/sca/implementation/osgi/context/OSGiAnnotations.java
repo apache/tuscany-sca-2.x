@@ -203,17 +203,18 @@ public class OSGiAnnotations  {
 
     /*
      * Get the annotation corresponding to an instance
-     * Note that this can be null since annotations are processed from implementation
-     * classes in bundles only if the class names are provided in <implementation.osgi/>
      * 
      */
     private JavaImplementation getAnnotationInfo(Object instance) {
-        for (Class clazz : javaAnnotationInfo.keySet()) {
-            if (clazz.isInstance(instance)) {
-                return javaAnnotationInfo.get(clazz);
-            }
-        }
-        
+    	
+    	// The simplest case where the implementation class was listed under the
+    	// classes attribute of <implementation.osgi/>, or this is the second call
+    	// to this method for the implementation class.
+    	JavaImplementation javaImpl = javaAnnotationInfo.get(instance.getClass());
+    	if (javaImpl != null)
+    		return javaImpl;
+    	
+        // Process annotations from the instance class.
         try {
             return processAnnotations(instance.getClass());
         } catch (IntrospectionException e) {

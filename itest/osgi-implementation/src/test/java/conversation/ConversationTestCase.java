@@ -21,42 +21,41 @@ package conversation;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import conversation.client.ConversationalClient;
 
-import util.OSGiTestUtil;
+import test.OSGiTestCase;
 
-public abstract class ConversationTestCase {
+public class ConversationTestCase  extends OSGiTestCase {
 
-    private SCADomain domain;
     private ConversationalClient conversationalStatelessClientStatelessService;
     private ConversationalClient conversationalStatelessClientStatefulService;
     private ConversationalClient conversationalStatefulClientStatelessService;
-    private ConversationalClient conversationalStatefulClientStatefulService;    
+    private ConversationalClient conversationalStatefulClientStatefulService; 
+    
+    public ConversationTestCase() {
+    	super("conversation-test.composite", "conversation");
+    }
 
     @Before
     public void setUp() throws Exception {
         
         try {
 
-            OSGiTestUtil.setUpOSGiTestRuntime();
-            
-            domain = SCADomain.newInstance("conversation/conversation-test.composite");
+        	super.setUp();
 
-            conversationalStatelessClientStatelessService = domain.getService(ConversationalClient.class,
+            conversationalStatelessClientStatelessService = scaDomain.getService(ConversationalClient.class,
                                    "ConversationalStatelessClientStatelessService/ConversationalClient");
 
-            conversationalStatelessClientStatefulService  = domain.getService(ConversationalClient.class,
+            conversationalStatelessClientStatefulService  = scaDomain.getService(ConversationalClient.class,
                                    "ConversationalStatelessClientStatefulService/ConversationalClient");
 
-            conversationalStatefulClientStatelessService  = domain.getService(ConversationalClient.class,
+            conversationalStatefulClientStatelessService  = scaDomain.getService(ConversationalClient.class,
                                    "ConversationalStatefulClientStatelessService/ConversationalClient");
 
-            conversationalStatefulClientStatefulService   = domain.getService(ConversationalClient.class,
+            conversationalStatefulClientStatefulService   = scaDomain.getService(ConversationalClient.class,
                                    "ConversationalStatefulClientStatefulService/ConversationalClient");
 
 
@@ -69,14 +68,7 @@ public abstract class ConversationTestCase {
                
     }
 
-    @After
-    public void tearDown() throws Exception {
-        domain.close();
-        
-
-        OSGiTestUtil.shutdownOSGiRuntime();
-    }
-  
+    
     // stateless client stateful service tests
     // =======================================
     @Test
@@ -121,7 +113,7 @@ public abstract class ConversationTestCase {
     }  
     
     /////@Test
-    public void testStatelessStatefulConversationHavingPassedReference() {
+    public void _testStatelessStatefulConversationHavingPassedReference() {
         int count = conversationalStatelessClientStatefulService.runConversationHavingPassedReference();
         Assert.assertEquals(3, count);
     }    
@@ -191,7 +183,7 @@ public abstract class ConversationTestCase {
                 conversationalStatelessClientStatelessService.getCalls());        
     }
     /////@Test
-    public void testStatelessStatelessConversationHavingPassedReference() {
+    public void _testStatelessStatelessConversationHavingPassedReference() {
         int count = conversationalStatelessClientStatelessService.runConversationHavingPassedReference();
         Assert.assertEquals(3, count);
     }     
@@ -244,6 +236,7 @@ public abstract class ConversationTestCase {
     @Test
     public void testStatefulStatefulConversationWithCallback() {
         int count = conversationalStatefulClientStatefulService.runConversationWithCallback();
+        //System.out.println("Calls: " + conversationalStatefulClientStatefulService.getCalls());
         Assert.assertEquals(4, count);
               
         Assert.assertEquals("init,runConversationWithCallback,initializeCount,incrementCount,retrieveCount,endConversation,destroy,init,", 
@@ -251,7 +244,7 @@ public abstract class ConversationTestCase {
     }   
     
     /////@Test
-    public void testStatefulStatefulConversationHavingPassedReference() {
+    public void _testStatefulStatefulConversationHavingPassedReference() {
         int count = conversationalStatefulClientStatefulService.runConversationHavingPassedReference();
         Assert.assertEquals(3, count);
     } 
@@ -312,7 +305,7 @@ public abstract class ConversationTestCase {
     }     
     
     /////@Test
-    public void testStatefulStatelessConversationHavingPassedReference() {
+    public void _testStatefulStatelessConversationHavingPassedReference() {
         int count = conversationalStatefulClientStatelessService.runConversationHavingPassedReference();
         Assert.assertEquals(3, count);
     }     

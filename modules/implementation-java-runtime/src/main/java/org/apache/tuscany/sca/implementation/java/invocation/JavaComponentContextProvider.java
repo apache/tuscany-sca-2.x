@@ -28,11 +28,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
@@ -42,7 +46,12 @@ import org.apache.tuscany.sca.core.invocation.CallableReferenceObjectFactory;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
+import org.apache.tuscany.sca.core.scope.Scope;
+import org.apache.tuscany.sca.core.scope.ScopeContainer;
+import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
+import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ConversationIDObjectFactory;
@@ -51,6 +60,7 @@ import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObj
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -183,10 +193,11 @@ public class JavaComponentContextProvider {
                                 JavaIntrospectionHelper.getBusinessInterface(baseType, callableRefType);
                             factory =
                                 new CallableReferenceObjectFactory(businessInterface, component,
-                                                                   (RuntimeComponentReference)wireList.get(i).getSource().getContract(),
-                                                                   wireList.get(i).getSource().getBinding());
+                                                                   (RuntimeComponentReference)wireList.get(i)
+                                                                       .getSource().getContract(), wireList.get(i)
+                                                                       .getSource().getBinding());
                         } else {
-                            factory = createWireFactory(baseType, wireList.get(i));
+                            factory = createObjectFactory(baseType, wireList.get(i));
                         }
                         factories.add(factory);
                     }
@@ -205,7 +216,7 @@ public class JavaComponentContextProvider {
                                 new CallableReferenceObjectFactory(businessInterface, component,
                                                                    (RuntimeComponentReference)componentReference, null);
                         } else {
-                            factory = createWireFactory(element.getType(), wireList.get(0));
+                            factory = createObjectFactory(element.getType(), wireList.get(0));
                         }
                         instanceFactoryProvider.setObjectFactory(element, factory);
                     }
@@ -260,7 +271,56 @@ public class JavaComponentContextProvider {
         return new JavaImplementationInvoker(operation, method, component);
     }
 
-    private <B> WireObjectFactory<B> createWireFactory(Class<B> interfaze, RuntimeWire wire) {
+    private static class OptimizedObjectFactory<T> implements ObjectFactory<T> {
+        private ScopeContainer scopeContainer;
+
+        public OptimizedObjectFactory(ScopeContainer scopeContainer) {
+            super();
+            this.scopeContainer = scopeContainer;
+        }
+
+        public T getInstance() throws ObjectCreationException {
+            try {
+                return (T)scopeContainer.getWrapper(null).getInstance();
+            } catch (TargetResolutionException e) {
+                throw new ObjectCreationException(e);
+            }
+        }
+
+    }
+
+    private <B> ObjectFactory<B> createObjectFactory(Class<B> interfaze, RuntimeWire wire) {
+        boolean conversational = wire.getSource().getInterfaceContract().getInterface().isConversational();
+        Binding binding = wire.getSource().getBinding();
+        // Check if it's wireable binding for optimization
+        if (!conversational && binding instanceof OptimizableBinding) {
+            OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
+            Component component = optimizableBinding.getTargetComponent();
+            if (component != null) {
+                Implementation implementation = component.getImplementation();
+                // Check if the target component is java component
+                if (implementation instanceof JavaImplementation) {
+                    JavaImplementation javaImplementation = (JavaImplementation)implementation;
+                    if (interfaze.isAssignableFrom(javaImplementation.getJavaClass())) {
+                        ScopedRuntimeComponent scopedComponent = (ScopedRuntimeComponent)component;
+                        ScopeContainer scopeContainer = scopedComponent.getScopeContainer();
+                        Scope scope = scopeContainer.getScope();
+                        if (scope == Scope.COMPOSITE || scope == Scope.STATELESS || scope == Scope.SYSTEM) {
+                            boolean optimizable = true;
+                            for (InvocationChain chain : wire.getInvocationChains()) {
+                                if (chain.getHeadInvoker() != chain.getTailInvoker()) {
+                                    optimizable = false;
+                                    break;
+                                }
+                            }
+                            if (optimizable) {
+                                return new OptimizedObjectFactory<B>(scopeContainer);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return new WireObjectFactory<B>(interfaze, wire, proxyFactory);
     }
 
