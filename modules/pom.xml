@@ -74,6 +74,7 @@
                 <module>databinding-json</module>
                 <module>databinding-saxon</module>
                 <module>databinding-xmlbeans</module>
+                <module>databinding-fastinfoset</module>
                 <module>data-engine-helper</module>
                 <!--
                 <module>discovery-jms</module>
