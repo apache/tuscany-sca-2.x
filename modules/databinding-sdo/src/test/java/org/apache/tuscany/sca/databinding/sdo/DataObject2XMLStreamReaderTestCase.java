@@ -23,11 +23,15 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.databinding.xml.Node2String;
+import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
+import commonj.sdo.DataObject;
+import commonj.sdo.helper.EqualityHelper;
 
 /**
  * 
@@ -52,7 +56,19 @@ public class DataObject2XMLStreamReaderTestCase extends SDOTransformerTestCaseBa
                 break;
             }
         }
-        new XMLStreamReader2DataObject().transform(reader, reversedContext);
+        DataObject d = new XMLStreamReader2DataObject().transform(reader, reversedContext);
+        assertNotNull(d);
+        assertTrue(EqualityHelper.INSTANCE.equal(dataObject, d));
+    }
+    
+    public final void testTransform1() throws XMLStreamException {
+        XMLStreamReader reader = new DataObject2XMLStreamReader().transform(dataObject, context);
+        XMLStreamReader2Node t2 = new XMLStreamReader2Node();
+        org.w3c.dom.Node node = t2.transform(reader, context);
+        assertNotNull(node);
+        Node2String t3 = new Node2String();
+        String xml = t3.transform(node, context);
+        assertTrue(xml.contains("xmlns:xsi"));
     }
 
 }
