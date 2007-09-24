@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://people.apache.org/~jsdelfino/tuscany/tools/updatesite">
+      Apache Tuscany SCA Tools.
+   </description>
+   <feature url="features/org.apache.tuscany.sca.feature_1.0.0.jar" id="org.apache.tuscany.sca.feature" version="1.0.0"/>
+</site>
