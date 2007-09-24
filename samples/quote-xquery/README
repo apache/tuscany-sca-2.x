@@ -7,7 +7,11 @@ Quote Xquery Sample
 If you just want to run it to see what happens open two command prompts (one for the server
 and the other for the client), navigate to this sample directory and do:
 
+Command Prompt 1:
+ant
 ant run-server
+
+Command Prompt 2:
 ant run
 
 OR if you don't have ant, on Windows do
@@ -24,7 +28,8 @@ Results
 ----------
 The sample when run should simply display on the standard output some startup messages followed by:
 
-The service side:
+The compilation:
+
 Buildfile: build.xml
 
 init:
@@ -116,6 +121,10 @@ generate-sdo:
 
 compile:
       [jar] Building jar: C:\Apache\tuscany-sca-1.0-incubating-SNAPSHOT\samples\quote-xquery\target\sample-quote-xquery.jar
+BUILD SUCCESSFUL
+
+
+The service side:
 
 run-server:
      [java] Sep 18, 2007 1:14:16 PM org.apache.catalina.core.StandardEngine start
@@ -147,98 +156,8 @@ run-server:
 BUILD SUCCESSFUL
 Total time: 2 minutes 51 seconds
 
-
 The client side:
 Buildfile: build.xml
-
-init:
-
-generate-sdo:
-     [java] >>  Generating code
-     [java] >>  Generating packages
-     [java] >>  Generating package QuotePackageImpl
-     [java] >>  Generating Java interface org.example.quote.QuoteFactory
-     [java] >>  Generating /TargetProject/org/example/quote/QuoteFactory.java
-     [java] >>  Examining old /TargetProject/org/example/quote/QuoteFactory.java
-     [java] >>  Generating Java class org.example.quote.impl.QuoteFactoryImpl
-     [java] >>  Generating /TargetProject/org/example/quote/impl/QuoteFactoryImpl.java
-     [java] >>  Examining old /TargetProject/org/example/quote/impl/QuoteFactoryImpl.java
-     [java] >>  Generating Quote
-     [java] >>  Generating Java interface org.example.quote.Quote
-     [java] >>  Generating /TargetProject/org/example/quote/Quote.java
-     [java] >>  Examining old /TargetProject/org/example/quote/Quote.java
-     [java] >>  Generating Java class org.example.quote.impl.QuoteImpl
-     [java] >>  Generating /TargetProject/org/example/quote/impl/QuoteImpl.java
-     [java] >>  Examining old /TargetProject/org/example/quote/impl/QuoteImpl.java
-     [java] >>  Generating Response
-     [java] >>  Generating Java interface org.example.quote.QuoteResponse
-     [java] >>  Generating /TargetProject/org/example/quote/QuoteResponse.java
-     [java] >>  Examining old /TargetProject/org/example/quote/QuoteResponse.java
-     [java] >>  Generating Java class org.example.quote.impl.QuoteResponseImpl
-     [java] >>  Generating /TargetProject/org/example/quote/impl/QuoteResponseImpl.java
-     [java] >>  Examining old /TargetProject/org/example/quote/impl/QuoteResponseImpl.java
-     [java] >>  Generating code
-     [java] >>  Generating packages
-     [java] >>  Generating package AvailPackageImpl
-     [java] >>  Generating Java interface org.example.avail.AvailFactory
-     [java] >>  Generating /TargetProject/org/example/avail/AvailFactory.java
-     [java] >>  Examining old /TargetProject/org/example/avail/AvailFactory.java
-     [java] >>  Generating Java class org.example.avail.impl.AvailFactoryImpl
-     [java] >>  Generating /TargetProject/org/example/avail/impl/AvailFactoryImpl.java
-     [java] >>  Examining old /TargetProject/org/example/avail/impl/AvailFactoryImpl.java
-     [java] >>  Generating Quote
-     [java] >>  Generating Java interface org.example.avail.AvailQuote
-     [java] >>  Generating /TargetProject/org/example/avail/AvailQuote.java
-     [java] >>  Examining old /TargetProject/org/example/avail/AvailQuote.java
-     [java] >>  Generating Java class org.example.avail.impl.AvailQuoteImpl
-     [java] >>  Generating /TargetProject/org/example/avail/impl/AvailQuoteImpl.java
-     [java] >>  Examining old /TargetProject/org/example/avail/impl/AvailQuoteImpl.java
-     [java] >>  Generating Request
-     [java] >>  Generating Java interface org.example.avail.AvailRequest
-     [java] >>  Generating /TargetProject/org/example/avail/AvailRequest.java
-     [java] >>  Examining old /TargetProject/org/example/avail/AvailRequest.java
-     [java] >>  Generating Java class org.example.avail.impl.AvailRequestImpl
-     [java] >>  Generating /TargetProject/org/example/avail/impl/AvailRequestImpl.java
-     [java] >>  Examining old /TargetProject/org/example/avail/impl/AvailRequestImpl.java
-     [java] >>  Generating code
-     [java] >>  Generating packages
-     [java] >>  Generating package PricePackageImpl
-     [java] >>  Generating Java interface org.example.price.PriceFactory
-     [java] >>  Generating /TargetProject/org/example/price/PriceFactory.java
-     [java] >>  Examining old /TargetProject/org/example/price/PriceFactory.java
-     [java] >>  Generating Java class org.example.price.impl.PriceFactoryImpl
-     [java] >>  Generating /TargetProject/org/example/price/impl/PriceFactoryImpl.java
-     [java] >>  Examining old /TargetProject/org/example/price/impl/PriceFactoryImpl.java
-     [java] >>  Generating Quote
-     [java] >>  Generating Java interface org.example.price.PriceQuote
-     [java] >>  Generating /TargetProject/org/example/price/PriceQuote.java
-     [java] >>  Examining old /TargetProject/org/example/price/PriceQuote.java
-     [java] >>  Generating Java class org.example.price.impl.PriceQuoteImpl
-     [java] >>  Generating /TargetProject/org/example/price/impl/PriceQuoteImpl.java
-     [java] >>  Examining old /TargetProject/org/example/price/impl/PriceQuoteImpl.java
-     [java] >>  Generating Request
-     [java] >>  Generating Java interface org.example.price.PriceRequest
-     [java] >>  Generating /TargetProject/org/example/price/PriceRequest.java
-     [java] >>  Examining old /TargetProject/org/example/price/PriceRequest.java
-     [java] >>  Generating Java class org.example.price.impl.PriceRequestImpl
-     [java] >>  Generating /TargetProject/org/example/price/impl/PriceRequestImpl.java
-     [java] >>  Examining old /TargetProject/org/example/price/impl/PriceRequestImpl.java
-     [java] >>  Generating Requests
-     [java] >>  Generating Java interface org.example.price.PriceRequests
-     [java] >>  Generating /TargetProject/org/example/price/PriceRequests.java
-     [java] >>  Examining old /TargetProject/org/example/price/PriceRequests.java
-     [java] >>  Generating Java class org.example.price.impl.PriceRequestsImpl
-     [java] >>  Generating /TargetProject/org/example/price/impl/PriceRequestsImpl.java
-     [java] >>  Examining old /TargetProject/org/example/price/impl/PriceRequestsImpl.java
-     [java] >>  Generating Ship Address
-     [java] >>  Generating Java interface org.example.price.ShipAddress
-     [java] >>  Generating /TargetProject/org/example/price/ShipAddress.java
-     [java] >>  Examining old /TargetProject/org/example/price/ShipAddress.java
-     [java] >>  Generating Java class org.example.price.impl.ShipAddressImpl
-     [java] >>  Generating /TargetProject/org/example/price/impl/ShipAddressImpl.java
-     [java] >>  Examining old /TargetProject/org/example/price/impl/ShipAddressImpl.java
-
-compile:
 
 run:
      [java] Input quote for the price list:

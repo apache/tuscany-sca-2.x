@@ -17,102 +17,104 @@
  * under the License.    
 -->
 <project name="sample-quote-xquery" default="compile">
-	<property name="test.class" value="xquery.quote.XQueryQuoteClient" />
-	<property name="test.server.class" value="xquery.quote.XQueryQuoteServer" />
-	<property name="test.jar" value="sample-quote-xquery.jar" />
+    <property name="test.class" value="xquery.quote.XQueryQuoteClient" />
+    <property name="test.server.class" value="xquery.quote.XQueryQuoteServer" />
+    <property name="test.jar" value="sample-quote-xquery.jar" />
 
-	<target name="init">
-		<mkdir dir="target/classes" />
-	</target>
+    <target name="init">
+        <mkdir dir="target/classes" />
+    </target>
 
-	<property name="tuscany.sca.manifest.location" value="../../lib/tuscany-sca-manifest.jar" />
+    <property name="tuscany.sca.manifest.location" value="../../lib/tuscany-sca-manifest.jar" />
 
-	<path id="project.classpath">
-		<pathelement path="target/classes" />
-		<pathelement path="target/sdo-source" />
-		<pathelement location="${tuscany.sca.manifest.location}" />
-	</path>
+    <path id="project.classpath">
+        <pathelement path="target/classes" />
+        <pathelement path="target/sdo-source" />
+        <pathelement location="${tuscany.sca.manifest.location}" />
+    </path>
 
-	<target name="generate-sdo" depends="init">
-		<java classname="org.apache.tuscany.sdo.generate.XSD2JavaGenerator" fork="true">
-			<arg value="-targetDirectory" />
-			<arg value="target/sdo-source" />
-			<arg value="-noNotification" />
-			<arg value="-noContainment" />
-			<arg value="-noUnsettable" />
-			<arg value="src/main/resources/wsdl/Quote.xsd" />
+    <target name="generate-sdo" depends="init">
+        <java classname="org.apache.tuscany.sdo.generate.XSD2JavaGenerator" fork="true">
+            <arg value="-targetDirectory" />
+            <arg value="target/sdo-source" />
+            <arg value="-noNotification" />
+            <!-- Make sure the -noUnsettable is not used, otherwise, the SDO cannot be
+            properly transformed to Node as some properties are treated as unset -->
+            <arg value="src/main/resources/wsdl/Quote.xsd" />
 
-			<classpath refid="project.classpath" />
-		</java>
-		<java classname="org.apache.tuscany.sdo.generate.XSD2JavaGenerator" fork="true">
-			<arg value="-targetDirectory" />
-			<arg value="target/sdo-source" />
-			<arg value="-noNotification" />
-			<arg value="-noContainment" />
-			<arg value="-noUnsettable" />
-			<arg value="src/main/resources/wsdl/AvailQuote.xsd" />
+            <classpath refid="project.classpath" />
+        </java>
+        <java classname="org.apache.tuscany.sdo.generate.XSD2JavaGenerator" fork="true">
+            <arg value="-targetDirectory" />
+            <arg value="target/sdo-source" />
+            <arg value="-noNotification" />
+            <!-- Make sure the -noUnsettable is not used, otherwise, the SDO cannot be
+            properly transformed to Node as some properties are treated as unset -->
+            <arg value="src/main/resources/wsdl/AvailQuote.xsd" />
 
-			<classpath refid="project.classpath" />
-		</java>
-		<java classname="org.apache.tuscany.sdo.generate.XSD2JavaGenerator" fork="true">
-			<arg value="-targetDirectory" />
-			<arg value="target/sdo-source" />
-			<arg value="-noNotification" />
-			<arg value="-noContainment" />
-			<arg value="-noUnsettable" />
-			<arg value="src/main/resources/wsdl/PriceQuote.xsd" />
+            <classpath refid="project.classpath" />
+        </java>
+        <java classname="org.apache.tuscany.sdo.generate.XSD2JavaGenerator" fork="true">
+            <arg value="-targetDirectory" />
+            <arg value="target/sdo-source" />
+            <arg value="-noNotification" />
+            <!-- Make sure the -noUnsettable is not used, otherwise, the SDO cannot be
+            properly transformed to Node as some properties are treated as unset -->
+            <arg value="src/main/resources/wsdl/PriceQuote.xsd" />
 
-			<classpath refid="project.classpath" />
-		</java>
+            <classpath refid="project.classpath" />
+        </java>
 
-	</target>
+    </target>
 
 
-	<target name="compile" depends="init, generate-sdo">
-		<javac srcdir="src/main/java" destdir="target/classes" debug="on" source="1.5" target="1.5">
-			<classpath refid="project.classpath" />
-		</javac>
-		<copy todir="target/classes">
-			<fileset dir="src/main/resources" />
-		</copy>
-		<jar destfile="target/${test.jar}" basedir="target/classes">
-			<manifest>
-				<attribute name="Main-Class" value="${test.class}" />
-			</manifest>
-		</jar>
+    <target name="compile" depends="init, generate-sdo">
+        <javac destdir="target/classes" debug="on" source="1.5" target="1.5">
+            <src path="target/sdo-source"/>
+            <src path="src/main/java"/>
+            <classpath refid="project.classpath" />
+        </javac>
+        <copy todir="target/classes">
+            <fileset dir="src/main/resources" />
+        </copy>
+        <jar destfile="target/${test.jar}" basedir="target/classes">
+            <manifest>
+                <attribute name="Main-Class" value="${test.class}" />
+            </manifest>
+        </jar>
 
-	</target>
+    </target>
 
-	<target name="run-classes">
-		<java classname="${test.class}" fork="true">
-			<classpath>
-				<pathelement path="target/classes" />
-			</classpath>
-			<classpath refid="project.classpath" />
-		</java>
-	</target>
+    <target name="run-classes">
+        <java classname="${test.class}" fork="true">
+            <classpath>
+                <pathelement path="target/classes" />
+            </classpath>
+            <classpath refid="project.classpath" />
+        </java>
+    </target>
 
-	<target name="run" depends="compile">
-		<java classname="${test.class}" fork="true">
-			<classpath>
-				<pathelement path="target/${test.jar}" />
-			</classpath>
-			<classpath refid="project.classpath" />
-		</java>
-	</target>
+    <target name="run">
+        <java classname="${test.class}" fork="true">
+            <classpath>
+                <pathelement path="target/${test.jar}" />
+            </classpath>
+            <classpath refid="project.classpath" />
+        </java>
+    </target>
 
-	<target name="run-server" depends="compile">
-		<java classname="${test.server.class}" fork="true">
-			<classpath>
-				<pathelement path="target/${test.jar}" />
-			</classpath>
-			<classpath refid="project.classpath" />
-		</java>
-	</target>
+    <target name="run-server">
+        <java classname="${test.server.class}" fork="true">
+            <classpath>
+                <pathelement path="target/${test.jar}" />
+            </classpath>
+            <classpath refid="project.classpath" />
+        </java>
+    </target>
 
-	<target name="clean">
-		<delete quiet="true" includeemptydirs="true">
-			<fileset dir="target" />
-		</delete>
-	</target>
+    <target name="clean">
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="target" />
+        </delete>
+    </target>
 </project>
