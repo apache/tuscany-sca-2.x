@@ -31,6 +31,8 @@
     <name>Apache Tuscany SCA Tools</name>
 
     <modules>
+        <!--
         <module>registry-inspector</module>
+        -->
     </modules>
 </project>

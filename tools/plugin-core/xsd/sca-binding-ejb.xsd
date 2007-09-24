@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006, 2007 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+        targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
+        elementFormDefault="qualified">
+   <include schemaLocation="sca-core.xsd"/>
+
+   <element name="binding.ejb" type="sca:EJBSessionBeanBinding" 
+            substitutionGroup="sca:binding" />
+
+    <simpleType name="BeanType">
+        <restriction base="string">
+            <enumeration value="stateless"/>
+            <enumeration value="stateful"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="VersionValue">
+        <restriction base="string">
+            <enumeration value="EJB2"/>
+            <enumeration value="EJB3"/>
+        </restriction>
+    </simpleType>
+
+
+     <complexType name="EJBSessionBeanBinding">
+	 <complexContent>
+	  <extension base="sca:Binding">
+         <sequence>
+            <any namespace="##other" processContents="lax"
+                 minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="homeInterface" type="NCName" use="optional"/>
+         <attribute name="ejb-link-name" type="NCName" use="optional"/>
+         <attribute name="session-type" type="sca:BeanType" use="optional" default="stateless"/>
+         <attribute name="ejb-version" type="sca:VersionValue" use="optional" default="EJB2"/>
+         <anyAttribute namespace="##any" processContents="lax"/>
+	  </extension>
+	 </complexContent>
+     </complexType>
+
+</schema>

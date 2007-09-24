@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006, 2007 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://www.osoa.org/xmlns/sca/1.0" 
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:wsdli="http://www.w3.org/2004/08/wsdl-instance"
+    xmlns:wsa="http://www.w3.org/2004/12/addressing"
+    elementFormDefault="qualified">
+
+    <include schemaLocation="sca-core.xsd"/>
+
+    <element name="binding.ws" type="sca:WebServiceBinding"
+             substitutionGroup="sca:binding"/>
+    <complexType name="WebServiceBinding">
+        <complexContent>
+            <extension base="sca:Binding">
+                <sequence>
+                    <any namespace="##other" processContents="lax" minOccurs="0"
+                         maxOccurs="unbounded"/>
+                </sequence>
+			 <attribute name="wsdlElement" type="anyURI" use="optional"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
