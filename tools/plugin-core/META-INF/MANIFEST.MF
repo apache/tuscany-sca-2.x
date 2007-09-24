@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache Tuscany SCA Tools
 Bundle-SymbolicName: org.apache.tuscany.sca.core;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
@@ -23,4 +23,5 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.osgi.framework;version="1.4.0"
-Bundle-ClassPath: target/classes/
+Bundle-Vendor: Apache Software Foundation
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

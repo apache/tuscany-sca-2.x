@@ -20,7 +20,8 @@
 <feature
       id="org.apache.tuscany.sca.feature"
       label="Apache Tuscany SCA Tools"
-      version="1.0.0">
+      version="1.0.0.qualifier"
+      provider-name="Apache Software Foundation">
 
    <description url="http://incubator.apache.org/tuscany">
       Apache Tuscany SCA Tools.
@@ -45,16 +46,31 @@
     under the License.
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.jobs"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.osgi"/>
+   </requires>
+
    <plugin
          id="org.apache.tuscany.sca.core"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
-
+         version="0.0.0" 
+         unpack="false"/>
    <plugin
          id="org.apache.tuscany.sca.runtime"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
-
+         version="0.0.0"/>
 </feature>
