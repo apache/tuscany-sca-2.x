@@ -20,7 +20,9 @@ package org.apache.tuscany.sca.binding.feed.provider;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -156,8 +158,10 @@ class FeedBindingListenerServlet extends HttpServlet {
                 workspace.addContent(collection);
 
                 XMLOutputter outputter = new XMLOutputter();
-                outputter.setFormat(Format.getPrettyFormat());
-                outputter.output(document, response.getWriter());
+                Format format = Format.getPrettyFormat();
+                format.setEncoding("UTF-8");
+                outputter.setFormat(format);
+                outputter.output(document, getWriter(response));
 
             } else if (path == null || path.length() == 0 || path.equals("/")) {
 
@@ -177,8 +181,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     feed.setFeedType(requestFeedType);
                     WireFeedOutput feedOutput = new WireFeedOutput();
                     try {
-                        OutputStream output = response.getOutputStream();
-                        feedOutput.output(feed, new PrintWriter(output));
+                        feedOutput.output(feed, getWriter(response));
                     } catch (FeedException e) {
                         throw new ServletException(e);
                     }
@@ -203,7 +206,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                 if (entry != null) {
                     response.setContentType("application/atom+xml; charset=utf-8");
                     try {
-                        AtomEntryUtil.writeEntry(entry, feedType, response.getWriter());
+                        AtomEntryUtil.writeEntry(entry, feedType, getWriter(response));
                     } catch (FeedException e) {
                         throw new ServletException(e);
                     }
@@ -238,8 +241,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     syndFeed.setFeedType(requestFeedType);
                     SyndFeedOutput syndOutput = new SyndFeedOutput();
                     try {
-                        OutputStream output = response.getOutputStream();
-                        syndOutput.output(syndFeed, new PrintWriter(output));
+                        syndOutput.output(syndFeed, getWriter(response));
                     } catch (FeedException e) {
                         throw new ServletException(e);
                     }
@@ -328,7 +330,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
-                    AtomEntryUtil.writeEntry(createdEntry, feedType, response.getWriter());
+                    AtomEntryUtil.writeEntry(createdEntry, feedType, getWriter(response));
                 } catch (FeedException e) {
                     throw new ServletException(e);
                 }
@@ -340,6 +342,11 @@ class FeedBindingListenerServlet extends HttpServlet {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    private Writer getWriter(HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+        Writer writer = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+        return writer;
     }
 
     @Override
@@ -417,7 +424,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                 // Write the updated Atom entry
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
-                    AtomEntryUtil.writeEntry(updatedEntry, feedType, response.getWriter());
+                    AtomEntryUtil.writeEntry(updatedEntry, feedType, getWriter(response));
                 } catch (FeedException e) {
                     throw new ServletException(e);
                 }
