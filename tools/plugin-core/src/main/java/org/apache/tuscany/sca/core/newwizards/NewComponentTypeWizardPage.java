@@ -54,7 +54,7 @@ public class NewComponentTypeWizardPage extends WizardNewFileCreationPage {
 		setDescription("Create a new SCA ComponentType.");
 		
 		try {
-			String location = FileLocator.toFileURL(Platform.getBundle("tuscany.eclipse").getEntry("/")).getFile().toString();
+			String location = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.core").getEntry("/")).getFile().toString();
 			setImageDescriptor(ImageDescriptor.createFromImageData((new ImageLoader()).load(location + "/icons/tuscany.gif")[0]));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -87,7 +87,6 @@ public class NewComponentTypeWizardPage extends WizardNewFileCreationPage {
 		printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		printWriter.println("<componentType	xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
 		printWriter.println("				xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\">");	
-		printWriter.println();
 		printWriter.println();
 		printWriter.println();
 		printWriter.println("</componentType>");
