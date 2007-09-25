@@ -45,6 +45,7 @@
                 <module>callback-set-callback</module>
                 <module>callback-set-conversation</module>
                 <module>contribution</module>
+                <module>contribution-multiple</module>
                 <module>contribution-import-export</module>
                 <module>conversations</module>
                 <module>databindings</module>
