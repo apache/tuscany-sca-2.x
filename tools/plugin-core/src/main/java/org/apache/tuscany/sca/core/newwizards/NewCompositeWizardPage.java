@@ -26,6 +26,8 @@ import java.io.PrintWriter;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -54,7 +56,7 @@ public class NewCompositeWizardPage extends WizardNewFileCreationPage {
 		setDescription("Create a new SCA Composite.");
 		
 		try {
-			String location = FileLocator.toFileURL(Platform.getBundle("tuscany.eclipse").getEntry("/")).getFile().toString();
+			String location = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.core").getEntry("/")).getFile().toString();
 			setImageDescriptor(ImageDescriptor.createFromImageData((new ImageLoader()).load(location + "/icons/tuscany.gif")[0]));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -81,17 +83,18 @@ public class NewCompositeWizardPage extends WizardNewFileCreationPage {
 
 	@Override
 	protected InputStream getInitialContents() {
-		
+
+	        IPath path = new Path(getFileName());
+	        String name = path.removeFileExtension().toString();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		PrintWriter printWriter = new PrintWriter(outputStream);
 		printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");		
 		printWriter.println("<composite	xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
 		printWriter.println("			xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\"");
-		printWriter.println("			xmlns:c=\"http://" + getFileName() + "\"");	
-		printWriter.println("			name=\"" + getFileName() + "\">");
+		printWriter.println("			xmlns:c=\"http://" + name + "\"");	
+		printWriter.println("			name=\"" + name + "\">");
 		printWriter.println();
-		printWriter.println();
-		printWriter.println();
+                printWriter.println();
 		printWriter.println("</composite>");
 		printWriter.close();
 		
