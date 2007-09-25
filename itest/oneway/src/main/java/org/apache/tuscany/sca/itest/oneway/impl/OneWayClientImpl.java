@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.itest.oneway.impl;
 
 import org.apache.tuscany.sca.itest.oneway.OneWayClient;
-import org.apache.tuscany.sca.itest.oneway.OneWayClientTest;
+import org.apache.tuscany.sca.itest.oneway.OneWayService;
 import org.osoa.sca.annotations.Reference;
 
 
@@ -33,7 +33,7 @@ import org.osoa.sca.annotations.Reference;
 public class OneWayClientImpl implements OneWayClient {
     
     @Reference 
-    protected org.apache.tuscany.sca.itest.oneway.OneWayService oneWayService;
+    protected OneWayService oneWayService;
 
 
     public int doSomething(int count){
