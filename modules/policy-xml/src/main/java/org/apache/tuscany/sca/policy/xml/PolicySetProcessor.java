@@ -38,6 +38,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.neethi.PolicyEngine;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -58,7 +59,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     private PolicyFactory policyFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
     
-
+    public PolicySetProcessor(ModelFactoryExtensionPoint modelFactories) {
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+    }
+    
     public PolicySetProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
         this.extensionProcessor = extensionProcessor;
