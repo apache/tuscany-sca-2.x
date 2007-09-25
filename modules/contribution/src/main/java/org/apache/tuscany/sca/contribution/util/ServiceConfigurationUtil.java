@@ -30,8 +30,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ServiceConfigurationUtil {
+    private final static Logger logger = Logger.getLogger(ServiceConfigurationUtil.class.getName());
 
     /**
      * Read the service name from a configuration file
@@ -42,8 +45,15 @@ public class ServiceConfigurationUtil {
      * @throws IOException
      */
     public static List<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
+        boolean debug = logger.isLoggable(Level.FINE);
+        if (debug) {
+            logger.fine("Discovering service providers using class loader " + classLoader);
+        }
         List<String> classNames = new ArrayList<String>();
-        for (URL url: Collections.list(classLoader.getResources("META-INF/services/" + name))) {
+        for (URL url : Collections.list(classLoader.getResources("META-INF/services/" + name))) {
+            if (debug) {
+                logger.fine("Reading service provider file: " + url.toExternalForm());
+            }
             InputStream is = url.openStream();
             BufferedReader reader = null;
             try {
@@ -54,7 +64,11 @@ public class ServiceConfigurationUtil {
                         break;
                     line = line.trim();
                     if (!line.startsWith("#") && !"".equals(line)) {
-                        classNames.add(line.trim());
+                        String reg = line.trim();
+                        if (debug) {
+                            logger.fine("Registering service provider: " + reg);
+                        }
+                        classNames.add(reg);
                     }
                 }
             } finally {
@@ -63,7 +77,8 @@ public class ServiceConfigurationUtil {
                 if (is != null) {
                     try {
                         is.close();
-                    } catch (IOException ioe) {}
+                    } catch (IOException ioe) {
+                    }
                 }
             }
         }
@@ -83,7 +98,7 @@ public class ServiceConfigurationUtil {
         String className = tokens.nextToken(";");
         if (className != null)
             attributes.put("class", className);
-        for (; tokens.hasMoreTokens(); ) {
+        for (; tokens.hasMoreTokens();) {
             String key = tokens.nextToken("=").substring(1);
             if (key == null)
                 break;
