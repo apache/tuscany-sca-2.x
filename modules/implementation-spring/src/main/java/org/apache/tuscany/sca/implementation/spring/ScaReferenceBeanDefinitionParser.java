@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created on 10-Apr-2006 by Adrian Colyer
  */
 package org.apache.tuscany.sca.implementation.spring;
 
