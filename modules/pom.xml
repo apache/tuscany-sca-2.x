@@ -124,9 +124,10 @@
                 <module>node-impl</module>
                 <module>policy</module>
                 <module>policy-xml</module>
-		<module>policy-security</module>
+                <module>policy-security</module>
                 <module>sca-api</module>
-		<module>definitions</module>
+                <module>definitions</module>
+                <module>definitions-xml</module>
                 <module>topology</module>
                 <module>topology-xml</module>
                 <module>wsdl2java</module>
