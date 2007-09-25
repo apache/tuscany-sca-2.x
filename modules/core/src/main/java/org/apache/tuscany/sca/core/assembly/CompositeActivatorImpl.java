@@ -442,6 +442,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
             logger.fine("Starting component: " + component.getURI());
         }
         RuntimeComponent runtimeComponent = ((RuntimeComponent)component);
+        if(runtimeComponent.isStarted()) {
+        	return;
+        }
+        
         configureComponentContext(runtimeComponent);
 
         for (ComponentReference reference : component.getReferences()) {
@@ -505,6 +509,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * Stop a component
      */
     public void stop(Component component) {
+    	if (!((RuntimeComponent)component).isStarted()) {
+    		return;
+        }
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Stopping component: " + component.getURI());
         }
@@ -543,7 +550,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
         if (component instanceof ScopedRuntimeComponent) {
             ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
-            if (runtimeComponent.getScopeContainer() != null) {
+            if (runtimeComponent.getScopeContainer() != null && 
+            		runtimeComponent.getScopeContainer().getLifecycleState() != ScopeContainer.STOPPED) {
                 runtimeComponent.getScopeContainer().stop();
             }
         }
