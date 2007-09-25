@@ -25,7 +25,7 @@ package org.apache.tuscany.sca.core;
  * module should provide an implementation of this interface and register the 
  * ModuleActivator implementation class by defining a file named 
  * 
- * "META-INF/services/org.apache.tuscany.spi.bootstrp.ModuleActivator"
+ * "META-INF/services/org.apache.tuscany.core.ModuleActivator"
  * 
  * The content of the file is the class name of the ModuleActivator implementation. 
  * The implementation class must have a no-arg constructor. The same instance 
