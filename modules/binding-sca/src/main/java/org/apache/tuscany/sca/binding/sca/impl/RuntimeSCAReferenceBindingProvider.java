@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ServiceUnavailableException;
 
-/**
+/** 
  * The sca reference binding provider mediates between the twin requirements of 
  * local sca bindings and remote sca bindings. In the local case is does 
  * very little. When the sca binding model is set as being remote (because a 

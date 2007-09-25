@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANode; 
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -47,7 +47,7 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
         NodeFactory domainFactory = factories.getFactory(NodeFactory.class);
         
         if (domainFactory != null) {
-        	node = domainFactory.getNode();
+        	node = domainFactory.getNode(); 
         }
         
     } 
