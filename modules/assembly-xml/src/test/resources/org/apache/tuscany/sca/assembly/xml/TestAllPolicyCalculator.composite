@@ -70,7 +70,7 @@
 
         <property name="round" type="xsd:boolean" many="false">true</property>
 
-        <implementation.java class="calculator.CalculatorServiceImpl" policySets="" requires="" />
+        <implementation.java class="calculator.CalculatorServiceImpl" policySets="" requires="cns:tuscanyIntent_4" />
     </component>
 
     <component name="AddServiceComponent">

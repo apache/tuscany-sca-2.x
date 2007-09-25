@@ -19,15 +19,17 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:calc="http://sample.calculator"
+	requires="cns:tuscanyIntent_1"
 	targetNamespace="http://sample.calculator"
+	xmlns:cns="http://test" 
 	name="Calculator">
 
     <service name="CalculatorService" promote="CalculatorServiceComponent">
         <interface.java interface="calculator.CalculatorService"/>
     </service>
 
-    <component name="CalculatorServiceComponent">
-		<implementation.java class="calculator.CalculatorServiceImpl"/>
+    <component name="CalculatorServiceComponent" requires="cns:tuscanyIntent_2">
+		<implementation.java class="calculator.CalculatorServiceImpl" requires="cns:tuscanyIntent_3" />
         <reference name="addService" target="AddServiceComponent"/>
         <reference name="subtractService" target="SubtractServiceComponent"/>
         <reference name="multiplyService" target="MultiplyServiceComponent"/>
