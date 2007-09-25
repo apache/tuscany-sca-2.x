@@ -24,6 +24,11 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
+/**
+ * A wizard to create new .composite files.
+ *
+ * @version $Rev$ $Date$
+ */
 public class NewCompositeWizard extends Wizard implements IWorkbenchWizard {
 	
 	private IWorkbench workbench;

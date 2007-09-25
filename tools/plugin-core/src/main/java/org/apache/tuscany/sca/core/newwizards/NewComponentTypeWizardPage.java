@@ -36,6 +36,11 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
+/**
+ * Wizard page for the new .componentType file wizard.
+ *
+ * @version $Rev$ $Date$
+ */
 public class NewComponentTypeWizardPage extends WizardNewFileCreationPage {
 	
 	private IWorkbench workbench;
