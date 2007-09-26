@@ -24,10 +24,10 @@ import java.lang.reflect.Proxy;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
+import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 
 
 /**

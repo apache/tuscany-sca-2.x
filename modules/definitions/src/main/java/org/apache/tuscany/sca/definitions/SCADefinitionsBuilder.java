@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.definitions;
 
-import org.apache.tuscany.sca.definitions.SCADefinitions;
 
 /**
  * Interface to abstract building of SCA Defintions for a Domain

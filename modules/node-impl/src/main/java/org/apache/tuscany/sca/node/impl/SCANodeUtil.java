@@ -27,7 +27,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -38,11 +37,6 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
-import org.apache.tuscany.sca.domain.SCADomainService;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.domain.SCADomain;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
 
 
 /**

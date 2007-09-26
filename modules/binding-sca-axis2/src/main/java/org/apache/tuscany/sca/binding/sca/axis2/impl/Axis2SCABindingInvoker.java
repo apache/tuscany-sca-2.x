@@ -18,12 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
-import java.lang.reflect.UndeclaredThrowableException;
-import java.net.ConnectException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.axis2.AxisFault;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;

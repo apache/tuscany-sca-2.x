@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 

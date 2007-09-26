@@ -19,7 +19,6 @@
 
 package test.crud;
 
-import test.crud.CRUDImplementation;
 
 /**
  * A factory for the sample CRUD implementation model.

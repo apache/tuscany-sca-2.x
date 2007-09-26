@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import java.net.URL;
-
-import junit.framework.Assert;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

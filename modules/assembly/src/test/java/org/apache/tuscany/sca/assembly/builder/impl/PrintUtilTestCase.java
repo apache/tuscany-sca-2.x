@@ -47,7 +47,6 @@ import org.apache.tuscany.sca.assembly.TestBinding;
 import org.apache.tuscany.sca.assembly.TestImplementation;
 import org.apache.tuscany.sca.assembly.TestInterfaceContract;
 import org.apache.tuscany.sca.assembly.Wire;
-import org.apache.tuscany.sca.assembly.builder.impl.PrintUtil;
 import org.junit.Test;
 
 /**

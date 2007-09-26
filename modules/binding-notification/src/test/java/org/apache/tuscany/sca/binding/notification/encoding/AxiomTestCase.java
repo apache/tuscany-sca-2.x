@@ -21,11 +21,11 @@ package org.apache.tuscany.sca.binding.notification.encoding;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
+import junit.framework.TestCase;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 public class AxiomTestCase extends TestCase {
 

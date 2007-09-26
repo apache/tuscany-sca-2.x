@@ -23,7 +23,6 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 
 /**

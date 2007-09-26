@@ -33,10 +33,10 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.topology.Component;
 import org.apache.tuscany.sca.topology.Node;
 import org.apache.tuscany.sca.topology.Runtime;
 import org.apache.tuscany.sca.topology.Scheme;
-import org.apache.tuscany.sca.topology.Component;
 import org.apache.tuscany.sca.topology.TopologyFactory;
 
 /**

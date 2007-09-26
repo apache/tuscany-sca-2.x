@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.databinding.saxon;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import net.sf.saxon.value.DecimalValue;
 import net.sf.saxon.value.DoubleValue;

@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.topology.Component;
 import org.apache.tuscany.sca.topology.Node;
 import org.apache.tuscany.sca.topology.Scheme;
-import org.apache.tuscany.sca.topology.Component;
 
 /**
  * Represents an SCA node implementation.

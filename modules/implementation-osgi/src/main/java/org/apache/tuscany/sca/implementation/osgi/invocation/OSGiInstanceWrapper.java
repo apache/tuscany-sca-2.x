@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.Scope;
@@ -36,7 +37,6 @@ import org.apache.tuscany.sca.core.scope.TargetInitializationException;
 import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;

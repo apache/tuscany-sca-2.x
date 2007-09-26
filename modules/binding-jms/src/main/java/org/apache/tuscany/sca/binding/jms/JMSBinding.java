@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms;
 
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Extensible;
 

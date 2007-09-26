@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
