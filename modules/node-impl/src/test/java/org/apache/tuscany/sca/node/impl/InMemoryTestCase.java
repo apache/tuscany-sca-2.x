@@ -23,8 +23,6 @@ package org.apache.tuscany.sca.node.impl;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.node.impl.SCANodeImpl;
-import org.apache.tuscany.sca.node.impl.SCANodeUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

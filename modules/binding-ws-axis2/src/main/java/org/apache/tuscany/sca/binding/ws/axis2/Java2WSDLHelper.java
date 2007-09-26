@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
@@ -44,7 +43,6 @@ import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.schema.Schema;
-import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;

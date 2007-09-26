@@ -38,11 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.axis2.AxisFault;
-import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.description.TransportInDescription;
-import org.apache.axis2.engine.ListenerManager;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;

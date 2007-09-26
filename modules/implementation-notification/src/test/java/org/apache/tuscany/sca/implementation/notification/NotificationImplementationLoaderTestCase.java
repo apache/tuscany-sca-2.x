@@ -25,8 +25,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.implementation.notification.DefaultNotificationImplementationFactory;
-import org.apache.tuscany.sca.implementation.notification.NotificationImplementationProcessor;
 import org.easymock.EasyMock;
 
 /**

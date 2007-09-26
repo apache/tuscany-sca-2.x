@@ -19,11 +19,11 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 
 import test.crud.CRUD;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$

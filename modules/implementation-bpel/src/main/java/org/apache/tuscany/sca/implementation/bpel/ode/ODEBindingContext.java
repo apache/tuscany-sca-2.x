@@ -1,13 +1,13 @@
 package org.apache.tuscany.sca.implementation.bpel.ode;
 
+import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
+
 import org.apache.ode.bpel.iapi.BindingContext;
-import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.Endpoint;
+import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.PartnerRoleChannel;
 import org.w3c.dom.Document;
-
-import javax.xml.namespace.QName;
-import javax.wsdl.PortType;
 
 /**
  * @author Matthieu Riou <mriou@apache.org>

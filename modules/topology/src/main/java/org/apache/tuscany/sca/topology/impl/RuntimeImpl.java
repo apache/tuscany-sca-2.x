@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.topology.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.topology.Runtime;
 import org.apache.tuscany.sca.topology.Node;
+import org.apache.tuscany.sca.topology.Runtime;
 
 /**
  * Represents an SCA runtime.

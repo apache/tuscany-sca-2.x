@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.domain;
 
-import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.osoa.sca.annotations.Remotable;
 
 

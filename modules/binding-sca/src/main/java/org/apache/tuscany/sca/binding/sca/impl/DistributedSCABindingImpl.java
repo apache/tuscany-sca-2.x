@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.sca.impl;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 

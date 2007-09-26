@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.node;
 
-import org.apache.tuscany.sca.node.SCANode;
 
 /**
  * A factory that always returns the same domain object

@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.domain;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.domain.NodeInfo;
 import org.osoa.sca.annotations.Remotable;
 
 

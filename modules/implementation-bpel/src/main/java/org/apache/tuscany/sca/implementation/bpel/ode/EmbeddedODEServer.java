@@ -42,9 +42,9 @@ import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.bpel.memdao.BpelDAOConnectionFactoryImpl;
 import org.apache.ode.il.config.OdeConfigProperties;
 import org.apache.ode.il.dbutil.Database;
-import org.apache.ode.store.ProcessStoreImpl;
-import org.apache.ode.scheduler.simple.SimpleScheduler;
 import org.apache.ode.scheduler.simple.JdbcDelegate;
+import org.apache.ode.scheduler.simple.SimpleScheduler;
+import org.apache.ode.store.ProcessStoreImpl;
 import org.apache.ode.utils.GUID;
 
 /**

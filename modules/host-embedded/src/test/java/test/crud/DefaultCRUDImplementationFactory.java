@@ -24,9 +24,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 import test.crud.impl.CRUDImplementationImpl;
 
-import test.crud.CRUDImplementation;
-import test.crud.CRUDImplementationFactory;
-
 /**
  * A default factory for the CRUD implementation model.
  *

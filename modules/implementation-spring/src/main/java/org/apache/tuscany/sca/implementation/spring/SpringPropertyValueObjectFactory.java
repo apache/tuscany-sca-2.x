@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.spring;
 
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 
 /**
  *

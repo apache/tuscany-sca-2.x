@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.spring.xml;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a <bean> element in a Spring application-context

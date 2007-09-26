@@ -1,7 +1,10 @@
 package org.apache.tuscany.sca.implementation.bpel.ode;
 
-import org.apache.ode.bpel.iapi.*;
-import org.apache.ode.utils.DOMUtils;
+import org.apache.ode.bpel.iapi.BpelEngineException;
+import org.apache.ode.bpel.iapi.ContextException;
+import org.apache.ode.bpel.iapi.MessageExchangeContext;
+import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
+import org.apache.ode.bpel.iapi.PartnerRoleMessageExchange;
 
 /**
  * @author Matthieu Riou <mriou@apache.org>

@@ -26,10 +26,10 @@ import java.io.StringReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.w3c.dom.Node;
-
-import junit.framework.TestCase;
 
 public class FastInfosetTransformerTestCase extends TestCase {
     private static final String IPO_XML =

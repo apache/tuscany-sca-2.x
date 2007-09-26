@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.node.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +34,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
+import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.node.CompositeManager;
 import org.apache.tuscany.sca.node.ContributionManager;
-import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class ContributionManagerImpl implements ContributionManager, CompositeManager {
