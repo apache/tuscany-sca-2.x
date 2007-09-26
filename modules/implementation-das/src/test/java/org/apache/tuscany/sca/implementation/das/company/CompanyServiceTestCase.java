@@ -28,7 +28,7 @@ import commonj.sdo.DataObject;
 /**
  * Tests the DAS service
  */
-public class CompanyServiceTestCaseFIXME extends TestCase {
+public class CompanyServiceTestCase extends TestCase {
 
     private SCADomain scaDomain;
     private CompanyService dasCompanyService;
@@ -39,7 +39,7 @@ public class CompanyServiceTestCaseFIXME extends TestCase {
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("company.composite");
-        dasCompanyService = scaDomain.getService(CompanyService.class, "CompanyComponent/CompanyServiceComponent");
+        dasCompanyService = scaDomain.getService(CompanyService.class, "CompanyServiceComponent/CompanyService");
     }
 
     /**
@@ -52,8 +52,9 @@ public class CompanyServiceTestCaseFIXME extends TestCase {
     
     public void testGetCompanies() throws Exception {
         DataObject root = dasCompanyService.getCompanies();
-        assertNotNull(root);       
+        assertNotNull(root);
+        String nome = root.getString("COMPANY[1]/NAME");
+        assertEquals("ACME Publishing", root.getString("COMPANY[1]/NAME"));
     }
-
 
 }

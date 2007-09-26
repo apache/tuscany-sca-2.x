@@ -112,7 +112,7 @@ public class DataAccessEngineManager {
         InputStream configStream = null;
         
         try {
-            configStream = this.getClass().getResourceAsStream(config); 
+            configStream = this.getClass().getClassLoader().getResourceAsStream(config); 
         } catch (Exception e) {
             throw new MissingConfigFileException(config); 
         }

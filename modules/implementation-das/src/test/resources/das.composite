@@ -23,7 +23,7 @@
 	name="das">
 
     <component name="DASServiceComponent">
-        <tuscany:implementation.das config="/CompanyConfig.xml" dataAccessType="rdb">
+        <tuscany:implementation.das config="company.xml" dataAccessType="rdb">
         <tuscany:connectionInfo>
 			<tuscany:connectionProperties 
 				driverClass="org.apache.derby.jdbc.EmbeddedDriver"

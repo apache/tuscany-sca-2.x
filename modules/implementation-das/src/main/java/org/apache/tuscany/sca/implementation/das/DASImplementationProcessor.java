@@ -20,6 +20,9 @@ package org.apache.tuscany.sca.implementation.das;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -27,6 +30,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -54,11 +60,14 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
     
     private DASImplementationFactory dasFactory;
     
+    private final AssemblyFactory assemblyFactory;
+    private final JavaInterfaceFactory javaFactory;
+    
     private StAXArtifactProcessor<ConnectionInfo> connectionInfoProcessor;
     
     public DASImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
-        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         
         this.dasFactory = new DefaultDASImplementationFactory(assemblyFactory, javaFactory);
         
@@ -104,6 +113,7 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
         DASImplementation implementation = dasFactory.createDASImplementation();
         implementation.setConfig(config);
         implementation.setDataAccessType(dataAccessType);
+        implementation.setUnresolved(true);
 
         while (true) {
             int event = reader.next();
@@ -127,6 +137,13 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
     }
 
     public void resolve(DASImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+        if( impl != null && impl.isUnresolved()) {
+            //resolve component type
+            mergeComponentType(resolver, impl);
+                        
+            //set current implementation resolved 
+            impl.setUnresolved(false);
+        }
     }
 
     public void write(DASImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
@@ -145,5 +162,81 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
         }
         
         writer.writeEndElement();
+    }
+    
+    /**
+     * Merge the componentType from introspection and external file
+     * @param resolver
+     * @param impl
+     */
+    private void mergeComponentType(ModelResolver resolver, DASImplementation impl) {
+        // FIXME: Need to clarify how to merge
+        ComponentType componentType = getComponentType(resolver, impl);
+        if (componentType != null && !componentType.isUnresolved()) {
+            /*
+            Map<String, Reference> refMap = new HashMap<String, Reference>();
+            for (Reference ref : impl.getReferences()) {
+                refMap.put(ref.getName(), ref);
+            }
+            for (Reference reference : componentType.getReferences()) {
+                refMap.put(reference.getName(), reference);
+            }
+            impl.getReferences().clear();
+            impl.getReferences().addAll(refMap.values());
+
+            // Try to match references by type
+            Map<String, JavaElementImpl> refMembers = impl.getReferenceMembers();
+            for (Reference ref : impl.getReferences()) {
+                if (ref.getInterfaceContract() != null) {
+                    Interface i = ref.getInterfaceContract().getInterface();
+                    if (i instanceof JavaInterface) {
+                        Class<?> type = ((JavaInterface)i).getJavaClass();
+                        if (!refMembers.containsKey(ref.getName())) {
+                            JavaElementImpl e = getMemeber(impl, ref.getName(), type);
+                            if (e != null) {
+                                refMembers.put(ref.getName(), e);
+                            }
+                        }
+                    }
+                }
+            }*/
+
+            Map<String, Service> serviceMap = new HashMap<String, Service>();
+            for (Service svc : impl.getServices()) {
+                if(svc != null) {
+                    serviceMap.put(svc.getName(), svc);    
+                }
+            }
+            for (Service service : componentType.getServices()) {                
+                serviceMap.put(service.getName(), service);
+            }
+            impl.getServices().clear();
+            impl.getServices().addAll(serviceMap.values());
+
+            Map<String, Property> propMap = new HashMap<String, Property>();
+            for (Property prop : impl.getProperties()) {
+                propMap.put(prop.getName(), prop);
+            }
+        }
+    }
+
+    private String getFileName(String filePath) {
+        int pos = filePath.lastIndexOf(".");
+        
+        return filePath.substring(0, pos);
+        
+    }
+    
+    private ComponentType getComponentType(ModelResolver resolver, DASImplementation impl) {
+        String dasConfig = this.getFileName(impl.getConfig());
+        String componentTypeURI = dasConfig.replace('.', '/') + ".componentType";
+        ComponentType componentType = assemblyFactory.createComponentType();
+        componentType.setUnresolved(true);
+        componentType.setURI(componentTypeURI);
+        componentType = resolver.resolveModel(ComponentType.class, componentType);
+        if (!componentType.isUnresolved()) {
+            return componentType;
+        }
+        return null;
     }
 }
