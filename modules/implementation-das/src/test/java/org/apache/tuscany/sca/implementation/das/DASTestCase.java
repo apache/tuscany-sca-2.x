@@ -41,7 +41,7 @@ public class DASTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("das.composite");
-        dasService = scaDomain.getService(DAS.class, "DASServiceComponent");
+        dasService = scaDomain.getService(DAS.class, "DASServiceComponent/DAS");
 
     }
 

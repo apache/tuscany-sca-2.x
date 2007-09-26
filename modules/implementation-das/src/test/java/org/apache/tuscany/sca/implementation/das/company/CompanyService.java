@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.das.company;
 
+import org.apache.tuscany.sca.implementation.das.annotations.Command;
+
 import commonj.sdo.DataObject;
 
 /**
@@ -26,7 +28,6 @@ import commonj.sdo.DataObject;
  * @version $Rev$ $Date$
  */
 public interface CompanyService {
-    
+    @Command(query="select * from COMPANY")
     public DataObject getCompanies();
-
 }

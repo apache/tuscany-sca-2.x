@@ -22,19 +22,14 @@
 	targetNamespace="http://sample/das"
 	name="das">
 
-    <component name="CompanyComponent">
-        <tuscany:implementation.das config="/CompanyConfig.xml" dataAccessType="rdb">
-        <tuscany:connectionInfo>
-			<tuscany:connectionProperties 
-				driverClass="org.apache.derby.jdbc.EmbeddedDriver"
-				databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
-				loginTimeout="600000"/>
-			</tuscany:connectionInfo>
+    <component name="CompanyServiceComponent">
+        <tuscany:implementation.das config="company.xml" dataAccessType="rdb">
+            <tuscany:connectionInfo>
+			    <tuscany:connectionProperties 
+				    driverClass="org.apache.derby.jdbc.EmbeddedDriver"
+				    databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
+				    loginTimeout="600000"/>
+		    </tuscany:connectionInfo>
 		</tuscany:implementation.das>
-
-	    <service name="CompanyServiceComponent">
-	        <interface.java interface="org.apache.tuscany.sca.implementation.das.company.CompanyService"/>
-	    </service>
-
     </component>
 </composite>
