@@ -57,13 +57,16 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.jruby.Ruby;
+import org.jruby.RubyException;
 import org.jruby.ast.Node;
+import org.jruby.exceptions.RaiseException;
 import org.jruby.internal.runtime.GlobalVariable;
 import org.jruby.internal.runtime.GlobalVariables;
 import org.jruby.internal.runtime.ReadonlyAccessor;
 import org.jruby.javasupport.Java;
 import org.jruby.javasupport.JavaObject;
 import org.jruby.javasupport.JavaUtil;
+import org.jruby.javasupport.bsf.JRubyEngine;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.IAccessor;
 import org.jruby.runtime.builtin.IRubyObject;
@@ -404,6 +407,9 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
         try {
             setGlobalVariables(ctx);
             return rubyToJava(runtime.eval(node));
+        } catch (RaiseException exp) {
+            RubyException rexp = exp.getException();
+            throw new ScriptException(rexp.toString());
         } catch (Exception exp) {
             throw new ScriptException(exp);
         } finally {
@@ -418,9 +424,16 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
         if (loadPath == null) {
             loadPath = System.getProperty("java.class.path");
         }
-        List list = Arrays.asList(loadPath.split(File.pathSeparator));
-        runtime.getLoadService().init(list);                
+        List list = new ArrayList(Arrays.asList(loadPath.split(File.pathSeparator)));
+        list.add("META-INF/jruby.home/lib/ruby/site_ruby/1.8");
+        list.add("META-INF/jruby.home/lib/ruby/site_ruby/1.8/java");
+        list.add("META-INF/jruby.home/lib/ruby/site_ruby");
+        list.add("META-INF/jruby.home/lib/ruby/1.8");
+        list.add("META-INF/jruby.home/lib/ruby/1.8/java");
+        list.add("lib/ruby/1.8");
+        runtime.getLoadService().init(list);
         runtime.getLoadService().require("java");
+        
     }
 
     private Object invokeImpl(final Object obj, String method, 
