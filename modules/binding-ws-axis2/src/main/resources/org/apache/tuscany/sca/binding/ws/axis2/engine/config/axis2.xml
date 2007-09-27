@@ -200,26 +200,9 @@
         <!-- <parameter name="threadKeepAliveTimeUnit">MILLISECONDS</parameter>            -->
     </transportReceiver>
     
-    <!--Uncomment this and configure as appropriate for JMS transport support, after setting up your JMS environment (e.g. ActiveMQ)
-    <transportReceiver name="jms" class="org.apache.axis2.transport.jms.JMSListener">
-        <parameter name="myTopicConnectionFactory">
-        	<parameter name="java.naming.factory.initial">org.apache.activemq.jndi.ActiveMQInitialContextFactory</parameter>
-        	<parameter name="java.naming.provider.url">tcp://localhost:61616</parameter>
-        	<parameter name="transport.jms.ConnectionFactoryJNDIName">TopicConnectionFactory</parameter>
-        </parameter>
-
-        <parameter name="myQueueConnectionFactory">
-        	<parameter name="java.naming.factory.initial">org.apache.activemq.jndi.ActiveMQInitialContextFactory</parameter>
-        	<parameter name="java.naming.provider.url">tcp://localhost:61616</parameter>
-        	<parameter name="transport.jms.ConnectionFactoryJNDIName">QueueConnectionFactory</parameter>
-        </parameter>
-
-        <parameter name="default">
-        	<parameter name="java.naming.factory.initial">org.apache.activemq.jndi.ActiveMQInitialContextFactory</parameter>
-        	<parameter name="java.naming.provider.url">tcp://localhost:61616</parameter>
-        	<parameter name="transport.jms.ConnectionFactoryJNDIName">QueueConnectionFactory</parameter>
-        </parameter>
-    </transportReceiver>-->
+     <!-- Added by Tuscany -->
+     <transportReceiver name="jms" class="org.apache.axis2.transport.jms.JMSListener">
+     </transportReceiver>
 
     <!-- ================================================= -->
     <!-- Non-blocking http/s Transport Listener  -->
@@ -302,8 +285,8 @@
         <parameter name="PROTOCOL">HTTP/1.1</parameter>
         <parameter name="Transfer-Encoding">chunked</parameter>
     </transportSender>
-    <!--<transportSender name="jms"-->
-                     <!--class="org.apache.axis2.transport.jms.JMSSender"/>-->
+    <transportSender name="jms"
+                     class="org.apache.axis2.transport.jms.JMSSender"/>
      
     <!-- ================================================= -->
     <!-- Non-blocking http/s Transport Sender  -->
@@ -419,9 +402,10 @@
                      class="org.apache.axis2.dispatchers.RequestURIOperationDispatcher"/>
             <handler name="SOAPMessageBodyBasedDispatcher"
                      class="org.apache.axis2.dispatchers.SOAPMessageBodyBasedDispatcher"/>
-
+<!--
             <handler name="HTTPLocationBasedDispatcher"
                      class="org.apache.axis2.dispatchers.HTTPLocationBasedDispatcher"/>
+-->					 
         </phase>
         <phase name="RMPhase"/>
         <!--  System pre defined phases       -->
@@ -458,9 +442,10 @@
                      class="org.apache.axis2.dispatchers.RequestURIOperationDispatcher"/>
             <handler name="SOAPMessageBodyBasedDispatcher"
                      class="org.apache.axis2.dispatchers.SOAPMessageBodyBasedDispatcher"/>
-
+<!--
             <handler name="HTTPLocationBasedDispatcher"
                      class="org.apache.axis2.dispatchers.HTTPLocationBasedDispatcher"/>
+-->					 
         </phase>
         <phase name="RMPhase"/>
         <!--      user can add his own phases to this area  -->

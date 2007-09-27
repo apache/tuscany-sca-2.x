@@ -28,6 +28,10 @@ import java.net.URL;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
@@ -40,10 +44,16 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
+import org.apache.axis2.transport.jms.JMSSender;
+import org.apache.axis2.transport.jms.JMSListener;
+import org.apache.axis2.transport.jms.JMSConstants;
+import org.apache.axis2.transport.jms.JMSUtils;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.context.ConfigurationContext;
@@ -52,15 +62,19 @@ import org.apache.axis2.deployment.DeploymentErrorMsgs;
 import org.apache.axis2.deployment.DeploymentException;
 import org.apache.axis2.deployment.ModuleBuilder;
 import org.apache.axis2.deployment.util.Utils;
+import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.TransportInDescription;
+import org.apache.axis2.description.TransportOutDescription;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.MessageReceiver;
+import org.apache.axis2.engine.ListenerManager;
 import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.AbstractContract;
@@ -83,12 +97,16 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 public class Axis2ServiceProvider {
+    
+    private final static Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());    
 
     private AbstractContract contract;
     private WebServiceBinding wsBinding;
     private ServletHost servletHost;
     private MessageFactory messageFactory;
     private ConfigurationContext configContext;
+    private JMSSender jmsSender;
+    private JMSListener jmsListener;
 
     public static final QName QNAME_WSA_ADDRESS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
@@ -104,6 +122,7 @@ public class Axis2ServiceProvider {
     // This port number may be used to construct callback URIs.  The value 8085 is used
     // beacuse it matches the service port number used by the simple-callback-ws sample.
     private static final String BASE_URI = "http://localhost:8085/";
+    private static final String DEFAULT_QUEUE_CONENCTION_FACTORY = "TuscanyQueueConnectionFactory";
 
     public Axis2ServiceProvider(RuntimeComponent component,
                                 AbstractContract contract,
@@ -115,6 +134,7 @@ public class Axis2ServiceProvider {
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
+
         
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
@@ -155,23 +175,72 @@ public class Axis2ServiceProvider {
         // service for every port
 
         try {
-            AxisService axisService = createAxisService(); 
-            configContext.getAxisConfiguration().addService(createAxisService());
+            AxisService axisService = createAxisService();
+            configContext.getAxisConfiguration().addService( axisService );
+          
+            if ( axisService.getEndpointURL().startsWith( "http" ) ) {
+                Axis2ServiceServlet servlet = new Axis2ServiceServlet();
+                servlet.init(configContext);
+                String servletURI = wsBinding.getURI();
+                configContext.setContextRoot(servletURI);
+                servletHost.addServletMapping(servletURI, servlet);
+            } else if ( axisService.getEndpointURL().startsWith( "jms" ) ) {
+                logger.log(Level.INFO,"Axis2 JMS URL=" + axisService.getEndpointURL() );
+                
+                jmsListener = new JMSListener();
+                jmsSender = new JMSSender();
+                ListenerManager listenerManager = configContext.getListenerManager();
+                TransportInDescription trsIn = configContext.getAxisConfiguration().getTransportIn(Constants.TRANSPORT_JMS);
+
+                Map<String, String> jmsProps = JMSUtils.getProperties( wsBinding.getURI() );
+                OMFactory fac = OMAbstractFactory.getOMFactory();
+                OMElement parms = fac.createOMElement(DEFAULT_QUEUE_CONENCTION_FACTORY, null);
+                for ( String key : jmsProps.keySet() ) {
+                    OMElement param = fac.createOMElement("parameter", null);
+                    param.addAttribute( "name", key, null );
+                    param.addChild(fac.createOMText(param, jmsProps.get(key)));
+                    parms.addChild(param);
+                }
+                Parameter queueConnectionFactory = new Parameter(DEFAULT_QUEUE_CONENCTION_FACTORY, parms);
+                trsIn.addParameter( queueConnectionFactory );
+                trsIn.setReceiver(jmsListener);
+
+                configContext.getAxisConfiguration().addTransportIn( trsIn );
+                TransportOutDescription trsOut = configContext.getAxisConfiguration().getTransportOut(Constants.TRANSPORT_JMS);
+                //configContext.getAxisConfiguration().addTransportOut( trsOut );
+                trsOut.setSender(jmsSender);
+
+                if (listenerManager == null) {
+                    listenerManager = new ListenerManager();
+                    listenerManager.init(configContext);
+                }
+                listenerManager.addListener(trsIn, true);
+                jmsSender.init(configContext, trsOut);
+                jmsListener.init(configContext, trsIn);
+                jmsListener.start();
+            }
         } catch (AxisFault e) {
             throw new RuntimeException(e);
-        } 
+        }
 
-        Axis2ServiceServlet servlet = new Axis2ServiceServlet();
-        servlet.init(configContext);
-        String servletURI = wsBinding.getURI();
-        servletHost.addServletMapping(servletURI, servlet);
     }
 
     public void stop() {
-        servletHost.removeServletMapping(wsBinding.getURI());
+        if ( jmsListener != null ) {
+            jmsListener.stop();
+            jmsListener.destroy();
+        }
+        else {
+            servletHost.removeServletMapping(wsBinding.getURI());
+        }
+
+        if ( jmsSender != null )
+            jmsSender.stop();
+
         try {
             configContext.getAxisConfiguration().removeService(wsBinding.getURI());
-        } catch (AxisFault e) {
+        }
+        catch (AxisFault e) {
             throw new RuntimeException(e);
         }
     }
@@ -186,7 +255,7 @@ public class Axis2ServiceProvider {
      * If the <binding.ws> has no wsdlElement but does have a uri attribute then
      * the uri takes precidence over any implicitly used WSDL.
      * 
-     * @param parent
+     * @param baseURI
      */
     protected URI computeActualURI(String baseURI, RuntimeComponent component, AbstractContract contract) {
 
@@ -338,9 +407,20 @@ public class Axis2ServiceProvider {
         AxisService axisService = builder.populateService();
 
         String path = URI.create(wsBinding.getURI()).getPath();
-        axisService.setName(path);
+        String name = ( path.startsWith( "/") ? path.substring(1) : path );
+        axisService.setName(name);
+        String endpointURL = wsBinding.getURI();
+        axisService.setEndpointURL(endpointURL );
         axisService.setDocumentation("Tuscany configured AxisService for service: " + wsBinding.getURI());
-
+        for ( Iterator i = axisService.getEndpoints().values().iterator(); i.hasNext(); ) {
+            AxisEndpoint ae = (AxisEndpoint)i.next();
+            if (endpointURL.startsWith("jms") ) {
+                Parameter qcf = new Parameter(JMSConstants.CONFAC_PARAM, null);
+                qcf.setValue(DEFAULT_QUEUE_CONENCTION_FACTORY);
+                axisService.addParameter(qcf);
+                break;
+            }
+        }
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
         wsdlParam.setValue(definition);
@@ -428,7 +508,8 @@ public class Axis2ServiceProvider {
         // create a message object and set the args as its body
         Message msg = messageFactory.createMessage();
         msg.setBody(args);
-
+        msg.setOperation( op );
+        
         // if reference parameters are needed, create a new "To" EPR to hold them
         EndpointReference to = null;
         if (callbackAddress != null ||
