@@ -30,13 +30,14 @@
    height="744.09448"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
-   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\helloworld-ws-service"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="C:\simon\tuscany\java-head\sca\samples\helloworld-ws-service"
    sodipodi:docname="helloworld-ws-service.svg"
    version="1.0"
-   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\helloworld-ws-reference\helloworld-ws-reference.png"
+   inkscape:export-filename="C:\simon\tuscany\java-head\sca\samples\helloworld-ws-service\helloworld-ws-service.png"
    inkscape:export-xdpi="52.84"
-   inkscape:export-ydpi="52.84">
+   inkscape:export-ydpi="52.84"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4" />
   <sodipodi:namedview
