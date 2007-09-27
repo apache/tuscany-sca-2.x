@@ -83,13 +83,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-                <!-- http://jira.codehaus.org/browse/SUREFIRE-322 -->
-                <version>2.3.1-SNAPSHOT</version>
+                                <!-- http://jira.codehaus.org/browse/SUREFIRE-322 -->
+                                <version>2.3.1-SNAPSHOT</version>
 				<configuration>
 					<useFile>false</useFile>
 					<trimStackTrace>false</trimStackTrace>
-					<skip>true</skip>
-					<!--useSystemClassLoader>true</useSystemClassLoader-->
+					<useSystemClassLoader>true</useSystemClassLoader>
 				</configuration>
 			</plugin>
 			<plugin>
