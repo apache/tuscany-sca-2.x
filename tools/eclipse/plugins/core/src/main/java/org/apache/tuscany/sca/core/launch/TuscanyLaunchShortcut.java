@@ -79,7 +79,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
             // Create a launch configuration
             ILaunchConfigurationWorkingCopy configuration =
                 launchConfigurationType.newInstance(null,
-                                                    launchManager.generateUniqueLaunchConfigurationNameFrom("test"));
+                                                    launchManager.generateUniqueLaunchConfigurationNameFrom(file.getFullPath().removeFileExtension().lastSegment()));
             configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.apache.tuscany.sca.host.embedded.impl.DefaultLauncher");
             configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file.getProject().getName());
 
