@@ -22,7 +22,7 @@
 
 	<extension point = "org.eclipse.wst.xml.core.catalogContributions">
 		<catalogContribution id="default">
-			<uri name="http://www.osoa.org/xmlns/sca/1.0" uri="xsd/tuscany-sca-include.xsd"/>
+			<uri name="http://www.osoa.org/xmlns/sca/1.0" uri="xsd/sca-all.xsd"/>
 		</catalogContribution>
 	</extension>
 	
