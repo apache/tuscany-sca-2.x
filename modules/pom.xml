@@ -76,17 +76,11 @@
                 <module>databinding-xmlbeans</module>
                 <module>databinding-fastinfoset</module>
                 <module>data-engine-helper</module>
-                <!--
-                <module>discovery-jms</module>
-                -->
                 <module>domain</module>
                 <module>domain-api</module>
                 <module>domain-impl</module>
                 <module>extension-helper</module>
                 <module>host-embedded</module>
-                <!--
-                <module>host-home</module>
-                -->
                 <module>host-http</module>
                 <module>host-rmi</module>
                 <module>host-webapp</module>
@@ -109,15 +103,11 @@
                 <module>implementation-notification</module>
                 <module>implementation-osgi</module>
                 <module>osgi-runtime</module>
-
                 <module>implementation-resource</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
                 <module>implementation-xquery</module>
                 <module>java2wsdl</module>
-                <!--
-                <module>jmx</module>
-                -->
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
                 <module>node</module>
