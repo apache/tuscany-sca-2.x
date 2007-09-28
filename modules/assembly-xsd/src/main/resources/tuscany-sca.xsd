@@ -20,7 +20,7 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0">
     
-    <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="tuscany-sca-include.xsd"/>
+    <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca-all.xsd"/>
 
     <include schemaLocation="tuscany-sca-binding-atom.xsd"/>
     <include schemaLocation="tuscany-sca-binding-dwr.xsd"/>
