@@ -23,6 +23,8 @@ import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.w3c.dom.Document;
 
 /**
  * Represents an XML Schema definition.
@@ -30,19 +32,22 @@ import org.apache.ws.commons.schema.XmlSchema;
  * @version $Rev$ $Date$
  */
 public interface XSDefinition extends Base {
-    
+    XmlSchemaCollection getSchemaCollection();
+
+    void setSchemaCollection(XmlSchemaCollection schemaCollection);
+
     /**
      * Returns the XmlSchema definition model
      * @return the XmlSchema definition model
      */
     XmlSchema getSchema();
-    
+
     /**
      * Sets the XmlSchema definition model
      * @param definition the XmlSchema definition model
      */
     void setSchema(XmlSchema definition);
-    
+
     /**
      * Returns the namespace of this XmlSchema definition.
      * @return the namespace of this XmlSchema definition
@@ -54,7 +59,28 @@ public interface XSDefinition extends Base {
      * @param namespace the namespace of this XmlSchema definition
      */
     void setNamespace(String namespace);
-    
+
+    /**
+     * Get the location of the XSD
+     * @return
+     */
     URI getLocation();
+
+    /**
+     * Set the location of the XSD
+     * @param uri
+     */
     void setLocation(URI uri);
+
+    /**
+     * Get the DOM representation of the XSD
+     * @return
+     */
+    Document getDocument();
+
+    /**
+     * Set the DOM representation of the XSD
+     * @param document
+     */
+    void setDocument(Document document);
 }

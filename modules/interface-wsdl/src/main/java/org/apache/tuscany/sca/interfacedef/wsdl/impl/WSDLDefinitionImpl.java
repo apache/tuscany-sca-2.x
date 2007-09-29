@@ -35,14 +35,14 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
  * @version $Rev$ $Date$
  */
 public class WSDLDefinitionImpl implements WSDLDefinition {
-    
+
     private Definition definition;
     private String namespace;
     private URI location;
-    private XmlSchemaCollection inlineSchemas = new XmlSchemaCollection();
+    private XmlSchemaCollection inlinedSchemas = new XmlSchemaCollection();
     private List<XSDefinition> schemas = new ArrayList<XSDefinition>();
     private boolean unresolved;
-    
+
     protected WSDLDefinitionImpl() {
     }
 
@@ -53,9 +53,9 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     public void setDefinition(Definition definition) {
         this.definition = definition;
     }
-    
+
     public XmlSchemaCollection getInlinedSchemas() {
-        return inlineSchemas;
+        return inlinedSchemas;
     }
 
     public boolean isUnresolved() {
@@ -65,7 +65,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     public void setUnresolved(boolean undefined) {
         this.unresolved = undefined;
     }
-    
+
     public String getNamespace() {
         if (isUnresolved()) {
             return namespace;
@@ -75,7 +75,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
             return namespace;
         }
     }
-    
+
     public void setNamespace(String namespace) {
         if (!isUnresolved()) {
             throw new IllegalStateException();
@@ -83,7 +83,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
             this.namespace = namespace;
         }
     }
-    
+
     /*
     @Override
     public int hashCode() {
@@ -126,6 +126,50 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
      */
     public void setLocation(URI url) {
         this.location = url;
+    }
+
+    /**
+     * @param inlineSchemas the inlineSchemas to set
+     */
+    public void setInlinedSchemas(XmlSchemaCollection inlinedSchemas) {
+        this.inlinedSchemas = inlinedSchemas;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof WSDLDefinitionImpl))
+            return false;
+        final WSDLDefinitionImpl other = (WSDLDefinitionImpl)obj;
+        if (location == null) {
+            if (other.location != null)
+                return false;
+        } else if (!location.equals(other.location))
+            return false;
+        if (namespace == null) {
+            if (other.namespace != null)
+                return false;
+        } else if (!namespace.equals(other.namespace))
+            return false;
+        return true;
     }
 
 }

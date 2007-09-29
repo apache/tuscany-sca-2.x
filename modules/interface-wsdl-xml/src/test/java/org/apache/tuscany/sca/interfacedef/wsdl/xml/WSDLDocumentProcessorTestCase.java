@@ -28,11 +28,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.AbstractWSDLTestCase;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,22 +37,14 @@ import org.junit.Test;
 /**
  * @version $Rev$ $Date$
  */
-public class WSDLDocumentProcessorTestCase {
-    private WSDLDocumentProcessor processor;
-    private WSDLFactory wsdlFactory;
-    private javax.wsdl.factory.WSDLFactory wsdl4jFactory;
+public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
 
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
-        wsdlFactory = new DefaultWSDLFactory();
-        modelFactories.addFactory(wsdlFactory);
-        wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
-        modelFactories.addFactory(wsdl4jFactory);
-        processor = new WSDLDocumentProcessor(modelFactories);
+        super.setUp();
     }
 
     /**
@@ -67,20 +56,21 @@ public class WSDLDocumentProcessorTestCase {
 
     @Test
     public void testWSDL() throws Exception {
+       
         URL url = getClass().getResource("/wsdl/helloworld-service.wsdl");
         WSDLDefinition definition = processor.read(null, URI.create("wsdl/helloworld-service.wsdl"), url);
+        
         Assert.assertNull(definition.getDefinition());
         Assert.assertEquals("http://helloworld", definition.getNamespace());
         URL url1 = getClass().getResource("/wsdl/helloworld-interface.wsdl");
         WSDLDefinition definition1 = processor.read(null, URI.create("wsdl/helloworld-interface.wsdl"), url1);
         Assert.assertNull(definition1.getDefinition());
         Assert.assertEquals("http://helloworld", definition1.getNamespace());
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        factories.addFactory(wsdlFactory);
-        factories.addFactory(wsdl4jFactory);
-        WSDLModelResolver resolver = new WSDLModelResolver(null, factories);
+
         resolver.addModel(definition);
         resolver.addModel(definition1);
+        resolver.resolveModel(WSDLDefinition.class, definition);
+        resolver.resolveModel(WSDLDefinition.class, definition1);
         WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, definition);
         List imports = (List)definition.getDefinition().getImports().get("http://helloworld");
         Assert.assertNotNull(imports);

@@ -53,6 +53,8 @@ public interface WSDLDefinition extends Base {
      */
     XmlSchemaCollection getInlinedSchemas();
     
+    void setInlinedSchemas(XmlSchemaCollection schemaCollection);
+    
     /**
      * Returns the namespace of this WSDL definition.
      * @return the namespace of this WSDL definition

@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,11 @@ import java.util.Map;
 import javax.wsdl.Definition;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.wsdl.extensions.ExtensionRegistry;
+import javax.wsdl.extensions.UnknownExtensibilityElement;
+import javax.wsdl.extensions.UnknownExtensionDeserializer;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
@@ -47,7 +53,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,6 +67,21 @@ import org.xml.sax.InputSource;
  * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
  */
 public class WSDLModelResolver implements ModelResolver {
+    //Schema element names
+    public static final String ELEM_SCHEMA = "schema";
+
+    //Schema uri
+    public static final String NS_URI_XSD_1999 = "http://www.w3.org/1999/XMLSchema";
+    public static final String NS_URI_XSD_2000 = "http://www.w3.org/2000/10/XMLSchema";
+    public static final String NS_URI_XSD_2001 = "http://www.w3.org/2001/XMLSchema";
+
+    //Schema qnames
+    public static final QName Q_ELEM_XSD_1999 = new QName(NS_URI_XSD_1999, ELEM_SCHEMA);
+    public static final QName Q_ELEM_XSD_2000 = new QName(NS_URI_XSD_2000, ELEM_SCHEMA);
+    public static final QName Q_ELEM_XSD_2001 = new QName(NS_URI_XSD_2001, ELEM_SCHEMA);
+    public static final List<QName> XSD_QNAME_LIST =
+        Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
+
     private Contribution contribution;
     private Map<String, List<WSDLDefinition>> map = new HashMap<String, List<WSDLDefinition>>();
 
@@ -78,6 +99,11 @@ public class WSDLModelResolver implements ModelResolver {
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
 
         wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
+        // REVIEW: [rfeng] Disable the schema extension for WSDL4J to avoid aggressive loading 
+        ExtensionDeserializer deserializer = new UnknownExtensionDeserializer();
+        for (QName schema : XSD_QNAME_LIST) {
+            wsdlExtensionRegistry.registerDeserializer(Types.class, schema, deserializer);
+        }
     }
 
     /**
@@ -155,6 +181,11 @@ public class WSDLModelResolver implements ModelResolver {
 
     public void addModel(Object resolved) {
         WSDLDefinition definition = (WSDLDefinition)resolved;
+        for (XSDefinition d : definition.getXmlSchemas()) {
+            if (contribution != null) {
+                contribution.getModelResolver().addModel(d);
+            }
+        }
         List<WSDLDefinition> list = map.get(definition.getNamespace());
         if (list == null) {
             list = new ArrayList<WSDLDefinition>();
@@ -185,12 +216,12 @@ public class WSDLModelResolver implements ModelResolver {
         }
         if (definitions.size() == 1) {
             WSDLDefinition d = definitions.get(0);
-            loadOnDemand(d, d.getInlinedSchemas());
+            loadOnDemand(d);
             return d;
         }
         WSDLDefinition aggregated = wsdlFactory.createWSDLDefinition();
         for (WSDLDefinition d : definitions) {
-            loadOnDemand(d, aggregated.getInlinedSchemas());
+            loadOnDemand(d);
         }
         Definition facade = wsdl4jFactory.newDefinition();
         String ns = definitions.get(0).getNamespace();
@@ -244,13 +275,12 @@ public class WSDLModelResolver implements ModelResolver {
     /**
      * Load the WSDL definition on demand
      * @param def
-     * @param schemaCollection
      */
-    private void loadOnDemand(WSDLDefinition def, XmlSchemaCollection schemaCollection) {
+    private void loadOnDemand(WSDLDefinition def) {
         if (def.getDefinition() == null && def.getLocation() != null) {
             // Load the definition on-demand
             try {
-                loadDefinition(def, schemaCollection);
+                loadDefinition(def);
             } catch (ContributionReadException e) {
                 throw new RuntimeException(e);
             }
@@ -263,11 +293,9 @@ public class WSDLModelResolver implements ModelResolver {
      * Load the WSDL definition and inline schemas
      * 
      * @param wsdlDef
-     * @param schemaCollection
      * @throws ContributionReadException
      */
-    private void loadDefinition(WSDLDefinition wsdlDef, XmlSchemaCollection schemaCollection)
-        throws ContributionReadException {
+    private void loadDefinition(WSDLDefinition wsdlDef) throws ContributionReadException {
         if (wsdlDef.getDefinition() != null || wsdlDef.getLocation() == null) {
             return;
         }
@@ -287,12 +315,35 @@ public class WSDLModelResolver implements ModelResolver {
             wsdlDef.setDefinition(definition);
 
             //Read inline schemas 
-            readInlineSchemas(definition, schemaCollection);
+            readInlineSchemas(wsdlDef, definition);
         } catch (WSDLException e) {
             throw new ContributionReadException(e);
         } catch (IOException e) {
             throw new ContributionReadException(e);
         }
+    }
+
+    private Document promote(Element element) {
+        Document doc = (Document)element.getOwnerDocument().cloneNode(false);
+        Element schema = (Element)doc.importNode(element, true);
+        doc.appendChild(schema);
+        Node parent = element.getParentNode();
+        while (parent instanceof Element) {
+            Element root = (Element)parent;
+            NamedNodeMap nodeMap = root.getAttributes();
+            for (int i = 0; i < nodeMap.getLength(); i++) {
+                Attr attr = (Attr)nodeMap.item(i);
+                String name = attr.getName();
+                if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
+                    if (schema.getAttributeNode(name) == null) {
+                        schema.setAttributeNodeNS((Attr)doc.importNode(attr, true));
+                    }
+                }
+            }
+            parent = parent.getParentNode();
+        }
+        doc.setDocumentURI(element.getOwnerDocument().getDocumentURI());
+        return doc;
     }
 
     /**
@@ -301,36 +352,34 @@ public class WSDLModelResolver implements ModelResolver {
      * @param definition
      * @param schemaCollection
      */
-    private void readInlineSchemas(Definition definition, XmlSchemaCollection schemaCollection) {
+    private void readInlineSchemas(WSDLDefinition wsdlDefinition, Definition definition) {
+        if (contribution == null) {
+            // Check null for test cases
+            return;
+        }
         Types types = definition.getTypes();
         if (types != null) {
-            schemaCollection.setSchemaResolver(new XSDModelResolver.URIResolverImpl(contribution));
             int index = 0;
             for (Object ext : types.getExtensibilityElements()) {
-                if (ext instanceof Schema) {
-                    Element element = ((Schema)ext).getElement();
-                    Document doc = (Document) element.getOwnerDocument().cloneNode(false);
-                    Element schema = (Element)doc.importNode(element, true);
-                    doc.appendChild(schema);
-                    Node parent = element.getParentNode();
-                    while (parent instanceof Element) {
-                        Element root = (Element)parent;
-                        NamedNodeMap nodeMap = root.getAttributes();
-                        for (int i = 0; i < nodeMap.getLength(); i++) {
-                            Attr attr = (Attr)nodeMap.item(i);
-                            String name = attr.getName();
-                            if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
-                                if (schema.getAttributeNode(name) == null) {
-                                    schema.setAttributeNodeNS((Attr)doc.importNode(attr, true));
-                                }
-                            }
-                        }
-                        parent = parent.getParentNode();
+                ExtensibilityElement extElement = (ExtensibilityElement)ext;
+                Element element = null;
+                if (XSD_QNAME_LIST.contains(extElement.getElementType())) {
+                    if (extElement instanceof Schema) {
+                        element = ((Schema)extElement).getElement();
+                    } else if (extElement instanceof UnknownExtensibilityElement) {
+                        element = ((UnknownExtensibilityElement)extElement).getElement();
                     }
-                    String baseURI = ((Schema)ext).getDocumentBaseURI();
-                    doc.setDocumentURI(baseURI);
-                    schemaCollection.setBaseUri(baseURI);
-                    schemaCollection.read(doc, baseURI + "#" + index, null);
+                }
+                if (element != null) {
+                    Document doc = promote(element);
+                    XSDefinition xsDefinition = wsdlFactory.createXSDefinition();
+                    xsDefinition.setUnresolved(true);
+                    xsDefinition.setNamespace(element.getAttribute("targetNamespace"));
+                    xsDefinition.setDocument(doc);
+                    xsDefinition.setLocation(URI.create(doc.getDocumentURI() + "#" + index));
+                    XSDefinition resolved =
+                        contribution.getModelResolver().resolveModel(XSDefinition.class, xsDefinition);
+                    wsdlDefinition.setInlinedSchemas(resolved.getSchemaCollection());
                     index++;
                 }
             }
@@ -341,7 +390,7 @@ public class WSDLModelResolver implements ModelResolver {
                 javax.wsdl.Import anImport = (javax.wsdl.Import)i;
                 // Read inline schemas 
                 if (anImport.getDefinition() != null) {
-                    readInlineSchemas(anImport.getDefinition(), schemaCollection);
+                    readInlineSchemas(wsdlDefinition, anImport.getDefinition());
                 }
             }
         }

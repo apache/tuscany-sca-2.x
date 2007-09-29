@@ -82,10 +82,18 @@ public class XSDModelResolver implements ModelResolver {
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
 
+        XSDefinition definition = (XSDefinition)unresolved;
         // Lookup a definition for the given namespace
-        String namespace = ((XSDefinition)unresolved).getNamespace();
+        String namespace = definition.getNamespace();
         List<XSDefinition> list = map.get(namespace);
-        XSDefinition resolved;
+        if (list != null && definition.getDocument() != null) {
+            // Set the document for the inline schema
+            int index = list.indexOf(definition);
+            if (index != -1) {
+                list.get(index).setDocument(definition.getDocument());
+            }
+        }
+        XSDefinition resolved = null;
         try {
             resolved = aggregate(list);
         } catch (IOException e) {
@@ -114,10 +122,26 @@ public class XSDModelResolver implements ModelResolver {
     }
 
     private void loadOnDemand(XSDefinition definition) throws IOException {
-        if (definition.getSchema() == null && definition.getLocation() != null) {
+        if (definition.getSchema() != null) {
+            return;
+        }
+        if (definition.getDocument() != null) {
+            String uri = null;
+            if (definition.getLocation() != null) {
+                uri = definition.getLocation().toString();
+            }
+            XmlSchema schema = schemaCollection.read(definition.getDocument(), uri, null);
+            definition.setSchemaCollection(schemaCollection);
+            definition.setSchema(schema);
+        } else if (definition.getLocation() != null) {
+            if (definition.getLocation().getFragment() != null) {
+                // It's an inline schema
+                return;
+            }
             // Read an XSD document
             InputSource xsd = XMLDocumentHelper.getInputSource(definition.getLocation().toURL());
             XmlSchema schema = schemaCollection.read(xsd, null);
+            definition.setSchemaCollection(schemaCollection);
             definition.setSchema(schema);
         }
     }
@@ -159,7 +183,7 @@ public class XSDModelResolver implements ModelResolver {
         aggregated.setSchema(facade);
         aggregated.setNamespace(ns);
         aggregated.setUnresolved(false);
-        
+
         // FIXME: [rfeng] This is hacky
         definitions.clear();
         definitions.add(aggregated);
@@ -171,7 +195,7 @@ public class XSDModelResolver implements ModelResolver {
      */
     public static class URIResolverImpl implements URIResolver {
         private Contribution contribution;
-        
+
         public URIResolverImpl(Contribution contribution) {
             this.contribution = contribution;
         }

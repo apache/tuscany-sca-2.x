@@ -23,6 +23,8 @@ import java.net.URI;
 
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.w3c.dom.Document;
 
 /**
  * Represents a XML schema definition.
@@ -30,21 +32,22 @@ import org.apache.ws.commons.schema.XmlSchema;
  * @version $Rev$ $Date$
  */
 public class XSDefinitionImpl implements XSDefinition {
-    
-    private XmlSchema definition;
+    private XmlSchemaCollection schemaCollection;
+    private XmlSchema schema;
     private String namespace;
     private URI location;
+    private Document document;
     private boolean unresolved;
     
     protected XSDefinitionImpl() {
     }
 
     public XmlSchema getSchema() {
-        return definition;
+        return schema;
     }
 
     public void setSchema(XmlSchema definition) {
-        this.definition = definition;
+        this.schema = definition;
     }
 
     public boolean isUnresolved() {
@@ -58,8 +61,8 @@ public class XSDefinitionImpl implements XSDefinition {
     public String getNamespace() {
         if (isUnresolved()) {
             return namespace;
-        } else if (definition != null) {
-            return definition.getTargetNamespace();
+        } else if (schema != null) {
+            return schema.getTargetNamespace();
         } else {
             return namespace;
         }
@@ -85,5 +88,70 @@ public class XSDefinitionImpl implements XSDefinition {
      */
     public void setLocation(URI location) {
         this.location = location;
+    }
+
+    /**
+     * @return the document
+     */
+    public Document getDocument() {
+        return document;
+    }
+
+    /**
+     * @param document the document to set
+     */
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+
+    /**
+     * @return the schemaCollection
+     */
+    public XmlSchemaCollection getSchemaCollection() {
+        return schemaCollection;
+    }
+
+    /**
+     * @param schemaCollection the schemaCollection to set
+     */
+    public void setSchemaCollection(XmlSchemaCollection schemaCollection) {
+        this.schemaCollection = schemaCollection;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof XSDefinitionImpl))
+            return false;
+        final XSDefinitionImpl other = (XSDefinitionImpl)obj;
+        if (location == null) {
+            if (other.location != null)
+                return false;
+        } else if (!location.equals(other.location))
+            return false;
+        if (namespace == null) {
+            if (other.namespace != null)
+                return false;
+        } else if (!namespace.equals(other.namespace))
+            return false;
+        return true;
     }
 }
