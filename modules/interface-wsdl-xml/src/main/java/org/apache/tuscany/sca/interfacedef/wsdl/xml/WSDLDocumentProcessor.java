@@ -148,6 +148,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
             int eventType = reader.getEventType();
+            int index = 0;
             while (true) {
                 if (eventType == XMLStreamConstants.START_ELEMENT) {
                     if (WSDL11.equals(reader.getName())) {
@@ -162,6 +163,8 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                         XSDefinition xsd = factory.createXSDefinition();
                         xsd.setUnresolved(true);
                         xsd.setNamespace(tns);
+                        xsd.setLocation(URI.create(doc.toURI() + "#" + index));
+                        index++;
                         // The definition is marked as resolved but not loaded
                         xsd.setUnresolved(false);
                         xsd.setSchema(null);
