@@ -74,7 +74,11 @@ public class RequestContextImpl implements RequestContext {
 
     @SuppressWarnings("unchecked")
     public <CB> CB getCallback() {
-        return (CB) getCallbackReference().getService();
+        CallableReference<CB> cb = getCallbackReference(); 
+        if (cb == null) {
+            return null;
+        }
+        return cb.getService();
     }
 
     @SuppressWarnings("unchecked")
