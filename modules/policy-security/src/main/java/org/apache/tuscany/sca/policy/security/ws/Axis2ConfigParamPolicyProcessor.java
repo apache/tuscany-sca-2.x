@@ -106,7 +106,7 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
-                	//since the axis2 code checks against a no namespace we need to generate accordingly
+                    //since the axis2 code checks against a no namespace we need to generate accordingly
                     QName name = new QName(reader.getName().getLocalPart());
                     OMElement child = fac.createOMElement(name, current);
 
@@ -129,9 +129,11 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
                         String qname = reader.getAttributeLocalName(i);
                         String value = reader.getAttributeValue(i);
                         
-                        child.addAttribute(qname, value, fac.createOMNamespace(ns, prefix));
                         if (ns != null) {
+                            child.addAttribute(qname, value, fac.createOMNamespace(ns, prefix));
                             child.declareNamespace(ns, prefix);
+                        } else {
+                            child.addAttribute(qname, value, null);
                         }
                     }
                     current = child;

@@ -88,6 +88,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
@@ -121,8 +122,15 @@ public class Axis2ServiceProvider {
     // TODO: what to do about the base URI?
     // This port number may be used to construct callback URIs.  The value 8085 is used
     // beacuse it matches the service port number used by the simple-callback-ws sample.
-    private static final String BASE_URI = "http://localhost:8085/";
-    private static final String DEFAULT_QUEUE_CONENCTION_FACTORY = "TuscanyQueueConnectionFactory";
+    private static final String BASE_HTTP_URI = "http://localhost:8085/";
+    private static final String BASE_JMS_URI = "jms:";
+    
+    private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
+    
+    private static final QName TRANSPORT_JMS_QUALIFIED_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0","transport.jms");
+    
+    private PolicySet transportJmsPolicySet = null;
+        
 
     public Axis2ServiceProvider(RuntimeComponent component,
                                 AbstractContract contract,
@@ -149,7 +157,45 @@ public class Axis2ServiceProvider {
 
         configContext.setContextRoot(servletHost.getContextPath());
 
-        String uri = computeActualURI(BASE_URI, component, contract).normalize().toString();
+        // pull out the binding intents to see what sort of transport is required
+        transportJmsPolicySet = getPolicySet(TRANSPORT_JMS_QUALIFIED_INTENT);
+        
+        String uri;
+        
+        if (transportJmsPolicySet != null){
+            uri = computeActualURI(BASE_JMS_URI, component, contract).normalize().toString();
+            
+            // construct the rest of the uri based on the policy. All the details are put
+            // into the uri here rather than being place directly into the Axis configuration 
+            // as the Axis JMS sender relies on parsing the target URI      
+            Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
+            for ( Object policy : transportJmsPolicySet.getPolicies() ) {
+                if ( policy instanceof Axis2ConfigParamPolicy ) {
+                    axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
+                    Iterator paramIterator = axis2ConfigParamPolicy.getParamElements().get(DEFAULT_QUEUE_CONNECTION_FACTORY).getChildElements();
+                    
+                    if (paramIterator.hasNext()){
+                        StringBuffer uriParams = new StringBuffer("?");
+                       
+                        while (paramIterator.hasNext()){
+                            OMElement parameter = (OMElement)paramIterator.next();
+                            uriParams.append(parameter.getAttributeValue(new QName("","name")));
+                            uriParams.append("=");
+                            uriParams.append(parameter.getText());
+                            
+                            if (paramIterator.hasNext()){
+                                uriParams.append("&");
+                            }
+                        }
+                        
+                        uri = uri + uriParams;
+                    }
+                }
+            }                     
+        } else {
+            uri = computeActualURI(BASE_HTTP_URI, component, contract).normalize().toString();
+        }
+        
         if (uri.endsWith("/")) {
             uri = uri.substring(0, uri.length() - 1);
         }
@@ -191,18 +237,24 @@ public class Axis2ServiceProvider {
                 jmsSender = new JMSSender();
                 ListenerManager listenerManager = configContext.getListenerManager();
                 TransportInDescription trsIn = configContext.getAxisConfiguration().getTransportIn(Constants.TRANSPORT_JMS);
-
+                                
+                // get JMS transport parameters from the binding uri
                 Map<String, String> jmsProps = JMSUtils.getProperties( wsBinding.getURI() );
+
+                // collect the parameters used to configure the JMS transport
                 OMFactory fac = OMAbstractFactory.getOMFactory();
-                OMElement parms = fac.createOMElement(DEFAULT_QUEUE_CONENCTION_FACTORY, null);
+                OMElement parms = fac.createOMElement(DEFAULT_QUEUE_CONNECTION_FACTORY, null);                    
+
                 for ( String key : jmsProps.keySet() ) {
                     OMElement param = fac.createOMElement("parameter", null);
                     param.addAttribute( "name", key, null );
                     param.addChild(fac.createOMText(param, jmsProps.get(key)));
                     parms.addChild(param);
                 }
-                Parameter queueConnectionFactory = new Parameter(DEFAULT_QUEUE_CONENCTION_FACTORY, parms);
+                
+                Parameter queueConnectionFactory = new Parameter(DEFAULT_QUEUE_CONNECTION_FACTORY, parms);
                 trsIn.addParameter( queueConnectionFactory );
+                
                 trsIn.setReceiver(jmsListener);
 
                 configContext.getAxisConfiguration().addTransportIn( trsIn );
@@ -222,7 +274,6 @@ public class Axis2ServiceProvider {
         } catch (AxisFault e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void stop() {
@@ -416,7 +467,7 @@ public class Axis2ServiceProvider {
             AxisEndpoint ae = (AxisEndpoint)i.next();
             if (endpointURL.startsWith("jms") ) {
                 Parameter qcf = new Parameter(JMSConstants.CONFAC_PARAM, null);
-                qcf.setValue(DEFAULT_QUEUE_CONENCTION_FACTORY);
+                qcf.setValue(DEFAULT_QUEUE_CONNECTION_FACTORY);
                 axisService.addParameter(qcf);
                 break;
             }
@@ -548,6 +599,24 @@ public class Axis2ServiceProvider {
     protected Binding getBinding() {
         return wsBinding;
     }
+    
+    private PolicySet getPolicySet(QName intentName){
+        PolicySet returnPolicySet = null;
+        
+        if ( wsBinding instanceof PolicySetAttachPoint ) {
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding; 
+            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
+                for (Intent intent : policySet.getProvidedIntents()){
+                    if ( intent.getName().equals(intentName) ){
+                        returnPolicySet = policySet;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return returnPolicySet;
+    } 
     
     private void configureSecurity() throws AxisFault {
         if ( wsBinding instanceof PolicySetAttachPoint ) {
