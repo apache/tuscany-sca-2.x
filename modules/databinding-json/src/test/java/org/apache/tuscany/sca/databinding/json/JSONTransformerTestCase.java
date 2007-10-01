@@ -35,6 +35,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.databinding.json.axiom.JSON2OMElement;
+import org.apache.tuscany.sca.databinding.xml.XMLStreamSerializer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
