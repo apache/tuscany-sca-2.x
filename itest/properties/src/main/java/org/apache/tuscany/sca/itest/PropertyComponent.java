@@ -26,6 +26,7 @@ import commonj.sdo.DataObject;
 
 public interface PropertyComponent {
     public String getLocation();
+    public String getLocationFromComponentContext();
     public String getYear();
     public ComplexPropertyBean getComplexPropertyOne();
     public ComplexPropertyBean getComplexPropertyTwo();

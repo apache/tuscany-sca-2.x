@@ -21,12 +21,17 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.Collection;
 
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Property;
 
 import com.example.customer.sdo.impl.CustomerImpl;
 import commonj.sdo.DataObject;
 
 public class PropertyComponentImpl implements PropertyComponent {
+    
+    @Context
+    protected ComponentContext context;
     
     @Property
     protected CustomerImpl customerSdo;
@@ -54,6 +59,10 @@ public class PropertyComponentImpl implements PropertyComponent {
     
     public String getLocation(){
         return location;
+    }
+    
+    public String getLocationFromComponentContext() {
+        return context.getProperty(String.class, "location");
     }
     
     public String getYear(){

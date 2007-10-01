@@ -110,7 +110,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
 
     public <B> B getProperty(Class<B> type, String propertyName) {
         for (ComponentProperty p : component.getProperties()) {
-            if (propertyName.equals(propertyName)) {
+            if (propertyName.equals(p.getName())) {
                 return type.cast(p.getValue());
             }
         }
