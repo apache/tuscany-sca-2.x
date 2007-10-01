@@ -35,8 +35,10 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.wsdl.extensions.ExtensionRegistry;
+import javax.wsdl.extensions.ExtensionSerializer;
 import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.UnknownExtensionDeserializer;
+import javax.wsdl.extensions.UnknownExtensionSerializer;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
@@ -100,12 +102,12 @@ public class WSDLModelResolver implements ModelResolver {
 
         wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
         // REVIEW: [rfeng] Disable the schema extension for WSDL4J to avoid aggressive loading 
-/*        
         ExtensionDeserializer deserializer = new UnknownExtensionDeserializer();
+        ExtensionSerializer serializer = new UnknownExtensionSerializer();
         for (QName schema : XSD_QNAME_LIST) {
+            wsdlExtensionRegistry.registerSerializer(Types.class, schema, serializer);
             wsdlExtensionRegistry.registerDeserializer(Types.class, schema, deserializer);
         }
-*/        
     }
 
     /**
