@@ -100,10 +100,12 @@ public class WSDLModelResolver implements ModelResolver {
 
         wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
         // REVIEW: [rfeng] Disable the schema extension for WSDL4J to avoid aggressive loading 
+/*        
         ExtensionDeserializer deserializer = new UnknownExtensionDeserializer();
         for (QName schema : XSD_QNAME_LIST) {
             wsdlExtensionRegistry.registerDeserializer(Types.class, schema, deserializer);
         }
+*/        
     }
 
     /**
