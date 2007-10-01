@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * 
  * @version $Rev$ $Date$
  */
-public class DataTransformationInteceptor implements Interceptor {
+public class DataTransformationInterceptor implements Interceptor {
     private Invoker next;
 
     private Operation sourceOperation;
@@ -53,7 +53,7 @@ public class DataTransformationInteceptor implements Interceptor {
 
     private Mediator mediator;
 
-    public DataTransformationInteceptor(RuntimeWire wire,
+    public DataTransformationInterceptor(RuntimeWire wire,
                                  Operation sourceOperation,
                                  Operation targetOperation,
                                  Mediator mediator) {
