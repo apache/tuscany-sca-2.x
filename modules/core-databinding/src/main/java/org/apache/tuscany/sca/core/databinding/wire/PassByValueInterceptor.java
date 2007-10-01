@@ -30,14 +30,14 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
-public class PassByValueInteceptor implements Interceptor {
+public class PassByValueInterceptor implements Interceptor {
 
     private DataBindingExtensionPoint dataBindings;
     private Operation operation;
 
     private Invoker nextInvoker;
 
-    public PassByValueInteceptor(DataBindingExtensionPoint dataBindings, Operation operation) {
+    public PassByValueInterceptor(DataBindingExtensionPoint dataBindings, Operation operation) {
         this.dataBindings = dataBindings;
         this.operation = operation;
     }

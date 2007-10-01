@@ -144,12 +144,12 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
                 // Add the interceptor to the source side because multiple
                 // references can be wired to the same service
-                interceptor = new DataTransformationInteceptor(wire, sourceOperation, targetOperation, mediator);
+                interceptor = new DataTransformationInterceptor(wire, sourceOperation, targetOperation, mediator);
             } else {
                 // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
                 // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
                 if (requiresCopy(wire, sourceOperation, targetOperation)) {
-                    interceptor = new PassByValueInteceptor(dataBindings, targetOperation);
+                    interceptor = new PassByValueInterceptor(dataBindings, targetOperation);
                 }
             }
             if (interceptor != null) {
