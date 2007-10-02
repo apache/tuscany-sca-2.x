@@ -19,8 +19,13 @@
 
 package org.apache.tuscany.sca.contribution.processor;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 
 /**
  * DefaultValidationSchemaExtensionPoint
@@ -30,6 +35,7 @@ import java.util.List;
 public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaExtensionPoint {
     
     private List<String> schemas = new ArrayList<String>();
+    private boolean loaded;
     
     public void addSchema(String uri) {
         schemas.add(uri);
@@ -39,7 +45,37 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
         schemas.remove(uri);
     }
     
+    /**
+     * Load schema declarations from META-INF/services/
+     * org.apache.tuscany.sca.contribution.processor.ValidationSchema files
+     */
+    private void loadSchemas() {
+        if (loaded)
+            return;
+
+        // Get the schema declarations
+        ClassLoader classLoader = ValidationSchemaExtensionPoint.class.getClassLoader();
+        List<String> schemaDeclarations; 
+        try {
+            schemaDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, "org.apache.tuscany.sca.contribution.processor.ValidationSchema");
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Find each schema
+        for (String schemaDeclaration: schemaDeclarations) {
+            URL url = classLoader.getResource(schemaDeclaration);
+            if (url == null) {
+                throw new IllegalArgumentException(new FileNotFoundException(schemaDeclaration));
+            }
+            schemas.add(url.toString());
+        }
+        
+        loaded = true;
+    }
+    
     public List<String> getSchemas() {
+        loadSchemas();
         return schemas;
     }
 
