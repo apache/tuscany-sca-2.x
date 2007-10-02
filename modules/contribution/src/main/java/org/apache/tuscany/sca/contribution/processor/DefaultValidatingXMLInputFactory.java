@@ -39,6 +39,8 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.xml.sax.SAXParseException;
+
 /**
  * Default implementation of an XMLInputFactory that creates validating
  * XMLStreamReaders.
@@ -86,9 +88,11 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         } catch (Error e) {
             //FIXME Log this, some old JDKs don't support XMLSchema validation
             //e.printStackTrace();
+        } catch (SAXParseException e) {
+            throw new IllegalStateException(e);
         } catch (Exception e) {
             //FIXME Log this, some old JDKs don't support XMLSchema validation
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
